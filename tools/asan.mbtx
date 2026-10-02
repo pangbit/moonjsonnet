@@ -1,0 +1,41 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/env",
+}
+
+async fn main {
+  let home = @env.get_env_var("MOON_HOME").unwrap_or(@env.get_env_var("HOME").unwrap() + "/.moon")
+  let work = @fs.tmpdir(prefix="moonjsonnet-asan-")
+  let repo = @fs.realpath(".")
+  let shadow = work + "/toolchain"
+  let checkout = work + "/source"
+  @fs.mkdir(shadow)
+  @fs.mkdir(checkout)
+  @shell.Cmd("cp", ["-R", home + "/lib", shadow + "/lib"]).run()
+  @fs.symlink(target=home + "/bin", shadow + "/bin")
+  // Only the temporary toolchain copy is changed. The installed runtime remains
+  // untouched. Disable mimalloc so ASan can observe libc malloc/free allocations.
+  @fs.write_file(work + "/empty.c", "/* ASan uses system allocation. */\n")
+  @shell.Cmd("cc", ["-c", work + "/empty.c", "-o", shadow + "/lib/libmoonbitrun.o"]).run()
+  let files = @shell.Cmd("git", ["ls-files"], cwd=repo).output()
+  files.check()
+  for file in files.stdout().split("\n") {
+    if file.is_empty() { continue }
+    let relative = file.to_owned()
+    if relative == "README.md" { continue }
+    let dest = checkout + "/" + relative
+    if dest.rev_find("/") is Some(i) { @fs.mkdir(dest[:i], recursive=true, allow_exist=true) }
+    @shell.Cmd("cp", [repo + "/" + relative, dest]).run()
+    if relative.has_suffix("moon.pkg") || relative == "moon.pkg" {
+      let text = @fs.read_file(dest).text()
+      @fs.write_file(dest, text + "\nlink(native(\"cc\": \"cc\", \"cc-flags\": \"-g -fsanitize=address -fno-omit-frame-pointer\", \"stub-cc-flags\": \"-g -fsanitize=address -fno-omit-frame-pointer\"))\n")
+    }
+  }
+  let environment = Map([("MOON_HOME", shadow), ("ASAN_OPTIONS", "detect_leaks=0:fast_unwind_on_malloc=0")])
+  @shell.Cmd("moon", ["test", "--target", "native", "--deny-warn"], cwd=checkout, env=environment).run()
+  @shell.Cmd("moon", ["build", "--target", "native"], cwd=checkout, env=environment).run()
+  @shell.Cmd("moon", ["run", repo + "/tools/integration.mbtx", checkout + "/_build/native/debug/build/cmd/main/main.exe"], cwd=checkout, env=environment).run()
+  println("ASan tests and host integration passed with isolated toolchain: \{work}; leak detection disabled")
+}

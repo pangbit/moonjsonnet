@@ -1,0 +1,37 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+}
+
+async fn main {
+  @shell.Cmd("moon", ["package"]).run()
+  let archive = @fs.realpath("_build/publish/pangbit-moonjsonnet-0.1.0.zip")
+  let listing = @shell.Cmd("unzip", ["-Z1", archive]).output()
+  listing.check()
+  for path in listing.stdout().split("\n") {
+    assert_true(!path.has_prefix("examples/") && !path.has_prefix("tools/") && !path.has_prefix("tests/") && !path.has_suffix("_test.mbt") && !path.has_suffix("_wbtest.mbt"), msg=path.to_owned())
+  }
+  let work = @fs.tmpdir(prefix="moonjsonnet-consumer-")
+  @fs.mkdir(work + "/package")
+  @fs.mkdir(work + "/consumer")
+  @shell.Cmd("unzip", ["-q", archive, "-d", work + "/package"]).run()
+  @fs.write_file(work + "/consumer/moon.mod", "name = \"pangbit/moonjsonnet_consumer_check\"\nversion = \"0.0.0\"\npreferred_target = \"native\"\nimport { \"pangbit/moonjsonnet@0.1.0\" }\n")
+  @fs.write_file(work + "/consumer/moon.pkg", "import { \"pangbit/moonjsonnet\", \"pangbit/moonjsonnet/fs\" } for \"test\"\nsupported_targets = \"native\"\n")
+  let test_source =
+    #|///|
+    #|test "independent archive consumer" {
+    #|  let limits = @moonjsonnet.Limits::default()
+    #|  let json = @moonjsonnet.evaluate("local f(x=21)=x*2; f()", limits~)
+    #|  assert_eq(json, Json::number(42))
+    #|  let host = @fs.FileHost::new(".")
+    #|  assert_true(host.resolve("", "moon.mod").text.contains("consumer_check"))
+    #|  try @moonjsonnet.evaluate("1/0") catch {
+    #|    @moonjsonnet.Error(d) => { assert_eq(d.kind, @moonjsonnet.Runtime); assert_true(!d.to_string().is_empty()) }
+    #|  } noraise { _ => fail("expected diagnostic") }
+    #|}
+  @fs.write_file(work + "/consumer/consumer_test.mbt", test_source)
+  @shell.Cmd("moon", ["work", "init", "package", "consumer"], cwd=work).run()
+  @shell.Cmd("moon", ["test", "--target", "native", "--deny-warn"], cwd=work + "/consumer").run()
+  println("Archive consumer passed: \{work}")
+}

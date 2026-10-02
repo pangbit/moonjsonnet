@@ -1,0 +1,39 @@
+name: CI
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install pinned MoonBit
+        run: curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- 0.1.20260920
+      - name: Add toolchain path
+        run: echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - run: moon version --all
+      - run: moon check --target native --deny-warn
+      - run: moon test --target native --deny-warn
+      - run: moon test --target native --release --deny-warn
+      - run: moon fmt --check
+      - run: moon info
+      - run: git diff --exit-code
+      - run: moon doc
+      - run: moon build --target native --release --deny-warn
+      - run: moon run examples/embedded
+      - name: Build pinned reference
+        run: |
+          git clone --depth 1 --branch v0.21.0 https://github.com/google/jsonnet.git "$RUNNER_TEMP/jsonnet"
+          git -C "$RUNNER_TEMP/jsonnet" rev-parse HEAD
+          make -C "$RUNNER_TEMP/jsonnet" -j4 jsonnet
+      - run: moon run tools/differential.mbtx "$RUNNER_TEMP/jsonnet/jsonnet" _build/native/release/build/cmd/main/main.exe
+      - run: moon run tools/integration.mbtx _build/native/release/build/cmd/main/main.exe
+      - run: moon run tools/consumer.mbtx
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: differential-${{ matrix.os }}
+          path: _build/differential/report.json

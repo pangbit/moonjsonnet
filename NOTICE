@@ -1,0 +1,19 @@
+MoonJsonnet
+Copyright 2026 pangbit
+
+Independent implementation based on the Jsonnet language specification,
+language reference and standard-library contracts at https://jsonnet.org/.
+
+Development-only reference: Google Jsonnet v0.21.0
+https://github.com/google/jsonnet
+Copyright Google Inc.; Apache License 2.0.
+Pinned commit: bbb38f1020be1f5aed560928fb839b2c448cefb4.
+No upstream interpreter or standard-library implementation is bundled or linked.
+The committed differential inputs and example fixtures are original project
+material, distributed under this project's Apache-2.0 license. The reference
+checkout retains its own LICENSE and third-party notices outside this package.
+
+MoonBit core is provided by the user's toolchain, not vendored here. Automation
+scripts use moonbitlang/async (Apache-2.0), resolved by Moon script mode; it is not
+a library runtime dependency. Official examples informed the package layout:
+https://github.com/moonbitlang/async/tree/main/examples

@@ -1,0 +1,15 @@
+.git/
+.github/
+.githooks/
+.codegraph/
+AGENTS.md
+MoonJsonnet_REQUIREMENTS.md
+examples/
+tests/
+tools/
+reports/
+*_test.mbt
+*_wbtest.mbt
+_build/
+target/
+.moonagent/

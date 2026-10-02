@@ -9,7 +9,7 @@ Fixed before implementation on 2026-10-02:
 | Language and standard-library compatibility baseline | Google Jsonnet v0.21.0 |
 | Official reference interpreter | google/jsonnet, tag v0.21.0, commit bbb38f1020be1f5aed560928fb839b2c448cefb4 |
 | Backend | native; POSIX file host (macOS and Linux) |
-| Runtime dependencies | MoonBit core bundled with the toolchain; POSIX libc for file host only |
+| Runtime dependencies | MoonBit core bundled with the toolchain; POSIX libc for file host and numeric text formatting |
 
 Semantic sources: <https://jsonnet.org/ref/spec.html>,
 <https://jsonnet.org/ref/language.html>, <https://jsonnet.org/ref/stdlib.html>.
