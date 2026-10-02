@@ -117,7 +117,7 @@
 | `parseInt` | function | 1 | registered |
 | `parseJson` | function | 1 | registered |
 | `parseOctal` | function | 1 | registered |
-| `parseYaml` | function | 1 | missing |
+| `parseYaml` | function | 1 | registered |
 | `pi` | number | null | registered |
 | `pow` | function | 2 | registered |
 | `primitiveEquals` | function | 2 | registered |

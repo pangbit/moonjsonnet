@@ -77,8 +77,9 @@ Trace fixtures additionally compare exact stderr on success and the exact trace
 prefix before an error diagnostic. Both programs receive the same absolute
 input path for these cases; relative/alias diagnostic-path parity is not implied.
 
-See the [native and trace report](../reports/GO-JSONNET-NATIVE-TRACE.md) for current
+See the [YAML parsing report](../reports/GO-JSONNET-PARSE-YAML.md) for current
 commit-bound results and the retained differences. The earlier
+[native and trace report](../reports/GO-JSONNET-NATIVE-TRACE.md),
 [digest report](../reports/GO-JSONNET-DIGESTS.md),
 [TOML and YAML output report](../reports/GO-JSONNET-TOML-YAML.md),
 [deletion and internal object merge report](../reports/GO-JSONNET-REMOVE.md),
