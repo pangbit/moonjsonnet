@@ -34,6 +34,8 @@ async fn main {
     #|  assert_eq(@moonjsonnet.evaluate("std.manifestJsonMinified({b:[true],a:{}})"), Json::string("{\"a\":{},\"b\":[true]}"))
     #|  assert_eq(@moonjsonnet.evaluate("std.manifestPython([true,null])"), Json::string("[True, None]"))
     #|  assert_eq(@moonjsonnet.evaluate("std.manifestXmlJsonml(['p','text'])"), Json::string("<p>text</p>"))
+    #|  assert_eq(@moonjsonnet.evaluate("local a=[1,2,3]; [std.removeAt(a,0),a]").stringify(), "[[2,3],[2,3,3]]")
+    #|  assert_eq(@moonjsonnet.evaluate("std['$objectFlatMerge']([{[k]:k for k in ['a']}])").stringify(), "{\"a\":\"a\"}")
     #|  let host = @fs.FileHost::new(".")
     #|  assert_true(host.resolve("", "moon.mod").text.contains("consumer_check"))
     #|  assert_true(!host.resolve_binary("", "moon.mod").bytes.is_empty())

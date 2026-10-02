@@ -13,7 +13,7 @@ fn builtin_names() -> Array[String] {
     "round", "isEven", "isOdd", "isInteger", "isDecimal", "pow", "modulo", "xor",
     "xnor", "id", "parseInt", "isEmpty", "trim", "splitLimit", "splitLimitR", "equalsIgnoreCase",
     "lstripChars", "rstripChars", "stripChars", "base64", "base64Decode", "base64DecodeBytes",
-    "encodeUTF8", "decodeUTF8", "manifestJsonEx",
+    "encodeUTF8", "decodeUTF8", "manifestJsonEx", "remove", "removeAt", "$objectFlatMerge",
   ]
 }
 
@@ -33,6 +33,9 @@ fn value_type(v : Value) -> String {
 ///|
 fn builtin_params(name : String) -> Array[String] {
   match name {
+    "remove" => ["arr", "elem"]
+    "removeAt" => ["arr", "i"]
+    "$objectFlatMerge" => ["x"]
     "extVar" => ["x"]
     "isArray"
     | "isBoolean"
@@ -160,6 +163,25 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "$objectFlatMerge" => self.object_flat_merge(array_value(x, loc), loc)
+    "removeAt" =>
+      self.remove_at(array_value(x, loc), integer(values[1], loc), loc)
+    "remove" => {
+      let items = array_value(x, loc)
+      let mut found = -1
+      for i, t in items {
+        self.tick(loc)
+        if self.equal(self.force(t, loc), values[1], loc) {
+          found = i
+          break
+        }
+      }
+      if found < 0 {
+        x
+      } else {
+        self.remove_at(items, found, loc)
+      }
+    }
     "manifestJsonEx" =>
       Str(
         self.manifest_json_ex(
@@ -449,13 +471,18 @@ fn Vm::builtin(
         self.tick(loc)
         if name == "filter" {
           if boolean(self.call(x, [(None, t)], loc), loc) {
-            out.push(t)
+            out.push(a[i])
           }
         } else {
-          let call_args = if name == "mapWithIndex" {
-            [self.store(Ready(Num(i.to_double()))), t]
+          let element = if values[1] is ArrayValue(_) {
+            self.defer_index(values[1], i.to_double(), loc)
           } else {
-            [t]
+            t
+          }
+          let call_args = if name == "mapWithIndex" {
+            [self.store(Ready(Num(i.to_double()))), element]
+          } else {
+            [element]
           }
           out.push(self.defer_call(x, call_args, loc))
         }

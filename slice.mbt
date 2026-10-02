@@ -34,7 +34,13 @@ fn Vm::slice(
   while index < stop && index < length {
     self.tick(loc)
     let i = array_index(Num(index), items.length(), loc)
-    out.push(items[i])
+    out.push(
+      if value is ArrayValue(_) {
+        self.defer_index(value, index, loc)
+      } else {
+        items[i]
+      },
+    )
     index = number_value(finite(index + stride, loc), loc)
   }
   if value is Str(_) {

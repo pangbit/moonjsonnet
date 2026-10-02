@@ -155,6 +155,8 @@ Only the following functions are supported. Arity/named-argument violations are
 | `escapeStringJson(str_)`, `escapeStringPython(str)`, `escapeStringBash(str_)`, `escapeStringDollars(str_)`, `escapeStringXML(str_)` | String coercion and context-specific escaping, including C0/C1 JSON controls |
 | `resolvePath(f,r)` | Pinned lexical directory joining; does not normalize .. or treat r as an absolute replacement |
 | `id(x)` | Eager identity; nested array/object values remain lazy |
+| `remove(arr,elem)`, `removeAt(arr,i)` | Remove the first equal value or an integer index; preserve Go's mutation of input slots, then return an independent shorter array; remove searches only through the first match, removeAt does not force elements |
+| `$objectFlatMerge(x)` | Internal helper: merge simple objects with disjoint keys, preserving field visibility and bindings, rebinding self, dropping assertions; explicit object locals and inherited objects are rejected |
 | `encodeUTF8(str)` | UTF-8 bytes, with BOM and zero characters preserved |
 | `decodeUTF8(arr)` | Integer bytes in 0..255; each malformed UTF-8 byte becomes U+FFFD, including incomplete multibyte sequences |
 | `base64(input)` | Standard padded alphabet; accepts a byte array or a string with code points <=255, then encodes the string's UTF-8 bytes |
@@ -220,6 +222,23 @@ output traverses lazy values directly, enforcing depth and byte budgets. For
 stack (exit 2); this implementation returns `Limit`. This input remains an
 explicit differential failure, not an expected-error pass or a final accepted
 compatibility exception.
+
+Deletion follows the pinned Go implementation's observable mutation: deleting
+index 1 from `[1,2,3,4]` returns `[1,3,4]` while leaving the original array as
+`[1,3,4,4]`. The returned array is independent; removing from it does not mutate
+the original again. `map`, `mapWithIndex` and array slices defer reading the slot
+until their element is demanded, and `filter` reads the selected slot after its
+predicate, so they observe these changes. Ordinary concatenation copies slots.
+Out-of-bounds `removeAt` inputs cause an internal Go crash but return `Runtime`
+here; those cases remain differential failures.
+
+Go's `$objectFlatMerge` is designed for desugared comprehensions. Top-level
+object literals gain an implicit `$` local in Go and crash when passed directly
+to this helper, as do explicit object locals and inherited objects. Nested
+objects without locals and desugared comprehensions work and are covered by
+passing cases. This implementation safely merges simple top-level literals;
+all observed reference crashes remain failed inputs, including duplicate-field
+and eager-error examples that crash before reaching those checks in Go.
 
 New sequence functions follow the pinned Go implementation. In particular,
 `makeArray` uses the parameter name `sz`, rejects fractional sizes, returns an

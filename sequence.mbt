@@ -1,4 +1,31 @@
 ///|
+// Source std.map and std.slice defer the indexing expression itself. Capturing
+// the current thunk would miss a subsequent removeAt mutation of the array.
+fn Vm::defer_index(
+  self : Vm,
+  value : Value,
+  index : Double,
+  loc : Location,
+) -> Int {
+  let env : Env = {
+    parent: None,
+    names: Map([("a", self.store(Ready(value)))]),
+  }
+  self.store(
+    Pending(
+      {
+        kind: Index({ kind: Var("a"), loc, }, {
+          kind: Literal(Json::number(index)),
+          loc,
+        }),
+        loc,
+      },
+      env,
+    ),
+  )
+}
+
+///|
 fn Vm::sequence(self : Vm, value : Value, loc : Location) -> Array[Int] raise {
   match value {
     ArrayValue(a) => a
