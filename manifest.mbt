@@ -40,7 +40,9 @@ fn Vm::manifest(
       }
       Json::object(fields)
     }
-    Closure(_, _, _) | Builtin(_) | Std =>
+    Std =>
+      raise problem(Unsupported, loc, "std object manifestation is unsupported")
+    Closure(_, _, _) | Builtin(_) =>
       raise problem(Type, loc, "cannot manifest a function or std")
     _ => {
       let j = match value {

@@ -98,3 +98,49 @@ test "resource limits" {
     }
   }
 }
+
+///|
+test "regressions for standard string manifests static super and token names" {
+  assert_eq(
+    @moonjsonnet.evaluate("std.toString({b:2,a:[1,2]})"),
+    Json::string("{\"a\": [1, 2], \"b\": 2}"),
+  )
+  assert_eq(
+    @moonjsonnet.evaluate("local string=1,number=2,EOF=3; string+number+EOF"),
+    Json::number(6),
+  )
+  try @moonjsonnet.evaluate("{a:super}") catch {
+    @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Static)
+  } noraise {
+    _ => fail("expected static error")
+  }
+  assert_eq(
+    @moonjsonnet.evaluate("std.foldl(function(a,b)b,[1,2],error 'unused')"),
+    Json::number(2),
+  )
+}
+
+///|
+test "flat syntax tree and exponential allocation are bounded" {
+  let b = StringBuilder()
+  b.write_char('1')
+  for _ in 0..<1000 {
+    b.write_string("+1")
+  }
+  try @moonjsonnet.evaluate(b.to_string()) catch {
+    @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Limit)
+  } noraise {
+    _ => fail("expected AST depth error")
+  }
+  let limits = @moonjsonnet.Limits::default()
+  try
+    @moonjsonnet.evaluate(
+      "local f(n)=if n==0 then [0] else local a=f(n-1); a+a; std.length(f(30))",
+      limits={ ..limits, output_bytes: 1024, },
+    )
+  catch {
+    @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Limit)
+  } noraise {
+    _ => fail("expected allocation limit")
+  }
+}

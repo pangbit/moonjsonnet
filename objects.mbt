@@ -93,7 +93,7 @@ fn Vm::keys(self : Vm, id : Int, top : Int, hidden : Bool) -> Array[String] {
     .keys()
     .filter(k => hidden || self.visible(id, top, k))
     .collect()
-  out.sort()
+  out.sort_by(compare_unicode)
   out
 }
 

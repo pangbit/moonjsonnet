@@ -1,0 +1,76 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+  "moonbitlang/core/env",
+}
+
+async fn main {
+  let args = @env.args()
+  guard args.length() == 2 else { fail("Usage: moon run tools/integration.mbtx CLI") }
+  let cli = args[1]
+  let root = "_build/host-tests/root"
+  @fs.mkdir(root, recursive=true, allow_exist=true)
+  @fs.mkdir("_build/host-tests/root-sibling", allow_exist=true)
+  @fs.write_file(root + "/value.libsonnet", "{x:42}")
+  @fs.write_file("_build/host-tests/root-sibling/secret", "42")
+  @fs.symlink(target="../root-sibling/secret", root + "/escape", force_symlink=true)
+  @fs.symlink(target="value.libsonnet", root + "/alias", force_symlink=true)
+  @fs.write_file(root + "/cycle-a", "import 'cycle-b'")
+  @fs.write_file(root + "/cycle-b", "import 'cycle-a'")
+  @fs.write_file(root + "/invalid-utf8", b"\xff\xfe")
+  let cases : Array[(String, String, Array[String], String?)] = [
+    ("relative", "(import './value.libsonnet').x", [], None),
+    ("normalized", "(import '../root/value.libsonnet').x", [], None),
+    ("alias", "(import 'alias').x", [], None),
+    ("parent-escape", "import '../root-sibling/secret'", [], Some("Import")),
+    ("symlink-escape", "import 'escape'", [], Some("Import")),
+    ("nul", "import 'value.libsonnet\\u0000x'", [], Some("Import")),
+    ("cycle", "import 'cycle-a'", [], Some("Import")),
+    ("utf8", "importstr 'invalid-utf8'", [], Some("Import")),
+    ("directory", "import '.'", [], Some("Import")),
+    ("import-bytes", "import 'value.libsonnet'", ["--max-import-bytes","2"], Some("Limit")),
+    ("source-bytes", "123456789", ["--max-source-bytes","5"], Some("Limit")),
+    ("import-count", "[import 'value.libsonnet',import 'alias']", ["--max-imports","1"], Some("Limit")),
+    ("steps", "std.range(0,100)", ["--max-steps","10"], Some("Limit")),
+    ("depth", "local f(x)=f(x+1); f(0)", ["--max-depth","20"], Some("Limit")),
+    ("output", "'😀😀'", ["--max-output-bytes","8"], Some("Limit")),
+    ("exact-output", "'😀'", ["--max-output-bytes","6"], None),
+    ("negative-limit", "1", ["--max-steps","-1"], Some("Limit")),
+    ("ext-code", "std.extVar('x')+1", ["--ext-code","x=41"], None),
+    ("ext-str", "std.extVar('x')", ["--ext-str","x=hello"], None),
+    ("assert", "assert false: 'invalid input'; 42", [], Some("Assertion")),
+  ]
+  let mut passed = 0
+  for (name, source, extra, error) in cases {
+    @fs.write_file(root + "/main.jsonnet", source)
+    let result = @shell.Cmd(cli, ["--root", root] + extra + ["main.jsonnet"]).output(timeout_ms=10000)
+    match error {
+      None => {
+        assert_eq(result.exit_code(), 0, msg=name + result.stderr())
+        ignore(@json.parse(result.stdout()))
+        if name == "relative" || name == "normalized" || name == "alias" || name == "ext-code" { assert_eq(@json.parse(result.stdout()), Json::number(42)) }
+      }
+      Some(kind) => {
+        assert_true(result.exit_code() != 0, msg=name)
+        assert_true(result.stderr().contains(kind), msg=name + result.stderr())
+        assert_eq(result.stdout(), "", msg=name)
+      }
+    }
+    passed += 1
+  }
+  let output = "_build/host-tests/output.json"
+  @fs.write_file(root + "/main.jsonnet", "{x:42}")
+  let success = @shell.Cmd(cli, ["--root",root,"-o",output,"main.jsonnet"]).output()
+  success.check()
+  assert_eq(success.stdout(), "")
+  assert_eq(@fs.read_file(output).json(), @json.parse("{\"x\":42}"))
+  @fs.write_file(root + "/main.jsonnet", "error 'bad'")
+  let bad = @shell.Cmd(cli, ["--root",root,"-o",output,"main.jsonnet"]).output()
+  assert_true(bad.exit_code() != 0)
+  assert_eq(@fs.read_file(output).json(), @json.parse("{\"x\":42}"))
+  let missing = @shell.Cmd(cli, []).output()
+  assert_eq(missing.exit_code(), 2)
+  println("Integration: \{passed + 3} passed; path, UTF-8, CLI exit/output and resource limits")
+}

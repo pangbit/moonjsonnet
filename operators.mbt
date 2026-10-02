@@ -12,9 +12,16 @@ fn Vm::binary(
         (Num(x), Num(y)) => finite(x + y, loc)
         (ArrayValue(x), ArrayValue(y)) => {
           self.tick(loc)
+          if x.length() > self.limits.steps - y.length() ||
+            x.length() > self.limits.output_bytes - y.length() {
+            raise problem(Limit, loc, "array size limit exceeded")
+          }
           ArrayValue(x + y)
         }
         (ObjectValue(x, xt), ObjectValue(y, yt)) => {
+          if xt > self.limits.steps - yt {
+            raise problem(Limit, loc, "object layer limit exceeded")
+          }
           let layers = self.objects[x].layers[:xt].to_owned() +
             self.objects[y].layers[:yt].to_owned()
           self.object_value(layers)
@@ -26,6 +33,9 @@ fn Vm::binary(
     "-" => finite(number_value(a, loc) - number_value(b, loc), loc)
     "*" => finite(number_value(a, loc) * number_value(b, loc), loc)
     "/" | "%" => {
+      if op == "%" && a is Str(_) {
+        raise problem(Unsupported, loc, "string formatting is unsupported")
+      }
       let x = number_value(a, loc)
       let y = number_value(b, loc)
       if y == 0 {
@@ -39,11 +49,17 @@ fn Vm::binary(
       let c = match (a, b) {
         (Num(x), Num(y)) => x.compare(y)
         (Str(x), Str(y)) => compare_unicode(x, y)
-        _ =>
+        (ArrayValue(_), ArrayValue(_)) =>
           raise problem(
             Unsupported,
             loc,
             "ordering supports only numbers and strings",
+          )
+        _ =>
+          raise problem(
+            Type,
+            loc,
+            "ordering operands must have compatible types",
           )
       }
       Bool(
@@ -96,7 +112,7 @@ fn Vm::join_string(
 fn Vm::coerce_string(self : Vm, v : Value, loc : Location) -> String raise {
   match v {
     Str(s) => s
-    _ => self.manifest(v, loc, 0).stringify()
+    _ => render_json(self.manifest(v, loc, 0), false, 0)
   }
 }
 

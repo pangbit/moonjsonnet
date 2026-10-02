@@ -127,6 +127,13 @@ fn Vm::bind(self : Vm, bindings : Array[(String, Expr)], outer : Env) -> Env {
 
 ///|
 fn Vm::from_json(self : Vm, json : Json, loc : Location) -> Value raise {
+  if self.depth >= self.limits.depth {
+    raise problem(Limit, loc, "JSON value depth limit exceeded")
+  }
+  self.depth += 1
+  defer {
+    self.depth -= 1
+  }
   self.tick(loc)
   match json {
     Null => Nil

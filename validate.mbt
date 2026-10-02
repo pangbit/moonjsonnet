@@ -25,7 +25,14 @@ fn validate(
   match e.kind {
     Literal(_) | ImportFile(_, _) => ()
     Var(n) => {
-      if (n == "self" || n == "super") && in_object {
+      if n == "super" {
+        raise problem(
+          Static,
+          e.loc,
+          "super requires field access or the in operator",
+        )
+      }
+      if n == "self" && in_object {
         return
       }
       if !names.contains(n) {
@@ -107,6 +114,13 @@ fn validate(
       validate(key, scope, in_object)
       scope.push("$")
       validate(body, scope, true)
+    }
+    Index({ kind: Var("super"), .. }, b)
+    | Binary("in", b, { kind: Var("super"), .. }) => {
+      if !in_object {
+        raise problem(Static, e.loc, "super outside object")
+      }
+      validate(b, names, in_object)
     }
     Index(a, b) | Binary(_, a, b) => {
       validate(a, names, in_object)

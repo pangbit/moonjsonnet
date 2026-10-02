@@ -43,7 +43,7 @@ fn Parser::expect(self : Parser, text : String) -> Unit raise Error {
 
 ///|
 fn is_name(s : String) -> Bool {
-  if s == "EOF" || s == "string" || s == "number" {
+  if s == "<eof>" || s == "<string>" || s == "<number>" {
     return false
   }
   match s {
@@ -391,7 +391,8 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
 fn parse(source : String, file : String, max_depth : Int) -> Expr raise Error {
   let p : Parser = { tokens: lex(source, file), pos: 0, depth: 0, max_depth, }
   let e = p.expr(0)
-  p.expect("EOF")
+  p.expect("<eof>")
+  check_ast_depth(e, max_depth)
   validate(e, ["std"], false)
   e
 }

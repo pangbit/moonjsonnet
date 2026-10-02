@@ -25,18 +25,15 @@ fn value_type(v : Value) -> String {
 fn builtin_params(name : String) -> Array[String] {
   match name {
     "extVar" => ["x"]
-    "type"
-    | "isArray"
+    "isArray"
     | "isBoolean"
     | "isFunction"
     | "isNumber"
     | "isObject"
-    | "isString"
-    | "length"
-    | "toString"
-    | "floor"
-    | "ceil"
-    | "abs" => ["x"]
+    | "isString" => ["v"]
+    "toString" => ["a"]
+    "type" | "length" | "floor" | "ceil" => ["x"]
+    "abs" => ["n"]
     "objectFields" | "objectFieldsAll" => ["o"]
     "objectHas" | "objectHasAll" => ["o", "f"]
     "map" | "filter" => ["func", "arr"]
@@ -72,6 +69,30 @@ fn Vm::builtin(
       raise problem(Runtime, loc, "invalid or duplicate argument '\{key}'")
     }
     ids[key] = t
+  }
+  if name == "foldl" {
+    let a = self.sequence(self.force(ids["arr"], loc), loc)
+    let mut acc = ids["init"]
+    for t in a {
+      self.tick(loc)
+      let env : Env = {
+        parent: None,
+        names: Map([("f", ids["func"]), ("a", acc), ("b", t)]),
+      }
+      acc = self.store(
+        Pending(
+          {
+            kind: Call({ kind: Var("f"), loc, }, [
+              (None, { kind: Var("a"), loc, }),
+              (None, { kind: Var("b"), loc, }),
+            ]),
+            loc,
+          },
+          env,
+        ),
+      )
+    }
+    return self.force(acc, loc)
   }
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
@@ -122,7 +143,11 @@ fn Vm::builtin(
       }
     }
     "map" | "filter" => {
-      let a = array_value(values[1], loc)
+      let a = if name == "map" {
+        self.sequence(values[1], loc)
+      } else {
+        array_value(values[1], loc)
+      }
       let out = []
       if value_type(x) != "function" {
         raise problem(Type, loc, "expected function")
@@ -155,14 +180,6 @@ fn Vm::builtin(
         }
       }
       ArrayValue(out)
-    }
-    "foldl" => {
-      let a = array_value(values[1], loc)
-      let mut acc = values[2]
-      for t in a {
-        acc = self.call(x, [(None, self.store(Ready(acc))), (None, t)], loc)
-      }
-      acc
     }
     "range" => {
       let start = integer(x, loc)
@@ -206,8 +223,8 @@ fn Vm::builtin(
     "split" => {
       let s = text_value(x, loc)
       let sep = text_value(values[1], loc)
-      if sep.iter().count() != 1 {
-        raise problem(Runtime, loc, "split separator must be one character")
+      if sep.is_empty() {
+        raise problem(Runtime, loc, "split separator must be nonempty")
       }
       ArrayValue(
         s.split(sep).map(s => self.store(Ready(Str(s.to_owned())))).collect(),
@@ -269,7 +286,7 @@ fn Vm::builtin(
       }
       self.from_json(j, loc)
     }
-    "manifestJson" => Str(self.manifest(x, loc, 0).stringify(indent=4))
+    "manifestJson" => Str(render_json(self.manifest(x, loc, 0), true, 0))
     "toString" => Str(self.coerce_string(x, loc))
     "floor" => finite(number_value(x, loc).floor(), loc)
     "ceil" => finite(number_value(x, loc).ceil(), loc)

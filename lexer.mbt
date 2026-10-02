@@ -122,7 +122,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         raise problem(Syntax, loc, "unterminated string")
       }
       out.push({
-        text: "string",
+        text: "<string>",
         value: Some(Json::string(b.to_string())),
         loc,
       })
@@ -159,7 +159,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       if v.is_inf() || v.is_nan() {
         raise problem(Runtime, loc, "non-finite number")
       }
-      out.push({ text: "number", value: Some(n), loc, })
+      out.push({ text: "<number>", value: Some(n), loc, })
     } else {
       let b = StringBuilder()
       b.write_char(c)
@@ -191,6 +191,6 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       }
     }
   }
-  out.push({ text: "EOF", value: None, loc: { file, line, column, }, })
+  out.push({ text: "<eof>", value: None, loc: { file, line, column, }, })
   out
 }
