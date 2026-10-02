@@ -1,0 +1,61 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+async fn main {
+  let args = @env.args()
+  guard args.length() == 3 else { fail("Usage: moon run tools/parity.mbtx GO_REFERENCE CLI") }
+  let metadata = @shell.Cmd("go", ["version", "-m", args[1]]).output()
+  metadata.check()
+  assert_true(metadata.stdout().contains("vcs.revision=67968688d9952f50662e979fab1bef889d0d3e57"))
+  assert_true(metadata.stdout().contains("vcs.modified=false"))
+  let reference = @shell.Cmd(args[1], ["tests/stdlib-surface.jsonnet"]).output()
+  let actual = @shell.Cmd(args[2], ["tests/stdlib-surface.jsonnet"]).output()
+  reference.check()
+  actual.check()
+  let frozen = @json.parse(@fs.read_file("tests/go-stdlib-surface.json").text())
+  assert_eq(@json.parse(reference.stdout()), frozen)
+  guard frozen is Array(expected) else { fail("invalid reference surface") }
+  guard @json.parse(actual.stdout()) is Array(actual) else { fail("invalid actual surface") }
+  let rows : Array[Json] = []
+  let mut registered = 0
+  let mut missing = 0
+  let mut mismatched = 0
+  let table = StringBuilder()
+  table.write_string("| std member | Kind | Required arguments | Surface status |\n| --- | --- | ---: | --- |\n")
+  for entry in expected {
+    guard entry is { "name": String(name), "type": String(kind), "required": required, .. } else { fail("invalid entry") }
+    let found = actual.filter(row => row is { "name": String(n), .. } && n == name).get(0)
+    let status = match found {
+      None => { missing += 1; "missing" }
+      Some(row) if row == entry => { registered += 1; "registered" }
+      Some(_) => { mismatched += 1; "signature mismatch" }
+    }
+    table.write_string("| `\{name}` | \{kind} | \{required.stringify()} | \{status} |\n")
+    rows.push({ "reference": entry, "actual": found.unwrap_or(Json::null()), "status": status })
+  }
+  let extra = actual.filter(entry => {
+    guard entry is { "name": String(name), .. } else { return true }
+    !expected.any(row => row is { "name": String(n), .. } && n == name)
+  })
+  let commit = @shell.Cmd("git", ["rev-parse", "HEAD"]).output()
+  let dirty = @shell.Cmd("git", ["status", "--porcelain"]).output()
+  let hashes = @shell.Cmd("shasum", ["-a", "256", args[1], args[2]]).output()
+  commit.check(); dirty.check(); hashes.check()
+  @fs.mkdir("_build/parity", recursive=true, allow_exist=true)
+  let report : Json = {
+    "source_commit": commit.stdout().trim().to_owned(),
+    "source_dirty": !dirty.stdout().is_empty(),
+    "binary_sha256": hashes.stdout(),
+    "reference_members": expected.length(), "registered": registered,
+    "missing": missing, "signature_mismatches": mismatched, "extra": extra,
+    "behavioral_parity_proven": false, "members": rows,
+  }
+  @fs.write_file("_build/parity/report.json", report.stringify(indent=2))
+  @fs.write_file("_build/parity/stdlib.md", table.to_string())
+  println("Standard-library surface: \{registered}/\{expected.length()} registered, \{missing} missing, \{mismatched} signature mismatches, \{extra.length()} extra. Registration is not behavioral parity.")
+}

@@ -1,0 +1,817 @@
+[
+   {
+      "name": "$flatMapArray",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "$objectFlatMerge",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "__array_greater",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "__array_greater_or_equal",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "__array_less",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "__array_less_or_equal",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "__compare",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "__compare_array",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "abs",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "acos",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "all",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "any",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "asciiLower",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "asciiUpper",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "asin",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "assertEqual",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "atan",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "atan2",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "avg",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "base64",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "base64Decode",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "base64DecodeBytes",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "ceil",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "char",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "clamp",
+      "required": 3,
+      "type": "function"
+   },
+   {
+      "name": "codepoint",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "contains",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "cos",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "count",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "decodeUTF8",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "deepJoin",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "deg2rad",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "encodeUTF8",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "endsWith",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "equals",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "equalsIgnoreCase",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "escapeStringBash",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "escapeStringDollars",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "escapeStringJson",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "escapeStringPython",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "escapeStringXML",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "exp",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "exponent",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "extVar",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "filter",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "filterMap",
+      "required": 3,
+      "type": "function"
+   },
+   {
+      "name": "find",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "findSubstr",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "flatMap",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "flattenArrays",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "flattenDeepArray",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "floor",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "foldl",
+      "required": 3,
+      "type": "function"
+   },
+   {
+      "name": "foldr",
+      "required": 3,
+      "type": "function"
+   },
+   {
+      "name": "format",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "get",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "hypot",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "id",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isArray",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isBoolean",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isDecimal",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isEmpty",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isEven",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isFunction",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isInteger",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isNumber",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isObject",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isOdd",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "isString",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "join",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "length",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "lines",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "log",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "log10",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "log2",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "lstripChars",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "makeArray",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "manifestIni",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "manifestJson",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "manifestJsonEx",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "manifestJsonMinified",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "manifestPython",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "manifestPythonVars",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "manifestToml",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "manifestTomlEx",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "manifestXmlJsonml",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "manifestYamlDoc",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "manifestYamlStream",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "mantissa",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "map",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "mapWithIndex",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "mapWithKey",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "max",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "maxArray",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "md5",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "member",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "mergePatch",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "min",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "minArray",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "mod",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "modulo",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "native",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "objectFields",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "objectFieldsAll",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "objectFieldsEx",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "objectHas",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "objectHasAll",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "objectHasEx",
+      "required": 3,
+      "type": "function"
+   },
+   {
+      "name": "objectKeysValues",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "objectKeysValuesAll",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "objectRemoveKey",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "objectValues",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "objectValuesAll",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "parseHex",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "parseInt",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "parseJson",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "parseOctal",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "parseYaml",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "pi",
+      "required": null,
+      "type": "number"
+   },
+   {
+      "name": "pow",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "primitiveEquals",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "prune",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "rad2deg",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "range",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "remove",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "removeAt",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "repeat",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "resolvePath",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "reverse",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "round",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "rstripChars",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "set",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "setDiff",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "setInter",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "setMember",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "setUnion",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "sha1",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "sha256",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "sha3",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "sha512",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "sign",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "sin",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "slice",
+      "required": 4,
+      "type": "function"
+   },
+   {
+      "name": "sort",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "split",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "splitLimit",
+      "required": 3,
+      "type": "function"
+   },
+   {
+      "name": "splitLimitR",
+      "required": 3,
+      "type": "function"
+   },
+   {
+      "name": "sqrt",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "startsWith",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "strReplace",
+      "required": 3,
+      "type": "function"
+   },
+   {
+      "name": "stringChars",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "stripChars",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "substr",
+      "required": 3,
+      "type": "function"
+   },
+   {
+      "name": "sum",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "tan",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "thisFile",
+      "required": null,
+      "type": "string"
+   },
+   {
+      "name": "toString",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "trace",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "trim",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "type",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "uniq",
+      "required": 1,
+      "type": "function"
+   },
+   {
+      "name": "xnor",
+      "required": 2,
+      "type": "function"
+   },
+   {
+      "name": "xor",
+      "required": 2,
+      "type": "function"
+   }
+]

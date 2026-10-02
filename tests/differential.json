@@ -67,7 +67,7 @@
   {"name":"noninteger-index","source":"[1][0.5]","expect":"error","go_expect":"success","cpp_difference":{"reference_error":"RUNTIME ERROR","moonjsonnet":1}},
   {"name":"function-output","source":"function(x)x","expect":"error"},
   {"name":"static-super","source":"{a:super}","expect":"error"},
-  {"name":"unsupported-stdlib","source":"std.sha256('x')","expect":"unsupported-reference-error","go_expect":"unsupported"},
+  {"name":"sha256","source":"std.sha256('x')","expect":"success","cpp_difference":{"reference_error":"RUNTIME ERROR","moonjsonnet":"2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881"}},
   {"name":"sort-default","source":"std.sort([2,1])","expect":"success"},
   {"name":"bitwise","source":"[1<<2,~1,5&3,5|2,5^3,-8>>2,1<<64,3.9&1,1<<53]","expect":"success"},
   {"name":"bitwise-boundary","source":"[9007199254740992&1,-9007199254740992>>53,-1<<63]","expect":"success"},

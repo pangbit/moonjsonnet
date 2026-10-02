@@ -39,7 +39,7 @@ test "structured errors preserve category and source" {
     ("1/0", @moonjsonnet.Runtime),
     ("1e308 * 10", @moonjsonnet.Runtime),
     ("import 'no.libsonnet'", @moonjsonnet.Import),
-    ("std.sha256('x')", @moonjsonnet.Unsupported),
+    ("std.sha512('x')", @moonjsonnet.Unsupported),
     ("local x=x; x", @moonjsonnet.Runtime),
   ]
   for (input, kind) in cases {

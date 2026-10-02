@@ -1,4 +1,11 @@
 [
+  {"name":"sha256-vectors","source":"[std.sha256(s=''),std.sha256('abc'),std.sha256('abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq')]","expect":"success"},
+  {"name":"sha256-utf8-nul","source":"[std.sha256('你😀'),std.sha256('a\\u0000b')]","expect":"success"},
+  {"name":"sha256-block-boundaries","source":"[std.sha256(std.join('',std.makeArray(n,function(i)'a'))) for n in [55,56,63,64,65,119,120,127,128,129,10000]]","expect":"success"},
+  {"name":"sha256-string-type","source":"std.sha256([97,98,99])","expect":"error"},
+  {"name":"sha256-null-type","source":"std.sha256(null)","expect":"error"},
+  {"name":"sha256-argument-name","source":"std.sha256(str='abc')","expect":"error"},
+  {"name":"sha256-reflection","source":"[std.objectHas(std,'sha256'),std.objectHasAll(std,'sha256'),std.length(std.sha256)]","expect":"success"},
   {"name":"sort-numeric","source":"std.sort([3,-1,2,2])","expect":"success"},
   {"name":"sort-unicode-named","source":"std.sort(arr=['😀','你','a'])","expect":"success"},
   {"name":"sort-array-keys","source":"std.sort([[1,2],[],[1],[0]])","expect":"success"},

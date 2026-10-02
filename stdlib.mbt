@@ -6,7 +6,7 @@ fn builtin_names() -> Array[String] {
     "map", "mapWithIndex", "makeArray", "reverse", "filter", "flatMap", "foldl",
     "foldr", "range", "join", "split", "substr", "strReplace", "startsWith", "endsWith",
     "parseJson", "manifestJson", "toString", "floor", "ceil", "abs", "format", "slice",
-    "char", "codepoint", "assertEqual", "lines", "sort",
+    "char", "codepoint", "assertEqual", "lines", "sort", "sha256",
   ]
 }
 
@@ -42,6 +42,7 @@ fn builtin_params(name : String) -> Array[String] {
     "makeArray" => ["sz", "func"]
     "reverse" => ["arr"]
     "sort" => ["arr", "keyF"]
+    "sha256" => ["s"]
     "foldl" | "foldr" => ["func", "arr", "init"]
     "range" => ["from", "to"]
     "join" => ["sep", "arr"]
@@ -93,6 +94,7 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "sha256" => Str(self.sha256(text_value(x, loc), loc))
     "flatMap" => self.flat_map(x, values[1], loc)
     "foldl" | "foldr" => {
       if value_type(x) != "function" {

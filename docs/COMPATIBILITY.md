@@ -15,6 +15,8 @@ embedding capabilities and CLI behavior. MoonBit APIs follow this project's host
 contract; differences from the reference must be documented and tested.
 
 The Go baseline is v0.21.0, commit `67968688d9952f50662e979fab1bef889d0d3e57`.
+The expanded overall parity objective, complete standard-library inventory and
+CLI/embedding gaps are tracked in [GO-PARITY](GO-PARITY.md). Overall parity is not complete.
 The differential runner compares identical inputs, imports and parameters and
 records Go and C++ results separately, including failed and unsupported cases.
 The existing C++ v0.21.0 results remain evidence for that baseline only. Selecting
@@ -122,6 +124,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `char(n)`, `codepoint(str)` | Unicode scalar conversion / one-code-point string |
 | `assertEqual(a,b)` | Returns true or reports `Assertion` |
 | `lines(arr)` | Join non-null strings with a newline after each |
+| `sha256(s)` | SHA-256 of UTF-8 string bytes, lowercase hexadecimal; rounds consume the evaluation step budget |
 
 Integer-only standard function bounds and resource limits may reject inputs that
 the reference accepts. Restricted argument domains return an error and are not

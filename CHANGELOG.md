@@ -2,6 +2,9 @@
 
 ## 0.1.0 — Unreleased
 
+- Full go-jsonnet standard-library surface inventory and explicit overall parity roadmap.
+- Native MoonBit `sha256` over UTF-8 strings with bounded work and known-answer tests.
+
 - Independent located parser, static name validation and lazy native evaluator.
 - Closures/defaults, comprehensions, layered inheritance, visibility and assertions.
 - Complete language surface: text blocks, slices, bitwise and array ordering,
