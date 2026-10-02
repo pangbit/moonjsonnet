@@ -7,6 +7,11 @@ MoonBit 原生 Jsonnet 解释器，可作为库嵌入，也提供 CLI。支持�
 对象继承、受控导入和 JSON 输出。语言以 Jsonnet v0.21.0 为完整实现目标，
 不额外裁剪语言特性；标准库按需求提供明确子集，兼容性以差分验收结果为依据。
 
+功能实现以 [google/go-jsonnet](https://github.com/google/go-jsonnet) 为对照项目，
+用于后续语言语义、标准库、嵌入接口和 CLI 行为的实现与差异核对。
+当前已执行的差分验收仍以固定的 C++ Jsonnet v0.21.0 为基线；
+对照约定与已验证范围见 [兼容性说明](docs/COMPATIBILITY.md)。
+
 ## Status and installation
 
 Version 0.1.0 targets **native on macOS and Linux**. File access uses POSIX libc;

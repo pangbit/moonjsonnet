@@ -7,6 +7,20 @@ The official C++ v0.21.0 interpreter is a development-only oracle. Input, import
 parameters and expected categories are committed under `tests/` and `examples/`.
 Success comparisons parse JSON and ignore object order and insignificant whitespace.
 
+## Implementation reference
+
+[google/go-jsonnet](https://github.com/google/go-jsonnet) is the functional
+implementation reference for future language semantics, standard-library coverage,
+embedding capabilities and CLI behavior. MoonBit APIs follow this project's host
+contract; differences from the reference must be documented and tested.
+
+Before adding go-jsonnet differential acceptance, pin its release and commit and
+record them with the results. Compare identical inputs, imports and parameters;
+report passed, failed, skipped and unsupported cases separately. The existing
+C++ v0.21.0 results remain evidence for that baseline only. Selecting go-jsonnet
+as a reference does not establish compatibility with it or expand the currently
+supported feature set below.
+
 ## Language
 
 Supported: JSON scalar literals; double/single/verbatim strings and indented text
