@@ -155,6 +155,10 @@ Only the following functions are supported. Arity/named-argument violations are
 | `escapeStringJson(str_)`, `escapeStringPython(str)`, `escapeStringBash(str_)`, `escapeStringDollars(str_)`, `escapeStringXML(str_)` | String coercion and context-specific escaping, including C0/C1 JSON controls |
 | `resolvePath(f,r)` | Pinned lexical directory joining; does not normalize .. or treat r as an absolute replacement |
 | `id(x)` | Eager identity; nested array/object values remain lazy |
+| `encodeUTF8(str)` | UTF-8 bytes, with BOM and zero characters preserved |
+| `decodeUTF8(arr)` | Integer bytes in 0..255; each malformed UTF-8 byte becomes U+FFFD, including incomplete multibyte sequences |
+| `base64(input)` | Standard padded alphabet; accepts a byte array or a string with code points <=255, then encodes the string's UTF-8 bytes |
+| `base64DecodeBytes(str)`, `base64Decode(str)` | Original UTF-8 byte length must be divisible by 4; ignore CR/LF only; require complete padding, accept nonzero unused pad bits; text output follows decodeUTF8 replacement rules |
 | `substr(str,from,len)` | Code-point substring; nonnegative signed 32-bit indices; out-of-range start gives empty string |
 | `strReplace(str,from,to)` | Nonoverlapping literal replacement; empty pattern rejected |
 | `startsWith(a,b)`, `endsWith(a,b)` | String prefix/suffix checks |

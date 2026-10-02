@@ -12,7 +12,8 @@ fn builtin_names() -> Array[String] {
     "cos", "tan", "asin", "acos", "atan", "atan2", "log", "exp", "mantissa", "exponent",
     "round", "isEven", "isOdd", "isInteger", "isDecimal", "pow", "modulo", "xor",
     "xnor", "id", "parseInt", "isEmpty", "trim", "splitLimit", "splitLimitR", "equalsIgnoreCase",
-    "lstripChars", "rstripChars", "stripChars",
+    "lstripChars", "rstripChars", "stripChars", "base64", "base64Decode", "base64DecodeBytes",
+    "encodeUTF8", "decodeUTF8",
   ]
 }
 
@@ -61,6 +62,9 @@ fn builtin_params(name : String) -> Array[String] {
     "atan2" => ["y", "x"]
     "pow" => ["x", "n"]
     "id" => ["x"]
+    "base64" => ["input"]
+    "base64Decode" | "base64DecodeBytes" | "encodeUTF8" => ["str"]
+    "decodeUTF8" => ["arr"]
     "parseInt" | "isEmpty" | "trim" => ["str"]
     "equalsIgnoreCase" => ["str1", "str2"]
     "lstripChars" | "rstripChars" | "stripChars" => ["str", "chars"]
@@ -141,6 +145,11 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "base64"
+    | "base64Decode"
+    | "base64DecodeBytes"
+    | "encodeUTF8"
+    | "decodeUTF8" => self.encoding_builtin(name, x, loc)
     "lstripChars" | "rstripChars" | "stripChars" =>
       self.strip_characters(x, values[1], name, loc)
     "id" => x

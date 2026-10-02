@@ -29,6 +29,8 @@ async fn main {
     #|  assert_eq(json, Json::number(42))
     #|  assert_eq(@moonjsonnet.evaluate("std.set([2,1,2])").stringify(), "[1,2]")
     #|  assert_eq(@moonjsonnet.evaluate("std.equalsIgnoreCase('KΣẞ𐐀','kςß𐐨')").stringify(), "true")
+    #|  assert_eq(@moonjsonnet.evaluate("std.base64(std.encodeUTF8('é😀'))").stringify(), "\"w6nwn5iA\"")
+    #|  assert_eq(@moonjsonnet.evaluate("std.length(std.decodeUTF8([226,130]))").stringify(), "2")
     #|  let host = @fs.FileHost::new(".")
     #|  assert_true(host.resolve("", "moon.mod").text.contains("consumer_check"))
     #|  assert_true(!host.resolve_binary("", "moon.mod").bytes.is_empty())
