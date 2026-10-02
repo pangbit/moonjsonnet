@@ -41,6 +41,7 @@ async fn main {
   let environment = Map([("MOON_HOME", shadow), ("ASAN_OPTIONS", "detect_leaks=0:fast_unwind_on_malloc=0")])
   @shell.Cmd("moon", ["test", "--target", "native", "--deny-warn"], cwd=checkout, env=environment).run()
   @shell.Cmd("moon", ["run", "--build-only", "--target", "native", "cmd/main"], cwd=checkout, env=environment).run()
-  @shell.Cmd("moon", ["run", repo + "/tools/integration.mbtx", checkout + "/_build/native/debug/build/cmd/main/main.exe"], cwd=checkout, env=environment).run()
+  @shell.Cmd("moon", ["run", repo + "/tools/integration.mbtx", checkout + "/_build/native/debug/build/cmd/main/main.exe"], cwd=checkout,
+    env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", "detect_leaks=0:fast_unwind_on_malloc=0")])).run()
   println("ASan tests and host integration passed with isolated toolchain: \{work}; leak detection disabled")
 }
