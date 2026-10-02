@@ -13,6 +13,8 @@
 - Lazy `makeArray`, Unicode-aware `mapWithIndex` and nonmutating `reverse`.
 - Go-compatible `flatMap` over arrays/Unicode strings and iterative `foldr`, with
   lazy array elements and bounded intermediate allocation.
+- Stable `sort` with an optional key function, cached keys, lazy payloads and
+  iterative merging bounded by the evaluation step limit.
 - Go-compatible required function arity and iterative `foldl` argument/result evaluation.
 - Go-compatible fractional indexing/slicing and signed 64-bit wrapping bitwise operators,
   with explicit rejection of the unrepresentable positive `2^63` conversion boundary.

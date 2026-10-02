@@ -6,7 +6,7 @@ fn builtin_names() -> Array[String] {
     "map", "mapWithIndex", "makeArray", "reverse", "filter", "flatMap", "foldl",
     "foldr", "range", "join", "split", "substr", "strReplace", "startsWith", "endsWith",
     "parseJson", "manifestJson", "toString", "floor", "ceil", "abs", "format", "slice",
-    "char", "codepoint", "assertEqual", "lines",
+    "char", "codepoint", "assertEqual", "lines", "sort",
   ]
 }
 
@@ -41,6 +41,7 @@ fn builtin_params(name : String) -> Array[String] {
     "map" | "mapWithIndex" | "filter" | "flatMap" => ["func", "arr"]
     "makeArray" => ["sz", "func"]
     "reverse" => ["arr"]
+    "sort" => ["arr", "keyF"]
     "foldl" | "foldr" => ["func", "arr", "init"]
     "range" => ["from", "to"]
     "join" => ["sep", "arr"]
@@ -69,7 +70,8 @@ fn Vm::builtin(
   loc : Location,
 ) -> Value raise {
   let params = builtin_params(name)
-  if args.length() != params.length() {
+  let required = if name == "sort" { 1 } else { params.length() }
+  if args.length() < required || args.length() > params.length() {
     raise problem(Runtime, loc, "std.\{name}: wrong argument count")
   }
   let ids : Map[String, Int] = Map([])
@@ -79,6 +81,14 @@ fn Vm::builtin(
       raise problem(Runtime, loc, "invalid or duplicate argument '\{key}'")
     }
     ids[key] = t
+  }
+  if name == "sort" {
+    guard ids.get("arr") is Some(arr) else {
+      raise problem(Runtime, loc, "std.sort: missing arr argument")
+    }
+    let input = self.force(arr, loc)
+    let key = ids.get("keyF").map(t => self.force(t, loc))
+    return self.sort_values(input, key, loc)
   }
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
@@ -166,7 +176,12 @@ fn Vm::builtin(
           ObjectValue(id, top) => self.keys(id, top, false).length().to_double()
           Closure(ps, _, _) =>
             ps.iter().filter(p => p.1 is None).count().to_double()
-          Builtin(n) => builtin_params(n).length().to_double()
+          Builtin(n) =>
+            if n == "sort" {
+              1
+            } else {
+              builtin_params(n).length().to_double()
+            }
           _ =>
             raise problem(
               Type,
