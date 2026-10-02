@@ -10,11 +10,12 @@ async fn main {
   let args = @env.args()
   guard args.length() == 2 else { fail("Usage: moon run tools/integration.mbtx CLI") }
   let cli = args[1]
-  let root = "_build/host-tests/root"
+  let work = @fs.tmpdir(prefix="moonjsonnet-host-tests-")
+  let root = work + "/root"
   @fs.mkdir(root, recursive=true, allow_exist=true)
-  @fs.mkdir("_build/host-tests/root-sibling", allow_exist=true)
+  @fs.mkdir(work + "/root-sibling", allow_exist=true)
   @fs.write_file(root + "/value.libsonnet", "{x:42}")
-  @fs.write_file("_build/host-tests/root-sibling/secret", "42")
+  @fs.write_file(work + "/root-sibling/secret", "42")
   @fs.symlink(target="../root-sibling/secret", root + "/escape", force_symlink=true)
   @fs.symlink(target="value.libsonnet", root + "/alias", force_symlink=true)
   @fs.write_file(root + "/cycle-a", "import 'cycle-b'")
@@ -60,7 +61,7 @@ async fn main {
     }
     passed += 1
   }
-  let output = "_build/host-tests/output.json"
+  let output = work + "/output.json"
   @fs.write_file(root + "/main.jsonnet", "{x:42}")
   let success = @shell.Cmd(cli, ["--root",root,"-o",output,"main.jsonnet"]).output()
   success.check()
