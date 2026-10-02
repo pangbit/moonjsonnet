@@ -43,6 +43,10 @@ test "object standard functions preserve hidden fields and lazy values" {
 
 ///|
 test "equality source functions and object argument contracts" {
+  assert_eq(
+    @moonjsonnet.evaluate("std.equals(x=[1],y=[1])"),
+    Json::boolean(true),
+  )
   for
     (source, expected) in [
       (
@@ -66,6 +70,7 @@ test "equality source functions and object argument contracts" {
       "std.objectFieldsEx({},error 'forced')", "std.get({},'x',inc_hidden=0)", "std.mapWithKey(1,{})",
       "std.mapWithKey(function(k,v)v,[])", "std.primitiveEquals([] ,[])", "std.primitiveEquals({}, {})",
       "std.equals(function()1,function()1)", "std.objectRemoveKey({a:1,b:self.a},'a').b",
+      "std.equals(a=1,b=1)",
     ] {
     try @moonjsonnet.evaluate(source) catch {
       @moonjsonnet.Error(d) => assert_true(d.kind != @moonjsonnet.Unsupported)

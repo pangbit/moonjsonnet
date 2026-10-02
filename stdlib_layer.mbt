@@ -23,8 +23,7 @@ fn standard_library_expression() -> Expr raise {
           | "objectKeysValues"
           | "objectKeysValuesAll"
           | "mapWithKey"
-          | "prune"
-          | "equals" => true
+          | "prune" => true
           _ => false
         }
       _ => false

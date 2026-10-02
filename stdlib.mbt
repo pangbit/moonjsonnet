@@ -7,7 +7,7 @@ fn builtin_names() -> Array[String] {
     "foldr", "range", "join", "split", "substr", "strReplace", "startsWith", "endsWith",
     "parseJson", "manifestJson", "toString", "floor", "ceil", "abs", "format", "slice",
     "char", "codepoint", "assertEqual", "lines", "sort", "sha256", "objectFieldsEx",
-    "objectHasEx", "primitiveEquals", "objectRemoveKey",
+    "objectHasEx", "primitiveEquals", "objectRemoveKey", "equals",
   ]
 }
 
@@ -41,7 +41,7 @@ fn builtin_params(name : String) -> Array[String] {
     "objectHas" | "objectHasAll" => ["o", "f"]
     "objectFieldsEx" => ["obj", "hidden"]
     "objectHasEx" => ["obj", "fname", "hidden"]
-    "primitiveEquals" => ["x", "y"]
+    "primitiveEquals" | "equals" => ["x", "y"]
     "objectRemoveKey" => ["obj", "key"]
     "map" | "mapWithIndex" | "filter" | "flatMap" => ["func", "arr"]
     "makeArray" => ["sz", "func"]
@@ -99,6 +99,7 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "equals" => Bool(self.equal(x, values[1], loc))
     "objectRemoveKey" => {
       guard x is ObjectValue(id, top) else {
         raise problem(Type, loc, "expected object")

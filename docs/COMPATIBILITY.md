@@ -119,7 +119,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `get`, `objectValues`, `objectValuesAll`, `objectKeysValues`, `objectKeysValuesAll`, `mapWithKey`, `prune` | Pinned Jsonnet definitions; hidden-field policy, lazy defaults/values and inherited self preserved |
 | `objectRemoveKey(obj,key)` | Copies remaining fields including hidden fields, rebinds self and omits object assertions, matching Go's native implementation for simple objects; input is unchanged |
 | `objectFieldsEx(obj,hidden)`, `objectHasEx(obj,fname,hidden)` | Native reflection with explicit hidden-field selection and reference parameter names |
-| `primitiveEquals(x,y)`, `equals(a,b)` | Primitive comparison or recursive equality; unlike types compare false, same-type functions cannot be compared |
+| `primitiveEquals(x,y)`, `equals(x,y)` | Primitive comparison or recursive equality; unlike types compare false, same-type functions cannot be compared; parameter names follow Go's native override |
 | `filter(func,arr)` | Array filtering; predicate must return boolean |
 | `flatMap(func,arr)` | Concatenates callback arrays or strings; string input uses Unicode code points; callback results are forced but returned array elements stay lazy; null results are errors |
 | `foldl(func,arr,init)` | Iterative left fold over array/string; forces function, sequence, initial value and each callback result; elements and nested fields remain lazy |

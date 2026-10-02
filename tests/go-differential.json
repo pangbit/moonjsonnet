@@ -1,4 +1,6 @@
 [
+  {"name":"equals-native-named-arguments","source":"std.equals(x=[1],y=[1])","expect":"success"},
+  {"name":"equals-reject-source-param-names","source":"std.equals(a=1,b=1)","expect":"error"},
   {"name":"object-map-values-inherited-self","source":"local o={a:1,b:self.a}+{a:2}; [std.objectValues(o),std.mapWithKey(function(k,v)v,o)]","expect":"success"},
   {"name":"object-remove-hidden-unmutated","source":"local o={a:1,h::2}; local r=std.objectRemoveKey(o,'a'); [std.objectFieldsAll(r),r.h,o.a]","expect":"success"},
   {"name":"object-remove-self-rebound","source":"local o={a:1,b:self.a}; (std.objectRemoveKey(o,'a')+{a:4}).b","expect":"success"},
