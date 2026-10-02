@@ -19,9 +19,9 @@
 | `atan` | function | 1 | registered |
 | `atan2` | function | 2 | registered |
 | `avg` | function | 1 | registered |
-| `base64` | function | 1 | missing |
-| `base64Decode` | function | 1 | missing |
-| `base64DecodeBytes` | function | 1 | missing |
+| `base64` | function | 1 | registered |
+| `base64Decode` | function | 1 | registered |
+| `base64DecodeBytes` | function | 1 | registered |
 | `ceil` | function | 1 | registered |
 | `char` | function | 1 | registered |
 | `clamp` | function | 3 | registered |
@@ -29,10 +29,10 @@
 | `contains` | function | 2 | registered |
 | `cos` | function | 1 | registered |
 | `count` | function | 2 | registered |
-| `decodeUTF8` | function | 1 | missing |
+| `decodeUTF8` | function | 1 | registered |
 | `deepJoin` | function | 1 | registered |
 | `deg2rad` | function | 1 | registered |
-| `encodeUTF8` | function | 1 | missing |
+| `encodeUTF8` | function | 1 | registered |
 | `endsWith` | function | 2 | registered |
 | `equals` | function | 2 | registered |
 | `equalsIgnoreCase` | function | 2 | registered |

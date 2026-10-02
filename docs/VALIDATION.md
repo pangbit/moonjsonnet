@@ -73,8 +73,9 @@ reported as `reference-difference`, with `passed=false`, and are not skipped or
 counted as compatible. Any changed outcome, missing error or unexpected
 convergence fails the check. This lets the C++ regression gate retain all inputs
 while checking the documented Go migration; undeclared mismatches still fail.
-See the [string and Unicode report](../reports/GO-JSONNET-STRINGS.md) for current
+See the [UTF-8 and Base64 report](../reports/GO-JSONNET-ENCODING.md) for current
 commit-bound results and the retained differences. The earlier
+[string and Unicode report](../reports/GO-JSONNET-STRINGS.md),
 [math and boolean report](../reports/GO-JSONNET-MATH.md),
 [aggregation and non-finite values report](../reports/GO-JSONNET-AGGREGATES.md),
 [array combinator and extrema report](../reports/GO-JSONNET-ARRAYS.md),
@@ -114,7 +115,8 @@ workspace and compiles/tests a separate module using only public APIs.
 It also verifies that the archive includes `NOTICE`, Go BSD attribution and
 the inherited Cephes/Sun math notices, plus the bundled Jsonnet standard-library
 source and the generated Unicode fold table. Its independent consumer executes
-`std.set` and Unicode `std.equalsIgnoreCase`.
+`std.set`, Unicode `std.equalsIgnoreCase`, Base64 encoding and malformed UTF-8
+replacement.
 
 Unicode simple folding is generated from Go 1.24.0's Unicode 15.0.0 tables.
 `tools/embed-unicode.mbtx` verifies the pinned source SHA-256 before writing the
