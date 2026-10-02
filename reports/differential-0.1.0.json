@@ -1,12 +1,54 @@
 {
-  "source_commit": "b39267afeb5fab0d7d46b68ac4bc3d808adc59c2",
+  "source_commit": "0467c9d3e86dc9dbdebe33259fccbb7864bb71f7",
   "reference": "Jsonnet commandline interpreter v0.21.0",
-  "passed": 71,
+  "passed": 108,
   "failed": 0,
   "skipped": 0,
-  "unsupported_cases": 6,
-  "error_cases": 15,
+  "unsupported_cases": 2,
+  "error_cases": 34,
   "cases": [
+    {
+      "name": "format-lazy-precision",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "format-char-fraction",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "empty-manifest-string",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "format-dynamic-fractional",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "bitwise-complement-wide",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "method-plus-static",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
     {
       "name": "numeric-string-rendering",
       "expect": "success",
@@ -456,31 +498,248 @@
       "moonjsonnet_exit": 1
     },
     {
-      "name": "unsupported-bitwise",
-      "expect": "unsupported",
+      "name": "bitwise",
+      "expect": "success",
       "passed": true,
       "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "bitwise-boundary",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "bitwise-range-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
       "moonjsonnet_exit": 1
     },
     {
-      "name": "unsupported-slice",
-      "expect": "unsupported",
+      "name": "bitwise-shift-error",
+      "expect": "error",
       "passed": true,
-      "reference_exit": 0,
+      "reference_exit": 1,
       "moonjsonnet_exit": 1
     },
     {
-      "name": "unsupported-object-local-comprehension",
-      "expect": "unsupported",
+      "name": "bitwise-overflow-error",
+      "expect": "error",
       "passed": true,
-      "reference_exit": 0,
+      "reference_exit": 1,
       "moonjsonnet_exit": 1
     },
     {
-      "name": "unsupported-text-block",
-      "expect": "unsupported",
+      "name": "slice",
+      "expect": "success",
       "passed": true,
       "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "slice-unicode",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "slice-negative-step",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "slice-zero-step",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "slice-fraction",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "object-local-comprehension",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "object-local-comp-self",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "object-local-key-scope",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "text-block",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "text-block-chomp",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "text-block-indent-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "text-block-import-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "tailstrict",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "tailstrict-argument-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "tailstrict-default-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "array-order",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "array-order-type-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "std-object",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "unicode-surrogate-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "unicode-pairs",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "format-integers",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "format-floats",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "format-strings",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "format-mapping",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "format-lazy",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "format-arity-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "format-extra-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "format-code-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "format-truncated-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "format-mapping-star-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
       "moonjsonnet_exit": 1
     },
     {

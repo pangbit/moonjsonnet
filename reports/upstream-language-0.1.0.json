@@ -1,0 +1,2738 @@
+{
+  "source_commit": "0467c9d3e86dc9dbdebe33259fccbb7864bb71f7",
+  "reference_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+  "cases": [
+    {
+      "name": "arith_bool",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "arith_float",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "arith_string",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "array",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "array_comparison",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "array_comparison2",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "assert",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "binary",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "comments",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "condition",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "dos_line_endings",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "functions",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "invariant",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "invariant_manifest",
+      "passed": true,
+      "unsupported_standard_library": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/invariant_manifest.jsonnet:19:21: Unsupported: field 'setInter' does not exist\n  at /private${LOCAL_PATH_020}/test_suite/invariant_manifest.jsonnet:19:10\n"
+    },
+    {
+      "name": "local",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "merge",
+      "passed": true,
+      "unsupported_standard_library": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/merge.jsonnet:94:21: Unsupported: field 'mergePatch' does not exist\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:94:5\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n  at /private${LOCAL_PATH_020}/test_suite/merge.jsonnet:98:1\n"
+    },
+    {
+      "name": "null",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "object",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "oop",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "oop_extra",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "parsing_edge_cases",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "precedence",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "recursive_function",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "recursive_object",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "safe_integer_conversion",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "shebang",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "slice.sugar",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "std_all_hidden",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "text_block",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "unicode_bmp",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "unix_line_endings",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "verbatim_strings",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:18",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:19",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:20",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:21",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:22",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:25",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:26",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:27",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:28",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:31",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:32",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:33",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:36",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:37",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:38",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:41",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:42",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:43",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:44",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:45",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:46",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:47",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:48",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:49",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:50",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:51",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:52",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:53",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:54",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:55",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:56",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:57",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:58",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:59",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:60",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:61",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:62",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:63",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:64",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:65",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:66",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:67",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:68",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:69",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:70",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:71",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:72",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:73",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:74",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:75",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:76",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:79",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:80",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:81",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:82",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:83",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:84",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:85",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:86",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:87",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:88",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:89",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:90",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:91",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:92",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:93",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:94",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:95",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:96",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:97",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:98",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:99",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:100",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:101",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:102",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:105",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:106",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:107",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:108",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:109",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:110",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:111",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:112",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:113",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:114",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:115",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:116",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:117",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:118",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:119",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:120",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:121",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:122",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:123",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:124",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:125",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:126",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:127",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:128",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:131",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:132",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:133",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:134",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:135",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:136",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:137",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:138",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:139",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:140",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:141",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:142",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:143",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:144",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:145",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:146",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:147",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:148",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:149",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:150",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:151",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:152",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:153",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:154",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:157",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:158",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:159",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:160",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:161",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:162",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:163",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:164",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:165",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:166",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:167",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:168",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:169",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:170",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:171",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:172",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:173",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:177",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:180",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:181",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:182",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:183",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:184",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:185",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:186",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:187",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:188",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:189",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:190",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:191",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:192",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:193",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:194",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:197",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:198",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:199",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:200",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:201",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:202",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:203",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:204",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:205",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:206",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:207",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:208",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:209",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:210",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:211",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:212",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:213",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:214",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:215",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:216",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:220",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:221",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:222",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:223",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:224",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:225",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:226",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:227",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:228",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:229",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:230",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:231",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:232",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:233",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:234",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:235",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:236",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:237",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:238",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:239",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:240",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:241",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:242",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:243",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:244",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:245",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:246",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:247",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:248",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:249",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:250",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:251",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:254",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:255",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:256",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:257",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:258",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:259",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:260",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:261",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:262",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:263",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:264",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:265",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:266",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:267",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:268",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:269",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:270",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:271",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:272",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:273",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:274",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:275",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:276",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:277",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:278",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:279",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:280",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:281",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:282",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:285",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:288",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:289",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0,
+      "reference_stderr": "",
+      "moonjsonnet_stderr": ""
+    },
+    {
+      "name": "format:313",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: ${LOCAL_HOME_01}/Workspace/mooncakes/moonjsonnet/_build/upstream-language/format-313.jsonnet:1:28-32: Unknown variable: text\n",
+      "moonjsonnet_stderr": "${LOCAL_HOME_01}/Workspace/mooncakes/moonjsonnet/_build/upstream-language/format-313.jsonnet:1:28: Static: unknown variable 'text'\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_short.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_short.jsonnet:17:1: unterminated string\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_short.jsonnet:17:1: Syntax: invalid or unpaired Unicode escape\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.text_block_eof.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.text_block_eof.jsonnet:17:1: unexpected EOF\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.text_block_eof.jsonnet:17:1: Syntax: unterminated text block\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.static_error_super.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.static_error_super.jsonnet:17:2-7: Can't use super outside of an object.\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.static_error_super.jsonnet:17:2: Static: super outside object\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.function_duplicate_param.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.function_duplicate_param.jsonnet:17:1-17: Duplicate function parameter: x\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.function_duplicate_param.jsonnet:17:14: Static: duplicate parameter 'x'\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.static_error_var_not_exist.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.static_error_var_not_exist.jsonnet:17:16-20: Unknown variable: tmp2\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.static_error_var_not_exist.jsonnet:17:16: Static: unknown variable 'tmp2'\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.function_arg_positional_after_named.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.function_arg_positional_after_named.jsonnet:19:10: Positional argument after a named argument is not allowed\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.function_arg_positional_after_named.jsonnet:19:10: Static: positional argument after named argument\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.array_comma.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.array_comma.jsonnet:17:7: expected a comma before next array element.\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.array_comma.jsonnet:17:7: Syntax: expected ']', got '<number>'\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.object_comma.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.object_comma.jsonnet:17:11: expected a comma before next field.\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.object_comma.jsonnet:17:11: Syntax: expected '}', got 'z'\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.unfinished2.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.string.unfinished2.jsonnet:17:1: unterminated string\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.unfinished2.jsonnet:17:1: Syntax: unterminated string\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.import_text_block.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.import_text_block.jsonnet:(17:8)-(20:4): Cannot use text blocks in import statements.\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.import_text_block.jsonnet:17:8: Syntax: imports cannot use text blocks\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "RUNTIME ERROR: max stack frames exceeded.\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:12\tthunk <x>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:17\tthunk <y>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:12\tthunk <x>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:17\tthunk <y>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:12\tthunk <x>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:17\tthunk <y>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:12\tthunk <x>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:17\tthunk <y>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:12\tthunk <x>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:17\tthunk <y>\n\t...\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:17\tthunk <y>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:12\tthunk <x>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:17\tthunk <y>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:12\tthunk <x>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:17\tthunk <y>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:12\tthunk <x>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:17\tthunk <y>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:12\tthunk <x>\n\t/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:17:20\tfunction <top_level>\n\tTop-level function\t\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.function_infinite_default.jsonnet:1:1: Type: cannot manifest a function or std\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.text_block_bad_whitespace.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.text_block_bad_whitespace.jsonnet:17:1: text block not terminated with |||\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.text_block_bad_whitespace.jsonnet:17:1: Syntax: text block must end with ||| at lesser indentation\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.string_multi_no_newline.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.string_multi_no_newline.jsonnet:17:1: text block syntax requires new line after |||.\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.string_multi_no_newline.jsonnet:17:1: Syntax: text block requires newline after |||\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.object_local_clash.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.object_local_clash.jsonnet:17:21: duplicate local var: x\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.object_local_clash.jsonnet:17:1: Static: duplicate binding 'x'\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.function_duplicate_arg.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "RUNTIME ERROR: binding parameter a second time: x\n\t/private${LOCAL_PATH_020}/test_suite/error.function_duplicate_arg.jsonnet:17:1-29\t\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.function_duplicate_arg.jsonnet:17:1: Runtime: duplicate argument 'x'\n  at /private${LOCAL_PATH_020}/test_suite/error.function_duplicate_arg.jsonnet:17:1\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.self_in_computed_field.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.self_in_computed_field.jsonnet:17:15-19: unexpected: self while parsing field definition\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.self_in_computed_field.jsonnet:17:15: Syntax: expected field name\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.function_too_many_args.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "RUNTIME ERROR: too many args, function has 2 parameter(s)\n\t/private${LOCAL_PATH_020}/test_suite/error.function_too_many_args.jsonnet:19:1-13\t\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.function_too_many_args.jsonnet:19:1: Runtime: too many arguments\n  at /private${LOCAL_PATH_020}/test_suite/error.function_too_many_args.jsonnet:19:1\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape.jsonnet:17:1-5: Unknown escape sequence in string literal: 'o'\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape.jsonnet:17:1: Syntax: invalid escape\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.text_block_not_terminated.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.text_block_not_terminated.jsonnet:17:1: text block not terminated with |||\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.text_block_not_terminated.jsonnet:17:1: Syntax: text block must end with ||| at lesser indentation\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.static_error_self.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.static_error_self.jsonnet:17:2-6: Can't use self outside of an object.\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.static_error_self.jsonnet:17:2: Static: unknown variable 'self'\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.static_error_bad_number.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.static_error_bad_number.jsonnet:17:1: unexpected: \".\" while parsing terminal\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.static_error_bad_number.jsonnet:17:1: Syntax: unexpected token '.'\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_short2.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_short2.jsonnet:17:1-8: Truncated unicode escape sequence in string literal.\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_short2.jsonnet:17:1: Syntax: invalid or unpaired Unicode escape\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.method_plus.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.method_plus.jsonnet:17:15: cannot use +: syntax sugar in a method: a\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.method_plus.jsonnet:17:15: Syntax: method cannot use additive field syntax\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.object_comprehension_local_clash.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.object_comprehension_local_clash.jsonnet:17:21: duplicate local var: x\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.object_comprehension_local_clash.jsonnet:17:29: Syntax: expected '}', got ':'\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_non_hex.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_non_hex.jsonnet:17:1-9: Malformed unicode escape character, should be hex: 't'\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_non_hex.jsonnet:17:1: Syntax: invalid or unpaired Unicode escape\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.function_no_default_arg.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "RUNTIME ERROR: function parameter b not bound in call.\n\tTop-level function\t\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.function_no_default_arg.jsonnet:1:1: Type: cannot manifest a function or std\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.import_not_literal.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.import_not_literal.jsonnet:17:8-28: computed imports are not allowed.\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/directory:1:1: Import: cannot resolve file\n  at /private${LOCAL_PATH_020}/test_suite/error.parse.import_not_literal.jsonnet:17:1\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_short3.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_short3.jsonnet:17:1: unterminated string\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.invalid_escape_unicode_short3.jsonnet:17:1: Syntax: invalid or unpaired Unicode escape\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.index_unterminated.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.index_unterminated.jsonnet:18:1: unexpected end of file.\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.index_unterminated.jsonnet:18:1: Syntax: unexpected token '<eof>'\n"
+    },
+    {
+      "name": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.unfinished.jsonnet",
+      "passed": true,
+      "unsupported_standard_library": false,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1,
+      "reference_stderr": "STATIC ERROR: /private${LOCAL_PATH_020}/test_suite/error.parse.string.unfinished.jsonnet:17:1: unterminated string\n",
+      "moonjsonnet_stderr": "/private${LOCAL_PATH_020}/test_suite/error.parse.string.unfinished.jsonnet:17:1: Syntax: unterminated string\n"
+    }
+  ],
+  "passed": 301,
+  "failed": 0,
+  "skipped": 0,
+  "unsupported_standard_library": 2,
+  "privacy_redaction": {"environment_identifiers_redacted": true, "unredacted_evidence": "retained locally, outside the public repository", "recorded_results": "from the original execution; exact environment-bearing bytes may be redacted", "tests_rerun_for_privacy_rewrite": false}
+}
