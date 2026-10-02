@@ -59,16 +59,17 @@ example, Go provides `sha256` while C++ does not). Undeclared behavioral differe
 failures and the runner exits nonzero; an upstream internal error is never an
 expected-error pass. Go compatibility is not yet a passing CI gate.
 
-Seven shared cases deliberately follow the Go contracts for function arity,
-`foldl`, indexing and bitwise operators, which differ from C++. Their
+Eight shared cases deliberately follow the Go contracts for function arity,
+`foldl`, indexing, bitwise operators and manifest numbers, which differ from C++. Their
 `cpp_difference` entries assert reference JSON or the C++ error class and
 MoonJsonnet JSON or structured error category. They are
 reported as `reference-difference`, with `passed=false`, and are not skipped or
 counted as compatible. Any changed outcome, missing error or unexpected
 convergence fails the check. This lets the C++ regression gate retain all inputs
 while checking the documented Go migration; undeclared mismatches still fail.
-See the [numeric alignment report](../reports/GO-JSONNET-NUMERIC.md) for current
+See the [manifest number report](../reports/GO-JSONNET-MANIFEST.md) for current
 commit-bound results and the retained differences. The earlier
+[numeric alignment report](../reports/GO-JSONNET-NUMERIC.md),
 [function-contract report](../reports/GO-JSONNET-CONTRACTS.md) and
 [sequence-function report](../reports/GO-JSONNET-PROGRESS.md) remain historical baselines.
 
