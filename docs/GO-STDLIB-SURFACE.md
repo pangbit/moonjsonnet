@@ -1,7 +1,7 @@
 | std member | Kind | Required arguments | Surface status |
 | --- | --- | ---: | --- |
 | `$flatMapArray` | function | 2 | registered |
-| `$objectFlatMerge` | function | 1 | missing |
+| `$objectFlatMerge` | function | 1 | registered |
 | `__array_greater` | function | 2 | registered |
 | `__array_greater_or_equal` | function | 2 | registered |
 | `__array_less` | function | 2 | registered |
@@ -124,8 +124,8 @@
 | `prune` | function | 1 | registered |
 | `rad2deg` | function | 1 | registered |
 | `range` | function | 2 | registered |
-| `remove` | function | 2 | missing |
-| `removeAt` | function | 2 | missing |
+| `remove` | function | 2 | registered |
+| `removeAt` | function | 2 | registered |
 | `repeat` | function | 2 | registered |
 | `resolvePath` | function | 2 | registered |
 | `reverse` | function | 1 | registered |

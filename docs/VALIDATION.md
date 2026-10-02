@@ -73,8 +73,9 @@ reported as `reference-difference`, with `passed=false`, and are not skipped or
 counted as compatible. Any changed outcome, missing error or unexpected
 convergence fails the check. This lets the C++ regression gate retain all inputs
 while checking the documented Go migration; undeclared mismatches still fail.
-See the [JSON, Python, INI and XML output report](../reports/GO-JSONNET-OUTPUT.md) for current
+See the [deletion and internal object merge report](../reports/GO-JSONNET-REMOVE.md) for current
 commit-bound results and the retained differences. The earlier
+[JSON, Python, INI and XML output report](../reports/GO-JSONNET-OUTPUT.md),
 [UTF-8 and Base64 report](../reports/GO-JSONNET-ENCODING.md),
 [string and Unicode report](../reports/GO-JSONNET-STRINGS.md),
 [math and boolean report](../reports/GO-JSONNET-MATH.md),
