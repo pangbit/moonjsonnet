@@ -16,7 +16,15 @@ fn standard_library_expression() -> Expr raise {
           | "setInter"
           | "setDiff"
           | "setMember"
-          | "mergePatch" => true
+          | "mergePatch"
+          | "get"
+          | "objectValues"
+          | "objectValuesAll"
+          | "objectKeysValues"
+          | "objectKeysValuesAll"
+          | "mapWithKey"
+          | "prune"
+          | "equals" => true
           _ => false
         }
       _ => false

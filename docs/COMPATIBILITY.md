@@ -89,6 +89,15 @@ There is no fallback to another interpreter.
 
 ## Standard library
 
+Go v0.21.0 crashes internally when `objectRemoveKey` receives an inherited object
+(`extendedObject` to `simpleObject` assertion). The retained
+`object-operations-inheritance` fixture records this Go difference. Removing a key
+from an object whose retained fields use object-local bindings also causes a Go
+internal error (`object-remove-local-bindings`); MoonJsonnet preserves those bindings.
+MoonJsonnet copies the remaining layers and reports a normal missing-field error
+if a retained field accesses the removed key through `self`; it does not reproduce
+the reference crash. This is not counted as a compatible pass.
+
 Only the following functions are supported. Arity/named-argument violations are
 `Runtime`; invalid types are `Type` unless an explicit assertion is involved.
 
@@ -107,6 +116,10 @@ Only the following functions are supported. Arity/named-argument violations are
 | `sort(arr,keyF=function(x)x)` | Stable array sort; optional key function evaluated once per element; numeric, string or lexicographic array keys; preserves original element thunks and input order for equal keys |
 | `uniq`, `set`, `setUnion`, `setInter`, `setDiff`, `setMember` | Pinned upstream Jsonnet definitions, evaluated by the MoonBit runtime; optional key functions, lazy elements and left-hand representatives preserved |
 | `mergePatch(target,patch)` | Recursive JSON merge patch with null deletion, visible fields, lazy retained values and scalar replacement |
+| `get`, `objectValues`, `objectValuesAll`, `objectKeysValues`, `objectKeysValuesAll`, `mapWithKey`, `prune` | Pinned Jsonnet definitions; hidden-field policy, lazy defaults/values and inherited self preserved |
+| `objectRemoveKey(obj,key)` | Copies remaining fields including hidden fields, rebinds self and omits object assertions, matching Go's native implementation for simple objects; input is unchanged |
+| `objectFieldsEx(obj,hidden)`, `objectHasEx(obj,fname,hidden)` | Native reflection with explicit hidden-field selection and reference parameter names |
+| `primitiveEquals(x,y)`, `equals(a,b)` | Primitive comparison or recursive equality; unlike types compare false, same-type functions cannot be compared |
 | `filter(func,arr)` | Array filtering; predicate must return boolean |
 | `flatMap(func,arr)` | Concatenates callback arrays or strings; string input uses Unicode code points; callback results are forced but returned array elements stay lazy; null results are errors |
 | `foldl(func,arr,init)` | Iterative left fold over array/string; forces function, sequence, initial value and each callback result; elements and nested fields remain lazy |

@@ -6,7 +6,8 @@ fn builtin_names() -> Array[String] {
     "map", "mapWithIndex", "makeArray", "reverse", "filter", "flatMap", "foldl",
     "foldr", "range", "join", "split", "substr", "strReplace", "startsWith", "endsWith",
     "parseJson", "manifestJson", "toString", "floor", "ceil", "abs", "format", "slice",
-    "char", "codepoint", "assertEqual", "lines", "sort", "sha256",
+    "char", "codepoint", "assertEqual", "lines", "sort", "sha256", "objectFieldsEx",
+    "objectHasEx", "primitiveEquals", "objectRemoveKey",
   ]
 }
 
@@ -38,6 +39,10 @@ fn builtin_params(name : String) -> Array[String] {
     "abs" => ["n"]
     "objectFields" | "objectFieldsAll" => ["o"]
     "objectHas" | "objectHasAll" => ["o", "f"]
+    "objectFieldsEx" => ["obj", "hidden"]
+    "objectHasEx" => ["obj", "fname", "hidden"]
+    "primitiveEquals" => ["x", "y"]
+    "objectRemoveKey" => ["obj", "key"]
     "map" | "mapWithIndex" | "filter" | "flatMap" => ["func", "arr"]
     "makeArray" => ["sz", "func"]
     "reverse" => ["arr"]
@@ -94,6 +99,42 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "objectRemoveKey" => {
+      guard x is ObjectValue(id, top) else {
+        raise problem(Type, loc, "expected object")
+      }
+      let key = text_value(values[1], loc)
+      let layers = []
+      for i in 0..<top {
+        self.tick(loc)
+        let layer = self.objects[id].layers[i]
+        let fields : Map[String, LayerField] = Map([])
+        for name, field in layer.fields {
+          self.tick(loc)
+          if name != key {
+            fields[name] = field
+          }
+        }
+        layers.push({ ..layer, fields, assertions: [], })
+      }
+      self.object_value(layers)
+    }
+    "primitiveEquals" => {
+      let y = values[1]
+      if value_type(x) != value_type(y) {
+        Bool(false)
+      } else {
+        match x {
+          ArrayValue(_) | ObjectValue(_, _) | Closure(_, _, _) | Builtin(_) =>
+            raise problem(
+              Type,
+              loc,
+              "primitiveEquals requires primitive values",
+            )
+          _ => Bool(self.equal(x, y, loc))
+        }
+      }
+    }
     "sha256" => Str(self.sha256(text_value(x, loc), loc))
     "flatMap" => self.flat_map(x, values[1], loc)
     "foldl" | "foldr" => {
@@ -192,12 +233,21 @@ fn Vm::builtin(
             )
         },
       )
-    "objectFields" | "objectFieldsAll" | "objectHas" | "objectHasAll" => {
+    "objectFields"
+    | "objectFieldsAll"
+    | "objectHas"
+    | "objectHasAll"
+    | "objectFieldsEx"
+    | "objectHasEx" => {
       guard x is ObjectValue(id, top) else {
         raise problem(Type, loc, "expected object")
       }
-      let hidden = name == "objectFieldsAll" || name == "objectHasAll"
-      if name == "objectHas" || name == "objectHasAll" {
+      let hidden = match name {
+        "objectFieldsEx" => boolean(values[1], loc)
+        "objectHasEx" => boolean(values[2], loc)
+        _ => name == "objectFieldsAll" || name == "objectHasAll"
+      }
+      if name == "objectHas" || name == "objectHasAll" || name == "objectHasEx" {
         let k = text_value(values[1], loc)
         Bool(self.has_field(id, top, k) && (hidden || self.visible(id, top, k)))
       } else {
