@@ -26,6 +26,11 @@ async fn main {
   } else { null }
   let cases = @json.parse(@fs.read_file("tests/differential.json").text())
   guard cases is Array(cases) else { fail("expected case array") }
+  if is_go {
+    let extra = @json.parse(@fs.read_file("tests/go-differential.json").text())
+    guard extra is Array(extra) else { fail("expected Go case array") }
+    for case in extra { cases.push(case) }
+  }
   let work = if is_go { "_build/go-differential" } else { "_build/differential" }
   @fs.mkdir(work, recursive=true, allow_exist=true)
   let mut passed = 0

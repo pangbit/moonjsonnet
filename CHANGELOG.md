@@ -10,5 +10,7 @@
 - Upstream language/formatting corpus and byte-preserving binary host tests.
 - JSON external variables, custom imports, bounded POSIX file host and CLI.
 - Explicit standard-library subset, configurable limits and structured diagnostics.
+- Lazy `makeArray`, Unicode-aware `mapWithIndex` and nonmutating `reverse`.
+- Pinned go-jsonnet differential reports retain mismatches separately from C++ acceptance.
 - Three runnable examples, fixed-reference differential and host integration tests.
 - Apache-2.0 metadata, generated API interfaces and reproducible release checks.

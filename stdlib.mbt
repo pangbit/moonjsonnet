@@ -3,9 +3,10 @@ fn builtin_names() -> Array[String] {
   [
     "extVar", "type", "isArray", "isBoolean", "isFunction", "isNumber", "isObject",
     "isString", "length", "objectFields", "objectFieldsAll", "objectHas", "objectHasAll",
-    "map", "filter", "foldl", "range", "join", "split", "substr", "strReplace", "startsWith",
-    "endsWith", "parseJson", "manifestJson", "toString", "floor", "ceil", "abs",
-    "format", "slice", "char", "codepoint", "assertEqual", "lines",
+    "map", "mapWithIndex", "makeArray", "reverse", "filter", "foldl", "range", "join",
+    "split", "substr", "strReplace", "startsWith", "endsWith", "parseJson", "manifestJson",
+    "toString", "floor", "ceil", "abs", "format", "slice", "char", "codepoint", "assertEqual",
+    "lines",
   ]
 }
 
@@ -37,7 +38,9 @@ fn builtin_params(name : String) -> Array[String] {
     "abs" => ["n"]
     "objectFields" | "objectFieldsAll" => ["o"]
     "objectHas" | "objectHasAll" => ["o", "f"]
-    "map" | "filter" => ["func", "arr"]
+    "map" | "mapWithIndex" | "filter" => ["func", "arr"]
+    "makeArray" => ["sz", "func"]
+    "reverse" => ["arr"]
     "foldl" => ["func", "arr", "init"]
     "range" => ["from", "to"]
     "join" => ["sep", "arr"]
@@ -194,8 +197,31 @@ fn Vm::builtin(
         )
       }
     }
-    "map" | "filter" => {
-      let a = if name == "map" {
+    "makeArray" => {
+      let size = integer(x, loc)
+      let func = values[1]
+      if value_type(func) != "function" {
+        raise problem(Type, loc, "expected function")
+      }
+      let out = []
+      for i in 0..<size {
+        self.tick(loc)
+        let index = self.store(Ready(Num(i.to_double())))
+        out.push(self.defer_call(func, [index], loc))
+      }
+      ArrayValue(out)
+    }
+    "reverse" => {
+      let a = array_value(x, loc)
+      let out = []
+      for i in 0..<a.length() {
+        self.tick(loc)
+        out.push(a[a.length() - i - 1])
+      }
+      ArrayValue(out)
+    }
+    "map" | "mapWithIndex" | "filter" => {
+      let a = if name != "filter" {
         self.sequence(values[1], loc)
       } else {
         array_value(values[1], loc)
@@ -204,33 +230,19 @@ fn Vm::builtin(
       if value_type(x) != "function" {
         raise problem(Type, loc, "expected function")
       }
-      for t in a {
+      for i, t in a {
         self.tick(loc)
         if name == "filter" {
           if boolean(self.call(x, [(None, t)], loc), loc) {
             out.push(t)
           }
         } else {
-          // Keep mapped results lazy by constructing a call in a tiny environment.
-          let scope : Env = {
-            parent: None,
-            names: Map([("f", self.store(Ready(x))), ("x", t)]),
+          let call_args = if name == "mapWithIndex" {
+            [self.store(Ready(Num(i.to_double()))), t]
+          } else {
+            [t]
           }
-          out.push(
-            self.store(
-              Pending(
-                {
-                  kind: Call(
-                    { kind: Var("f"), loc, },
-                    [(None, { kind: Var("x"), loc, })],
-                    false,
-                  ),
-                  loc,
-                },
-                scope,
-              ),
-            ),
-          )
+          out.push(self.defer_call(x, call_args, loc))
         }
       }
       ArrayValue(out)

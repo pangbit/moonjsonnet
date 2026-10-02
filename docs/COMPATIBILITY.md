@@ -75,6 +75,9 @@ Only the following functions are supported. Arity/named-argument violations are
 | `objectFields(o)`, `objectFieldsAll(o)` | Sorted Unicode keys, excluding/including hidden fields |
 | `objectHas(o,f)`, `objectHasAll(o,f)` | Membership excluding/including hidden fields |
 | `map(func,arr)` | Lazy mapped array; accepts array or string |
+| `mapWithIndex(func,arr)` | Lazy mapped array; callback receives zero-based index and element; strings use Unicode code points |
+| `makeArray(sz,func)` | Lazy generated array; callback receives index; signed 32-bit integer size, with negative sizes producing an empty array; callback arity checked when an element is used |
+| `reverse(arr)` | New array in reverse order; elements remain lazy and the input is unchanged |
 | `filter(func,arr)` | Array filtering; predicate must return boolean |
 | `foldl(func,arr,init)` | Left fold, preserving lazy accumulator semantics; array/string |
 | `range(from,to)` | Inclusive integer range; arguments restricted to signed 32-bit integers |
@@ -98,6 +101,17 @@ the reference accepts. Restricted argument domains return an error and are not
 silently truncated. Standard-library numeric text uses the C locale, fixed integer
 formatting or 17 significant digits, matching the pinned reference. CLI JSON
 uses MoonBit core's JSON serialization; comparisons operate on parsed values.
+
+New sequence functions follow the pinned Go implementation. In particular,
+`makeArray` uses the parameter name `sz`, rejects fractional sizes, returns an
+empty array for negative sizes, and defers callback arity errors until an
+element is used. C++ v0.21.0 uses `size`, truncates fractional sizes, rejects
+negative sizes and requires exactly one declared callback parameter up front.
+`reverse` accepts only arrays, as in Go; C++ also accepts strings (returning an
+array of characters) and an empty object (returning an empty array).
+The new sequence corpus is checked against Go; the original C++ corpus is
+retained unchanged. Sequence allocation consumes the evaluation step budget
+even when generated elements are never forced.
 
 ## Known boundaries
 

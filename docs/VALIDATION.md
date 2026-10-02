@@ -42,6 +42,11 @@ go -C /tmp/go-jsonnet-v0.21.0 build -o /tmp/go-jsonnet-v0.21.0/jsonnet ./cmd/jso
 moon run tools/differential.mbtx /tmp/go-jsonnet-v0.21.0/jsonnet _build/native/release/build/cmd/main/main.exe
 ```
 
+The Go run includes the shared `tests/differential.json` corpus plus new sequence
+cases in `tests/go-differential.json`. C++ continues to run the original shared
+corpus: its pass count does not cover the Go-specific sequence cases. The
+`makeArray` contract differences are listed in [compatibility](COMPATIBILITY.md).
+
 The runner checks Go binary build metadata for commit
 `67968688d9952f50662e979fab1bef889d0d3e57` and an unmodified checkout. Build the
 binary before writing other files into that checkout. Go results are written to
