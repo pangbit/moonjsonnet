@@ -9,7 +9,8 @@ fn Vm::import_file(
   let source = match self.sources.get(request) {
     Some(s) => s
     None => {
-      if self.sources.length() >= self.limits.imports {
+      if self.sources.length() + self.binary_sources.length() >=
+        self.limits.imports {
         raise problem(Limit, loc, "import count limit exceeded")
       }
       guard self.resolver is Some(resolve) else {
@@ -51,7 +52,7 @@ fn Vm::import_file(
     }
     e => raise e
   }
-  let t = self.store(Pending(expression, self.base_env()))
+  let t = self.store(Pending(expression, self.base_env(file=source.id)))
   self.imports[key] = t
   self.force(t, loc) catch {
     Error(d) => {
@@ -63,6 +64,80 @@ fn Vm::import_file(
 }
 
 ///|
-fn Vm::base_env(self : Vm) -> Env {
-  { parent: None, names: Map([("std", self.store(Ready(Std)))]), }
+fn Vm::base_env(self : Vm, file? : String = "<input>") -> Env {
+  let env : Env = { parent: None, names: Map([]), }
+  let loc : Location = { file, line: 1, column: 1, }
+  let fields : Map[String, LayerField] = Map([])
+  for name in builtin_names() {
+    fields[name] = {
+      field: {
+        key: { kind: Literal(Json::string(name)), loc, },
+        value: { kind: StandardFunction(name), loc, },
+        visibility: 2,
+        additive: false,
+      },
+      env,
+    }
+  }
+  fields["thisFile"] = {
+    field: {
+      key: { kind: Literal(Json::string("thisFile")), loc, },
+      value: { kind: Literal(Json::string(file)), loc, },
+      visibility: 2,
+      additive: false,
+    },
+    env,
+  }
+  let value = self.object_value([{ fields, locals: [], assertions: [], env, }])
+  if value is ObjectValue(id, _) {
+    self.objects[id].standard = true
+  }
+  { parent: None, names: Map([("std", self.store(Ready(value)))]), }
+}
+
+///|
+fn Vm::import_binary(self : Vm, path : String, loc : Location) -> Value raise {
+  let request = (loc.file, path)
+  let source = match self.binary_sources.get(request) {
+    Some(s) => s
+    None => {
+      if self.sources.length() + self.binary_sources.length() >=
+        self.limits.imports {
+        raise problem(Limit, loc, "import count limit exceeded")
+      }
+      guard self.binary_resolver is Some(resolve) else {
+        raise problem(
+          Import,
+          loc,
+          "binary imports disabled: no binary resolver supplied",
+        )
+      }
+      let s = resolve(loc.file, path) catch {
+        Error(d) => {
+          d.context.push(loc)
+          raise Error(d)
+        }
+        e => raise problem(Import, loc, e.to_string())
+      }
+      let size = s.bytes.length()
+      if size > self.limits.source_bytes ||
+        size > self.limits.import_bytes - self.imported_bytes {
+        raise problem(Limit, loc, "import byte limit exceeded")
+      }
+      self.imported_bytes += size
+      self.binary_sources[request] = s
+      s
+    }
+  }
+  if self.binary_imports.get(source.id) is Some(t) {
+    return self.force(t, loc)
+  }
+  let items = []
+  for b in source.bytes {
+    self.tick(loc)
+    items.push(self.store(Ready(Num(b.to_int().to_double()))))
+  }
+  let value = ArrayValue(items)
+  self.binary_imports[source.id] = self.store(Ready(value))
+  value
 }

@@ -23,7 +23,7 @@ fn validate(
   in_object : Bool,
 ) -> Unit raise Error {
   match e.kind {
-    Literal(_) | ImportFile(_, _) => ()
+    Literal(_) | ImportFile(_, _) | ImportBinary(_) | StandardFunction(_) => ()
     Var(n) => {
       if n == "super" {
         raise problem(
@@ -58,7 +58,7 @@ fn validate(
       }
       validate(body, scope, in_object)
     }
-    Call(f, args) => {
+    Call(f, args, _) => {
       validate(f, names, in_object)
       let seen : Map[String, Bool] = Map([])
       for (n, a) in args {
@@ -109,11 +109,15 @@ fn validate(
       let scope = validate_clauses(cs, names, in_object)
       validate(body, scope, in_object)
     }
-    ObjectComp(key, body, cs) => {
+    ObjectComp(key, body, cs, bs) => {
       let scope = validate_clauses(cs, names, in_object)
       validate(key, scope, in_object)
       scope.push("$")
-      validate(body, scope, true)
+      let inner = binding_scope(bs, scope, e.loc)
+      for (_, v) in bs {
+        validate(v, inner, true)
+      }
+      validate(body, inner, true)
     }
     Index({ kind: Var("super"), .. }, b)
     | Binary("in", b, { kind: Var("super"), .. }) => {
@@ -125,6 +129,14 @@ fn validate(
     Index(a, b) | Binary(_, a, b) => {
       validate(a, names, in_object)
       validate(b, names, in_object)
+    }
+    Slice(a, start, end, step) => {
+      validate(a, names, in_object)
+      for x in [start, end, step] {
+        if x is Some(v) {
+          validate(v, names, in_object)
+        }
+      }
     }
     Unary(_, a) | Fail(a) => validate(a, names, in_object)
     Assert(a, b, c) => {

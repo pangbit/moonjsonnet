@@ -6,6 +6,7 @@ fn Vm::object_value(self : Vm, layers : Array[Layer]) -> Value {
     cache: Map([]),
     scopes: Map([]),
     assertion_state: 0,
+    standard: false,
   })
   ObjectValue(id, layers.length())
 }
@@ -138,7 +139,15 @@ fn Vm::field(
     }
     layer -= 1
   }
-  raise problem(Runtime, loc, "field '\{name}' does not exist")
+  raise problem(
+    if obj.standard {
+      Unsupported
+    } else {
+      Runtime
+    },
+    loc,
+    "field '\{name}' does not exist",
+  )
 }
 
 ///|

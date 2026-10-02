@@ -8,7 +8,6 @@ priv enum Value {
   ObjectValue(Int, Int)
   Closure(Array[(String, Expr?)], Expr, Env)
   Builtin(String)
-  Std
 }
 
 ///|
@@ -62,6 +61,7 @@ priv struct ObjectData {
   cache : Map[(Int, String), Int]
   scopes : Map[Int, Env]
   mut assertion_state : Int
+  mut standard : Bool
 }
 
 ///|
@@ -71,6 +71,9 @@ priv struct Vm {
   limits : Limits
   ext : Map[String, Json]
   resolver : ((String, String) -> Source raise)?
+  binary_resolver : ((String, String) -> BinarySource raise)?
+  binary_sources : Map[(String, String), BinarySource]
+  binary_imports : Map[String, Int]
   sources : Map[(String, String), Source]
   imports : Map[(String, Bool), Int]
   mut steps : Int

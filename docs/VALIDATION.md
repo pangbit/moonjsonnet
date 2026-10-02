@@ -20,6 +20,7 @@ git clone --depth 1 --branch v0.21.0 https://github.com/google/jsonnet.git /tmp/
 git -C /tmp/jsonnet-v0.21.0 rev-parse HEAD
 make -C /tmp/jsonnet-v0.21.0 -j4 jsonnet
 moon run tools/differential.mbtx /tmp/jsonnet-v0.21.0/jsonnet _build/native/release/build/cmd/main/main.exe
+moon run tools/upstream-language.mbtx /tmp/jsonnet-v0.21.0 _build/native/release/build/cmd/main/main.exe
 moon run tools/integration.mbtx _build/native/release/build/cmd/main/main.exe
 moon run tools/consumer.mbtx
 ```
@@ -31,6 +32,15 @@ per-case outcomes, counts, reference version and source commit in
 `_build/differential/report.json`. `unsupported-reference-error` distinguishes a
 function the pinned C++ reference itself rejects. Structured local error-category
 checks are covered by the library and host integration suites.
+
+The upstream language runner verifies the exact reference commit, runs 32
+language fixture files, separately evaluates the upstream formatting assertions,
+and checks parser/static/function error fixtures. It preserves upstream inputs;
+the isolated formatting expressions retain their original source line numbers
+in report names. Two fixtures also require the out-of-scope `setInter` or
+`mergePatch` standard functions; those are retained and reported separately as
+unsupported standard-library dependencies, never as language passes. The report
+is written to `_build/upstream-language/report.json`.
 
 Run ASan **after committing source**, because its isolated checkout copies only
 tracked files. It copies the installed runtime to a temporary directory, disables

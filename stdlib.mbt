@@ -5,6 +5,7 @@ fn builtin_names() -> Array[String] {
     "isString", "length", "objectFields", "objectFieldsAll", "objectHas", "objectHasAll",
     "map", "filter", "foldl", "range", "join", "split", "substr", "strReplace", "startsWith",
     "endsWith", "parseJson", "manifestJson", "toString", "floor", "ceil", "abs",
+    "format", "slice", "char", "codepoint", "assertEqual", "lines",
   ]
 }
 
@@ -16,7 +17,7 @@ fn value_type(v : Value) -> String {
     Num(_) => "number"
     Str(_) => "string"
     ArrayValue(_) => "array"
-    ObjectValue(_, _) | Std => "object"
+    ObjectValue(_, _) => "object"
     Closure(_, _, _) | Builtin(_) => "function"
   }
 }
@@ -47,6 +48,12 @@ fn builtin_params(name : String) -> Array[String] {
     "endsWith" => ["a", "b"]
     "parseJson" => ["str"]
     "manifestJson" => ["value"]
+    "format" => ["str", "vals"]
+    "slice" => ["indexable", "index", "end", "step"]
+    "char" => ["n"]
+    "codepoint" => ["str"]
+    "assertEqual" => ["a", "b"]
+    "lines" => ["arr"]
     _ => []
   }
 }
@@ -82,10 +89,14 @@ fn Vm::builtin(
       acc = self.store(
         Pending(
           {
-            kind: Call({ kind: Var("f"), loc, }, [
-              (None, { kind: Var("a"), loc, }),
-              (None, { kind: Var("b"), loc, }),
-            ]),
+            kind: Call(
+              { kind: Var("f"), loc, },
+              [
+                (None, { kind: Var("a"), loc, }),
+                (None, { kind: Var("b"), loc, }),
+              ],
+              false,
+            ),
             loc,
           },
           env,
@@ -97,6 +108,47 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "lines" => {
+      let mut result = Str("")
+      for t in array_value(x, loc) {
+        let v = self.force(t, loc)
+        if v is Nil {
+          continue
+        }
+        result = self.join_string(
+          text_value(result, loc),
+          text_value(v, loc),
+          loc,
+        )
+        result = self.join_string(text_value(result, loc), "\n", loc)
+      }
+      result
+    }
+    "format" => Str(self.format_string(text_value(x, loc), values[1], loc))
+    "slice" => self.slice(x, values[1], values[2], values[3], loc)
+    "char" => {
+      let n = number_value(x, loc)
+      if n <= -1 || n >= 1114112 {
+        raise problem(Runtime, loc, "invalid character code")
+      }
+      guard n.to_int().to_char() is Some(c) else {
+        raise problem(Runtime, loc, "invalid Unicode scalar")
+      }
+      Str(c.to_string())
+    }
+    "codepoint" => {
+      let chars = text_value(x, loc).to_array()
+      if chars.length() != 1 {
+        raise problem(Runtime, loc, "expected one code point")
+      }
+      Num(chars[0].to_int().to_double())
+    }
+    "assertEqual" => {
+      if !self.equal(x, values[1], loc) {
+        raise problem(Assertion, loc, "values are not equal")
+      }
+      Bool(true)
+    }
     "extVar" => {
       let key = text_value(x, loc)
       match self.ext.get(key) {
@@ -168,9 +220,11 @@ fn Vm::builtin(
             self.store(
               Pending(
                 {
-                  kind: Call({ kind: Var("f"), loc, }, [
-                    (None, { kind: Var("x"), loc, }),
-                  ]),
+                  kind: Call(
+                    { kind: Var("f"), loc, },
+                    [(None, { kind: Var("x"), loc, })],
+                    false,
+                  ),
                   loc,
                 },
                 scope,
@@ -256,11 +310,7 @@ fn Vm::builtin(
       let from = text_value(values[1], loc)
       let to = text_value(values[2], loc)
       if from.is_empty() {
-        raise problem(
-          Unsupported,
-          loc,
-          "empty strReplace pattern is unsupported",
-        )
+        raise problem(Assertion, loc, "strReplace pattern must be nonempty")
       }
       let mut out = ""
       let mut first = true

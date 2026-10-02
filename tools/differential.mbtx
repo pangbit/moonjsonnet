@@ -34,7 +34,7 @@ async fn main {
       (if expect == "unsupported" { a.exit_code() == 0 } else { a.exit_code() != 0 }) && b.exit_code() != 0 && b.stderr().contains("Unsupported")
     } else if expect == "error" {
       errors += 1
-      a.exit_code() != 0 && b.exit_code() != 0
+      a.exit_code() == 1 && b.exit_code() == 1
     } else {
       a.exit_code() == 0 && b.exit_code() == 0 && @json.parse(a.stdout()) == @json.parse(b.stdout())
     }

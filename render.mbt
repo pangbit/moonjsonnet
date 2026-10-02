@@ -37,6 +37,9 @@ fn render_json(
   match j {
     Array(items) => {
       write("[")
+      if items.is_empty() {
+        write(if pretty { "\n\n" } else { " " })
+      }
       for i, item in items {
         separator(i == 0)
         write(render_json(item, pretty, depth + 1, limit - bytes, loc))
@@ -51,6 +54,9 @@ fn render_json(
       let keys = fields.keys().collect()
       keys.sort_by(compare_unicode)
       write("{")
+      if keys.is_empty() {
+        write(if pretty { "\n\n" } else { " " })
+      }
       for i, key in keys {
         separator(i == 0)
         write(Json::string(key).stringify())

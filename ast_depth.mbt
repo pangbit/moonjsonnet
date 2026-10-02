@@ -16,7 +16,11 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
       }
     }
     match e.kind {
-      Literal(_) | Var(_) | ImportFile(_, _) => ()
+      Literal(_)
+      | Var(_)
+      | ImportFile(_, _)
+      | ImportBinary(_)
+      | StandardFunction(_) => ()
       Local(bs, body) => {
         for (_, v) in bs {
           push(v)
@@ -36,7 +40,7 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
         push(b)
         push(c)
       }
-      Call(f, args) => {
+      Call(f, args, _) => {
         push(f)
         for (_, v) in args {
           push(v)
@@ -65,7 +69,10 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
         push(body)
         clauses(cs)
       }
-      ObjectComp(key, body, cs) => {
+      ObjectComp(key, body, cs, bs) => {
+        for (_, v) in bs {
+          push(v)
+        }
         push(key)
         push(body)
         clauses(cs)
@@ -73,6 +80,14 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
       Index(a, b) | Binary(_, a, b) => {
         push(a)
         push(b)
+      }
+      Slice(a, start, end, step) => {
+        push(a)
+        for x in [start, end, step] {
+          if x is Some(v) {
+            push(v)
+          }
+        }
       }
       Unary(_, a) | Fail(a) => push(a)
       Assert(a, m, b) => {

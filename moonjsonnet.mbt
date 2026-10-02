@@ -13,6 +13,7 @@ pub fn evaluate(
   filename? : String = "<input>",
   ext_vars? : Map[String, Json] = Map([]),
   resolver? : (String, String) -> Source raise,
+  binary_resolver? : (String, String) -> BinarySource raise,
   limits? : Limits = Limits::default(),
 ) -> Json raise JsonnetError {
   let loc : Location = { file: filename, line: 1, column: 1, }
@@ -39,6 +40,9 @@ pub fn evaluate(
       limits,
       ext: ext_vars,
       resolver,
+      binary_resolver,
+      binary_sources: Map([]),
+      binary_imports: Map([]),
       sources: Map([]),
       imports: Map([]),
       steps: 0,
@@ -47,7 +51,7 @@ pub fn evaluate(
       output_bytes: 0,
     }
     let expression = parse(source, filename, limits.depth)
-    let value = vm.eval(expression, vm.base_env())
+    let value = vm.eval(expression, vm.base_env(file=filename))
     vm.output_bytes = 0
     vm.manifest(value, loc, 0)
   } catch {

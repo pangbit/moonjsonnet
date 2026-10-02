@@ -4,6 +4,10 @@
 
 - Independent located parser, static name validation and lazy native evaluator.
 - Closures/defaults, comprehensions, layered inheritance, visibility and assertions.
+- Complete language surface: text blocks, slices, bitwise and array ordering,
+  percent formatting, strict tail-call trampoline, comprehension locals and binary imports.
+- Ordinary hidden-field std object with reflection, inheritance and thisFile.
+- Upstream language/formatting corpus and byte-preserving binary host tests.
 - JSON external variables, custom imports, bounded POSIX file host and CLI.
 - Explicit standard-library subset, configurable limits and structured diagnostics.
 - Three runnable examples, fixed-reference differential and host integration tests.

@@ -12,6 +12,10 @@ No upstream interpreter or standard-library implementation is bundled or linked.
 The committed differential inputs and example fixtures are original project
 material, distributed under this project's Apache-2.0 license. The reference
 checkout retains its own LICENSE and third-party notices outside this package.
+tools/upstream-language.mbtx executes selected upstream Apache-2.0 test files
+and extracts individual formatting assertions into temporary test artifacts.
+These upstream assertions remain Google copyright and are not bundled in the
+published package. See the pinned reference checkout for their license headers.
 
 MoonBit core is provided by the user's toolchain, not vendored here. Automation
 scripts use moonbitlang/async (Apache-2.0), resolved by Moon script mode; it is not

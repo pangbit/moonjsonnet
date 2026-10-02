@@ -8,6 +8,8 @@ pub fn exit(Int) -> Unit
 
 pub fn read(String, String, Int) -> (Int, String)
 
+pub fn read_bytes(String, String, Int) -> (Int, Bytes)
+
 pub fn stderr(String) -> Unit
 
 pub fn write(String, String) -> Bool

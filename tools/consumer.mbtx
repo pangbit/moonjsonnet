@@ -26,6 +26,9 @@ async fn main {
     #|  assert_eq(json, Json::number(42))
     #|  let host = @fs.FileHost::new(".")
     #|  assert_true(host.resolve("", "moon.mod").text.contains("consumer_check"))
+    #|  assert_true(!host.resolve_binary("", "moon.mod").bytes.is_empty())
+    #|  let binary = @moonjsonnet.evaluate("importbin 'data'", binary_resolver=fn(_, _) { {id: "data", bytes: b"\x00\xff"} })
+    #|  assert_eq(binary.stringify(), "[0,255]")
     #|  try @moonjsonnet.evaluate("1/0") catch {
     #|    @moonjsonnet.Error(d) => { assert_eq(d.kind, @moonjsonnet.Runtime); assert_true(!d.to_string().is_empty()) }
     #|  } noraise { _ => fail("expected diagnostic") }

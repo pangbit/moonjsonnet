@@ -13,104 +13,163 @@ fn Vm::eval(self : Vm, expr : Expr, env : Env) -> Value raise {
 
 ///|
 fn Vm::eval_inner(self : Vm, expr : Expr, env : Env) -> Value raise {
-  let loc = expr.loc
-  match expr.kind {
-    Literal(j) => self.from_json(j, loc)
-    Var(n) =>
-      match env.lookup(n) {
-        Some(t) => self.force(t, loc)
-        None => raise problem(Static, loc, "unknown variable '\{n}'")
-      }
-    Local(bs, body) => self.eval(body, self.bind(bs, env))
-    If(c, yes, no) =>
-      if boolean(self.eval(c, env), c.loc) {
-        self.eval(yes, env)
-      } else {
-        self.eval(no, env)
-      }
-    Func(ps, body) => Closure(ps, body, env)
-    Call(f, args) => {
-      let function = self.eval(f, env)
-      let thunks = args.map(pair => (pair.0, self.store(Pending(pair.1, env))))
-      self.call(function, thunks, loc) catch {
-        Error(d) => {
-          d.context.push(loc)
-          raise Error(d)
+  let mut expr = expr
+  let mut env = env
+  while true {
+    self.tick(expr.loc)
+    let loc = expr.loc
+    return match expr.kind {
+      Literal(j) => self.from_json(j, loc)
+      Var(n) =>
+        match env.lookup(n) {
+          Some(t) => self.force(t, loc)
+          None => raise problem(Static, loc, "unknown variable '\{n}'")
         }
-        e => raise e
+      Local(bs, body) => {
+        env = self.bind(bs, env)
+        expr = body
+        continue
       }
-    }
-    Arr(items) => ArrayValue(items.map(e => self.store(Pending(e, env))))
-    Obj(fields, locals, assertions) => {
-      let fs : Map[String, LayerField] = Map([])
-      for f in fields {
-        match self.eval(f.key, env) {
-          Nil => ()
-          Str(k) => {
-            if fs.contains(k) {
-              raise problem(Runtime, f.key.loc, "duplicate field '\{k}'")
+      If(c, yes, no) => {
+        expr = if boolean(self.eval(c, env), c.loc) { yes } else { no }
+        continue
+      }
+      Func(ps, body) => Closure(ps, body, env)
+      Call(f, args, strict) => {
+        let function = self.eval(f, env)
+        let thunks = args.map(pair => (pair.0, self.store(Pending(pair.1, env))))
+        if strict && function is Closure(params, body, outer) {
+          let scope = try {
+            let scope = self.call_env(params, thunks, outer, loc)
+            for (n, _) in params {
+              ignore(self.force(scope.names[n], loc))
             }
-            fs[k] = { field: f, env, }
+            scope
+          } catch {
+            Error(d) => {
+              d.context.push(loc)
+              raise Error(d)
+            }
+            e => raise e
           }
-          _ =>
-            raise problem(Type, f.key.loc, "field name must be string or null")
+          expr = body
+          env = scope
+          continue
         }
-      }
-      self.object_value([{ fields: fs, locals, assertions, env, }])
-    }
-    ArrayComp(body, clauses) => {
-      let out = []
-      self.comprehend(clauses, 0, env, loc, scope => {
-        out.push(self.store(Pending(body, scope)))
-      })
-      ArrayValue(out)
-    }
-    ObjectComp(key, body, clauses) => {
-      let fs : Map[String, LayerField] = Map([])
-      self.comprehend(clauses, 0, env, loc, scope => {
-        match self.eval(key, scope) {
-          Nil => ()
-          Str(k) => {
-            if fs.contains(k) {
-              raise problem(Runtime, key.loc, "duplicate field '\{k}'")
-            }
-            fs[k] = {
-              field: { key, value: body, visibility: 1, additive: false, },
-              env: scope,
-            }
+        self.call(function, thunks, loc, strict~) catch {
+          Error(d) => {
+            d.context.push(loc)
+            raise Error(d)
           }
-          _ => raise problem(Type, key.loc, "field name must be string or null")
+          e => raise e
         }
-      })
-      self.object_value([{ fields: fs, locals: [], assertions: [], env, }])
-    }
-    Index(a, b) => self.index(self.eval(a, env), self.eval(b, env), loc)
-    Unary(op, e) => {
-      let v = self.eval(e, env)
-      match op {
-        "!" => Bool(!boolean(v, loc))
-        "-" => finite(-number_value(v, loc), loc)
-        "+" => finite(number_value(v, loc), loc)
-        _ =>
-          raise problem(Unsupported, loc, "bitwise operators are unsupported")
       }
-    }
-    Binary(op, a, b) => {
-      let left = self.eval(a, env)
-      if op == "&&" {
-        Bool(boolean(left, loc) && boolean(self.eval(b, env), loc))
-      } else if op == "||" {
-        Bool(boolean(left, loc) || boolean(self.eval(b, env), loc))
-      } else {
-        self.binary(op, left, self.eval(b, env), loc)
+      Arr(items) => ArrayValue(items.map(e => self.store(Pending(e, env))))
+      Obj(fields, locals, assertions) => {
+        let fs : Map[String, LayerField] = Map([])
+        for f in fields {
+          match self.eval(f.key, env) {
+            Nil => ()
+            Str(k) => {
+              if fs.contains(k) {
+                raise problem(Runtime, f.key.loc, "duplicate field '\{k}'")
+              }
+              fs[k] = { field: f, env, }
+            }
+            _ =>
+              raise problem(
+                Type,
+                f.key.loc,
+                "field name must be string or null",
+              )
+          }
+        }
+        self.object_value([{ fields: fs, locals, assertions, env, }])
       }
+      ArrayComp(body, clauses) => {
+        let out = []
+        self.comprehend(clauses, 0, env, loc, scope => {
+          out.push(self.store(Pending(body, scope)))
+        })
+        ArrayValue(out)
+      }
+      ObjectComp(key, body, clauses, locals) => {
+        let fs : Map[String, LayerField] = Map([])
+        self.comprehend(clauses, 0, env, loc, scope => {
+          match self.eval(key, scope) {
+            Nil => ()
+            Str(k) => {
+              if fs.contains(k) {
+                raise problem(Runtime, key.loc, "duplicate field '\{k}'")
+              }
+              fs[k] = {
+                field: {
+                  key,
+                  value: { kind: Local(locals, body), loc: body.loc, },
+                  visibility: 1,
+                  additive: false,
+                },
+                env: scope,
+              }
+            }
+            _ =>
+              raise problem(Type, key.loc, "field name must be string or null")
+          }
+        })
+        self.object_value([{ fields: fs, locals: [], assertions: [], env, }])
+      }
+      Index(a, b) => self.index(self.eval(a, env), self.eval(b, env), loc)
+      Slice(a, start, end, step) => {
+        let v = self.eval(a, env)
+        let bound = fn(e : Expr?) raise {
+          match e {
+            Some(x) => self.eval(x, env)
+            None => Nil
+          }
+        }
+        self.slice(v, bound(start), bound(end), bound(step), loc)
+      }
+      Unary(op, e) => {
+        let v = self.eval(e, env)
+        match op {
+          "!" => Bool(!boolean(v, loc))
+          "-" => finite(-number_value(v, loc), loc)
+          "+" => finite(number_value(v, loc), loc)
+          _ => {
+            let n = number_value(v, loc)
+            if n < -9223372036854775808.0 || n >= 9223372036854775808.0 {
+              raise problem(
+                Runtime,
+                loc,
+                "bitwise complement operand outside signed 64-bit range",
+              )
+            }
+            Num(n.to_int64().lnot().to_double())
+          }
+        }
+      }
+      Binary(op, a, b) => {
+        let left = self.eval(a, env)
+        if op == "&&" {
+          Bool(boolean(left, loc) && boolean(self.eval(b, env), loc))
+        } else if op == "||" {
+          Bool(boolean(left, loc) || boolean(self.eval(b, env), loc))
+        } else {
+          self.binary(op, left, self.eval(b, env), loc)
+        }
+      }
+      Assert(c, m, body) => {
+        self.assertion(c, m, env)
+        expr = body
+        continue
+      }
+      Fail(e) => raise problem(Runtime, loc, text_value(self.eval(e, env), loc))
+      ImportFile(path, raw) => self.import_file(path, raw, loc)
+      ImportBinary(path) => self.import_binary(path, loc)
+      StandardFunction(name) => Builtin(name)
     }
-    Assert(c, m, body) => {
-      self.assertion(c, m, env)
-      self.eval(body, env)
-    }
-    Fail(e) => raise problem(Runtime, loc, text_value(self.eval(e, env), loc))
-    ImportFile(path, raw) => self.import_file(path, raw, loc)
+  } nobreak {
+    abort("unreachable evaluator loop")
   }
 }
 
@@ -153,46 +212,71 @@ fn Vm::call(
   function : Value,
   args : Array[(String?, Int)],
   loc : Location,
+  strict? : Bool = false,
 ) -> Value raise {
   self.tick(loc)
   match function {
-    Builtin(name) => self.builtin(name, args, loc)
-    Closure(params, body, outer) => {
-      let env = outer.child()
-      let assigned : Map[String, Bool] = Map([])
-      for i, (name, t) in args {
-        let n = match name {
-          Some(n) => {
-            if !params.any(p => p.0 == n) {
-              raise problem(Runtime, loc, "unknown argument '\{n}'")
-            }
-            n
-          }
-          None => {
-            if i >= params.length() {
-              raise problem(Runtime, loc, "too many arguments")
-            }
-            params[i].0
-          }
+    Builtin(name) => {
+      if strict {
+        for (_, t) in args {
+          ignore(self.force(t, loc))
         }
-        if assigned.contains(n) {
-          raise problem(Runtime, loc, "duplicate argument '\{n}'")
-        }
-        assigned[n] = true
-        env.names[n] = t
       }
-      for (n, d) in params {
-        if !assigned.contains(n) {
-          match d {
-            Some(e) => env.names[n] = self.store(Pending(e, env))
-            None => raise problem(Runtime, loc, "missing argument '\{n}'")
-          }
+      self.builtin(name, args, loc)
+    }
+    Closure(params, body, outer) => {
+      let env = self.call_env(params, args, outer, loc)
+      if strict {
+        for (n, _) in params {
+          ignore(self.force(env.names[n], loc))
         }
       }
       self.eval(body, env)
     }
     _ => raise problem(Type, loc, "expected function")
   }
+}
+
+///|
+fn Vm::call_env(
+  self : Vm,
+  params : Array[(String, Expr?)],
+  args : Array[(String?, Int)],
+  outer : Env,
+  loc : Location,
+) -> Env raise {
+  let env = outer.child()
+  let assigned : Map[String, Bool] = Map([])
+  for i, (name, t) in args {
+    let n = match name {
+      Some(n) => {
+        if !params.any(p => p.0 == n) {
+          raise problem(Runtime, loc, "unknown argument '\{n}'")
+        }
+        n
+      }
+      None => {
+        if i >= params.length() {
+          raise problem(Runtime, loc, "too many arguments")
+        }
+        params[i].0
+      }
+    }
+    if assigned.contains(n) {
+      raise problem(Runtime, loc, "duplicate argument '\{n}'")
+    }
+    assigned[n] = true
+    env.names[n] = t
+  }
+  for (n, d) in params {
+    if !assigned.contains(n) {
+      match d {
+        Some(e) => env.names[n] = self.store(Pending(e, env))
+        None => raise problem(Runtime, loc, "missing argument '\{n}'")
+      }
+    }
+  }
+  env
 }
 
 ///|
@@ -203,17 +287,6 @@ fn Vm::index(
   loc : Location,
 ) -> Value raise {
   match target {
-    Std => {
-      let name = text_value(key, loc)
-      if !builtin_names().contains(name) {
-        raise problem(
-          Unsupported,
-          loc,
-          "unsupported standard function std.\{name}",
-        )
-      }
-      Builtin(name)
-    }
     ObjectValue(id, top) => self.field(id, top, text_value(key, loc), loc)
     ArrayValue(a) => {
       let i = array_index(key, a.length(), loc)

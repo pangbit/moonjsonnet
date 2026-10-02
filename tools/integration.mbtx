@@ -30,6 +30,10 @@ async fn main {
     ("nul", "import 'value.libsonnet\\u0000x'", [], Some("Import")),
     ("cycle", "import 'cycle-a'", [], Some("Import")),
     ("utf8", "importstr 'invalid-utf8'", [], Some("Import")),
+    ("binary", "importbin 'invalid-utf8'", [], None),
+    ("binary-escape", "importbin 'escape'", [], Some("Import")),
+    ("binary-directory", "importbin '.'", [], Some("Import")),
+    ("binary-bytes", "importbin 'invalid-utf8'", ["--max-import-bytes","1"], Some("Limit")),
     ("directory", "import '.'", [], Some("Import")),
     ("import-bytes", "import 'value.libsonnet'", ["--max-import-bytes","2"], Some("Limit")),
     ("source-bytes", "123456789", ["--max-source-bytes","5"], Some("Limit")),
@@ -51,6 +55,7 @@ async fn main {
       None => {
         assert_eq(result.exit_code(), 0, msg=name + result.stderr())
         ignore(@json.parse(result.stdout()))
+        if name == "binary" { assert_eq(@json.parse(result.stdout()), @json.parse("[255,254]")) }
         if name == "relative" || name == "normalized" || name == "alias" || name == "ext-code" { assert_eq(@json.parse(result.stdout()), Json::number(42)) }
       }
       Some(kind) => {

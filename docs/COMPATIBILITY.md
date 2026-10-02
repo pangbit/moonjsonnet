@@ -1,6 +1,7 @@
-# Compatibility: Jsonnet v0.21.0 subset
+# Compatibility: Jsonnet v0.21.0 language and standard-library subset
 
-This is an independent implementation with a bounded supported surface. Passing
+The language target is Jsonnet v0.21.0, without intentionally excluded language
+constructs. The standard library is a documented subset. Passing
 the committed corpus does not prove compatibility with all Jsonnet programs.
 The official C++ v0.21.0 interpreter is a development-only oracle. Input, imports,
 parameters and expected categories are committed under `tests/` and `examples/`.
@@ -8,16 +9,20 @@ Success comparisons parse JSON and ignore object order and insignificant whitesp
 
 ## Language
 
-Supported: JSON scalar literals; double/single/verbatim strings; `#`, `//`, `/* */`
+Supported: JSON scalar literals; double/single/verbatim strings and indented text
+blocks (`|||`, `|||-`); `#`, `//`, `/* */`
 comments; recursive `local`; conditionals; lexical functions and closures;
-positional/named/default arguments; lazy arrays and fields; array/object indexing;
-array comprehensions with nested `for`/`if`; single-field object comprehensions;
+positional/named/default arguments and `tailstrict`; lazy arrays and fields;
+array/object/string indexing and array/string slices;
+array comprehensions with nested `for`/`if`; object comprehensions with local bindings;
 object methods and locals; computed string/null keys; object `+` and juxtaposition;
 `self`, `$`, field access through `super`; `:`, `::`, `:::` visibility;
-`+:`, `+::`, `+:::`; expression and object assertions; `error`; `import`, `importstr`.
+`+:`, `+::`, `+:::`; expression and object assertions; `error`; `import`, `importstr`,
+`importbin`. Binary imports preserve arbitrary bytes as arrays of numbers.
 
-Arithmetic `+ - * / %`, boolean `! && ||`, equality `== !=`, and `in` are supported.
-Ordering supports numbers and Unicode strings. Equality compares arrays and
+Arithmetic `+ - * / %`, string `%` formatting, boolean `! && ||`, bitwise
+`~ & | ^ << >>`, equality `== !=`, and `in` are supported.
+Ordering supports numbers, Unicode strings and lexicographic arrays. Equality compares arrays and
 visible object fields recursively; function equality is an error. Object assertions
 are checked on field access/manifestation, including inherited assertions bound to
 the final object. An unused error or failed assertion is not evaluated.
@@ -25,15 +30,22 @@ the final object. An unused error or failed assertion is not evaluated.
 Numbers use IEEE-754 binary64. Division by zero and non-finite results are errors;
 integer precision is not guaranteed above 2^53. Strings/indexing/length/substrings
 use Unicode code points, not bytes, UTF-16 units or grapheme clusters. Paired Unicode
-escapes are decoded; lone surrogates are explicitly unsupported to preserve
-MoonBit's well-formed string invariant. Source locations count code points.
+escapes are decoded; lone surrogate escapes are syntax errors, as in v0.21.0.
+Source locations count code points.
 
-Explicitly unsupported: text blocks, slices, bitwise operations, string `%`
-formatting, `tailstrict`, `importbin`, object-local declarations in comprehensions,
-array ordering, reflection/materialization/composition of the `std` object, and
-standard functions not listed below. Unsupported syntax/operators/functions are
-rejected; there is no fallback to another interpreter. Ordinary malformed syntax
-can report `Syntax` before an unsupported construct is identified.
+Slices support omitted/null bounds, negative bounds and positive steps. Zero or
+negative steps are errors in the reference language too. Formatting supports
+mapping keys, flags, dynamic width/precision, length modifiers and every v0.21.0
+conversion (`diuoxXeEfFgGcs%`). `tailstrict` forces supplied/default parameters
+and uses a trampoline for tail calls; a 10,000-iteration regression verifies this.
+Binary operators apply the reference's safe-integer checks and modulo-64 shifts;
+bitwise complement accepts signed 64-bit operands.
+
+`std` is an ordinary object with hidden function fields and `thisFile`. It can be
+inherited, indexed, reflected and manifested. Hidden-field reflection lists this
+implementation's available standard functions; it does not invent missing ones.
+Standard functions not listed below report `Unsupported` when accessed on `std`.
+There is no fallback to another interpreter.
 
 ## Standard library
 
@@ -61,6 +73,11 @@ Only the following functions are supported. Arity/named-argument violations are
 | `manifestJson(value)` | Sorted keys, four-space indentation |
 | `toString(a)` | Strings unchanged; other manifestable values become compact JSON with Jsonnet spacing |
 | `floor(x)`, `ceil(x)`, `abs(n)` | Finite binary64 arithmetic |
+| `format(str,vals)` | Same formatting semantics as string `%` |
+| `slice(indexable,index,end,step)` | Same semantics as array/string slice syntax |
+| `char(n)`, `codepoint(str)` | Unicode scalar conversion / one-code-point string |
+| `assertEqual(a,b)` | Returns true or reports `Assertion` |
+| `lines(arr)` | Join non-null strings with a newline after each |
 
 Integer-only standard function bounds and resource limits may reject inputs that
 the reference accepts. Restricted argument domains return an error and are not
@@ -70,7 +87,8 @@ uses MoonBit core's JSON serialization; comparisons operate on parsed values.
 
 ## Known boundaries
 
-The POSIX host accepts valid UTF-8 regular files within one canonical root. Custom
+The POSIX host accepts regular files within one canonical root. Text imports
+require valid UTF-8; binary imports do not decode their contents. Custom
 importers have a separate trust contract. No JS/Wasm/Windows host, formatter, LSP,
 package manager, native callbacks or full standard library are provided.
 Duplicate JSON keys passed to `parseJson` follow the core parser behavior.

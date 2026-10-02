@@ -41,6 +41,88 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         raise problem(Syntax, loc, "unterminated comment")
       }
       i += 2
+    } else if c == '|' &&
+      chars.get(i + 1) == Some('|') &&
+      chars.get(i + 2) == Some('|') {
+      i += 3
+      let chomp = chars.get(i) == Some('-')
+      if chomp {
+        i += 1
+      }
+      while chars.get(i) == Some(' ') ||
+            chars.get(i) == Some('\t') ||
+            chars.get(i) == Some('\r') {
+        i += 1
+      }
+      guard chars.get(i) == Some('\n') else {
+        raise problem(Syntax, loc, "text block requires newline after |||")
+      }
+      i += 1
+      let content : Array[Char] = []
+      while chars.get(i) == Some('\n') {
+        content.push('\n')
+        i += 1
+      }
+      let indent_start = i
+      while chars.get(i) == Some(' ') || chars.get(i) == Some('\t') {
+        i += 1
+      }
+      let indent = chars[indent_start:i].to_owned()
+      guard !indent.is_empty() else {
+        raise problem(Syntax, loc, "text block requires indentation")
+      }
+      while true {
+        while chars.get(i) != Some('\n') {
+          guard i < chars.length() else {
+            raise problem(Syntax, loc, "unterminated text block")
+          }
+          content.push(chars[i])
+          i += 1
+        }
+        content.push('\n')
+        i += 1
+        while chars.get(i) == Some('\n') {
+          content.push('\n')
+          i += 1
+        }
+        let mut matches = true
+        for j, ch in indent {
+          if chars.get(i + j) != Some(ch) {
+            matches = false
+            break
+          }
+        }
+        if matches {
+          i += indent.length()
+          continue
+        }
+        while chars.get(i) == Some(' ') || chars.get(i) == Some('\t') {
+          i += 1
+        }
+        guard chars.get(i) == Some('|') &&
+          chars.get(i + 1) == Some('|') &&
+          chars.get(i + 2) == Some('|') else {
+          raise problem(
+            Syntax,
+            loc,
+            "text block must end with ||| at lesser indentation",
+          )
+        }
+        i += 3
+        break
+      }
+      if chomp {
+        ignore(content.pop())
+      }
+      let b = StringBuilder()
+      for ch in content {
+        b.write_char(ch)
+      }
+      out.push({
+        text: "<block>",
+        value: Some(Json::string(b.to_string())),
+        loc,
+      })
     } else if c == '"' || c == '\'' || c == '@' {
       let verbatim = c == '@'
       if verbatim {
@@ -81,14 +163,29 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
               // Delegate scalar/pair validation to the core JSON decoder.
               let escaped = StringBuilder()
               escaped.write_string("\"\\u")
+              let mut code = 0
               for _ in 0..<4 {
                 guard i < chars.length() else {
                   raise problem(Syntax, loc, "short unicode escape")
                 }
                 escaped.write_char(chars[i])
+                let c = chars[i].to_int()
+                code = code * 16 +
+                  (if c >= 48 && c <= 57 {
+                    c - 48
+                  } else if c >= 65 && c <= 70 {
+                    c - 55
+                  } else if c >= 97 && c <= 102 {
+                    c - 87
+                  } else {
+                    0
+                  })
                 i += 1
               }
-              if chars.get(i) == Some('\\') && chars.get(i + 1) == Some('u') {
+              if code >= 0xd800 &&
+                code <= 0xdbff &&
+                chars.get(i) == Some('\\') &&
+                chars.get(i + 1) == Some('u') {
                 escaped.write_string("\\u")
                 i += 2
                 for _ in 0..<4 {
@@ -103,7 +200,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
               let decoded = @json.parse(escaped.to_string()) catch {
                 _ =>
                   raise problem(
-                    Unsupported,
+                    Syntax,
                     loc,
                     "invalid or unpaired Unicode escape",
                   )

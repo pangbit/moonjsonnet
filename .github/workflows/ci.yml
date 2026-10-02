@@ -31,10 +31,13 @@ jobs:
           git -C "$RUNNER_TEMP/jsonnet" rev-parse HEAD
           make -C "$RUNNER_TEMP/jsonnet" -j4 jsonnet
       - run: moon run tools/differential.mbtx "$RUNNER_TEMP/jsonnet/jsonnet" _build/native/release/build/cmd/main/main.exe
+      - run: moon run tools/upstream-language.mbtx "$RUNNER_TEMP/jsonnet" _build/native/release/build/cmd/main/main.exe
       - run: moon run tools/integration.mbtx _build/native/release/build/cmd/main/main.exe
       - run: moon run tools/consumer.mbtx
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: differential-${{ matrix.os }}
-          path: _build/differential/report.json
+          path: |
+            _build/differential/report.json
+            _build/upstream-language/report.json

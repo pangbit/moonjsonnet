@@ -4,6 +4,7 @@ pub struct FileHost {
   root : String
   max_bytes : Int
   cache : Map[String, @moonjsonnet.Source]
+  binary_cache : Map[String, @moonjsonnet.BinarySource]
 }
 
 ///|
@@ -40,7 +41,7 @@ pub fn FileHost::new(
       "cannot canonicalize allowed root",
     )
   }
-  { root, max_bytes, cache: Map([]), }
+  { root, max_bytes, cache: Map([]), binary_cache: Map([]), }
 }
 
 ///|
@@ -51,6 +52,25 @@ pub fn FileHost::resolve(
   from : String,
   path : String,
 ) -> @moonjsonnet.Source raise @moonjsonnet.JsonnetError {
+  let source = self.resolve_binary(from, path)
+  if self.cache.get(source.id) is Some(cached) {
+    return cached
+  }
+  let text = @utf8.decode(source.bytes) catch {
+    _ => raise diagnostic(@moonjsonnet.Import, source.id, "invalid UTF-8")
+  }
+  let result : @moonjsonnet.Source = { id: source.id, text, }
+  self.cache[source.id] = result
+  result
+}
+
+///|
+/// Resolve arbitrary bytes with the same canonical root and cache guarantees.
+pub fn FileHost::resolve_binary(
+  self : FileHost,
+  from : String,
+  path : String,
+) -> @moonjsonnet.BinarySource raise @moonjsonnet.JsonnetError {
   let base = if from.is_empty() {
     self.root
   } else {
@@ -71,11 +91,11 @@ pub fn FileHost::resolve(
       "import escapes allowed root",
     )
   }
-  if self.cache.get(canonical) is Some(source) {
+  if self.binary_cache.get(canonical) is Some(source) {
     return source
   }
   let relative = canonical[prefix.length():].to_owned()
-  let (status, text) = @posix.read(self.root, relative, self.max_bytes)
+  let (status, bytes) = @posix.read_bytes(self.root, relative, self.max_bytes)
   if status != 0 {
     raise diagnostic(
       if status == 3 {
@@ -92,8 +112,8 @@ pub fn FileHost::resolve(
       },
     )
   }
-  let source : @moonjsonnet.Source = { id: canonical, text, }
-  self.cache[canonical] = source
+  let source : @moonjsonnet.BinarySource = { id: canonical, bytes, }
+  self.binary_cache[canonical] = source
   source
 }
 
@@ -107,8 +127,12 @@ pub fn evaluate_file(
 ) -> Json raise @moonjsonnet.JsonnetError {
   let host = FileHost::new(root, max_bytes=limits.source_bytes)
   let source = host.resolve("", path)
-  @moonjsonnet.evaluate(source.text, filename=source.id, ext_vars~, limits~, resolver=(
-    from,
-    path,
-  ) => host.resolve(from, path))
+  @moonjsonnet.evaluate(
+    source.text,
+    filename=source.id,
+    ext_vars~,
+    limits~,
+    resolver=(from, path) => host.resolve(from, path),
+    binary_resolver=(from, path) => host.resolve_binary(from, path),
+  )
 }

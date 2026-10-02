@@ -1,0 +1,57 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/json",
+  "moonbitlang/core/env",
+}
+
+async fn main {
+  let args = @env.args()
+  guard args.length() == 3 else { fail("Usage: moon run tools/upstream-language.mbtx REFERENCE_DIRECTORY CLI") }
+  let reference = args[1]
+  let cli = args[2]
+  let revision = @shell.Cmd("git", ["-C", reference, "rev-parse", "HEAD"]).output()
+  revision.check()
+  assert_eq(revision.stdout().trim().to_owned(), "bbb38f1020be1f5aed560928fb839b2c448cefb4")
+  let root = reference + "/test_suite"
+  let cwd = @shell.Cmd("pwd", []).output()
+  cwd.check()
+  let work = cwd.stdout().trim().to_owned() + "/_build/upstream-language"
+  @fs.mkdir(work, recursive=true, allow_exist=true)
+  let names = ["arith_bool", "arith_float", "arith_string", "array", "array_comparison", "array_comparison2", "assert", "binary", "comments", "condition", "dos_line_endings", "functions", "invariant", "invariant_manifest", "local", "merge", "null", "object", "oop", "oop_extra", "parsing_edge_cases", "precedence", "recursive_function", "recursive_object", "safe_integer_conversion", "shebang", "slice.sugar", "std_all_hidden", "text_block", "unicode_bmp", "unix_line_endings", "verbatim_strings"]
+  let cases : Array[(String, String)] = names.map(n => (n, root + "/" + n + ".jsonnet"))
+  // Keep the upstream format assertions intact, but evaluate each separately so
+  // an unrelated long && chain does not consume the configured AST depth budget.
+  let formatting = @fs.read_file(root + "/format.jsonnet").text()
+  for i, line in formatting.split("\n").collect() {
+    let line = line.trim().to_owned()
+    if line.has_prefix("std.assertEqual(") && line.has_suffix("&&") {
+      let path = work + "/format-\{i + 1}.jsonnet"
+      @fs.write_file(path, line[:line.length() - 2].to_owned())
+      cases.push(("format:\{i + 1}", path))
+    }
+  }
+  let listed = @shell.Cmd("rg", ["--files", root, "-g", "error.parse.*.jsonnet", "-g", "error.static*.jsonnet", "-g", "error.function*.jsonnet"]).output()
+  listed.check()
+  for path in listed.stdout().split("\n") {
+    if !path.is_empty() { cases.push((path.to_owned(), path.to_owned())) }
+  }
+  let mut failed = 0
+  let mut unsupported = 0
+  let rows : Array[Json] = []
+  for (name, path) in cases {
+    let a = @shell.Cmd(reference + "/jsonnet", [path]).output(timeout_ms=30000)
+    let b = @shell.Cmd(cli, ["--root", "/", "--max-depth", "512", "--max-steps", "10000000", path]).output(timeout_ms=30000)
+    let excluded = (name == "invariant_manifest" && b.stderr().contains("Unsupported: field 'setInter'")) || (name == "merge" && b.stderr().contains("Unsupported: field 'mergePatch'"))
+    let ok = if excluded { unsupported += 1; a.exit_code() == 0 && b.exit_code() == 1 } else if a.exit_code() == 0 && b.exit_code() == 0 { @json.parse(a.stdout()) == @json.parse(b.stdout()) } else { a.exit_code() == 1 && b.exit_code() == 1 }
+    if !ok { failed += 1; println("FAIL \{name}: reference_exit=\{a.exit_code()} actual_exit=\{b.exit_code()} \{b.stderr()}") }
+    rows.push({"name": name, "passed": ok, "unsupported_standard_library": excluded, "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stderr": a.stderr(), "moonjsonnet_stderr": b.stderr()})
+  }
+  let commit = @shell.Cmd("git", ["rev-parse", "HEAD"]).output()
+  commit.check()
+  let report : Json = {"source_commit": commit.stdout().trim().to_owned(), "reference_commit": revision.stdout().trim().to_owned(), "cases": rows, "passed": cases.length() - failed - unsupported, "failed": failed, "skipped": 0, "unsupported_standard_library": unsupported}
+  @fs.write_file(work + "/report.json", report.stringify(indent=2))
+  println("Upstream language: \{cases.length() - failed - unsupported} passed, \{failed} failed, \{unsupported} unsupported standard library; all inputs retained")
+  if failed > 0 { fail("upstream language regressions") }
+}

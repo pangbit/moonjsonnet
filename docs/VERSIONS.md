@@ -16,7 +16,9 @@ Semantic sources: <https://jsonnet.org/ref/spec.html>,
 <https://jsonnet.org/ref/language.html>, <https://jsonnet.org/ref/stdlib.html>.
 These live pages can change; v0.21.0 source and behavior are the pinned
 compatibility oracle. Reference source is a test dependency, never linked into
-or invoked by the interpreter. The implementation and test inputs are original.
+or invoked by the interpreter. The implementation and committed differential
+inputs are original; `tools/upstream-language.mbtx` additionally executes the
+Apache-2.0 upstream test fixtures from the external reference checkout.
 
 CI pins the installer argument and reference commit. Toolchain download archives
 have an upstream retention policy; if the pinned build becomes unavailable,

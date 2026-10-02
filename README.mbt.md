@@ -4,7 +4,8 @@ An embeddable Jsonnet interpreter written in MoonBit. It parses and evaluates
 source directly; no Jsonnet executable or shared library is required at runtime.
 
 MoonBit 原生 Jsonnet 解释器，可作为库嵌入，也提供 CLI。支持惰性求值、词法闭包、
-对象继承、受控导入和 JSON 输出。首期为 Jsonnet v0.21.0 的明确子集，不宣称完整兼容。
+对象继承、受控导入和 JSON 输出。语言以 Jsonnet v0.21.0 为完整实现目标，
+不额外裁剪语言特性；标准库按需求提供明确子集，兼容性以差分验收结果为依据。
 
 ## Status and installation
 

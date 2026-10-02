@@ -49,6 +49,16 @@ pub(all) struct Source {
 } derive(Debug)
 
 ///|
+/// Raw import response. Binary data is never decoded as UTF-8.
+pub(all) struct BinarySource {
+  id : String
+  bytes : Bytes
+} derive(Debug)
+
+///|
+pub extend BinarySource with @debug.Debug::{to_repr}
+
+///|
 /// Limits are per evaluation. Byte limits count UTF-8; all must be positive.
 pub(all) struct Limits {
   steps : Int
@@ -116,17 +126,20 @@ priv enum ExprKind {
   Local(Array[(String, Expr)], Expr)
   If(Expr, Expr, Expr)
   Func(Array[(String, Expr?)], Expr)
-  Call(Expr, Array[(String?, Expr)])
+  Call(Expr, Array[(String?, Expr)], Bool)
   Arr(Array[Expr])
   Obj(Array[Field], Array[(String, Expr)], Array[(Expr, Expr?)])
   ArrayComp(Expr, Array[Clause])
-  ObjectComp(Expr, Expr, Array[Clause])
+  ObjectComp(Expr, Expr, Array[Clause], Array[(String, Expr)])
   Index(Expr, Expr)
+  Slice(Expr, Expr?, Expr?, Expr?)
   Unary(String, Expr)
   Binary(String, Expr, Expr)
   Assert(Expr, Expr?, Expr)
   Fail(Expr)
   ImportFile(String, Bool)
+  ImportBinary(String)
+  StandardFunction(String)
 }
 
 ///|

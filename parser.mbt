@@ -153,6 +153,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
   let fields : Array[Field] = []
   let locals = []
   let assertions = []
+  let mut computed_field = false
   while !self.eat("}") {
     if self.eat("local") {
       locals.push(self.binding())
@@ -162,6 +163,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
       assertions.push((cond, message))
     } else {
       let computed = self.eat("[")
+      computed_field = computed
       let key = if computed {
         let e = self.expr(0)
         self.expect("]")
@@ -182,6 +184,13 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
         None
       }
       let additive = self.eat("+")
+      if additive && params is Some(_) {
+        raise problem(
+          Syntax,
+          key.loc,
+          "method cannot use additive field syntax",
+        )
+      }
       let visibility = if self.eat(":::") {
         3
       } else if self.eat("::") {
@@ -196,28 +205,28 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
         None => body
       }
       fields.push({ key, value, visibility, additive, })
-      if self.peek().text == "," && self.tokens[self.pos + 1].text == "for" {
-        ignore(self.eat(","))
+    }
+    let comma = self.eat(",")
+    if self.peek().text == "for" {
+      if !computed_field ||
+        fields.length() != 1 ||
+        !assertions.is_empty() ||
+        fields[0].visibility != 1 ||
+        fields[0].additive {
+        raise problem(
+          Syntax,
+          loc,
+          "object comprehension requires one computed visible field",
+        )
       }
-      if self.peek().text == "for" {
-        if !computed ||
-          fields.length() != 1 ||
-          !locals.is_empty() ||
-          !assertions.is_empty() ||
-          visibility != 1 ||
-          additive {
-          raise problem(
-            Unsupported,
-            loc,
-            "object comprehension requires one computed visible field and no object locals",
-          )
-        }
-        let clauses = self.clauses()
-        self.expect("}")
-        return { kind: ObjectComp(key, value, clauses), loc, }
+      let clauses = self.clauses()
+      self.expect("}")
+      return {
+        kind: ObjectComp(fields[0].key, fields[0].value, clauses, locals),
+        loc,
       }
     }
-    if !self.eat(",") {
+    if !comma {
       self.expect("}")
       break
     }
@@ -275,15 +284,23 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           { kind: Assert(c, m, self.expr(0)), loc, }
         }
         "error" => { kind: Fail(self.expr(0)), loc, }
-        "import" | "importstr" => {
+        "import" | "importstr" | "importbin" => {
           let t = self.take()
           guard t.value is Some(String(path)) else {
             raise problem(Syntax, t.loc, "import requires a string literal")
           }
-          { kind: ImportFile(path, token.text == "importstr"), loc, }
+          if t.text == "<block>" {
+            raise problem(Syntax, t.loc, "imports cannot use text blocks")
+          }
+          {
+            kind: if token.text == "importbin" {
+              ImportBinary(path)
+            } else {
+              ImportFile(path, token.text == "importstr")
+            },
+            loc,
+          }
         }
-        "importbin" | "||" =>
-          raise problem(Unsupported, loc, "unsupported syntax '\{token.text}'")
         "!" | "-" | "+" | "~" =>
           { kind: Unary(token.text, self.expr(11)), loc, }
         "[" =>
@@ -333,12 +350,38 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
       }
     } else if t.text == "[" {
       ignore(self.take())
-      let index = self.expr(0)
-      if self.peek().text == ":" || self.peek().text == "::" {
-        raise problem(Unsupported, t.loc, "slices are unsupported")
+      let index = if self.peek().text == ":" || self.peek().text == "::" {
+        None
+      } else {
+        Some(self.expr(0))
       }
-      self.expect("]")
-      left = { kind: Index(left, index), loc, }
+      if self.peek().text == ":" || self.peek().text == "::" {
+        let double = self.eat("::")
+        if !double {
+          self.expect(":")
+        }
+        let end = if double ||
+          self.peek().text == ":" ||
+          self.peek().text == "]" {
+          None
+        } else {
+          Some(self.expr(0))
+        }
+        let step = if double || self.eat(":") {
+          if self.peek().text == "]" {
+            None
+          } else {
+            Some(self.expr(0))
+          }
+        } else {
+          None
+        }
+        self.expect("]")
+        left = { kind: Slice(left, index, end, step), loc, }
+      } else {
+        self.expect("]")
+        left = { kind: Index(left, index.unwrap()), loc, }
+      }
     } else if t.text == "(" {
       ignore(self.take())
       let args = []
@@ -366,10 +409,7 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           break
         }
       }
-      if self.peek().text == "tailstrict" {
-        raise problem(Unsupported, t.loc, "tailstrict is unsupported")
-      }
-      left = { kind: Call(left, args), loc, }
+      left = { kind: Call(left, args, self.eat("tailstrict")), loc, }
     } else if t.text == "{" {
       ignore(self.take())
       left = { kind: Binary("+", left, self.object(t.loc)), loc, }

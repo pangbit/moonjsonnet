@@ -34,16 +34,29 @@ pub fn canonical(path : String) -> String? {
 
 ///|
 pub fn read(root : String, relative : String, limit : Int) -> (Int, String) {
+  let (status, data) = read_bytes(root, relative, limit)
+  if status != 0 {
+    return (status, "")
+  }
+  (0, @utf8.decode(data)) catch {
+    _ => (5, "")
+  }
+}
+
+///|
+pub fn read_bytes(
+  root : String,
+  relative : String,
+  limit : Int,
+) -> (Int, Bytes) {
   if root.contains("\u0000") || relative.contains("\u0000") {
-    return (2, "")
+    return (2, b"")
   }
   let data = read_ffi(@utf8.encode(root), @utf8.encode(relative), limit)
   if data[0] != 0 {
-    return (data[0].to_int(), "")
+    return (data[0].to_int(), b"")
   }
-  (0, @utf8.decode(data[1:])) catch {
-    _ => (5, "")
-  }
+  (0, data[1:].to_owned())
 }
 
 ///|

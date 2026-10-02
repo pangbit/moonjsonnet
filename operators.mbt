@@ -33,8 +33,8 @@ fn Vm::binary(
     "-" => finite(number_value(a, loc) - number_value(b, loc), loc)
     "*" => finite(number_value(a, loc) * number_value(b, loc), loc)
     "/" | "%" => {
-      if op == "%" && a is Str(_) {
-        raise problem(Unsupported, loc, "string formatting is unsupported")
+      if op == "%" && a is Str(format) {
+        return Str(self.format_string(format, b, loc))
       }
       let x = number_value(a, loc)
       let y = number_value(b, loc)
@@ -49,12 +49,7 @@ fn Vm::binary(
       let c = match (a, b) {
         (Num(x), Num(y)) => x.compare(y)
         (Str(x), Str(y)) => compare_unicode(x, y)
-        (ArrayValue(_), ArrayValue(_)) =>
-          raise problem(
-            Unsupported,
-            loc,
-            "ordering supports only numbers and strings",
-          )
+        (ArrayValue(x), ArrayValue(y)) => self.compare_arrays(x, y, loc)
         _ =>
           raise problem(
             Type,
@@ -78,8 +73,73 @@ fn Vm::binary(
       }
       Bool(self.has_field(id, top, k))
     }
-    _ => raise problem(Unsupported, loc, "operator '\{op}' is unsupported")
+    "&" | "|" | "^" | "<<" | ">>" => {
+      let x = bitwise_integer(a, loc)
+      let y = bitwise_integer(b, loc)
+      let n = match op {
+        "&" => x.land(y)
+        "|" => x.lor(y)
+        "^" => x.lxor(y)
+        _ => {
+          if number_value(b, loc) < 0 {
+            raise problem(Runtime, loc, "negative shift")
+          }
+          let shift = (y % 64L).to_int()
+          if op == "<<" {
+            if shift > 0 && x >= 1L << (63 - shift) {
+              raise problem(Runtime, loc, "left shift overflow")
+            }
+            x << shift
+          } else {
+            x >> shift
+          }
+        }
+      }
+      Num(n.to_double())
+    }
+    _ => raise problem(Runtime, loc, "invalid operator '\{op}'")
   }
+}
+
+///|
+fn bitwise_integer(v : Value, loc : Location) -> Int64 raise {
+  let n = number_value(v, loc)
+  if n < -9007199254740992.0 || n > 9007199254740992.0 {
+    raise problem(Runtime, loc, "bitwise operand outside exact integer range")
+  }
+  n.to_int64()
+}
+
+///|
+fn Vm::compare_arrays(
+  self : Vm,
+  a : Array[Int],
+  b : Array[Int],
+  loc : Location,
+) -> Int raise {
+  if self.depth >= self.limits.depth {
+    raise problem(Limit, loc, "comparison depth limit exceeded")
+  }
+  self.depth += 1
+  defer {
+    self.depth -= 1
+  }
+  for i in 0..<Int::min(a.length(), b.length()) {
+    self.tick(loc)
+    let x = self.force(a[i], loc)
+    let y = self.force(b[i], loc)
+    let c = match (x, y) {
+      (Num(x), Num(y)) => x.compare(y)
+      (Str(x), Str(y)) => compare_unicode(x, y)
+      (ArrayValue(x), ArrayValue(y)) => self.compare_arrays(x, y, loc)
+      _ =>
+        raise problem(Type, loc, "array ordering requires comparable elements")
+    }
+    if c != 0 {
+      return c
+    }
+  }
+  a.length().compare(b.length())
 }
 
 ///|

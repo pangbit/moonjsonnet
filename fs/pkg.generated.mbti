@@ -15,9 +15,11 @@ pub struct FileHost {
   root : String
   max_bytes : Int
   cache : Map[String, @moonjsonnet.Source]
+  binary_cache : Map[String, @moonjsonnet.BinarySource]
 }
 pub fn FileHost::new(String, max_bytes? : Int) -> Self raise @moonjsonnet.JsonnetError
 pub fn FileHost::resolve(Self, String, String) -> @moonjsonnet.Source raise @moonjsonnet.JsonnetError
+pub fn FileHost::resolve_binary(Self, String, String) -> @moonjsonnet.BinarySource raise @moonjsonnet.JsonnetError
 
 // Type aliases
 
