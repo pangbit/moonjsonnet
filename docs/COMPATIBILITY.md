@@ -151,6 +151,14 @@ Only the following functions are supported. Arity/named-argument violations are
 | `toString(a)` | Strings unchanged; other manifestable values become compact JSON with Jsonnet spacing |
 | `floor(x)`, `ceil(x)` | Reject non-finite results |
 | `abs(n)` | Go source rule: retain n if positive, otherwise negate; preserves non-finite values and flips signed zero |
+| `sqrt(x)`, `sin(x)`, `cos(x)`, `tan(x)`, `asin(x)`, `acos(x)`, `atan(x)`, `log(x)`, `exp(x)` | Numeric functions; non-finite results are Runtime errors; finite outputs from non-finite inputs are accepted |
+| `hypot(x,y)`, `atan2(y,x)`, `pow(x,n)`, `modulo(x,y)` | Native numeric argument names, signed-zero and non-finite special cases; modulo rejects zero divisor |
+| `round(x)` | Nearest integer, half away from zero, preserving negative zero |
+| `mantissa(x)`, `exponent(x)` | Binary fraction and exponent, including subnormal normalization; exponent returns 0 for zero/Infinity/NaN |
+| `isEven(x)`, `isOdd(x)` | Parity of truncated numeric value; Infinity/NaN yield false/true respectively |
+| `isInteger(x)`, `isDecimal(x)` | Zero/nonzero fractional part; Infinity/NaN yield false/true respectively |
+| `pi`, `deg2rad(x)`, `rad2deg(x)`, `log2(x)`, `log10(x)`, `sign(n)`, `mod(a,b)` | Pinned source definitions; mod dispatches numeric modulo or string formatting |
+| `xor(x,y)`, `xnor(x,y)` | Eager boolean-only operands |
 | `format(str,vals)` | Same formatting semantics as string `%` |
 | `slice(indexable,index,end,step)` | Same semantics as array/string slice syntax |
 | `char(n)`, `codepoint(str)` | Unicode scalar conversion / one-code-point string |
@@ -165,6 +173,14 @@ Numeric formatting rejects non-finite operands; `%s` uses their string spelling.
 NaN comparison follows Go's comparator (`<`/`>` false, `<=`/`>=` true), while NaN
 equality remains false. NaN index/character/bitwise conversion explicitly uses
 zero to match the pinned arm64 reference without a non-finite native cast.
+
+Trigonometric, inverse trigonometric, exponential and power algorithms preserve
+the fixed Go 1.24.0 ARM64 reference's operation order, including explicit fused
+multiply-add and Payne–Hanek reduction for huge angles. The reference ARM64
+exponential's lowest subnormal boundary is preserved (`std.exp(-745)` is 0).
+These exact results do not establish equivalence to every Go architecture or
+toolchain. The algorithms are implemented in MoonBit; a scalar C `fma` wrapper
+provides one-rounding multiply-add without linking a reference interpreter.
 
 Integer-only standard function bounds and resource limits may reject inputs that
 the reference accepts. Restricted argument domains return an error and are not

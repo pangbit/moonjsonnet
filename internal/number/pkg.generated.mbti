@@ -4,6 +4,8 @@ package "pangbit/moonjsonnet/internal/number"
 // Values
 pub fn format(Double) -> String
 
+pub fn fused_multiply_add(Double, Double, Double) -> Double
+
 // Errors
 
 // Types and methods

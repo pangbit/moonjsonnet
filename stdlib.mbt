@@ -8,7 +8,10 @@ fn builtin_names() -> Array[String] {
     "parseJson", "manifestJson", "toString", "floor", "ceil", "abs", "format", "slice",
     "char", "codepoint", "assertEqual", "lines", "sort", "sha256", "objectFieldsEx",
     "objectHasEx", "primitiveEquals", "objectRemoveKey", "equals", "member", "contains",
-    "minArray", "maxArray", "$flatMapArray", "sum", "avg",
+    "minArray", "maxArray", "$flatMapArray", "sum", "avg", "sqrt", "hypot", "sin",
+    "cos", "tan", "asin", "acos", "atan", "atan2", "log", "exp", "mantissa", "exponent",
+    "round", "isEven", "isOdd", "isInteger", "isDecimal", "pow", "modulo", "xor",
+    "xnor",
   ]
 }
 
@@ -37,6 +40,25 @@ fn builtin_params(name : String) -> Array[String] {
     | "isString" => ["v"]
     "toString" => ["a"]
     "type" | "length" | "floor" | "ceil" => ["x"]
+    "sqrt"
+    | "sin"
+    | "cos"
+    | "tan"
+    | "asin"
+    | "acos"
+    | "atan"
+    | "log"
+    | "exp"
+    | "mantissa"
+    | "exponent"
+    | "round"
+    | "isEven"
+    | "isOdd"
+    | "isInteger"
+    | "isDecimal" => ["x"]
+    "hypot" | "modulo" | "xor" | "xnor" => ["x", "y"]
+    "atan2" => ["y", "x"]
+    "pow" => ["x", "n"]
     "abs" => ["n"]
     "objectFields" | "objectFieldsAll" => ["o"]
     "objectHas" | "objectHasAll" => ["o", "f"]
@@ -113,6 +135,28 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "sqrt"
+    | "hypot"
+    | "sin"
+    | "cos"
+    | "tan"
+    | "asin"
+    | "acos"
+    | "atan"
+    | "atan2"
+    | "log"
+    | "exp"
+    | "mantissa"
+    | "exponent"
+    | "round"
+    | "isEven"
+    | "isOdd"
+    | "isInteger"
+    | "isDecimal"
+    | "pow"
+    | "modulo"
+    | "xor"
+    | "xnor" => math_builtin(name, values, loc)
     "sum" | "avg" => {
       let items = array_value(x, loc)
       if name == "avg" && items.is_empty() {

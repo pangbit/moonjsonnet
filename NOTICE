@@ -38,6 +38,13 @@ Copyright 2009 The Go Authors. All rights reserved.
 It is distributed under the BSD 3-Clause terms in licenses/GO-BSD-3-Clause.txt.
 This is separate from the development-only go-jsonnet interpreter reference.
 
+reference_math.mbt and reference_trig.mbt adapt Go 1.24.0 src/math/atan.go,
+atan2.go, asin.go, exp.go, exp_arm64.s, pow.go, sin.go, tan.go, and trig_reduce.go:
+https://github.com/golang/go/tree/go1.24.0/src/math
+Copyright 2009, 2011, 2017, 2018 The Go Authors. All rights reserved.
+BSD 3-Clause terms: licenses/GO-BSD-3-Clause.txt. Inherited Cephes and Sun
+Microsystems notices are retained in licenses/GO-MATH-NOTICES.txt.
+
 MoonBit core is provided by the user's toolchain, not vendored here. Automation
 scripts use moonbitlang/async (Apache-2.0), resolved by Moon script mode; it is not
 a library runtime dependency. Official examples informed the package layout:

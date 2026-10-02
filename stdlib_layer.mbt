@@ -41,7 +41,14 @@ fn standard_library_expression() -> Expr raise {
           | "__array_less"
           | "__array_greater"
           | "__array_less_or_equal"
-          | "__array_greater_or_equal" => true
+          | "__array_greater_or_equal"
+          | "pi"
+          | "deg2rad"
+          | "rad2deg"
+          | "log2"
+          | "log10"
+          | "sign"
+          | "mod" => true
           _ => false
         }
       _ => false
