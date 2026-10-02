@@ -18,6 +18,11 @@ These live pages can change; v0.21.0 source and behavior are the pinned
 compatibility oracle. Reference source is a test dependency, never linked into
 or invoked by the interpreter. The implementation and test inputs are original.
 
+CI pins the installer argument and reference commit. Toolchain download archives
+have an upstream retention policy; if the pinned build becomes unavailable,
+refresh the toolchain baseline and rerun acceptance instead of silently falling
+back to a newer compiler. Only local macOS acceptance has been executed so far.
+
 Design: parse into located expressions; resolve names statically; evaluate
 lexical closures with memoized thunks; represent objects as ordered layers whose
 fields are rebound to the final self. Manifest only visible fields into JSON.

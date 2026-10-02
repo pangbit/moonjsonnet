@@ -27,6 +27,7 @@ jobs:
       - name: Build pinned reference
         run: |
           git clone --depth 1 --branch v0.21.0 https://github.com/google/jsonnet.git "$RUNNER_TEMP/jsonnet"
+          git -C "$RUNNER_TEMP/jsonnet" checkout --detach bbb38f1020be1f5aed560928fb839b2c448cefb4
           git -C "$RUNNER_TEMP/jsonnet" rev-parse HEAD
           make -C "$RUNNER_TEMP/jsonnet" -j4 jsonnet
       - run: moon run tools/differential.mbtx "$RUNNER_TEMP/jsonnet/jsonnet" _build/native/release/build/cmd/main/main.exe
