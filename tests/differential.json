@@ -67,7 +67,7 @@
   {"name":"noninteger-index","source":"[1][0.5]","expect":"error"},
   {"name":"function-output","source":"function(x)x","expect":"error"},
   {"name":"static-super","source":"{a:super}","expect":"error"},
-  {"name":"unsupported-stdlib","source":"std.sha256('x')","expect":"unsupported-reference-error"},
+  {"name":"unsupported-stdlib","source":"std.sha256('x')","expect":"unsupported-reference-error","go_expect":"unsupported"},
   {"name":"unsupported-sort","source":"std.sort([2,1])","expect":"unsupported"},
   {"name":"bitwise","source":"[1<<2,~1,5&3,5|2,5^3,-8>>2,1<<64,3.9&1,1<<53]","expect":"success"},
   {"name":"bitwise-boundary","source":"[9007199254740992&1,-9007199254740992>>53,-1<<63]","expect":"success"},

@@ -13,10 +13,20 @@ async fn main {
   let cli = args[2]
   let version = @shell.Cmd(reference, ["--version"]).output()
   version.check()
-  assert_true(version.stdout().contains("v0.21.0"))
+  let reference_version = version.stdout().trim().to_owned()
+  let is_go = reference_version == "Jsonnet commandline interpreter (Go implementation) v0.21.0"
+  assert_true(is_go || reference_version == "Jsonnet commandline interpreter v0.21.0")
+  let reference_commit : Json = if is_go {
+    let build = @shell.Cmd("go", ["version", "-m", reference]).output()
+    build.check()
+    let lines = build.stdout().split("\n").map(s => s.trim().to_owned()).collect()
+    assert_true(lines.contains("build\tvcs.revision=67968688d9952f50662e979fab1bef889d0d3e57"))
+    assert_true(lines.contains("build\tvcs.modified=false"))
+    Json::string("67968688d9952f50662e979fab1bef889d0d3e57")
+  } else { null }
   let cases = @json.parse(@fs.read_file("tests/differential.json").text())
   guard cases is Array(cases) else { fail("expected case array") }
-  let work = "_build/differential"
+  let work = if is_go { "_build/go-differential" } else { "_build/differential" }
   @fs.mkdir(work, recursive=true, allow_exist=true)
   let mut passed = 0
   let mut failed = 0
@@ -25,32 +35,38 @@ async fn main {
   let rows : Array[Json] = []
   for case in cases {
     guard case is { "name": String(name), "source": String(source), "expect": String(expect), .. } else { fail("invalid case") }
+    let expect = if is_go && case is { "go_expect": String(go_expect), .. } { go_expect } else { expect }
+    assert_true(["success", "error", "unsupported", "unsupported-reference-error"].contains(expect))
     let path = work + "/" + name + ".jsonnet"
     @fs.write_file(path, source)
     let a = @shell.Cmd(reference, [path]).output(timeout_ms=10000)
     let b = @shell.Cmd(cli, [path]).output(timeout_ms=10000)
     let ok = if expect == "unsupported" || expect == "unsupported-reference-error" {
-      unsupported += 1
       (if expect == "unsupported" { a.exit_code() == 0 } else { a.exit_code() != 0 }) && b.exit_code() != 0 && b.stderr().contains("Unsupported")
     } else if expect == "error" {
       errors += 1
-      a.exit_code() == 1 && b.exit_code() == 1
+      a.exit_code() == 1 && b.exit_code() == 1 && !a.stderr().contains("INTERNAL ERROR")
     } else {
       a.exit_code() == 0 && b.exit_code() == 0 && @json.parse(a.stdout()) == @json.parse(b.stdout())
     }
-    if ok { passed += 1 } else { failed += 1; println("FAIL \{name}: reference=\{a.stdout()} \{a.stderr()} moonjsonnet=\{b.stdout()} \{b.stderr()}") }
-    rows.push({ "name": name, "expect": expect, "passed": ok, "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code() })
+    let status = if !ok { failed += 1; "failed" } else if expect.has_prefix("unsupported") { unsupported += 1; "unsupported" } else { passed += 1; "passed" }
+    if !ok { println("FAIL \{name}: reference_exit=\{a.exit_code()}, moonjsonnet_exit=\{b.exit_code()} (details in \{work}/report.json)") }
+    rows.push({ "name": name, "source": source, "expect": expect, "status": status, "passed": status == "passed", "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr() })
   }
   for path in ["examples/environments/main.jsonnet", "examples/dashboards/main.jsonnet", "examples/embedded/config/main.jsonnet"] {
     let a = @shell.Cmd(reference, ["--ext-code", "replicas=3", path]).output()
     let b = @shell.Cmd(cli, ["--ext-code", "replicas=3", path]).output()
     let ok = a.exit_code() == 0 && b.exit_code() == 0 && @json.parse(a.stdout()) == @json.parse(b.stdout())
     if ok { passed += 1 } else { failed += 1; println("FAIL example \{path}: \{b.stderr()}") }
-    rows.push({ "name": path, "expect": "success", "passed": ok })
+    rows.push({ "name": path, "expect": "success", "status": if ok { "passed" } else { "failed" }, "passed": ok, "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr() })
   }
   let commit = @shell.Cmd("git", ["rev-parse", "HEAD"]).output()
   commit.check()
-  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "reference": version.stdout().trim().to_owned(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "error_cases": errors, "cases": rows }
+  let dirty = @shell.Cmd("git", ["status", "--porcelain"]).output()
+  dirty.check()
+  let hashes = @shell.Cmd("shasum", ["-a", "256", reference, cli]).output()
+  hashes.check()
+  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "source_dirty": !dirty.stdout().is_empty(), "binary_sha256": hashes.stdout(), "reference": reference_version, "reference_commit": reference_commit, "total": rows.length(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "error_cases": errors, "cases": rows }
   @fs.write_file(work + "/report.json", report.stringify(indent=2))
   println("Differential: passed=\{passed}, failed=\{failed}, skipped=0, explicitly unsupported=\{unsupported}, expected errors=\{errors}")
   if failed != 0 { fail("differential validation failed; all cases retained") }

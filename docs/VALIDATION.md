@@ -33,6 +33,27 @@ per-case outcomes, counts, reference version and source commit in
 function the pinned C++ reference itself rejects. Structured local error-category
 checks are covered by the library and host integration suites.
 
+Run the same corpus against the pinned Go implementation separately:
+
+```sh
+git clone --depth 1 --branch v0.21.0 https://github.com/google/go-jsonnet.git /tmp/go-jsonnet-v0.21.0
+git -C /tmp/go-jsonnet-v0.21.0 rev-parse HEAD
+go -C /tmp/go-jsonnet-v0.21.0 build -o /tmp/go-jsonnet-v0.21.0/jsonnet ./cmd/jsonnet
+moon run tools/differential.mbtx /tmp/go-jsonnet-v0.21.0/jsonnet _build/native/release/build/cmd/main/main.exe
+```
+
+The runner checks Go binary build metadata for commit
+`67968688d9952f50662e979fab1bef889d0d3e57` and an unmodified checkout. Build the
+binary before writing other files into that checkout. Go results are written to
+`_build/go-differential/report.json`, preserving the C++ report. Both reports
+include binary SHA-256 hashes, source commit/dirty state and per-case outputs.
+Passed, failed and unsupported counts are disjoint; `error_cases` overlaps the
+tested cases. Unsupported checks with an unexpected outcome count as failures.
+The `go_expect` fixture field only records reference-specific expectations (for
+example, Go provides `sha256` while C++ does not). Behavioral differences remain
+failures and the runner exits nonzero; an upstream internal error is never an
+expected-error pass. Go compatibility is not yet a passing CI gate.
+
 The upstream language runner verifies the exact reference commit, runs 32
 language fixture files, separately evaluates the upstream formatting assertions,
 and checks parser/static/function error fixtures. It preserves upstream inputs;

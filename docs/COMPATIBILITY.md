@@ -14,12 +14,12 @@ implementation reference for future language semantics, standard-library coverag
 embedding capabilities and CLI behavior. MoonBit APIs follow this project's host
 contract; differences from the reference must be documented and tested.
 
-Before adding go-jsonnet differential acceptance, pin its release and commit and
-record them with the results. Compare identical inputs, imports and parameters;
-report passed, failed, skipped and unsupported cases separately. The existing
-C++ v0.21.0 results remain evidence for that baseline only. Selecting go-jsonnet
-as a reference does not establish compatibility with it or expand the currently
-supported feature set below.
+The Go baseline is v0.21.0, commit `67968688d9952f50662e979fab1bef889d0d3e57`.
+The differential runner compares identical inputs, imports and parameters and
+records Go and C++ results separately, including failed and unsupported cases.
+The existing C++ v0.21.0 results remain evidence for that baseline only. Selecting
+go-jsonnet as a reference does not establish compatibility with it. See
+[validation](VALIDATION.md) for reproduction and report locations.
 
 ## Language
 

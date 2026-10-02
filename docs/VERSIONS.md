@@ -9,6 +9,7 @@ Fixed before implementation on 2026-10-02:
 | Installer argument | `0.10.14+7d59c7ec9` (compiler build ID, not Moon CLI version) |
 | Language and standard-library compatibility baseline | Google Jsonnet v0.21.0 |
 | Official reference interpreter | google/jsonnet, tag v0.21.0, commit bbb38f1020be1f5aed560928fb839b2c448cefb4 |
+| Functional implementation reference | google/go-jsonnet, tag v0.21.0, commit 67968688d9952f50662e979fab1bef889d0d3e57 |
 | Backend | native; POSIX file host (macOS and Linux) |
 | Runtime dependencies | MoonBit core bundled with the toolchain; POSIX libc for file host and numeric text formatting |
 

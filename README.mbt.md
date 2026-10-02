@@ -9,7 +9,7 @@ MoonBit 原生 Jsonnet 解释器，可作为库嵌入，也提供 CLI。支持�
 
 功能实现以 [google/go-jsonnet](https://github.com/google/go-jsonnet) 为对照项目，
 用于后续语言语义、标准库、嵌入接口和 CLI 行为的实现与差异核对。
-当前已执行的差分验收仍以固定的 C++ Jsonnet v0.21.0 为基线；
+差分工具分别记录固定版本的 Go/C++ Jsonnet v0.21.0 结果；
 对照约定与已验证范围见 [兼容性说明](docs/COMPATIBILITY.md)。
 
 ## Status and installation

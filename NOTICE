@@ -17,6 +17,13 @@ and extracts individual formatting assertions into temporary test artifacts.
 These upstream assertions remain Google copyright and are not bundled in the
 published package. See the pinned reference checkout for their license headers.
 
+Functional implementation reference: Google go-jsonnet v0.21.0
+https://github.com/google/go-jsonnet
+Copyright Google Inc.; Apache License 2.0.
+Pinned commit: 67968688d9952f50662e979fab1bef889d0d3e57.
+The Go interpreter is used only for development-time behavioral comparisons;
+its implementation is not bundled or linked into this package.
+
 MoonBit core is provided by the user's toolchain, not vendored here. Automation
 scripts use moonbitlang/async (Apache-2.0), resolved by Moon script mode; it is not
 a library runtime dependency. Official examples informed the package layout:
