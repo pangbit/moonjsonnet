@@ -73,8 +73,9 @@ reported as `reference-difference`, with `passed=false`, and are not skipped or
 counted as compatible. Any changed outcome, missing error or unexpected
 convergence fails the check. This lets the C++ regression gate retain all inputs
 while checking the documented Go migration; undeclared mismatches still fail.
-See the [math and boolean report](../reports/GO-JSONNET-MATH.md) for current
+See the [string and Unicode report](../reports/GO-JSONNET-STRINGS.md) for current
 commit-bound results and the retained differences. The earlier
+[math and boolean report](../reports/GO-JSONNET-MATH.md),
 [aggregation and non-finite values report](../reports/GO-JSONNET-AGGREGATES.md),
 [array combinator and extrema report](../reports/GO-JSONNET-ARRAYS.md),
 [object standard-library report](../reports/GO-JSONNET-OBJECTS.md),
@@ -112,7 +113,16 @@ and `moonbitlang/async`; commands may need access to Moon's dependency cache.
 workspace and compiles/tests a separate module using only public APIs.
 It also verifies that the archive includes `NOTICE`, Go BSD attribution and
 the inherited Cephes/Sun math notices, plus the bundled Jsonnet standard-library
-source. Its independent consumer executes `std.set`.
+source and the generated Unicode fold table. Its independent consumer executes
+`std.set` and Unicode `std.equalsIgnoreCase`.
+
+Unicode simple folding is generated from Go 1.24.0's Unicode 15.0.0 tables.
+`tools/embed-unicode.mbtx` verifies the pinned source SHA-256 before writing the
+runtime map and 2,880 test pairs. To reproduce, download the exact source from
+`https://raw.githubusercontent.com/golang/go/go1.24.0/src/unicode/tables.go`, run
+`moon run tools/embed-unicode.mbtx PATH_TO_TABLES_GO`, then `moon fmt`.
+The Go differential suite evaluates every generated pair on both interpreters;
+separate fixtures cover non-equivalent characters and multi-character folding.
 
 See the repository's `reports/` directory for commit-bound acceptance evidence.
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
