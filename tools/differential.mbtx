@@ -50,13 +50,17 @@ async fn main {
     let difference = if !is_go && case is { "cpp_difference": difference, .. } { Some(difference) } else { None }
     let matches_difference = match difference {
       Some(difference) => {
-        guard difference is { "reference": expected_reference, .. } else { fail("invalid C++ difference") }
+        let reference_matches = match difference {
+          { "reference": expected, .. } => a.exit_code() == 0 && @json.parse(a.stdout()) == expected
+          { "reference_error": String(kind), .. } => a.exit_code() == 1 && a.stderr().has_prefix(kind + ":")
+          _ => fail("missing reference outcome for C++ difference")
+        }
         let actual_matches = match difference {
           { "moonjsonnet": expected, .. } => b.exit_code() == 0 && @json.parse(b.stdout()) == expected
           { "moonjsonnet_error": String(kind), .. } => b.exit_code() == 1 && b.stderr().contains(": " + kind + ":")
           _ => fail("missing MoonJsonnet outcome for C++ difference")
         }
-        a.exit_code() == 0 && @json.parse(a.stdout()) == expected_reference && actual_matches
+        reference_matches && actual_matches
       }
       None => false
     }

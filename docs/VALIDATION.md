@@ -42,9 +42,9 @@ go -C /tmp/go-jsonnet-v0.21.0 build -o /tmp/go-jsonnet-v0.21.0/jsonnet ./cmd/jso
 moon run tools/differential.mbtx /tmp/go-jsonnet-v0.21.0/jsonnet _build/native/release/build/cmd/main/main.exe
 ```
 
-The Go run includes the shared `tests/differential.json` corpus plus new sequence
+The Go run includes the shared `tests/differential.json` corpus plus Go-specific
 cases in `tests/go-differential.json`. C++ continues to run the original shared
-corpus: its pass count does not cover the Go-specific sequence cases. The
+corpus: its pass count does not cover the Go-specific cases. The
 `makeArray` contract differences are listed in [compatibility](COMPATIBILITY.md).
 
 The runner checks Go binary build metadata for commit
@@ -59,9 +59,10 @@ example, Go provides `sha256` while C++ does not). Undeclared behavioral differe
 failures and the runner exits nonzero; an upstream internal error is never an
 expected-error pass. Go compatibility is not yet a passing CI gate.
 
-Three shared cases deliberately follow the Go contract for function arity and
-`foldl`, which differs from C++. Their `cpp_difference` entries assert the exact
-reference JSON and MoonJsonnet JSON or structured error category. They are
+Seven shared cases deliberately follow the Go contracts for function arity,
+`foldl`, indexing and bitwise operators, which differ from C++. Their
+`cpp_difference` entries assert reference JSON or the C++ error class and
+MoonJsonnet JSON or structured error category. They are
 reported as `reference-difference`, with `passed=false`, and are not skipped or
 counted as compatible. Any changed outcome, missing error or unexpected
 convergence fails the check. This lets the C++ regression gate retain all inputs

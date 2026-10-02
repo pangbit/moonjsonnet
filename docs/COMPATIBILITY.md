@@ -47,13 +47,28 @@ use Unicode code points, not bytes, UTF-16 units or grapheme clusters. Paired Un
 escapes are decoded; lone surrogate escapes are syntax errors, as in v0.21.0.
 Source locations count code points.
 
-Slices support omitted/null bounds, negative bounds and positive steps. Zero or
-negative steps are errors in the reference language too. Formatting supports
+Array/string indices truncate toward zero before checking bounds, matching Go;
+this includes negative fractions between -1 and 0 selecting the first element.
+Slices support omitted/null bounds, negative bounds and positive steps. Fractional
+bounds and steps retain their fractional progression; each selected index is
+then truncated. Zero or negative steps are errors in the reference language too. Formatting supports
 mapping keys, flags, dynamic width/precision, length modifiers and every v0.21.0
 conversion (`diuoxXeEfFgGcs%`). `tailstrict` forces supplied/default parameters
 and uses a trampoline for tail calls; a 10,000-iteration regression verifies this.
-Binary operators apply the reference's safe-integer checks and modulo-64 shifts;
-bitwise complement accepts signed 64-bit operands.
+Bitwise operators truncate operands to signed 64-bit integers, with shift counts
+reduced modulo 64. Left shifts wrap at 64 bits and right shifts preserve the sign,
+matching Go. Negative shift counts are rejected before truncation. Operands must
+be within `[-2^63, 2^63)` before conversion; results are converted back to binary64.
+Bitwise complement retains the same operand range.
+
+The pinned Go implementation admits the positive `2^63` boundary because its
+floating-point range check rounds `MaxInt64` upward. Conversion of that value to
+`int64` is outside the representable range and is
+[implementation-dependent in Go](https://go.dev/ref/spec#Conversions_between_numeric_types).
+MoonJsonnet rejects it with `Runtime`, preserving a defined conversion boundary;
+`bitwise-int64-upper-boundary` remains a Go differential failure. C++ also rejects
+fractional indices, operands beyond its safe-integer bound and positive left-shift
+overflow. Those previously shared cases now record explicit C++/MoonJsonnet outcomes.
 
 `std` is an ordinary object with hidden function fields and `thisFile`. It can be
 inherited, indexed, reflected and manifested. Hidden-field reflection lists this

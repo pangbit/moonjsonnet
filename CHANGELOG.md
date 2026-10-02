@@ -12,6 +12,8 @@
 - Explicit standard-library subset, configurable limits and structured diagnostics.
 - Lazy `makeArray`, Unicode-aware `mapWithIndex` and nonmutating `reverse`.
 - Go-compatible required function arity and iterative `foldl` argument/result evaluation.
+- Go-compatible fractional indexing/slicing and signed 64-bit wrapping bitwise operators,
+  with explicit rejection of the unrepresentable positive `2^63` conversion boundary.
 - Pinned go-jsonnet differential reports retain mismatches separately from C++ acceptance.
 - Three runnable examples, fixed-reference differential and host integration tests.
 - Apache-2.0 metadata, generated API interfaces and reproducible release checks.

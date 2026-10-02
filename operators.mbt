@@ -86,9 +86,6 @@ fn Vm::binary(
           }
           let shift = (y % 64L).to_int()
           if op == "<<" {
-            if shift > 0 && x >= 1L << (63 - shift) {
-              raise problem(Runtime, loc, "left shift overflow")
-            }
             x << shift
           } else {
             x >> shift
@@ -104,8 +101,9 @@ fn Vm::binary(
 ///|
 fn bitwise_integer(v : Value, loc : Location) -> Int64 raise {
   let n = number_value(v, loc)
-  if n < -9007199254740992.0 || n > 9007199254740992.0 {
-    raise problem(Runtime, loc, "bitwise operand outside exact integer range")
+  // 2^63 is not representable by Int64, so the upper bound is exclusive.
+  if n < -9223372036854775808.0 || n >= 9223372036854775808.0 {
+    raise problem(Runtime, loc, "bitwise operand outside signed 64-bit range")
   }
   n.to_int64()
 }

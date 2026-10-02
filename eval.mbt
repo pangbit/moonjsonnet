@@ -303,9 +303,9 @@ fn Vm::index(
 
 ///|
 fn array_index(key : Value, length : Int, loc : Location) -> Int raise {
-  let n = number_value(key, loc)
-  if n < 0 || n >= length.to_double() || n != n.floor() {
-    raise problem(Runtime, loc, "index out of bounds or non-integral")
+  let n = number_value(key, loc).trunc()
+  if n < 0 || n >= length.to_double() {
+    raise problem(Runtime, loc, "index out of bounds")
   }
   n.to_int()
 }
