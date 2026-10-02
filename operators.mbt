@@ -235,8 +235,9 @@ fn Vm::equal_inner(
     (Closure(_, _, _), _)
     | (_, Closure(_, _, _))
     | (Builtin(_), _)
-    | (_, Builtin(_)) =>
-      raise problem(Type, loc, "functions cannot be compared")
+    | (_, Builtin(_))
+    | (Native(_), _)
+    | (_, Native(_)) => raise problem(Type, loc, "functions cannot be compared")
     (Nil, Nil) => true
     (Bool(x), Bool(y)) => x == y
     (Num(x), Num(y)) => x == y

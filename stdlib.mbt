@@ -14,7 +14,8 @@ fn builtin_names() -> Array[String] {
     "xnor", "id", "parseInt", "isEmpty", "trim", "splitLimit", "splitLimitR", "equalsIgnoreCase",
     "lstripChars", "rstripChars", "stripChars", "base64", "base64Decode", "base64DecodeBytes",
     "encodeUTF8", "decodeUTF8", "manifestJsonEx", "remove", "removeAt", "$objectFlatMerge",
-    "manifestTomlEx", "manifestYamlDoc", "md5", "sha1", "sha512", "sha3",
+    "manifestTomlEx", "manifestYamlDoc", "md5", "sha1", "sha512", "sha3", "native",
+    "trace",
   ]
 }
 
@@ -27,13 +28,15 @@ fn value_type(v : Value) -> String {
     Str(_) => "string"
     ArrayValue(_) => "array"
     ObjectValue(_, _) => "object"
-    Closure(_, _, _) | Builtin(_) => "function"
+    Closure(_, _, _) | Builtin(_) | Native(_) => "function"
   }
 }
 
 ///|
 fn builtin_params(name : String) -> Array[String] {
   match name {
+    "native" => ["x"]
+    "trace" => ["str", "rest"]
     "manifestYamlDoc" => ["value", "indent_array_in_object", "quote_keys"]
     "manifestTomlEx" => ["value", "indent"]
     "remove" => ["arr", "elem"]
@@ -183,6 +186,15 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "native" =>
+      match self.native_functions.get(text_value(x, loc)) {
+        Some(f) => Native(f)
+        None => Nil
+      }
+    "trace" => {
+      (self.trace)(loc, text_value(x, loc))
+      values[1]
+    }
     "manifestYamlDoc" => {
       let out = ManifestText::new(self.limits.output_bytes, loc)
       self.yaml_value(
@@ -331,7 +343,11 @@ fn Vm::builtin(
         Bool(false)
       } else {
         match x {
-          ArrayValue(_) | ObjectValue(_, _) | Closure(_, _, _) | Builtin(_) =>
+          ArrayValue(_)
+          | ObjectValue(_, _)
+          | Closure(_, _, _)
+          | Builtin(_)
+          | Native(_) =>
             raise problem(
               Type,
               loc,
@@ -434,6 +450,7 @@ fn Vm::builtin(
           ObjectValue(id, top) => self.keys(id, top, false).length().to_double()
           Closure(ps, _, _) =>
             ps.iter().filter(p => p.1 is None).count().to_double()
+          Native(f) => f.params.length().to_double()
           Builtin(n) =>
             if n == "sort" ||
               n == "minArray" ||

@@ -4,7 +4,7 @@ Import `pangbit/moonjsonnet` for source evaluation and `pangbit/moonjsonnet/fs`
 for the POSIX file host. Generated signatures are in `pkg.generated.mbti` and
 `fs/pkg.generated.mbti`; regenerate with `moon info`.
 
-`evaluate(source, filename?, ext_vars?, resolver?, binary_resolver?, limits?) -> Json raise JsonnetError`
+`evaluate(source, filename?, ext_vars?, native_functions?, trace?, resolver?, binary_resolver?, limits?) -> Json raise JsonnetError`
 owns a fresh evaluation state on every call. `filename` defaults to `<input>` and
 is passed to the importer. `ext_vars` is a `Map[String, Json]` read by
 `std.extVar`; strings and JSON values are never implicitly parsed as Jsonnet.
@@ -31,7 +31,30 @@ its raw bytes become an array of integers 0–255 without UTF-8 decoding. Text a
 binary requests have separate caches and share the import count/byte budgets.
 Omitting a resolver disables only its corresponding import modes.
 
-`@fs.evaluate_file(path, root?, ext_vars?, limits?)` creates a new `FileHost` and
+`native_functions: Map[String, NativeFunction]` registers host functions for this
+evaluation. `NativeFunction { params: Array[String], callback: (Array[Json]) -> Json raise }`
+declares required parameter names and a callback; keep names unique and do not
+mutate registrations during evaluation. `std.native(name)` returns the function,
+or `null` if absent. Positional/named arguments are bound normally and fully
+manifested in parameter order before the callback runs, including object
+assertions and visible fields. Hidden fields are omitted. Function arguments
+cannot be converted to JSON. A lazy call runs once when forced.
+
+Return containers are copied eagerly, rejecting non-finite numbers even in
+unread fields. Callback errors become `Runtime` diagnostics at the call site;
+MoonBit process aborts are not recoverable Go panics. Native callbacks are trusted
+host code: evaluation limits bound argument/result traversal, but cannot interrupt
+the callback or prevent its own allocation and I/O. Argument manifestation shares
+one output budget per call and preserves an outer manifestation's byte counter.
+
+`trace: (Location, String) -> Unit` receives the call location and unmodified
+message. The default prints `TRACE: filename:line message` plus a newline to
+stderr. `std.trace(str, rest)` forces both arguments to values before emitting,
+requires a string message and returns `rest`; nested arrays/objects remain lazy.
+The sink is non-raising. A sink that ignores both arguments silences tracing.
+Imports use the same native registry and sink, with their own source locations.
+
+`@fs.evaluate_file(path, root?, ext_vars?, native_functions?, trace?, limits?)` creates a new `FileHost` and
 evaluates an entry file. `path` is relative to `root` (default `.`), or absolute
 within that root. `FileHost::new(root, max_bytes?)` and `FileHost::resolve(from,
 path)` also allow manually supplying the host to `evaluate`. An empty `from`

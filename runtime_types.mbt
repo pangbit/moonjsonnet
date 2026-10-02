@@ -8,6 +8,7 @@ priv enum Value {
   ObjectValue(Int, Int)
   Closure(Array[(String, Expr?)], Expr, Env)
   Builtin(String)
+  Native(NativeFunction)
 }
 
 ///|
@@ -71,6 +72,8 @@ priv struct Vm {
   objects : Array[ObjectData]
   limits : Limits
   ext : Map[String, Json]
+  native_functions : Map[String, NativeFunction]
+  trace : (Location, String) -> Unit
   resolver : ((String, String) -> Source raise)?
   binary_resolver : ((String, String) -> BinarySource raise)?
   binary_sources : Map[(String, String), BinarySource]

@@ -30,7 +30,7 @@ fn Vm::manifest_json_ex(
     Bool(b) => write(if b { "true" } else { "false" })
     Num(n) => write(manifest_number(n))
     Str(s) => write(manifest_json_quote(s))
-    Closure(_, _, _) | Builtin(_) =>
+    Closure(_, _, _) | Builtin(_) | Native(_) =>
       raise problem(Runtime, loc, "cannot manifest a function")
     ArrayValue(items) => {
       write("[")

@@ -206,14 +206,8 @@ fn Vm::call(
 ) -> Value raise {
   self.tick(loc)
   match function {
-    Builtin(name) => {
-      if strict {
-        for (_, t) in args {
-          ignore(self.force(t, loc))
-        }
-      }
-      self.builtin(name, args, loc)
-    }
+    Native(f) => self.call_native(f, args, loc)
+    Builtin(name) => self.builtin(name, args, loc)
     Closure(params, body, outer) => {
       let env = self.call_env(params, args, outer, loc)
       if strict {

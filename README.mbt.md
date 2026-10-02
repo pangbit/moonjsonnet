@@ -41,6 +41,27 @@ import resolver and per-evaluation limits. It returns `Json` or `JsonnetError`.
 The separate `pangbit/moonjsonnet/fs` package loads files within a configured
 root. See [API and host contract](docs/API.md).
 
+Host callbacks receive JSON arguments in parameter order. Trace output defaults
+to stderr; an optional callback receives the call location and message.
+
+```mbt check
+///|
+test "readme native callback and trace" {
+  let identity : @moonjsonnet.NativeFunction = {
+    params: ["value"],
+    callback: args => args[0],
+  }
+  let messages : Array[String] = []
+  let result = @moonjsonnet.evaluate(
+    "std.trace('calling host', std.native('identity')(value=42))",
+    native_functions=Map([("identity", identity)]),
+    trace=fn(_, message) { messages.push(message) },
+  )
+  assert_eq(result, 42)
+  assert_eq(messages, ["calling host"])
+}
+```
+
 ## Run from source
 
 Validated toolchain: Moon 0.1.20260920 / MoonBit v0.10.14+7d59c7ec9.

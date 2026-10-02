@@ -78,5 +78,11 @@ async fn main {
   assert_eq(@fs.read_file(output).json(), @json.parse("{\"x\":42}"))
   let missing = @shell.Cmd(cli, []).output()
   assert_eq(missing.exit_code(), 2)
-  println("Integration: \{passed + 3} passed; path, UTF-8, CLI exit/output and resource limits")
+  @fs.write_file(root + "/main.jsonnet", "import 'traced.libsonnet'")
+  @fs.write_file(root + "/traced.libsonnet", "\nstd.trace('import trace',42)")
+  let traced = @shell.Cmd(cli, ["--root",root,"main.jsonnet"]).output()
+  traced.check()
+  assert_eq(traced.stdout(), "42\n")
+  assert_eq(traced.stderr(), "TRACE: " + @fs.realpath(root + "/traced.libsonnet") + ":2 import trace\n")
+  println("Integration: \{passed + 4} passed; path, UTF-8, CLI exit/output, trace and resource limits")
 }

@@ -46,6 +46,9 @@ async fn main {
     assert_true(["success", "raw-output", "error", "unsupported", "unsupported-reference-error"].contains(expect))
     let path = work + "/" + name + ".jsonnet"
     @fs.write_file(path, source)
+    // Absolute input paths give both trace sinks the same diagnostic filename.
+    // Existing non-trace fixtures retain their original invocation paths.
+    let path = if case is { "trace": String(_), .. } { @fs.realpath(path) } else { path }
     let a = @shell.Cmd(reference, [path]).output(timeout_ms=10000)
     let b = @shell.Cmd(cli, [path]).output(timeout_ms=10000)
     let difference = if !is_go && case is { "cpp_difference": difference, .. } { Some(difference) } else { None }
@@ -65,7 +68,7 @@ async fn main {
       }
       None => false
     }
-    let ok = if expect == "raw-output" {
+    let outcome_ok = if expect == "raw-output" {
       raw_output_cases += 1
       // Go sum/avg can emit +Inf/-Inf/NaN, which are not JSON. Pin the exact
       // scalar spelling on both sides instead of silently dropping the input.
@@ -80,6 +83,18 @@ async fn main {
     } else {
       a.exit_code() == 0 && b.exit_code() == 0 && @json.parse(a.stdout()) == @json.parse(b.stdout())
     }
+    let trace_ok = match case {
+      { "trace": String(expected), .. } => {
+        let expected = expected.replace_all(old="<file>", new=path)
+        if expect == "success" { a.stderr() == expected && b.stderr() == expected }
+        else {
+          a.stderr().has_prefix(expected) && b.stderr().has_prefix(expected) &&
+          !a.stderr()[expected.length():].contains("TRACE:") && !b.stderr()[expected.length():].contains("TRACE:")
+        }
+      }
+      _ => true
+    }
+    let ok = outcome_ok && trace_ok
     let status = if difference is Some(_) {
       if matches_difference && !ok { reference_differences += 1; "reference-difference" } else { failed += 1; "failed" }
     } else if !ok { failed += 1; "failed" } else if expect.has_prefix("unsupported") { unsupported += 1; "unsupported" } else { passed += 1; "passed" }

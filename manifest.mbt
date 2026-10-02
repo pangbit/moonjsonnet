@@ -40,7 +40,7 @@ fn Vm::manifest(
       }
       Json::object(fields)
     }
-    Closure(_, _, _) | Builtin(_) =>
+    Closure(_, _, _) | Builtin(_) | Native(_) =>
       raise problem(Type, loc, "cannot manifest a function or std")
     _ => {
       let j = match value {

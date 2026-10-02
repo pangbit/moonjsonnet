@@ -139,7 +139,7 @@ fn Vm::yaml_value(
         out.write(manifest_text_quote(s))
       }
     // Native Go omits a function case and returns an empty string.
-    Closure(_, _, _) | Builtin(_) => ()
+    Closure(_, _, _) | Builtin(_) | Native(_) => ()
     ArrayValue(items) => {
       if items.is_empty() {
         out.write("[]")

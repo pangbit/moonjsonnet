@@ -6,7 +6,7 @@ import {
 }
 
 // Values
-pub fn evaluate(String, filename? : String, ext_vars? : Map[String, Json], resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Json raise JsonnetError
+pub fn evaluate(String, filename? : String, ext_vars? : Map[String, Json], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Json raise JsonnetError
 
 // Errors
 pub(all) suberror JsonnetError {
@@ -65,6 +65,11 @@ pub(all) struct Location {
 pub fn Location::equal(Self, Self) -> Bool
 pub fn Location::not_equal(Self, Self) -> Bool
 pub fn Location::to_repr(Self) -> @debug.Repr
+
+pub(all) struct NativeFunction {
+  params : Array[String]
+  callback : (Array[Json]) -> Json raise
+}
 
 pub(all) struct Source {
   id : String

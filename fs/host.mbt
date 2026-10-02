@@ -123,6 +123,8 @@ pub fn evaluate_file(
   path : String,
   root? : String = ".",
   ext_vars? : Map[String, Json] = Map([]),
+  native_functions? : Map[String, @moonjsonnet.NativeFunction] = Map([]),
+  trace? : (@moonjsonnet.Location, String) -> Unit,
   limits? : @moonjsonnet.Limits = @moonjsonnet.Limits::default(),
 ) -> Json raise @moonjsonnet.JsonnetError {
   let host = FileHost::new(root, max_bytes=limits.source_bytes)
@@ -131,6 +133,8 @@ pub fn evaluate_file(
     source.text,
     filename=source.id,
     ext_vars~,
+    native_functions~,
+    trace?,
     limits~,
     resolver=(from, path) => host.resolve(from, path),
     binary_resolver=(from, path) => host.resolve_binary(from, path),

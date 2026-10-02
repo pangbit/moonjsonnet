@@ -280,7 +280,16 @@ the exact differing outcomes separately from compatibility passes.
 The POSIX host accepts regular files within one canonical root. Text imports
 require valid UTF-8; binary imports do not decode their contents. Custom
 importers have a separate trust contract. No JS/Wasm/Windows host, formatter, LSP,
-package manager, native callbacks or full standard library are provided.
+package manager or full standard library are provided.
+
+Host native functions and trace sinks are available through `evaluate` and
+`fs.evaluate_file`; see the [embedding contract](API.md). Native calls bind
+arguments by parameter name/order, fully manifest visible JSON and assertions,
+then eagerly copy the returned JSON. Unknown native names return null. Trace
+defaults to stderr with Go's `TRACE: filename:line message` format; the filesystem
+host reports canonical filenames. Relative/alias diagnostic filename parity and
+Go panic recovery are not claimed. Native callbacks and trace sinks execute
+trusted host code outside the interpreter's preemptive control.
 Duplicate JSON keys passed to `parseJson` follow the core parser behavior.
 Error categories and locations are stable concepts, not exact upstream wording.
 

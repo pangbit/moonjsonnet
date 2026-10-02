@@ -54,7 +54,7 @@ fn Vm::toml_value(
   let out = ManifestText::new(self.limits.output_bytes, loc)
   match value {
     Nil => raise problem(Runtime, loc, "cannot manifest null as TOML")
-    Closure(_, _, _) | Builtin(_) =>
+    Closure(_, _, _) | Builtin(_) | Native(_) =>
       raise problem(Runtime, loc, "cannot manifest function as TOML")
     Bool(v) => out.write(if v { "true" } else { "false" })
     Num(v) =>
