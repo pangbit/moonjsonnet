@@ -1,6 +1,6 @@
 | std member | Kind | Required arguments | Surface status |
 | --- | --- | ---: | --- |
-| `$flatMapArray` | function | 2 | missing |
+| `$flatMapArray` | function | 2 | registered |
 | `$objectFlatMerge` | function | 1 | missing |
 | `__array_greater` | function | 2 | registered |
 | `__array_greater_or_equal` | function | 2 | registered |
@@ -26,7 +26,7 @@
 | `char` | function | 1 | registered |
 | `clamp` | function | 3 | registered |
 | `codepoint` | function | 1 | registered |
-| `contains` | function | 2 | missing |
+| `contains` | function | 2 | registered |
 | `cos` | function | 1 | missing |
 | `count` | function | 2 | registered |
 | `decodeUTF8` | function | 1 | missing |
@@ -93,12 +93,12 @@
 | `mapWithIndex` | function | 2 | registered |
 | `mapWithKey` | function | 2 | registered |
 | `max` | function | 2 | registered |
-| `maxArray` | function | 1 | missing |
+| `maxArray` | function | 1 | registered |
 | `md5` | function | 1 | missing |
-| `member` | function | 2 | missing |
+| `member` | function | 2 | registered |
 | `mergePatch` | function | 2 | registered |
 | `min` | function | 2 | registered |
-| `minArray` | function | 1 | missing |
+| `minArray` | function | 1 | registered |
 | `mod` | function | 2 | missing |
 | `modulo` | function | 2 | missing |
 | `native` | function | 1 | missing |

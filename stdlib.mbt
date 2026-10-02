@@ -7,7 +7,8 @@ fn builtin_names() -> Array[String] {
     "foldr", "range", "join", "split", "substr", "strReplace", "startsWith", "endsWith",
     "parseJson", "manifestJson", "toString", "floor", "ceil", "abs", "format", "slice",
     "char", "codepoint", "assertEqual", "lines", "sort", "sha256", "objectFieldsEx",
-    "objectHasEx", "primitiveEquals", "objectRemoveKey", "equals",
+    "objectHasEx", "primitiveEquals", "objectRemoveKey", "equals", "member", "contains",
+    "minArray", "maxArray", "$flatMapArray",
   ]
 }
 
@@ -43,10 +44,14 @@ fn builtin_params(name : String) -> Array[String] {
     "objectHasEx" => ["obj", "fname", "hidden"]
     "primitiveEquals" | "equals" => ["x", "y"]
     "objectRemoveKey" => ["obj", "key"]
-    "map" | "mapWithIndex" | "filter" | "flatMap" => ["func", "arr"]
+    "member" => ["arr", "x"]
+    "contains" => ["arr", "elem"]
+    "map" | "mapWithIndex" | "filter" | "flatMap" | "$flatMapArray" =>
+      ["func", "arr"]
     "makeArray" => ["sz", "func"]
     "reverse" => ["arr"]
     "sort" => ["arr", "keyF"]
+    "minArray" | "maxArray" => ["arr", "keyF", "onEmpty"]
     "sha256" => ["s"]
     "foldl" | "foldr" => ["func", "arr", "init"]
     "range" => ["from", "to"]
@@ -76,7 +81,11 @@ fn Vm::builtin(
   loc : Location,
 ) -> Value raise {
   let params = builtin_params(name)
-  let required = if name == "sort" { 1 } else { params.length() }
+  let required = if name == "sort" || name == "minArray" || name == "maxArray" {
+    1
+  } else {
+    params.length()
+  }
   if args.length() < required || args.length() > params.length() {
     raise problem(Runtime, loc, "std.\{name}: wrong argument count")
   }
@@ -88,17 +97,37 @@ fn Vm::builtin(
     }
     ids[key] = t
   }
-  if name == "sort" {
+  if name == "sort" || name == "minArray" || name == "maxArray" {
     guard ids.get("arr") is Some(arr) else {
-      raise problem(Runtime, loc, "std.sort: missing arr argument")
+      raise problem(Runtime, loc, "std.\{name}: missing arr argument")
     }
     let input = self.force(arr, loc)
     let key = ids.get("keyF").map(t => self.force(t, loc))
-    return self.sort_values(input, key, loc)
+    if name == "sort" {
+      return self.sort_values(input, key, loc)
+    }
+    // Go forces an explicitly supplied onEmpty even for nonempty arrays.
+    let on_empty = ids.get("onEmpty").map(t => self.force(t, loc))
+    return self.extreme_value(input, key, on_empty, name == "maxArray", loc)
   }
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "member" | "contains" =>
+      if name == "member" && x is Str(s) {
+        Bool(s.contains(text_value(values[1], loc)))
+      } else {
+        let items = array_value(x, loc)
+        let mut found = false
+        for t in items {
+          self.tick(loc)
+          if self.equal(self.force(t, loc), values[1], loc) {
+            found = true
+            break
+          }
+        }
+        Bool(found)
+      }
     "equals" => Bool(self.equal(x, values[1], loc))
     "objectRemoveKey" => {
       guard x is ObjectValue(id, top) else {
@@ -137,6 +166,10 @@ fn Vm::builtin(
       }
     }
     "sha256" => Str(self.sha256(text_value(x, loc), loc))
+    "$flatMapArray" => {
+      ignore(array_value(values[1], loc))
+      self.flat_map(x, values[1], loc)
+    }
     "flatMap" => self.flat_map(x, values[1], loc)
     "foldl" | "foldr" => {
       if value_type(x) != "function" {
@@ -221,7 +254,7 @@ fn Vm::builtin(
           Closure(ps, _, _) =>
             ps.iter().filter(p => p.1 is None).count().to_double()
           Builtin(n) =>
-            if n == "sort" {
+            if n == "sort" || n == "minArray" || n == "maxArray" {
               1
             } else {
               builtin_params(n).length().to_double()

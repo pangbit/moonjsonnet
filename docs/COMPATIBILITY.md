@@ -120,6 +120,9 @@ Only the following functions are supported. Arity/named-argument violations are
 | `mergePatch(target,patch)` | Recursive JSON merge patch with null deletion, visible fields, lazy retained values and scalar replacement |
 | `all`, `any`, `filterMap`, `flattenArrays`, `flattenDeepArray`, `count`, `repeat`, `find`, `deepJoin` | Pinned source definitions; boolean short circuit, lazy retained values, nested flattening and Unicode strings |
 | `min`, `max`, `clamp` | Source numeric min/max and lazy clamp branches |
+| `member(arr,x)`, `contains(arr,elem)` | Native short-circuit membership; member also accepts a string substring (including empty substring), contains requires an array |
+| `minArray(arr,keyF=function(x)x,onEmpty=error ...)`, `maxArray(...)` | Native stable extrema; force elements, compute each key once, preserve lazy fields, force explicitly supplied onEmpty even when nonempty |
+| `$flatMapArray(func,arr)` | Reflected Go helper; flatMap behavior restricted to array input |
 | `__compare`, `__compare_array`, `__array_less`, `__array_greater`, `__array_less_or_equal`, `__array_greater_or_equal` | Reflected upstream comparison helpers, including lexicographic nested arrays |
 | `get`, `objectValues`, `objectValuesAll`, `objectKeysValues`, `objectKeysValuesAll`, `mapWithKey`, `prune` | Pinned Jsonnet definitions; hidden-field policy, lazy defaults/values and inherited self preserved |
 | `objectRemoveKey(obj,key)` | Copies remaining fields including hidden fields, rebinds self and omits object assertions, matching Go's native implementation for simple objects; input is unchanged |
