@@ -1,0 +1,1 @@
+{"development":{"app":"checkout","region":"local","environment":"dev","replicas":1,"endpoint":"https://dev.example.test","debug":true},"production":{"app":"checkout","region":"local","environment":"prod","replicas":3,"endpoint":"https://prod.example.test","debug":false}}

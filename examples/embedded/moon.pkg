@@ -1,0 +1,8 @@
+import {
+  "pangbit/moonjsonnet",
+  "pangbit/moonjsonnet/fs",
+}
+
+supported_targets = "native"
+
+pkgtype(kind: "executable")

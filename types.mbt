@@ -27,7 +27,7 @@ pub(all) struct Diagnostic {
 } derive(Debug)
 
 ///|
-pub suberror JsonnetError {
+pub(all) suberror JsonnetError {
   Error(Diagnostic)
 } derive(Debug)
 

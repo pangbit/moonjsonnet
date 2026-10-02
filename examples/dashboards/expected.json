@@ -1,0 +1,1 @@
+{"title":"Services","panels":[{"id":1,"title":"checkout requests","target":"checkout:8080","tags":["http","local"]},{"id":2,"title":"catalog requests","target":"catalog:8081","tags":["http","local"]}],"byName":{"checkout":8080,"catalog":8081}}

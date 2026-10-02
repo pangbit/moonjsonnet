@@ -1,0 +1,6 @@
+import {
+  "pangbit/moonjsonnet/fs",
+  "moonbitlang/core/json",
+} for "test"
+
+supported_targets = "native"

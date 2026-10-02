@@ -1,0 +1,6 @@
+import {
+  "pangbit/moonjsonnet",
+  "pangbit/moonjsonnet/internal/posix",
+}
+
+supported_targets = "native"

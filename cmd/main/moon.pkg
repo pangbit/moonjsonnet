@@ -1,5 +1,12 @@
-// import {
-//   "pangbit/moonjsonnet" @lib,
-// }
+import {
+  "pangbit/moonjsonnet",
+  "pangbit/moonjsonnet/fs",
+  "pangbit/moonjsonnet/internal/posix",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "moonbitlang/core/string",
+}
+
+supported_targets = "native"
 
 pkgtype(kind: "executable")

@@ -9,7 +9,7 @@ import {
 pub fn evaluate(String, filename? : String, ext_vars? : Map[String, Json], resolver? : (String, String) -> Source raise, limits? : Limits) -> Json raise JsonnetError
 
 // Errors
-pub suberror JsonnetError {
+pub(all) suberror JsonnetError {
   Error(Diagnostic)
 } derive(@debug.Debug)
 pub fn JsonnetError::to_repr(Self) -> @debug.Repr

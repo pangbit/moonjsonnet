@@ -1,0 +1,24 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "pangbit/moonjsonnet/fs"
+
+import {
+  "pangbit/moonjsonnet",
+}
+
+// Values
+pub fn evaluate_file(String, root? : String, ext_vars? : Map[String, Json], limits? : @moonjsonnet.Limits) -> Json raise @moonjsonnet.JsonnetError
+
+// Errors
+
+// Types and methods
+pub struct FileHost {
+  root : String
+  max_bytes : Int
+  cache : Map[String, @moonjsonnet.Source]
+}
+pub fn FileHost::new(String, max_bytes? : Int) -> Self raise @moonjsonnet.JsonnetError
+pub fn FileHost::resolve(Self, String, String) -> @moonjsonnet.Source raise @moonjsonnet.JsonnetError
+
+// Type aliases
+
+// Traits
