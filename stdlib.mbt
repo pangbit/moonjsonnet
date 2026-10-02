@@ -13,7 +13,7 @@ fn builtin_names() -> Array[String] {
     "round", "isEven", "isOdd", "isInteger", "isDecimal", "pow", "modulo", "xor",
     "xnor", "id", "parseInt", "isEmpty", "trim", "splitLimit", "splitLimitR", "equalsIgnoreCase",
     "lstripChars", "rstripChars", "stripChars", "base64", "base64Decode", "base64DecodeBytes",
-    "encodeUTF8", "decodeUTF8",
+    "encodeUTF8", "decodeUTF8", "manifestJsonEx",
   ]
 }
 
@@ -95,6 +95,7 @@ fn builtin_params(name : String) -> Array[String] {
     "endsWith" => ["a", "b"]
     "parseJson" => ["str"]
     "manifestJson" => ["value"]
+    "manifestJsonEx" => ["value", "indent", "newline", "key_val_sep"]
     "format" => ["str", "vals"]
     "slice" => ["indexable", "index", "end", "step"]
     "char" => ["n"]
@@ -115,6 +116,8 @@ fn Vm::builtin(
   let params = builtin_params(name)
   let required = if name == "sort" || name == "minArray" || name == "maxArray" {
     1
+  } else if name == "manifestJsonEx" {
+    2
   } else {
     params.length()
   }
@@ -128,6 +131,18 @@ fn Vm::builtin(
       raise problem(Runtime, loc, "invalid or duplicate argument '\{key}'")
     }
     ids[key] = t
+  }
+  if name == "manifestJsonEx" {
+    for key in ["value", "indent"] {
+      if !ids.contains(key) {
+        raise problem(Runtime, loc, "std.manifestJsonEx: missing " + key)
+      }
+    }
+    for (key, default_value) in [("newline", "\n"), ("key_val_sep", ": ")] {
+      if !ids.contains(key) {
+        ids[key] = self.store(Ready(Str(default_value)))
+      }
+    }
   }
   if name == "sort" || name == "minArray" || name == "maxArray" {
     guard ids.get("arr") is Some(arr) else {
@@ -145,6 +160,21 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "manifestJsonEx" =>
+      Str(
+        self.manifest_json_ex(
+          x,
+          (
+            text_value(values[1], loc),
+            text_value(values[2], loc),
+            text_value(values[3], loc),
+          ),
+          "",
+          0,
+          self.limits.output_bytes,
+          loc,
+        ),
+      )
     "base64"
     | "base64Decode"
     | "base64DecodeBytes"
@@ -346,6 +376,8 @@ fn Vm::builtin(
           Builtin(n) =>
             if n == "sort" || n == "minArray" || n == "maxArray" {
               1
+            } else if n == "manifestJsonEx" {
+              2
             } else {
               builtin_params(n).length().to_double()
             }
@@ -533,9 +565,10 @@ fn Vm::builtin(
     }
     "manifestJson" =>
       Str(
-        render_json(
-          self.manifest(x, loc, 0),
-          true,
+        self.manifest_json_ex(
+          x,
+          ("    ", "\n", ": "),
+          "",
           0,
           self.limits.output_bytes,
           loc,

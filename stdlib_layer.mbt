@@ -61,6 +61,11 @@ fn standard_library_expression() -> Expr raise {
           | "escapeStringXML"
           | "findSubstr"
           | "resolvePath" => true
+          "manifestJsonMinified"
+          | "manifestPython"
+          | "manifestPythonVars"
+          | "manifestIni"
+          | "manifestXmlJsonml" => true
           _ => false
         }
       _ => false

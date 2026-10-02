@@ -164,6 +164,10 @@ Only the following functions are supported. Arity/named-argument violations are
 | `startsWith(a,b)`, `endsWith(a,b)` | String prefix/suffix checks |
 | `parseJson(str)` | Core JSON parser with bounded nesting; malformed JSON is `Runtime` |
 | `manifestJson(value)` | Sorted keys, four-space indentation, shortest round-trip decimal numbers without exponents; preserves negative zero |
+| `manifestJsonEx(value,indent,newline='\n',key_val_sep=': ')`, `manifestJsonMinified(value)` | Custom layout or compact JSON; empty containers retain both surrounding newlines; JSON escapes C0 and U+2028/U+2029 but preserves HTML characters and C1 |
+| `manifestPython(v)`, `manifestPythonVars(conf)` | Pinned source layout: Python True/False/None, sorted visible object fields, 17-digit numeric coercion; vars adds one assignment and newline per field |
+| `manifestIni(ini)` | Optional main object and required sections object; sorted fields, array values emit repeated key lines, no escaping |
+| `manifestXmlJsonml(value)` | Pinned source JsonML conversion; sorted visible attributes and paired tags; text and attribute values are emitted without automatic XML escaping |
 | `toString(a)` | Strings unchanged; other manifestable values become compact JSON with Jsonnet spacing |
 | `floor(x)`, `ceil(x)` | Reject non-finite results |
 | `abs(n)` | Go source rule: retain n if positive, otherwise negate; preserves non-finite values and flips signed zero |
@@ -208,6 +212,14 @@ conversion and expands exponents; expanded output remains subject to the output
 byte limit. C++ uses the older numeric text rule for both operations, so the
 shared numeric-string fixture records both exact outputs as a declared difference. CLI JSON
 uses MoonBit core's JSON serialization; comparisons operate on parsed values.
+
+JSON and Python output read only visible fields; empty or hidden-only objects do
+not force assertions. Visible fields still trigger object assertions. JSON
+output traverses lazy values directly, enforcing depth and byte budgets. For
+`std.manifestJsonMinified({x:self})`, the pinned Go binary fatally overflows its
+stack (exit 2); this implementation returns `Limit`. This input remains an
+explicit differential failure, not an expected-error pass or a final accepted
+compatibility exception.
 
 New sequence functions follow the pinned Go implementation. In particular,
 `makeArray` uses the parameter name `sz`, rejects fractional sizes, returns an
