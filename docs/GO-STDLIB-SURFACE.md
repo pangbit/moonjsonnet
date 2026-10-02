@@ -83,11 +83,11 @@
 | `manifestJsonMinified` | function | 1 | registered |
 | `manifestPython` | function | 1 | registered |
 | `manifestPythonVars` | function | 1 | registered |
-| `manifestToml` | function | 1 | missing |
-| `manifestTomlEx` | function | 2 | missing |
+| `manifestToml` | function | 1 | registered |
+| `manifestTomlEx` | function | 2 | registered |
 | `manifestXmlJsonml` | function | 1 | registered |
-| `manifestYamlDoc` | function | 1 | missing |
-| `manifestYamlStream` | function | 1 | missing |
+| `manifestYamlDoc` | function | 1 | registered |
+| `manifestYamlStream` | function | 1 | registered |
 | `mantissa` | function | 1 | registered |
 | `map` | function | 2 | registered |
 | `mapWithIndex` | function | 2 | registered |
