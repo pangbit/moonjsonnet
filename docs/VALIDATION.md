@@ -73,8 +73,9 @@ reported as `reference-difference`, with `passed=false`, and are not skipped or
 counted as compatible. Any changed outcome, missing error or unexpected
 convergence fails the check. This lets the C++ regression gate retain all inputs
 while checking the documented Go migration; undeclared mismatches still fail.
-See the [aggregation and non-finite values report](../reports/GO-JSONNET-AGGREGATES.md) for current
+See the [math and boolean report](../reports/GO-JSONNET-MATH.md) for current
 commit-bound results and the retained differences. The earlier
+[aggregation and non-finite values report](../reports/GO-JSONNET-AGGREGATES.md),
 [array combinator and extrema report](../reports/GO-JSONNET-ARRAYS.md),
 [object standard-library report](../reports/GO-JSONNET-OBJECTS.md),
 [sets and merge patch report](../reports/GO-JSONNET-SETS.md),
@@ -109,9 +110,9 @@ address errors, not a LeakSanitizer proof. Test scripts use MoonBit script mode
 and `moonbitlang/async`; commands may need access to Moon's dependency cache.
 `tools/consumer.mbtx` extracts the actual Mooncakes archive into a temporary
 workspace and compiles/tests a separate module using only public APIs.
-It also verifies that the archive includes `NOTICE` and the Go BSD attribution
-required by the adapted fractional format power implementation, plus the bundled
-Jsonnet standard-library source. Its independent consumer executes `std.set`.
+It also verifies that the archive includes `NOTICE`, Go BSD attribution and
+the inherited Cephes/Sun math notices, plus the bundled Jsonnet standard-library
+source. Its independent consumer executes `std.set`.
 
 See the repository's `reports/` directory for commit-bound acceptance evidence.
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
