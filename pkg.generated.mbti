@@ -1,0 +1,71 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "pangbit/moonjsonnet"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn evaluate(String, filename? : String, ext_vars? : Map[String, Json], resolver? : (String, String) -> Source raise, limits? : Limits) -> Json raise JsonnetError
+
+// Errors
+pub suberror JsonnetError {
+  Error(Diagnostic)
+} derive(@debug.Debug)
+pub fn JsonnetError::to_repr(Self) -> @debug.Repr
+
+// Types and methods
+pub(all) struct Diagnostic {
+  kind : ErrorKind
+  message : String
+  location : Location
+  context : Array[Location]
+} derive(@debug.Debug)
+pub fn Diagnostic::output(Self, &Logger) -> Unit
+pub fn Diagnostic::to_repr(Self) -> @debug.Repr
+pub fn Diagnostic::to_string(Self) -> String
+pub impl Show for Diagnostic
+
+pub(all) enum ErrorKind {
+  Syntax
+  Static
+  Type
+  Runtime
+  Assertion
+  Import
+  Limit
+  Unsupported
+} derive(Eq, @debug.Debug)
+pub fn ErrorKind::equal(Self, Self) -> Bool
+pub fn ErrorKind::not_equal(Self, Self) -> Bool
+pub fn ErrorKind::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Limits {
+  steps : Int
+  depth : Int
+  source_bytes : Int
+  import_bytes : Int
+  imports : Int
+  output_bytes : Int
+} derive(@debug.Debug)
+pub fn Limits::default() -> Self
+pub fn Limits::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Location {
+  file : String
+  line : Int
+  column : Int
+} derive(Eq, @debug.Debug)
+pub fn Location::equal(Self, Self) -> Bool
+pub fn Location::not_equal(Self, Self) -> Bool
+pub fn Location::to_repr(Self) -> @debug.Repr
+
+pub(all) struct Source {
+  id : String
+  text : String
+} derive(@debug.Debug)
+pub fn Source::to_repr(Self) -> @debug.Repr
+
+// Type aliases
+
+// Traits

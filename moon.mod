@@ -15,12 +15,12 @@ version = "0.1.0"
 
 readme = "README.mbt.md"
 
-repository = ""
+repository = "https://github.com/pangbit/moonjsonnet"
 
 license = "Apache-2.0"
 
-keywords = []
+keywords = [ "jsonnet", "configuration", "interpreter", "json" ]
 
-preferred_target = "wasm"
+preferred_target = "native"
 
-description = ""
+description = "An embeddable, lazy Jsonnet interpreter for MoonBit native applications"

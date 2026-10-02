@@ -1,0 +1,238 @@
+///|
+fn Vm::eval(self : Vm, expr : Expr, env : Env) -> Value raise {
+  self.tick(expr.loc)
+  if self.depth >= self.limits.depth {
+    raise problem(Limit, expr.loc, "evaluation depth limit exceeded")
+  }
+  self.depth += 1
+  defer {
+    self.depth -= 1
+  }
+  self.eval_inner(expr, env)
+}
+
+///|
+fn Vm::eval_inner(self : Vm, expr : Expr, env : Env) -> Value raise {
+  let loc = expr.loc
+  match expr.kind {
+    Literal(j) => self.from_json(j, loc)
+    Var(n) =>
+      match env.lookup(n) {
+        Some(t) => self.force(t, loc)
+        None => raise problem(Static, loc, "unknown variable '\{n}'")
+      }
+    Local(bs, body) => self.eval(body, self.bind(bs, env))
+    If(c, yes, no) =>
+      if boolean(self.eval(c, env), c.loc) {
+        self.eval(yes, env)
+      } else {
+        self.eval(no, env)
+      }
+    Func(ps, body) => Closure(ps, body, env)
+    Call(f, args) => {
+      let function = self.eval(f, env)
+      let thunks = args.map(pair => (pair.0, self.store(Pending(pair.1, env))))
+      self.call(function, thunks, loc) catch {
+        Error(d) => {
+          d.context.push(loc)
+          raise Error(d)
+        }
+        e => raise e
+      }
+    }
+    Arr(items) => ArrayValue(items.map(e => self.store(Pending(e, env))))
+    Obj(fields, locals, assertions) => {
+      let fs : Map[String, LayerField] = Map([])
+      for f in fields {
+        match self.eval(f.key, env) {
+          Nil => ()
+          Str(k) => {
+            if fs.contains(k) {
+              raise problem(Runtime, f.key.loc, "duplicate field '\{k}'")
+            }
+            fs[k] = { field: f, env, }
+          }
+          _ =>
+            raise problem(Type, f.key.loc, "field name must be string or null")
+        }
+      }
+      self.object_value([{ fields: fs, locals, assertions, env, }])
+    }
+    ArrayComp(body, clauses) => {
+      let out = []
+      self.comprehend(clauses, 0, env, loc, scope => {
+        out.push(self.store(Pending(body, scope)))
+      })
+      ArrayValue(out)
+    }
+    ObjectComp(key, body, clauses) => {
+      let fs : Map[String, LayerField] = Map([])
+      self.comprehend(clauses, 0, env, loc, scope => {
+        match self.eval(key, scope) {
+          Nil => ()
+          Str(k) => {
+            if fs.contains(k) {
+              raise problem(Runtime, key.loc, "duplicate field '\{k}'")
+            }
+            fs[k] = {
+              field: { key, value: body, visibility: 1, additive: false, },
+              env: scope,
+            }
+          }
+          _ => raise problem(Type, key.loc, "field name must be string or null")
+        }
+      })
+      self.object_value([{ fields: fs, locals: [], assertions: [], env, }])
+    }
+    Index(a, b) => self.index(self.eval(a, env), self.eval(b, env), loc)
+    Unary(op, e) => {
+      let v = self.eval(e, env)
+      match op {
+        "!" => Bool(!boolean(v, loc))
+        "-" => finite(-number_value(v, loc), loc)
+        "+" => finite(number_value(v, loc), loc)
+        _ =>
+          raise problem(Unsupported, loc, "bitwise operators are unsupported")
+      }
+    }
+    Binary(op, a, b) => {
+      let left = self.eval(a, env)
+      if op == "&&" {
+        Bool(boolean(left, loc) && boolean(self.eval(b, env), loc))
+      } else if op == "||" {
+        Bool(boolean(left, loc) || boolean(self.eval(b, env), loc))
+      } else {
+        self.binary(op, left, self.eval(b, env), loc)
+      }
+    }
+    Assert(c, m, body) => {
+      self.assertion(c, m, env)
+      self.eval(body, env)
+    }
+    Fail(e) => raise problem(Runtime, loc, text_value(self.eval(e, env), loc))
+    ImportFile(path, raw) => self.import_file(path, raw, loc)
+  }
+}
+
+///|
+fn Vm::comprehend(
+  self : Vm,
+  clauses : Array[Clause],
+  index : Int,
+  env : Env,
+  loc : Location,
+  emit : (Env) -> Unit raise,
+) -> Unit raise {
+  self.tick(loc)
+  if index >= self.limits.depth {
+    raise problem(Limit, loc, "comprehension depth limit exceeded")
+  }
+  if index == clauses.length() {
+    emit(env)
+    return
+  }
+  match clauses[index] {
+    For(n, expr) => {
+      let a = array_value(self.eval(expr, env), expr.loc)
+      for t in a {
+        let scope = env.child()
+        scope.names[n] = t
+        self.comprehend(clauses, index + 1, scope, loc, emit)
+      }
+    }
+    When(expr) =>
+      if boolean(self.eval(expr, env), expr.loc) {
+        self.comprehend(clauses, index + 1, env, loc, emit)
+      }
+  }
+}
+
+///|
+fn Vm::call(
+  self : Vm,
+  function : Value,
+  args : Array[(String?, Int)],
+  loc : Location,
+) -> Value raise {
+  self.tick(loc)
+  match function {
+    Builtin(name) => self.builtin(name, args, loc)
+    Closure(params, body, outer) => {
+      let env = outer.child()
+      let assigned : Map[String, Bool] = Map([])
+      for i, (name, t) in args {
+        let n = match name {
+          Some(n) => {
+            if !params.any(p => p.0 == n) {
+              raise problem(Runtime, loc, "unknown argument '\{n}'")
+            }
+            n
+          }
+          None => {
+            if i >= params.length() {
+              raise problem(Runtime, loc, "too many arguments")
+            }
+            params[i].0
+          }
+        }
+        if assigned.contains(n) {
+          raise problem(Runtime, loc, "duplicate argument '\{n}'")
+        }
+        assigned[n] = true
+        env.names[n] = t
+      }
+      for (n, d) in params {
+        if !assigned.contains(n) {
+          match d {
+            Some(e) => env.names[n] = self.store(Pending(e, env))
+            None => raise problem(Runtime, loc, "missing argument '\{n}'")
+          }
+        }
+      }
+      self.eval(body, env)
+    }
+    _ => raise problem(Type, loc, "expected function")
+  }
+}
+
+///|
+fn Vm::index(
+  self : Vm,
+  target : Value,
+  key : Value,
+  loc : Location,
+) -> Value raise {
+  match target {
+    Std => {
+      let name = text_value(key, loc)
+      if !builtin_names().contains(name) {
+        raise problem(
+          Unsupported,
+          loc,
+          "unsupported standard function std.\{name}",
+        )
+      }
+      Builtin(name)
+    }
+    ObjectValue(id, top) => self.field(id, top, text_value(key, loc), loc)
+    ArrayValue(a) => {
+      let i = array_index(key, a.length(), loc)
+      self.force(a[i], loc)
+    }
+    Str(s) => {
+      let chars = s.to_array()
+      let i = array_index(key, chars.length(), loc)
+      Str(chars[i].to_string())
+    }
+    _ => raise problem(Type, loc, "expected object, array or string")
+  }
+}
+
+///|
+fn array_index(key : Value, length : Int, loc : Location) -> Int raise {
+  let n = number_value(key, loc)
+  if n < 0 || n >= length.to_double() || n != n.floor() {
+    raise problem(Runtime, loc, "index out of bounds or non-integral")
+  }
+  n.to_int()
+}
