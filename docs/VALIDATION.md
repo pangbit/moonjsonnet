@@ -73,8 +73,13 @@ reported as `reference-difference`, with `passed=false`, and are not skipped or
 counted as compatible. Any changed outcome, missing error or unexpected
 convergence fails the check. This lets the C++ regression gate retain all inputs
 while checking the documented Go migration; undeclared mismatches still fail.
-See the [digest report](../reports/GO-JSONNET-DIGESTS.md) for current
+Trace fixtures additionally compare exact stderr on success and the exact trace
+prefix before an error diagnostic. Both programs receive the same absolute
+input path for these cases; relative/alias diagnostic-path parity is not implied.
+
+See the [native and trace report](../reports/GO-JSONNET-NATIVE-TRACE.md) for current
 commit-bound results and the retained differences. The earlier
+[digest report](../reports/GO-JSONNET-DIGESTS.md),
 [TOML and YAML output report](../reports/GO-JSONNET-TOML-YAML.md),
 [deletion and internal object merge report](../reports/GO-JSONNET-REMOVE.md),
 [JSON, Python, INI and XML output report](../reports/GO-JSONNET-OUTPUT.md),

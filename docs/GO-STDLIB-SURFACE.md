@@ -101,7 +101,7 @@
 | `minArray` | function | 1 | registered |
 | `mod` | function | 2 | registered |
 | `modulo` | function | 2 | registered |
-| `native` | function | 1 | missing |
+| `native` | function | 1 | registered |
 | `objectFields` | function | 1 | registered |
 | `objectFieldsAll` | function | 1 | registered |
 | `objectFieldsEx` | function | 2 | registered |
@@ -157,7 +157,7 @@
 | `tan` | function | 1 | registered |
 | `thisFile` | string | null | registered |
 | `toString` | function | 1 | registered |
-| `trace` | function | 2 | missing |
+| `trace` | function | 2 | registered |
 | `trim` | function | 1 | registered |
 | `type` | function | 1 | registered |
 | `uniq` | function | 1 | registered |

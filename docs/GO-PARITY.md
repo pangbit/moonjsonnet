@@ -13,8 +13,8 @@
 通过固定 Go 二进制实际运行 `std.objectFieldsAll(std)`，记录每个成员的名字、类型
 和必需参数数目。冻结参考快照为 [go-stdlib-surface.json](../tests/go-stdlib-surface.json)，
 包含 163 个成员（包括可反射的内部辅助成员和常量）。本次扩展前注册 42 个，缺少
-121 个；加入摘要、集合、对象、数组组合、查找、极值、聚合及数学布尔函数后
-注册 160 个，缺少 3 个（继续补齐 MD5、SHA-1、SHA-512 和 SHA3-512）。
+121 个；加入摘要、集合、对象、数组组合、查找、极值、聚合、数学布尔函数及
+宿主 native/trace 后注册 162 个，仅缺少 `parseYaml`。
 
 [逐项状态表](GO-STDLIB-SURFACE.md) 保留全部成员，缺失项不会因为没有差分用例而消失。
 `registered` 仅表示名字、类型和必需参数数目相同，不表示默认值、惰性、错误、边界
@@ -42,7 +42,7 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | 输出标准函数 | JSON、INI、Python、XML JSONML、YAML 和 TOML 对应成员已注册 | 扩大输出边界与诊断验证，保留 YAML 参考崩溃差异 |
 | 扩展参数 | JSON 值和字符串 | `ExtCode` 真正求值 Jsonnet；文件/环境变量参数、重置语义 |
 | 顶层参数 TLA | 缺失 | 字符串/代码参数及顶层函数调用、默认值、错误传播 |
-| 原生回调与 trace | 缺失 | 宿主函数注册、`std.native`、可配置 trace 输出 |
+| 原生回调与 trace | 已实现按名注册、JSON 回调、可配置 sink 及默认 stderr | 扩大宿主边界验证；CLI trace 重定向选项与诊断路径行为仍待补齐 |
 | 导入器 | 有定制文本/二进制解析及限定目录文件宿主 | `-J`、`JSONNET_PATH` 搜索顺序、依赖发现、导入查询接口 |
 | 输入模式 | 文件和库内源码求值 | CLI `-e`、stdin、`--`、选项缩写；诊断文件名行为 |
 | 输出模式 | 单个 JSON/文件 | 字符串输出、multi、stream、目录创建及对应嵌入方法 |
@@ -53,8 +53,7 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 
 推进顺序：先标准库基础/集合对象能力，再参数、导入、输入输出及宿主接口，随后
 格式化和分析工具，持续补齐语言边界与平台验证。`sha256` 消除现有差分中的最后一项
-未支持函数，但远非完成标准库；全量清单仍有 3 个缺失成员：`parseYaml`、
-`native`、`trace`。
+未支持函数，但远非完成标准库；全量清单仍有 1 个缺失成员：`parseYaml`。
 
 已处理的聚合数值边界：保留 Go `sum`/`avg` 的 Infinity/NaN，覆盖传播、比较、转换、
 格式化拒绝与非 JSON 标量输出。正 `2^63` 的旧差异通过显式模拟固定 ARM64 参考的
@@ -95,11 +94,20 @@ TOML/YAML 批次新增 4 个成员和 41 项输入，其中 40 项通过；当�
 吞掉对象内递归输出的错误；最后一个字段可返回部分文本，后续字段求值则可能
 触发内部栈状态崩溃。两种情况分别保留输入，资源限制错误始终传播。
 
-摘要批次新增 MD5、SHA-1、SHA-512 和 SHA3-512，23 项新增差分全部通过；当前
+摘要批次新增 MD5、SHA-1、SHA-512 和 SHA3-512，23 项新增差分全部通过；当时
 完整差分为 678/695，既有 17 项参考崩溃输入仍保留。摘要读取 UTF-8 字节，
 输出小写十六进制；`sha3` 固定为 SHA3-512。实现采用固定大小工作区和虚拟填充，
 每轮压缩或置换计入步骤预算。分块临界长度、Unicode/NUL、168 组宽字符组合、
 参数错误与百万字节输入均有验证，未引入系统密码库依赖。
+
+native/trace 批次新增 2 个成员与 16 项差分，全部通过；当前完整差分为
+694/711，仍保留既有 17 项参考崩溃输入。回调按形参顺序完整转换 JSON 参数，
+返回对象立即递归转换并隔离后续宿主修改；错误带调用位置传播。trace 对两个
+参数先求值再输出，返回值内部保持惰性，默认写 stderr，也可由宿主配置 sink。
+trace 用例逐字节验证 stderr，含命名参数 tailstrict 顺序、Unicode/NUL 和换行。
+本地测试及 README 覆盖宿主注册、导入共享、错误、预算与返回容器复制；固定
+参考 native1..7 的成功 JSON/失败结果已对照，未声明错误文本完全一致。
+详见 [native/trace 验收](../reports/GO-JSONNET-NATIVE-TRACE.md)。
 
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
 MoonBit 求值器执行。每次 evaluate 解析一次，导入共享 AST，各文件的 `thisFile`
