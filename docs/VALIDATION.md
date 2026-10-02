@@ -54,22 +54,23 @@ binary before writing other files into that checkout. Go results are written to
 include binary SHA-256 hashes, source commit/dirty state and per-case outputs.
 Passed, failed, unsupported and `reference_differences` counts are disjoint; `error_cases` overlaps the
 tested cases. Unsupported checks with an unexpected outcome count as failures.
-The `go_expect` fixture field only records reference-specific expectations (for
-example, Go provides `sha256` while C++ does not). Undeclared behavioral differences remain
+The `go_expect` fixture field only records reference-specific expectations.
+Undeclared behavioral differences remain
 failures and the runner exits nonzero; an upstream internal error is never an
 expected-error pass. Go compatibility is not yet a passing CI gate.
 
-Nine shared cases deliberately follow the Go contracts for function arity,
+Ten shared cases deliberately follow the Go contracts for function arity,
 `foldl`, indexing, bitwise operators, manifest numbers and fractional format
-precision, which differ from C++. Their
+precision and SHA-256 support, which differ from C++. Their
 `cpp_difference` entries assert reference JSON or the C++ error class and
 MoonJsonnet JSON or structured error category. They are
 reported as `reference-difference`, with `passed=false`, and are not skipped or
 counted as compatible. Any changed outcome, missing error or unexpected
 convergence fails the check. This lets the C++ regression gate retain all inputs
 while checking the documented Go migration; undeclared mismatches still fail.
-See the [stable sort report](../reports/GO-JSONNET-SORT.md) for current
+See the [overall parity baseline](../reports/GO-JSONNET-PARITY-BASELINE.md) for current
 commit-bound results and the retained differences. The earlier
+[stable sort report](../reports/GO-JSONNET-SORT.md),
 [sequence combinator report](../reports/GO-JSONNET-COMBINATORS.md),
 [fractional format report](../reports/GO-JSONNET-FORMAT.md),
 [manifest number report](../reports/GO-JSONNET-MANIFEST.md),
@@ -105,3 +106,9 @@ required by the adapted fractional format power implementation.
 
 See the repository's `reports/` directory for commit-bound acceptance evidence.
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
+
+The [overall parity plan](GO-PARITY.md) tracks capabilities outside the existing
+behavioral corpus. `tools/parity.mbtx` compares all 163 reflected Go standard-library
+members against a frozen reference snapshot and the local CLI, writing
+`_build/parity/report.json`. It records registration gaps, not behavioral passes;
+zero unsupported cases in the smaller differential corpus does not imply full parity.
