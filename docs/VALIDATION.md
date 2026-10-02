@@ -58,6 +58,8 @@ The `go_expect` fixture field only records reference-specific expectations (for
 example, Go provides `sha256` while C++ does not). Behavioral differences remain
 failures and the runner exits nonzero; an upstream internal error is never an
 expected-error pass. Go compatibility is not yet a passing CI gate.
+See the [Go alignment progress report](../reports/GO-JSONNET-PROGRESS.md) for
+commit-bound results and the retained differences.
 
 The upstream language runner verifies the exact reference commit, runs 32
 language fixture files, separately evaluates the upstream formatting assertions,
