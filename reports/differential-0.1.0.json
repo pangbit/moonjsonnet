@@ -1,0 +1,502 @@
+{
+  "source_commit": "b39267afeb5fab0d7d46b68ac4bc3d808adc59c2",
+  "reference": "Jsonnet commandline interpreter v0.21.0",
+  "passed": 71,
+  "failed": 0,
+  "skipped": 0,
+  "unsupported_cases": 6,
+  "error_cases": 15,
+  "cases": [
+    {
+      "name": "numeric-string-rendering",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "identifier-token-names",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "map-string",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "split-multi",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "fold-lazy",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "fold-empty",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "fold-string",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "predicate-named",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "unicode-field-order",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "literals",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "arithmetic",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "comments",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "verbatim",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "unicode",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "numeric-boundary",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "unused-error",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "mutual-recursion",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "recursive-array",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "closure",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "defaults",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "unused-argument",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "lazy-array",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "lazy-map",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "comprehensions",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "object-comprehension",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "object-comprehension-scope",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "null-field",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "self-rebound",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "super-chain",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "hidden",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "nested-root",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "nested-super",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "object-local",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "method",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "assert-inherited",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "assert-unused",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "short-circuit",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "type-predicates",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "length",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "object-operations",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "array-operations",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "join",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "string-operations",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "json",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "string-manifest",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "rounding",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "named-builtin",
+      "expect": "success",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 0
+    },
+    {
+      "name": "syntax-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "static-unused",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "duplicate-local",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "duplicate-field",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "type-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "assert-error",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "divide-zero",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "overflow",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "missing-import",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "cyclic-binding",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "missing-argument",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "duplicate-argument",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "noninteger-index",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "function-output",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "static-super",
+      "expect": "error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "unsupported-stdlib",
+      "expect": "unsupported-reference-error",
+      "passed": true,
+      "reference_exit": 1,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "unsupported-sort",
+      "expect": "unsupported",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "unsupported-bitwise",
+      "expect": "unsupported",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "unsupported-slice",
+      "expect": "unsupported",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "unsupported-object-local-comprehension",
+      "expect": "unsupported",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "unsupported-text-block",
+      "expect": "unsupported",
+      "passed": true,
+      "reference_exit": 0,
+      "moonjsonnet_exit": 1
+    },
+    {
+      "name": "examples/environments/main.jsonnet",
+      "expect": "success",
+      "passed": true
+    },
+    {
+      "name": "examples/dashboards/main.jsonnet",
+      "expect": "success",
+      "passed": true
+    },
+    {
+      "name": "examples/embedded/config/main.jsonnet",
+      "expect": "success",
+      "passed": true
+    }
+  ]
+}
