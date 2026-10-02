@@ -14,7 +14,7 @@ fn builtin_names() -> Array[String] {
     "xnor", "id", "parseInt", "isEmpty", "trim", "splitLimit", "splitLimitR", "equalsIgnoreCase",
     "lstripChars", "rstripChars", "stripChars", "base64", "base64Decode", "base64DecodeBytes",
     "encodeUTF8", "decodeUTF8", "manifestJsonEx", "remove", "removeAt", "$objectFlatMerge",
-    "manifestTomlEx", "manifestYamlDoc",
+    "manifestTomlEx", "manifestYamlDoc", "md5", "sha1", "sha512", "sha3",
   ]
 }
 
@@ -90,7 +90,7 @@ fn builtin_params(name : String) -> Array[String] {
     "reverse" | "sum" | "avg" => ["arr"]
     "sort" => ["arr", "keyF"]
     "minArray" | "maxArray" => ["arr", "keyF", "onEmpty"]
-    "sha256" => ["s"]
+    "md5" | "sha1" | "sha256" | "sha512" | "sha3" => ["s"]
     "foldl" | "foldr" => ["func", "arr", "init"]
     "range" => ["from", "to"]
     "join" => ["sep", "arr"]
@@ -342,6 +342,10 @@ fn Vm::builtin(
       }
     }
     "sha256" => Str(self.sha256(text_value(x, loc), loc))
+    "md5" => Str(self.md5(text_value(x, loc), loc))
+    "sha1" => Str(self.sha1(text_value(x, loc), loc))
+    "sha512" => Str(self.sha512(text_value(x, loc), loc))
+    "sha3" => Str(self.sha3(text_value(x, loc), loc))
     "$flatMapArray" => {
       ignore(array_value(values[1], loc))
       self.flat_map(x, values[1], loc)

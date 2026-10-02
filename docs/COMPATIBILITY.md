@@ -190,6 +190,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `assertEqual(a,b)` | Returns true or reports `Assertion` |
 | `lines(arr)` | Join non-null strings with a newline after each |
 | `sha256(s)` | SHA-256 of UTF-8 string bytes, lowercase hexadecimal; rounds consume the evaluation step budget |
+| `md5(s)`, `sha1(s)`, `sha512(s)`, `sha3(s)` | MD5, SHA-1, SHA-512 and SHA3-512 of UTF-8 string bytes; lowercase hexadecimal; require strings and consume a work step per compression/permutation round |
 
 Non-finite aggregate values manifest as `+Inf`, `-Inf`, or `NaN`, including in
 arrays/objects, matching Go. These tokens are outside strict JSON. The returned
