@@ -170,6 +170,9 @@ Only the following functions are supported. Arity/named-argument violations are
 | `manifestPython(v)`, `manifestPythonVars(conf)` | Pinned source layout: Python True/False/None, sorted visible object fields, 17-digit numeric coercion; vars adds one assignment and newline per field |
 | `manifestIni(ini)` | Optional main object and required sections object; sorted fields, array values emit repeated key lines, no escaping |
 | `manifestXmlJsonml(value)` | Pinned source JsonML conversion; sorted visible attributes and paired tags; text and attribute values are emitted without automatic XML escaping |
+| `manifestToml(value)`, `manifestTomlEx(value,indent)` | Native Go table/array-of-tables layout; default indent is two spaces; empty key is `''`; null and functions rejected; numeric coercion uses 17 significant digits |
+| `manifestYamlDoc(value,indent_array_in_object=false,quote_keys=true)` | Native layout, shortest fixed-decimal numbers, newline-terminated block strings, conservative bare-key recognition; function values render as empty text |
+| `manifestYamlStream(value,indent_array_in_object=false,c_document_end=true,quote_keys=true)` | Pinned source document separators and optional final marker; empty stream preserves separators and leaves unused document options lazy |
 | `toString(a)` | Strings unchanged; other manifestable values become compact JSON with Jsonnet spacing |
 | `floor(x)`, `ceil(x)` | Reject non-finite results |
 | `abs(n)` | Go source rule: retain n if positive, otherwise negate; preserves non-finite values and flips signed zero |
@@ -239,6 +242,19 @@ objects without locals and desugared comprehensions work and are covered by
 passing cases. This implementation safely merges simple top-level literals;
 all observed reference crashes remain failed inputs, including duplicate-field
 and eager-error examples that crash before reaching those checks in Go.
+
+TOML/YAML native string quoting escapes C0/C1 controls but preserves HTML and
+U+2028/U+2029, unlike native JSON output. TOML renders fields in sorted key order
+before grouping scalar output ahead of sections, preserving evaluation order.
+YAML bare keys follow Go's case-sensitive binary and unanchored hexadecimal
+checks, decimal underscores, overflow/underflow and reserved-word rules.
+
+The Go YAML object renderer ignores recursive rendering errors. This can return
+partial text, such as `"a":\n- 1\n` for `{a:[1,error 'nested']}`. These successful
+partial results are preserved. If later fields need evaluation, the reference
+can internally crash with `Saving empty traceElement on stack`; that input is
+retained as a differential failure. MoonJsonnet keeps valid VM state. Depth,
+step and output limits always propagate, including inside YAML object fields.
 
 New sequence functions follow the pinned Go implementation. In particular,
 `makeArray` uses the parameter name `sz`, rejects fractional sizes, returns an

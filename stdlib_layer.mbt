@@ -62,6 +62,8 @@ fn standard_library_expression() -> Expr raise {
           | "findSubstr"
           | "resolvePath" => true
           "manifestJsonMinified"
+          | "manifestToml"
+          | "manifestYamlStream"
           | "manifestPython"
           | "manifestPythonVars"
           | "manifestIni"

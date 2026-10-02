@@ -21,8 +21,13 @@ Functional implementation reference: Google go-jsonnet v0.21.0
 https://github.com/google/go-jsonnet
 Copyright Google Inc.; Apache License 2.0.
 Pinned commit: 67968688d9952f50662e979fab1bef889d0d3e57.
-The Go interpreter is used only for development-time behavioral comparisons;
-its implementation is not bundled or linked into this package.
+The Go interpreter executable is used only for development-time behavioral
+comparisons; no Go interpreter or Go runtime is bundled or linked into this package.
+
+manifest_toml.mbt, manifest_yaml.mbt and manifest_text.mbt adapt the native
+TOML/YAML rendering contracts and control flow in the pinned go-jsonnet
+builtins.go and interpreter.go to MoonBit, including quoting and key recognition.
+Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 
 stdlib_source.mbt embeds the Jsonnet standard-library source from the pinned
 go-jsonnet astgen/stdast.go above. Copyright Google Inc.; Apache License 2.0

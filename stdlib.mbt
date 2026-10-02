@@ -14,6 +14,7 @@ fn builtin_names() -> Array[String] {
     "xnor", "id", "parseInt", "isEmpty", "trim", "splitLimit", "splitLimitR", "equalsIgnoreCase",
     "lstripChars", "rstripChars", "stripChars", "base64", "base64Decode", "base64DecodeBytes",
     "encodeUTF8", "decodeUTF8", "manifestJsonEx", "remove", "removeAt", "$objectFlatMerge",
+    "manifestTomlEx", "manifestYamlDoc",
   ]
 }
 
@@ -33,6 +34,8 @@ fn value_type(v : Value) -> String {
 ///|
 fn builtin_params(name : String) -> Array[String] {
   match name {
+    "manifestYamlDoc" => ["value", "indent_array_in_object", "quote_keys"]
+    "manifestTomlEx" => ["value", "indent"]
     "remove" => ["arr", "elem"]
     "removeAt" => ["arr", "i"]
     "$objectFlatMerge" => ["x"]
@@ -117,7 +120,10 @@ fn Vm::builtin(
   loc : Location,
 ) -> Value raise {
   let params = builtin_params(name)
-  let required = if name == "sort" || name == "minArray" || name == "maxArray" {
+  let required = if name == "sort" ||
+    name == "minArray" ||
+    name == "maxArray" ||
+    name == "manifestYamlDoc" {
     1
   } else if name == "manifestJsonEx" {
     2
@@ -147,6 +153,20 @@ fn Vm::builtin(
       }
     }
   }
+  if name == "manifestYamlDoc" {
+    if !ids.contains("value") {
+      raise problem(Runtime, loc, "std.manifestYamlDoc: missing value")
+    }
+    for
+      (key, default_value) in [
+        ("indent_array_in_object", false),
+        ("quote_keys", true),
+      ] {
+      if !ids.contains(key) {
+        ids[key] = self.store(Ready(Bool(default_value)))
+      }
+    }
+  }
   if name == "sort" || name == "minArray" || name == "maxArray" {
     guard ids.get("arr") is Some(arr) else {
       raise problem(Runtime, loc, "std.\{name}: missing arr argument")
@@ -163,6 +183,21 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "manifestYamlDoc" => {
+      let out = ManifestText::new(self.limits.output_bytes, loc)
+      self.yaml_value(
+        x,
+        boolean(values[1], loc),
+        boolean(values[2], loc),
+        "",
+        0,
+        out,
+        loc,
+      )
+      Str(out.text())
+    }
+    "manifestTomlEx" =>
+      Str(self.toml_table(x, text_value(values[1], loc), [], "", 0, loc))
     "$objectFlatMerge" => self.object_flat_merge(array_value(x, loc), loc)
     "removeAt" =>
       self.remove_at(array_value(x, loc), integer(values[1], loc), loc)
@@ -396,7 +431,10 @@ fn Vm::builtin(
           Closure(ps, _, _) =>
             ps.iter().filter(p => p.1 is None).count().to_double()
           Builtin(n) =>
-            if n == "sort" || n == "minArray" || n == "maxArray" {
+            if n == "sort" ||
+              n == "minArray" ||
+              n == "maxArray" ||
+              n == "manifestYamlDoc" {
               1
             } else if n == "manifestJsonEx" {
               2

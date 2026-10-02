@@ -1,0 +1,59 @@
+///|
+priv struct ManifestText {
+  buffer : StringBuilder
+  mut bytes : Int
+  limit : Int
+  loc : Location
+}
+
+///|
+fn ManifestText::new(limit : Int, loc : Location) -> ManifestText {
+  { buffer: StringBuilder(), bytes: 0, limit, loc, }
+}
+
+///|
+fn ManifestText::write(self : ManifestText, s : String) -> Unit raise {
+  let size = @utf8.encode(s).length()
+  if size > self.limit - self.bytes {
+    raise problem(Limit, self.loc, "manifest output limit exceeded")
+  }
+  self.bytes += size
+  self.buffer.write_string(s)
+}
+
+///|
+fn ManifestText::text(self : ManifestText) -> String {
+  self.buffer.to_string()
+}
+
+///|
+// Go unparseString, used by native TOML and YAML, escapes C0/C1 but does not
+// escape HTML or U+2028/U+2029. JSON's native manifest has a different contract.
+fn manifest_text_quote(s : String) -> String {
+  let out = StringBuilder()
+  out.write_string("\"")
+  for c in s.iter() {
+    out.write_string(
+      match c {
+        '"' => "\\\""
+        '\\' => "\\\\"
+        '\b' => "\\b"
+        '\u000c' => "\\f"
+        '\n' => "\\n"
+        '\r' => "\\r"
+        '\t' => "\\t"
+        _ => {
+          let n = c.to_int()
+          if n < 32 || (n >= 127 && n <= 159) {
+            let hex = "0123456789abcdef".to_array()
+            "\\u00" + hex[n / 16].to_string() + hex[n % 16].to_string()
+          } else {
+            c.to_string()
+          }
+        }
+      },
+    )
+  }
+  out.write_string("\"")
+  out.to_string()
+}

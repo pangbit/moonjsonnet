@@ -1,5 +1,6 @@
 import {
   "moonbitlang/core/math",
+  "moonbitlang/core/string",
   "pangbit/moonjsonnet/internal/number",
   "moonbitlang/core/json",
   "moonbitlang/core/debug",
