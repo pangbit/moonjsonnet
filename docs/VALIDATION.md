@@ -67,9 +67,10 @@ reported as `reference-difference`, with `passed=false`, and are not skipped or
 counted as compatible. Any changed outcome, missing error or unexpected
 convergence fails the check. This lets the C++ regression gate retain all inputs
 while checking the documented Go migration; undeclared mismatches still fail.
-See the [function-contract report](../reports/GO-JSONNET-CONTRACTS.md) for current
+See the [numeric alignment report](../reports/GO-JSONNET-NUMERIC.md) for current
 commit-bound results and the retained differences. The earlier
-[sequence-function report](../reports/GO-JSONNET-PROGRESS.md) remains a historical baseline.
+[function-contract report](../reports/GO-JSONNET-CONTRACTS.md) and
+[sequence-function report](../reports/GO-JSONNET-PROGRESS.md) remain historical baselines.
 
 The upstream language runner verifies the exact reference commit, runs 32
 language fixture files, separately evaluates the upstream formatting assertions,
