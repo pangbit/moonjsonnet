@@ -33,6 +33,11 @@ per-case outcomes, counts, reference version and source commit in
 function the pinned C++ reference itself rejects. Structured local error-category
 checks are covered by the library and host integration suites.
 
+Go aggregate overflow can emit non-JSON scalar tokens. `raw-output` cases pin
+exact `+Inf`, `-Inf` or `NaN` spellings for both processes with exit 0; they are
+not passed to a JSON parser or omitted. The overlapping `raw_output_cases` count
+identifies these inputs separately from ordinary JSON comparisons.
+
 Run the same corpus against the pinned Go implementation separately:
 
 ```sh

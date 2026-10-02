@@ -5,7 +5,8 @@ constructs. The standard library is a documented subset. Passing
 the committed corpus does not prove compatibility with all Jsonnet programs.
 The official C++ v0.21.0 interpreter is a development-only oracle. Input, imports,
 parameters and expected categories are committed under `tests/` and `examples/`.
-Success comparisons parse JSON and ignore object order and insignificant whitespace.
+Success comparisons parse JSON and ignore object order and insignificant whitespace;
+non-finite aggregate scalar outputs use exact spelling checks instead.
 
 ## Implementation reference
 
@@ -45,7 +46,9 @@ before accessing values or triggering assertions. Object assertions
 are checked on field access/manifestation, including inherited assertions bound to
 the final object. An unused error or failed assertion is not evaluated.
 
-Numbers use IEEE-754 binary64. Division by zero and non-finite results are errors;
+Numbers use IEEE-754 binary64. Division by zero and non-finite ordinary arithmetic
+results are errors. As in the pinned Go reference, `sum`/`avg` retain overflow
+Infinity/NaN, which unary signs, comparisons and string conversion can consume;
 integer precision is not guaranteed above 2^53. Strings/indexing/length/substrings
 use Unicode code points, not bytes, UTF-16 units or grapheme clusters. Paired Unicode
 escapes are decoded; lone surrogate escapes are syntax errors, as in v0.21.0.
@@ -62,8 +65,10 @@ and uses a trampoline for tail calls; a 10,000-iteration regression verifies thi
 Bitwise operators truncate operands to signed 64-bit integers, with shift counts
 reduced modulo 64. Left shifts wrap at 64 bits and right shifts preserve the sign,
 matching Go. Negative shift counts are rejected before truncation. Operands must
-be within `[-2^63, 2^63)` before conversion; results are converted back to binary64.
-Bitwise complement retains the same operand range.
+be within `[-2^63, 2^63]` before conversion; the upper endpoint explicitly maps
+to MaxInt64. NaN explicitly maps to zero. Complement saturates out-of-range values
+before inversion, matching the pinned arm64 Go binary; no out-of-range native
+cast is performed. Results are converted back to binary64.
 
 Dynamic fractional format precision uses Go's exponent decomposition and ordered
 scaling for powers of ten. Integral precision and scientific mantissa scaling
@@ -78,8 +83,10 @@ The pinned Go implementation admits the positive `2^63` boundary because its
 floating-point range check rounds `MaxInt64` upward. Conversion of that value to
 `int64` is outside the representable range and is
 [implementation-dependent in Go](https://go.dev/ref/spec#Conversions_between_numeric_types).
-MoonJsonnet rejects it with `Runtime`, preserving a defined conversion boundary;
-`bitwise-int64-upper-boundary` remains a Go differential failure. C++ also rejects
+MoonJsonnet now reproduces the pinned arm64 result with an explicit branch;
+`bitwise-int64-upper-boundary` is retained and passes. This is not evidence for
+Go's conversion behavior on other architectures, which remains to be validated.
+C++ also rejects
 fractional indices, operands beyond its safe-integer bound and positive left-shift
 overflow. Those previously shared cases now record explicit C++/MoonJsonnet outcomes.
 
@@ -120,6 +127,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `mergePatch(target,patch)` | Recursive JSON merge patch with null deletion, visible fields, lazy retained values and scalar replacement |
 | `all`, `any`, `filterMap`, `flattenArrays`, `flattenDeepArray`, `count`, `repeat`, `find`, `deepJoin` | Pinned source definitions; boolean short circuit, lazy retained values, nested flattening and Unicode strings |
 | `min`, `max`, `clamp` | Source numeric min/max and lazy clamp branches |
+| `sum(arr)`, `avg(arr)` | Numeric left-to-right aggregation; avg rejects an empty array; overflow retains Infinity/NaN as in Go |
 | `member(arr,x)`, `contains(arr,elem)` | Native short-circuit membership; member also accepts a string substring (including empty substring), contains requires an array |
 | `minArray(arr,keyF=function(x)x,onEmpty=error ...)`, `maxArray(...)` | Native stable extrema; force elements, compute each key once, preserve lazy fields, force explicitly supplied onEmpty even when nonempty |
 | `$flatMapArray(func,arr)` | Reflected Go helper; flatMap behavior restricted to array input |
@@ -141,13 +149,22 @@ Only the following functions are supported. Arity/named-argument violations are
 | `parseJson(str)` | Core JSON parser with bounded nesting; malformed JSON is `Runtime` |
 | `manifestJson(value)` | Sorted keys, four-space indentation, shortest round-trip decimal numbers without exponents; preserves negative zero |
 | `toString(a)` | Strings unchanged; other manifestable values become compact JSON with Jsonnet spacing |
-| `floor(x)`, `ceil(x)`, `abs(n)` | Finite binary64 arithmetic |
+| `floor(x)`, `ceil(x)` | Reject non-finite results |
+| `abs(n)` | Go source rule: retain n if positive, otherwise negate; preserves non-finite values and flips signed zero |
 | `format(str,vals)` | Same formatting semantics as string `%` |
 | `slice(indexable,index,end,step)` | Same semantics as array/string slice syntax |
 | `char(n)`, `codepoint(str)` | Unicode scalar conversion / one-code-point string |
 | `assertEqual(a,b)` | Returns true or reports `Assertion` |
 | `lines(arr)` | Join non-null strings with a newline after each |
 | `sha256(s)` | SHA-256 of UTF-8 string bytes, lowercase hexadecimal; rounds consume the evaluation step budget |
+
+Non-finite aggregate values manifest as `+Inf`, `-Inf`, or `NaN`, including in
+arrays/objects, matching Go. These tokens are outside strict JSON. The returned
+MoonBit `Json::Number` retains the numeric value and its spelling for `stringify`.
+Numeric formatting rejects non-finite operands; `%s` uses their string spelling.
+NaN comparison follows Go's comparator (`<`/`>` false, `<=`/`>=` true), while NaN
+equality remains false. NaN index/character/bitwise conversion explicitly uses
+zero to match the pinned arm64 reference without a non-finite native cast.
 
 Integer-only standard function bounds and resource limits may reject inputs that
 the reference accepts. Restricted argument domains return an error and are not

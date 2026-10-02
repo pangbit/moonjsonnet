@@ -18,7 +18,7 @@
 | `assertEqual` | function | 2 | registered |
 | `atan` | function | 1 | missing |
 | `atan2` | function | 2 | missing |
-| `avg` | function | 1 | missing |
+| `avg` | function | 1 | registered |
 | `base64` | function | 1 | missing |
 | `base64Decode` | function | 1 | missing |
 | `base64DecodeBytes` | function | 1 | missing |
@@ -153,7 +153,7 @@
 | `stringChars` | function | 1 | missing |
 | `stripChars` | function | 2 | missing |
 | `substr` | function | 3 | registered |
-| `sum` | function | 1 | missing |
+| `sum` | function | 1 | registered |
 | `tan` | function | 1 | missing |
 | `thisFile` | string | null | registered |
 | `toString` | function | 1 | registered |

@@ -8,7 +8,7 @@ fn builtin_names() -> Array[String] {
     "parseJson", "manifestJson", "toString", "floor", "ceil", "abs", "format", "slice",
     "char", "codepoint", "assertEqual", "lines", "sort", "sha256", "objectFieldsEx",
     "objectHasEx", "primitiveEquals", "objectRemoveKey", "equals", "member", "contains",
-    "minArray", "maxArray", "$flatMapArray",
+    "minArray", "maxArray", "$flatMapArray", "sum", "avg",
   ]
 }
 
@@ -49,7 +49,7 @@ fn builtin_params(name : String) -> Array[String] {
     "map" | "mapWithIndex" | "filter" | "flatMap" | "$flatMapArray" =>
       ["func", "arr"]
     "makeArray" => ["sz", "func"]
-    "reverse" => ["arr"]
+    "reverse" | "sum" | "avg" => ["arr"]
     "sort" => ["arr", "keyF"]
     "minArray" | "maxArray" => ["arr", "keyF", "onEmpty"]
     "sha256" => ["s"]
@@ -113,6 +113,20 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "sum" | "avg" => {
+      let items = array_value(x, loc)
+      if name == "avg" && items.is_empty() {
+        raise problem(Runtime, loc, "cannot average an empty array")
+      }
+      let mut sum = 0.0
+      for t in items {
+        self.tick(loc)
+        sum += number_value(self.force(t, loc), loc)
+      }
+      // The Go builtins omit makeDoubleCheck, retaining IEEE
+      // infinity/NaN after overflow, unlike ordinary arithmetic operators.
+      Num(if name == "avg" { sum / items.length().to_double() } else { sum })
+    }
     "member" | "contains" =>
       if name == "member" && x is Str(s) {
         Bool(s.contains(text_value(values[1], loc)))
@@ -208,7 +222,8 @@ fn Vm::builtin(
     "format" => Str(self.format_string(text_value(x, loc), values[1], loc))
     "slice" => self.slice(x, values[1], values[2], values[3], loc)
     "char" => {
-      let n = number_value(x, loc)
+      let number = number_value(x, loc)
+      let n = if number.is_nan() { 0.0 } else { number }
       if n <= -1 || n >= 1114112 {
         raise problem(Runtime, loc, "invalid character code")
       }
@@ -454,7 +469,10 @@ fn Vm::builtin(
     "toString" => Str(self.coerce_string(x, loc))
     "floor" => finite(number_value(x, loc).floor(), loc)
     "ceil" => finite(number_value(x, loc).ceil(), loc)
-    "abs" => finite(number_value(x, loc).abs(), loc)
+    "abs" => {
+      let n = number_value(x, loc)
+      Num(if n > 0 { n } else { -n })
+    }
     _ => raise problem(Unsupported, loc, "unsupported std.\{name}")
   }
 }

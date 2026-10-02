@@ -14,14 +14,14 @@ fn Vm::slice(
     _ => number_value(start, loc)
   }
   if index < 0 {
-    index = Double::max(0, length + index)
+    index = Double::max(0, number_value(finite(length + index, loc), loc))
   }
   let mut stop = match end {
     Nil => length
     _ => number_value(end, loc)
   }
   if stop < 0 {
-    stop += length
+    stop = number_value(finite(stop + length, loc), loc)
   }
   let stride = match step {
     Nil => 1.0
@@ -35,7 +35,7 @@ fn Vm::slice(
     self.tick(loc)
     let i = array_index(Num(index), items.length(), loc)
     out.push(items[i])
-    index += stride
+    index = number_value(finite(index + stride, loc), loc)
   }
   if value is Str(_) {
     let b = StringBuilder()

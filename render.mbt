@@ -70,7 +70,11 @@ fn render_json(
       write("}")
     }
     Number(n, ..) => {
-      let text = if pretty { manifest_number(n) } else { @number.format(n) }
+      let text = if pretty || n.is_inf() || n.is_nan() {
+        manifest_number(n)
+      } else {
+        @number.format(n)
+      }
       if text.is_empty() {
         fail("cannot format number in C numeric locale")
       }
@@ -83,9 +87,15 @@ fn render_json(
 
 ///|
 // Go's manifestJson uses shortest round-trip digits in fixed decimal notation.
-// Values reaching the renderer are finite. Core supplies the shortest digits;
+// Go's sum/avg may also produce non-finite values. Core supplies finite digits;
 // expand its exponent and restore negative zero, which core prints as "0".
 fn manifest_number(n : Double) -> String {
+  if n.is_nan() {
+    return "NaN"
+  }
+  if n.is_inf() {
+    return if n < 0 { "-Inf" } else { "+Inf" }
+  }
   let sign = if n.reinterpret_as_int64() < 0 { "-" } else { "" }
   let text = n.abs().to_string()
   guard text.find("e") is Some(e) else { return sign + text }

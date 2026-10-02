@@ -63,7 +63,9 @@ moon run cmd/main -- --root examples/embedded/config --ext-code replicas=3 main.
 moon run cmd/main -- --root examples/environments -o result.json main.jsonnet
 ```
 
-CLI success writes valid JSON; errors go to stderr and return a nonzero status.
+CLI success writes manifested output; errors go to stderr and return a nonzero status.
+Output is normally JSON; Go-compatible `sum`/`avg` overflow can emit `+Inf`, `-Inf`
+or `NaN`, which are outside strict JSON. See [compatibility](docs/COMPATIBILITY.md).
 `--ext-code` accepts **JSON values only** in this release. See [CLI](docs/CLI.md).
 
 ## Validation and contribution

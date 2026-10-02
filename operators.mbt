@@ -47,7 +47,7 @@ fn Vm::binary(
     "!=" => Bool(!self.equal(a, b, loc))
     "<" | "<=" | ">" | ">=" => {
       let c = match (a, b) {
-        (Num(x), Num(y)) => x.compare(y)
+        (Num(x), Num(y)) => compare_numbers(x, y)
         (Str(x), Str(y)) => compare_unicode(x, y)
         (ArrayValue(x), ArrayValue(y)) => self.compare_arrays(x, y, loc)
         _ =>
@@ -101,11 +101,27 @@ fn Vm::binary(
 ///|
 fn bitwise_integer(v : Value, loc : Location) -> Int64 raise {
   let n = number_value(v, loc)
-  // 2^63 is not representable by Int64, so the upper bound is exclusive.
-  if n < -9223372036854775808.0 || n >= 9223372036854775808.0 {
+  // Go's floating-point MaxInt64 bound rounds to 2^63. Reproduce the
+  // pinned arm64 result explicitly instead of casting that unrepresentable value.
+  if n < -9223372036854775808.0 || n > 9223372036854775808.0 {
     raise problem(Runtime, loc, "bitwise operand outside signed 64-bit range")
   }
-  n.to_int64()
+  reference_int64(n)
+}
+
+///|
+// Defined conversion matching the pinned Go arm64 binary: NaN becomes zero,
+// out-of-range values saturate. The actual MoonBit cast only sees safe values.
+fn reference_int64(n : Double) -> Int64 {
+  if n.is_nan() {
+    0L
+  } else if n >= 9223372036854775808.0 {
+    9223372036854775807L
+  } else if n <= -9223372036854775808.0 {
+    -9223372036854775808L
+  } else {
+    n.to_int64()
+  }
 }
 
 ///|
@@ -127,7 +143,7 @@ fn Vm::compare_arrays(
     let x = self.force(a[i], loc)
     let y = self.force(b[i], loc)
     let c = match (x, y) {
-      (Num(x), Num(y)) => x.compare(y)
+      (Num(x), Num(y)) => compare_numbers(x, y)
       (Str(x), Str(y)) => compare_unicode(x, y)
       (ArrayValue(x), ArrayValue(y)) => self.compare_arrays(x, y, loc)
       _ =>
@@ -138,6 +154,17 @@ fn Vm::compare_arrays(
     }
   }
   a.length().compare(b.length())
+}
+
+///|
+fn compare_numbers(a : Double, b : Double) -> Int {
+  if a < b {
+    -1
+  } else if a > b {
+    1
+  } else {
+    0
+  }
 }
 
 ///|

@@ -25,7 +25,9 @@ external values and multiple inputs are errors. Repeated external names use the
 last value. There is no implicit environment-variable lookup, stdin input,
 top-level function application, import search path or multi-file output mode.
 
-Exit 0 means valid JSON was emitted (or help/version was requested). Interpreter
+Exit 0 means manifested output was emitted (or help/version was requested).
+Go-compatible aggregate overflow may emit `+Inf`, `-Inf`, or `NaN` instead of
+strict JSON, including within arrays/objects. Interpreter
 errors exit 1; CLI argument/output errors exit 2. Diagnostics go to stderr.
 Evaluation failure does not open or truncate the output file. On successful
 evaluation `-o` overwrites its destination; output I/O is not transactional.

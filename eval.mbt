@@ -133,19 +133,9 @@ fn Vm::eval_inner(self : Vm, expr : Expr, env : Env) -> Value raise {
         let v = self.eval(e, env)
         match op {
           "!" => Bool(!boolean(v, loc))
-          "-" => finite(-number_value(v, loc), loc)
-          "+" => finite(number_value(v, loc), loc)
-          _ => {
-            let n = number_value(v, loc)
-            if n < -9223372036854775808.0 || n >= 9223372036854775808.0 {
-              raise problem(
-                Runtime,
-                loc,
-                "bitwise complement operand outside signed 64-bit range",
-              )
-            }
-            Num(n.to_int64().lnot().to_double())
-          }
+          "-" => Num(-number_value(v, loc))
+          "+" => Num(number_value(v, loc))
+          _ => Num(reference_int64(number_value(v, loc)).lnot().to_double())
         }
       }
       Binary(op, a, b) => {
@@ -303,7 +293,8 @@ fn Vm::index(
 
 ///|
 fn array_index(key : Value, length : Int, loc : Location) -> Int raise {
-  let n = number_value(key, loc).trunc()
+  let number = number_value(key, loc)
+  let n = if number.is_nan() { 0.0 } else { number.trunc() }
   if n < 0 || n >= length.to_double() {
     raise problem(Runtime, loc, "index out of bounds")
   }

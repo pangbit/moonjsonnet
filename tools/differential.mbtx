@@ -37,12 +37,13 @@ async fn main {
   let mut failed = 0
   let mut unsupported = 0
   let mut errors = 0
+  let mut raw_output_cases = 0
   let mut reference_differences = 0
   let rows : Array[Json] = []
   for case in cases {
     guard case is { "name": String(name), "source": String(source), "expect": String(expect), .. } else { fail("invalid case") }
     let expect = if is_go && case is { "go_expect": String(go_expect), .. } { go_expect } else { expect }
-    assert_true(["success", "error", "unsupported", "unsupported-reference-error"].contains(expect))
+    assert_true(["success", "raw-output", "error", "unsupported", "unsupported-reference-error"].contains(expect))
     let path = work + "/" + name + ".jsonnet"
     @fs.write_file(path, source)
     let a = @shell.Cmd(reference, [path]).output(timeout_ms=10000)
@@ -64,7 +65,14 @@ async fn main {
       }
       None => false
     }
-    let ok = if expect == "unsupported" || expect == "unsupported-reference-error" {
+    let ok = if expect == "raw-output" {
+      raw_output_cases += 1
+      // Go sum/avg can emit +Inf/-Inf/NaN, which are not JSON. Pin the exact
+      // scalar spelling on both sides instead of silently dropping the input.
+      guard case is { "raw_output": String(expected), .. } else { fail("missing exact raw output") }
+      assert_true(["+Inf", "-Inf", "NaN"].contains(expected))
+      a.exit_code() == 0 && b.exit_code() == 0 && a.stdout().trim().to_owned() == expected && b.stdout().trim().to_owned() == expected
+    } else if expect == "unsupported" || expect == "unsupported-reference-error" {
       (if expect == "unsupported" { a.exit_code() == 0 } else { a.exit_code() != 0 }) && b.exit_code() != 0 && b.stderr().contains("Unsupported")
     } else if expect == "error" {
       errors += 1
@@ -92,7 +100,7 @@ async fn main {
   dirty.check()
   let hashes = @shell.Cmd("shasum", ["-a", "256", reference, cli]).output()
   hashes.check()
-  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "source_dirty": !dirty.stdout().is_empty(), "binary_sha256": hashes.stdout(), "reference": reference_version, "reference_commit": reference_commit, "total": rows.length(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "reference_differences": reference_differences, "error_cases": errors, "cases": rows }
+  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "source_dirty": !dirty.stdout().is_empty(), "binary_sha256": hashes.stdout(), "reference": reference_version, "reference_commit": reference_commit, "total": rows.length(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "reference_differences": reference_differences, "error_cases": errors, "raw_output_cases": raw_output_cases, "cases": rows }
   @fs.write_file(work + "/report.json", report.stringify(indent=2))
   println("Differential: passed=\{passed}, failed=\{failed}, skipped=0, explicitly unsupported=\{unsupported}, declared reference differences=\{reference_differences}, expected errors=\{errors}")
   if failed != 0 { fail("differential validation failed; all cases retained") }

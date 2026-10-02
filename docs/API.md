@@ -11,6 +11,12 @@ is passed to the importer. `ext_vars` is a `Map[String, Json]` read by
 No importer means imports are disabled. A host exception is translated into an
 `Import` diagnostic; an existing `JsonnetError` preserves its category.
 
+Like the pinned Go implementation, `sum`/`avg` can return non-finite numbers.
+The returned `Json::Number` keeps Infinity/NaN and a spelling preserved by
+`stringify` (`+Inf`, `-Inf`, `NaN`). Those spellings are not valid strict JSON;
+this applies inside arrays/objects as well. Ordinary arithmetic still rejects
+non-finite results. See [compatibility](COMPATIBILITY.md) for conversion details.
+
 The resolver has signature `(from: String, path: String) -> Source raise`.
 `Source { id, text }` must use a stable canonical identity for one immutable
 source during an evaluation. Request pairs are cached, and parsed/evaluated

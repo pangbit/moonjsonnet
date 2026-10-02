@@ -31,6 +31,14 @@ test "fractional slices retain fractional progression and lazy elements" {
 test "bitwise operands use signed 64 bit conversion" {
   assert_eq(
     @moonjsonnet.evaluate(
+      "[9223372036854775808&1,9223372036854775808>>1,1<<9223372036854775808,~9223372036854775808,~1e100,~-1e100]",
+    ),
+    @json.parse(
+      "[1,4611686018427387904,-9223372036854775808,-9223372036854775808,-9223372036854775808,9223372036854775808]",
+    ),
+  )
+  assert_eq(
+    @moonjsonnet.evaluate(
       "[9007199254740994&3,1e16>>2,-1e16>>2,3.9&1,-3.9&1,9223372036854774784|1,-9223372036854775808&1]",
     ),
     @json.parse(
@@ -67,8 +75,6 @@ test "numeric conversion rejects invalid bounds before native conversion" {
     ("1|9223372036854777856", @moonjsonnet.Runtime),
     ("1<<-0.1", @moonjsonnet.Runtime),
     ("1&true", @moonjsonnet.Type),
-    // 2^63 itself is not representable by Int64; do not perform a native cast.
-    ("9223372036854775808&1", @moonjsonnet.Runtime),
   ]
   for (source, kind) in cases {
     try @moonjsonnet.evaluate(source) catch {

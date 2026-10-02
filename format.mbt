@@ -118,6 +118,7 @@ fn parse_format(
 ///|
 fn Vm::format_size(self : Vm, v : Value, loc : Location) -> Double raise {
   let n = number_value(v, loc)
+  ignore(finite(n, loc))
   if n.abs() > self.limits.output_bytes.to_double() {
     raise problem(Limit, loc, "format size exceeds output limit")
   }
@@ -393,7 +394,8 @@ fn Vm::format_value(
         }
         s
       }
-      Num(n) => {
+      Num(number) => {
+        let n = if number.is_nan() { 0.0 } else { number }
         if n <= -1 || n >= 1114112 {
           raise problem(Runtime, loc, "invalid character code")
         }
@@ -406,6 +408,7 @@ fn Vm::format_value(
     }
   }
   let n = number_value(value, loc)
+  ignore(finite(n, loc))
   let padding = if code.zero && !code.left { width } else { 0 }
   match code.kind {
     'd' | 'i' | 'u' | 'o' | 'x' | 'X' => {
