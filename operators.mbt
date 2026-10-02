@@ -112,7 +112,14 @@ fn Vm::join_string(
 fn Vm::coerce_string(self : Vm, v : Value, loc : Location) -> String raise {
   match v {
     Str(s) => s
-    _ => render_json(self.manifest(v, loc, 0), false, 0)
+    _ =>
+      render_json(
+        self.manifest(v, loc, 0),
+        false,
+        0,
+        self.limits.output_bytes,
+        loc,
+      )
   }
 }
 

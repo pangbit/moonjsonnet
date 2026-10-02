@@ -286,7 +286,16 @@ fn Vm::builtin(
       }
       self.from_json(j, loc)
     }
-    "manifestJson" => Str(render_json(self.manifest(x, loc, 0), true, 0))
+    "manifestJson" =>
+      Str(
+        render_json(
+          self.manifest(x, loc, 0),
+          true,
+          0,
+          self.limits.output_bytes,
+          loc,
+        ),
+      )
     "toString" => Str(self.coerce_string(x, loc))
     "floor" => finite(number_value(x, loc).floor(), loc)
     "ceil" => finite(number_value(x, loc).ceil(), loc)

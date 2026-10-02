@@ -144,3 +144,18 @@ test "flat syntax tree and exponential allocation are bounded" {
     _ => fail("expected allocation limit")
   }
 }
+
+///|
+test "pretty manifestation cannot bypass intermediate output budget" {
+  let limits = @moonjsonnet.Limits::default()
+  try
+    @moonjsonnet.evaluate("std.length(std.manifestJson([[[[[1]]]]]))", limits={
+      ..limits,
+      output_bytes: 30,
+    })
+  catch {
+    @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Limit)
+  } noraise {
+    _ => fail("expected pretty output limit")
+  }
+}

@@ -14,6 +14,7 @@ async fn main {
   @fs.mkdir(shadow)
   @fs.mkdir(checkout)
   @shell.Cmd("cp", ["-R", home + "/lib", shadow + "/lib"]).run()
+  if @fs.exists(home + "/include") { @shell.Cmd("cp", ["-R", home + "/include", shadow + "/include"]).run() }
   @fs.symlink(target=home + "/bin", shadow + "/bin")
   // Only the temporary toolchain copy is changed. The installed runtime remains
   // untouched. Disable mimalloc so ASan can observe libc malloc/free allocations.
@@ -30,12 +31,16 @@ async fn main {
     @shell.Cmd("cp", [repo + "/" + relative, dest]).run()
     if relative.has_suffix("moon.pkg") || relative == "moon.pkg" {
       let text = @fs.read_file(dest).text()
-      @fs.write_file(dest, text + "\nlink(native(\"cc\": \"cc\", \"cc-flags\": \"-g -fsanitize=address -fno-omit-frame-pointer\", \"stub-cc-flags\": \"-g -fsanitize=address -fno-omit-frame-pointer\"))\n")
+      let flags = "link: { \"native\": { \"cc\": \"cc\", \"cc-flags\": \"-g -fsanitize=address -fno-omit-frame-pointer\", \"stub-cc-flags\": \"-g -fsanitize=address -fno-omit-frame-pointer\" } }"
+      let patched = if text.contains("options(") {
+        text.replace(old="options(", new="options(" + flags + ", ")
+      } else { text + "\noptions(" + flags + ")\n" }
+      @fs.write_file(dest, patched)
     }
   }
   let environment = Map([("MOON_HOME", shadow), ("ASAN_OPTIONS", "detect_leaks=0:fast_unwind_on_malloc=0")])
   @shell.Cmd("moon", ["test", "--target", "native", "--deny-warn"], cwd=checkout, env=environment).run()
-  @shell.Cmd("moon", ["build", "--target", "native"], cwd=checkout, env=environment).run()
+  @shell.Cmd("moon", ["run", "--build-only", "--target", "native", "cmd/main"], cwd=checkout, env=environment).run()
   @shell.Cmd("moon", ["run", repo + "/tools/integration.mbtx", checkout + "/_build/native/debug/build/cmd/main/main.exe"], cwd=checkout, env=environment).run()
   println("ASan tests and host integration passed with isolated toolchain: \{work}; leak detection disabled")
 }

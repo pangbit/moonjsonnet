@@ -6,6 +6,7 @@ Fixed before implementation on 2026-10-02:
 | --- | --- |
 | Moon | 0.1.20260920, 914d7da |
 | MoonBit compiler | v0.10.14+7d59c7ec9, 2026-09-18 |
+| Installer argument | `0.10.14+7d59c7ec9` (compiler build ID, not Moon CLI version) |
 | Language and standard-library compatibility baseline | Google Jsonnet v0.21.0 |
 | Official reference interpreter | google/jsonnet, tag v0.21.0, commit bbb38f1020be1f5aed560928fb839b2c448cefb4 |
 | Backend | native; POSIX file host (macOS and Linux) |
