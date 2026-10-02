@@ -103,7 +103,9 @@ Only the following functions are supported. Arity/named-argument violations are
 | `makeArray(sz,func)` | Lazy generated array; callback receives index; signed 32-bit integer size, with negative sizes producing an empty array; callback arity checked when an element is used |
 | `reverse(arr)` | New array in reverse order; elements remain lazy and the input is unchanged |
 | `filter(func,arr)` | Array filtering; predicate must return boolean |
+| `flatMap(func,arr)` | Concatenates callback arrays or strings; string input uses Unicode code points; callback results are forced but returned array elements stay lazy; null results are errors |
 | `foldl(func,arr,init)` | Iterative left fold over array/string; forces function, sequence, initial value and each callback result; elements and nested fields remain lazy |
+| `foldr(func,arr,init)` | Iterative right fold over array/string; callback receives element then accumulator; same forcing contract as `foldl` |
 | `range(from,to)` | Inclusive integer range; arguments restricted to signed 32-bit integers |
 | `join(sep,arr)` | String/array separator with like-typed entries; skips null entries |
 | `split(str,c)` | Nonempty string delimiter; empty delimiter is `Runtime` |

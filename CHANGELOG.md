@@ -11,6 +11,8 @@
 - JSON external variables, custom imports, bounded POSIX file host and CLI.
 - Explicit standard-library subset, configurable limits and structured diagnostics.
 - Lazy `makeArray`, Unicode-aware `mapWithIndex` and nonmutating `reverse`.
+- Go-compatible `flatMap` over arrays/Unicode strings and iterative `foldr`, with
+  lazy array elements and bounded intermediate allocation.
 - Go-compatible required function arity and iterative `foldl` argument/result evaluation.
 - Go-compatible fractional indexing/slicing and signed 64-bit wrapping bitwise operators,
   with explicit rejection of the unrepresentable positive `2^63` conversion boundary.

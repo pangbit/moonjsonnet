@@ -3,10 +3,10 @@ fn builtin_names() -> Array[String] {
   [
     "extVar", "type", "isArray", "isBoolean", "isFunction", "isNumber", "isObject",
     "isString", "length", "objectFields", "objectFieldsAll", "objectHas", "objectHasAll",
-    "map", "mapWithIndex", "makeArray", "reverse", "filter", "foldl", "range", "join",
-    "split", "substr", "strReplace", "startsWith", "endsWith", "parseJson", "manifestJson",
-    "toString", "floor", "ceil", "abs", "format", "slice", "char", "codepoint", "assertEqual",
-    "lines",
+    "map", "mapWithIndex", "makeArray", "reverse", "filter", "flatMap", "foldl",
+    "foldr", "range", "join", "split", "substr", "strReplace", "startsWith", "endsWith",
+    "parseJson", "manifestJson", "toString", "floor", "ceil", "abs", "format", "slice",
+    "char", "codepoint", "assertEqual", "lines",
   ]
 }
 
@@ -38,10 +38,10 @@ fn builtin_params(name : String) -> Array[String] {
     "abs" => ["n"]
     "objectFields" | "objectFieldsAll" => ["o"]
     "objectHas" | "objectHasAll" => ["o", "f"]
-    "map" | "mapWithIndex" | "filter" => ["func", "arr"]
+    "map" | "mapWithIndex" | "filter" | "flatMap" => ["func", "arr"]
     "makeArray" => ["sz", "func"]
     "reverse" => ["arr"]
-    "foldl" => ["func", "arr", "init"]
+    "foldl" | "foldr" => ["func", "arr", "init"]
     "range" => ["from", "to"]
     "join" => ["sep", "arr"]
     "split" => ["str", "c"]
@@ -83,15 +83,22 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
-    "foldl" => {
+    "flatMap" => self.flat_map(x, values[1], loc)
+    "foldl" | "foldr" => {
       if value_type(x) != "function" {
         raise problem(Type, loc, "expected function")
       }
       let a = self.sequence(values[1], loc)
       let mut acc = values[2]
-      for t in a {
+      for i in 0..<a.length() {
         self.tick(loc)
-        acc = self.call(x, [(None, self.store(Ready(acc))), (None, t)], loc)
+        let accumulator = self.store(Ready(acc))
+        let args = if name == "foldl" {
+          [(None, accumulator), (None, a[i])]
+        } else {
+          [(None, a[a.length() - i - 1]), (None, accumulator)]
+        }
+        acc = self.call(x, args, loc)
       }
       acc
     }
