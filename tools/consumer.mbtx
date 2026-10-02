@@ -9,7 +9,7 @@ async fn main {
   let archive = @fs.realpath("_build/publish/pangbit-moonjsonnet-0.1.0.zip")
   let listing = @shell.Cmd("unzip", ["-Z1", archive]).output()
   listing.check()
-  for required in ["NOTICE", "licenses/GO-BSD-3-Clause.txt", "licenses/GO-MATH-NOTICES.txt", "stdlib_source.mbt"] {
+  for required in ["NOTICE", "licenses/GO-BSD-3-Clause.txt", "licenses/GO-MATH-NOTICES.txt", "stdlib_source.mbt", "unicode_fold.mbt"] {
     assert_true(listing.stdout().split("\n").any(path => path == required), msg="missing archive attribution: " + required)
   }
   for path in listing.stdout().split("\n") {
@@ -28,6 +28,7 @@ async fn main {
     #|  let json = @moonjsonnet.evaluate("local f(x=21)=x*2; f()", limits~)
     #|  assert_eq(json, Json::number(42))
     #|  assert_eq(@moonjsonnet.evaluate("std.set([2,1,2])").stringify(), "[1,2]")
+    #|  assert_eq(@moonjsonnet.evaluate("std.equalsIgnoreCase('KΣẞ𐐀','kςß𐐨')").stringify(), "true")
     #|  let host = @fs.FileHost::new(".")
     #|  assert_true(host.resolve("", "moon.mod").text.contains("consumer_check"))
     #|  assert_true(!host.resolve_binary("", "moon.mod").bytes.is_empty())

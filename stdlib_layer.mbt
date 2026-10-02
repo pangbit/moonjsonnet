@@ -49,6 +49,18 @@ fn standard_library_expression() -> Expr raise {
           | "log10"
           | "sign"
           | "mod" => true
+          "asciiLower"
+          | "asciiUpper"
+          | "stringChars"
+          | "parseHex"
+          | "parseOctal"
+          | "escapeStringJson"
+          | "escapeStringPython"
+          | "escapeStringBash"
+          | "escapeStringDollars"
+          | "escapeStringXML"
+          | "findSubstr"
+          | "resolvePath" => true
           _ => false
         }
       _ => false

@@ -45,6 +45,13 @@ Copyright 2009, 2011, 2017, 2018 The Go Authors. All rights reserved.
 BSD 3-Clause terms: licenses/GO-BSD-3-Clause.txt. Inherited Cephes and Sun
 Microsystems notices are retained in licenses/GO-MATH-NOTICES.txt.
 
+unicode_fold.mbt and tests/unicode-fold-pairs.json are generated from
+Go 1.24.0 src/unicode/tables.go (Unicode 15.0.0):
+https://github.com/golang/go/blob/go1.24.0/src/unicode/tables.go
+Copyright 2009 The Go Authors. All rights reserved.
+BSD 3-Clause terms: licenses/GO-BSD-3-Clause.txt.
+tools/embed-unicode.mbtx verifies the exact source SHA-256 before extraction.
+
 MoonBit core is provided by the user's toolchain, not vendored here. Automation
 scripts use moonbitlang/async (Apache-2.0), resolved by Moon script mode; it is not
 a library runtime dependency. Official examples informed the package layout:

@@ -11,7 +11,8 @@ fn builtin_names() -> Array[String] {
     "minArray", "maxArray", "$flatMapArray", "sum", "avg", "sqrt", "hypot", "sin",
     "cos", "tan", "asin", "acos", "atan", "atan2", "log", "exp", "mantissa", "exponent",
     "round", "isEven", "isOdd", "isInteger", "isDecimal", "pow", "modulo", "xor",
-    "xnor",
+    "xnor", "id", "parseInt", "isEmpty", "trim", "splitLimit", "splitLimitR", "equalsIgnoreCase",
+    "lstripChars", "rstripChars", "stripChars",
   ]
 }
 
@@ -59,6 +60,11 @@ fn builtin_params(name : String) -> Array[String] {
     "hypot" | "modulo" | "xor" | "xnor" => ["x", "y"]
     "atan2" => ["y", "x"]
     "pow" => ["x", "n"]
+    "id" => ["x"]
+    "parseInt" | "isEmpty" | "trim" => ["str"]
+    "equalsIgnoreCase" => ["str1", "str2"]
+    "lstripChars" | "rstripChars" | "stripChars" => ["str", "chars"]
+    "splitLimit" | "splitLimitR" => ["str", "c", "maxsplits"]
     "abs" => ["n"]
     "objectFields" | "objectFieldsAll" => ["o"]
     "objectHas" | "objectHasAll" => ["o", "f"]
@@ -135,6 +141,22 @@ fn Vm::builtin(
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "lstripChars" | "rstripChars" | "stripChars" =>
+      self.strip_characters(x, values[1], name, loc)
+    "id" => x
+    "parseInt" => parse_decimal(text_value(x, loc), loc)
+    "isEmpty" => Bool(text_value(x, loc).is_empty())
+    "trim" => Str(trim_space(text_value(x, loc)))
+    "equalsIgnoreCase" =>
+      Bool(equal_fold(text_value(x, loc), text_value(values[1], loc)))
+    "splitLimit" | "splitLimitR" =>
+      self.split_limit(
+        text_value(x, loc),
+        text_value(values[1], loc),
+        integer(values[2], loc),
+        name == "splitLimitR",
+        loc,
+      )
     "sqrt"
     | "hypot"
     | "sin"
