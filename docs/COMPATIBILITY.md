@@ -71,7 +71,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `extVar(x)` | Injected JSON value; missing name is `Runtime` |
 | `type(x)` | Jsonnet type string |
 | `isArray(v)`, `isBoolean(v)`, `isFunction(v)`, `isNumber(v)`, `isObject(v)`, `isString(v)` | Type predicates; do not manifest values |
-| `length(x)` | Unicode string, array, visible object fields, or function parameter count |
+| `length(x)` | Unicode string, array, visible object fields, or required function parameter count (excluding defaults, as in Go) |
 | `objectFields(o)`, `objectFieldsAll(o)` | Sorted Unicode keys, excluding/including hidden fields |
 | `objectHas(o,f)`, `objectHasAll(o,f)` | Membership excluding/including hidden fields |
 | `map(func,arr)` | Lazy mapped array; accepts array or string |
@@ -79,7 +79,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `makeArray(sz,func)` | Lazy generated array; callback receives index; signed 32-bit integer size, with negative sizes producing an empty array; callback arity checked when an element is used |
 | `reverse(arr)` | New array in reverse order; elements remain lazy and the input is unchanged |
 | `filter(func,arr)` | Array filtering; predicate must return boolean |
-| `foldl(func,arr,init)` | Left fold, preserving lazy accumulator semantics; array/string |
+| `foldl(func,arr,init)` | Iterative left fold over array/string; forces function, sequence, initial value and each callback result; elements and nested fields remain lazy |
 | `range(from,to)` | Inclusive integer range; arguments restricted to signed 32-bit integers |
 | `join(sep,arr)` | String/array separator with like-typed entries; skips null entries |
 | `split(str,c)` | Nonempty string delimiter; empty delimiter is `Runtime` |
@@ -112,6 +112,13 @@ array of characters) and an empty object (returning an empty array).
 The new sequence corpus is checked against Go; the original C++ corpus is
 retained unchanged. Sequence allocation consumes the evaluation step budget
 even when generated elements are never forced.
+
+`length` on a function excludes defaulted parameters, as in Go; C++ counts all
+declared parameters. `foldl` follows Go's strict argument and intermediate-result
+evaluation. It does not deeply manifest the accumulator or force unused array
+elements. This changes the earlier C++-based behavior for unused erroneous
+functions/initial values. The shared corpus preserves these inputs and verifies
+the exact differing outcomes separately from compatibility passes.
 
 ## Known boundaries
 

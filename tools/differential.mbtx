@@ -37,6 +37,7 @@ async fn main {
   let mut failed = 0
   let mut unsupported = 0
   let mut errors = 0
+  let mut reference_differences = 0
   let rows : Array[Json] = []
   for case in cases {
     guard case is { "name": String(name), "source": String(source), "expect": String(expect), .. } else { fail("invalid case") }
@@ -46,6 +47,19 @@ async fn main {
     @fs.write_file(path, source)
     let a = @shell.Cmd(reference, [path]).output(timeout_ms=10000)
     let b = @shell.Cmd(cli, [path]).output(timeout_ms=10000)
+    let difference = if !is_go && case is { "cpp_difference": difference, .. } { Some(difference) } else { None }
+    let matches_difference = match difference {
+      Some(difference) => {
+        guard difference is { "reference": expected_reference, .. } else { fail("invalid C++ difference") }
+        let actual_matches = match difference {
+          { "moonjsonnet": expected, .. } => b.exit_code() == 0 && @json.parse(b.stdout()) == expected
+          { "moonjsonnet_error": String(kind), .. } => b.exit_code() == 1 && b.stderr().contains(": " + kind + ":")
+          _ => fail("missing MoonJsonnet outcome for C++ difference")
+        }
+        a.exit_code() == 0 && @json.parse(a.stdout()) == expected_reference && actual_matches
+      }
+      None => false
+    }
     let ok = if expect == "unsupported" || expect == "unsupported-reference-error" {
       (if expect == "unsupported" { a.exit_code() == 0 } else { a.exit_code() != 0 }) && b.exit_code() != 0 && b.stderr().contains("Unsupported")
     } else if expect == "error" {
@@ -54,9 +68,12 @@ async fn main {
     } else {
       a.exit_code() == 0 && b.exit_code() == 0 && @json.parse(a.stdout()) == @json.parse(b.stdout())
     }
-    let status = if !ok { failed += 1; "failed" } else if expect.has_prefix("unsupported") { unsupported += 1; "unsupported" } else { passed += 1; "passed" }
-    if !ok { println("FAIL \{name}: reference_exit=\{a.exit_code()}, moonjsonnet_exit=\{b.exit_code()} (details in \{work}/report.json)") }
-    rows.push({ "name": name, "source": source, "expect": expect, "status": status, "passed": status == "passed", "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr() })
+    let status = if difference is Some(_) {
+      if matches_difference && !ok { reference_differences += 1; "reference-difference" } else { failed += 1; "failed" }
+    } else if !ok { failed += 1; "failed" } else if expect.has_prefix("unsupported") { unsupported += 1; "unsupported" } else { passed += 1; "passed" }
+    if status == "failed" { println("FAIL \{name}: reference_exit=\{a.exit_code()}, moonjsonnet_exit=\{b.exit_code()} (details in \{work}/report.json)") }
+    if status == "reference-difference" { println("DIFF \{name}: exact declared C++/MoonJsonnet outcomes verified") }
+    rows.push({ "name": name, "source": source, "expect": expect, "status": status, "passed": status == "passed", "cpp_difference": difference.unwrap_or(Json::null()), "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr() })
   }
   for path in ["examples/environments/main.jsonnet", "examples/dashboards/main.jsonnet", "examples/embedded/config/main.jsonnet"] {
     let a = @shell.Cmd(reference, ["--ext-code", "replicas=3", path]).output()
@@ -71,8 +88,8 @@ async fn main {
   dirty.check()
   let hashes = @shell.Cmd("shasum", ["-a", "256", reference, cli]).output()
   hashes.check()
-  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "source_dirty": !dirty.stdout().is_empty(), "binary_sha256": hashes.stdout(), "reference": reference_version, "reference_commit": reference_commit, "total": rows.length(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "error_cases": errors, "cases": rows }
+  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "source_dirty": !dirty.stdout().is_empty(), "binary_sha256": hashes.stdout(), "reference": reference_version, "reference_commit": reference_commit, "total": rows.length(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "reference_differences": reference_differences, "error_cases": errors, "cases": rows }
   @fs.write_file(work + "/report.json", report.stringify(indent=2))
-  println("Differential: passed=\{passed}, failed=\{failed}, skipped=0, explicitly unsupported=\{unsupported}, expected errors=\{errors}")
+  println("Differential: passed=\{passed}, failed=\{failed}, skipped=0, explicitly unsupported=\{unsupported}, declared reference differences=\{reference_differences}, expected errors=\{errors}")
   if failed != 0 { fail("differential validation failed; all cases retained") }
 }

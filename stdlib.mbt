@@ -80,37 +80,21 @@ fn Vm::builtin(
     }
     ids[key] = t
   }
-  if name == "foldl" {
-    let a = self.sequence(self.force(ids["arr"], loc), loc)
-    let mut acc = ids["init"]
-    for t in a {
-      self.tick(loc)
-      let env : Env = {
-        parent: None,
-        names: Map([("f", ids["func"]), ("a", acc), ("b", t)]),
-      }
-      acc = self.store(
-        Pending(
-          {
-            kind: Call(
-              { kind: Var("f"), loc, },
-              [
-                (None, { kind: Var("a"), loc, }),
-                (None, { kind: Var("b"), loc, }),
-              ],
-              false,
-            ),
-            loc,
-          },
-          env,
-        ),
-      )
-    }
-    return self.force(acc, loc)
-  }
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
+    "foldl" => {
+      if value_type(x) != "function" {
+        raise problem(Type, loc, "expected function")
+      }
+      let a = self.sequence(values[1], loc)
+      let mut acc = values[2]
+      for t in a {
+        self.tick(loc)
+        acc = self.call(x, [(None, self.store(Ready(acc))), (None, t)], loc)
+      }
+      acc
+    }
     "lines" => {
       let mut result = Str("")
       for t in array_value(x, loc) {
@@ -173,7 +157,8 @@ fn Vm::builtin(
           Str(s) => s.iter().count().to_double()
           ArrayValue(a) => a.length().to_double()
           ObjectValue(id, top) => self.keys(id, top, false).length().to_double()
-          Closure(ps, _, _) => ps.length().to_double()
+          Closure(ps, _, _) =>
+            ps.iter().filter(p => p.1 is None).count().to_double()
           Builtin(n) => builtin_params(n).length().to_double()
           _ =>
             raise problem(

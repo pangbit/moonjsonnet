@@ -52,12 +52,20 @@ The runner checks Go binary build metadata for commit
 binary before writing other files into that checkout. Go results are written to
 `_build/go-differential/report.json`, preserving the C++ report. Both reports
 include binary SHA-256 hashes, source commit/dirty state and per-case outputs.
-Passed, failed and unsupported counts are disjoint; `error_cases` overlaps the
+Passed, failed, unsupported and `reference_differences` counts are disjoint; `error_cases` overlaps the
 tested cases. Unsupported checks with an unexpected outcome count as failures.
 The `go_expect` fixture field only records reference-specific expectations (for
-example, Go provides `sha256` while C++ does not). Behavioral differences remain
+example, Go provides `sha256` while C++ does not). Undeclared behavioral differences remain
 failures and the runner exits nonzero; an upstream internal error is never an
 expected-error pass. Go compatibility is not yet a passing CI gate.
+
+Three shared cases deliberately follow the Go contract for function arity and
+`foldl`, which differs from C++. Their `cpp_difference` entries assert the exact
+reference JSON and MoonJsonnet JSON or structured error category. They are
+reported as `reference-difference`, with `passed=false`, and are not skipped or
+counted as compatible. Any changed outcome, missing error or unexpected
+convergence fails the check. This lets the C++ regression gate retain all inputs
+while checking the documented Go migration; undeclared mismatches still fail.
 See the [Go alignment progress report](../reports/GO-JSONNET-PROGRESS.md) for
 commit-bound results and the retained differences.
 
