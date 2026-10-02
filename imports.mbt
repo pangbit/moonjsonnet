@@ -16,7 +16,10 @@ fn Vm::import_file(
         raise problem(Import, loc, "imports disabled: no resolver supplied")
       }
       let s = resolve(loc.file, path) catch {
-        Error(d) => raise Error(d)
+        Error(d) => {
+          d.context.push(loc)
+          raise Error(d)
+        }
         e => raise problem(Import, loc, e.to_string())
       }
       let size = @utf8.encode(s.text).length()
@@ -41,7 +44,13 @@ fn Vm::import_file(
     self.imports[key] = self.store(Ready(v))
     return v
   }
-  let expression = parse(source.text, source.id, self.limits.depth)
+  let expression = parse(source.text, source.id, self.limits.depth) catch {
+    Error(d) => {
+      d.context.push(loc)
+      raise Error(d)
+    }
+    e => raise e
+  }
   let t = self.store(Pending(expression, self.base_env()))
   self.imports[key] = t
   self.force(t, loc) catch {

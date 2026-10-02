@@ -159,3 +159,37 @@ test "pretty manifestation cannot bypass intermediate output budget" {
     _ => fail("expected pretty output limit")
   }
 }
+
+///|
+test "import syntax and resolver failures retain calling context" {
+  let syntax : (String, String) -> @moonjsonnet.Source raise = (_, _) => {
+    id: "child",
+    text: "{",
+  }
+  let missing : (String, String) -> @moonjsonnet.Source raise = (_, _) => {
+    raise @moonjsonnet.Error({
+      kind: @moonjsonnet.Import,
+      message: "missing",
+      location: { file: "child", line: 1, column: 1, },
+      context: [],
+    })
+  }
+  for resolver in [syntax, missing] {
+    try
+      @moonjsonnet.evaluate(
+        "local f() = import 'child'; f()",
+        filename="parent",
+        resolver~,
+      )
+    catch {
+      @moonjsonnet.Error(d) => {
+        assert_eq(d.location.file, "child")
+        assert_eq(d.context.length(), 2)
+        assert_eq(d.context[0].file, "parent")
+        assert_eq(d.context[1].file, "parent")
+      }
+    } noraise {
+      _ => fail("expected located import error")
+    }
+  }
+}
