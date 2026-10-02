@@ -14,6 +14,8 @@
 - Go-compatible required function arity and iterative `foldl` argument/result evaluation.
 - Go-compatible fractional indexing/slicing and signed 64-bit wrapping bitwise operators,
   with explicit rejection of the unrepresentable positive `2^63` conversion boundary.
+- Go-compatible shortest fixed decimal numbers in `manifestJson`, preserving signed
+  zero and output limits while retaining the separate string-coercion contract.
 - Pinned go-jsonnet differential reports retain mismatches separately from C++ acceptance.
 - Three runnable examples, fixed-reference differential and host integration tests.
 - Apache-2.0 metadata, generated API interfaces and reproducible release checks.

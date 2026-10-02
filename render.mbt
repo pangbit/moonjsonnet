@@ -70,7 +70,7 @@ fn render_json(
       write("}")
     }
     Number(n, ..) => {
-      let text = @number.format(n)
+      let text = if pretty { manifest_number(n) } else { @number.format(n) }
       if text.is_empty() {
         fail("cannot format number in C numeric locale")
       }
@@ -79,4 +79,24 @@ fn render_json(
     _ => write(j.stringify())
   }
   b.to_string()
+}
+
+///|
+// Go's manifestJson uses shortest round-trip digits in fixed decimal notation.
+// Values reaching the renderer are finite. Core supplies the shortest digits;
+// expand its exponent and restore negative zero, which core prints as "0".
+fn manifest_number(n : Double) -> String {
+  let sign = if n.reinterpret_as_int64() < 0 { "-" } else { "" }
+  let text = n.abs().to_string()
+  guard text.find("e") is Some(e) else { return sign + text }
+  let digits = text[:e].to_owned().replace(old=".", new="")
+  let mut exponent = 0
+  for c in text[e + 2:].iter() {
+    exponent = exponent * 10 + c.to_int() - 48
+  }
+  if text.code_unit_at(e + 1) == 45 {
+    sign + "0." + "0".repeat(exponent - 1) + digits
+  } else {
+    sign + digits + "0".repeat(exponent + 1 - digits.length())
+  }
 }

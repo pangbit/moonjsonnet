@@ -102,7 +102,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `strReplace(str,from,to)` | Nonoverlapping literal replacement; empty pattern rejected |
 | `startsWith(a,b)`, `endsWith(a,b)` | String prefix/suffix checks |
 | `parseJson(str)` | Core JSON parser with bounded nesting; malformed JSON is `Runtime` |
-| `manifestJson(value)` | Sorted keys, four-space indentation |
+| `manifestJson(value)` | Sorted keys, four-space indentation, shortest round-trip decimal numbers without exponents; preserves negative zero |
 | `toString(a)` | Strings unchanged; other manifestable values become compact JSON with Jsonnet spacing |
 | `floor(x)`, `ceil(x)`, `abs(n)` | Finite binary64 arithmetic |
 | `format(str,vals)` | Same formatting semantics as string `%` |
@@ -113,8 +113,13 @@ Only the following functions are supported. Arity/named-argument violations are
 
 Integer-only standard function bounds and resource limits may reject inputs that
 the reference accepts. Restricted argument domains return an error and are not
-silently truncated. Standard-library numeric text uses the C locale, fixed integer
-formatting or 17 significant digits, matching the pinned reference. CLI JSON
+silently truncated. String coercion (`toString`, string concatenation and `%s`)
+uses the C locale, fixed integer formatting or 17 significant digits.
+`manifestJson` follows Go's shortest round-trip digits in fixed decimal notation,
+including subnormal numbers and signed zero. It uses MoonBit core's shortest
+conversion and expands exponents; expanded output remains subject to the output
+byte limit. C++ uses the older numeric text rule for both operations, so the
+shared numeric-string fixture records both exact outputs as a declared difference. CLI JSON
 uses MoonBit core's JSON serialization; comparisons operate on parsed values.
 
 New sequence functions follow the pinned Go implementation. In particular,

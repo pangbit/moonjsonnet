@@ -1,4 +1,11 @@
 [
+  {"name":"manifest-shortest-numbers","source":"[std.manifestJson(x) for x in [0.1,0.3,1.2345678901234567,1000000000000000100,9007199254740992]]","expect":"success"},
+  {"name":"manifest-signed-zero","source":"[std.manifestJson(0),std.manifestJson(-0),std.manifestJson([-0,0])]","expect":"success"},
+  {"name":"manifest-decimal-transitions","source":"[std.manifestJson(x) for x in [1e-8,-1.23e-7,1e-6,1e20,1e21,1.234e30,-1e30]]","expect":"success"},
+  {"name":"manifest-finite-extremes","source":"[std.manifestJson(x) for x in [5e-324,-5e-324,2.2250738585072014e-308,1.7976931348623157e308,-1.7976931348623157e308]]","expect":"success"},
+  {"name":"manifest-nested-numbers","source":"std.manifestJson({z::error 'hidden',b:-0,a:[0.1,1e-8]})","expect":"success"},
+  {"name":"manifest-number-roundtrip","source":"[std.parseJson(std.manifestJson(x))==x for x in [0.1,0.3,1e-8,1e21,1.234e30,5e-324,1.7976931348623157e308,1000000000000000100]]","expect":"success"},
+  {"name":"coercion-numeric-contract","source":"[std.toString(0.1),std.toString(1e-8),std.toString(-0),std.toString({x:0.1}),'x'+0.1,'%s'%0.1]","expect":"success"},
   {"name":"fractional-array-indices","source":"[[10,20,30][-0.9],[10,20,30][1.9],[1,error 'unused'][0.9]]","expect":"success"},
   {"name":"fractional-string-indices","source":"['你😀a'[1.9],'你😀a'[-0.9]]","expect":"success"},
   {"name":"fractional-slice-progression","source":"[[0,1,2][0.5:2.5:0.5],[0,1,2][-0.5:],[0,1,2][:1.5]]","expect":"success"},
