@@ -1,6 +1,7 @@
 ///|
 test "thunk cache computes once and remembers failure" {
   let vm : Vm = {
+    library: standard_library_expression(),
     thunks: [],
     objects: [],
     limits: Limits::default(),

@@ -35,6 +35,7 @@ pub fn evaluate(
       raise problem(Limit, loc, "source byte limit exceeded")
     }
     let vm : Vm = {
+      library: standard_library_expression(),
       thunks: [],
       objects: [],
       limits,

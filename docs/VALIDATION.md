@@ -82,9 +82,8 @@ The upstream language runner verifies the exact reference commit, runs 32
 language fixture files, separately evaluates the upstream formatting assertions,
 and checks parser/static/function error fixtures. It preserves upstream inputs;
 the isolated formatting expressions retain their original source line numbers
-in report names. Two fixtures also require the out-of-scope `setInter` or
-`mergePatch` standard functions; those are retained and reported separately as
-unsupported standard-library dependencies, never as language passes. The report
+in report names. The `setInter` and `mergePatch` dependencies are now implemented;
+all 303 selected cases pass. Any unsupported dependency now fails the check. The report
 is written to `_build/upstream-language/report.json`.
 
 Run ASan **after committing source**, because its isolated checkout copies only
@@ -102,7 +101,8 @@ and `moonbitlang/async`; commands may need access to Moon's dependency cache.
 `tools/consumer.mbtx` extracts the actual Mooncakes archive into a temporary
 workspace and compiles/tests a separate module using only public APIs.
 It also verifies that the archive includes `NOTICE` and the Go BSD attribution
-required by the adapted fractional format power implementation.
+required by the adapted fractional format power implementation, plus the bundled
+Jsonnet standard-library source. Its independent consumer executes `std.set`.
 
 See the repository's `reports/` directory for commit-bound acceptance evidence.
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.

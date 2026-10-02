@@ -8,7 +8,7 @@ Development-only reference: Google Jsonnet v0.21.0
 https://github.com/google/jsonnet
 Copyright Google Inc.; Apache License 2.0.
 Pinned commit: bbb38f1020be1f5aed560928fb839b2c448cefb4.
-No upstream interpreter or standard-library implementation is bundled or linked.
+No upstream interpreter is bundled or linked.
 The committed differential inputs and example fixtures are original project
 material, distributed under this project's Apache-2.0 license. The reference
 checkout retains its own LICENSE and third-party notices outside this package.
@@ -23,6 +23,13 @@ Copyright Google Inc.; Apache License 2.0.
 Pinned commit: 67968688d9952f50662e979fab1bef889d0d3e57.
 The Go interpreter is used only for development-time behavioral comparisons;
 its implementation is not bundled or linked into this package.
+
+stdlib_source.mbt embeds the Jsonnet standard-library source from the pinned
+go-jsonnet astgen/stdast.go above. Copyright Google Inc.; Apache License 2.0
+(see LICENSE and the original header embedded in stdlib_source.mbt).
+tools/embed-stdlib.mbtx verifies the reference revision and extracts the source;
+stdlib_layer.mbt selects supported definitions. This Jsonnet source is evaluated
+by MoonJsonnet's own MoonBit interpreter; no Go interpreter is required at runtime.
 
 format_power.mbt adapts the fractional base-10 evaluation path from the Go
 standard library, Go 1.24.0 src/math/pow.go:

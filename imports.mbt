@@ -64,7 +64,7 @@ fn Vm::import_file(
 }
 
 ///|
-fn Vm::base_env(self : Vm, file? : String = "<input>") -> Env {
+fn Vm::base_env(self : Vm, file? : String = "<input>") -> Env raise {
   let env : Env = { parent: None, names: Map([]), }
   let loc : Location = { file, line: 1, column: 1, }
   let fields : Map[String, LayerField] = Map([])
@@ -88,7 +88,12 @@ fn Vm::base_env(self : Vm, file? : String = "<input>") -> Env {
     },
     env,
   }
-  let value = self.object_value([{ fields, locals: [], assertions: [], env, }])
+  guard self.eval(self.library, env) is ObjectValue(library_id, _) else {
+    raise problem(Runtime, loc, "standard library must be an object")
+  }
+  let layers = self.objects[library_id].layers.copy()
+  layers.push({ fields, locals: [], assertions: [], env, })
+  let value = self.object_value(layers)
   if value is ObjectValue(id, _) {
     self.objects[id].standard = true
   }

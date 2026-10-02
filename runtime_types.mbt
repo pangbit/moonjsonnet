@@ -66,6 +66,7 @@ priv struct ObjectData {
 
 ///|
 priv struct Vm {
+  library : Expr
   thunks : Array[Thunk]
   objects : Array[ObjectData]
   limits : Limits

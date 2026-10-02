@@ -96,7 +96,7 @@
 | `maxArray` | function | 1 | missing |
 | `md5` | function | 1 | missing |
 | `member` | function | 2 | missing |
-| `mergePatch` | function | 2 | missing |
+| `mergePatch` | function | 2 | registered |
 | `min` | function | 2 | missing |
 | `minArray` | function | 1 | missing |
 | `mod` | function | 2 | missing |
@@ -131,11 +131,11 @@
 | `reverse` | function | 1 | registered |
 | `round` | function | 1 | missing |
 | `rstripChars` | function | 2 | missing |
-| `set` | function | 1 | missing |
-| `setDiff` | function | 2 | missing |
-| `setInter` | function | 2 | missing |
-| `setMember` | function | 2 | missing |
-| `setUnion` | function | 2 | missing |
+| `set` | function | 1 | registered |
+| `setDiff` | function | 2 | registered |
+| `setInter` | function | 2 | registered |
+| `setMember` | function | 2 | registered |
+| `setUnion` | function | 2 | registered |
 | `sha1` | function | 1 | missing |
 | `sha256` | function | 1 | registered |
 | `sha3` | function | 1 | missing |
@@ -160,6 +160,6 @@
 | `trace` | function | 2 | missing |
 | `trim` | function | 1 | missing |
 | `type` | function | 1 | registered |
-| `uniq` | function | 1 | missing |
+| `uniq` | function | 1 | registered |
 | `xnor` | function | 2 | missing |
 | `xor` | function | 2 | missing |
