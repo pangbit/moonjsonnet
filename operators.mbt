@@ -201,6 +201,9 @@ fn Vm::equal_inner(
   loc : Location,
 ) -> Bool raise {
   self.tick(loc)
+  if value_type(a) != value_type(b) {
+    return false
+  }
   match (a, b) {
     (Closure(_, _, _), _)
     | (_, Closure(_, _, _))
@@ -223,8 +226,6 @@ fn Vm::equal_inner(
       true
     }
     (ObjectValue(x, xt), ObjectValue(y, yt)) => {
-      self.check_assertions(x, loc)
-      self.check_assertions(y, loc)
       let keys = self.keys(x, xt, false)
       if keys != self.keys(y, yt, false) {
         return false

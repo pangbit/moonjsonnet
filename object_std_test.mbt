@@ -44,6 +44,12 @@ test "object standard functions preserve hidden fields and lazy values" {
 ///|
 test "equality source functions and object argument contracts" {
   assert_eq(
+    @moonjsonnet.evaluate(
+      "[std.equals(function()1,1),(function()1)==1,std.equals({assert false,a:1},{b:2}),{assert false}=={}]",
+    ),
+    @json.parse("[false,false,false,true]"),
+  )
+  assert_eq(
     @moonjsonnet.evaluate("std.equals(x=[1],y=[1])"),
     Json::boolean(true),
   )

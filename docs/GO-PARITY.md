@@ -13,7 +13,7 @@
 通过固定 Go 二进制实际运行 `std.objectFieldsAll(std)`，记录每个成员的名字、类型
 和必需参数数目。冻结参考快照为 [go-stdlib-surface.json](../tests/go-stdlib-surface.json)，
 包含 163 个成员（包括可反射的内部辅助成员和常量）。本次扩展前注册 42 个，缺少
-121 个；加入摘要、集合和对象函数后注册 62 个，缺少 101 个。
+121 个；加入摘要、集合、对象、数组组合和比较辅助函数后注册 80 个，缺少 83 个。
 
 [逐项状态表](GO-STDLIB-SURFACE.md) 保留全部成员，缺失项不会因为没有差分用例而消失。
 `registered` 仅表示名字、类型和必需参数数目相同，不表示默认值、惰性、错误、边界
@@ -36,7 +36,7 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | --- | --- | --- |
 | 语言核心 | 已实现主要语法和求值，完整语言等价尚未证明 | 扩大 Go 上游语言/错误/惰性语料覆盖；保留已知差异 |
 | 数值、布尔标准函数 | 部分 | 补齐数学、比较、聚合、谓词及边界 |
-| 数组、集合、对象 | 部分；集合、mergePatch、prune、对象映射/反射已加入 | 其他数组操作、聚合、扁平化 |
+| 数组、集合、对象 | 部分；集合、对象、扁平化、过滤映射和比较辅助已加入 | 成员查找、删除、聚合与极值 |
 | 字符串、编码、摘要 | 部分 | UTF-8/Base64、解析整数、转义、大小写、拆分、其余摘要函数 |
 | 输出标准函数 | 仅基础 JSON | `manifestJsonEx`/minified、YAML、TOML、INI、Python、XML JSONML |
 | 扩展参数 | JSON 值和字符串 | `ExtCode` 真正求值 Jsonnet；文件/环境变量参数、重置语义 |
@@ -52,7 +52,7 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 
 推进顺序：先标准库基础/集合对象能力，再参数、导入、输入输出及宿主接口，随后
 格式化和分析工具，持续补齐语言边界与平台验证。`sha256` 消除现有差分中的最后一项
-未支持函数，但远非完成标准库；全量清单仍有 101 个缺失成员。
+未支持函数，但远非完成标准库；全量清单仍有 83 个缺失成员。
 
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
 MoonBit 求值器执行。每次 evaluate 解析一次，导入共享 AST，各文件的 `thisFile`

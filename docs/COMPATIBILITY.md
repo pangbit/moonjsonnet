@@ -39,7 +39,9 @@ object methods and locals; computed string/null keys; object `+` and juxtapositi
 Arithmetic `+ - * / %`, string `%` formatting, boolean `! && ||`, bitwise
 `~ & | ^ << >>`, equality `== !=`, and `in` are supported.
 Ordering supports numbers, Unicode strings and lexicographic arrays. Equality compares arrays and
-visible object fields recursively; function equality is an error. Object assertions
+visible object fields recursively; same-type function equality is an error,
+while unlike types compare false. Object equality short-circuits on field names
+before accessing values or triggering assertions. Object assertions
 are checked on field access/manifestation, including inherited assertions bound to
 the final object. An unused error or failed assertion is not evaluated.
 
@@ -116,6 +118,9 @@ Only the following functions are supported. Arity/named-argument violations are
 | `sort(arr,keyF=function(x)x)` | Stable array sort; optional key function evaluated once per element; numeric, string or lexicographic array keys; preserves original element thunks and input order for equal keys |
 | `uniq`, `set`, `setUnion`, `setInter`, `setDiff`, `setMember` | Pinned upstream Jsonnet definitions, evaluated by the MoonBit runtime; optional key functions, lazy elements and left-hand representatives preserved |
 | `mergePatch(target,patch)` | Recursive JSON merge patch with null deletion, visible fields, lazy retained values and scalar replacement |
+| `all`, `any`, `filterMap`, `flattenArrays`, `flattenDeepArray`, `count`, `repeat`, `find`, `deepJoin` | Pinned source definitions; boolean short circuit, lazy retained values, nested flattening and Unicode strings |
+| `min`, `max`, `clamp` | Source numeric min/max and lazy clamp branches |
+| `__compare`, `__compare_array`, `__array_less`, `__array_greater`, `__array_less_or_equal`, `__array_greater_or_equal` | Reflected upstream comparison helpers, including lexicographic nested arrays |
 | `get`, `objectValues`, `objectValuesAll`, `objectKeysValues`, `objectKeysValuesAll`, `mapWithKey`, `prune` | Pinned Jsonnet definitions; hidden-field policy, lazy defaults/values and inherited self preserved |
 | `objectRemoveKey(obj,key)` | Copies remaining fields including hidden fields, rebinds self and omits object assertions, matching Go's native implementation for simple objects; input is unchanged |
 | `objectFieldsEx(obj,hidden)`, `objectHasEx(obj,fname,hidden)` | Native reflection with explicit hidden-field selection and reference parameter names |

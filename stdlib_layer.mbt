@@ -23,7 +23,25 @@ fn standard_library_expression() -> Expr raise {
           | "objectKeysValues"
           | "objectKeysValuesAll"
           | "mapWithKey"
-          | "prune" => true
+          | "prune"
+          | "all"
+          | "any"
+          | "flattenArrays"
+          | "flattenDeepArray"
+          | "filterMap"
+          | "count"
+          | "repeat"
+          | "find"
+          | "deepJoin"
+          | "min"
+          | "max"
+          | "clamp"
+          | "__compare"
+          | "__compare_array"
+          | "__array_less"
+          | "__array_greater"
+          | "__array_less_or_equal"
+          | "__array_greater_or_equal" => true
           _ => false
         }
       _ => false
