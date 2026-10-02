@@ -18,5 +18,7 @@ The scanner accepts a configured flow nesting limit so buffered lookahead cannot
 bypass the caller's depth bound. YAML 1.1 NEL/LS/PS line breaks are recognized.
 A missing character advance in `scan_verbatim_tag` is fixed to prevent an
 unbounded buffer loop on verbatim tags.
-Percent-escaped multibyte tag characters decode UTF-8 payload bits and reject
-overlong sequences, instead of combining raw octets as a code point.
+Percent-escaped multibyte tag characters decode UTF-8 payload bits rather than
+combining raw octets as a code point. Overlong sequences use a replacement
+character to preserve Go's unknown-tag behavior without turning malformed bytes
+into a recognized built-in tag name.

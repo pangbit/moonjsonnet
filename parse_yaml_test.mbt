@@ -11,6 +11,10 @@ fn parse_yaml_test(
 
 ///|
 test "parseYaml YAML 1.1 scalars and recursive collections" {
+  assert_eq(
+    parse_yaml_test("!<tag:example.com,%C0%80> value"),
+    Json::string("value"),
+  )
   assert_eq(parse_yaml_test("!<tag:yaml.org,2002:int> '012'"), 10)
   assert_eq(
     parse_yaml_test("!<tag:example.com,%E4%B8%AD> value"),

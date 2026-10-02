@@ -1,6 +1,6 @@
 [
   {"name":"parse-yaml-tag-utf8","source":"std.parseYaml('!<tag:example.com,%E4%B8%AD> value')","expect":"success"},
-  {"name":"parse-yaml-tag-escape-invalid","source":"std.parseYaml('!<tag:example.com,%C0%80> value')","expect":"error"},
+  {"name":"parse-yaml-tag-escape-overlong","source":"std.parseYaml('!<tag:example.com,%C0%80> value')","expect":"success"},
   {"name":"parse-yaml-float-key-matrix","source":"std.parseYaml(std.join('\\n',[std.toString(std.pow(10,e)*(1+i/17))+': 0' for e in [-45,-38,-10,-5,-4,0,5,6,10,38,39] for i in std.range(1,32)]))","expect":"success"},
   {"name":"parse-yaml-nul","source":"std.parseYaml(str=\"a: 1\\u0000b: 2\")","expect":"error"},
   {"name":"parse-yaml-control","source":"std.parseYaml(str=\"a: \\u0001\")","expect":"error"},

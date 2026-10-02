@@ -2101,7 +2101,10 @@ fn Lexer::scan_uri_escapes(self : Lexer, mark : Marker) -> Char raise YamlError 
     }
   }
   if code < minimum {
-    raise YamlError::YamlError(mark~, info="overlong UTF-8 tag escape")
+    // go-yaml keeps malformed UTF-8 bytes in a tag, which then resolves as an
+    // unknown tag. MoonBit strings cannot retain those bytes: use replacement
+    // rather than canonicalizing them into a recognized built-in tag name.
+    return '\ufffd'
   }
   match Int::to_char(code) {
     Some(ch) => ch
