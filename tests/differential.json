@@ -2,7 +2,7 @@
   {"name":"format-lazy-precision","source":"['%.*s' % [error 'unused',1], '%.*f' % [null,1.2], '%(x).*s' % {x:'ok'}, '%.*c' % [error 'unused',65], '%.*%' % [error 'unused']]","expect":"success"},
   {"name":"format-char-fraction","source":"['%c' % 65.5, std.char(65.5)]","expect":"success"},
   {"name":"empty-manifest-string","source":"[std.toString([]),std.toString({}),std.manifestJson([]),std.manifestJson({})]","expect":"success"},
-  {"name":"format-dynamic-fractional","source":"['%*s' % [1.5,'x'], '%.*f' % [-1,123.45], '%.*d' % [1.5,1], '%.*f' % [1.5,1.25]]","expect":"success"},
+  {"name":"format-dynamic-fractional","source":"['%*s' % [1.5,'x'], '%.*f' % [-1,123.45], '%.*d' % [1.5,1], '%.*f' % [1.5,1.25]]","expect":"success","cpp_difference":{"reference":[" x","128.0.099999999999999339","01","1.8.3772233983162074"],"moonjsonnet":[" x","128.0.099999999999999339","01","1.8.3772233983162003"]}},
   {"name":"bitwise-complement-wide","source":"[~1e16,~-1e16,~0.9]","expect":"success"},
   {"name":"method-plus-static","source":"local unused={f()+::1}; 42","expect":"error"},
   {"name":"numeric-string-rendering","source":"[std.toString(0.1),std.toString(1e20),std.toString(1e-8),std.toString(-0),std.manifestJson({x:0.1}),std.abs(n=-2)]","expect":"success","cpp_difference":{"reference":["0.10000000000000001","100000000000000000000","1e-08","-0","{\n    \"x\": 0.10000000000000001\n}",2],"moonjsonnet":["0.10000000000000001","100000000000000000000","1e-08","-0","{\n    \"x\": 0.1\n}",2]}},

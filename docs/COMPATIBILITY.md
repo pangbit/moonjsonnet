@@ -61,6 +61,15 @@ matching Go. Negative shift counts are rejected before truncation. Operands must
 be within `[-2^63, 2^63)` before conversion; results are converted back to binary64.
 Bitwise complement retains the same operand range.
 
+Dynamic fractional format precision uses Go's exponent decomposition and ordered
+scaling for powers of ten. Integral precision and scientific mantissa scaling
+retain MoonBit core's power function. Arithmetic overflow/underflow and output
+limits are still checked. This resolves the retained fractional-format fixture;
+it does not claim bit-for-bit agreement for every transcendental calculation on
+every platform. The shared C++ fixture asserts both exact outputs as a declared
+difference. Attribution and the Go BSD license are included in `NOTICE` and
+`licenses/GO-BSD-3-Clause.txt`.
+
 The pinned Go implementation admits the positive `2^63` boundary because its
 floating-point range check rounds `MaxInt64` upward. Conversion of that value to
 `int64` is outside the representable range and is

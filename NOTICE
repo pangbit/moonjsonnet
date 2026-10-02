@@ -24,6 +24,13 @@ Pinned commit: 67968688d9952f50662e979fab1bef889d0d3e57.
 The Go interpreter is used only for development-time behavioral comparisons;
 its implementation is not bundled or linked into this package.
 
+format_power.mbt adapts the fractional base-10 evaluation path from the Go
+standard library, Go 1.24.0 src/math/pow.go:
+https://github.com/golang/go/blob/go1.24.0/src/math/pow.go
+Copyright 2009 The Go Authors. All rights reserved.
+It is distributed under the BSD 3-Clause terms in licenses/GO-BSD-3-Clause.txt.
+This is separate from the development-only go-jsonnet interpreter reference.
+
 MoonBit core is provided by the user's toolchain, not vendored here. Automation
 scripts use moonbitlang/async (Apache-2.0), resolved by Moon script mode; it is not
 a library runtime dependency. Official examples informed the package layout:

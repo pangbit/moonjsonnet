@@ -297,7 +297,7 @@ fn format_decimal(
   trailing : Bool,
   loc : Location,
 ) -> String raise {
-  let denominator = @math.pow(10, precision)
+  let denominator = format_power(precision)
   let rounded = n.abs() * denominator + 0.5
   if denominator == 0 || denominator.is_inf() || rounded.is_inf() {
     raise problem(Runtime, loc, "non-finite formatting arithmetic")

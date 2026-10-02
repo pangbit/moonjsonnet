@@ -16,6 +16,8 @@
   with explicit rejection of the unrepresentable positive `2^63` conversion boundary.
 - Go-compatible shortest fixed decimal numbers in `manifestJson`, preserving signed
   zero and output limits while retaining the separate string-coercion contract.
+- Go-style fractional powers for dynamic format precision, with upstream attribution
+  and regression coverage for fixed, scientific and general conversions.
 - Pinned go-jsonnet differential reports retain mismatches separately from C++ acceptance.
 - Three runnable examples, fixed-reference differential and host integration tests.
 - Apache-2.0 metadata, generated API interfaces and reproducible release checks.
