@@ -15,7 +15,7 @@ fn builtin_names() -> Array[String] {
     "lstripChars", "rstripChars", "stripChars", "base64", "base64Decode", "base64DecodeBytes",
     "encodeUTF8", "decodeUTF8", "manifestJsonEx", "remove", "removeAt", "$objectFlatMerge",
     "manifestTomlEx", "manifestYamlDoc", "md5", "sha1", "sha512", "sha3", "native",
-    "trace",
+    "trace", "parseYaml",
   ]
 }
 
@@ -102,7 +102,7 @@ fn builtin_params(name : String) -> Array[String] {
     "strReplace" => ["str", "from", "to"]
     "startsWith" => ["a", "b"]
     "endsWith" => ["a", "b"]
-    "parseJson" => ["str"]
+    "parseJson" | "parseYaml" => ["str"]
     "manifestJson" => ["value"]
     "manifestJsonEx" => ["value", "indent", "newline", "key_val_sep"]
     "format" => ["str", "vals"]
@@ -195,6 +195,7 @@ fn Vm::builtin(
       (self.trace)(loc, text_value(x, loc))
       values[1]
     }
+    "parseYaml" => self.parse_yaml(text_value(x, loc), loc)
     "manifestYamlDoc" => {
       let out = ManifestText::new(self.limits.output_bytes, loc)
       self.yaml_value(

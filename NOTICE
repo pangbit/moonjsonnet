@@ -57,7 +57,16 @@ Copyright 2009 The Go Authors. All rights reserved.
 BSD 3-Clause terms: licenses/GO-BSD-3-Clause.txt.
 tools/embed-unicode.mbtx verifies the exact source SHA-256 before extraction.
 
-MoonBit core is provided by the user's toolchain, not vendored here. Automation
-scripts use moonbitlang/async (Apache-2.0), resolved by Moon script mode; it is not
+MoonBit core is provided by the user's toolchain, not vendored here.
+
+internal/yaml contains the syntax/event parser from moonbit-community/yaml.mbt,
+commit e2f1129249a7cc707aa1c9c39bd8bfe207c93821 (0.0.7 source):
+https://github.com/moonbit-community/yaml.mbt
+Copyright 2025 International Digital Economy Academy. MIT terms are retained in
+licenses/YAML-MIT.txt. Parser::next_token is exposed for bounded event consumption;
+the plain-scalar colon rule follows go-yaml v2. The dependency's JSON schema
+resolver and emitter are not used.
+
+Automation scripts use moonbitlang/async (Apache-2.0), resolved by Moon script mode; it is not
 a library runtime dependency. Official examples informed the package layout:
 https://github.com/moonbitlang/async/tree/main/examples

@@ -9,7 +9,7 @@ async fn main {
   let archive = @fs.realpath("_build/publish/pangbit-moonjsonnet-0.1.0.zip")
   let listing = @shell.Cmd("unzip", ["-Z1", archive]).output()
   listing.check()
-  for required in ["NOTICE", "licenses/GO-BSD-3-Clause.txt", "licenses/GO-MATH-NOTICES.txt", "stdlib_source.mbt", "unicode_fold.mbt"] {
+  for required in ["NOTICE", "licenses/GO-BSD-3-Clause.txt", "licenses/GO-MATH-NOTICES.txt", "licenses/YAML-MIT.txt", "internal/yaml/parser.mbt", "stdlib_source.mbt", "unicode_fold.mbt"] {
     assert_true(listing.stdout().split("\n").any(path => path == required), msg="missing archive attribution: " + required)
   }
   for path in listing.stdout().split("\n") {
@@ -44,6 +44,7 @@ async fn main {
     #|  assert_eq(@moonjsonnet.evaluate("std.sha512('abc')"), Json::string("ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"))
     #|  assert_eq(@moonjsonnet.evaluate("std.sha3('abc')"), Json::string("b751850b1a57168a5693cd924b6b096e08f621827444f70d884f5d0240d2712e10e116e9192af3c91a7ec57647e3934057340b4cf408d5a56592f8274eec53f0"))
     #|  let host = @fs.FileHost::new(".")
+    #|  assert_eq(@moonjsonnet.evaluate("std.parseYaml('a: &a [yes,012]\\nb: *a')"),{"a":[true,10],"b":[true,10]})
     #|  let native : @moonjsonnet.NativeFunction = {params:["x"],callback:args => args[0]}
     #|  let traces : Array[String] = []
     #|  assert_eq(@moonjsonnet.evaluate("std.trace('consumer',std.native('id')(42))",native_functions=Map([("id",native)]),trace=fn(_,s) {traces.push(s)}),42)

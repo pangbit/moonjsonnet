@@ -257,6 +257,28 @@ can internally crash with `Saving empty traceElement on stack`; that input is
 retained as a differential failure. MoonJsonnet keeps valid VM state. Depth,
 step and output limits always propagate, including inside YAML object fields.
 
+`parseYaml(str)` parses block/flow collections, quoted/plain/block scalars,
+anchors, aliases, merge keys, tags and Go-style document streams. YAML 1.1
+`yes/no/on/off/y/n` spellings resolve to booleans; octal and prefixed integers,
+floating-point values and explicit scalar tags follow the pinned reference.
+Timestamps remain strings. Mapping keys are converted to strings, with Go's
+binary32 shortest format for floating keys; null, collection and unsigned
+64-bit integer keys are rejected. Non-finite values cannot become JSON, while
+non-finite keys use `.inf`, `-.inf`, `.nan`.
+
+Only unindented `---` followed by whitespace activates the reference's stream
+splitting; each chunk decodes its first document, and duplicate mapping keys
+overwrite earlier keys. Aliases and merge expansion are bounded by step, depth
+and intermediate output budgets. An empty input returns Runtime where the pinned
+Go implementation crashes. Collisions between differently typed keys that
+convert to the same JSON name may depend on Go map iteration; general YAML
+behavioral equivalence is not proven by the current corpus.
+
+The bundled MoonBit syntax parser and its local fixes are documented in
+`internal/yaml/README.md`, with its MIT license preserved. No external YAML
+library or executable is needed at runtime. Explicit tags, scalar resolution and
+stream handling are implemented locally; the upstream JSON loader is not used.
+
 New sequence functions follow the pinned Go implementation. In particular,
 `makeArray` uses the parameter name `sz`, rejects fractional sizes, returns an
 empty array for negative sizes, and defers callback arity errors until an
