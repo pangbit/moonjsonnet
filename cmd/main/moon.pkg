@@ -1,0 +1,5 @@
+// import {
+//   "pangbit/moonjsonnet" @lib,
+// }
+
+pkgtype(kind: "executable")
