@@ -94,7 +94,7 @@
 | `mapWithKey` | function | 2 | registered |
 | `max` | function | 2 | registered |
 | `maxArray` | function | 1 | registered |
-| `md5` | function | 1 | missing |
+| `md5` | function | 1 | registered |
 | `member` | function | 2 | registered |
 | `mergePatch` | function | 2 | registered |
 | `min` | function | 2 | registered |
@@ -136,10 +136,10 @@
 | `setInter` | function | 2 | registered |
 | `setMember` | function | 2 | registered |
 | `setUnion` | function | 2 | registered |
-| `sha1` | function | 1 | missing |
+| `sha1` | function | 1 | registered |
 | `sha256` | function | 1 | registered |
-| `sha3` | function | 1 | missing |
-| `sha512` | function | 1 | missing |
+| `sha3` | function | 1 | registered |
+| `sha512` | function | 1 | registered |
 | `sign` | function | 1 | registered |
 | `sin` | function | 1 | registered |
 | `slice` | function | 4 | registered |
