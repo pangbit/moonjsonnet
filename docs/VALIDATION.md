@@ -43,12 +43,14 @@ Run the same corpus against the pinned Go implementation separately:
 ```sh
 git clone --depth 1 --branch v0.21.0 https://github.com/google/go-jsonnet.git /tmp/go-jsonnet-v0.21.0
 git -C /tmp/go-jsonnet-v0.21.0 rev-parse HEAD
-go -C /tmp/go-jsonnet-v0.21.0 build -o /tmp/go-jsonnet-v0.21.0/jsonnet ./cmd/jsonnet
+GOTOOLCHAIN=go1.24.0 go -C /tmp/go-jsonnet-v0.21.0 build -o /tmp/go-jsonnet-v0.21.0/jsonnet ./cmd/jsonnet
 moon run tools/differential.mbtx /tmp/go-jsonnet-v0.21.0/jsonnet _build/native/release/build/cmd/main/main.exe
 ```
 
 The Go run includes the shared `tests/differential.json` corpus plus Go-specific
-cases in `tests/go-differential.json`. C++ continues to run the original shared
+cases in `tests/go-differential.json` and `tests/go-parameters.json`. Parameter
+fixtures can supply `args`, `files`, `env` and pinned JSON `result` or error
+diagnostic checks; reports retain all inputs and outputs. C++ continues to run the original shared
 corpus: its pass count does not cover the Go-specific cases. The
 `makeArray` contract differences are listed in [compatibility](COMPATIBILITY.md).
 
@@ -77,8 +79,9 @@ Trace fixtures additionally compare exact stderr on success and the exact trace
 prefix before an error diagnostic. Both programs receive the same absolute
 input path for these cases; relative/alias diagnostic-path parity is not implied.
 
-See the [YAML parsing report](../reports/GO-JSONNET-PARSE-YAML.md) for current
+See the [parameter report](../reports/GO-JSONNET-PARAMETERS.md) for current
 commit-bound results and the retained differences. The earlier
+[YAML parsing report](../reports/GO-JSONNET-PARSE-YAML.md),
 [native and trace report](../reports/GO-JSONNET-NATIVE-TRACE.md),
 [digest report](../reports/GO-JSONNET-DIGESTS.md),
 [TOML and YAML output report](../reports/GO-JSONNET-TOML-YAML.md),
