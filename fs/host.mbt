@@ -71,7 +71,7 @@ pub fn FileHost::resolve(
 ///
 /// ```mbt check
 /// test {
-///   let host = @fs.FileHost::new(".", jpaths=["lib"])
+///   let host = @fs.FileHost::new(@env.current_dir().unwrap(), jpaths=["lib"])
 ///   assert_true(!host.load("moon.mod").text.is_empty())
 /// }
 /// ```
