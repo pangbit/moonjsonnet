@@ -48,8 +48,9 @@ moon run tools/differential.mbtx /tmp/go-jsonnet-v0.21.0/jsonnet _build/native/r
 ```
 
 The Go run includes the shared `tests/differential.json` corpus plus Go-specific
-cases in `tests/go-differential.json`, `tests/go-parameters.json` and
-`tests/go-cli-input.json` and `tests/go-cli-output.json`. Fixtures can supply `args`, `files`, `env`, an
+cases in `tests/go-differential.json`, `tests/go-parameters.json`,
+`tests/go-cli-input.json`, `tests/go-cli-output.json` and `tests/go-cli-multi.json`.
+Fixtures can supply `args`, `files`, `env`, an
 `input` mode (`file`, `exec` or `stdin`), literal `input_arg`, explicit `stdin`,
 `cwd` and pinned JSON `result` or error diagnostic checks. The `<work>` marker
 in fixture paths resolves to the runner's isolated case directory; reports
@@ -62,6 +63,24 @@ NUL and newlines; they do not parse or trim output. They cover Go CLI JSON layou
 plain strings and YAML document streams. `text_output_cases` is an overlapping
 count of these successful-output fixtures. Error cases also require empty stdout
 on both processes, retaining the stream's evaluate-before-output contract.
+
+File-output fixtures use independent `<out>` directories for the reference and
+local program. `output_setup`, `output_directories` and `output_links` prepare
+initial state; `output_files` pins each final file's complete contents or `null`
+for absence. `file-output` also pins stdout, replacing only the generated root
+with `<out>`. `io-error` pins exit 1, diagnostic fragments, partial stdout and
+final files. Reports retain the fixture, both concrete argument lists and both
+observed file maps. ENOTDIR below a regular file counts as absence; other host
+observation errors still abort. The overlapping `file_output_cases` count
+includes successful, evaluation-error and I/O-error file fixtures;
+`io_error_cases` also overlaps `error_cases`. Output directories are reset before
+each side, so reference-created files cannot mask local mkdir/write defects.
+
+The host integration entrypoint also runs `tools/multi-integration.mbtx`. It
+checks raw bytes, directory creation, partial failures and budgets, then compares
+mtime/inode after pinning a past timestamp to prove identical content is not
+rewritten. No timing sleep is used. The existing-file comparison is exercised
+at zero length and around 4096-byte boundaries, including unchanged and changed files.
 
 The runner checks Go binary build metadata for commit
 `67968688d9952f50662e979fab1bef889d0d3e57` and an unmodified checkout. Build the
@@ -88,8 +107,9 @@ Trace fixtures additionally compare exact stderr on success and the exact trace
 prefix before an error diagnostic. Both programs receive the same absolute
 input path for these cases; relative/alias diagnostic-path parity is not implied.
 
-See the [CLI output report](../reports/GO-JSONNET-CLI-OUTPUT.md) for current
+See the [multi-output report](../reports/GO-JSONNET-MULTI-OUTPUT.md) for current
 commit-bound results and the retained differences. The earlier
+[CLI output report](../reports/GO-JSONNET-CLI-OUTPUT.md),
 [CLI input report](../reports/GO-JSONNET-CLI-INPUT.md),
 [parameter report](../reports/GO-JSONNET-PARAMETERS.md),
 [YAML parsing report](../reports/GO-JSONNET-PARSE-YAML.md),
