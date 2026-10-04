@@ -234,5 +234,6 @@ async fn main {
     assert_eq(result.stdout(),expected)
     passed += 1
   }
+  @shell.Cmd("moon",["run","tools/multi-integration.mbtx",cli]).run()
   println("Integration: \{passed + 18} passed; path, UTF-8, CLI inputs/parameters/exit/output, trace and resource limits")
 }

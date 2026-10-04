@@ -8,7 +8,8 @@ parameters and expected categories are committed under `tests/` and `examples/`.
 Success comparisons parse JSON and ignore object order and insignificant whitespace;
 non-finite aggregate scalar outputs use exact spelling checks instead. The Go
 CLI output corpus also pins complete stdout bytes for JSON layout, plain strings
-and YAML document streams.
+and YAML document streams. Multi-file fixtures separately compare complete file
+contents and filename lists in isolated reference/local output directories.
 
 ## Implementation reference
 
@@ -306,8 +307,7 @@ and CLI. Top-level functions are applied exactly once; other top-level values
 ignore TLAs. Code parameters have separate scopes, cached values/errors and
 synthetic filenames, but imports originate at the host root. The CLI supports
 string/code/file/environment forms and last-assignment wins. File reads retain
-the project's restricted-root policy. Reusable VM/reset/AST capabilities and
-multi-file output remains pending.
+the project's restricted-root policy. Reusable VM/reset/AST capabilities remain pending.
 CLI inline (`-e`), stdin (`-`), `--` and bytewise short-option expansion are now
 available. Anonymous entry `std.thisFile` and import origin are empty, with
 synthetic diagnostic filenames. Argument/evaluation/output failures exit 1.
@@ -315,8 +315,13 @@ Stdin retains the bounded-read and strict UTF-8 host policy. `-S` plain strings,
 `-y` JSON documents with YAML stream framing and their embedding APIs are now
 available. Default JSON formatting follows the fixed Go CLI serializer.
 String mode rejects other types before traversing them; stream mode first deeply
-manifests the result, requires an array and ignores `-S`. Multi-file output,
-automatic output-directory creation and complete CLI options remain pending.
+manifests the result, requires an array and ignores `-S`. Multi-file output and
+automatic output-directory creation are also available through `-m`/`-c` and
+`evaluate_multi`. Multi mode takes precedence over stream mode; raw multi strings
+have no added newline. Like Go, `-c` applies to ordinary output and multi data
+parents, while stream/list parents must already exist. Identical output content
+preserves modification time; I/O failure can leave partial files and lists.
+Import search paths, stack/trace options and other CLI capabilities remain pending.
 
 The POSIX host accepts regular files within one canonical root. Text imports
 require valid UTF-8; binary imports do not decode their contents. Custom

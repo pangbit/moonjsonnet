@@ -1,0 +1,751 @@
+[
+  {
+    "name": "multi-json",
+    "source": "{b:[],a:{x:1}}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/a\n<out>/b\n",
+    "output_files": {
+      "a": "{\n   \"x\": 1\n}\n",
+      "b": "[ ]\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-long",
+    "source": "{a:42}",
+    "args": [
+      "--multi",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/a\n",
+    "output_files": {
+      "a": "42\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-empty",
+    "source": "{}",
+    "args": [
+      "-m",
+      "<out>/missing",
+      "-e"
+    ],
+    "stdout": "",
+    "output_files": {
+      "missing/a": null
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-empty-manifest",
+    "source": "{}",
+    "args": [
+      "-cm",
+      "<out>/missing",
+      "-o",
+      "<out>/manifest",
+      "-e"
+    ],
+    "stdout": "",
+    "output_files": {
+      "manifest": "",
+      "missing/a": null
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-strings",
+    "source": "{a:'',b:'é😀\\u0000\\n'}",
+    "args": [
+      "-Sm",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/a\n<out>/b\n",
+    "output_files": {
+      "a": "",
+      "b": "é😀\u0000\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-string-no-newline",
+    "source": "{a:'raw'}",
+    "args": [
+      "-m",
+      "<out>",
+      "--string",
+      "-e"
+    ],
+    "stdout": "<out>/a\n",
+    "output_files": {
+      "a": "raw"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-hidden",
+    "source": "{a:42,hidden::error 'hidden'}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/a\n",
+    "output_files": {
+      "a": "42\n",
+      "hidden": null
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-sorted-keys",
+    "source": "{z:1,aa:2,a:3}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/a\n<out>/aa\n<out>/z\n",
+    "output_files": {
+      "a": "3\n",
+      "aa": "2\n",
+      "z": "1\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-unicode-order",
+    "source": "{'𐀀':1,'\\ue000':2,'é':3}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/é\n<out>/\n<out>/𐀀\n",
+    "output_files": {
+      "é": "3\n",
+      "": "2\n",
+      "𐀀": "1\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-trailing-slashes",
+    "source": "{a:42}",
+    "args": [
+      "-m",
+      "<out>//",
+      "-e"
+    ],
+    "stdout": "<out>//a\n",
+    "output_files": {
+      "a": "42\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-manifest-file",
+    "source": "{b:2,a:1}",
+    "args": [
+      "-m",
+      "<out>",
+      "-o",
+      "<out>/manifest",
+      "-e"
+    ],
+    "stdout": "",
+    "output_files": {
+      "a": "1\n",
+      "b": "2\n",
+      "manifest": "<out>/a\n<out>/b\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-over-stream",
+    "source": "{a:42}",
+    "args": [
+      "-ym",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/a\n",
+    "output_files": {
+      "a": "42\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-string-over-stream",
+    "source": "{a:'raw'}",
+    "args": [
+      "-ySm",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/a\n",
+    "output_files": {
+      "a": "raw"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-stdin",
+    "source": "{a:42}",
+    "input": "stdin",
+    "args": [
+      "-m",
+      "<out>"
+    ],
+    "stdout": "<out>/a\n",
+    "output_files": {
+      "a": "42\n"
+    },
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-file-input",
+    "source": "{a:42}",
+    "input": "file",
+    "args": [
+      "-m",
+      "<out>"
+    ],
+    "stdout": "<out>/a\n",
+    "output_files": {
+      "a": "42\n"
+    },
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-parameters",
+    "source": "function(x) {a:std.extVar('n'),b:x,c:std.thisFile}",
+    "args": [
+      "-m",
+      "<out>",
+      "--ext-code",
+      "n=21*2",
+      "--tla-str",
+      "x=raw",
+      "-e"
+    ],
+    "stdout": "<out>/a\n<out>/b\n<out>/c\n",
+    "output_files": {
+      "a": "42\n",
+      "b": "\"raw\"\n",
+      "c": "\"\"\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-repeated",
+    "source": "{a:42}",
+    "args": [
+      "-m",
+      "<out>/first",
+      "-m",
+      "<out>/last",
+      "-c",
+      "-e"
+    ],
+    "stdout": "<out>/last/a\n",
+    "output_files": {
+      "last/a": "42\n",
+      "first/a": null
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-create-nested",
+    "source": "{'a/b/c.json':{x:42}}",
+    "args": [
+      "-m",
+      "<out>",
+      "-c",
+      "-e"
+    ],
+    "stdout": "<out>/a/b/c.json\n",
+    "output_files": {
+      "a/b/c.json": "{\n   \"x\": 42\n}\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-create-long",
+    "source": "{a:42}",
+    "args": [
+      "--multi",
+      "<out>/new/deep",
+      "--create-output-dirs",
+      "-e"
+    ],
+    "stdout": "<out>/new/deep/a\n",
+    "output_files": {
+      "new/deep/a": "42\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-symlink-file",
+    "source": "{alias:42}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "output_setup": {
+      "target": "old"
+    },
+    "output_links": {
+      "alias": "target"
+    },
+    "stdout": "<out>/alias\n",
+    "output_files": {
+      "target": "42\n",
+      "alias": "42\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-parent-key",
+    "source": "{'../a':42}",
+    "args": [
+      "-cm",
+      "<out>/inside",
+      "-e"
+    ],
+    "output_directories": [
+      "inside"
+    ],
+    "stdout": "<out>/inside/../a\n",
+    "output_files": {
+      "a": "42\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-leading-slash-key",
+    "source": "{'/a':42}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>//a\n",
+    "output_files": {
+      "a": "42\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "create-single-json",
+    "source": "{x:42}",
+    "args": [
+      "-co",
+      "<out>/new/deep/a",
+      "-e"
+    ],
+    "stdout": "",
+    "output_files": {
+      "new/deep/a": "{\n   \"x\": 42\n}\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "create-single-string",
+    "source": "'é😀\\u0000'",
+    "args": [
+      "--create-output-dirs",
+      "-S",
+      "-o",
+      "<out>/new/a",
+      "-e"
+    ],
+    "stdout": "",
+    "output_files": {
+      "new/a": "é😀\u0000\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "create-stdout",
+    "source": "42",
+    "args": [
+      "-c",
+      "-e"
+    ],
+    "stdout": "42\n",
+    "output_files": {},
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "create-normalized-parent",
+    "source": "42",
+    "args": [
+      "-co",
+      "<out>/existing/../a",
+      "-e"
+    ],
+    "output_directories": [
+      "existing"
+    ],
+    "stdout": "",
+    "output_files": {
+      "a": "42\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-json-numbers",
+    "source": "{a:[0.1,1e21,-0]}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/a\n",
+    "output_files": {
+      "a": "[\n   0.10000000000000001,\n   1000000000000000000000,\n   -0\n]\n"
+    },
+    "input": "exec",
+    "expect": "file-output"
+  },
+  {
+    "name": "multi-error-preserves-manifest",
+    "source": "{a:42,b:error 'late'}",
+    "args": [
+      "-cm",
+      "<out>/new",
+      "-o",
+      "<out>/manifest",
+      "-e"
+    ],
+    "output_setup": {
+      "manifest": "keep"
+    },
+    "output_files": {
+      "manifest": "keep",
+      "new/a": null,
+      "new/b": null
+    },
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "late",
+    "moonjsonnet_error": "Runtime"
+  },
+  {
+    "name": "multi-assert",
+    "source": "{assert false}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "output_files": {},
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "Object assertion failed",
+    "moonjsonnet_error": "Assertion"
+  },
+  {
+    "name": "multi-type",
+    "source": "[]",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "output_files": {},
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "should be an object",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "multi-wrong-type-eager",
+    "source": "[error 'forced']",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "output_files": {},
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "forced",
+    "moonjsonnet_error": "Runtime"
+  },
+  {
+    "name": "multi-string-type",
+    "source": "{a:42}",
+    "args": [
+      "-Sm",
+      "<out>",
+      "-e"
+    ],
+    "output_files": {
+      "a": null
+    },
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "should be a string",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "multi-string-eager",
+    "source": "{a:{x:error 'forced'}}",
+    "args": [
+      "-Sm",
+      "<out>",
+      "-e"
+    ],
+    "output_files": {
+      "a": null
+    },
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "forced",
+    "moonjsonnet_error": "Runtime"
+  },
+  {
+    "name": "multi-function",
+    "source": "{a:function() 1}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "output_files": {
+      "a": null
+    },
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "couldn't manifest function",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "multi-missing-directory",
+    "source": "{a:42}",
+    "args": [
+      "-m",
+      "<out>/missing",
+      "-e"
+    ],
+    "stdout": "<out>/missing/a\n",
+    "output_files": {
+      "missing/a": null
+    },
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "no such file or directory",
+    "moonjsonnet_cli_error": "cannot write output"
+  },
+  {
+    "name": "multi-manifest-parent",
+    "source": "{a:42}",
+    "args": [
+      "-cm",
+      "<out>/data",
+      "-o",
+      "<out>/missing/manifest",
+      "-e"
+    ],
+    "stdout": "",
+    "output_files": {
+      "data/a": null,
+      "missing/manifest": null
+    },
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "no such file or directory",
+    "moonjsonnet_cli_error": "cannot open output filename list"
+  },
+  {
+    "name": "multi-partial-write",
+    "source": "{a:42,'blocked/b':7}",
+    "args": [
+      "-cm",
+      "<out>",
+      "-e"
+    ],
+    "output_setup": {
+      "blocked": "keep"
+    },
+    "stdout": "<out>/a\n<out>/blocked/b\n",
+    "output_files": {
+      "a": "42\n",
+      "blocked": "keep",
+      "blocked/b": null
+    },
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "not a directory",
+    "moonjsonnet_cli_error": "cannot create output directories"
+  },
+  {
+    "name": "multi-existing-directory",
+    "source": "{blocked:1}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "output_directories": [
+      "blocked"
+    ],
+    "stdout": "<out>/blocked\n",
+    "output_files": {},
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "is a directory",
+    "moonjsonnet_cli_error": "cannot read existing output"
+  },
+  {
+    "name": "multi-empty-directory-option",
+    "source": "{}",
+    "args": [
+      "-m",
+      "",
+      "-e"
+    ],
+    "stdout": "",
+    "output_files": {},
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "-m argument was empty string",
+    "moonjsonnet_cli_error": "multi directory must not be empty"
+  },
+  {
+    "name": "multi-empty-filename",
+    "source": "{'':42}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/\n",
+    "output_files": {},
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "is a directory",
+    "moonjsonnet_cli_error": "cannot read existing output"
+  },
+  {
+    "name": "multi-nul-filename",
+    "source": "{'x\\u0000y':42}",
+    "args": [
+      "-m",
+      "<out>",
+      "-e"
+    ],
+    "stdout": "<out>/x\u0000y\n",
+    "output_files": {},
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "invalid argument",
+    "moonjsonnet_cli_error": "cannot read existing output"
+  },
+  {
+    "name": "create-single-disabled",
+    "source": "42",
+    "args": [
+      "-o",
+      "<out>/missing/a",
+      "-e"
+    ],
+    "stdout": "",
+    "output_files": {
+      "missing/a": null
+    },
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "no such file or directory",
+    "moonjsonnet_cli_error": "cannot write output"
+  },
+  {
+    "name": "create-stream-ignored",
+    "source": "[42]",
+    "args": [
+      "-cyo",
+      "<out>/missing/a",
+      "-e"
+    ],
+    "stdout": "",
+    "output_files": {
+      "missing/a": null
+    },
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "no such file or directory",
+    "moonjsonnet_cli_error": "cannot write output"
+  },
+  {
+    "name": "create-clean-parent-raw-write",
+    "source": "42",
+    "args": [
+      "-co",
+      "<out>/missing/../a",
+      "-e"
+    ],
+    "stdout": "",
+    "output_files": {
+      "a": null
+    },
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "no such file or directory",
+    "moonjsonnet_cli_error": "cannot write output"
+  },
+  {
+    "name": "create-file-parent",
+    "source": "42",
+    "args": [
+      "-co",
+      "<out>/blocked/a",
+      "-e"
+    ],
+    "output_setup": {
+      "blocked": "keep"
+    },
+    "stdout": "",
+    "output_files": {
+      "blocked": "keep",
+      "blocked/a": null
+    },
+    "input": "exec",
+    "expect": "io-error",
+    "reference_error": "not a directory",
+    "moonjsonnet_cli_error": "cannot create output directories"
+  }
+]

@@ -39,6 +39,9 @@ async fn main {
     let outputs = @json.parse(@fs.read_file("tests/go-cli-output.json").text())
     guard outputs is Array(outputs) else { fail("expected Go CLI output case array") }
     for case in outputs { cases.push(case) }
+    let multi = @json.parse(@fs.read_file("tests/go-cli-multi.json").text())
+    guard multi is Array(multi) else { fail("expected Go multi-output case array") }
+    for case in multi { cases.push(case) }
   }
   let work = if is_go { "_build/go-differential" } else { "_build/differential" }
   @fs.mkdir(work, recursive=true, allow_exist=true)
@@ -48,12 +51,14 @@ async fn main {
   let mut errors = 0
   let mut raw_output_cases = 0
   let mut text_output_cases = 0
+  let mut file_output_cases = 0
+  let mut io_error_cases = 0
   let mut reference_differences = 0
   let rows : Array[Json] = []
   for case in cases {
     guard case is { "name": String(name), "source": String(source), "expect": String(expect), .. } else { fail("invalid case") }
     let expect = if is_go && case is { "go_expect": String(go_expect), .. } { go_expect } else { expect }
-    assert_true(["success", "raw-output", "text-output", "error", "unsupported", "unsupported-reference-error"].contains(expect))
+    assert_true(["success", "raw-output", "text-output", "file-output", "error", "io-error", "unsupported", "unsupported-reference-error"].contains(expect))
     let path = work + "/" + name + ".jsonnet"
     @fs.write_file(path, source)
     // Absolute input paths give both trace sinks the same diagnostic filename.
@@ -84,8 +89,23 @@ async fn main {
     }
     let stdin = match case {{"stdin":String(s),..}=>s;_=>if mode=="stdin" {source} else {""}}
     let cwd = match case {{"cwd":String(dir),..}=>Some(dir.replace_all(old="<work>",new=work));_=>None}
-    let a = @shell.Cmd(@fs.realpath(reference), extra_args + [input],env=environment,cwd?,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
-    let b = @shell.Cmd(@fs.realpath(cli), extra_args + [input],env=environment,cwd?,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+    // File-output fixtures must never share generated files between interpreters.
+    let out_a = @fs.realpath(work) + "/" + name + ".reference-output"
+    let out_b = @fs.realpath(work) + "/" + name + ".moonjsonnet-output"
+    if case is {"output_files":Object(_),..} {
+      for base in [out_a,out_b] { prepare_output(case,base) }
+      file_output_cases += 1
+    }
+    let args_a = extra_args.map(s=>s.replace_all(old="<out>",new=out_a)) + [input]
+    let args_b = extra_args.map(s=>s.replace_all(old="<out>",new=out_b)) + [input]
+    let a = @shell.Cmd(@fs.realpath(reference), args_a,env=environment,cwd?,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+    let b = @shell.Cmd(@fs.realpath(cli), args_b,env=environment,cwd?,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+    let files_a = observe_output(case,out_a)
+    let files_b = observe_output(case,out_b)
+    let output_ok = match case {
+      {"output_files":Object(expected),..} => Json::object(files_a)==Json::object(expected) && Json::object(files_b)==Json::object(expected)
+      _ => true
+    }
     let difference = if !is_go && case is { "cpp_difference": difference, .. } { Some(difference) } else { None }
     let matches_difference = match difference {
       Some(difference) => {
@@ -110,12 +130,17 @@ async fn main {
       guard case is { "raw_output": String(expected), .. } else { fail("missing exact raw output") }
       assert_true(["+Inf", "-Inf", "NaN"].contains(expected))
       a.exit_code() == 0 && b.exit_code() == 0 && a.stdout().trim().to_owned() == expected && b.stdout().trim().to_owned() == expected
-    } else if expect == "text-output" {
+    } else if expect == "text-output" || expect == "file-output" {
       text_output_cases += 1
       guard case is {"stdout":String(expected),..} else {fail("missing exact text output")}
-      a.exit_code()==0 && b.exit_code()==0 && a.stdout()==expected && b.stdout()==expected
+      a.exit_code()==0 && b.exit_code()==0 && a.stdout().replace_all(old=out_a,new="<out>")==expected && b.stdout().replace_all(old=out_b,new="<out>")==expected
     } else if expect == "unsupported" || expect == "unsupported-reference-error" {
       (if expect == "unsupported" { a.exit_code() == 0 } else { a.exit_code() != 0 }) && b.exit_code() != 0 && b.stderr().contains("Unsupported")
+    } else if expect == "io-error" {
+      io_error_cases += 1
+      errors += 1
+      guard case is {"stdout":String(expected),"reference_error":String(reference_error),"moonjsonnet_cli_error":String(actual),..} else {fail("missing exact I/O error expectation")}
+      a.exit_code()==1 && b.exit_code()==1 && a.stdout().replace_all(old=out_a,new="<out>")==expected && b.stdout().replace_all(old=out_b,new="<out>")==expected && a.stderr().contains(reference_error) && b.stderr().contains(actual)
     } else if expect == "error" {
       errors += 1
       a.exit_code() == 1 && b.exit_code() == 1 && a.stdout().is_empty() && b.stdout().is_empty() && !a.stderr().contains("INTERNAL ERROR")
@@ -138,13 +163,13 @@ async fn main {
       {"reference_error": String(kind),"moonjsonnet_error":String(actual), ..} => a.stderr().contains(kind) && b.stderr().contains(": "+actual+":")
       _ => true
     }
-    let ok = outcome_ok && trace_ok && expected_ok
+    let ok = outcome_ok && trace_ok && expected_ok && output_ok
     let status = if difference is Some(_) {
       if matches_difference && !ok { reference_differences += 1; "reference-difference" } else { failed += 1; "failed" }
     } else if !ok { failed += 1; "failed" } else if expect.has_prefix("unsupported") { unsupported += 1; "unsupported" } else { passed += 1; "passed" }
     if status == "failed" { println("FAIL \{name}: reference_exit=\{a.exit_code()}, moonjsonnet_exit=\{b.exit_code()} (details in \{work}/report.json)") }
     if status == "reference-difference" { println("DIFF \{name}: exact declared C++/MoonJsonnet outcomes verified") }
-    rows.push({ "name": name, "source": source, "input":mode,"input_arg":input,"stdin":stdin,"cwd":cwd,"args":extra_args,"files":match case {{"files":files,..}=>files;_=>Json::object(Map([]))},"env":match case {{"env":vars,..}=>vars;_=>Json::object(Map([]))}, "expect": expect, "status": status, "passed": status == "passed", "cpp_difference": difference.unwrap_or(Json::null()), "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr() })
+    rows.push({ "name": name, "source": source, "input":mode,"input_arg":input,"stdin":stdin,"cwd":cwd,"args":extra_args,"files":match case {{"files":files,..}=>files;_=>Json::object(Map([]))},"env":match case {{"env":vars,..}=>vars;_=>Json::object(Map([]))}, "expect": expect, "status": status, "passed": status == "passed", "cpp_difference": difference.unwrap_or(Json::null()), "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr(), "output_fixture":match case {{"output_files":_,..}=>case;_=>null}, "reference_args":args_a, "moonjsonnet_args":args_b, "reference_output_files":files_a, "moonjsonnet_output_files":files_b })
   }
   for path in ["examples/environments/main.jsonnet", "examples/dashboards/main.jsonnet", "examples/embedded/config/main.jsonnet"] {
     let a = @shell.Cmd(reference, ["--ext-code", "replicas=3", path]).output()
@@ -159,8 +184,49 @@ async fn main {
   dirty.check()
   let hashes = @shell.Cmd("shasum", ["-a", "256", reference, cli]).output()
   hashes.check()
-  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "source_dirty": !dirty.stdout().is_empty(), "binary_sha256": hashes.stdout(), "reference": reference_version, "reference_commit": reference_commit, "total": rows.length(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "reference_differences": reference_differences, "error_cases": errors, "raw_output_cases": raw_output_cases, "text_output_cases":text_output_cases, "cases": rows }
+  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "source_dirty": !dirty.stdout().is_empty(), "binary_sha256": hashes.stdout(), "reference": reference_version, "reference_commit": reference_commit, "total": rows.length(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "reference_differences": reference_differences, "error_cases": errors, "raw_output_cases": raw_output_cases, "text_output_cases":text_output_cases, "file_output_cases":file_output_cases, "io_error_cases":io_error_cases, "cases": rows }
   @fs.write_file(work + "/report.json", report.stringify(indent=2))
   println("Differential: passed=\{passed}, failed=\{failed}, skipped=0, explicitly unsupported=\{unsupported}, declared reference differences=\{reference_differences}, expected errors=\{errors}")
   if failed != 0 { fail("differential validation failed; all cases retained") }
+}
+
+async fn prepare_output(case : Json, base : String) -> Unit {
+  if @fs.exists(base) { @fs.rmdir(base,recursive=true) }
+  @fs.mkdir(base)
+  if case is {"output_directories":Array(dirs),..} {
+    for dir in dirs {
+      guard dir is String(dir) else {fail("expected output directory")}
+      @fs.mkdir(base+"/"+dir,recursive=true,allow_exist=true)
+    }
+  }
+  if case is {"output_setup":Object(files),..} {
+    for path,content in files {
+      guard content is String(content) else {fail("expected initial output content")}
+      if path.rev_find("/") is Some(i) { @fs.mkdir(base+"/"+path[:i].to_owned(),recursive=true,allow_exist=true) }
+      @fs.write_file(base+"/"+path,content.replace_all(old="<out>",new=base))
+    }
+  }
+  if case is {"output_links":Object(links),..} {
+    for path,target in links {
+      guard target is String(target) else {fail("expected output symlink target")}
+      @fs.symlink(target~,base+"/"+path)
+    }
+  }
+}
+
+async fn observe_output(case : Json, base : String) -> Map[String,Json] {
+  let observed : Map[String,Json] = Map([])
+  if case is {"output_files":Object(files),..} {
+    for path,_ in files {
+      // A path below a regular file cannot exist; async/fs reports ENOTDIR
+      // rather than false. Preserve that absence without hiding other errors.
+      let exists = @fs.exists(base+"/"+path) catch {
+        e => if e.to_string().contains("Not a directory") { false } else {raise e}
+      }
+      observed[path] = if exists {
+        Json::string(@fs.read_file(base+"/"+path).text().replace_all(old=base,new="<out>"))
+      } else { null }
+    }
+  }
+  observed
 }

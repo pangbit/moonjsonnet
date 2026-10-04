@@ -4,7 +4,15 @@ package "pangbit/moonjsonnet/internal/posix"
 // Values
 pub fn canonical(String) -> String?
 
+pub fn close_output(Int) -> Bool
+
 pub fn exit(Int) -> Unit
+
+pub fn mkdir_all(String) -> Bool
+
+pub fn open_output(String) -> Int
+
+pub fn output_same(String, String) -> Int
 
 pub fn read(String, String, Int) -> (Int, String)
 
@@ -17,6 +25,8 @@ pub fn stderr(String) -> Unit
 pub fn stdout(String) -> Bool
 
 pub fn write(String, String) -> Bool
+
+pub fn write_output(Int, String) -> Bool
 
 // Errors
 

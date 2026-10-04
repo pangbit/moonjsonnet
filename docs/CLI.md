@@ -10,6 +10,8 @@ For development use `moon run cmd/main -- OPTIONS INPUT`.
 | `-e`, `--exec` | Interpret the one input argument as Jsonnet source |
 | `-S`, `--string` | Require a string result and emit its contents followed by one newline |
 | `-y`, `--yaml-stream` | Require an array and emit its elements as JSON documents with YAML stream delimiters |
+| `-m DIR`, `--multi DIR` | Write a top-level object's values to files and list their names |
+| `-c`, `--create-output-dirs` | Create parent directories for ordinary output files and multi data files |
 | `--` | End option processing; subsequent arguments are inputs |
 | `-V NAME[=VALUE]`, `--ext-str NAME[=VALUE]` | Inject a literal string; omitted value comes from the named environment variable |
 | `--ext-code NAME[=CODE]` | Inject a lazy Jsonnet expression; omitted code comes from the named environment variable |
@@ -17,7 +19,7 @@ For development use `moon run cmd/main -- OPTIONS INPUT`.
 | `--tla-code NAME[=CODE]` | Supply a lazy Jsonnet expression to a top-level function |
 | `--ext-str-file NAME=FILE`, `--tla-str-file NAME=FILE` | Supply a lazy `importstr` expression |
 | `--ext-code-file NAME=FILE`, `--tla-code-file NAME=FILE` | Supply a lazy `import` expression |
-| `-o FILE`, `--output-file FILE`, `--output FILE` | Write the selected output after successful evaluation; default stdout |
+| `-o FILE`, `--output-file FILE`, `--output FILE` | Write the selected output, or the multi filename list; default stdout |
 | `--max-steps N` | Evaluation step budget |
 | `--max-depth N` | Depth budget, 1–512 |
 | `--max-source-bytes N` | Entry/import per-file UTF-8 bytes |
@@ -61,8 +63,7 @@ is stricter than Go's default unrestricted filesystem importer.
 Top-level functions are called once using named TLAs, with ordinary lazy/default
 parameter behavior. Missing and unknown argument names are errors. Non-function
 top-level values ignore TLAs. See [API](API.md) for code parameter filenames and
-shared budgets. Import search paths, full stack/trace options and multi-file
-output are still pending.
+shared budgets. Import search paths and full stack/trace options are still pending.
 
 Default JSON output now follows Go's CLI layout: three-space indentation, sorted
 keys, `[ ]`/`{ }` empty containers and one trailing newline. Integral numbers use
@@ -77,11 +78,34 @@ is rendered as ordinary JSON, preceded by `---` and a newline; a nonempty stream
 ends with `...` and a newline. An empty array emits no bytes. `-y` ignores `-S`,
 matching Go. All documents are evaluated before any output is written.
 
+`-m` deeply manifests the result and requires a top-level object. Visible keys
+are filenames, appended to `DIR/` and listed in UTF-8 lexical order. Each JSON
+file ends in one newline; with `-S`, values must be strings and are written raw
+with no added newline. `-m` takes precedence over `-y`. Repeated `-m` uses the
+last directory; an empty directory argument fails. An empty object writes no
+data and does not create the output directory, but `-o` still creates an empty list.
+
+Existing files are compared without UTF-8 decoding; identical bytes preserve
+their modification time. The bounded comparison reads up to the new content's
+length plus one byte rather than loading an unbounded existing file. Each name
+is written to the list before that file is checked/written, as in Go, so an I/O
+failure can leave a partial list and earlier files. Evaluation failure creates
+neither files nor directories and preserves an existing filename list.
+
+`-c` creates ordinary output and multi data-file parents with mode 0755 subject
+to umask. Like the reference, it does not create stream output parents or the
+multi filename-list parent. Parent paths are lexically cleaned for directory
+creation; the actual output path and printed names retain their original spelling.
+Output paths and generated keys follow the host filesystem, including symlinks
+and `..`; the import root restricts reads, not these explicitly selected writes.
+
 JSON/string budgets count actual payload UTF-8 bytes, excluding the one trailing
 newline. JSON/stream manifestation also retains the conservative compact JSON
 budget. Stream document payloads share one serialized budget; the CLI additionally
 counts every document newline and YAML delimiter before writing the stream.
 These explicit limits are host policy rather than unrestricted Go input equivalence.
+Multi payloads share one budget, excluding JSON final newlines; the complete
+filename list has another check against `output_bytes` before opening any output.
 
 Exit 0 means manifested output was emitted (or help/version was requested).
 Go-compatible aggregate overflow may emit `+Inf`, `-Inf`, or `NaN` instead of

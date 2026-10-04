@@ -44,14 +44,16 @@ test "readme embedded evaluation" {
   assert_eq(@moonjsonnet.evaluate_stream("[42,'hello']"), [
     "42\n", "\"hello\"\n",
   ])
+  assert_eq(@moonjsonnet.evaluate_multi("{a:42}")["a"], "42\n")
 }
 ```
 
 The root library takes source text, JSON/Jsonnet external variables and top-level arguments, an optional host
 import resolver and per-evaluation limits. It returns `Json` or `JsonnetError`.
 `evaluate_text` returns formatted JSON or plain strings; `evaluate_stream`
-returns JSON documents from a top-level array. The separate `pangbit/moonjsonnet/fs` package loads files within a configured
-root. See [API and host contract](docs/API.md).
+returns JSON documents from a top-level array. `evaluate_multi` returns
+filename/content pairs without writing files. The separate `pangbit/moonjsonnet/fs`
+package loads files within a configured root. See [API and host contract](docs/API.md).
 
 ```mbt check
 ///|

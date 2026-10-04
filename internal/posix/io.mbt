@@ -11,6 +11,61 @@ extern "c" fn read_ffi(root : Bytes, relative : Bytes, limit : Int) -> Bytes = "
 extern "c" fn write_ffi(path : Bytes, data : Bytes) -> Int = "mj_write"
 
 ///|
+#borrow(path)
+extern "c" fn mkdir_all_ffi(path : Bytes) -> Int = "mj_mkdir_all"
+
+///|
+pub fn mkdir_all(path : String) -> Bool {
+  !path.is_empty() &&
+  !path.contains("\u0000") &&
+  mkdir_all_ffi(@utf8.encode(path)) == 0
+}
+
+///|
+#borrow(path, data)
+extern "c" fn output_same_ffi(path : Bytes, data : Bytes) -> Int = "mj_output_same"
+
+///|
+// 0 missing/different; 1 identical; 2 read error.
+pub fn output_same(path : String, text : String) -> Int {
+  if path.contains("\u0000") {
+    2
+  } else {
+    output_same_ffi(@utf8.encode(path), @utf8.encode(text))
+  }
+}
+
+///|
+#borrow(path)
+extern "c" fn open_output_ffi(path : Bytes) -> Int = "mj_open_output"
+
+///|
+pub fn open_output(path : String) -> Int {
+  if path.contains("\u0000") {
+    -1
+  } else {
+    open_output_ffi(@utf8.encode(path))
+  }
+}
+
+///|
+#borrow(data)
+extern "c" fn write_output_ffi(fd : Int, data : Bytes) -> Int = "mj_write_output"
+
+///|
+pub fn write_output(fd : Int, text : String) -> Bool {
+  write_output_ffi(fd, @utf8.encode(text)) == 0
+}
+
+///|
+pub fn close_output(fd : Int) -> Bool {
+  close_output_ffi(fd) == 0
+}
+
+///|
+extern "c" fn close_output_ffi(fd : Int) -> Int = "mj_close_output"
+
+///|
 #borrow(data)
 extern "c" fn stderr_ffi(data : Bytes) -> Unit = "mj_stderr"
 

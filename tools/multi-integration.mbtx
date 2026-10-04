@@ -1,0 +1,120 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/env",
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==2 else {fail("Usage: moon run tools/multi-integration.mbtx CLI")}
+  let cli=@fs.realpath(args[1])
+  let work=@fs.tmpdir(prefix="moonjsonnet-multi-tests-")
+  let root=work+"/root"
+  let multi=work+"/output"
+  let output=work+"/manifest"
+  @fs.mkdir(root)
+  @fs.mkdir(multi)
+  let mut passed=0
+  let files=@shell.Cmd(cli,["--root",root,"-Sm",multi,"-o",output,"-e","{a:'é😀\\u0000\\n',b:''}"]).output()
+  files.check()
+  assert_eq(files.stdout(),"")
+  assert_eq(@fs.read_file(output).text(),multi+"/a\n"+multi+"/b\n")
+  assert_eq(@fs.read_file(multi+"/a").text(),"é😀\u0000\n")
+  assert_eq(@fs.read_file(multi+"/b").text(),"")
+  passed+=1
+  // Pin a past timestamp instead of sleeping. Even a same-content rewrite is visible.
+  @shell.Cmd("touch",["-t","200001020304",multi+"/a"]).run()
+  @shell.Cmd("chmod",["444",multi+"/a"]).run()
+  let platform=@shell.Cmd("uname",["-s"]).output()
+  platform.check()
+  let stat_args=if platform.stdout().trim()=="Darwin" {["-f","%m %i"]} else {["-c","%Y %i"]}
+  let before=@shell.Cmd("stat",stat_args+[multi+"/a"]).output()
+  before.check()
+  let same=@shell.Cmd(cli,["--root",root,"-Sm",multi,"-e","{a:'é😀\\u0000\\n'}"]).output()
+  same.check()
+  assert_eq(same.stdout(),multi+"/a\n")
+  let after=@shell.Cmd("stat",stat_args+[multi+"/a"]).output()
+  after.check()
+  assert_eq(after.stdout(),before.stdout())
+  @shell.Cmd("chmod",["644",multi+"/a"]).run()
+  passed+=1
+  for length in [0,1,4095,4096,4097,8192] {
+    let payload="x".repeat(length)
+    @fs.write_file(multi+"/a",payload+"!")
+    for _ in 0..<2 {
+      let result=@shell.Cmd(cli,["--root",root,"-Sm",multi,"-V","data="+payload,"-e","{a:std.extVar('data')}"]).output()
+      result.check()
+      assert_eq(result.stdout(),multi+"/a\n")
+      assert_eq(@fs.read_file(multi+"/a").text(),payload)
+      passed+=1
+    }
+  }
+  @fs.write_file(multi+"/a","x")
+  let longer=@shell.Cmd(cli,["--root",root,"-Sm",multi,"-e","{a:std.repeat('x',4097)}"]).output()
+  longer.check()
+  assert_eq(@fs.read_file(multi+"/a").text(),"x".repeat(4097))
+  passed+=1
+  let nested=@shell.Cmd(cli,["--root",root,"-cm",multi,"-e","{'nested/deep/a':{x:42}}"]).output()
+  nested.check()
+  assert_eq(nested.stdout(),multi+"/nested/deep/a\n")
+  assert_eq(@fs.read_file(multi+"/nested/deep/a").text(),"{\n   \"x\": 42\n}\n")
+  passed+=1
+  let empty=@shell.Cmd(cli,["--root",root,"-cm",multi+"/empty-dir","-o",output,"-e","{}"]).output()
+  empty.check()
+  assert_eq(@fs.read_file(output).text(),"")
+  assert_true(!@fs.exists(multi+"/empty-dir"))
+  passed+=1
+  @fs.write_file(output,"keep manifest")
+  let eval_error=@shell.Cmd(cli,["--root",root,"-cm",multi+"/error-dir","-o",output,"-e","{a:42,b:error 'late'}"]).output()
+  assert_eq(eval_error.exit_code(),1)
+  assert_eq(eval_error.stdout(),"")
+  assert_eq(@fs.read_file(output).text(),"keep manifest")
+  assert_true(!@fs.exists(multi+"/error-dir"))
+  passed+=1
+  let manifest_parent=@shell.Cmd(cli,["--root",root,"-cm",multi+"/data-dir","-o",multi+"/missing/manifest","-e","{a:42}"]).output()
+  assert_eq(manifest_parent.exit_code(),1)
+  assert_eq(manifest_parent.stdout(),"")
+  assert_true(!@fs.exists(multi+"/data-dir"))
+  passed+=1
+  @fs.write_file(multi+"/blocked","keep file")
+  let partial=@shell.Cmd(cli,["--root",root,"-cm",multi,"-o",output,"-e","{aa:42,'blocked/b':7}"]).output()
+  assert_eq(partial.exit_code(),1)
+  assert_eq(partial.stdout(),"")
+  assert_eq(@fs.read_file(output).text(),multi+"/aa\n"+multi+"/blocked/b\n")
+  assert_eq(@fs.read_file(multi+"/aa").text(),"42\n")
+  assert_eq(@fs.read_file(multi+"/blocked").text(),"keep file")
+  passed+=1
+  let names=multi+"/a\n"
+  let exact=@shell.Cmd(cli,["--root",root,"-m",multi,"--max-output-bytes",names.length().to_string(),"-e","{a:1}"]).output()
+  exact.check()
+  assert_eq(exact.stdout(),names)
+  passed+=1
+  @fs.write_file(output,"keep manifest")
+  let over=@shell.Cmd(cli,["--root",root,"-m",multi,"-o",output,"--max-output-bytes",(names.length()-1).to_string(),"-e","{a:2}"]).output()
+  assert_eq(over.exit_code(),1)
+  assert_true(over.stderr().contains("Limit"))
+  assert_eq(over.stdout(),"")
+  assert_eq(@fs.read_file(output).text(),"keep manifest")
+  assert_eq(@fs.read_file(multi+"/a").text(),"1\n")
+  passed+=1
+  let created=@shell.Cmd(cli,["--root",root,"-co",multi+"/single/new/a","-Se","'raw'"]).output()
+  created.check()
+  assert_eq(@fs.read_file(multi+"/single/new/a").text(),"raw\n")
+  passed+=1
+  let stream_dirs=@shell.Cmd(cli,["--root",root,"-cyo",multi+"/stream-dir/a","-e","[42]"]).output()
+  assert_eq(stream_dirs.exit_code(),1)
+  assert_true(!@fs.exists(multi+"/stream-dir"))
+  passed+=1
+  let nul=@shell.Cmd(cli,["--root",root,"-m",multi,"-e","{'x\\u0000y':42}"]).output()
+  assert_eq(nul.exit_code(),1)
+  assert_eq(nul.stdout(),multi+"/x\u0000y\n")
+  passed+=1
+  @fs.symlink(target="a",multi+"/alias")
+  let linked=@shell.Cmd(cli,["--root",root,"-Sm",multi,"-e","{alias:'symlink'}"]).output()
+  linked.check()
+  assert_eq(@fs.read_file(multi+"/a").text(),"symlink")
+  assert_eq(@fs.read_file(multi+"/alias").text(),"symlink")
+  passed+=1
+  println("Multi-output integration: \{passed} passed; timestamp, raw bytes, comparison boundaries, directories, failures and limits")
+}

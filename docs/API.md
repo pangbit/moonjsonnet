@@ -29,6 +29,18 @@ Neither API writes files or emits successful output before returning all results
 They accept the same anonymous, parameter, resolver, native and trace options as
 `evaluate`; manually configure a `FileHost` to use them with file input.
 
+`evaluate_multi(source, string_output?, ...same evaluation options...) -> Map[String, String] raise JsonnetError`
+deeply manifests the whole result, then requires an object. Visible keys are
+returned unchanged as filenames; JSON values become Go-style documents ending
+in a newline. With `string_output=true`, each value must be a string and its raw
+contents are returned without an added newline. Hidden fields remain unforced;
+assertions and visible values are checked before shape/string validation.
+The returned map has no iteration-order guarantee. The CLI sorts filenames by
+UTF-8 lexical order, but this API neither writes files nor validates filename
+paths. The embedding host chooses its own output policy. All files share one
+evaluation and payload budget; options and import/native/trace state match the
+other evaluation APIs. The compact JSON manifestation budget is retained.
+
 `anonymous=true` matches Go's anonymous-snippet input mode: `filename` is used
 only for diagnostics and trace, `std.thisFile` is empty, and entry imports call
 the resolver with empty `from`. Imported files keep their own filenames and
@@ -140,7 +152,7 @@ Use `Limits::default()` and a record update to change selected fields.
 | `source_bytes` | 1,048,576 | UTF-8 bytes per entry/import/forced parameter code source; raw bytes per binary import |
 | `import_bytes` | 4,194,304 | Cumulative resolved request bytes per evaluation |
 | `imports` | 128 | Distinct `(from,path)` requests per text/binary mode, including aliases |
-| `output_bytes` | 4,194,304 | Compact JSON for `evaluate`; actual serialized payload for text/stream, with conservative JSON manifestation checks retained |
+| `output_bytes` | 4,194,304 | Compact JSON for `evaluate`; actual serialized payload for text/stream/multi, with conservative JSON manifestation checks retained |
 
 All limits must be positive. Internal string and array construction also uses
 the output/step budgets to reject exponential intermediates. Standard-library
@@ -149,8 +161,10 @@ manifestation starts a fresh output counter. This is intentionally conservative;
 limits are execution budgets, not reference Jsonnet language semantics.
 Text output's final newline is outside the payload byte count. Stream document
 payloads share one budget, excluding their final newlines; the CLI additionally
-counts all YAML delimiters and document newlines. The POSIX host checks
-regular-file size and bounds reads before decoding UTF-8.
+counts all YAML delimiters and document newlines.
+Multi JSON final newlines are excluded, with payloads shared across all files;
+the CLI checks the full filename list separately before output I/O. The POSIX
+import host checks regular-file size and bounds reads before decoding UTF-8.
 
 Lazy values, function arguments/defaults, object fields and imports are memoized.
 Object composition creates a fresh field cache bound to the new `self`.

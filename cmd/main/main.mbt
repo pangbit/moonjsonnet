@@ -7,6 +7,8 @@ fn run(args : Array[String]) -> Unit raise {
   let mut exec = false
   let mut string_output = false
   let mut stream = false
+  let mut multi : String? = None
+  let mut create_dirs = false
   let mut options = true
   let ext : Map[String, Json] = Map([])
   let ext_code : Map[String, String] = Map([])
@@ -28,7 +30,7 @@ fn run(args : Array[String]) -> Unit raise {
     }
     if arg == "--help" || arg == "-h" {
       println(
-        "Usage: moonjsonnet [-e/--exec] [-S/--string] [-y/--yaml-stream] [--root DIR] [-V/--ext-str NAME[=VALUE]] [--ext-code NAME[=CODE]] [-A/--tla-str NAME[=VALUE]] [--tla-code NAME[=CODE]] [--ext-str-file/--ext-code-file/--tla-str-file/--tla-code-file NAME=FILE] [-o/--output-file FILE] [--max-steps N] [--max-depth N] [--max-source-bytes N] [--max-import-bytes N] [--max-imports N] [--max-output-bytes N] [--] INPUT\nINPUT is a file, - for stdin, or code with -e. Combined short options expand before --.",
+        "Usage: moonjsonnet [-e/--exec] [-S/--string] [-y/--yaml-stream] [-m/--multi DIR] [-c/--create-output-dirs] [--root DIR] [-V/--ext-str NAME[=VALUE]] [--ext-code NAME[=CODE]] [-A/--tla-str NAME[=VALUE]] [--tla-code NAME[=CODE]] [--ext-str-file/--ext-code-file/--tla-str-file/--tla-code-file NAME=FILE] [-o/--output-file FILE] [--max-steps N] [--max-depth N] [--max-source-bytes N] [--max-import-bytes N] [--max-imports N] [--max-output-bytes N] [--] INPUT\nINPUT is a file, - for stdin, or code with -e. Combined short options expand before --.",
       )
       return
     }
@@ -51,12 +53,23 @@ fn run(args : Array[String]) -> Unit raise {
       i += 1
       continue
     }
+    if arg == "-c" || arg == "--create-output-dirs" {
+      create_dirs = true
+      i += 1
+      continue
+    }
     if arg.has_prefix("-") {
       guard i + 1 < args.length() else { fail("missing value for \{arg}") }
       i += 1
       let value = args[i]
       match arg {
         "--root" => root = value
+        "-m" | "--multi" => {
+          if value.is_empty() {
+            fail("multi directory must not be empty")
+          }
+          multi = Some(if value.has_suffix("/") { value } else { value + "/" })
+        }
         "-o" | "--output" | "--output-file" => {
           if value.is_empty() {
             fail("output filename must not be empty")
@@ -162,6 +175,27 @@ fn run(args : Array[String]) -> Unit raise {
   } else {
     host.resolve("", path)
   }
+  if multi is Some(directory) {
+    let files = @moonjsonnet.evaluate_multi(
+      source.text,
+      string_output~,
+      filename=source.id,
+      anonymous~,
+      ext_vars=ext,
+      ext_code~,
+      tla_vars=tla,
+      tla_code~,
+      limits~,
+      resolver=(from, path) => host.resolve(from, path),
+      binary_resolver=(from, path) => host.resolve_binary(from, path),
+    )
+    write_multi(files, directory, output, create_dirs, limits.output_bytes, {
+      file: source.id,
+      line: 1,
+      column: 1,
+    })
+    return
+  }
   let result = if stream {
     let documents = @moonjsonnet.evaluate_stream(
       source.text,
@@ -215,10 +249,14 @@ fn run(args : Array[String]) -> Unit raise {
   }
   match output {
     None => if !@posix.stdout(result) { fail("cannot write stdout") }
-    Some(path) =>
+    Some(path) => {
+      if create_dirs && !stream && !@posix.mkdir_all(output_parent(path)) {
+        fail("cannot create output directories: " + path)
+      }
       if !@posix.write(path, result) {
         fail("cannot write output: \{path}")
       }
+    }
   }
 }
 
