@@ -15,6 +15,15 @@ extern "c" fn write_ffi(path : Bytes, data : Bytes) -> Int = "mj_write"
 extern "c" fn stderr_ffi(data : Bytes) -> Unit = "mj_stderr"
 
 ///|
+#borrow(data)
+extern "c" fn stdout_ffi(data : Bytes) -> Int = "mj_stdout"
+
+///|
+pub fn stdout(text : String) -> Bool {
+  stdout_ffi(@utf8.encode(text)) == 0
+}
+
+///|
 pub extern "c" fn exit(code : Int) -> Unit = "mj_exit"
 
 ///|

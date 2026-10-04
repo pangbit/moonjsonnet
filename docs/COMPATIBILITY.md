@@ -6,7 +6,9 @@ the committed corpus does not prove compatibility with all Jsonnet programs.
 The official C++ v0.21.0 interpreter is a development-only oracle. Input, imports,
 parameters and expected categories are committed under `tests/` and `examples/`.
 Success comparisons parse JSON and ignore object order and insignificant whitespace;
-non-finite aggregate scalar outputs use exact spelling checks instead.
+non-finite aggregate scalar outputs use exact spelling checks instead. The Go
+CLI output corpus also pins complete stdout bytes for JSON layout, plain strings
+and YAML document streams.
 
 ## Implementation reference
 
@@ -305,12 +307,16 @@ ignore TLAs. Code parameters have separate scopes, cached values/errors and
 synthetic filenames, but imports originate at the host root. The CLI supports
 string/code/file/environment forms and last-assignment wins. File reads retain
 the project's restricted-root policy. Reusable VM/reset/AST capabilities and
-full output modes remain pending.
+multi-file output remains pending.
 CLI inline (`-e`), stdin (`-`), `--` and bytewise short-option expansion are now
 available. Anonymous entry `std.thisFile` and import origin are empty, with
 synthetic diagnostic filenames. Argument/evaluation/output failures exit 1.
-Stdin retains the bounded-read and strict UTF-8 host policy. Other output modes
-and complete CLI options remain pending.
+Stdin retains the bounded-read and strict UTF-8 host policy. `-S` plain strings,
+`-y` JSON documents with YAML stream framing and their embedding APIs are now
+available. Default JSON formatting follows the fixed Go CLI serializer.
+String mode rejects other types before traversing them; stream mode first deeply
+manifests the result, requires an array and ignores `-S`. Multi-file output,
+automatic output-directory creation and complete CLI options remain pending.
 
 The POSIX host accepts regular files within one canonical root. Text imports
 require valid UTF-8; binary imports do not decode their contents. Custom

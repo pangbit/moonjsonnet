@@ -183,5 +183,56 @@ async fn main {
   assert_eq(large_over.exit_code(),1)
   assert_true(large_over.stderr().contains("Limit"))
   assert_eq(large_over.stdout(),"")
+  let outputs : Array[(String,Array[String],String,String?,String?)] = [
+    ("plain-empty",["-Se","''"],"\n",None,None),
+    ("plain-stdin",["-S","-"],"é😀\u0000\n\n",Some("'é😀\\u0000\\n'"),None),
+    ("plain-exact",["-Se","'😀'","--max-output-bytes","4"],"😀\n",None,None),
+    ("plain-over",["-Se","'😀'","--max-output-bytes","3"],"",None,Some("Limit")),
+    ("plain-type",["-Se","{x:error 'unforced'}"],"",None,Some("Type")),
+    ("json-layout",["-e","{x:[]}"],"{\n   \"x\": [ ]\n}\n",None,None),
+    ("json-exact",["-e","{x:1}","--max-output-bytes","13"],"{\n   \"x\": 1\n}\n",None,None),
+    ("json-over",["-e","{x:1}","--max-output-bytes","12"],"",None,Some("Limit")),
+    ("stream-empty",["-ye","[]"],"",None,None),
+    ("stream-ignores-string",["-ySe","['x']"],"---\n\"x\"\n...\n",None,None),
+    ("stream-exact",["-ye","[1]","--max-output-bytes","10"],"---\n1\n...\n",None,None),
+    ("stream-over",["-ye","[1]","--max-output-bytes","9"],"",None,Some("Limit")),
+    ("stream-type",["-ye","{x:1}"],"",None,Some("Type")),
+    ("stream-late-error",["-ye","[1,error 'late']"],"",None,Some("Runtime")),
+  ]
+  for (name,extra,expected,stdin,error) in outputs {
+    let result=@shell.Cmd(cli,["--root",root]+extra,stdin=@shell.Text(stdin.unwrap_or(""))).output()
+    assert_eq(result.stdout(),expected,msg=name)
+    match error {
+      None => result.check()
+      Some(kind) => {assert_eq(result.exit_code(),1,msg=name);assert_true(result.stderr().contains(kind),msg=name+result.stderr())}
+    }
+    passed += 1
+  }
+  for (extra,expected) in [(["-Se","'é😀\\u0000'"],"é😀\u0000\n"),(["-ye","[]"],""),(["-ye","[42]"],"---\n42\n...\n")] {
+    let result=@shell.Cmd(cli,["--root",root,"-o",output]+extra).output()
+    result.check()
+    assert_eq(result.stdout(),"")
+    assert_eq(@fs.read_file(output).text(),expected)
+    passed += 1
+  }
+  for extra in [["-Se","42"],["-ye","[1,error 'late']"],["-Se","'😀'","--max-output-bytes","3"]] {
+    @fs.write_file(output,"keep existing")
+    let result=@shell.Cmd(cli,["--root",root,"-o",output]+extra).output()
+    assert_eq(result.exit_code(),1)
+    assert_eq(result.stdout(),"")
+    assert_eq(@fs.read_file(output).text(),"keep existing")
+    passed += 1
+  }
+  let output_failure=@shell.Cmd(cli,["--root",root,"-o",work,"-Se","'x'"]).output()
+  assert_eq(output_failure.exit_code(),1)
+  assert_eq(output_failure.stdout(),"")
+  passed += 1
+  for (source,mode,expected) in [("'file'","-S","file\n"),("[42]","-y","---\n42\n...\n")] {
+    @fs.write_file(root+"/main.jsonnet",source)
+    let result=@shell.Cmd(cli,["--root",root,mode,"main.jsonnet"]).output()
+    result.check()
+    assert_eq(result.stdout(),expected)
+    passed += 1
+  }
   println("Integration: \{passed + 18} passed; path, UTF-8, CLI inputs/parameters/exit/output, trace and resource limits")
 }

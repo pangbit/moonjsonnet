@@ -105,4 +105,12 @@ MOONBIT_FFI_EXPORT void mj_stderr(moonbit_bytes_t data) {
   fputc('\n', stderr);
 }
 
+/* Borrow the buffer for this call; stdout remains owned by the process. */
+MOONBIT_FFI_EXPORT int32_t mj_stdout(moonbit_bytes_t data) {
+  size_t size = Moonbit_array_length(data);
+  int ok = fwrite(data, 1, size, stdout) == size;
+  if (fflush(stdout)) ok = 0;
+  return ok ? 0 : 1;
+}
+
 MOONBIT_FFI_EXPORT void mj_exit(int32_t code) { exit(code); }

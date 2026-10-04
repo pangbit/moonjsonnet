@@ -11,6 +11,24 @@ is passed to the importer. `ext_vars` is a `Map[String, Json]` read by
 No importer means imports are disabled. A host exception is translated into an
 `Import` diagnostic; an existing `JsonnetError` preserves its category.
 
+`evaluate_text(source, string_output?, ...same evaluation options...) -> String raise JsonnetError`
+returns Go-style formatted JSON followed by a newline. With `string_output=true`,
+it requires a string and returns its unescaped contents plus one newline; other
+types fail without deep manifestation. Existing `evaluate` behavior is unchanged.
+The JSON serializer uses sorted keys, three-space indentation, `[ ]`/`{ }` for
+empty containers, fixed integers and 17 significant digits for other numbers.
+Its escaping follows Go's CLI serializer, which preserves HTML/U+2028/U+2029
+and escapes C0/C1 characters. It differs from the `std.manifestJson` contract.
+
+`evaluate_stream(source, ...same evaluation options...) -> Array[String] raise JsonnetError`
+deeply manifests the whole result, then requires an array. Each returned document
+is formatted as above and ends in one newline; an empty array returns `[]`.
+Documents share one evaluation, parameter/import caches, callbacks and budgets.
+This interface returns documents only; the CLI adds YAML stream delimiters.
+Neither API writes files or emits successful output before returning all results.
+They accept the same anonymous, parameter, resolver, native and trace options as
+`evaluate`; manually configure a `FileHost` to use them with file input.
+
 `anonymous=true` matches Go's anonymous-snippet input mode: `filename` is used
 only for diagnostics and trace, `std.thisFile` is empty, and entry imports call
 the resolver with empty `from`. Imported files keep their own filenames and
@@ -122,14 +140,16 @@ Use `Limits::default()` and a record update to change selected fields.
 | `source_bytes` | 1,048,576 | UTF-8 bytes per entry/import/forced parameter code source; raw bytes per binary import |
 | `import_bytes` | 4,194,304 | Cumulative resolved request bytes per evaluation |
 | `imports` | 128 | Distinct `(from,path)` requests per text/binary mode, including aliases |
-| `output_bytes` | 4,194,304 | Compact UTF-8 JSON, including punctuation and escaping |
+| `output_bytes` | 4,194,304 | Compact JSON for `evaluate`; actual serialized payload for text/stream, with conservative JSON manifestation checks retained |
 
 All limits must be positive. Internal string and array construction also uses
 the output/step budgets to reject exponential intermediates. Standard-library
 string manifestation consumes the output budget during evaluation, then final
 manifestation starts a fresh output counter. This is intentionally conservative;
 limits are execution budgets, not reference Jsonnet language semantics.
-The CLI's final newline is outside the JSON byte count. The POSIX host checks
+Text output's final newline is outside the payload byte count. Stream document
+payloads share one budget, excluding their final newlines; the CLI additionally
+counts all YAML delimiters and document newlines. The POSIX host checks
 regular-file size and bounds reads before decoding UTF-8.
 
 Lazy values, function arguments/defaults, object fields and imports are memoized.

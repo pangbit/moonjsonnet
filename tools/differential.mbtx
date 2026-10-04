@@ -36,6 +36,9 @@ async fn main {
     let inputs = @json.parse(@fs.read_file("tests/go-cli-input.json").text())
     guard inputs is Array(inputs) else { fail("expected Go CLI input case array") }
     for case in inputs { cases.push(case) }
+    let outputs = @json.parse(@fs.read_file("tests/go-cli-output.json").text())
+    guard outputs is Array(outputs) else { fail("expected Go CLI output case array") }
+    for case in outputs { cases.push(case) }
   }
   let work = if is_go { "_build/go-differential" } else { "_build/differential" }
   @fs.mkdir(work, recursive=true, allow_exist=true)
@@ -44,12 +47,13 @@ async fn main {
   let mut unsupported = 0
   let mut errors = 0
   let mut raw_output_cases = 0
+  let mut text_output_cases = 0
   let mut reference_differences = 0
   let rows : Array[Json] = []
   for case in cases {
     guard case is { "name": String(name), "source": String(source), "expect": String(expect), .. } else { fail("invalid case") }
     let expect = if is_go && case is { "go_expect": String(go_expect), .. } { go_expect } else { expect }
-    assert_true(["success", "raw-output", "error", "unsupported", "unsupported-reference-error"].contains(expect))
+    assert_true(["success", "raw-output", "text-output", "error", "unsupported", "unsupported-reference-error"].contains(expect))
     let path = work + "/" + name + ".jsonnet"
     @fs.write_file(path, source)
     // Absolute input paths give both trace sinks the same diagnostic filename.
@@ -106,11 +110,15 @@ async fn main {
       guard case is { "raw_output": String(expected), .. } else { fail("missing exact raw output") }
       assert_true(["+Inf", "-Inf", "NaN"].contains(expected))
       a.exit_code() == 0 && b.exit_code() == 0 && a.stdout().trim().to_owned() == expected && b.stdout().trim().to_owned() == expected
+    } else if expect == "text-output" {
+      text_output_cases += 1
+      guard case is {"stdout":String(expected),..} else {fail("missing exact text output")}
+      a.exit_code()==0 && b.exit_code()==0 && a.stdout()==expected && b.stdout()==expected
     } else if expect == "unsupported" || expect == "unsupported-reference-error" {
       (if expect == "unsupported" { a.exit_code() == 0 } else { a.exit_code() != 0 }) && b.exit_code() != 0 && b.stderr().contains("Unsupported")
     } else if expect == "error" {
       errors += 1
-      a.exit_code() == 1 && b.exit_code() == 1 && !a.stderr().contains("INTERNAL ERROR")
+      a.exit_code() == 1 && b.exit_code() == 1 && a.stdout().is_empty() && b.stdout().is_empty() && !a.stderr().contains("INTERNAL ERROR")
     } else {
       a.exit_code() == 0 && b.exit_code() == 0 && @json.parse(a.stdout()) == @json.parse(b.stdout())
     }
@@ -151,7 +159,7 @@ async fn main {
   dirty.check()
   let hashes = @shell.Cmd("shasum", ["-a", "256", reference, cli]).output()
   hashes.check()
-  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "source_dirty": !dirty.stdout().is_empty(), "binary_sha256": hashes.stdout(), "reference": reference_version, "reference_commit": reference_commit, "total": rows.length(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "reference_differences": reference_differences, "error_cases": errors, "raw_output_cases": raw_output_cases, "cases": rows }
+  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "source_dirty": !dirty.stdout().is_empty(), "binary_sha256": hashes.stdout(), "reference": reference_version, "reference_commit": reference_commit, "total": rows.length(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "reference_differences": reference_differences, "error_cases": errors, "raw_output_cases": raw_output_cases, "text_output_cases":text_output_cases, "cases": rows }
   @fs.write_file(work + "/report.json", report.stringify(indent=2))
   println("Differential: passed=\{passed}, failed=\{failed}, skipped=0, explicitly unsupported=\{unsupported}, declared reference differences=\{reference_differences}, expected errors=\{errors}")
   if failed != 0 { fail("differential validation failed; all cases retained") }

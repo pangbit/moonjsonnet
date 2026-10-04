@@ -53,6 +53,8 @@ async fn main {
     #|  assert_eq(traces,["consumer","file consumer"])
     #|  assert_eq(@moonjsonnet.evaluate("function(x) x",ext_code=Map([("a","21*2")]),tla_code=Map([("x","std.extVar('a')")])),42)
     #|  assert_eq(@moonjsonnet.evaluate("std.thisFile",filename="<cmdline>",anonymous=true),Json::string(""))
+    #|  assert_eq(@moonjsonnet.evaluate_text("'consumer'",string_output=true),"consumer\n")
+    #|  assert_eq(@moonjsonnet.evaluate_stream("[42,'consumer']"),["42\n","\"consumer\"\n"])
     #|  assert_eq(@fs.evaluate_file("native.jsonnet",ext_code=Map([("unused","invalid code !")]),tla_vars=Map([("unused",42)]),native_functions=Map([("id",native)]),trace=fn(_,_) {}),42)
     #|  assert_true(host.resolve("", "moon.mod").text.contains("consumer_check"))
     #|  assert_true(!host.resolve_binary("", "moon.mod").bytes.is_empty())

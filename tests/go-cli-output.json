@@ -1,0 +1,517 @@
+[
+  {
+    "name": "output-json-layout",
+    "source": "{z::error 'hidden',b:[[],{},-0],a:0.1}",
+    "stdout": "{\n   \"a\": 0.10000000000000001,\n   \"b\": [\n      [ ],\n      { },\n      -0\n   ]\n}\n",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "text-output"
+  },
+  {
+    "name": "output-json-escaping",
+    "source": "'<>&\\u0000\\u0001\\u007f\\u0080\\u2028\\u2029é😀'",
+    "stdout": "\"<>&\\u0000\\u0001\\u007f\\u0080  é😀\"\n",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "text-output"
+  },
+  {
+    "name": "output-json-large-number",
+    "source": "[1e21,1e-8,1000000000000000100]",
+    "stdout": "[\n   1000000000000000000000,\n   1e-08,\n   1000000000000000128\n]\n",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "text-output"
+  },
+  {
+    "name": "output-json-empty-array",
+    "source": "[]",
+    "stdout": "[ ]\n",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "text-output"
+  },
+  {
+    "name": "output-json-empty-object",
+    "source": "{}",
+    "stdout": "{ }\n",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "text-output"
+  },
+  {
+    "name": "output-json-assert",
+    "source": "{assert false}",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "error",
+    "reference_error": "Object assertion failed",
+    "moonjsonnet_error": "Assertion"
+  },
+  {
+    "name": "output-string",
+    "source": "'hello'",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "stdout": "hello\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-long",
+    "source": "'hello'",
+    "args": [
+      "--string",
+      "-e"
+    ],
+    "stdout": "hello\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-empty",
+    "source": "''",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "stdout": "\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-trailing-newline",
+    "source": "'hello\\n'",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "stdout": "hello\n\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-controls",
+    "source": "'é😀\\u0000\\u0001\\u007f\\u0080\\u2028\\u2029'",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "stdout": "é😀\u0000\u0001  \n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-quotes",
+    "source": "'\"\\\\'",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "stdout": "\"\\\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-repeat",
+    "source": "'x'",
+    "args": [
+      "-SS",
+      "-e"
+    ],
+    "stdout": "x\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-combined",
+    "source": "'x'",
+    "args": [
+      "-Se",
+      "-e"
+    ],
+    "stdout": "x\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-stdin",
+    "source": "'stdin'",
+    "input": "stdin",
+    "args": [
+      "-S"
+    ],
+    "stdout": "stdin\n",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-ext",
+    "source": "std.extVar('x')",
+    "args": [
+      "-S",
+      "--ext-str",
+      "x=é😀",
+      "-e"
+    ],
+    "stdout": "é😀\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-tla",
+    "source": "function(x) x",
+    "args": [
+      "-S",
+      "--tla-str",
+      "x=42",
+      "-e"
+    ],
+    "stdout": "42\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-import",
+    "cwd": "<work>",
+    "source": "importstr 'output-plain.txt'",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "files": {
+      "output-plain.txt": "raw\ntext"
+    },
+    "stdout": "raw\ntext\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-anonymous",
+    "source": "std.thisFile",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "stdout": "\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-trace",
+    "source": "std.trace('raw','x')",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "stdout": "x\n",
+    "trace": "TRACE: <cmdline>:1 raw\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-string-type-0",
+    "source": "null",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "expected string result",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "output-string-type-1",
+    "source": "true",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "expected string result",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "output-string-type-2",
+    "source": "42",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "expected string result",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "output-string-type-3",
+    "source": "[]",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "expected string result",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "output-string-type-4",
+    "source": "{}",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "expected string result",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "output-string-type-5",
+    "source": "[error 'unforced']",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "expected string result",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "output-string-type-6",
+    "source": "{assert false,x:error 'unforced'}",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "expected string result",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "output-string-type-7",
+    "source": "function() function() 1",
+    "args": [
+      "-S",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "expected string result",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "output-stream-empty",
+    "source": "[]",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "stdout": "",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-scalars",
+    "source": "[1,'x',true,null]",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "stdout": "---\n1\n---\n\"x\"\n---\ntrue\n---\nnull\n...\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-objects",
+    "source": "[{b:[],a:{}},[1]]",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "stdout": "---\n{\n   \"a\": { },\n   \"b\": [ ]\n}\n---\n[\n   1\n]\n...\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-long",
+    "source": "[42]",
+    "args": [
+      "--yaml-stream",
+      "-e"
+    ],
+    "stdout": "---\n42\n...\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-ignores-string",
+    "source": "['raw']",
+    "args": [
+      "-yS",
+      "-e"
+    ],
+    "stdout": "---\n\"raw\"\n...\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-string-first",
+    "source": "['raw']",
+    "args": [
+      "-Sy",
+      "-e"
+    ],
+    "stdout": "---\n\"raw\"\n...\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-stdin",
+    "source": "[42]",
+    "input": "stdin",
+    "args": [
+      "-y"
+    ],
+    "stdout": "---\n42\n...\n",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-tla",
+    "source": "function(x) [x]",
+    "args": [
+      "-y",
+      "--tla-code",
+      "x=42",
+      "-e"
+    ],
+    "stdout": "---\n42\n...\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-ext",
+    "source": "[std.extVar('x')]",
+    "args": [
+      "-y",
+      "--ext-code",
+      "x={a:42}",
+      "-e"
+    ],
+    "stdout": "---\n{\n   \"a\": 42\n}\n...\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-trace",
+    "source": "[std.trace('first',1),std.trace('second',2)]",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "stdout": "---\n1\n---\n2\n...\n",
+    "trace": "TRACE: <cmdline>:1 first\nTRACE: <cmdline>:1 second\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-numbers",
+    "source": "[-0,0.1,1e-8,std.sum([1e308,1e308])]",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "stdout": "---\n-0\n---\n0.10000000000000001\n---\n1e-08\n---\n+Inf\n...\n",
+    "input": "exec",
+    "expect": "text-output"
+  },
+  {
+    "name": "output-stream-type",
+    "source": "{x:1}",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "should be an array",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "output-stream-wrong-type-eager",
+    "source": "{x:error 'forced'}",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "forced",
+    "moonjsonnet_error": "Runtime"
+  },
+  {
+    "name": "output-stream-assert",
+    "source": "[{assert false}]",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "Object assertion failed",
+    "moonjsonnet_error": "Assertion"
+  },
+  {
+    "name": "output-stream-late-error",
+    "source": "[42,error 'late']",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "late",
+    "moonjsonnet_error": "Runtime"
+  },
+  {
+    "name": "output-stream-function",
+    "source": "[function() 1]",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "couldn't manifest function",
+    "moonjsonnet_error": "Type"
+  },
+  {
+    "name": "output-stream-top-function",
+    "source": "function(x=42) [x]",
+    "args": [
+      "-y",
+      "-e"
+    ],
+    "stdout": "---\n42\n...\n",
+    "input": "exec",
+    "expect": "text-output"
+  }
+]

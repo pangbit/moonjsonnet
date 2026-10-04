@@ -5,6 +5,8 @@ fn run(args : Array[String]) -> Unit raise {
   let mut output : String? = None
   let mut root = "."
   let mut exec = false
+  let mut string_output = false
+  let mut stream = false
   let mut options = true
   let ext : Map[String, Json] = Map([])
   let ext_code : Map[String, String] = Map([])
@@ -26,7 +28,7 @@ fn run(args : Array[String]) -> Unit raise {
     }
     if arg == "--help" || arg == "-h" {
       println(
-        "Usage: moonjsonnet [-e/--exec] [--root DIR] [-V/--ext-str NAME[=VALUE]] [--ext-code NAME[=CODE]] [-A/--tla-str NAME[=VALUE]] [--tla-code NAME[=CODE]] [--ext-str-file/--ext-code-file/--tla-str-file/--tla-code-file NAME=FILE] [-o/--output-file FILE] [--max-steps N] [--max-depth N] [--max-source-bytes N] [--max-import-bytes N] [--max-imports N] [--max-output-bytes N] [--] INPUT\nINPUT is a file, - for stdin, or code with -e. Combined short options expand before --.",
+        "Usage: moonjsonnet [-e/--exec] [-S/--string] [-y/--yaml-stream] [--root DIR] [-V/--ext-str NAME[=VALUE]] [--ext-code NAME[=CODE]] [-A/--tla-str NAME[=VALUE]] [--tla-code NAME[=CODE]] [--ext-str-file/--ext-code-file/--tla-str-file/--tla-code-file NAME=FILE] [-o/--output-file FILE] [--max-steps N] [--max-depth N] [--max-source-bytes N] [--max-import-bytes N] [--max-imports N] [--max-output-bytes N] [--] INPUT\nINPUT is a file, - for stdin, or code with -e. Combined short options expand before --.",
       )
       return
     }
@@ -36,6 +38,16 @@ fn run(args : Array[String]) -> Unit raise {
     }
     if arg == "-e" || arg == "--exec" {
       exec = true
+      i += 1
+      continue
+    }
+    if arg == "-S" || arg == "--string" {
+      string_output = true
+      i += 1
+      continue
+    }
+    if arg == "-y" || arg == "--yaml-stream" {
+      stream = true
       i += 1
       continue
     }
@@ -150,22 +162,61 @@ fn run(args : Array[String]) -> Unit raise {
   } else {
     host.resolve("", path)
   }
-  let result = @moonjsonnet.evaluate(
-    source.text,
-    filename=source.id,
-    anonymous~,
-    ext_vars=ext,
-    ext_code~,
-    tla_vars=tla,
-    tla_code~,
-    limits~,
-    resolver=(from, path) => host.resolve(from, path),
-    binary_resolver=(from, path) => host.resolve_binary(from, path),
-  ).stringify()
+  let result = if stream {
+    let documents = @moonjsonnet.evaluate_stream(
+      source.text,
+      filename=source.id,
+      anonymous~,
+      ext_vars=ext,
+      ext_code~,
+      tla_vars=tla,
+      tla_code~,
+      limits~,
+      resolver=(from, path) => host.resolve(from, path),
+      binary_resolver=(from, path) => host.resolve_binary(from, path),
+    )
+    let output = StringBuilder()
+    let mut bytes = 0
+    let write = fn(text : String) raise {
+      let size = @utf8.encode(text).length()
+      if size > limits.output_bytes - bytes {
+        raise @moonjsonnet.Error({
+          kind: @moonjsonnet.Limit,
+          message: "stream output byte limit exceeded",
+          location: { file: source.id, line: 1, column: 1, },
+          context: [],
+        })
+      }
+      bytes += size
+      output.write_string(text)
+    }
+    for document in documents {
+      write("---\n")
+      write(document)
+    }
+    if !documents.is_empty() {
+      write("...\n")
+    }
+    output.to_string()
+  } else {
+    @moonjsonnet.evaluate_text(
+      source.text,
+      string_output~,
+      filename=source.id,
+      anonymous~,
+      ext_vars=ext,
+      ext_code~,
+      tla_vars=tla,
+      tla_code~,
+      limits~,
+      resolver=(from, path) => host.resolve(from, path),
+      binary_resolver=(from, path) => host.resolve_binary(from, path),
+    )
+  }
   match output {
-    None => println(result)
+    None => if !@posix.stdout(result) { fail("cannot write stdout") }
     Some(path) =>
-      if !@posix.write(path, result + "\n") {
+      if !@posix.write(path, result) {
         fail("cannot write output: \{path}")
       }
   }

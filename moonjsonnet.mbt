@@ -27,6 +27,39 @@ pub fn evaluate(
   binary_resolver? : (String, String) -> BinarySource raise,
   limits? : Limits = Limits::default(),
 ) -> Json raise JsonnetError {
+  evaluate_with_output(
+    source,
+    (vm, value, loc) => vm.manifest(value, loc, 0),
+    filename~,
+    anonymous~,
+    ext_vars~,
+    ext_code~,
+    tla_vars~,
+    tla_code~,
+    native_functions~,
+    trace~,
+    resolver?,
+    binary_resolver?,
+    limits~,
+  )
+}
+
+///|
+fn[T] evaluate_with_output(
+  source : String,
+  output : (Vm, Value, Location) -> T raise,
+  filename? : String = "<input>",
+  anonymous? : Bool = false,
+  ext_vars? : Map[String, Json] = Map([]),
+  ext_code? : Map[String, String] = Map([]),
+  tla_vars? : Map[String, Json] = Map([]),
+  tla_code? : Map[String, String] = Map([]),
+  native_functions? : Map[String, NativeFunction] = Map([]),
+  trace? : (Location, String) -> Unit = default_trace,
+  resolver? : (String, String) -> Source raise,
+  binary_resolver? : (String, String) -> BinarySource raise,
+  limits? : Limits = Limits::default(),
+) -> T raise JsonnetError {
   let loc : Location = { file: filename, line: 1, column: 1, }
   try {
     if limits.steps <= 0 ||
@@ -83,7 +116,7 @@ pub fn evaluate(
       _ => value
     }
     vm.output_bytes = 0
-    vm.manifest(value, loc, 0)
+    output(vm, value, loc)
   } catch {
     Error(d) => raise Error(d)
     e =>

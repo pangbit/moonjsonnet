@@ -8,6 +8,8 @@ For development use `moon run cmd/main -- OPTIONS INPUT`.
 | --- | --- |
 | `--root DIR` | Allowed filesystem root, default current directory |
 | `-e`, `--exec` | Interpret the one input argument as Jsonnet source |
+| `-S`, `--string` | Require a string result and emit its contents followed by one newline |
+| `-y`, `--yaml-stream` | Require an array and emit its elements as JSON documents with YAML stream delimiters |
 | `--` | End option processing; subsequent arguments are inputs |
 | `-V NAME[=VALUE]`, `--ext-str NAME[=VALUE]` | Inject a literal string; omitted value comes from the named environment variable |
 | `--ext-code NAME[=CODE]` | Inject a lazy Jsonnet expression; omitted code comes from the named environment variable |
@@ -15,13 +17,13 @@ For development use `moon run cmd/main -- OPTIONS INPUT`.
 | `--tla-code NAME[=CODE]` | Supply a lazy Jsonnet expression to a top-level function |
 | `--ext-str-file NAME=FILE`, `--tla-str-file NAME=FILE` | Supply a lazy `importstr` expression |
 | `--ext-code-file NAME=FILE`, `--tla-code-file NAME=FILE` | Supply a lazy `import` expression |
-| `-o FILE`, `--output-file FILE`, `--output FILE` | Write JSON after successful evaluation; default stdout |
+| `-o FILE`, `--output-file FILE`, `--output FILE` | Write the selected output after successful evaluation; default stdout |
 | `--max-steps N` | Evaluation step budget |
 | `--max-depth N` | Depth budget, 1–512 |
 | `--max-source-bytes N` | Entry/import per-file UTF-8 bytes |
 | `--max-import-bytes N` | Cumulative import bytes |
 | `--max-imports N` | Import request count |
-| `--max-output-bytes N` | JSON output byte budget |
+| `--max-output-bytes N` | Serialized output byte budget; see the mode-specific accounting below |
 | `--help`, `-h` | Usage |
 | `--version`, `-v` | Package and compatibility version |
 
@@ -61,6 +63,25 @@ parameter behavior. Missing and unknown argument names are errors. Non-function
 top-level values ignore TLAs. See [API](API.md) for code parameter filenames and
 shared budgets. Import search paths, full stack/trace options and multi-file
 output are still pending.
+
+Default JSON output now follows Go's CLI layout: three-space indentation, sorted
+keys, `[ ]`/`{ }` empty containers and one trailing newline. Integral numbers use
+fixed decimal text; other numbers use 17 significant digits. C0/C1 characters
+are escaped; HTML and U+2028/U+2029 are preserved. This replaces the earlier
+compact CLI JSON layout; the embedding `evaluate` still returns `Json`.
+
+`-S` emits raw string contents, including Unicode, NUL and existing newlines,
+then adds one newline. Other result types fail without traversing their fields.
+`-y` deeply manifests the result and then requires a top-level array. Each element
+is rendered as ordinary JSON, preceded by `---` and a newline; a nonempty stream
+ends with `...` and a newline. An empty array emits no bytes. `-y` ignores `-S`,
+matching Go. All documents are evaluated before any output is written.
+
+JSON/string budgets count actual payload UTF-8 bytes, excluding the one trailing
+newline. JSON/stream manifestation also retains the conservative compact JSON
+budget. Stream document payloads share one serialized budget; the CLI additionally
+counts every document newline and YAML delimiter before writing the stream.
+These explicit limits are host policy rather than unrestricted Go input equivalence.
 
 Exit 0 means manifested output was emitted (or help/version was requested).
 Go-compatible aggregate overflow may emit `+Inf`, `-Inf`, or `NaN` instead of
