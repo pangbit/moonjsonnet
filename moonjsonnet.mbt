@@ -51,7 +51,6 @@ pub fn evaluate(
       objects: [],
       limits,
       ext: Map([]),
-      import_origins: Map([]),
       native_functions,
       trace,
       resolver,
@@ -64,9 +63,6 @@ pub fn evaluate(
       depth: 0,
       imported_bytes: 0,
       output_bytes: 0,
-    }
-    if anonymous {
-      vm.import_origins[filename] = ""
     }
     let ext = vm.prepare_parameters(ext_vars, ext_code, "extvar")
     for name, id in ext {

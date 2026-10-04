@@ -22,7 +22,7 @@ fn Vm::call_native(
   let env = self.call_env(
     function.params.map(n => (n, None)),
     args,
-    { parent: None, names: Map([]), },
+    { parent: None, names: Map([]), import_from: "", },
     loc,
   )
   // Native arguments have their own bounded manifestation. Restore the outer
@@ -64,7 +64,7 @@ fn Vm::native_result(
         }),
       )
     Object(fields) => {
-      let env : Env = { parent: None, names: Map([]), }
+      let env : Env = { parent: None, names: Map([]), import_from: "", }
       let result : Map[String, LayerField] = Map([])
       for name, item in fields {
         env.names[name] = self.store(

@@ -6,7 +6,6 @@ test "thunk cache computes once and remembers failure" {
     objects: [],
     limits: Limits::default(),
     ext: Map([]),
-    import_origins: Map([]),
     native_functions: Map([]),
     trace: default_trace,
     resolver: None,

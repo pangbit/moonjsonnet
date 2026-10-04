@@ -36,8 +36,8 @@ manifested. Top-level values other than functions ignore all TLAs.
 
 Code parameters use `<extvar:NAME>` or `<top-level-arg:NAME>` for diagnostics,
 trace locations and `std.thisFile`. Their imports pass an empty `from` to the
-resolver, so `FileHost` resolves them relative to its root. These synthetic
-filenames are reserved; resolver identities must not reuse them. A file option
+resolver, so `FileHost` resolves them relative to its root. Origins are preserved
+in lexical environments independently of diagnostic names. A file option
 imports the supplied file normally, giving it its own identity and relative
 imports. Parameter code shares step/depth/output/import budgets and is checked
 against `source_bytes` when forced. Each `evaluate` call starts fresh; reusable

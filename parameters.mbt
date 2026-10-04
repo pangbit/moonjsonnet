@@ -8,7 +8,7 @@ fn Vm::prepare_parameters(
   kind : String,
 ) -> Map[String, Int] {
   let result : Map[String, Int] = Map([])
-  let env : Env = { parent: None, names: Map([]), }
+  let env : Env = { parent: None, names: Map([]), import_from: "", }
   for name, json in values {
     if !code.contains(name) {
       let loc : Location = { file: "<\{kind}:\{name}>", line: 1, column: 1, }
@@ -17,13 +17,7 @@ fn Vm::prepare_parameters(
   }
   for name, source in code {
     let loc : Location = { file: "<\{kind}:\{name}>", line: 1, column: 1, }
-    self.import_origins[loc.file] = ""
     result[name] = self.store(Code(source, loc))
   }
   result
-}
-
-///|
-fn Vm::import_origin(self : Vm, file : String) -> String {
-  self.import_origins.get(file).unwrap_or(file)
 }

@@ -154,8 +154,8 @@ fn Vm::eval_inner(self : Vm, expr : Expr, env : Env) -> Value raise {
         continue
       }
       Fail(e) => raise problem(Runtime, loc, text_value(self.eval(e, env), loc))
-      ImportFile(path, raw) => self.import_file(path, raw, loc)
-      ImportBinary(path) => self.import_binary(path, loc)
+      ImportFile(path, raw) => self.import_file(path, raw, env.import_from, loc)
+      ImportBinary(path) => self.import_binary(path, env.import_from, loc)
       StandardFunction(name) => Builtin(name)
     }
   } nobreak {

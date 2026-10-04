@@ -15,11 +15,12 @@ priv enum Value {
 priv struct Env {
   parent : Env?
   names : Map[String, Int]
+  import_from : String
 }
 
 ///|
 fn Env::child(self : Env) -> Env {
-  { parent: Some(self), names: Map([]), }
+  { parent: Some(self), names: Map([]), import_from: self.import_from, }
 }
 
 ///|
@@ -73,7 +74,6 @@ priv struct Vm {
   objects : Array[ObjectData]
   limits : Limits
   ext : Map[String, Int]
-  import_origins : Map[String, String]
   native_functions : Map[String, NativeFunction]
   trace : (Location, String) -> Unit
   resolver : ((String, String) -> Source raise)?
@@ -123,7 +123,7 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
           raise problem(Limit, origin, "parameter source byte limit exceeded")
         }
         let expr = parse(source, origin.file, self.limits.depth)
-        self.eval(expr, self.base_env(file=origin.file))
+        self.eval(expr, self.base_env(file=origin.file, import_from=""))
       } catch {
         e => self.failure(id, e)
       }
@@ -167,7 +167,7 @@ fn Vm::from_json(self : Vm, json : Json, loc : Location) -> Value raise {
     Array(a) =>
       ArrayValue(a.map(x => self.store(Ready(self.from_json(x, loc)))))
     Object(o) => {
-      let env : Env = { parent: None, names: Map([]), }
+      let env : Env = { parent: None, names: Map([]), import_from: "", }
       let fs : Map[String, LayerField] = Map([])
       for k, v in o {
         fs[k] = {

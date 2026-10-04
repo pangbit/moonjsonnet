@@ -10,6 +10,7 @@ fn Vm::defer_index(
   let env : Env = {
     parent: None,
     names: Map([("a", self.store(Ready(value)))]),
+    import_from: "",
   }
   self.store(
     Pending(
@@ -102,6 +103,7 @@ fn Vm::defer_call(
     Pending({ kind: Call({ kind: Var("f"), loc, }, params, false), loc, }, {
       parent: None,
       names,
+      import_from: "",
     }),
   )
 }

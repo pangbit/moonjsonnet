@@ -3,9 +3,9 @@ fn Vm::import_file(
   self : Vm,
   path : String,
   raw : Bool,
+  from : String,
   loc : Location,
 ) -> Value raise {
-  let from = self.import_origin(loc.file)
   let request = (from, path)
   let source = match self.sources.get(request) {
     Some(s) => s
@@ -65,8 +65,13 @@ fn Vm::import_file(
 }
 
 ///|
-fn Vm::base_env(self : Vm, file? : String = "<input>") -> Env raise {
-  let env : Env = { parent: None, names: Map([]), }
+fn Vm::base_env(
+  self : Vm,
+  file? : String = "<input>",
+  import_from? : String,
+) -> Env raise {
+  let import_from = import_from.unwrap_or(file)
+  let env : Env = { parent: None, names: Map([]), import_from, }
   let loc : Location = { file, line: 1, column: 1, }
   let fields : Map[String, LayerField] = Map([])
   for name in builtin_names() {
@@ -98,12 +103,20 @@ fn Vm::base_env(self : Vm, file? : String = "<input>") -> Env raise {
   if value is ObjectValue(id, _) {
     self.objects[id].standard = true
   }
-  { parent: None, names: Map([("std", self.store(Ready(value)))]), }
+  {
+    parent: None,
+    names: Map([("std", self.store(Ready(value)))]),
+    import_from,
+  }
 }
 
 ///|
-fn Vm::import_binary(self : Vm, path : String, loc : Location) -> Value raise {
-  let from = self.import_origin(loc.file)
+fn Vm::import_binary(
+  self : Vm,
+  path : String,
+  from : String,
+  loc : Location,
+) -> Value raise {
   let request = (from, path)
   let source = match self.binary_sources.get(request) {
     Some(s) => s
