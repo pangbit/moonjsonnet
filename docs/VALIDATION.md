@@ -49,11 +49,13 @@ moon run tools/differential.mbtx /tmp/go-jsonnet-v0.21.0/jsonnet _build/native/r
 
 The Go run includes the shared `tests/differential.json` corpus plus Go-specific
 cases in `tests/go-differential.json`, `tests/go-parameters.json`,
-`tests/go-cli-input.json`, `tests/go-cli-output.json` and `tests/go-cli-multi.json`.
+`tests/go-cli-input.json`, `tests/go-cli-output.json`, `tests/go-cli-multi.json`
+and `tests/go-cli-imports.json`.
 Fixtures can supply `args`, `files`, `env`, an
 `input` mode (`file`, `exec` or `stdin`), literal `input_arg`, explicit `stdin`,
 `cwd` and pinned JSON `result` or error diagnostic checks. The `<work>` marker
-in fixture paths resolves to the runner's isolated case directory; reports
+in fixture paths and environment values resolves to the runner's working directory;
+fixture files can include nested directories. Reports
 retain all inputs and outputs. C++ continues to run the original shared
 corpus: its pass count does not cover the Go-specific cases. The
 `makeArray` contract differences are listed in [compatibility](COMPATIBILITY.md).
@@ -75,12 +77,21 @@ observation errors still abort. The overlapping `file_output_cases` count
 includes successful, evaluation-error and I/O-error file fixtures;
 `io_error_cases` also overlaps `error_cases`. Output directories are reset before
 each side, so reference-created files cannot mask local mkdir/write defects.
+ENOTDIR-as-absence applies only to output observation; import lookup treats it
+as a fatal I/O error, matching the pinned Go importer.
 
 The host integration entrypoint also runs `tools/multi-integration.mbtx`. It
 checks raw bytes, directory creation, partial failures and budgets, then compares
 mtime/inode after pinning a past timestamp to prove identical content is not
 rewritten. No timing sleep is used. The existing-file comparison is exercised
 at zero length and around 4096-byte boundaries, including unchanged and changed files.
+
+It also runs `tools/import-integration.mbtx`, covering library priority, root
+policy, absolute paths, symlinks, permissions, UTF-8/binary data and import limits.
+Library fixtures retain successful and failing candidates; API regressions
+mutate files between calls to verify positive/negative host-cache stability and
+fresh-host behavior. The archive consumer calls `jpaths` and entry `load` from
+the actual packaged module, including its executable documentation.
 
 The runner checks Go binary build metadata for commit
 `67968688d9952f50662e979fab1bef889d0d3e57` and an unmodified checkout. Build the
@@ -107,8 +118,9 @@ Trace fixtures additionally compare exact stderr on success and the exact trace
 prefix before an error diagnostic. Both programs receive the same absolute
 input path for these cases; relative/alias diagnostic-path parity is not implied.
 
-See the [multi-output report](../reports/GO-JSONNET-MULTI-OUTPUT.md) for current
+See the [import-search report](../reports/GO-JSONNET-IMPORT-SEARCH.md) for current
 commit-bound results and the retained differences. The earlier
+[multi-output report](../reports/GO-JSONNET-MULTI-OUTPUT.md),
 [CLI output report](../reports/GO-JSONNET-CLI-OUTPUT.md),
 [CLI input report](../reports/GO-JSONNET-CLI-INPUT.md),
 [parameter report](../reports/GO-JSONNET-PARAMETERS.md),
