@@ -33,6 +33,10 @@ test "readme embedded evaluation" {
     "local template(n=1) = { replicas: n, port: 8080 }; template(3)",
   )
   assert_eq(value, { "replicas": 3, "port": 8080 })
+  assert_eq(
+    @moonjsonnet.evaluate("std.thisFile", filename="<cmdline>", anonymous=true),
+    Json::string(""),
+  )
 }
 ```
 

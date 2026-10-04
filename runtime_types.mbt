@@ -73,7 +73,7 @@ priv struct Vm {
   objects : Array[ObjectData]
   limits : Limits
   ext : Map[String, Int]
-  parameter_files : Map[String, Unit]
+  import_origins : Map[String, String]
   native_functions : Map[String, NativeFunction]
   trace : (Location, String) -> Unit
   resolver : ((String, String) -> Source raise)?

@@ -1,8 +1,11 @@
 ///|
 fn run(args : Array[String]) -> Unit raise {
-  let mut input : String? = None
+  let args = simplify_args(args)
+  let inputs : Array[String] = []
   let mut output : String? = None
   let mut root = "."
+  let mut exec = false
+  let mut options = true
   let ext : Map[String, Json] = Map([])
   let ext_code : Map[String, String] = Map([])
   let tla : Map[String, Json] = Map([])
@@ -11,15 +14,30 @@ fn run(args : Array[String]) -> Unit raise {
   let mut i = 1
   while i < args.length() {
     let arg = args[i]
+    if options && arg == "--" {
+      options = false
+      i += 1
+      continue
+    }
+    if !options || arg == "-" || !arg.has_prefix("-") {
+      inputs.push(arg)
+      i += 1
+      continue
+    }
     if arg == "--help" || arg == "-h" {
       println(
-        "Usage: moonjsonnet [--root DIR] [-V/--ext-str NAME[=VALUE]] [--ext-code NAME[=CODE]] [-A/--tla-str NAME[=VALUE]] [--tla-code NAME[=CODE]] [--ext-str-file/--ext-code-file/--tla-str-file/--tla-code-file NAME=FILE] [-o FILE] [--max-steps N] [--max-depth N] [--max-source-bytes N] [--max-import-bytes N] [--max-imports N] [--max-output-bytes N] INPUT",
+        "Usage: moonjsonnet [-e/--exec] [--root DIR] [-V/--ext-str NAME[=VALUE]] [--ext-code NAME[=CODE]] [-A/--tla-str NAME[=VALUE]] [--tla-code NAME[=CODE]] [--ext-str-file/--ext-code-file/--tla-str-file/--tla-code-file NAME=FILE] [-o/--output-file FILE] [--max-steps N] [--max-depth N] [--max-source-bytes N] [--max-import-bytes N] [--max-imports N] [--max-output-bytes N] [--] INPUT\nINPUT is a file, - for stdin, or code with -e. Combined short options expand before --.",
       )
       return
     }
-    if arg == "--version" {
+    if arg == "--version" || arg == "-v" {
       println("moonjsonnet 0.1.0 (Jsonnet v0.21.0 subset)")
       return
+    }
+    if arg == "-e" || arg == "--exec" {
+      exec = true
+      i += 1
+      continue
     }
     if arg.has_prefix("-") {
       guard i + 1 < args.length() else { fail("missing value for \{arg}") }
@@ -27,7 +45,12 @@ fn run(args : Array[String]) -> Unit raise {
       let value = args[i]
       match arg {
         "--root" => root = value
-        "-o" | "--output" => output = Some(value)
+        "-o" | "--output" | "--output-file" => {
+          if value.is_empty() {
+            fail("output filename must not be empty")
+          }
+          output = Some(value)
+        }
         "-V"
         | "--ext-str"
         | "--ext-code"
@@ -86,23 +109,58 @@ fn run(args : Array[String]) -> Unit raise {
           limits = { ..limits, output_bytes: @string.parse_int(value), }
         _ => fail("unknown option: \{arg}")
       }
-    } else {
-      if input is Some(_) {
-        fail("only one input file is supported")
-      }
-      input = Some(arg)
     }
     i += 1
   }
-  guard input is Some(path) else { fail("missing input; use --help") }
-  let result = @fs.evaluate_file(
-    path,
-    root~,
+  if inputs.is_empty() {
+    fail("missing input; use --help")
+  }
+  if inputs.length() != 1 {
+    fail("only one input is supported")
+  }
+  let path = inputs[0]
+  let host = @fs.FileHost::new(root, max_bytes=limits.source_bytes)
+  let anonymous = exec || path == "-"
+  let source : @moonjsonnet.Source = if exec {
+    { id: "<cmdline>", text: path, }
+  } else if path == "-" {
+    let (status, bytes) = @posix.read_stdin(limits.source_bytes)
+    if status != 0 {
+      raise @moonjsonnet.Error({
+        kind: if status == 3 || status == 2 {
+          @moonjsonnet.Limit
+        } else {
+          @moonjsonnet.Import
+        },
+        message: "cannot read stdin within source byte limit",
+        location: { file: "<stdin>", line: 1, column: 1, },
+        context: [],
+      })
+    }
+    let text = @utf8.decode(bytes) catch {
+      _ =>
+        raise @moonjsonnet.Error({
+          kind: @moonjsonnet.Import,
+          message: "stdin is not valid UTF-8",
+          location: { file: "<stdin>", line: 1, column: 1, },
+          context: [],
+        })
+    }
+    { id: "<stdin>", text, }
+  } else {
+    host.resolve("", path)
+  }
+  let result = @moonjsonnet.evaluate(
+    source.text,
+    filename=source.id,
+    anonymous~,
     ext_vars=ext,
     ext_code~,
     tla_vars=tla,
     tla_code~,
     limits~,
+    resolver=(from, path) => host.resolve(from, path),
+    binary_resolver=(from, path) => host.resolve_binary(from, path),
   ).stringify()
   match output {
     None => println(result)
@@ -122,7 +180,7 @@ fn main {
     }
     e => {
       @posix.stderr("moonjsonnet: \{e}")
-      @posix.exit(2)
+      @posix.exit(1)
     }
   }
 }

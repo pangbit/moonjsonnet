@@ -4,6 +4,8 @@
 /// `ext_code` and `tla_code` contain lazy Jsonnet expressions in clean scopes.
 /// Code overrides JSON for duplicate names. A top-level function is applied once
 /// with named TLAs; other top-level values ignore them.
+/// With `anonymous=true`, filename is diagnostic-only: std.thisFile and the
+/// entry import origin are empty, matching Go's EvaluateAnonymousSnippet.
 ///
 /// ```mbt check
 /// test {
@@ -14,6 +16,7 @@
 pub fn evaluate(
   source : String,
   filename? : String = "<input>",
+  anonymous? : Bool = false,
   ext_vars? : Map[String, Json] = Map([]),
   ext_code? : Map[String, String] = Map([]),
   tla_vars? : Map[String, Json] = Map([]),
@@ -48,7 +51,7 @@ pub fn evaluate(
       objects: [],
       limits,
       ext: Map([]),
-      parameter_files: Map([]),
+      import_origins: Map([]),
       native_functions,
       trace,
       resolver,
@@ -62,12 +65,18 @@ pub fn evaluate(
       imported_bytes: 0,
       output_bytes: 0,
     }
+    if anonymous {
+      vm.import_origins[filename] = ""
+    }
     let ext = vm.prepare_parameters(ext_vars, ext_code, "extvar")
     for name, id in ext {
       vm.ext[name] = id
     }
     let expression = parse(source, filename, limits.depth)
-    let value = vm.eval(expression, vm.base_env(file=filename))
+    let value = vm.eval(
+      expression,
+      vm.base_env(file=if anonymous { "" } else { filename }),
+    )
     let value = match value {
       Closure(_, _, _) | Builtin(_) | Native(_) => {
         let tla = vm.prepare_parameters(tla_vars, tla_code, "top-level-arg")

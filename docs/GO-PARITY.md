@@ -46,9 +46,9 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | 顶层参数 TLA | JSON/字符串/代码及 CLI 文件/环境变量形式，顶层函数调用、默认值与错误传播 | 扩大语料；可重用 VM 的 TLA/reset/AST 接口仍待实现 |
 | 原生回调与 trace | 已实现按名注册、JSON 回调、可配置 sink 及默认 stderr | 扩大宿主边界验证；CLI trace 重定向选项与诊断路径行为仍待补齐 |
 | 导入器 | 有定制文本/二进制解析及限定目录文件宿主 | `-J`、`JSONNET_PATH` 搜索顺序、依赖发现、导入查询接口 |
-| 输入模式 | 文件和库内源码求值 | CLI `-e`、stdin、`--`、选项缩写；诊断文件名行为 |
+| 输入模式 | 文件、CLI `-e`、stdin、`--`、短选项展开和匿名源码求值 | 扩大输入/诊断边界，保留宿主资源与 UTF-8 政策 |
 | 输出模式 | 单个 JSON/文件 | 字符串输出、multi、stream、目录创建及对应嵌入方法 |
-| CLI 参数兼容 | 部分 | 与参考完整 help 逐项核对，包括 `--output-file`、stack/trace 选项 |
+| CLI 参数兼容 | 已补齐参数、输入、`--output-file`/`-v`、短选项及退出 1 行为；其余部分 | 与参考完整 help 核对 stack/trace、导入搜索与输出模式 |
 | VM/AST 接口 | 一次性 evaluate | 可重用 VM、AST 解析/执行、缓存生命周期、依赖扫描的 MoonBit 等价接口 |
 | 格式化器、静态分析工具 | 缺失 | 单独建立格式化/lint/工具接口语料，纳入整体覆盖状态 |
 | 平台与交付 | native；实测 macOS arm64 | Linux 持续验证；其余参考平台和分发能力逐项核验，不凭本机结果推断 |

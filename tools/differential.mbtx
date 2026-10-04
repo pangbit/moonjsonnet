@@ -33,6 +33,9 @@ async fn main {
     let parameters = @json.parse(@fs.read_file("tests/go-parameters.json").text())
     guard parameters is Array(parameters) else { fail("expected Go parameter case array") }
     for case in parameters { cases.push(case) }
+    let inputs = @json.parse(@fs.read_file("tests/go-cli-input.json").text())
+    guard inputs is Array(inputs) else { fail("expected Go CLI input case array") }
+    for case in inputs { cases.push(case) }
   }
   let work = if is_go { "_build/go-differential" } else { "_build/differential" }
   @fs.mkdir(work, recursive=true, allow_exist=true)
@@ -69,8 +72,16 @@ async fn main {
         environment[name] = value
       }
     }
-    let a = @shell.Cmd(reference, extra_args + [path],env=environment).output(timeout_ms=10000)
-    let b = @shell.Cmd(cli, extra_args + [path],env=environment).output(timeout_ms=10000)
+    let mode = match case {{"input":String(mode),..}=>mode;_=>"file"}
+    assert_true(["file","exec","stdin"].contains(mode))
+    let input = match case {
+      {"input_arg":String(arg),..} => arg.replace_all(old="<work>",new=work)
+      _ => if mode=="exec" {source} else if mode=="stdin" {"-"} else {path}
+    }
+    let stdin = match case {{"stdin":String(s),..}=>s;_=>if mode=="stdin" {source} else {""}}
+    let cwd = match case {{"cwd":String(dir),..}=>Some(dir.replace_all(old="<work>",new=work));_=>None}
+    let a = @shell.Cmd(@fs.realpath(reference), extra_args + [input],env=environment,cwd?,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+    let b = @shell.Cmd(@fs.realpath(cli), extra_args + [input],env=environment,cwd?,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
     let difference = if !is_go && case is { "cpp_difference": difference, .. } { Some(difference) } else { None }
     let matches_difference = match difference {
       Some(difference) => {
@@ -125,7 +136,7 @@ async fn main {
     } else if !ok { failed += 1; "failed" } else if expect.has_prefix("unsupported") { unsupported += 1; "unsupported" } else { passed += 1; "passed" }
     if status == "failed" { println("FAIL \{name}: reference_exit=\{a.exit_code()}, moonjsonnet_exit=\{b.exit_code()} (details in \{work}/report.json)") }
     if status == "reference-difference" { println("DIFF \{name}: exact declared C++/MoonJsonnet outcomes verified") }
-    rows.push({ "name": name, "source": source, "args":extra_args,"files":match case {{"files":files,..}=>files;_=>Json::object(Map([]))},"env":match case {{"env":vars,..}=>vars;_=>Json::object(Map([]))}, "expect": expect, "status": status, "passed": status == "passed", "cpp_difference": difference.unwrap_or(Json::null()), "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr() })
+    rows.push({ "name": name, "source": source, "input":mode,"input_arg":input,"stdin":stdin,"cwd":cwd,"args":extra_args,"files":match case {{"files":files,..}=>files;_=>Json::object(Map([]))},"env":match case {{"env":vars,..}=>vars;_=>Json::object(Map([]))}, "expect": expect, "status": status, "passed": status == "passed", "cpp_difference": difference.unwrap_or(Json::null()), "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr() })
   }
   for path in ["examples/environments/main.jsonnet", "examples/dashboards/main.jsonnet", "examples/embedded/config/main.jsonnet"] {
     let a = @shell.Cmd(reference, ["--ext-code", "replicas=3", path]).output()

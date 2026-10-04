@@ -4,12 +4,19 @@ Import `pangbit/moonjsonnet` for source evaluation and `pangbit/moonjsonnet/fs`
 for the POSIX file host. Generated signatures are in `pkg.generated.mbti` and
 `fs/pkg.generated.mbti`; regenerate with `moon info`.
 
-`evaluate(source, filename?, ext_vars?, ext_code?, tla_vars?, tla_code?, native_functions?, trace?, resolver?, binary_resolver?, limits?) -> Json raise JsonnetError`
+`evaluate(source, filename?, anonymous?, ext_vars?, ext_code?, tla_vars?, tla_code?, native_functions?, trace?, resolver?, binary_resolver?, limits?) -> Json raise JsonnetError`
 owns a fresh evaluation state on every call. `filename` defaults to `<input>` and
 is passed to the importer. `ext_vars` is a `Map[String, Json]` read by
 `std.extVar`; strings and JSON values are never implicitly parsed as Jsonnet.
 No importer means imports are disabled. A host exception is translated into an
 `Import` diagnostic; an existing `JsonnetError` preserves its category.
+
+`anonymous=true` matches Go's anonymous-snippet input mode: `filename` is used
+only for diagnostics and trace, `std.thisFile` is empty, and entry imports call
+the resolver with empty `from`. Imported files keep their own filenames and
+origins. The default `anonymous=false` keeps the existing filename-based behavior.
+CLI inline code and stdin use the anonymous mode; code parameters retain their
+own synthetic `std.thisFile` names.
 
 `ext_code: Map[String, String]` supplies Jsonnet expressions, including functions,
 objects and imports. Code runs in an independent lexical environment containing

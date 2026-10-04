@@ -18,6 +18,20 @@ extern "c" fn stderr_ffi(data : Bytes) -> Unit = "mj_stderr"
 pub extern "c" fn exit(code : Int) -> Unit = "mj_exit"
 
 ///|
+extern "c" fn stdin_ffi(limit : Int) -> Bytes = "mj_stdin"
+
+///|
+// 0 success; 1 I/O/allocation failure; 2 invalid limit; 3 byte limit exceeded.
+pub fn read_stdin(limit : Int) -> (Int, Bytes) {
+  let data = stdin_ffi(limit)
+  if data[0] != 0 {
+    (data[0].to_int(), b"")
+  } else {
+    (0, data[1:].to_owned())
+  }
+}
+
+///|
 pub fn canonical(path : String) -> String? {
   if path.contains("\u0000") {
     return None

@@ -17,7 +17,7 @@ fn Vm::prepare_parameters(
   }
   for name, source in code {
     let loc : Location = { file: "<\{kind}:\{name}>", line: 1, column: 1, }
-    self.parameter_files[loc.file] = ()
+    self.import_origins[loc.file] = ""
     result[name] = self.store(Code(source, loc))
   }
   result
@@ -25,9 +25,5 @@ fn Vm::prepare_parameters(
 
 ///|
 fn Vm::import_origin(self : Vm, file : String) -> String {
-  if self.parameter_files.contains(file) {
-    ""
-  } else {
-    file
-  }
+  self.import_origins.get(file).unwrap_or(file)
 }

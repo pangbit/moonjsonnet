@@ -95,7 +95,7 @@ async fn main {
   assert_true(bad.exit_code() != 0)
   assert_eq(@fs.read_file(output).json(), @json.parse("{\"x\":42}"))
   let missing = @shell.Cmd(cli, []).output()
-  assert_eq(missing.exit_code(), 2)
+  assert_eq(missing.exit_code(), 1)
   @fs.write_file(root + "/main.jsonnet", "import 'traced.libsonnet'")
   @fs.write_file(root + "/traced.libsonnet", "\nstd.trace('import trace',42)")
   let traced = @shell.Cmd(cli, ["--root",root,"main.jsonnet"]).output()
@@ -111,10 +111,77 @@ async fn main {
   assert_eq(parameter_failure.exit_code(),1)
   assert_eq(@fs.read_file(output).json(),@json.parse("{\"x\":42}"))
   let parameter_format = @shell.Cmd(cli,["--root",root,"--tla-code-file","x","main.jsonnet"]).output()
-  assert_eq(parameter_format.exit_code(),2)
+  assert_eq(parameter_format.exit_code(),1)
   assert_eq(parameter_format.stdout(),"")
   let missing_environment = @shell.Cmd("env",["-u","MOONJSONNET_INTEGRATION_MISSING",cli,"--root",root,"--ext-code","MOONJSONNET_INTEGRATION_MISSING","main.jsonnet"]).output()
-  assert_eq(missing_environment.exit_code(),2)
+  assert_eq(missing_environment.exit_code(),1)
   assert_eq(missing_environment.stdout(),"")
-  println("Integration: \{passed + 8} passed; path, UTF-8, CLI parameters/exit/output, trace and resource limits")
+  @fs.write_file(root+"/--help","42")
+  @fs.write_file(root+"/-input.jsonnet","42")
+  let inputs : Array[(String,Array[String],Bytes,Json?,String?)] = [
+    ("exec",["-e","21*2"],b"",Some(42),None),
+    ("exec-long",["--exec","[std.thisFile,std.extVar('x')]","--ext-code","x=42"],b"",Some(["",42]),None),
+    ("exec-parameters",["-e","function(x) x","--tla-code","x=42"],b"",Some(42),None),
+    ("exec-import",["-e","(import 'value.libsonnet').x"],b"",Some(42),None),
+    ("exec-escape",["-e","import 'escape'"],b"",None,Some("Import")),
+    ("exec-delimiter",["-e","--","-42"],b"",Some(-42),None),
+    ("file-delimiter",["--","--help"],b"",Some(42),None),
+    ("file-dash",["--","-input.jsonnet"],b"",Some(42),None),
+    ("short-options",["-eA","x=42","function(x) x"],b"",Some(Json::string("42")),None),
+    ("stdin",["-"],b"21*2",Some(42),None),
+    ("stdin-exact",["--max-source-bytes","2","-"],b"42",Some(42),None),
+    ("stdin-unicode-exact",["--max-source-bytes","6","-"],b"'\xf0\x9f\x98\x80'",Some(Json::string("😀")),None),
+    ("stdin-unicode-limit",["--max-source-bytes","6","-"],b"'\xf0\x9f\x98\x80'\n",None,Some("Limit")),
+    ("stdin-large-limit",["--max-source-bytes","50","-"],b"x".repeat(1000),None,Some("Limit")),
+    ("stdin-utf8",["-"],b"'\xff'",None,Some("Import")),
+    ("stdin-import",["-"],b"(import 'value.libsonnet').x",Some(42),None),
+    ("stdin-binary",["-"],b"importbin 'invalid-utf8'",Some([255,254]),None),
+    ("stdin-escape",["-"],b"import '../root-sibling/secret'",None,Some("Import")),
+    ("stdin-source",["--max-source-bytes","1","-"],b"42",None,Some("Limit")),
+  ]
+  for (name,extra,stdin,expected,error) in inputs {
+    let result = @shell.Cmd(cli,["--root",root]+extra,stdin=@shell.Binary(stdin)).output(timeout_ms=10000)
+    match expected {
+      Some(expected)=>{result.check();assert_eq(@json.parse(result.stdout()),expected,msg=name)}
+      None=>{assert_eq(result.exit_code(),1,msg=name);assert_true(result.stderr().contains(error.unwrap()),msg=name+result.stderr());assert_eq(result.stdout(),"")}
+    }
+    passed += 1
+  }
+  let stdin_trace = @shell.Cmd(cli,["--root",root,"-"],stdin=@shell.Text("\nstd.trace('input',42)")).output()
+  stdin_trace.check()
+  assert_eq(stdin_trace.stderr(),"TRACE: <stdin>:2 input\n")
+  let exec_trace = @shell.Cmd(cli,["--root",root,"-e","\nstd.trace('input',42)"]).output()
+  exec_trace.check()
+  assert_eq(exec_trace.stderr(),"TRACE: <cmdline>:2 input\n")
+  let short_help = @shell.Cmd(cli,["-eh"]).output()
+  short_help.check()
+  assert_true(short_help.stdout().has_prefix("Usage:"))
+  let short_version = @shell.Cmd(cli,["-v"]).output()
+  short_version.check()
+  assert_true(short_version.stdout().contains("moonjsonnet 0.1.0"))
+  let output_alias = @shell.Cmd(cli,["--root",root,"--output-file",output,"-e","42"]).output()
+  output_alias.check()
+  assert_eq(output_alias.stdout(),"")
+  assert_eq(@fs.read_file(output).json(),Json::number(42))
+  let stdin_failure = @shell.Cmd(cli,["--root",root,"-o",output,"-"],stdin=@shell.Text("error 'bad'")).output()
+  assert_eq(stdin_failure.exit_code(),1)
+  assert_eq(@fs.read_file(output).json(),Json::number(42))
+  let empty_output = @shell.Cmd(cli,["--root",root,"--output-file","","-e","42"]).output()
+  assert_eq(empty_output.exit_code(),1)
+  assert_eq(empty_output.stdout(),"")
+  let multiple_help = @shell.Cmd(cli,["a","b","--help"]).output()
+  multiple_help.check()
+  assert_true(multiple_help.stdout().has_prefix("Usage:"))
+  let large = work + "/large-input"
+  let payload = "'" + "x".repeat(1048574) + "'"
+  @fs.write_file(large,payload)
+  let large_exact = @shell.Cmd(cli,["--root",root,"-"],stdin=@shell.FromFile(large)).output(timeout_ms=10000)
+  large_exact.check()
+  assert_eq(@json.parse(large_exact.stdout()),Json::string("x".repeat(1048574)))
+  @fs.write_file(large,payload+"\n")
+  let large_over = @shell.Cmd(cli,["--root",root,"-"],stdin=@shell.FromFile(large)).output(timeout_ms=10000)
+  assert_eq(large_over.exit_code(),1)
+  assert_true(large_over.stderr().contains("Limit"))
+  assert_eq(large_over.stdout(),"")
+  println("Integration: \{passed + 18} passed; path, UTF-8, CLI inputs/parameters/exit/output, trace and resource limits")
 }

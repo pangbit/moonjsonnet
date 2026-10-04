@@ -304,8 +304,13 @@ and CLI. Top-level functions are applied exactly once; other top-level values
 ignore TLAs. Code parameters have separate scopes, cached values/errors and
 synthetic filenames, but imports originate at the host root. The CLI supports
 string/code/file/environment forms and last-assignment wins. File reads retain
-the project's restricted-root policy. Reusable VM/reset/AST capabilities,
-combined CLI abbreviations and full input/output modes remain pending.
+the project's restricted-root policy. Reusable VM/reset/AST capabilities and
+full output modes remain pending.
+CLI inline (`-e`), stdin (`-`), `--` and bytewise short-option expansion are now
+available. Anonymous entry `std.thisFile` and import origin are empty, with
+synthetic diagnostic filenames. Argument/evaluation/output failures exit 1.
+Stdin retains the bounded-read and strict UTF-8 host policy. Other output modes
+and complete CLI options remain pending.
 
 The POSIX host accepts regular files within one canonical root. Text imports
 require valid UTF-8; binary imports do not decode their contents. Custom
