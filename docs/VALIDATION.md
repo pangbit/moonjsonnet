@@ -49,13 +49,19 @@ moon run tools/differential.mbtx /tmp/go-jsonnet-v0.21.0/jsonnet _build/native/r
 
 The Go run includes the shared `tests/differential.json` corpus plus Go-specific
 cases in `tests/go-differential.json`, `tests/go-parameters.json` and
-`tests/go-cli-input.json`. Fixtures can supply `args`, `files`, `env`, an
+`tests/go-cli-input.json` and `tests/go-cli-output.json`. Fixtures can supply `args`, `files`, `env`, an
 `input` mode (`file`, `exec` or `stdin`), literal `input_arg`, explicit `stdin`,
 `cwd` and pinned JSON `result` or error diagnostic checks. The `<work>` marker
 in fixture paths resolves to the runner's isolated case directory; reports
 retain all inputs and outputs. C++ continues to run the original shared
 corpus: its pass count does not cover the Go-specific cases. The
 `makeArray` contract differences are listed in [compatibility](COMPATIBILITY.md).
+
+`text-output` fixtures pin complete `stdout` bytes, including whitespace, Unicode,
+NUL and newlines; they do not parse or trim output. They cover Go CLI JSON layout,
+plain strings and YAML document streams. `text_output_cases` is an overlapping
+count of these successful-output fixtures. Error cases also require empty stdout
+on both processes, retaining the stream's evaluate-before-output contract.
 
 The runner checks Go binary build metadata for commit
 `67968688d9952f50662e979fab1bef889d0d3e57` and an unmodified checkout. Build the
@@ -82,8 +88,9 @@ Trace fixtures additionally compare exact stderr on success and the exact trace
 prefix before an error diagnostic. Both programs receive the same absolute
 input path for these cases; relative/alias diagnostic-path parity is not implied.
 
-See the [CLI input report](../reports/GO-JSONNET-CLI-INPUT.md) for current
+See the [CLI output report](../reports/GO-JSONNET-CLI-OUTPUT.md) for current
 commit-bound results and the retained differences. The earlier
+[CLI input report](../reports/GO-JSONNET-CLI-INPUT.md),
 [parameter report](../reports/GO-JSONNET-PARAMETERS.md),
 [YAML parsing report](../reports/GO-JSONNET-PARSE-YAML.md),
 [native and trace report](../reports/GO-JSONNET-NATIVE-TRACE.md),
