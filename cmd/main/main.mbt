@@ -2,6 +2,13 @@
 fn run(args : Array[String]) -> Unit raise {
   let args = simplify_args(args)
   let inputs : Array[String] = []
+  let jpaths : Array[String] = []
+  if @env.get_env_var("JSONNET_PATH") is Some(value) && !value.is_empty() {
+    let paths = value.split(":").map(s => s.to_owned()).collect()
+    for i = paths.length() - 1; i >= 0; i = i - 1 {
+      jpaths.push(paths[i])
+    }
+  }
   let mut output : String? = None
   let mut root = "."
   let mut exec = false
@@ -31,6 +38,9 @@ fn run(args : Array[String]) -> Unit raise {
     if arg == "--help" || arg == "-h" {
       println(
         "Usage: moonjsonnet [-e/--exec] [-S/--string] [-y/--yaml-stream] [-m/--multi DIR] [-c/--create-output-dirs] [--root DIR] [-V/--ext-str NAME[=VALUE]] [--ext-code NAME[=CODE]] [-A/--tla-str NAME[=VALUE]] [--tla-code NAME[=CODE]] [--ext-str-file/--ext-code-file/--tla-str-file/--tla-code-file NAME=FILE] [-o/--output-file FILE] [--max-steps N] [--max-depth N] [--max-source-bytes N] [--max-import-bytes N] [--max-imports N] [--max-output-bytes N] [--] INPUT\nINPUT is a file, - for stdin, or code with -e. Combined short options expand before --.",
+      )
+      println(
+        "-J/--jpath DIR adds a library path (rightmost wins). JSONNET_PATH adds colon-separated paths (leftmost wins), below -J. All imports remain confined to --root.",
       )
       return
     }
@@ -64,6 +74,12 @@ fn run(args : Array[String]) -> Unit raise {
       let value = args[i]
       match arg {
         "--root" => root = value
+        "-J" | "--jpath" => {
+          if value.is_empty() {
+            fail("jpath must not be empty")
+          }
+          jpaths.push(value)
+        }
         "-m" | "--multi" => {
           if value.is_empty() {
             fail("multi directory must not be empty")
@@ -144,7 +160,7 @@ fn run(args : Array[String]) -> Unit raise {
     fail("only one input is supported")
   }
   let path = inputs[0]
-  let host = @fs.FileHost::new(root, max_bytes=limits.source_bytes)
+  let host = @fs.FileHost::new(root, jpaths~, max_bytes=limits.source_bytes)
   let anonymous = exec || path == "-"
   let source : @moonjsonnet.Source = if exec {
     { id: "<cmdline>", text: path, }
@@ -173,7 +189,7 @@ fn run(args : Array[String]) -> Unit raise {
     }
     { id: "<stdin>", text, }
   } else {
-    host.resolve("", path)
+    host.load(path)
   }
   if multi is Some(directory) {
     let files = @moonjsonnet.evaluate_multi(

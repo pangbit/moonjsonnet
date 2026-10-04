@@ -1,0 +1,87 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/shell",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+async fn main {
+  let args = @env.args()
+  guard args.length() == 2 else { fail("Usage: moon run tools/import-integration.mbtx CLI") }
+  let cli = @fs.realpath(args[1])
+  let work = @fs.tmpdir(prefix="moonjsonnet-import-tests-")
+  let root = work + "/root"
+  for path in [root,root+"/low",root+"/high"] { @fs.mkdir(path) }
+  @fs.write_file(root+"/low/value","21")
+  @fs.write_file(root+"/high/value","42")
+  @fs.write_file(root+"/entry","import 'value'")
+  @fs.write_file(work+"/outside","7")
+  @fs.write_file(root+"/low/raw","fallback")
+  @fs.write_file(root+"/high/raw",b"\xff\x00")
+  @fs.write_file(root+"/high/large","1".repeat(100))
+  @fs.write_file(root+"/low/large","1")
+  @fs.mkdir(root+"/high/directory")
+  @fs.write_file(root+"/low/directory","42")
+  @fs.symlink(target=work+"/outside",root+"/high/escape")
+  @fs.write_file(root+"/low/escape","42")
+  @fs.symlink(target="value",root+"/high/alias")
+  @fs.symlink(target="loop",root+"/high/loop")
+  @fs.write_file(root+"/low/loop","42")
+  @fs.write_file(root+"/high/denied","42")
+  @fs.write_file(root+"/low/denied","21")
+  @fs.write_file(root+"/not-dir","file")
+  @shell.Cmd("chmod",["000",root+"/high/denied"]).run()
+  let env = Map([("JSONNET_PATH","")])
+  let mut passed = 0
+  for item in [
+    (["-J","low","-J","high"],"import 'value'",Json::number(42)),
+    (["-J",root+"/high"],"import 'value'",Json::number(42)),
+    (["-J",work,"-J","high"],"import 'value'",Json::number(42)),
+    (["-J","high"],"importbin 'raw'",@json.parse("[255,0]")),
+    (["-J","high"],"[import 'alias',import 'value']",@json.parse("[42,42]")),
+    (["-J","low"],"import @'"+root+"/high/value'",Json::number(42)),
+    (["-J","low","-J","high"],"std.extVar('x')",Json::number(42)),
+  ] {
+    let (options,source,expected) = item
+    let parameters = if source=="std.extVar('x')" { ["--ext-code","x=import 'value'"] } else { [] }
+    let result = @shell.Cmd(cli,["--root",root]+options+parameters+["-e",source],env~).output()
+    result.check()
+    assert_eq(@json.parse(result.stdout()),expected)
+    passed+=1
+  }
+  for item in [
+    (["-J","low","-J","high"],"importstr 'raw'","Import","invalid UTF-8"),
+    (["-J","low","-J","high","--max-source-bytes","22"],"import 'large'","Limit","file byte limit exceeded"),
+    (["-J","low","-J","high"],"import 'directory'","Import","expected regular file"),
+    (["-J","low","-J","high"],"import 'escape'","Import","escapes allowed root"),
+    (["-J","low","-J","high"],"import 'loop'","Import","cannot resolve file"),
+    (["-J","low","-J","high"],"import 'denied'","Import","cannot open file"),
+    (["-J","low","-J","not-dir"],"import 'value'","Import","cannot resolve file"),
+    (["-J",work],"import 'outside'","Import","escapes allowed root"),
+    (["-J","high"],"import @'"+work+"/outside'","Import","escapes allowed root"),
+    (["-J","high"],"import @'"+root+"/missing'","Import","no match locally"),
+  ] {
+    let (options,source,kind,message) = item
+    let result = @shell.Cmd(cli,["--root",root]+options+["-e",source],env~).output()
+    assert_eq(result.exit_code(),1)
+    assert_eq(result.stdout(),"")
+    assert_true(result.stderr().contains(": "+kind+":"))
+    assert_true(result.stderr().contains(message))
+    passed+=1
+  }
+  @shell.Cmd("chmod",["644",root+"/high/denied"]).run()
+  let entry = @shell.Cmd(cli,["--root",root,"-J","high","entry"],env~).output()
+  entry.check()
+  assert_eq(@json.parse(entry.stdout()),42)
+  passed+=1
+  let missing_entry = @shell.Cmd(cli,["--root",root,"-J","high","value"],env~).output()
+  assert_eq(missing_entry.exit_code(),1)
+  assert_true(missing_entry.stderr().contains("entry file"))
+  passed+=1
+  let environment = @shell.Cmd(cli,["--root",root,"-e","import 'value'"],env=Map([("JSONNET_PATH","high:low")])).output()
+  environment.check()
+  assert_eq(@json.parse(environment.stdout()),42)
+  passed+=1
+  println("Import-search integration: \{passed} passed; root policy, library priority, bytes, symlinks, errors and entry files")
+}

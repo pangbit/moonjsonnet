@@ -1,0 +1,724 @@
+[
+  {
+    "name": "search-env-from-process-root",
+    "source": "import 'value'",
+    "input": "exec",
+    "cwd": ".",
+    "args": ["-e"],
+    "env": {"JSONNET_PATH": "<work>/search-env-marker/lib"},
+    "files": {"search-env-marker/lib/value": "42"},
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-jpath",
+    "source": "import 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-jpath/lib"
+    ],
+    "files": {
+      "search-jpath/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-long-jpath",
+    "source": "import 'value'",
+    "args": [
+      "-e",
+      "--jpath",
+      "search-long-jpath/lib"
+    ],
+    "files": {
+      "search-long-jpath/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-rightmost",
+    "source": "import 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-rightmost/low",
+      "-J",
+      "search-rightmost/high"
+    ],
+    "files": {
+      "search-rightmost/low/value": "21",
+      "search-rightmost/high/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-fallback",
+    "source": "import 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-fallback/low",
+      "-J",
+      "search-fallback/missing"
+    ],
+    "files": {
+      "search-fallback/low/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-local-first",
+    "source": "import 'local-value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-local/lib"
+    ],
+    "files": {
+      "local-value": "7",
+      "search-local/lib/local-value": "42"
+    },
+    "result": 7
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": "search-env/left:search-env/right"
+    },
+    "name": "search-env-leftmost",
+    "source": "import 'value'",
+    "args": [
+      "-e"
+    ],
+    "files": {
+      "search-env/left/value": "42",
+      "search-env/right/value": "21"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": "search-env-fallback/missing:search-env-fallback/lib"
+    },
+    "name": "search-env-fallback",
+    "source": "import 'value'",
+    "args": [
+      "-e"
+    ],
+    "files": {
+      "search-env-fallback/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": "search-cli-env/env"
+    },
+    "name": "search-cli-before-env",
+    "source": "import 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-cli-env/cli"
+    ],
+    "files": {
+      "search-cli-env/cli/value": "42",
+      "search-cli-env/env/value": "21"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": "search-cli-fallback/env"
+    },
+    "name": "search-cli-fallback-env",
+    "source": "import 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-cli-fallback/missing"
+    ],
+    "files": {
+      "search-cli-fallback/env/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ":search-env-empty:"
+    },
+    "name": "search-empty-env-components",
+    "source": "import 'env-empty-local'",
+    "args": [
+      "-e"
+    ],
+    "files": {
+      "env-empty-local": "42",
+      "search-env-empty/env-empty-local": "21"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-empty-env",
+    "source": "42",
+    "args": [
+      "-e"
+    ],
+    "result": 42
+  },
+  {
+    "input": "stdin",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-stdin",
+    "source": "import 'value'",
+    "args": [
+      "-J",
+      "search-stdin/lib"
+    ],
+    "files": {
+      "search-stdin/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "file",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-file",
+    "source": "import 'value'",
+    "input_arg": "search-file/app/main.jsonnet",
+    "args": [
+      "-J",
+      "search-file/lib"
+    ],
+    "files": {
+      "search-file/app/main.jsonnet": "import 'value'",
+      "search-file/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "file",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-importer-before-library",
+    "source": "import 'value'",
+    "input_arg": "search-importer/app/main.jsonnet",
+    "args": [
+      "-J",
+      "search-importer/lib"
+    ],
+    "files": {
+      "search-importer/app/main.jsonnet": "import 'value'",
+      "search-importer/app/value": "7",
+      "search-importer/lib/value": "42"
+    },
+    "result": 7
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-nested-importer",
+    "source": "import 'entry'",
+    "args": [
+      "-e",
+      "-J",
+      "search-nested/lib"
+    ],
+    "files": {
+      "search-nested/lib/entry": "import 'sub/value'",
+      "search-nested/lib/sub/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-nested-global",
+    "source": "import 'entry'",
+    "args": [
+      "-e",
+      "-J",
+      "search-nested-global/shared",
+      "-J",
+      "search-nested-global/lib"
+    ],
+    "files": {
+      "search-nested-global/lib/entry": "import 'value'",
+      "search-nested-global/shared/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-importstr",
+    "source": "importstr 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-text/lib"
+    ],
+    "files": {
+      "search-text/lib/value": "é😀\u0000\n"
+    },
+    "result": "é😀\u0000\n"
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-importbin",
+    "source": "importbin 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-bytes/lib"
+    ],
+    "files": {
+      "search-bytes/lib/value": "é\u0000"
+    },
+    "result": [
+      195,
+      169,
+      0
+    ]
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-code-parameter",
+    "source": "std.extVar('x')",
+    "args": [
+      "-e",
+      "-J",
+      "search-ext/lib",
+      "--ext-code",
+      "x=import 'value'"
+    ],
+    "files": {
+      "search-ext/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-tla-code",
+    "source": "function(x) x",
+    "args": [
+      "-e",
+      "-J",
+      "search-tla/lib",
+      "--tla-code",
+      "x=import 'value'"
+    ],
+    "files": {
+      "search-tla/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-ext-file",
+    "source": "std.extVar('x')",
+    "args": [
+      "-e",
+      "-J",
+      "search-ext-file/lib",
+      "--ext-code-file",
+      "x=value"
+    ],
+    "files": {
+      "search-ext-file/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-tla-string-file",
+    "source": "function(x) x",
+    "args": [
+      "-e",
+      "-J",
+      "search-tla-file/lib",
+      "--tla-str-file",
+      "x=value"
+    ],
+    "files": {
+      "search-tla-file/lib/value": "raw"
+    },
+    "result": "raw"
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-clean-path",
+    "source": "import 'missing/../value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-clean/lib"
+    ],
+    "files": {
+      "search-clean/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-clean-library",
+    "source": "import './value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-clean-lib/missing/../lib"
+    ],
+    "files": {
+      "search-clean-lib/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "error",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-file-library-stops",
+    "source": "import 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-file-lib/low",
+      "-J",
+      "search-file-lib/not-dir"
+    ],
+    "files": {
+      "search-file-lib/low/value": "42",
+      "search-file-lib/not-dir": "file"
+    },
+    "reference_error": "not a directory",
+    "moonjsonnet_error": "Import"
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-alias-cache",
+    "source": "[import 'value',import './value',importbin 'value',importstr 'value']",
+    "args": [
+      "-e",
+      "-J",
+      "search-alias/lib"
+    ],
+    "files": {
+      "search-alias/lib/value": "42"
+    },
+    "result": [
+      42,
+      42,
+      [
+        52,
+        50
+      ],
+      "42"
+    ]
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-combined-short",
+    "source": "import 'value'",
+    "args": [
+      "-eJ",
+      "search-combined/lib"
+    ],
+    "files": {
+      "search-combined/lib/value": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-unicode-directory",
+    "source": "import '值'",
+    "args": [
+      "-e",
+      "-J",
+      "search-unicode/目录"
+    ],
+    "files": {
+      "search-unicode/目录/值": "42"
+    },
+    "result": 42
+  },
+  {
+    "input": "file",
+    "cwd": "<work>",
+    "expect": "error",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-entry-not-searched",
+    "source": "42",
+    "input_arg": "library-only-entry.jsonnet",
+    "args": [
+      "-J",
+      "search-entry/lib"
+    ],
+    "files": {
+      "search-entry/lib/library-only-entry.jsonnet": "42"
+    }
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "error",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-missing",
+    "source": "import 'never-created-search-value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-missing/lib"
+    ],
+    "reference_error": "no match locally or in the Jsonnet library paths",
+    "moonjsonnet_error": "Import"
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "error",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-directory-stops",
+    "source": "import 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-dir/low",
+      "-J",
+      "search-dir/high"
+    ],
+    "files": {
+      "search-dir/low/value": "42",
+      "search-dir/high/value/child": "1"
+    },
+    "reference_error": "is a directory",
+    "moonjsonnet_error": "Import"
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "error",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-parse-stops",
+    "source": "import 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-parse/low",
+      "-J",
+      "search-parse/high"
+    ],
+    "files": {
+      "search-parse/low/value": "42",
+      "search-parse/high/value": "invalid !"
+    },
+    "reference_error": "RUNTIME ERROR",
+    "moonjsonnet_error": "Syntax"
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "error",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-runtime-stops",
+    "source": "import 'value'",
+    "args": [
+      "-e",
+      "-J",
+      "search-runtime/low",
+      "-J",
+      "search-runtime/high"
+    ],
+    "files": {
+      "search-runtime/low/value": "42",
+      "search-runtime/high/value": "error 'high' "
+    },
+    "reference_error": "high",
+    "moonjsonnet_error": "Runtime"
+  },
+  {
+    "input": "exec",
+    "cwd": "<work>",
+    "expect": "error",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-empty-jpath",
+    "source": "42",
+    "args": [
+      "-e",
+      "-J",
+      ""
+    ]
+  },
+  {
+    "input": "file",
+    "cwd": "<work>",
+    "expect": "error",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-missing-jpath-value",
+    "source": "",
+    "input_arg": "-J",
+    "args": []
+  },
+  {
+    "input": "file",
+    "cwd": "<work>",
+    "expect": "success",
+    "env": {
+      "JSONNET_PATH": ""
+    },
+    "name": "search-stop-options",
+    "source": "42",
+    "input_arg": "search-stop/main.jsonnet",
+    "args": [
+      "-J",
+      "search-stop/lib",
+      "--"
+    ],
+    "files": {
+      "search-stop/main.jsonnet": "import 'value'",
+      "search-stop/lib/value": "42"
+    },
+    "result": 42
+  }
+]

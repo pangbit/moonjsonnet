@@ -3,8 +3,10 @@
 pub struct FileHost {
   root : String
   max_bytes : Int
+  jpaths : Array[String]
   cache : Map[String, @moonjsonnet.Source]
   binary_cache : Map[String, @moonjsonnet.BinarySource]
+  attempts : Map[String, @moonjsonnet.BinarySource?]
 }
 
 ///|
@@ -23,8 +25,10 @@ fn diagnostic(
 
 ///|
 /// Canonicalize the allowed root. Use a fresh host to observe file changes.
+/// Library paths are relative to root; the last path has highest priority.
 pub fn FileHost::new(
   root : String,
+  jpaths? : Array[String] = [],
   max_bytes? : Int = 1048576,
 ) -> FileHost raise @moonjsonnet.JsonnetError {
   guard max_bytes > 0 && max_bytes < 2147483647 else {
@@ -41,18 +45,52 @@ pub fn FileHost::new(
       "cannot canonicalize allowed root",
     )
   }
-  { root, max_bytes, cache: Map([]), binary_cache: Map([]), }
+  {
+    root,
+    max_bytes,
+    jpaths: jpaths.copy(),
+    cache: Map([]),
+    binary_cache: Map([]),
+    attempts: Map([]),
+  }
 }
 
 ///|
-/// Resolve relative to the importing file (or root when `from` is empty).
+/// Resolve locally, then search library paths from right to left.
 /// Canonical paths outside the root, including symlink escapes, are rejected.
 pub fn FileHost::resolve(
   self : FileHost,
   from : String,
   path : String,
 ) -> @moonjsonnet.Source raise @moonjsonnet.JsonnetError {
-  let source = self.resolve_binary(from, path)
+  self.decode_source(self.resolve_binary(from, path))
+}
+
+///|
+/// Load an entry file relative to root, without searching library paths.
+///
+/// ```mbt check
+/// test {
+///   let host = @fs.FileHost::new(".", jpaths=["lib"])
+///   assert_true(!host.load("moon.mod").text.is_empty())
+/// }
+/// ```
+pub fn FileHost::load(
+  self : FileHost,
+  path : String,
+) -> @moonjsonnet.Source raise @moonjsonnet.JsonnetError {
+  match self.try_path(self.root, path) {
+    Some(source) => self.decode_source(source)
+    None =>
+      raise diagnostic(@moonjsonnet.Import, path, "cannot resolve entry file")
+  }
+}
+
+///|
+fn FileHost::decode_source(
+  self : FileHost,
+  source : @moonjsonnet.BinarySource,
+) -> @moonjsonnet.Source raise @moonjsonnet.JsonnetError {
   if self.cache.get(source.id) is Some(cached) {
     return cached
   }
@@ -75,12 +113,75 @@ pub fn FileHost::resolve_binary(
     self.root
   } else {
     match from.rev_find("/") {
-      Some(i) => from[:i].to_owned()
+      Some(i) => if i == 0 { "/" } else { from[:i].to_owned() }
       None => self.root
     }
   }
-  let requested = if path.has_prefix("/") { path } else { base + "/" + path }
-  guard @posix.canonical(requested) is Some(canonical) else {
+  if self.try_path(base, path) is Some(source) {
+    return source
+  }
+  if !path.has_prefix("/") {
+    for i = self.jpaths.length() - 1; i >= 0; i = i - 1 {
+      let dir = self.jpaths[i]
+      let base = if dir.has_prefix("/") { dir } else { self.root + "/" + dir }
+      if self.try_path(base, path) is Some(source) {
+        return source
+      }
+    }
+  }
+  raise diagnostic(
+    @moonjsonnet.Import,
+    path,
+    "no match locally or in Jsonnet library paths",
+  )
+}
+
+///|
+// Go's filepath.Join cleans dot components before filesystem lookup.
+fn joined_path(base : String, path : String) -> String {
+  if path.has_prefix("/") {
+    return path
+  }
+  let requested = base + "/" + path
+  let absolute = requested.has_prefix("/")
+  let parts : Array[String] = []
+  for part in requested.split("/") {
+    match part.to_owned() {
+      "" | "." => ()
+      ".." =>
+        if parts.last() is Some(last) && last != ".." {
+          ignore(parts.pop())
+        } else if !absolute {
+          parts.push("..")
+        }
+      part => parts.push(part)
+    }
+  }
+  if absolute {
+    "/" + parts.join("/")
+  } else if parts.is_empty() {
+    "."
+  } else {
+    parts.join("/")
+  }
+}
+
+///|
+fn FileHost::try_path(
+  self : FileHost,
+  base : String,
+  path : String,
+) -> @moonjsonnet.BinarySource? raise @moonjsonnet.JsonnetError {
+  let requested = joined_path(base, path)
+  if self.attempts.get(requested) is Some(result) {
+    return result
+  }
+  let (status, canonical) = @posix.canonical_result(requested)
+  if status == 6 {
+    self.attempts[requested] = None
+    return None
+  }
+  if status != 0 {
     raise diagnostic(@moonjsonnet.Import, requested, "cannot resolve file")
   }
   let prefix = if self.root == "/" { "/" } else { self.root + "/" }
@@ -92,10 +193,15 @@ pub fn FileHost::resolve_binary(
     )
   }
   if self.binary_cache.get(canonical) is Some(source) {
-    return source
+    self.attempts[requested] = Some(source)
+    return Some(source)
   }
   let relative = canonical[prefix.length():].to_owned()
   let (status, bytes) = @posix.read_bytes(self.root, relative, self.max_bytes)
+  if status == 6 {
+    self.attempts[requested] = None
+    return None
+  }
   if status != 0 {
     raise diagnostic(
       if status == 3 {
@@ -114,7 +220,8 @@ pub fn FileHost::resolve_binary(
   }
   let source : @moonjsonnet.BinarySource = { id: canonical, bytes, }
   self.binary_cache[canonical] = source
-  source
+  self.attempts[requested] = Some(source)
+  Some(source)
 }
 
 ///|
@@ -122,6 +229,7 @@ pub fn FileHost::resolve_binary(
 pub fn evaluate_file(
   path : String,
   root? : String = ".",
+  jpaths? : Array[String] = [],
   ext_vars? : Map[String, Json] = Map([]),
   ext_code? : Map[String, String] = Map([]),
   tla_vars? : Map[String, Json] = Map([]),
@@ -130,8 +238,8 @@ pub fn evaluate_file(
   trace? : (@moonjsonnet.Location, String) -> Unit,
   limits? : @moonjsonnet.Limits = @moonjsonnet.Limits::default(),
 ) -> Json raise @moonjsonnet.JsonnetError {
-  let host = FileHost::new(root, max_bytes=limits.source_bytes)
-  let source = host.resolve("", path)
+  let host = FileHost::new(root, jpaths~, max_bytes=limits.source_bytes)
+  let source = host.load(path)
   @moonjsonnet.evaluate(
     source.text,
     filename=source.id,

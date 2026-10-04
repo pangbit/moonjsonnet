@@ -7,6 +7,7 @@ For development use `moon run cmd/main -- OPTIONS INPUT`.
 | Option | Purpose |
 | --- | --- |
 | `--root DIR` | Allowed filesystem root, default current directory |
+| `-J DIR`, `--jpath DIR` | Add a library search directory; the rightmost path wins |
 | `-e`, `--exec` | Interpret the one input argument as Jsonnet source |
 | `-S`, `--string` | Require a string result and emit its contents followed by one newline |
 | `-y`, `--yaml-stream` | Require an array and emit its elements as JSON documents with YAML stream delimiters |
@@ -63,7 +64,23 @@ is stricter than Go's default unrestricted filesystem importer.
 Top-level functions are called once using named TLAs, with ordinary lazy/default
 parameter behavior. Missing and unknown argument names are errors. Non-function
 top-level values ignore TLAs. See [API](API.md) for code parameter filenames and
-shared budgets. Import search paths and full stack/trace options are still pending.
+shared budgets. Full stack/trace options are still pending.
+
+Imports first search beside the importing file (or root for anonymous inputs
+and code parameters), then `-J` directories from right to left, then the
+colon-separated `JSONNET_PATH` directories from left to right. Empty environment
+components mean root; an empty environment value adds no paths. Empty `-J`
+values are argument errors. Relative library directories are relative to
+`--root`, matching the default current-directory root; this remains an extension
+when an explicit root differs from the process directory. Absolute imports do
+not search libraries. Entry files never use library search.
+
+Code, text and binary imports share the host's canonical byte cache. Successful
+and missing path attempts stay fixed for one host lifetime. Only a nonexistent
+path falls through; permissions, non-directory parents, directories, symlink
+loops, invalid UTF-8, byte limits and root escapes stop resolution. `-J` and
+`JSONNET_PATH` do not expand the allowed root. Unlike unrestricted Go imports,
+library files and symlink targets must remain inside the configured root.
 
 Default JSON output now follows Go's CLI layout: three-space indentation, sorted
 keys, `[ ]`/`{ }` empty containers and one trailing newline. Integral numbers use

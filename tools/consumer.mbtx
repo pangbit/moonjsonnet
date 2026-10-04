@@ -43,7 +43,7 @@ async fn main {
     #|  assert_eq(@moonjsonnet.evaluate("std.sha1('abc')"), Json::string("a9993e364706816aba3e25717850c26c9cd0d89d"))
     #|  assert_eq(@moonjsonnet.evaluate("std.sha512('abc')"), Json::string("ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"))
     #|  assert_eq(@moonjsonnet.evaluate("std.sha3('abc')"), Json::string("b751850b1a57168a5693cd924b6b096e08f621827444f70d884f5d0240d2712e10e116e9192af3c91a7ec57647e3934057340b4cf408d5a56592f8274eec53f0"))
-    #|  let host = @fs.FileHost::new(".")
+    #|  let host = @fs.FileHost::new(".",jpaths=["library"])
     #|  assert_eq(@moonjsonnet.evaluate("std.parseYaml('a: &a [yes,012]\\nb: *a')"),{"a":[true,10],"b":[true,10]})
     #|  let native : @moonjsonnet.NativeFunction = {params:["x"],callback:args => args[0]}
     #|  let traces : Array[String] = []
@@ -60,6 +60,9 @@ async fn main {
     #|  assert_eq(@fs.evaluate_file("native.jsonnet",ext_code=Map([("unused","invalid code !")]),tla_vars=Map([("unused",42)]),native_functions=Map([("id",native)]),trace=fn(_,_) {}),42)
     #|  assert_true(host.resolve("", "moon.mod").text.contains("consumer_check"))
     #|  assert_true(!host.resolve_binary("", "moon.mod").bytes.is_empty())
+    #|  assert_true(!host.load("moon.mod").text.is_empty())
+    #|  assert_eq(@fs.evaluate_file("search.jsonnet",jpaths=["library"]),42)
+    #|  assert_eq(host.resolve("","answer").text,"42")
     #|  let binary = @moonjsonnet.evaluate("importbin 'data'", binary_resolver=fn(_, _) { {id: "data", bytes: b"\x00\xff"} })
     #|  assert_eq(binary.stringify(), "[0,255]")
     #|  try @moonjsonnet.evaluate("1/0") catch {
@@ -67,6 +70,9 @@ async fn main {
     #|  } noraise { _ => fail("expected diagnostic") }
     #|}
   @fs.write_file(work + "/consumer/consumer_test.mbt", test_source)
+  @fs.mkdir(work+"/consumer/library")
+  @fs.write_file(work+"/consumer/library/answer","42")
+  @fs.write_file(work+"/consumer/search.jsonnet","import 'answer'")
   @shell.Cmd("moon", ["work", "init", "package", "consumer"], cwd=work).run()
   @shell.Cmd("moon", ["test", "--target", "native", "--deny-warn"], cwd=work + "/consumer").run()
   println("Archive consumer passed: \{work}")

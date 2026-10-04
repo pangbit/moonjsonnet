@@ -116,13 +116,19 @@ requires a string message and returns `rest`; nested arrays/objects remain lazy.
 The sink is non-raising. A sink that ignores both arguments silences tracing.
 Imports use the same native registry and sink, with their own source locations.
 
-`@fs.evaluate_file(path, root?, ext_vars?, ext_code?, tla_vars?, tla_code?, native_functions?, trace?, limits?)` creates a new `FileHost` and
+`@fs.evaluate_file(path, root?, jpaths?, ext_vars?, ext_code?, tla_vars?, tla_code?, native_functions?, trace?, limits?)` creates a new `FileHost` and
 evaluates an entry file. `path` is relative to `root` (default `.`), or absolute
-within that root. `FileHost::new(root, max_bytes?)` and `FileHost::resolve(from,
+within that root. `FileHost::new(root, jpaths?, max_bytes?)` and `FileHost::resolve(from,
 path)` also allow manually supplying the host to `evaluate`. An empty `from`
 resolves relative to the root; otherwise imports resolve beside the source file.
-Canonical source contents are cached for the lifetime of a host; create a new
-host to observe disk changes. Do not share a mutable host concurrently.
+If absent locally, imports search `jpaths` from right to left. Relative library
+directories are relative to root; the constructor copies the array and never
+reads `JSONNET_PATH`. Absolute imports bypass library search. `FileHost::load(path)`
+loads an entry file without search, as used by `evaluate_file` and the CLI.
+Successful and missing path attempts and canonical source contents are cached
+for the lifetime of a host; create a new host to observe disk changes. Other
+I/O errors are not cached and never fall through. Root, UTF-8 and byte policies
+apply to every winning library candidate. Do not share a mutable host concurrently.
 `FileHost::resolve_binary(from,path)` uses the same canonical root checks and
 byte cache; `evaluate_file` installs both resolver modes automatically.
 `std.thisFile` is the current source's filename/canonical import identity.

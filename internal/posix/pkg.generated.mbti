@@ -4,6 +4,8 @@ package "pangbit/moonjsonnet/internal/posix"
 // Values
 pub fn canonical(String) -> String?
 
+pub fn canonical_result(String) -> (Int, String)
+
 pub fn close_output(Int) -> Bool
 
 pub fn exit(Int) -> Unit

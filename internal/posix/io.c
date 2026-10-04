@@ -16,10 +16,10 @@ static moonbit_bytes_t status(int code) {
 
 MOONBIT_FFI_EXPORT moonbit_bytes_t mj_realpath(const uint8_t *path) {
   char *p = realpath((const char *)path, NULL);
-  if (!p) return moonbit_make_bytes(0, 0);
+  if (!p) return status(errno == ENOENT ? 6 : 1);
   size_t n = strlen(p);
-  moonbit_bytes_t out = moonbit_make_bytes((int32_t)n, 0);
-  memcpy(out, p, n);
+  moonbit_bytes_t out = moonbit_make_bytes((int32_t)n + 1, 0);
+  memcpy(out + 1, p, n);
   free(p);
   return out;
 }
@@ -43,8 +43,9 @@ MOONBIT_FFI_EXPORT moonbit_bytes_t mj_read(const uint8_t *root,
     }
     int child = openat(fd, part, O_RDONLY | O_NOFOLLOW | O_CLOEXEC |
                                   (next ? O_DIRECTORY : O_NONBLOCK));
+    int error = errno;
     close(fd);
-    if (child < 0) { free(path); return status(1); }
+    if (child < 0) { free(path); return status(error == ENOENT ? 6 : 1); }
     fd = child;
     part = next;
   }

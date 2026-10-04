@@ -97,16 +97,26 @@ pub fn read_stdin(limit : Int) -> (Int, Bytes) {
 
 ///|
 pub fn canonical(path : String) -> String? {
+  let (status, result) = canonical_result(path)
+  if status == 0 {
+    Some(result)
+  } else {
+    None
+  }
+}
+
+///|
+// 0 success; 1 I/O failure; 2 invalid path; 5 invalid UTF-8; 6 not found.
+pub fn canonical_result(path : String) -> (Int, String) {
   if path.contains("\u0000") {
-    return None
+    return (2, "")
   }
   let bytes = realpath_ffi(@utf8.encode(path))
-  if bytes.is_empty() {
-    None
-  } else {
-    Some(@utf8.decode(bytes)) catch {
-      _ => None
-    }
+  if bytes[0] != 0 {
+    return (bytes[0].to_int(), "")
+  }
+  (0, @utf8.decode(bytes[1:])) catch {
+    _ => (5, "")
   }
 }
 

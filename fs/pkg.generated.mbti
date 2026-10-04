@@ -6,7 +6,7 @@ import {
 }
 
 // Values
-pub fn evaluate_file(String, root? : String, ext_vars? : Map[String, Json], ext_code? : Map[String, String], tla_vars? : Map[String, Json], tla_code? : Map[String, String], native_functions? : Map[String, @moonjsonnet.NativeFunction], trace? : (@moonjsonnet.Location, String) -> Unit, limits? : @moonjsonnet.Limits) -> Json raise @moonjsonnet.JsonnetError
+pub fn evaluate_file(String, root? : String, jpaths? : Array[String], ext_vars? : Map[String, Json], ext_code? : Map[String, String], tla_vars? : Map[String, Json], tla_code? : Map[String, String], native_functions? : Map[String, @moonjsonnet.NativeFunction], trace? : (@moonjsonnet.Location, String) -> Unit, limits? : @moonjsonnet.Limits) -> Json raise @moonjsonnet.JsonnetError
 
 // Errors
 
@@ -14,10 +14,13 @@ pub fn evaluate_file(String, root? : String, ext_vars? : Map[String, Json], ext_
 pub struct FileHost {
   root : String
   max_bytes : Int
+  jpaths : Array[String]
   cache : Map[String, @moonjsonnet.Source]
   binary_cache : Map[String, @moonjsonnet.BinarySource]
+  attempts : Map[String, @moonjsonnet.BinarySource?]
 }
-pub fn FileHost::new(String, max_bytes? : Int) -> Self raise @moonjsonnet.JsonnetError
+pub fn FileHost::load(Self, String) -> @moonjsonnet.Source raise @moonjsonnet.JsonnetError
+pub fn FileHost::new(String, jpaths? : Array[String], max_bytes? : Int) -> Self raise @moonjsonnet.JsonnetError
 pub fn FileHost::resolve(Self, String, String) -> @moonjsonnet.Source raise @moonjsonnet.JsonnetError
 pub fn FileHost::resolve_binary(Self, String, String) -> @moonjsonnet.BinarySource raise @moonjsonnet.JsonnetError
 

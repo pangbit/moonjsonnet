@@ -42,6 +42,9 @@ async fn main {
     let multi = @json.parse(@fs.read_file("tests/go-cli-multi.json").text())
     guard multi is Array(multi) else { fail("expected Go multi-output case array") }
     for case in multi { cases.push(case) }
+    let imports = @json.parse(@fs.read_file("tests/go-cli-imports.json").text())
+    guard imports is Array(imports) else { fail("expected Go import-search case array") }
+    for case in imports { cases.push(case) }
   }
   let work = if is_go { "_build/go-differential" } else { "_build/differential" }
   @fs.mkdir(work, recursive=true, allow_exist=true)
@@ -71,14 +74,16 @@ async fn main {
     if case is {"files": Object(files), ..} {
       for name, content in files {
         guard content is String(content) else {fail("expected fixture text")}
-        @fs.write_file(work + "/" + name,content)
+        let path = work + "/" + name
+        if path.rev_find("/") is Some(i) { @fs.mkdir(path[:i],recursive=true,allow_exist=true) }
+        @fs.write_file(path,content)
       }
     }
     let environment : Map[String,String] = Map([])
     if case is {"env": Object(vars), ..} {
       for name, value in vars {
         guard value is String(value) else {fail("expected environment string")}
-        environment[name] = value
+        environment[name] = value.replace_all(old="<work>",new=work)
       }
     }
     let mode = match case {{"input":String(mode),..}=>mode;_=>"file"}
