@@ -117,12 +117,20 @@ YAML 解析批次新增 81 项差分，80 项通过；空字符串使固定 Go �
 Go 文档流和浮点键；修复标签扫描不前移及 URI 多字节解码，并在扫描器和别名
 展开层设置资源限制。详见 [YAML 解析验收](../reports/GO-JSONNET-PARSE-YAML.md)。
 
-外部代码/TLA 批次新增 50 项差分，全部通过；当前完整 Go 差分 824/842，
+外部代码/TLA 批次新增 50 项差分，全部通过；当时完整 Go 差分 824/842，
 18 项历史参考崩溃差异保留。独立作用域的代码参数按名记忆化，顶层函数自动
 调用一次，默认/命名/惰性参数、synthetic 文件名和空导入起点均已覆盖。
 CLI 加入 string/code/file/environment 参数形式及同名最后赋值覆盖，文件导入
 保留根目录限制。可重用 VM/reset/AST 和其他 CLI 模式仍待实现。
 详见 [参数验收](../reports/GO-JSONNET-PARAMETERS.md)。
+
+CLI 输入批次新增 38 项差分，全部通过；当前完整 Go 差分 862/880，18 项
+历史差异继续保留。实现 `-e`/`--exec`、stdin、`--`、逐字节短选项展开、
+`--output-file`/`-v` 和失败退出 1；匿名输入的 `std.thisFile` 为空，诊断仍
+保留 `<cmdline>`/`<stdin>`。导入起点保存在词法环境，匿名诊断名与真实导入
+路径相同也不会混淆。stdin 受源字节预算和严格 UTF-8 政策约束，仍未声明
+全部输入与 Go 等价；输出模式、搜索路径及 VM/AST 等能力仍待补齐。
+详见 [CLI 输入验收](../reports/GO-JSONNET-CLI-INPUT.md)。
 
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
 MoonBit 求值器执行。每次 evaluate 解析一次，导入共享 AST，各文件的 `thisFile`
