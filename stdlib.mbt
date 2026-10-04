@@ -431,7 +431,7 @@ fn Vm::builtin(
     "extVar" => {
       let key = text_value(x, loc)
       match self.ext.get(key) {
-        Some(j) => self.from_json(j, loc)
+        Some(t) => self.force(t, loc)
         None =>
           raise problem(Runtime, loc, "undefined external variable '\{key}'")
       }

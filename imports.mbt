@@ -5,7 +5,8 @@ fn Vm::import_file(
   raw : Bool,
   loc : Location,
 ) -> Value raise {
-  let request = (loc.file, path)
+  let from = self.import_origin(loc.file)
+  let request = (from, path)
   let source = match self.sources.get(request) {
     Some(s) => s
     None => {
@@ -16,7 +17,7 @@ fn Vm::import_file(
       guard self.resolver is Some(resolve) else {
         raise problem(Import, loc, "imports disabled: no resolver supplied")
       }
-      let s = resolve(loc.file, path) catch {
+      let s = resolve(from, path) catch {
         Error(d) => {
           d.context.push(loc)
           raise Error(d)
@@ -102,7 +103,8 @@ fn Vm::base_env(self : Vm, file? : String = "<input>") -> Env raise {
 
 ///|
 fn Vm::import_binary(self : Vm, path : String, loc : Location) -> Value raise {
-  let request = (loc.file, path)
+  let from = self.import_origin(loc.file)
+  let request = (from, path)
   let source = match self.binary_sources.get(request) {
     Some(s) => s
     None => {
@@ -117,7 +119,7 @@ fn Vm::import_binary(self : Vm, path : String, loc : Location) -> Value raise {
           "binary imports disabled: no binary resolver supplied",
         )
       }
-      let s = resolve(loc.file, path) catch {
+      let s = resolve(from, path) catch {
         Error(d) => {
           d.context.push(loc)
           raise Error(d)

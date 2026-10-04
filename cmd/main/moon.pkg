@@ -3,7 +3,6 @@ import {
   "pangbit/moonjsonnet/fs",
   "pangbit/moonjsonnet/internal/posix",
   "moonbitlang/core/env",
-  "moonbitlang/core/json",
   "moonbitlang/core/string",
 }
 

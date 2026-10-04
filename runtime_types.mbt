@@ -37,6 +37,7 @@ fn Env::lookup(self : Env, name : String) -> Int? {
 ///|
 priv enum Thunk {
   Pending(Expr, Env)
+  Code(String, Location)
   Ready(Value)
   Busy
   Failed(Error)
@@ -71,7 +72,8 @@ priv struct Vm {
   thunks : Array[Thunk]
   objects : Array[ObjectData]
   limits : Limits
-  ext : Map[String, Json]
+  ext : Map[String, Int]
+  parameter_files : Map[String, Unit]
   native_functions : Map[String, NativeFunction]
   trace : (Location, String) -> Unit
   resolver : ((String, String) -> Source raise)?
@@ -111,6 +113,20 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
     Pending(expr, env) => {
       self.thunks[id] = Busy
       let v = self.eval(expr, env) catch { e => self.failure(id, e) }
+      self.thunks[id] = Ready(v)
+      v
+    }
+    Code(source, origin) => {
+      self.thunks[id] = Busy
+      let v = try {
+        if @utf8.encode(source).length() > self.limits.source_bytes {
+          raise problem(Limit, origin, "parameter source byte limit exceeded")
+        }
+        let expr = parse(source, origin.file, self.limits.depth)
+        self.eval(expr, self.base_env(file=origin.file))
+      } catch {
+        e => self.failure(id, e)
+      }
       self.thunks[id] = Ready(v)
       v
     }

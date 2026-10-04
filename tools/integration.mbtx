@@ -15,6 +15,9 @@ async fn main {
   @fs.mkdir(root, recursive=true, allow_exist=true)
   @fs.mkdir(work + "/root-sibling", allow_exist=true)
   @fs.write_file(root + "/value.libsonnet", "{x:42}")
+  @fs.write_file(root + "/parameter.libsonnet", "local n=21; n*2")
+  @fs.write_file(root + "/parameter.txt", "é😀=literal\n")
+  @fs.write_file(root + "/top.libsonnet", "function(x) x")
   @fs.write_file(work + "/root-sibling/secret", "42")
   @fs.symlink(target="../root-sibling/secret", root + "/escape", force_symlink=true)
   @fs.symlink(target="value.libsonnet", root + "/alias", force_symlink=true)
@@ -45,6 +48,19 @@ async fn main {
     ("negative-limit", "1", ["--max-steps","-1"], Some("Limit")),
     ("ext-code", "std.extVar('x')+1", ["--ext-code","x=41"], None),
     ("ext-str", "std.extVar('x')", ["--ext-str","x=hello"], None),
+    ("ext-expression", "std.extVar('x')", ["--ext-code","x=local n=21; n*2"], None),
+    ("ext-file", "std.extVar('x')", ["--ext-code-file","x=parameter.libsonnet"], None),
+    ("ext-string-file", "std.extVar('x')", ["--ext-str-file","x=parameter.txt"], None),
+    ("ext-file-escape", "std.extVar('x')", ["--ext-code-file","x=../root-sibling/secret"], Some("Import")),
+    ("ext-import-escape", "std.extVar('x')", ["--ext-code","x=import 'escape'"], Some("Import")),
+    ("ext-invalid", "std.extVar('x')", ["--ext-code","x={"], Some("Syntax")),
+    ("parameter-source-bytes", "std.extVar('x')", ["--ext-code","x='"+"x".repeat(100)+"'","--max-source-bytes","50"], Some("Limit")),
+    ("tla-expression", "function(x) x", ["--tla-code","x=21*2"], None),
+    ("tla-default", "function(x=42) x", [], None),
+    ("tla-file", "import 'top.libsonnet'", ["--tla-code-file","x=parameter.libsonnet"], None),
+    ("tla-string-file", "function(x) x", ["--tla-str-file","x=parameter.txt"], None),
+    ("tla-file-escape", "function(x) x", ["--tla-code-file","x=escape"], Some("Import")),
+    ("tla-invalid", "function(x) x", ["--tla-code","x={"], Some("Syntax")),
     ("assert", "assert false: 'invalid input'; 42", [], Some("Assertion")),
   ]
   let mut passed = 0
@@ -57,6 +73,8 @@ async fn main {
         ignore(@json.parse(result.stdout()))
         if name == "binary" { assert_eq(@json.parse(result.stdout()), @json.parse("[255,254]")) }
         if name == "relative" || name == "normalized" || name == "alias" || name == "ext-code" { assert_eq(@json.parse(result.stdout()), Json::number(42)) }
+        if ["ext-expression","ext-file","tla-expression","tla-default","tla-file"].contains(name) { assert_eq(@json.parse(result.stdout()),Json::number(42)) }
+        if name == "ext-string-file" || name == "tla-string-file" {assert_eq(@json.parse(result.stdout()),Json::string("é😀=literal\n"))}
       }
       Some(kind) => {
         assert_true(result.exit_code() != 0, msg=name)
@@ -84,5 +102,19 @@ async fn main {
   traced.check()
   assert_eq(traced.stdout(), "42\n")
   assert_eq(traced.stderr(), "TRACE: " + @fs.realpath(root + "/traced.libsonnet") + ":2 import trace\n")
-  println("Integration: \{passed + 4} passed; path, UTF-8, CLI exit/output, trace and resource limits")
+  @fs.write_file(root + "/main.jsonnet", "function(MOONJSONNET_INTEGRATION_PARAMETER) MOONJSONNET_INTEGRATION_PARAMETER")
+  let environment = Map([("MOONJSONNET_INTEGRATION_PARAMETER","21*2")])
+  let parameter_env = @shell.Cmd(cli,["--root",root,"--tla-code","MOONJSONNET_INTEGRATION_PARAMETER","main.jsonnet"],env=environment).output()
+  parameter_env.check()
+  assert_eq(@json.parse(parameter_env.stdout()),Json::number(42))
+  let parameter_failure = @shell.Cmd(cli,["--root",root,"--tla-code","MOONJSONNET_INTEGRATION_PARAMETER={","-o",output,"main.jsonnet"]).output()
+  assert_eq(parameter_failure.exit_code(),1)
+  assert_eq(@fs.read_file(output).json(),@json.parse("{\"x\":42}"))
+  let parameter_format = @shell.Cmd(cli,["--root",root,"--tla-code-file","x","main.jsonnet"]).output()
+  assert_eq(parameter_format.exit_code(),2)
+  assert_eq(parameter_format.stdout(),"")
+  let missing_environment = @shell.Cmd("env",["-u","MOONJSONNET_INTEGRATION_MISSING",cli,"--root",root,"--ext-code","MOONJSONNET_INTEGRATION_MISSING","main.jsonnet"]).output()
+  assert_eq(missing_environment.exit_code(),2)
+  assert_eq(missing_environment.stdout(),"")
+  println("Integration: \{passed + 8} passed; path, UTF-8, CLI parameters/exit/output, trace and resource limits")
 }

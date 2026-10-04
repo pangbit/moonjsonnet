@@ -4,12 +4,37 @@ Import `pangbit/moonjsonnet` for source evaluation and `pangbit/moonjsonnet/fs`
 for the POSIX file host. Generated signatures are in `pkg.generated.mbti` and
 `fs/pkg.generated.mbti`; regenerate with `moon info`.
 
-`evaluate(source, filename?, ext_vars?, native_functions?, trace?, resolver?, binary_resolver?, limits?) -> Json raise JsonnetError`
+`evaluate(source, filename?, ext_vars?, ext_code?, tla_vars?, tla_code?, native_functions?, trace?, resolver?, binary_resolver?, limits?) -> Json raise JsonnetError`
 owns a fresh evaluation state on every call. `filename` defaults to `<input>` and
 is passed to the importer. `ext_vars` is a `Map[String, Json]` read by
 `std.extVar`; strings and JSON values are never implicitly parsed as Jsonnet.
 No importer means imports are disabled. A host exception is translated into an
 `Import` diagnostic; an existing `JsonnetError` preserves its category.
+
+`ext_code: Map[String, String]` supplies Jsonnet expressions, including functions,
+objects and imports. Code runs in an independent lexical environment containing
+`std`; it can read other external variables but cannot read entry-file locals.
+Each external value is a memoized thunk shared by imports and the entry program.
+Unused code, including syntax errors, remains unforced. Cyclic forcing is a
+`Runtime` error. If a name appears in both `ext_vars` and `ext_code`, code wins.
+Do not mutate parameter maps or their JSON containers during evaluation.
+
+A top-level function is called once, even when no TLA is supplied. Named
+arguments come from `tla_vars: Map[String, Json]` and `tla_code: Map[String, String]`;
+code wins for overlapping names. Default parameters use the function's normal
+scope. Code arguments have independent scopes and can read `std.extVar`, but
+cannot refer directly to other TLAs. Unused argument values stay lazy; missing
+required and unknown arguments are errors. A returned function cannot be
+manifested. Top-level values other than functions ignore all TLAs.
+
+Code parameters use `<extvar:NAME>` or `<top-level-arg:NAME>` for diagnostics,
+trace locations and `std.thisFile`. Their imports pass an empty `from` to the
+resolver, so `FileHost` resolves them relative to its root. These synthetic
+filenames are reserved; resolver identities must not reuse them. A file option
+imports the supplied file normally, giving it its own identity and relative
+imports. Parameter code shares step/depth/output/import budgets and is checked
+against `source_bytes` when forced. Each `evaluate` call starts fresh; reusable
+VM/AST interfaces and their reset/cache lifecycle are still pending.
 
 Like the pinned Go implementation, `sum`/`avg` can return non-finite numbers.
 The returned `Json::Number` keeps Infinity/NaN and a spelling preserved by
@@ -54,7 +79,7 @@ requires a string message and returns `rest`; nested arrays/objects remain lazy.
 The sink is non-raising. A sink that ignores both arguments silences tracing.
 Imports use the same native registry and sink, with their own source locations.
 
-`@fs.evaluate_file(path, root?, ext_vars?, native_functions?, trace?, limits?)` creates a new `FileHost` and
+`@fs.evaluate_file(path, root?, ext_vars?, ext_code?, tla_vars?, tla_code?, native_functions?, trace?, limits?)` creates a new `FileHost` and
 evaluates an entry file. `path` is relative to `root` (default `.`), or absolute
 within that root. `FileHost::new(root, max_bytes?)` and `FileHost::resolve(from,
 path)` also allow manually supplying the host to `evaluate`. An empty `from`
@@ -87,7 +112,7 @@ Use `Limits::default()` and a record update to change selected fields.
 | --- | ---: | --- |
 | `steps` | 1,000,000 | Expression evaluation, forcing, loops, comparisons and manifestation |
 | `depth` | 200 | Parser/AST, evaluation, comparison, JSON and manifestation depth; allowed 1–512 |
-| `source_bytes` | 1,048,576 | UTF-8 bytes per text source; raw bytes per binary import |
+| `source_bytes` | 1,048,576 | UTF-8 bytes per entry/import/forced parameter code source; raw bytes per binary import |
 | `import_bytes` | 4,194,304 | Cumulative resolved request bytes per evaluation |
 | `imports` | 128 | Distinct `(from,path)` requests per text/binary mode, including aliases |
 | `output_bytes` | 4,194,304 | Compact UTF-8 JSON, including punctuation and escaping |

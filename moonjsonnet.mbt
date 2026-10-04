@@ -1,6 +1,9 @@
 ///|
 /// Evaluate Jsonnet source into JSON. Imports are disabled unless a resolver is
 /// provided. Each call has independent caches and resource counters.
+/// `ext_code` and `tla_code` contain lazy Jsonnet expressions in clean scopes.
+/// Code overrides JSON for duplicate names. A top-level function is applied once
+/// with named TLAs; other top-level values ignore them.
 ///
 /// ```mbt check
 /// test {
@@ -12,6 +15,9 @@ pub fn evaluate(
   source : String,
   filename? : String = "<input>",
   ext_vars? : Map[String, Json] = Map([]),
+  ext_code? : Map[String, String] = Map([]),
+  tla_vars? : Map[String, Json] = Map([]),
+  tla_code? : Map[String, String] = Map([]),
   native_functions? : Map[String, NativeFunction] = Map([]),
   trace? : (Location, String) -> Unit = default_trace,
   resolver? : (String, String) -> Source raise,
@@ -41,7 +47,8 @@ pub fn evaluate(
       thunks: [],
       objects: [],
       limits,
-      ext: ext_vars,
+      ext: Map([]),
+      parameter_files: Map([]),
       native_functions,
       trace,
       resolver,
@@ -55,8 +62,21 @@ pub fn evaluate(
       imported_bytes: 0,
       output_bytes: 0,
     }
+    let ext = vm.prepare_parameters(ext_vars, ext_code, "extvar")
+    for name, id in ext {
+      vm.ext[name] = id
+    }
     let expression = parse(source, filename, limits.depth)
     let value = vm.eval(expression, vm.base_env(file=filename))
+    let value = match value {
+      Closure(_, _, _) | Builtin(_) | Native(_) => {
+        let tla = vm.prepare_parameters(tla_vars, tla_code, "top-level-arg")
+        let names = tla.keys().collect()
+        names.sort()
+        vm.call(value, names.map(name => (Some(name), tla[name])), loc)
+      }
+      _ => value
+    }
     vm.output_bytes = 0
     vm.manifest(value, loc, 0)
   } catch {

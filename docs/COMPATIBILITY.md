@@ -112,7 +112,7 @@ Only the following functions are supported. Arity/named-argument violations are
 
 | Function and parameter names | Behavior and restrictions |
 | --- | --- |
-| `extVar(x)` | Injected JSON value; missing name is `Runtime` |
+| `extVar(x)` | Memoized JSON value or lazy Jsonnet code in a clean scope; missing/cyclic names are `Runtime` |
 | `type(x)` | Jsonnet type string |
 | `isArray(v)`, `isBoolean(v)`, `isFunction(v)`, `isNumber(v)`, `isObject(v)`, `isString(v)` | Type predicates; do not manifest values |
 | `length(x)` | Unicode string, array, visible object fields, or required function parameter count (excluding defaults, as in Go) |
@@ -298,6 +298,14 @@ functions/initial values. The shared corpus preserves these inputs and verifies
 the exact differing outcomes separately from compatibility passes.
 
 ## Known boundaries
+
+External code and named top-level parameters are available in the embedding API
+and CLI. Top-level functions are applied exactly once; other top-level values
+ignore TLAs. Code parameters have separate scopes, cached values/errors and
+synthetic filenames, but imports originate at the host root. The CLI supports
+string/code/file/environment forms and last-assignment wins. File reads retain
+the project's restricted-root policy. Reusable VM/reset/AST capabilities,
+combined CLI abbreviations and full input/output modes remain pending.
 
 The POSIX host accepts regular files within one canonical root. Text imports
 require valid UTF-8; binary imports do not decode their contents. Custom

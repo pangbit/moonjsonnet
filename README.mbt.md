@@ -36,10 +36,22 @@ test "readme embedded evaluation" {
 }
 ```
 
-The root library takes source text, JSON external variables, an optional host
+The root library takes source text, JSON/Jsonnet external variables and top-level arguments, an optional host
 import resolver and per-evaluation limits. It returns `Json` or `JsonnetError`.
 The separate `pangbit/moonjsonnet/fs` package loads files within a configured
 root. See [API and host contract](docs/API.md).
+
+```mbt check
+///|
+test "readme code and top-level arguments" {
+  let result = @moonjsonnet.evaluate(
+    "function(replicas, port=8080) {replicas:replicas,port:port}",
+    ext_code=Map([("base", "1+2")]),
+    tla_code=Map([("replicas", "std.extVar('base')")]),
+  )
+  assert_eq(result, { "replicas": 3, "port": 8080 })
+}
+```
 
 Host callbacks receive JSON arguments in parameter order. Trace output defaults
 to stderr; an optional callback receives the call location and message.

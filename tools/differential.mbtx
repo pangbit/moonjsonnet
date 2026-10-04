@@ -30,6 +30,9 @@ async fn main {
     let extra = @json.parse(@fs.read_file("tests/go-differential.json").text())
     guard extra is Array(extra) else { fail("expected Go case array") }
     for case in extra { cases.push(case) }
+    let parameters = @json.parse(@fs.read_file("tests/go-parameters.json").text())
+    guard parameters is Array(parameters) else { fail("expected Go parameter case array") }
+    for case in parameters { cases.push(case) }
   }
   let work = if is_go { "_build/go-differential" } else { "_build/differential" }
   @fs.mkdir(work, recursive=true, allow_exist=true)
@@ -49,8 +52,25 @@ async fn main {
     // Absolute input paths give both trace sinks the same diagnostic filename.
     // Existing non-trace fixtures retain their original invocation paths.
     let path = if case is { "trace": String(_), .. } { @fs.realpath(path) } else { path }
-    let a = @shell.Cmd(reference, [path]).output(timeout_ms=10000)
-    let b = @shell.Cmd(cli, [path]).output(timeout_ms=10000)
+    let extra_args = match case {
+      {"args": Array(args), ..} => args.map(arg => match arg {String(s) => s.replace_all(old="<work>",new=work); _ => fail("expected CLI argument string")})
+      _ => []
+    }
+    if case is {"files": Object(files), ..} {
+      for name, content in files {
+        guard content is String(content) else {fail("expected fixture text")}
+        @fs.write_file(work + "/" + name,content)
+      }
+    }
+    let environment : Map[String,String] = Map([])
+    if case is {"env": Object(vars), ..} {
+      for name, value in vars {
+        guard value is String(value) else {fail("expected environment string")}
+        environment[name] = value
+      }
+    }
+    let a = @shell.Cmd(reference, extra_args + [path],env=environment).output(timeout_ms=10000)
+    let b = @shell.Cmd(cli, extra_args + [path],env=environment).output(timeout_ms=10000)
     let difference = if !is_go && case is { "cpp_difference": difference, .. } { Some(difference) } else { None }
     let matches_difference = match difference {
       Some(difference) => {
@@ -94,13 +114,18 @@ async fn main {
       }
       _ => true
     }
-    let ok = outcome_ok && trace_ok
+    let expected_ok = match case {
+      {"result": expected, ..} => a.exit_code()==0 && b.exit_code()==0 && @json.parse(a.stdout())==expected && @json.parse(b.stdout())==expected
+      {"reference_error": String(kind),"moonjsonnet_error":String(actual), ..} => a.stderr().contains(kind) && b.stderr().contains(": "+actual+":")
+      _ => true
+    }
+    let ok = outcome_ok && trace_ok && expected_ok
     let status = if difference is Some(_) {
       if matches_difference && !ok { reference_differences += 1; "reference-difference" } else { failed += 1; "failed" }
     } else if !ok { failed += 1; "failed" } else if expect.has_prefix("unsupported") { unsupported += 1; "unsupported" } else { passed += 1; "passed" }
     if status == "failed" { println("FAIL \{name}: reference_exit=\{a.exit_code()}, moonjsonnet_exit=\{b.exit_code()} (details in \{work}/report.json)") }
     if status == "reference-difference" { println("DIFF \{name}: exact declared C++/MoonJsonnet outcomes verified") }
-    rows.push({ "name": name, "source": source, "expect": expect, "status": status, "passed": status == "passed", "cpp_difference": difference.unwrap_or(Json::null()), "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr() })
+    rows.push({ "name": name, "source": source, "args":extra_args,"files":match case {{"files":files,..}=>files;_=>Json::object(Map([]))},"env":match case {{"env":vars,..}=>vars;_=>Json::object(Map([]))}, "expect": expect, "status": status, "passed": status == "passed", "cpp_difference": difference.unwrap_or(Json::null()), "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr() })
   }
   for path in ["examples/environments/main.jsonnet", "examples/dashboards/main.jsonnet", "examples/embedded/config/main.jsonnet"] {
     let a = @shell.Cmd(reference, ["--ext-code", "replicas=3", path]).output()
