@@ -15,6 +15,17 @@ fn ast_name(name : String, loc : Location) -> Unit raise JsonnetError {
 ///|
 // Parser checks which must also hold for manually constructed syntax trees.
 fn check_ast_shape(e : Ast) -> Unit raise JsonnetError {
+  if e.end is Some(end) &&
+    (
+      end.file != e.loc.file ||
+      e.loc.line < 1 ||
+      e.loc.column < 1 ||
+      end.line < e.loc.line ||
+      end.column < 1 ||
+      (end.line == e.loc.line && end.column < e.loc.column)
+    ) {
+    raise problem(Static, e.loc, "invalid AST source range")
+  }
   let name = fn(n) raise JsonnetError { ast_name(n, e.loc) }
   let bindings = fn(bs : Array[(String, Ast)]) raise JsonnetError {
     for (n, _) in bs {

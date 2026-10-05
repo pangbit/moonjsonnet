@@ -1,5 +1,5 @@
 ///|
-/// Source location. Lines and Unicode code-point columns are one-based.
+/// Source location. Lines and UTF-8 byte columns are one-based, matching Go.
 pub(all) struct Location {
   file : String
   line : Int
@@ -169,6 +169,7 @@ pub extend Limits with @debug.Debug::{to_repr}
 priv struct Expr {
   kind : ExprKind
   loc : Location
+  end : Location?
 }
 
 ///|

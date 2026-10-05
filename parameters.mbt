@@ -18,7 +18,7 @@ fn Vm::prepare_parameters(
       result[name] = self.store(
         match json {
           String(text) => Ready(Str(text))
-          _ => Pending({ kind: Literal(json), loc, }, env)
+          _ => Pending({ kind: Literal(json), loc, end: None, }, env)
         },
       )
     }

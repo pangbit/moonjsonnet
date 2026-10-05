@@ -72,8 +72,8 @@ fn Vm::native_result(
         )
         result[name] = {
           field: {
-            key: { kind: Literal(Json::string(name)), loc, },
-            value: { kind: Var(name), loc, },
+            key: { kind: Literal(Json::string(name)), loc, end: None, },
+            value: { kind: Var(name), loc, end: None, },
             visibility: 1,
             additive: false,
           },

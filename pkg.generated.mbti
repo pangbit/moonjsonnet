@@ -28,8 +28,10 @@ pub fn JsonnetError::to_repr(Self) -> @debug.Repr
 pub(all) struct Ast {
   kind : AstKind
   loc : Location
+  end : Location?
 }
 pub fn Ast::clone(Self, limits? : Limits) -> Self raise JsonnetError
+pub fn Ast::source_range(Self) -> SourceRange?
 
 pub(all) enum AstClause {
   For(String, Ast)
@@ -164,6 +166,15 @@ pub(all) struct Source {
   text : String
 } derive(@debug.Debug)
 pub fn Source::to_repr(Self) -> @debug.Repr
+
+pub(all) struct SourceRange {
+  begin : Location
+  end : Location
+} derive(Eq, @debug.Debug)
+pub fn SourceRange::equal(Self, Self) -> Bool
+pub fn SourceRange::format(Self) -> String
+pub fn SourceRange::not_equal(Self, Self) -> Bool
+pub fn SourceRange::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

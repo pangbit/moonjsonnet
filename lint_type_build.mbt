@@ -176,7 +176,7 @@ fn LintGraph::build(
       }
     }
     Slice(a, b, c, d) => {
-      let null : Expr = { kind: Literal(Json::null()), loc: e.loc, }
+      let null : Expr = { kind: Literal(Json::null()), loc: e.loc, end: None, }
       return self.build(
         lint_std_call(
           "slice",
@@ -198,11 +198,12 @@ fn LintGraph::build(
       let value = if bs.is_empty() {
         body
       } else {
-        Expr::{ kind: Local(bs, body), loc: body.loc, }
+        Expr::{ kind: Local(bs, body), loc: body.loc, end: None, }
       }
       let object : Expr = {
         kind: Obj([{ key, value, visibility: 1, additive: false, }], [], []),
         loc: e.loc,
+        end: e.end,
       }
       return self.build(
         lint_std_call("$objectFlatMerge", [lint_comp(object, cs, e.loc)], e.loc),

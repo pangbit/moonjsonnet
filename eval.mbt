@@ -126,7 +126,11 @@ fn Vm::eval_inner(
               fs[k] = {
                 field: {
                   key,
-                  value: { kind: Local(locals, body), loc: body.loc, },
+                  value: {
+                    kind: Local(locals, body),
+                    loc: body.loc,
+                    end: body.end,
+                  },
                   visibility: 1,
                   additive: false,
                 },

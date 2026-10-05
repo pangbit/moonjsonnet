@@ -2,6 +2,7 @@ import {
   "pangbit/moonjsonnet",
   "pangbit/moonjsonnet/internal/posix",
   "moonbitlang/core/json",
+  "moonbitlang/core/string",
   "moonbitlang/core/encoding/utf8",
 }
 

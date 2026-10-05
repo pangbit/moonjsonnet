@@ -15,11 +15,13 @@ fn Vm::defer_index(
   self.store(
     Pending(
       {
-        kind: Index({ kind: Var("a"), loc, }, {
+        kind: Index({ kind: Var("a"), loc, end: None, }, {
           kind: Literal(Json::number(index)),
           loc,
+          end: None,
         }),
         loc,
+        end: None,
       },
       env,
     ),
@@ -97,13 +99,16 @@ fn Vm::defer_call(
   for i, t in args {
     let name = i.to_string()
     names[name] = t
-    params.push((None, { kind: Var(name), loc, }))
+    params.push((None, { kind: Var(name), loc, end: None, }))
   }
   self.store(
-    Pending({ kind: Call({ kind: Var("f"), loc, }, params, false), loc, }, {
-      parent: None,
-      names,
-      import_from: "",
-    }),
+    Pending(
+      {
+        kind: Call({ kind: Var("f"), loc, end: None, }, params, false),
+        loc,
+        end: None,
+      },
+      { parent: None, names, import_from: "", },
+    ),
   )
 }

@@ -54,7 +54,7 @@ fn AstReader::read(
     ImportFile(p, s) => ImportFile(p, s)
     ImportBinary(p) => ImportBinary(p)
   }
-  { kind, loc: e.loc, }
+  { kind, loc: e.loc, end: e.end, }
 }
 
 ///|
@@ -106,5 +106,5 @@ fn export_ast(e : Expr) -> Ast {
     StandardFunction(_) | StandardValue(_) =>
       abort("runtime-only node in program AST")
   }
-  { kind, loc: e.loc, }
+  { kind, loc: e.loc, end: e.end, }
 }

@@ -224,8 +224,8 @@ caches are provided by `Evaluator` below.
 
 ## Editable semantic AST
 
-`Program::ast() -> Ast` returns a deep, editable copy. `Ast` contains `kind` and
-`loc`; public `AstKind`, `AstField` and `AstClause` represent every supported
+`Program::ast() -> Ast` returns a deep, editable copy. `Ast` contains `kind`,
+`loc` and optional exclusive `end`; public `AstKind`, `AstField` and `AstClause` represent every supported
 expression form. Replace records with `{ ..node, kind: ... }` and edit child
 arrays to construct transformations. `Ast::clone(limits?)` makes another isolated
 copy, including subtrees with free variables. No runtime objects are exposed.
@@ -254,8 +254,23 @@ later imports, steps, stack, depth or output from execution limits. Filename
 defaults to the root location file, while explicit `filename`/`anonymous` control
 the entry/import identity. Individual diagnostic locations remain unchanged.
 Trees contain semantic syntax, not comments, whitespace, original number spelling,
-source ranges or Go's desugared/free-variable metadata. Source-preserving tooling
+or Go's desugared/free-variable metadata. Source-preserving tooling
 and complete Go AST metadata compatibility remain pending.
+
+`Ast::source_range() -> SourceRange?` returns retained coordinates. `Location`
+lines and UTF-8 byte columns start at one; `SourceRange.end` is exclusive.
+`SourceRange::format()` renders `file:line:begin-end` or
+`file:(beginLine:beginColumn)-(endLine:endColumn)`. Clone and Program conversion
+preserve these coordinates, including when the entry filename is overridden.
+Ranges describe the parsed source, so editing a node does not recompute them.
+`from_ast` rejects reversed, nonpositive or cross-file ranges.
+
+The pre-1.0 `Ast` record now requires `end` in manual record literals: use
+`end: None` for synthetic nodes. Record updates preserve it automatically.
+Parentheses are omitted from the inner node's range; calls exclude `tailstrict`.
+Implicit null, identifier/dot field keys, method wrappers and assertion wrappers
+have no range, matching Go's semantic AST. Coordinates do not retain source
+text, comments, declaration/parameter spans, or complete diagnostic end ranges.
 
 ## Reusable evaluator
 

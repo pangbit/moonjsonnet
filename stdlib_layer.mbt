@@ -73,5 +73,5 @@ fn standard_library_expression() -> Expr raise {
       _ => false
     }
   })
-  { kind: Obj(enabled, locals, assertions), loc: source.loc, }
+  { kind: Obj(enabled, locals, assertions), loc: source.loc, end: source.end, }
 }

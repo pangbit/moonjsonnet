@@ -4,6 +4,7 @@ priv struct Token {
   value : Json?
   loc : Location
   raw : String
+  end : Location
 }
 
 ///|
@@ -125,6 +126,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         value: Some(Json::string(b.to_string())),
         loc,
         raw: "",
+        end: loc,
       })
     } else if c == '"' || c == '\'' || c == '@' {
       let verbatim = c == '@'
@@ -226,6 +228,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         value: Some(Json::string(b.to_string())),
         loc,
         raw: "",
+        end: loc,
       })
     } else if identifier_start(c) {
       let b = StringBuilder()
@@ -234,7 +237,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         b.write_char(chars[i])
         i += 1
       }
-      out.push({ text: b.to_string(), value: None, loc, raw: "", })
+      out.push({ text: b.to_string(), value: None, loc, raw: "", end: loc, })
     } else if digit(c) {
       let b = StringBuilder()
       while i < chars.length() &&
@@ -260,7 +263,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       if v.is_inf() || v.is_nan() {
         raise problem(Runtime, loc, "non-finite number")
       }
-      out.push({ text: "<number>", value: Some(n), loc, raw: "", })
+      out.push({ text: "<number>", value: Some(n), loc, raw: "", end: loc, })
     } else {
       let b = StringBuilder()
       i += 1
@@ -291,7 +294,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       for j in start..<i {
         b.write_char(chars[j])
       }
-      out.push({ text: b.to_string(), value: None, loc, raw: "", })
+      out.push({ text: b.to_string(), value: None, loc, raw: "", end: loc, })
     }
     if out.length() > count {
       let raw = StringBuilder()
@@ -305,8 +308,20 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         line += 1
         column = 1
       } else {
-        column += 1
+        let cp = chars[j].to_int()
+        column += if cp < 0x80 {
+          1
+        } else if cp < 0x800 {
+          2
+        } else if cp < 0x10000 {
+          3
+        } else {
+          4
+        }
       }
+    }
+    if out.length() > count {
+      out[count] = { ..out[count], end: { file, line, column, }, }
     }
   }
   out.push({
@@ -314,6 +329,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
     value: None,
     loc: { file, line, column, },
     raw: "",
+    end: { file, line, column, },
   })
   out
 }

@@ -242,5 +242,1066 @@
       42,
       42
     ]
+  },
+  {
+    "name": "range literal",
+    "source": "42",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        3,
+        "entry:1:1-3"
+      ]
+    ]
+  },
+  {
+    "name": "range parentheses",
+    "source": " ((42)) ",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        4,
+        1,
+        6,
+        "entry:1:4-6"
+      ]
+    ]
+  },
+  {
+    "name": "range binary parentheses",
+    "source": "(1) + (2 * 3)",
+    "op": "ranges",
+    "paths": [
+      "",
+      "left",
+      "right",
+      "right.left"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        14,
+        "entry:1:1-14"
+      ],
+      [
+        1,
+        2,
+        1,
+        3,
+        "entry:1:2-3"
+      ],
+      [
+        1,
+        8,
+        1,
+        13,
+        "entry:1:8-13"
+      ],
+      [
+        1,
+        8,
+        1,
+        9,
+        "entry:1:8-9"
+      ]
+    ]
+  },
+  {
+    "name": "range unicode",
+    "source": "['é', '中', '😀', 42]",
+    "op": "ranges",
+    "paths": [
+      "",
+      "item:0",
+      "item:1",
+      "item:2",
+      "item:3"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        26,
+        "entry:1:1-26"
+      ],
+      [
+        1,
+        2,
+        1,
+        6,
+        "entry:1:2-6"
+      ],
+      [
+        1,
+        8,
+        1,
+        13,
+        "entry:1:8-13"
+      ],
+      [
+        1,
+        15,
+        1,
+        21,
+        "entry:1:15-21"
+      ],
+      [
+        1,
+        23,
+        1,
+        25,
+        "entry:1:23-25"
+      ]
+    ]
+  },
+  {
+    "name": "range multiline",
+    "source": "[\n  '中',\n  42\n]",
+    "op": "ranges",
+    "paths": [
+      "",
+      "item:0",
+      "item:1"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        4,
+        2,
+        "entry:(1:1)-(4:2)"
+      ],
+      [
+        2,
+        3,
+        2,
+        8,
+        "entry:2:3-8"
+      ],
+      [
+        3,
+        3,
+        3,
+        5,
+        "entry:3:3-5"
+      ]
+    ]
+  },
+  {
+    "name": "range crlf",
+    "source": "[\r\n  1,\r\n  2\r\n]",
+    "op": "ranges",
+    "paths": [
+      "",
+      "item:0",
+      "item:1"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        4,
+        2,
+        "entry:(1:1)-(4:2)"
+      ],
+      [
+        2,
+        3,
+        2,
+        4,
+        "entry:2:3-4"
+      ],
+      [
+        3,
+        3,
+        3,
+        4,
+        "entry:3:3-4"
+      ]
+    ]
+  },
+  {
+    "name": "range comments",
+    "source": "/*中*/ [1 /*é*/, //😀\n 2] // end",
+    "op": "ranges",
+    "paths": [
+      "",
+      "item:0",
+      "item:1"
+    ],
+    "expected": [
+      [
+        1,
+        9,
+        2,
+        4,
+        "entry:(1:9)-(2:4)"
+      ],
+      [
+        1,
+        10,
+        1,
+        11,
+        "entry:1:10-11"
+      ],
+      [
+        2,
+        2,
+        2,
+        3,
+        "entry:2:2-3"
+      ]
+    ]
+  },
+  {
+    "name": "range unary",
+    "source": "!-1",
+    "op": "ranges",
+    "paths": [
+      "",
+      "operand",
+      "operand.operand"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        4,
+        "entry:1:1-4"
+      ],
+      [
+        1,
+        2,
+        1,
+        4,
+        "entry:1:2-4"
+      ],
+      [
+        1,
+        3,
+        1,
+        4,
+        "entry:1:3-4"
+      ]
+    ]
+  },
+  {
+    "name": "range conditional",
+    "source": "if true then (1) else (2)",
+    "op": "ranges",
+    "paths": [
+      "",
+      "cond",
+      "then",
+      "else"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        26,
+        "entry:1:1-26"
+      ],
+      [
+        1,
+        4,
+        1,
+        8,
+        "entry:1:4-8"
+      ],
+      [
+        1,
+        15,
+        1,
+        16,
+        "entry:1:15-16"
+      ],
+      [
+        1,
+        24,
+        1,
+        25,
+        "entry:1:24-25"
+      ]
+    ]
+  },
+  {
+    "name": "range omitted else",
+    "source": "if false then 1",
+    "op": "ranges",
+    "paths": [
+      "",
+      "else"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        16,
+        "entry:1:1-16"
+      ],
+      null
+    ]
+  },
+  {
+    "name": "range function",
+    "source": "function(x=(21)) (x * 2)",
+    "op": "ranges",
+    "paths": [
+      "",
+      "default:0",
+      "body",
+      "body.left"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        25,
+        "entry:1:1-25"
+      ],
+      [
+        1,
+        13,
+        1,
+        15,
+        "entry:1:13-15"
+      ],
+      [
+        1,
+        19,
+        1,
+        24,
+        "entry:1:19-24"
+      ],
+      [
+        1,
+        19,
+        1,
+        20,
+        "entry:1:19-20"
+      ]
+    ]
+  },
+  {
+    "name": "range local function",
+    "source": "local f(x=1)=(x+1); f()",
+    "op": "ranges",
+    "paths": [
+      "",
+      "bind:0",
+      "bind:0.body",
+      "body",
+      "body.target"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        24,
+        "entry:1:1-24"
+      ],
+      [
+        1,
+        7,
+        1,
+        19,
+        "entry:1:7-19"
+      ],
+      [
+        1,
+        15,
+        1,
+        18,
+        "entry:1:15-18"
+      ],
+      [
+        1,
+        21,
+        1,
+        24,
+        "entry:1:21-24"
+      ],
+      [
+        1,
+        21,
+        1,
+        22,
+        "entry:1:21-22"
+      ]
+    ]
+  },
+  {
+    "name": "range local binding",
+    "source": "local x=(1), y=x+2; y",
+    "op": "ranges",
+    "paths": [
+      "",
+      "bind:0",
+      "bind:1",
+      "body"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        22,
+        "entry:1:1-22"
+      ],
+      [
+        1,
+        10,
+        1,
+        11,
+        "entry:1:10-11"
+      ],
+      [
+        1,
+        16,
+        1,
+        19,
+        "entry:1:16-19"
+      ],
+      [
+        1,
+        21,
+        1,
+        22,
+        "entry:1:21-22"
+      ]
+    ]
+  },
+  {
+    "name": "range object",
+    "source": "{a:1, 'b':2, ['c']:3}",
+    "op": "ranges",
+    "paths": [
+      "",
+      "key:0",
+      "key:1",
+      "key:2",
+      "field:0",
+      "field:2"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        22,
+        "entry:1:1-22"
+      ],
+      null,
+      [
+        1,
+        7,
+        1,
+        10,
+        "entry:1:7-10"
+      ],
+      [
+        1,
+        15,
+        1,
+        18,
+        "entry:1:15-18"
+      ],
+      [
+        1,
+        4,
+        1,
+        5,
+        "entry:1:4-5"
+      ],
+      [
+        1,
+        20,
+        1,
+        21,
+        "entry:1:20-21"
+      ]
+    ]
+  },
+  {
+    "name": "range method",
+    "source": "{f(x=1):(x+1)}",
+    "op": "ranges",
+    "paths": [
+      "",
+      "key:0",
+      "field:0",
+      "field:0.default:0",
+      "field:0.body"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        15,
+        "entry:1:1-15"
+      ],
+      null,
+      null,
+      [
+        1,
+        6,
+        1,
+        7,
+        "entry:1:6-7"
+      ],
+      [
+        1,
+        10,
+        1,
+        13,
+        "entry:1:10-13"
+      ]
+    ]
+  },
+  {
+    "name": "range dot",
+    "source": "{a:1}.a",
+    "op": "ranges",
+    "paths": [
+      "",
+      "target",
+      "index"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        8,
+        "entry:1:1-8"
+      ],
+      [
+        1,
+        1,
+        1,
+        6,
+        "entry:1:1-6"
+      ],
+      null
+    ]
+  },
+  {
+    "name": "range index",
+    "source": "[1,2][(0)]",
+    "op": "ranges",
+    "paths": [
+      "",
+      "target",
+      "index"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        11,
+        "entry:1:1-11"
+      ],
+      [
+        1,
+        1,
+        1,
+        6,
+        "entry:1:1-6"
+      ],
+      [
+        1,
+        8,
+        1,
+        9,
+        "entry:1:8-9"
+      ]
+    ]
+  },
+  {
+    "name": "range call",
+    "source": "(function(x) x)(21) tailstrict",
+    "op": "ranges",
+    "paths": [
+      "",
+      "target",
+      "arg:0"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        20,
+        "entry:1:1-20"
+      ],
+      [
+        1,
+        2,
+        1,
+        15,
+        "entry:1:2-15"
+      ],
+      [
+        1,
+        17,
+        1,
+        19,
+        "entry:1:17-19"
+      ]
+    ]
+  },
+  {
+    "name": "range implicit object apply",
+    "source": "{a:1} {b:2}",
+    "op": "ranges",
+    "paths": [
+      "",
+      "left",
+      "right"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        12,
+        "entry:1:1-12"
+      ],
+      [
+        1,
+        1,
+        1,
+        6,
+        "entry:1:1-6"
+      ],
+      [
+        1,
+        7,
+        1,
+        12,
+        "entry:1:7-12"
+      ]
+    ]
+  },
+  {
+    "name": "range assert",
+    "source": "assert true: 'bad'; 42",
+    "op": "ranges",
+    "paths": [
+      "",
+      "body"
+    ],
+    "expected": [
+      null,
+      [
+        1,
+        21,
+        1,
+        23,
+        "entry:1:21-23"
+      ]
+    ]
+  },
+  {
+    "name": "range error",
+    "source": "error ('bad')",
+    "op": "ranges",
+    "paths": [
+      "",
+      "operand"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        14,
+        "entry:1:1-14"
+      ],
+      [
+        1,
+        8,
+        1,
+        13,
+        "entry:1:8-13"
+      ]
+    ]
+  },
+  {
+    "name": "range slice",
+    "source": "[1,2,3][0:2]",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        13,
+        "entry:1:1-13"
+      ]
+    ]
+  },
+  {
+    "name": "range modulo",
+    "source": "5 % 2",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        6,
+        "entry:1:1-6"
+      ]
+    ]
+  },
+  {
+    "name": "range membership",
+    "source": "'x' in {}",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        10,
+        "entry:1:1-10"
+      ]
+    ]
+  },
+  {
+    "name": "range array comprehension",
+    "source": "[x for x in [1,2]]",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        19,
+        "entry:1:1-19"
+      ]
+    ]
+  },
+  {
+    "name": "range object comprehension",
+    "source": "{[x]: 1 for x in ['a']}",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        24,
+        "entry:1:1-24"
+      ]
+    ]
+  },
+  {
+    "name": "range import",
+    "source": "import 'foo'",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        13,
+        "entry:1:1-13"
+      ]
+    ]
+  },
+  {
+    "name": "range verbatim",
+    "source": "@'a''中'",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        10,
+        "entry:1:1-10"
+      ]
+    ]
+  },
+  {
+    "name": "range block string",
+    "source": "|||\n  中\n|||",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        3,
+        4,
+        "entry:(1:1)-(3:4)"
+      ]
+    ]
+  },
+  {
+    "name": "range binary tailstrict",
+    "source": "1 + (function() 2)() tailstrict",
+    "op": "ranges",
+    "paths": [
+      "",
+      "right"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        21,
+        "entry:1:1-21"
+      ],
+      [
+        1,
+        5,
+        1,
+        21,
+        "entry:1:5-21"
+      ]
+    ]
+  },
+  {
+    "name": "range parenthesized tailstrict",
+    "source": "1 + ((function() 2)() tailstrict)",
+    "op": "ranges",
+    "paths": [
+      "",
+      "right"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        34,
+        "entry:1:1-34"
+      ],
+      [
+        1,
+        6,
+        1,
+        22,
+        "entry:1:6-22"
+      ]
+    ]
+  },
+  {
+    "name": "range unary tailstrict",
+    "source": "-(function() 2)() tailstrict",
+    "op": "ranges",
+    "paths": [
+      "",
+      "operand"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        18,
+        "entry:1:1-18"
+      ],
+      [
+        1,
+        2,
+        1,
+        18,
+        "entry:1:2-18"
+      ]
+    ]
+  },
+  {
+    "name": "range conditional tailstrict",
+    "source": "if true then (function() 2)() tailstrict",
+    "op": "ranges",
+    "paths": [
+      "",
+      "then",
+      "else"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        30,
+        "entry:1:1-30"
+      ],
+      [
+        1,
+        14,
+        1,
+        30,
+        "entry:1:14-30"
+      ],
+      null
+    ]
+  },
+  {
+    "name": "range local tailstrict",
+    "source": "local f()=(function() 2)() tailstrict; f() tailstrict",
+    "op": "ranges",
+    "paths": [
+      "",
+      "bind:0",
+      "bind:0.body",
+      "body"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        43,
+        "entry:1:1-43"
+      ],
+      [
+        1,
+        7,
+        1,
+        27,
+        "entry:1:7-27"
+      ],
+      [
+        1,
+        11,
+        1,
+        27,
+        "entry:1:11-27"
+      ],
+      [
+        1,
+        40,
+        1,
+        43,
+        "entry:1:40-43"
+      ]
+    ]
+  },
+  {
+    "name": "range function tailstrict",
+    "source": "function() (function() 2)() tailstrict",
+    "op": "ranges",
+    "paths": [
+      "",
+      "body"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        28,
+        "entry:1:1-28"
+      ],
+      [
+        1,
+        12,
+        1,
+        28,
+        "entry:1:12-28"
+      ]
+    ]
+  },
+  {
+    "name": "range assert tailstrict",
+    "source": "local x=assert true; (function() 2)() tailstrict; x",
+    "op": "ranges",
+    "paths": [
+      "",
+      "bind:0",
+      "bind:0.body"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        52,
+        "entry:1:1-52"
+      ],
+      null,
+      [
+        1,
+        22,
+        1,
+        38,
+        "entry:1:22-38"
+      ]
+    ]
+  },
+  {
+    "name": "range call chain tailstrict",
+    "source": "(function() function() 2)() tailstrict() tailstrict",
+    "op": "ranges",
+    "paths": [
+      "",
+      "target"
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        41,
+        "entry:1:1-41"
+      ],
+      [
+        1,
+        1,
+        1,
+        28,
+        "entry:1:1-28"
+      ]
+    ]
   }
 ]

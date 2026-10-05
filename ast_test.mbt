@@ -41,11 +41,12 @@ test "AST edits and copies do not mutate validated programs or other copies" {
   assert_eq(edited.evaluate(), [42])
   assert_eq(@moonjsonnet.Program::from_ast(clone).evaluate(), [21])
   let loc : @moonjsonnet.Location = { file: "synthetic", line: 9, column: 4, }
-  let variable : @moonjsonnet.Ast = { kind: Var("x"), loc, }
+  let variable : @moonjsonnet.Ast = { kind: Var("x"), loc, end: None, }
   ignore(variable.clone())
   let program = @moonjsonnet.Program::from_ast({
-    kind: Local([("x", { kind: Literal(42), loc, })], variable),
+    kind: Local([("x", { kind: Literal(42), loc, end: None, })], variable),
     loc,
+    end: None,
   })
   assert_eq(program.evaluate(), 42)
   assert_eq(
@@ -57,7 +58,7 @@ test "AST edits and copies do not mutate validated programs or other copies" {
 ///|
 test "AST construction validates names scopes operators and shapes" {
   let loc : @moonjsonnet.Location = { file: "edited", line: 7, column: 2, }
-  let one : @moonjsonnet.Ast = { kind: Literal(1), loc, }
+  let one : @moonjsonnet.Ast = { kind: Literal(1), loc, end: None, }
   for
     kind in [
       @moonjsonnet.AstKind::Var("unknown"),
@@ -74,7 +75,7 @@ test "AST construction validates names scopes operators and shapes" {
       ArrayComp(one, [When(one)]),
       Obj([{ key: one, value: one, visibility: 0, additive: false, }], [], []),
     ] {
-    try @moonjsonnet.Program::from_ast({ kind, loc, }) catch {
+    try @moonjsonnet.Program::from_ast({ kind, loc, end: None, }) catch {
       @moonjsonnet.Error(d) => {
         assert_eq(d.kind, @moonjsonnet.Static)
         assert_eq(d.location, loc)
@@ -89,7 +90,7 @@ test "AST construction validates names scopes operators and shapes" {
 test "AST conversion bounds cycles width and later execution depth" {
   let loc : @moonjsonnet.Location = { file: "cycle", line: 1, column: 1, }
   let items : Array[@moonjsonnet.Ast] = []
-  let tree : @moonjsonnet.Ast = { kind: Arr(items), loc, }
+  let tree : @moonjsonnet.Ast = { kind: Arr(items), loc, end: None, }
   items.push(tree)
   try
     @moonjsonnet.Program::from_ast(tree, limits={
@@ -102,7 +103,7 @@ test "AST conversion bounds cycles width and later execution depth" {
     _ => fail("cyclic AST accepted")
   }
   items.clear()
-  let one : @moonjsonnet.Ast = { kind: Literal(1), loc, }
+  let one : @moonjsonnet.Ast = { kind: Literal(1), loc, end: None, }
   items.push(one)
   items.push(one)
   try tree.clone(limits={ ..@moonjsonnet.Limits::default(), steps: 2, }) catch {

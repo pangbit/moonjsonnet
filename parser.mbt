@@ -4,6 +4,8 @@ priv struct Parser {
   mut pos : Int
   mut depth : Int
   max_depth : Int
+  // End of the last parsed expression before semantic sugar is removed.
+  mut expression_end : Location
 }
 
 ///|
@@ -140,16 +142,21 @@ fn Parser::params(
 }
 
 ///|
+fn Parser::last_end(self : Parser) -> Location {
+  self.tokens[self.pos - 1].end
+}
+
+///|
 fn Parser::binding(self : Parser) -> (String, Expr) raise Error {
-  let name = self.name()
   let loc = self.peek().loc
+  let name = self.name()
   let params = if self.peek().text == "(" { Some(self.params()) } else { None }
   self.expect("=")
   let value = self.expr(0)
   (
     name,
     match params {
-      Some(p) => { kind: Func(p, value), loc, }
+      Some(p) => { kind: Func(p, value), loc, end: Some(self.expression_end), }
       None => value
     },
   )
@@ -194,9 +201,9 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
       } else {
         let t = self.take()
         if t.value is Some(String(_)) {
-          { kind: Literal(t.value.unwrap()), loc: t.loc, }
+          { kind: Literal(t.value.unwrap()), loc: t.loc, end: Some(t.end), }
         } else if is_name(t.text) {
-          { kind: Literal(Json::string(t.text)), loc: t.loc, }
+          { kind: Literal(Json::string(t.text)), loc: t.loc, end: None, }
         } else {
           raise problem(
             Syntax,
@@ -241,7 +248,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
       }
       let body = self.expr(0)
       let value : Expr = match params {
-        Some(p) => { kind: Func(p, body), loc: key.loc, }
+        Some(p) => { kind: Func(p, body), loc: key.loc, end: None, }
         None => body
       }
       fields.push({ key, value, visibility, additive, })
@@ -264,6 +271,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
       return {
         kind: ObjectComp(fields[0].key, fields[0].value, clauses, locals),
         loc,
+        end: Some(self.last_end()),
       }
     }
     if !comma {
@@ -271,7 +279,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
       break
     }
   }
-  { kind: Obj(fields, locals, assertions), loc, }
+  { kind: Obj(fields, locals, assertions), loc, end: Some(self.last_end()), }
 }
 
 ///|
@@ -283,12 +291,12 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
   let token = self.take()
   let loc = token.loc
   let mut left : Expr = match token.value {
-    Some(value) => { kind: Literal(value), loc, }
+    Some(value) => { kind: Literal(value), loc, end: None, }
     None =>
       match token.text {
-        "true" => { kind: Literal(Json::boolean(true)), loc, }
-        "false" => { kind: Literal(Json::boolean(false)), loc, }
-        "null" => { kind: Literal(Json::null()), loc, }
+        "true" => { kind: Literal(Json::boolean(true)), loc, end: None, }
+        "false" => { kind: Literal(Json::boolean(false)), loc, end: None, }
+        "null" => { kind: Literal(Json::null()), loc, end: None, }
         "(" => {
           let e = self.expr(0)
           self.expect(")")
@@ -306,7 +314,7 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
               "Expected , or ; but got " + self.peek().describe(),
             )
           }
-          { kind: Local(bindings, self.expr(0)), loc, }
+          { kind: Local(bindings, self.expr(0)), loc, end: None, }
         }
         "if" => {
           let c = self.expr(0)
@@ -315,9 +323,9 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           let no = if self.eat("else") {
             self.expr(0)
           } else {
-            { kind: Literal(Json::null()), loc, }
+            { kind: Literal(Json::null()), loc, end: None, }
           }
-          { kind: If(c, yes, no), loc, }
+          { kind: If(c, yes, no), loc, end: None, }
         }
         "function" => {
           if self.peek().text != "(" {
@@ -328,15 +336,15 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
             )
           }
           let p = self.params()
-          { kind: Func(p, self.expr(0)), loc, }
+          { kind: Func(p, self.expr(0)), loc, end: None, }
         }
         "assert" => {
           let c = self.expr(0)
           let m = if self.eat(":") { Some(self.expr(0)) } else { None }
           self.expect(";")
-          { kind: Assert(c, m, self.expr(0)), loc, }
+          { kind: Assert(c, m, self.expr(0)), loc, end: None, }
         }
-        "error" => { kind: Fail(self.expr(0)), loc, }
+        "error" => { kind: Fail(self.expr(0)), loc, end: None, }
         "import" | "importstr" | "importbin" => {
           let t = self.peek()
           let body = self.expr(0)
@@ -357,20 +365,21 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
               ImportFile(path, token.text == "importstr")
             },
             loc,
+            end: None,
           }
         }
         "!" | "-" | "+" | "~" =>
-          { kind: Unary(token.text, self.expr(11)), loc, }
+          { kind: Unary(token.text, self.expr(11)), loc, end: None, }
         "[" =>
           if self.eat("]") {
-            { kind: Arr([]), loc, }
+            { kind: Arr([]), loc, end: None, }
           } else {
             let first = self.expr(0)
             let comma = self.eat(",")
             if self.peek().text == "for" {
               let clauses = self.clauses()
               self.expect("]")
-              { kind: ArrayComp(first, clauses), loc, }
+              { kind: ArrayComp(first, clauses), loc, end: None, }
             } else {
               let items = [first]
               if comma {
@@ -384,14 +393,14 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
               } else {
                 self.end_list("]", "array element", describe=false)
               }
-              { kind: Arr(items), loc, }
+              { kind: Arr(items), loc, end: None, }
             }
           }
         "{" => self.object(loc)
-        "self" | "super" | "$" => { kind: Var(token.text), loc, }
+        "self" | "super" | "$" => { kind: Var(token.text), loc, end: None, }
         n =>
           if is_name(n) {
-            { kind: Var(n), loc, }
+            { kind: Var(n), loc, end: None, }
           } else {
             raise problem(
               Syntax,
@@ -407,14 +416,38 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           }
       }
   }
+  let mut span_end = match token.text {
+    "local"
+    | "if"
+    | "function"
+    | "assert"
+    | "error"
+    | "import"
+    | "importstr"
+    | "importbin"
+    | "!"
+    | "-"
+    | "+"
+    | "~" => self.expression_end
+    _ => self.last_end()
+  }
+  if token.text != "(" && token.text != "assert" {
+    left = { ..left, end: Some(span_end), }
+  }
   while true {
     let t = self.peek()
+    let mut end = None
     if t.text == "." {
       ignore(self.take())
       let n = self.name()
       left = {
-        kind: Index(left, { kind: Literal(Json::string(n)), loc: t.loc, }),
+        kind: Index(left, {
+          kind: Literal(Json::string(n)),
+          loc: t.loc,
+          end: None,
+        }),
         loc,
+        end: None,
       }
     } else if t.text == "[" {
       ignore(self.take())
@@ -445,10 +478,10 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           None
         }
         self.expect("]")
-        left = { kind: Slice(left, index, end, step), loc, }
+        left = { kind: Slice(left, index, end, step), loc, end: None, }
       } else {
         self.expect("]")
-        left = { kind: Index(left, index.unwrap()), loc, }
+        left = { kind: Index(left, index.unwrap()), loc, end: None, }
       }
     } else if t.text == "(" {
       ignore(self.take())
@@ -479,10 +512,11 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           break
         }
       }
-      left = { kind: Call(left, args, self.eat("tailstrict")), loc, }
+      end = Some(self.last_end())
+      left = { kind: Call(left, args, self.eat("tailstrict")), loc, end: None, }
     } else if t.text == "{" {
       ignore(self.take())
-      left = { kind: Binary("+", left, self.object(t.loc)), loc, }
+      left = { kind: Binary("+", left, self.object(t.loc)), loc, end: None, }
     } else {
       let prec = precedence(t.text)
       if prec == 0 && t.is_operator() && t.text != ":" && t.text != "::" {
@@ -493,16 +527,26 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
       }
       ignore(self.take())
       let right = self.expr(prec + 1)
-      left = { kind: Binary(t.text, left, right), loc, }
+      end = Some(self.expression_end)
+      left = { kind: Binary(t.text, left, right), loc, end: None, }
     }
+    span_end = end.unwrap_or(self.last_end())
+    left = { ..left, end: Some(span_end), }
   }
+  self.expression_end = span_end
   self.depth -= 1
   left
 }
 
 ///|
 fn parse(source : String, file : String, max_depth : Int) -> Expr raise Error {
-  let p : Parser = { tokens: lex(source, file), pos: 0, depth: 0, max_depth, }
+  let p : Parser = {
+    tokens: lex(source, file),
+    pos: 0,
+    depth: 0,
+    max_depth,
+    expression_end: { file, line: 1, column: 1, },
+  }
   let e = p.expr(0)
   p.expect("<eof>")
   check_ast_depth(e, max_depth)

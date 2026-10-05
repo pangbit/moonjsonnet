@@ -88,8 +88,8 @@ fn Vm::base_env(
   for name in builtin_names() {
     fields[name] = {
       field: {
-        key: { kind: Literal(Json::string(name)), loc, },
-        value: { kind: StandardFunction(name), loc, },
+        key: { kind: Literal(Json::string(name)), loc, end: None, },
+        value: { kind: StandardFunction(name), loc, end: None, },
         visibility: 2,
         additive: false,
       },
@@ -98,8 +98,8 @@ fn Vm::base_env(
   }
   fields["thisFile"] = {
     field: {
-      key: { kind: Literal(Json::string("thisFile")), loc, },
-      value: { kind: StandardValue(Json::string(file)), loc, },
+      key: { kind: Literal(Json::string("thisFile")), loc, end: None, },
+      value: { kind: StandardValue(Json::string(file)), loc, end: None, },
       visibility: 2,
       additive: false,
     },

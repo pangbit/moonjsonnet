@@ -4,6 +4,8 @@
 pub(all) struct Ast {
   kind : AstKind
   loc : Location
+  /// Exclusive end position, or None for a node without a source range.
+  end : Location?
 }
 
 ///|

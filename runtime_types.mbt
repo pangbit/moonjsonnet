@@ -217,8 +217,8 @@ fn Vm::from_json(self : Vm, json : Json, loc : Location) -> Value raise {
       for k, v in o {
         fs[k] = {
           field: {
-            key: { kind: Literal(Json::string(k)), loc, },
-            value: { kind: Literal(v), loc, },
+            key: { kind: Literal(Json::string(k)), loc, end: None, },
+            value: { kind: Literal(v), loc, end: None, },
             visibility: 1,
             additive: false,
           },

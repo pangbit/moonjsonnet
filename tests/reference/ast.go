@@ -7,9 +7,80 @@ import (
 	jsonnet "github.com/google/go-jsonnet"
 	"github.com/google/go-jsonnet/ast"
 	"os"
+	"strconv"
+	"strings"
 )
 
-type fixture struct{ Source, Replacement, Op, Mode string }
+type fixture struct {
+	Source, Replacement, Op, Mode string
+	Paths                         []string
+}
+
+func rangeNode(node ast.Node, path string) ast.Node {
+	if path == "" {
+		return node
+	}
+	for _, part := range strings.Split(path, ".") {
+		key, index, _ := strings.Cut(part, ":")
+		n, _ := strconv.Atoi(index)
+		switch v := node.(type) {
+		case *ast.Binary:
+			if key == "left" {
+				node = v.Left
+			} else {
+				node = v.Right
+			}
+		case *ast.Conditional:
+			switch key {
+			case "cond":
+				node = v.Cond
+			case "then", "body":
+				node = v.BranchTrue
+			case "else":
+				node = v.BranchFalse
+			}
+		case *ast.Local:
+			if key == "body" {
+				node = v.Body
+			} else {
+				node = v.Binds[n].Body
+			}
+		case *ast.Function:
+			if key == "body" {
+				node = v.Body
+			} else {
+				node = v.Parameters[n].DefaultArg
+			}
+		case *ast.Array:
+			node = v.Elements[n].Expr
+		case *ast.DesugaredObject:
+			if key == "key" {
+				node = v.Fields[n].Name
+			} else {
+				node = v.Fields[n].Body
+			}
+		case *ast.Apply:
+			if key == "target" {
+				node = v.Target
+			} else {
+				node = v.Arguments.Positional[n].Expr
+			}
+		case *ast.Index:
+			if key == "target" {
+				node = v.Target
+			} else {
+				node = v.Index
+			}
+		case *ast.Unary:
+			node = v.Expr
+		case *ast.Error:
+			node = v.Expr
+		default:
+			panic("unsupported range path: " + path)
+		}
+	}
+	return node
+}
 
 func run(f fixture) (interface{}, error) {
 	original, err := jsonnet.SnippetToAST("entry", f.Source)
@@ -17,6 +88,18 @@ func run(f fixture) (interface{}, error) {
 		return nil, err
 	}
 	edited := ast.Clone(original)
+	if f.Op == "ranges" {
+		result := []interface{}{}
+		for _, path := range f.Paths {
+			r := rangeNode(edited, path).Loc()
+			if !r.IsSet() {
+				result = append(result, nil)
+			} else {
+				result = append(result, []interface{}{r.Begin.Line, r.Begin.Column, r.End.Line, r.End.Column, r.String()})
+			}
+		}
+		return result, nil
+	}
 	replacement := f.Replacement
 	if replacement == "" {
 		replacement = "42"

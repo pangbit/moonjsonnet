@@ -55,7 +55,7 @@ Infinity/NaN, which unary signs, comparisons and string conversion can consume;
 integer precision is not guaranteed above 2^53. Strings/indexing/length/substrings
 use Unicode code points, not bytes, UTF-16 units or grapheme clusters. Paired Unicode
 escapes are decoded; lone surrogate escapes are syntax errors, as in v0.21.0.
-Source locations count code points.
+Source locations use one-based UTF-8 byte columns. AST source ranges have exclusive ends.
 
 Array/string indices truncate toward zero before checking bounds, matching Go;
 this includes negative fractions between -1 and 0 selecting the first element.

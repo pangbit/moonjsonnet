@@ -19,6 +19,16 @@ fn run(input : Json) -> Json {
       filename="entry",
     )
     let tree = original.ast().clone()
+    if text(input, "op", "") == "ranges" {
+      let copied = @moonjsonnet.Program::from_ast(tree).ast()
+      return {
+        "result": range_result(copied, input),
+        "error": "",
+        "requests": [],
+        "trace": "",
+        "native_calls": 0,
+      }
+    }
     let replacement = @moonjsonnet.Program::parse(
       text(input, "replacement", "42"),
       filename="entry",
@@ -36,6 +46,7 @@ fn run(input : Json) -> Json {
         {
           kind: @moonjsonnet.AstKind::Binary("+", tree, replacement),
           loc: tree.loc,
+          end: None,
         }
       _ => tree
     }
