@@ -73,6 +73,13 @@ async fn main {
     #|  assert_true(parameter.default_value.unwrap().kind is NumberLiteral("42"))
     #|  assert_eq(@moonjsonnet.Program::from_ast(function).evaluate(),42)
     #|  assert_eq(@moonjsonnet.evaluate("(function(x,x) x)(1,42)"),42)
+    #|  let raw_source="/*source*/ unknown + @'it''s' //tail\r\n"
+    #|  let parsed=@moonjsonnet.ParsedSource::parse(raw_source,filename="consumer")
+    #|  assert_eq(parsed.text(),raw_source)
+    #|  let parts : Array[@moonjsonnet.SourcePart] = parsed.parts()
+    #|  assert_true(parts[0].kind is BlockComment)
+    #|  assert_eq(parts.map(p=>p.text).join(""),raw_source)
+    #|  assert_eq(parsed.ast().loc.file,"consumer")
     #|  assert_eq(ranged.source_range().unwrap().format(),"consumer:1:1-6")
     #|  let manual : @moonjsonnet.Ast = {kind:Literal(42),loc:ranged.loc,end:None}
     #|  assert_eq(@moonjsonnet.Program::from_ast(manual).evaluate(),42)

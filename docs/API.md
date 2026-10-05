@@ -306,6 +306,27 @@ Implicit null, identifier/dot field keys, method wrappers and assertion wrappers
 have no range, matching Go's semantic AST. Coordinates do not retain source
 text, comments, or complete diagnostic end ranges.
 
+## Parsed source for source tooling
+
+`ParsedSource::parse(source, filename?, limits?)` parses without evaluation or
+lexical-scope validation, following the raw parsing role used by Go's formatter.
+Unknown variables and out-of-scope self/super can be retained; syntax errors,
+duplicate local names, repeated literal field spellings and source/depth limits
+still fail. Convert its
+`ast()` view through `Program::from_ast` to validate scopes before execution.
+
+`text()` reconstructs the exact input. `parts()` returns independent `SourcePart`
+records in source order, including leading and trailing material. Kinds distinguish
+token text, whitespace, line comments and block comments; each carries original
+text and a one-based UTF-8 byte range. Quotes, verbatim doubling, escapes, text-block
+indentation, numeric spelling, CRLF, shebangs and comments are retained.
+
+The `ast()` result is an independent semantic view. Editing that view or a returned
+parts array does not rewrite the retained document. This is source retention and
+raw parsing, not an implementation of Go's Fodder normalization, editable raw AST,
+formatting options, FormatNode or jsonnetfmt. Ordinary Program parsing does not
+retain trivia.
+
 ## Reusable evaluator
 
 `Evaluator::new()` creates a configurable interpreter with persistent imported

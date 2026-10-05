@@ -163,6 +163,14 @@ pub(all) struct NativeFunction {
   callback : (Array[Json]) -> Json raise
 }
 
+pub struct ParsedSource {
+  // private fields
+}
+pub fn ParsedSource::ast(Self) -> Ast
+pub fn ParsedSource::parse(String, filename? : String, limits? : Limits) -> Self raise JsonnetError
+pub fn ParsedSource::parts(Self) -> Array[SourcePart]
+pub fn ParsedSource::text(Self) -> String
+
 pub struct Program {
   // private fields
 }
@@ -179,6 +187,21 @@ pub(all) struct Source {
   text : String
 } derive(@debug.Debug)
 pub fn Source::to_repr(Self) -> @debug.Repr
+
+pub(all) struct SourcePart {
+  kind : SourcePartKind
+  text : String
+  range : SourceRange
+}
+
+pub(all) enum SourcePartKind {
+  TokenText
+  Whitespace
+  LineComment
+  BlockComment
+} derive(Eq)
+pub fn SourcePartKind::equal(Self, Self) -> Bool
+pub fn SourcePartKind::not_equal(Self, Self) -> Bool
 
 pub(all) struct SourceRange {
   begin : Location

@@ -156,10 +156,15 @@ fn Parser::last_end(self : Parser) -> Location {
 ///|
 fn Parser::binding(
   self : Parser,
+  names : Map[String, Bool],
   in_object? : Bool = false,
 ) -> ExprBinding raise Error {
   let loc = self.peek().loc
   let name = self.name()
+  if names.contains(name) {
+    raise problem(Static, loc, "Duplicate local var: \{name}")
+  }
+  names[name] = true
   let params = if self.peek().text == "(" { Some(self.params()) } else { None }
   self.expect("=")
   let value = self.expr(0)
@@ -199,11 +204,13 @@ fn Parser::clauses(self : Parser) -> Array[Clause] raise Error {
 fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
   let fields : Array[Field] = []
   let locals = []
+  let local_names : Map[String, Bool] = Map([])
+  let field_names : Map[String, Bool] = Map([])
   let assertions = []
   let mut computed_field = false
   while !self.eat("}") {
     if self.eat("local") {
-      locals.push(self.binding(in_object=true))
+      locals.push(self.binding(local_names, in_object=true))
     } else if self.eat("assert") {
       let cond = self.expr(0)
       let message = if self.eat(":") { Some(self.expr(0)) } else { None }
@@ -211,16 +218,19 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
     } else {
       let computed = self.eat("[")
       computed_field = computed
-      let key = if computed {
+      let (key, literal_name) = if computed {
         let e = self.expr(0)
         self.expect("]")
-        e
+        (e, None)
       } else {
         let t = self.take()
-        if t.value is Some(String(_)) {
-          { kind: t.literal_kind(), loc: t.loc, end: Some(t.end), }
+        if t.value is Some(String(raw)) {
+          ({ kind: t.literal_kind(), loc: t.loc, end: Some(t.end), }, Some(raw))
         } else if is_name(t.text) {
-          { kind: Literal(Json::string(t.text)), loc: t.loc, end: None, }
+          (
+            { kind: Literal(Json::string(t.text)), loc: t.loc, end: None, },
+            Some(t.text),
+          )
         } else {
           raise problem(
             Syntax,
@@ -262,6 +272,12 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
           key.loc,
           "method cannot use additive field syntax",
         )
+      }
+      if literal_name is Some(name) {
+        if field_names.contains(name) {
+          raise problem(Static, key.loc, "Duplicate field: \{name}")
+        }
+        field_names[name] = true
       }
       let body = self.expr(0)
       let value : Expr = match params {
@@ -321,9 +337,10 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           e
         }
         "local" => {
-          let bindings = [self.binding()]
+          let names : Map[String, Bool] = Map([])
+          let bindings = [self.binding(names)]
           while self.eat(",") {
-            bindings.push(self.binding())
+            bindings.push(self.binding(names))
           }
           if !self.eat(";") {
             raise problem(
@@ -558,16 +575,22 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
 
 ///|
 fn parse(source : String, file : String, max_depth : Int) -> Expr raise Error {
+  let e = parse_tokens(lex(source, file), max_depth)
+  validate(e, ["std"], false)
+  e
+}
+
+///|
+fn parse_tokens(tokens : Array[Token], max_depth : Int) -> Expr raise Error {
   let p : Parser = {
-    tokens: lex(source, file),
+    tokens,
     pos: 0,
     depth: 0,
     max_depth,
-    expression_end: { file, line: 1, column: 1, },
+    expression_end: tokens[0].loc,
   }
   let e = p.expr(0)
   p.expect("<eof>")
   check_ast_depth(e, max_depth)
-  validate(e, ["std"], false)
   e
 }

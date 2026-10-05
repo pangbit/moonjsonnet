@@ -14,6 +14,19 @@ fn text(input : Json, key : String, fallback : String) -> String {
 fn run(input : Json) -> Json {
   let mut error = ""
   let result = try {
+    if text(input, "op", "") == "parse-source" {
+      let source = text(input, "source", "")
+      let document = @moonjsonnet.ParsedSource::parse(source, filename="entry")
+      assert_eq(document.parts().map(p => p.text).join(""), source)
+      ignore(document.ast().clone())
+      return {
+        "result": document.text(),
+        "error": "",
+        "requests": [],
+        "trace": "",
+        "native_calls": 0,
+      }
+    }
     let original = @moonjsonnet.Program::parse(
       text(input, "source", ""),
       filename="entry",

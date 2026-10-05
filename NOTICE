@@ -9,7 +9,7 @@ https://github.com/google/jsonnet
 Copyright Google Inc.; Apache License 2.0.
 Pinned commit: bbb38f1020be1f5aed560928fb839b2c448cefb4.
 No upstream interpreter is bundled or linked.
-Except for the attributed upstream lint inputs below, the committed differential
+Except for the attributed upstream lint and formatter inputs below, the committed differential
 inputs and example fixtures are original project material, distributed under this
 project's Apache-2.0 license. The reference
 checkout retains its own LICENSE and third-party notices outside this package.
@@ -31,6 +31,11 @@ fixtures are excluded from the published package. lint.mbt and lint_children.mbt
 adapt lexical-use and eager local-cycle analysis from linter/internal/variables,
 linter/internal/traversal and internal/parser/context.go at that same revision.
 Copyright Google Inc.; Apache License 2.0 (see LICENSE).
+
+tests/go-ast.json includes formatter/testdata/empty_comment.jsonnet and
+formatter/testdata/regular_expression.jsonnet from that pinned go-jsonnet revision.
+Copyright Google Inc.; Apache License 2.0 (see LICENSE). These inputs exercise raw
+parsing and source retention, not formatter output, and are excluded from the package.
 
 lint_type_*.mbt adapt conservative type-graph inference, checks and declarations
 from linter/internal/types at the same pinned go-jsonnet revision.

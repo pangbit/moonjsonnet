@@ -6,6 +6,7 @@ import (
 	"fmt"
 	jsonnet "github.com/google/go-jsonnet"
 	"github.com/google/go-jsonnet/ast"
+	"github.com/google/go-jsonnet/formatter"
 	"os"
 	"strconv"
 	"strings"
@@ -83,6 +84,13 @@ func rangeNode(node ast.Node, path string) ast.Node {
 }
 
 func run(f fixture) (interface{}, error) {
+	if f.Op == "parse-source" {
+		_, _, err := formatter.SnippetToRawAST("entry", f.Source)
+		if err != nil {
+			return nil, err
+		}
+		return f.Source, nil
+	}
 	original, err := jsonnet.SnippetToAST("entry", f.Source)
 	if err != nil {
 		return nil, err

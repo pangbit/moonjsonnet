@@ -5948,6 +5948,166 @@
       "group": "parameter-duplicate",
       "expected": [],
       "locations": []
+    },
+    {
+      "name": "source-duplicate-1",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1,x=2;42"
+        }
+      ],
+      "files": {},
+      "group": "source-duplicate",
+      "expected": [
+        "Duplicate local var: x"
+      ],
+      "locations": [
+        [
+          1,
+          11
+        ]
+      ]
+    },
+    {
+      "name": "source-duplicate-2",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local x=1,local x=2,a:42}"
+        }
+      ],
+      "files": {},
+      "group": "source-duplicate",
+      "expected": [
+        "Duplicate local var: x"
+      ],
+      "locations": [
+        [
+          1,
+          18
+        ]
+      ]
+    },
+    {
+      "name": "source-duplicate-3",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a:1,a:2}"
+        }
+      ],
+      "files": {},
+      "group": "source-duplicate",
+      "expected": [
+        "Duplicate field: a"
+      ],
+      "locations": [
+        [
+          1,
+          6
+        ]
+      ]
+    },
+    {
+      "name": "source-duplicate-4",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{'a':1,a:2}"
+        }
+      ],
+      "files": {},
+      "group": "source-duplicate",
+      "expected": [
+        "Duplicate field: a"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "source-duplicate-5",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a:1,a:}"
+        }
+      ],
+      "files": {},
+      "group": "source-duplicate",
+      "expected": [
+        "Duplicate field: a"
+      ],
+      "locations": [
+        [
+          1,
+          6
+        ]
+      ]
+    },
+    {
+      "name": "source-duplicate-6",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1,x=;42"
+        }
+      ],
+      "files": {},
+      "group": "source-duplicate",
+      "expected": [
+        "Duplicate local var: x"
+      ],
+      "locations": [
+        [
+          1,
+          11
+        ]
+      ]
+    },
+    {
+      "name": "source-duplicate-7",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{'\\u0061':1,'\\u0061':2}"
+        }
+      ],
+      "files": {},
+      "group": "source-duplicate",
+      "expected": [
+        "Duplicate field: \\u0061"
+      ],
+      "locations": [
+        [
+          1,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "source-duplicate-8",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a:1,a:2 ?}"
+        }
+      ],
+      "files": {},
+      "group": "source-duplicate",
+      "expected": [
+        "Could not lex the character '?'"
+      ],
+      "locations": [
+        [
+          1,
+          10
+        ]
+      ]
     }
   ]
 }

@@ -5,6 +5,14 @@ priv struct Token {
   loc : Location
   raw : String
   end : Location
+  leading : Array[Trivia]
+}
+
+///|
+priv struct Trivia {
+  kind : SourcePartKind
+  raw : String
+  range : SourceRange
 }
 
 ///|
@@ -18,19 +26,32 @@ fn digit(c : Char) -> Bool {
 }
 
 ///|
-fn lex(source : String, file : String) -> Array[Token] raise Error {
+fn lex(
+  source : String,
+  file : String,
+  retain_trivia? : Bool = false,
+) -> Array[Token] raise Error {
   let chars = source.to_array()
   let out : Array[Token] = []
   let mut i = 0
   let mut line = 1
   let mut column = 1
+  let mut leading : Array[Trivia] = []
   while i < chars.length() {
     let c = chars[i]
     let loc : Location = { file, line, column, }
     let start = i
     let count = out.length()
     if c == ' ' || c == '\t' || c == '\r' || c == '\n' {
-      i += 1
+      while i < chars.length() &&
+            (
+              chars[i] == ' ' ||
+              chars[i] == '\t' ||
+              chars[i] == '\r' ||
+              chars[i] == '\n'
+            ) {
+        i += 1
+      }
     } else if c == '#' || (c == '/' && chars.get(i + 1) == Some('/')) {
       while i < chars.length() && chars[i] != '\n' {
         i += 1
@@ -127,6 +148,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         loc,
         raw: "",
         end: loc,
+        leading: [],
       })
     } else if c == '"' || c == '\'' || c == '@' {
       let verbatim = c == '@'
@@ -180,6 +202,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         loc,
         raw: "",
         end: loc,
+        leading: [],
       })
     } else if identifier_start(c) {
       let b = StringBuilder()
@@ -188,10 +211,24 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         b.write_char(chars[i])
         i += 1
       }
-      out.push({ text: b.to_string(), value: None, loc, raw: "", end: loc, })
+      out.push({
+        text: b.to_string(),
+        value: None,
+        loc,
+        raw: "",
+        end: loc,
+        leading: [],
+      })
     } else if digit(c) {
       i = number_end(chars, start, loc)
-      out.push({ text: "<number>", value: None, loc, raw: "", end: loc, })
+      out.push({
+        text: "<number>",
+        value: None,
+        loc,
+        raw: "",
+        end: loc,
+        leading: [],
+      })
     } else {
       if !operator_char(c) &&
         c != '{' &&
@@ -238,14 +275,23 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       for j in start..<i {
         b.write_char(chars[j])
       }
-      out.push({ text: b.to_string(), value: None, loc, raw: "", end: loc, })
+      out.push({
+        text: b.to_string(),
+        value: None,
+        loc,
+        raw: "",
+        end: loc,
+        leading: [],
+      })
     }
-    if out.length() > count {
-      let raw = StringBuilder()
+    let raw = if out.length() > count || retain_trivia {
+      let builder = StringBuilder()
       for j in start..<i {
-        raw.write_char(chars[j])
+        builder.write_char(chars[j])
       }
-      out[count] = { ..out[count], raw: raw.to_string(), }
+      builder.to_string()
+    } else {
+      ""
     }
     for j in start..<i {
       if chars[j] == '\n' {
@@ -265,7 +311,20 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       }
     }
     if out.length() > count {
-      out[count] = { ..out[count], end: { file, line, column, }, }
+      out[count] = { ..out[count], raw, end: { file, line, column, }, leading, }
+      leading = []
+    } else if retain_trivia {
+      leading.push({
+        kind: if c == '#' || (c == '/' && chars.get(start + 1) == Some('/')) {
+          LineComment
+        } else if c == '/' {
+          BlockComment
+        } else {
+          Whitespace
+        },
+        raw,
+        range: { begin: loc, end: { file, line, column, }, },
+      })
     }
   }
   out.push({
@@ -274,6 +333,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
     loc: { file, line, column, },
     raw: "",
     end: { file, line, column, },
+    leading,
   })
   out
 }

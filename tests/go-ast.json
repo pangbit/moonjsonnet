@@ -2709,5 +2709,193 @@
       42,
       42
     ]
+  },
+  {
+    "name": "source-fidelity-1",
+    "source": "unknown + 42",
+    "op": "parse-source",
+    "expected": "unknown + 42"
+  },
+  {
+    "name": "source-fidelity-2",
+    "source": "self",
+    "op": "parse-source",
+    "expected": "self"
+  },
+  {
+    "name": "source-fidelity-3",
+    "source": "super.x",
+    "op": "parse-source",
+    "expected": "super.x"
+  },
+  {
+    "name": "source-fidelity-4",
+    "source": "function(x=unknown) x",
+    "op": "parse-source",
+    "expected": "function(x=unknown) x"
+  },
+  {
+    "name": "source-fidelity-5",
+    "source": "#!/usr/bin/env jsonnet\r\n/*中*/ unknown + @'it''s' //tail",
+    "op": "parse-source",
+    "expected": "#!/usr/bin/env jsonnet\r\n/*中*/ unknown + @'it''s' //tail"
+  },
+  {
+    "name": "source-fidelity-6",
+    "source": " /*a*/ /*b*/\n[1.20E+003, @'it''s', @\"a\"\"b\", '\\u0041']\t",
+    "op": "parse-source",
+    "expected": " /*a*/ /*b*/\n[1.20E+003, @'it''s', @\"a\"\"b\", '\\u0041']\t"
+  },
+  {
+    "name": "source-fidelity-7",
+    "source": "/*😀*/\r\n'中' //😀\r\n",
+    "op": "parse-source",
+    "expected": "/*😀*/\r\n'中' //😀\r\n"
+  },
+  {
+    "name": "source-fidelity-8",
+    "source": "1/*mid*/+ //next\n2",
+    "op": "parse-source",
+    "expected": "1/*mid*/+ //next\n2"
+  },
+  {
+    "name": "source-fidelity-9",
+    "source": "|||\n  a\n  b\n|||\n",
+    "op": "parse-source",
+    "expected": "|||\n  a\n  b\n|||\n"
+  },
+  {
+    "name": "source-fidelity-10",
+    "source": "|||-\n\n  x\n||| #end",
+    "op": "parse-source",
+    "expected": "|||-\n\n  x\n||| #end"
+  },
+  {
+    "name": "source-fidelity-11",
+    "source": "'/* string */ # text // text'",
+    "op": "parse-source",
+    "expected": "'/* string */ # text // text'"
+  },
+  {
+    "name": "source-fidelity-12",
+    "source": "'line\nbreak'",
+    "op": "parse-source",
+    "expected": "'line\nbreak'"
+  },
+  {
+    "name": "source-fidelity-13",
+    "source": "{a:42} // comment without final newline",
+    "op": "parse-source",
+    "expected": "{a:42} // comment without final newline"
+  },
+  {
+    "name": "source-fidelity-14",
+    "source": "if false then import 'missing' else error 'not executed'",
+    "op": "parse-source",
+    "expected": "if false then import 'missing' else error 'not executed'"
+  },
+  {
+    "name": "source-fidelity-15",
+    "source": "local x=1; function(x,x=2) x",
+    "op": "parse-source",
+    "expected": "local x=1; function(x,x=2) x"
+  },
+  {
+    "name": "source-fidelity-16",
+    "source": "{a:1,['a']:2}",
+    "op": "parse-source",
+    "expected": "{a:1,['a']:2}"
+  },
+  {
+    "name": "source-fidelity-17",
+    "source": "{'a':1,'\\u0061':2}",
+    "op": "parse-source",
+    "expected": "{'a':1,'\\u0061':2}"
+  },
+  {
+    "name": "source-fidelity-18",
+    "source": "local x=1,x=2;42",
+    "op": "parse-source",
+    "error_contains": [
+      "Duplicate local var: x"
+    ]
+  },
+  {
+    "name": "source-fidelity-19",
+    "source": "{local x=1,local x=2,a:42}",
+    "op": "parse-source",
+    "error_contains": [
+      "Duplicate local var: x"
+    ]
+  },
+  {
+    "name": "source-fidelity-20",
+    "source": "{a:1,a:2}",
+    "op": "parse-source",
+    "error_contains": [
+      "Duplicate field: a"
+    ]
+  },
+  {
+    "name": "source-fidelity-21",
+    "source": "{'a':1,a:2}",
+    "op": "parse-source",
+    "error_contains": [
+      "Duplicate field: a"
+    ]
+  },
+  {
+    "name": "source-fidelity-22",
+    "source": "{a:1,a:}",
+    "op": "parse-source",
+    "error_contains": [
+      "Duplicate field: a"
+    ]
+  },
+  {
+    "name": "source-fidelity-23",
+    "source": "local x=1,x=;42",
+    "op": "parse-source",
+    "error_contains": [
+      "Duplicate local var: x"
+    ]
+  },
+  {
+    "name": "source-fidelity-24",
+    "source": "'\\q'",
+    "op": "parse-source",
+    "error_contains": [
+      "Unknown escape sequence"
+    ]
+  },
+  {
+    "name": "source-fidelity-25",
+    "source": "/*",
+    "op": "parse-source",
+    "error_contains": [
+      "Multi-line comment has no terminating */"
+    ]
+  },
+  {
+    "name": "source-fidelity-26",
+    "source": "[1,",
+    "op": "parse-source",
+    "error_contains": [
+      "Unexpected end of file"
+    ]
+  },
+  {
+    "name": "source-fidelity-27",
+    "source": "#\n{}\n",
+    "op": "parse-source",
+    "expected": "#\n{}\n"
+  },
+  {
+    "name": "source-fidelity-28",
+    "source": "{\n  x: {\n    data: '([^:]+)(?::\\d+)?',\n  },\n}",
+    "op": "parse-source",
+    "error_contains": [
+      "Unknown escape sequence"
+    ]
   }
 ]
