@@ -51,14 +51,25 @@ entries. The fixed Go lifecycle sequences use the same API-adapter approach:
 moon run tools/evaluator-integration.mbtx _build/native/release/build/examples/evaluator-probe/evaluator-probe.exe /tmp/go-jsonnet-v0.21.0
 ```
 
-`tests/go-evaluator.json` pins every evaluation's value/error outcome, native-call
+`evaluator_imports_test.mbt` and its whitebox companion cover query/execution cache
+sharing, nonexecution, raw invalid UTF-8 bytes, importer replacement, cached-source
+and AST budgets, and reentry. The same sequence runner also exercises resolve,
+raw data, imported programs and dependency queries.
+
+`tests/go-evaluator.json` pins every evaluation/query value/error outcome, native-call
 count, source-read count and trace messages with sink labels. The Go adapter's
 importer caches immutable contents; source-read counts do not measure raw importer
 callback invocations. Error fragments and full actual diagnostics are retained.
 The report at `_build/evaluators/report.json` records sequence counts separately
-from nested evaluation/error counts. The optional local-only mode is included in
+from nested evaluation/query/error counts. Query errors use Go's ordinary error
+text because these APIs return importer errors directly; runtime evaluation errors
+still use its ErrorFormatter. The optional local-only mode is included in
 ASan and writes `local-report.json`. These are VM API sequences, not additional
 CLI-expression passes, and the arena checks do not establish RSS/leak bounds.
+The current Go result is 20/21 sequences: failed-parse retry returns a successful
+nil AST in Go v0.21.0, while MoonJsonnet continues to report the static error.
+This remains a failing case; local-only expectations pass 21/21. See the
+[import-query report](../reports/GO-JSONNET-IMPORT-QUERIES.md).
 
 Reference interpreter (development only; not a runtime dependency):
 

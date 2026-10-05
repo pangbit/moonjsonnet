@@ -45,11 +45,11 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | 扩展参数 | JSON/字符串、独立作用域的惰性代码及已解析 Program；CLI 文件/环境变量形式；Evaluator 替换/reset 及值缓存失效 | 扩大 AST 参数和跨次求值语料 |
 | 顶层参数 TLA | JSON/字符串/代码/已解析 Program 及 CLI 文件/环境变量形式，顶层函数调用、默认值与错误传播；Evaluator 替换/reset 保留导入缓存 | 扩大跨次调用和参数边界语料 |
 | 原生回调与 trace | 已实现按名注册、JSON 回调、可配置 sink 及默认 stderr；Evaluator native 变更清值缓存、sink 变更保留缓存 | 扩大宿主边界验证；完整诊断路径/帧及 EvalHook 仍待补齐 |
-| 导入器 | 定制文本/二进制解析、限定目录宿主、`-J`/`JSONNET_PATH` 搜索、正负缓存及静态依赖扫描；Evaluator 共享 source/AST/value 缓存 | 导入查询及共享缓存的依赖扫描；继续核验路径身份、扫描遍历顺序与宿主政策差异 |
+| 导入器 | 定制文本/二进制解析、限定目录宿主、`-J`/`JSONNET_PATH` 搜索、正负缓存及静态依赖扫描；Evaluator 提供导入查询和共享 source/AST/value 缓存 | 继续核验路径身份、扫描遍历顺序、失败 AST 缓存与宿主政策差异 |
 | 输入模式 | 文件、CLI `-e`、stdin、`--`、短选项展开和匿名源码求值 | 扩大输入/诊断边界，保留宿主资源与 UTF-8 政策 |
 | 输出模式 | 单个 JSON/文件、字符串、文档流、multi 与目录创建；对应嵌入方法已提供 | 扩大文件状态与 I/O 边界验证，保留执行预算政策 |
 | CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、错误 context 裁剪、独立 `-s`/`--max-stack` 帧预算、短选项及退出 1 行为；其余部分 | 扩大帧边界语料、Go 诊断帧集合及剩余选项 |
-| VM/AST 接口 | 不透明 Program 及 ext/TLA 参数；可重用 Evaluator 配置、分层导入缓存与四种输出；原 Program API 仍每次独立 | AST 编辑、导入查询/共享依赖扫描、EvalHook 及完整诊断配置能力 |
+| VM/AST 接口 | 不透明 Program 及 ext/TLA 参数；可重用 Evaluator 配置、分层导入缓存、四种输出及导入查询/共享依赖扫描；原 Program API 仍每次独立 | AST 编辑、EvalHook/调试器及完整诊断配置能力 |
 | 格式化器、静态分析工具 | 已有 `cmd/deps` 静态依赖工具；格式化器与 lint 缺失 | 扩大依赖扫描语料；建立格式化/lint/工具接口语料，纳入整体覆盖状态 |
 | 平台与交付 | native；实测 macOS arm64 | Linux 持续验证；其余参考平台和分发能力逐项核验，不凭本机结果推断 |
 
@@ -203,6 +203,14 @@ AST 参数批次加入 `ext_programs` / `tla_programs`，所有字符串及 Prog
 原 18 项失败保留。导入查询、共享依赖扫描、AST 编辑与 EvalHook 等仍待推进，
 详见 [Evaluator 验收](../reports/GO-JSONNET-EVALUATOR.md)。
 
+导入查询批次加入 `resolve_import`、`import_data`、`import_program` 和
+`Evaluator::find_dependencies`，查询不执行代码，源码与 AST 缓存可跨查询和求值
+复用。固定 Go API 对照为 20/21 序列，包含 62 次求值和 26 次查询；新增差异为
+Go 在失败解析后缓存 nil AST，第二次 ImportAST 返回成功，本项目仍返回静态错误。
+该输入继续计为失败，未算作已接受例外。本地 21/21 序列、181/181 测试通过；
+CLI 差分仍为 1112/1130，原 18 项失败单独保留。详见
+[导入查询验收](../reports/GO-JSONNET-IMPORT-QUERIES.md)。
+
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
 MoonBit 求值器执行。一次性入口与 Evaluator 采用各自的 AST/值缓存生命周期，
 各文件的 `thisFile` 独立绑定。仅启用已验证依赖的成员，原生函数覆盖对应字段；源码提取工具校验参考
@@ -218,6 +226,8 @@ MoonBit 求值器执行。一次性入口与 Evaluator 采用各自的 AST/值�
    继承对象与对象局部绑定、循环对象 JSON 栈溢出、3 项删除越界、9 项内部合并及
    YAML 嵌套错误后的栈状态以及 `parseYaml('')` 的空结果索引。
    不复制崩溃；是否作为最终兼容例外另行明确。
+6. API 差分另保留失败解析后重复 ImportAST 的 nil AST 缓存行为差异；
+   不能以其属于参考缺陷为由自动计为兼容通过。
 
 最新证据见 [验证说明](VALIDATION.md)。整体功能完成前，README/版本输出继续标明子集状态。
 
