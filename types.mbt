@@ -33,12 +33,54 @@ pub(all) suberror JsonnetError {
 
 ///|
 pub impl Show for Diagnostic with fn output(self, logger) {
+  logger.write_string(self.format())
+}
+
+///|
+/// Render the error header and context. A positive limit keeps half the context
+/// at each end (the outer end gets the odd frame); zero or negative is unlimited.
+/// The primary location stays in the header and the stored context is unchanged.
+///
+/// ```mbt check
+/// test {
+///   let loc : @moonjsonnet.Location = { file: "example", line: 1, column: 1, }
+///   let diagnostic : @moonjsonnet.Diagnostic = {
+///     kind: @moonjsonnet.Runtime,
+///     message: "failed",
+///     location: loc,
+///     context: [loc, loc, loc],
+///   }
+///   assert_eq(
+///     diagnostic.format(max_trace=1),
+///     "example:1:1: Runtime: failed\n  ...\n  at example:1:1",
+///   )
+/// }
+/// ```
+pub fn Diagnostic::format(self : Diagnostic, max_trace? : Int = 0) -> String {
+  let logger = StringBuilder()
   logger.write_string(
     "\{self.location.file}:\{self.location.line}:\{self.location.column}: \{Repr(self.kind)}: \{self.message}",
   )
-  for loc in self.context {
+  let write = fn(loc : Location) {
     logger.write_string("\n  at \{loc.file}:\{loc.line}:\{loc.column}")
   }
+  let size = self.context.length()
+  if max_trace > 0 && size > max_trace {
+    let above = max_trace / 2
+    let below = max_trace - above
+    for loc in self.context[:above] {
+      write(loc)
+    }
+    logger.write_string("\n  ...")
+    for loc in self.context[size - below:] {
+      write(loc)
+    }
+  } else {
+    for loc in self.context {
+      write(loc)
+    }
+  }
+  logger.to_string()
 }
 
 ///|

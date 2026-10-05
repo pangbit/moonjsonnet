@@ -1,0 +1,86 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+}
+
+fn check_context(stderr : String, frames : Int, cropped : Bool) -> Unit raise {
+  let lines=stderr.split("\n").map(s=>s.to_owned()).collect()
+  assert_eq(lines.filter(s=>s.has_prefix("  at ")).length(),frames)
+  assert_eq(lines.contains("  ..."),cropped)
+  assert_true(stderr.contains(": Runtime: trace failure"))
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==2 else {fail("Usage: moon run tools/diagnostic-integration.mbtx CLI")}
+  let cli=@fs.realpath(args[1])
+  let root=@fs.tmpdir(prefix="moonjsonnet-diagnostic-tests-")
+  let env=Map([("JSONNET_PATH","")])
+  let source="local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)"
+  @fs.write_file(root+"/entry.jsonnet",source)
+  @fs.write_file(root+"/nested.jsonnet","import 'entry.jsonnet'")
+  let mut passed=0
+  for (value,frames,cropped) in [
+    (None,20,true),(Some("0"),26,false),(Some("1"),1,true),(Some("2"),2,true),
+    (Some("3"),3,true),(Some("5"),5,true),(Some("20"),20,true),
+    (Some("26"),26,false),(Some("27"),26,false),(Some("9223372036854775807"),26,false),
+  ] {
+    let options=match value {Some(v)=>["--max-trace",v];None=>[]}
+    let result=@shell.Cmd(cli,["--root",root]+options+["-e",source],env~).output()
+    assert_eq(result.exit_code(),1)
+    assert_eq(result.stdout(),"")
+    check_context(result.stderr(),frames,cropped)
+    passed+=1
+  }
+  let output=root+"/output"
+  @fs.write_file(output,"preserve")
+  let file=@shell.Cmd(cli,["--root",root,"-t","1","-o",output,"entry.jsonnet"],env~).output()
+  assert_eq(file.exit_code(),1)
+  assert_eq(file.stdout(),"")
+  check_context(file.stderr(),1,true)
+  assert_eq(@fs.read_file(output).text(),"preserve")
+  passed+=1
+  for (options,code) in [
+    (["-S"],source),
+    (["-y"],"local f(x)=if x==0 then error 'trace failure' else f(x-1); [f(25)]"),
+    (["-cm",root+"/multi"],"local f(x)=if x==0 then error 'trace failure' else f(x-1); {a:f(25)}"),
+  ] {
+    let result=@shell.Cmd(cli,["--root",root,"-t","3"]+options+["-e",code],env~).output()
+    assert_eq(result.exit_code(),1)
+    assert_eq(result.stdout(),"")
+    check_context(result.stderr(),3,true)
+    assert_true(!@fs.exists(root+"/multi"))
+    passed+=1
+  }
+  let imported=@shell.Cmd(cli,["--root",root,"-t","3","-e","import 'nested.jsonnet'"],env~).output()
+  assert_eq(imported.exit_code(),1)
+  check_context(imported.stderr(),3,true)
+  assert_true(imported.stderr().contains(root+"/entry.jsonnet"))
+  assert_true(imported.stderr().contains("at <cmdline>"))
+  passed+=1
+  let syntax=@shell.Cmd(cli,["--root",root,"-t","1","-e","local"],env~).output()
+  assert_eq(syntax.exit_code(),1)
+  assert_true(syntax.stderr().contains(": Syntax:"))
+  assert_true(!syntax.stderr().contains("  ..."))
+  passed+=1
+  let traced=@shell.Cmd(cli,["--root",root,"-t","1","-e","local f(x)=if x==0 then error 'trace failure' else f(x-1); std.trace('message',0)+f(25)"],env~).output()
+  assert_eq(traced.exit_code(),1)
+  assert_true(traced.stderr().has_prefix("TRACE: <cmdline>:1 message\n"))
+  check_context(traced.stderr(),1,true)
+  passed+=1
+  let last=@shell.Cmd(cli,["--root",root,"-t","3","-t","1","-e",source],env~).output()
+  assert_eq(last.exit_code(),1)
+  check_context(last.stderr(),1,true)
+  passed+=1
+  let budget=@shell.Cmd(cli,["--root",root,"-t","0","--max-depth","3","-e",source],env~).output()
+  assert_eq(budget.exit_code(),1)
+  assert_true(budget.stderr().contains(": Limit:"))
+  passed+=1
+  let help=@shell.Cmd(cli,["--help"],env~).output()
+  help.check()
+  assert_true(help.stdout().contains("--max-trace"))
+  passed+=1
+  println("Diagnostic integration: \{passed} passed; context bounds, modes, files, imports, trace and budgets")
+}

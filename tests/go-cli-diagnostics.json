@@ -1,0 +1,524 @@
+[
+  {
+    "name": "diagnostic-crop-0",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "0"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-crop-1",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "1"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  ...\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t...\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-crop-2",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "2"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-crop-3",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "3"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-crop-4",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "4"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-crop-5",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "5"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-crop-20",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "20"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-crop-26",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "26"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-crop-27",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "27"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-crop-2147483648",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "2147483648"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-crop-9223372036854775807",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "9223372036854775807"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-default",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-long-option",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      "3"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-repeat-last",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "1",
+      "--max-trace",
+      "3"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-combined-options",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "exec",
+    "args": [
+      "-et",
+      "3"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-stdin",
+    "source": "local f(x)=if x==0 then error 'trace failure' else f(x-1); f(25)",
+    "input": "stdin",
+    "args": [
+      "-t",
+      "3"
+    ],
+    "expect": "error",
+    "moonjsonnet_stderr": "<stdin>:1:25: Runtime: trace failure\n  at <stdin>:1:52\n  ...\n  at <stdin>:1:52\n  at <stdin>:1:60\n",
+    "reference_stderr": "RUNTIME ERROR: trace failure\n\t<stdin>:1:25-46\tfunction <f>\n\t...\n\t<stdin>:1:60-65\t$\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-success-0",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "0"
+    ],
+    "expect": "success",
+    "result": 42,
+    "moonjsonnet_stderr": "",
+    "reference_stderr": ""
+  },
+  {
+    "name": "diagnostic-success--0",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "-0"
+    ],
+    "expect": "success",
+    "result": 42,
+    "moonjsonnet_stderr": "",
+    "reference_stderr": ""
+  },
+  {
+    "name": "diagnostic-success-+1",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "+1"
+    ],
+    "expect": "success",
+    "result": 42,
+    "moonjsonnet_stderr": "",
+    "reference_stderr": ""
+  },
+  {
+    "name": "diagnostic-success-001",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "001"
+    ],
+    "expect": "success",
+    "result": 42,
+    "moonjsonnet_stderr": "",
+    "reference_stderr": ""
+  },
+  {
+    "name": "diagnostic-success-2147483648",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "2147483648"
+    ],
+    "expect": "success",
+    "result": 42,
+    "moonjsonnet_stderr": "",
+    "reference_stderr": ""
+  },
+  {
+    "name": "diagnostic-success-9223372036854775807",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "9223372036854775807"
+    ],
+    "expect": "success",
+    "result": 42,
+    "moonjsonnet_stderr": "",
+    "reference_stderr": ""
+  },
+  {
+    "name": "diagnostic-invalid-negative",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      "-1"
+    ],
+    "expect": "error",
+    "reference_stderr": "ERROR: invalid --max-trace value: -1\n"
+  },
+  {
+    "name": "diagnostic-invalid-empty",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      ""
+    ],
+    "expect": "error",
+    "reference_stderr": "Invalid integer \"\"\n"
+  },
+  {
+    "name": "diagnostic-invalid-underscore",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      "1_0"
+    ],
+    "expect": "error",
+    "reference_stderr": "Invalid integer \"1_0\"\n"
+  },
+  {
+    "name": "diagnostic-invalid-radix",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      "0x10"
+    ],
+    "expect": "error",
+    "reference_stderr": "Invalid integer \"0x10\"\n"
+  },
+  {
+    "name": "diagnostic-invalid-space",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      " 1"
+    ],
+    "expect": "error",
+    "reference_stderr": "Invalid integer \" 1\"\n"
+  },
+  {
+    "name": "diagnostic-invalid-plus",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      "+"
+    ],
+    "expect": "error",
+    "reference_stderr": "Invalid integer \"+\"\n"
+  },
+  {
+    "name": "diagnostic-invalid-decimal",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      "1.5"
+    ],
+    "expect": "error",
+    "reference_stderr": "Invalid integer \"1.5\"\n"
+  },
+  {
+    "name": "diagnostic-invalid-exponent",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      "1e2"
+    ],
+    "expect": "error",
+    "reference_stderr": "Invalid integer \"1e2\"\n"
+  },
+  {
+    "name": "diagnostic-invalid-unicode",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      "１２"
+    ],
+    "expect": "error",
+    "reference_stderr": "Invalid integer \"１２\"\n"
+  },
+  {
+    "name": "diagnostic-invalid-overflow",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--max-trace",
+      "9223372036854775808"
+    ],
+    "expect": "error",
+    "reference_stderr": "Invalid integer \"9223372036854775808\"\n"
+  },
+  {
+    "name": "diagnostic-missing-value",
+    "source": "",
+    "input": "file",
+    "input_arg": "-t",
+    "args": [],
+    "expect": "error",
+    "reference_stderr": "Expected another commandline argument.\n"
+  },
+  {
+    "name": "diagnostic-after-delimiter",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--",
+      "-t",
+      "1"
+    ],
+    "expect": "error",
+    "reference_stderr": "ERROR: only one code is allowed\n"
+  },
+  {
+    "name": "diagnostic-earlier-invalid",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "-1",
+      "-t",
+      "3"
+    ],
+    "expect": "error",
+    "reference_stderr": "ERROR: invalid --max-trace value: -1\n"
+  },
+  {
+    "name": "diagnostic-syntax",
+    "source": "local",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "1"
+    ],
+    "expect": "error",
+    "reference_stderr": "<cmdline>:1:6 Expected token IDENTIFIER but got end of file\n\nlocal\n\n\n"
+  },
+  {
+    "name": "diagnostic-no-context",
+    "source": "error 'failure'",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "1"
+    ],
+    "expect": "error",
+    "reference_stderr": "RUNTIME ERROR: failure\n\t...\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-parameter",
+    "source": "std.extVar('x')",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "1",
+      "--ext-code",
+      "x=error 'parameter'"
+    ],
+    "expect": "error",
+    "reference_stderr": "RUNTIME ERROR: parameter\n\t...\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-tailstrict",
+    "source": "local f(x)=if x==0 then error 'tail' else f(x-1) tailstrict; f(25)",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-t",
+      "1"
+    ],
+    "expect": "error",
+    "reference_stderr": "RUNTIME ERROR: tail\n\t...\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-string",
+    "source": "error 'string'",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-S",
+      "-t",
+      "1"
+    ],
+    "expect": "error",
+    "reference_stderr": "RUNTIME ERROR: string\n\t...\n\tDuring evaluation\t\n\n"
+  },
+  {
+    "name": "diagnostic-stream",
+    "source": "[error 'stream']",
+    "input": "exec",
+    "args": [
+      "-e",
+      "-y",
+      "-t",
+      "1"
+    ],
+    "expect": "error",
+    "reference_stderr": "RUNTIME ERROR: stream\n\t...\n\tDuring manifestation\t\n\n"
+  }
+]

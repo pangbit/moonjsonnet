@@ -1,5 +1,10 @@
 ///|
-fn run(args : Array[String]) -> Unit raise {
+priv struct CliDiagnostics {
+  mut max_trace : Int
+}
+
+///|
+fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
   let args = simplify_args(args)
   let inputs : Array[String] = []
   let jpaths : Array[String] = []
@@ -42,6 +47,9 @@ fn run(args : Array[String]) -> Unit raise {
       println(
         "-J/--jpath DIR adds a library path (rightmost wins). JSONNET_PATH adds colon-separated paths (leftmost wins), below -J. All imports remain confined to --root.",
       )
+      println(
+        "-t/--max-trace N crops error context (default 20; 0 is unlimited).",
+      )
       return
     }
     if arg == "--version" || arg == "-v" {
@@ -74,6 +82,7 @@ fn run(args : Array[String]) -> Unit raise {
       let value = args[i]
       match arg {
         "--root" => root = value
+        "-t" | "--max-trace" => diagnostics.max_trace = trace_limit(value)
         "-J" | "--jpath" => {
           if value.is_empty() {
             fail("jpath must not be empty")
@@ -278,9 +287,10 @@ fn run(args : Array[String]) -> Unit raise {
 
 ///|
 fn main {
-  run(@env.args()) catch {
+  let diagnostics : CliDiagnostics = { max_trace: 20, }
+  run(@env.args(), diagnostics) catch {
     @moonjsonnet.Error(d) => {
-      @posix.stderr(d.to_string())
+      @posix.stderr(d.format(max_trace=diagnostics.max_trace))
       @posix.exit(1)
     }
     e => {

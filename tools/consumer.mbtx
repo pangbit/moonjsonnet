@@ -68,6 +68,10 @@ async fn main {
     #|  try @moonjsonnet.evaluate("1/0") catch {
     #|    @moonjsonnet.Error(d) => { assert_eq(d.kind, @moonjsonnet.Runtime); assert_true(!d.to_string().is_empty()) }
     #|  } noraise { _ => fail("expected diagnostic") }
+    #|  let loc : @moonjsonnet.Location = {file:"consumer",line:1,column:1}
+    #|  let d : @moonjsonnet.Diagnostic = {kind:@moonjsonnet.Runtime,message:"failed",location:loc,context:[loc,loc,loc]}
+    #|  assert_eq(d.format(max_trace=1),"consumer:1:1: Runtime: failed\n  ...\n  at consumer:1:1")
+    #|  assert_eq(d.context.length(),3)
     #|}
   @fs.write_file(work + "/consumer/consumer_test.mbt", test_source)
   @fs.mkdir(work+"/consumer/library")

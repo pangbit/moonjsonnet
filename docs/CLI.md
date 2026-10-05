@@ -8,6 +8,7 @@ For development use `moon run cmd/main -- OPTIONS INPUT`.
 | --- | --- |
 | `--root DIR` | Allowed filesystem root, default current directory |
 | `-J DIR`, `--jpath DIR` | Add a library search directory; the rightmost path wins |
+| `-t N`, `--max-trace N` | Crop error context to N locations; default 20, zero is unlimited |
 | `-e`, `--exec` | Interpret the one input argument as Jsonnet source |
 | `-S`, `--string` | Require a string result and emit its contents followed by one newline |
 | `-y`, `--yaml-stream` | Require an array and emit its elements as JSON documents with YAML stream delimiters |
@@ -64,7 +65,20 @@ is stricter than Go's default unrestricted filesystem importer.
 Top-level functions are called once using named TLAs, with ordinary lazy/default
 parameter behavior. Missing and unknown argument names are errors. Non-function
 top-level values ignore TLAs. See [API](API.md) for code parameter filenames and
-shared budgets. Full stack/trace options are still pending.
+shared budgets. `-s`/`--max-stack` is still pending; it needs runtime frame
+accounting and is separate from the existing evaluation-depth budget.
+
+`-t` accepts a nonnegative decimal integer in the pinned 64-bit Go range. Signs
+and leading zeroes are accepted; radix prefixes, underscores, whitespace,
+non-ASCII digits and overflow are errors. Repeated values use the last assignment.
+A positive limit retains `floor(N/2)` inner context locations and the remaining
+outer locations, with one `...` line between them when cropping is needed.
+Zero disables cropping. Large values do not narrow or overflow the context count.
+The primary error header/location is always printed, and collected context is
+not discarded. This option controls error rendering; `std.trace` messages still
+use the configured trace sink. The project's context locations differ from Go's
+named/synthetic frames, so this does not establish stack-frame or diagnostic-text
+equivalence. Embedding callers can use `Diagnostic::format(max_trace?)`.
 
 Imports first search beside the importing file (or root for anonymous inputs
 and code parameters), then `-J` directories from right to left, then the

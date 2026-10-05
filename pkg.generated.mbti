@@ -33,6 +33,7 @@ pub(all) struct Diagnostic {
   location : Location
   context : Array[Location]
 } derive(@debug.Debug)
+pub fn Diagnostic::format(Self, max_trace? : Int) -> String
 pub fn Diagnostic::output(Self, &Logger) -> Unit
 pub fn Diagnostic::to_repr(Self) -> @debug.Repr
 pub fn Diagnostic::to_string(Self) -> String

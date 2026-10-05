@@ -147,6 +147,16 @@ use the requested/canonical filename and position 1:1. Manifestation errors use
 the entry location if no expression is active. Diagnostics may contain source
 paths and user-generated messages; the embedding application controls disclosure.
 
+`Diagnostic::format(max_trace? = 0)` returns a header followed by rendered context.
+A positive limit keeps half the context at each end, assigning the odd location
+to the outer end and inserting `...` for the omitted middle. Zero or a negative
+value leaves context unlimited, as with Go's embedding formatter. The primary
+location in the header is always retained. Rendering never mutates the stored
+`Diagnostic`; `to_string`/`Show` remain unlimited for compatibility. The CLI uses
+a default context limit of 20 and rejects negative option values. These are
+limits on this API's context list, not a claim that its locations equal Go's
+complete named/synthetic frame set. See [CLI](CLI.md).
+
 ## Limits
 
 Use `Limits::default()` and a record update to change selected fields.

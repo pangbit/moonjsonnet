@@ -1,4 +1,31 @@
 ///|
+test "trace limits use nonnegative decimal integers without narrowing overflow" {
+  for
+    (text, value) in [
+      ("0", 0),
+      ("-0", 0),
+      ("+1", 1),
+      ("01", 1),
+      ("20", 20),
+      ("2147483647", 2147483647),
+      ("2147483648", 2147483647),
+      ("9223372036854775807", 2147483647),
+    ] {
+    assert_eq(trace_limit(text), value)
+  }
+  for
+    text in [
+      "", "+", "-", "-1", "1_0", "0x10", " 1", "1 ", "1.5", "1e2", "１２", "9223372036854775808",
+    ] {
+    try trace_limit(text) catch {
+      _ => ()
+    } noraise {
+      _ => fail("expected invalid trace limit: " + text)
+    }
+  }
+}
+
+///|
 test "short option expansion preserves order and stops at delimiter" {
   assert_eq(simplify_args(["cli", "-eV", "x=42", "--", "-42", "-hello"]), [
     "cli", "-e", "-V", "x=42", "--", "-42", "-hello",
