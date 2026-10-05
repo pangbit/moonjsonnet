@@ -20,6 +20,28 @@ same parsed-program execution path. These local API tests establish the document
 fresh-state contract; they do not establish reusable Go VM cache-lifecycle parity.
 The archive consumer also compiles and calls all four public `Program` methods.
 
+`program_parameters_test.mbt` covers lazy `ext_programs`/`tla_programs`, duplicate
+binding precedence, source identity, current execution budgets and recovery after
+failure. The public file host is also exercised by the archive consumer. Run the
+separate fixed Go API corpus after building the local probe:
+
+```sh
+moon build --target native --release --deny-warn
+moon run tools/parameter-integration.mbtx _build/native/release/build/examples/parameter-probe/parameter-probe.exe /tmp/go-jsonnet-v0.21.0
+```
+
+The runner verifies the clean pinned reference checkout and builds the small
+`tests/reference/parameters.go` API adapter with Go 1.24.0, using that module's
+source, `GOWORK=off` and `GOPROXY=off`. It tests both adapters against the same
+`tests/go-program-parameters.json` expectations: results, complete output-mode
+strings, trace text, importer requests, native-call counts and selected diagnostic
+fragments. It retains both complete process outputs, binary/adapter hashes and
+build metadata in `_build/parameters/report.json`. These API cases are counted
+separately from CLI differential cases; error fragments do not prove identical
+diagnostic frames. Neither adapter is shipped in the Mooncakes archive. Omitting
+the Go checkout runs the local expectations only and writes `local-report.json`;
+ASan uses this mode in its isolated source copy, whose Git metadata is unavailable.
+
 Reference interpreter (development only; not a runtime dependency):
 
 ```sh
@@ -159,8 +181,9 @@ Trace fixtures additionally compare exact stderr on success and the exact trace
 prefix before an error diagnostic. Both programs receive the same absolute
 input path for these cases; relative/alias diagnostic-path parity is not implied.
 
-See the [parsed-program report](../reports/GO-JSONNET-PROGRAM.md) for current
+See the [AST-parameter report](../reports/GO-JSONNET-PROGRAM-PARAMETERS.md) for current
 commit-bound results and the retained differences. The earlier
+[parsed-program report](../reports/GO-JSONNET-PROGRAM.md),
 [dependency-scan report](../reports/GO-JSONNET-DEPENDENCIES.md),
 [runtime-frame report](../reports/GO-JSONNET-STACK.md),
 [diagnostic report](../reports/GO-JSONNET-DIAGNOSTICS.md),
@@ -210,8 +233,8 @@ moon run tools/asan.mbtx
 
 Leak detection is disabled for portability with Apple Clang; this check covers
 address errors, not a LeakSanitizer proof. The script sets ASan `exitcode=99` for
-tests and both CLI integration suites so a sanitizer failure cannot satisfy an
-expected application-error exit code of 1. Test scripts use MoonBit script mode
+tests, both CLI integration suites and the parameter API probe so a sanitizer
+failure cannot satisfy an expected application-error exit code. Test scripts use MoonBit script mode
 and `moonbitlang/async`; commands may need access to Moon's dependency cache.
 `tools/consumer.mbtx` extracts the actual Mooncakes archive into a temporary
 workspace and compiles/tests a separate module using only public APIs.

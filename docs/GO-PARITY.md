@@ -42,14 +42,14 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | 字符串、编码、摘要 | 对应成员均已注册；5 种摘要均有 MoonBit 实现 | 更广泛输入、边界及诊断验证 |
 | 输出标准函数 | JSON、INI、Python、XML JSONML、YAML 和 TOML 对应成员已注册 | 扩大输出边界与诊断验证，保留 YAML 参考崩溃差异 |
 | YAML 解析 | 已注册 `parseYaml`，覆盖块/流语法、标签、别名、合并及 YAML 1.1 转换 | 扩大 YAML 语料；保留空输入参考崩溃，注册不代表通用 YAML 等价 |
-| 扩展参数 | JSON/字符串及独立作用域的惰性 Jsonnet 代码；CLI 文件/环境变量形式 | 可重用 VM 的重置和缓存语义、AST 参数接口仍待实现 |
-| 顶层参数 TLA | JSON/字符串/代码及 CLI 文件/环境变量形式，顶层函数调用、默认值与错误传播 | 扩大语料；可重用 VM 的 TLA/reset/AST 接口仍待实现 |
+| 扩展参数 | JSON/字符串、独立作用域的惰性代码及已解析 Program；CLI 文件/环境变量形式 | 可重用 VM 的重置和缓存语义；扩大 AST 参数语料 |
+| 顶层参数 TLA | JSON/字符串/代码/已解析 Program 及 CLI 文件/环境变量形式，顶层函数调用、默认值与错误传播 | 扩大语料；可重用 VM 的 TLA/reset 接口仍待实现 |
 | 原生回调与 trace | 已实现按名注册、JSON 回调、可配置 sink 及默认 stderr | 扩大宿主边界验证；可重用 VM 的 sink 配置及诊断路径/帧行为仍待补齐 |
 | 导入器 | 定制文本/二进制解析、限定目录宿主、`-J`/`JSONNET_PATH` 搜索、正负缓存及静态依赖扫描 | 可重用 VM 的共享缓存与导入查询；继续核验路径身份、扫描遍历顺序与宿主政策差异 |
 | 输入模式 | 文件、CLI `-e`、stdin、`--`、短选项展开和匿名源码求值 | 扩大输入/诊断边界，保留宿主资源与 UTF-8 政策 |
 | 输出模式 | 单个 JSON/文件、字符串、文档流、multi 与目录创建；对应嵌入方法已提供 | 扩大文件状态与 I/O 边界验证，保留执行预算政策 |
 | CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、错误 context 裁剪、独立 `-s`/`--max-stack` 帧预算、短选项及退出 1 行为；其余部分 | 扩大帧边界语料、Go 诊断帧集合及剩余选项 |
-| VM/AST 接口 | 不透明 `Program` 解析/重复执行，支持四种输出；每次执行状态独立，另有依赖扫描 API | AST 编辑/参数、可重用 VM 配置与共享缓存生命周期、导入查询接口 |
+| VM/AST 接口 | 不透明 `Program` 解析/重复执行及 ext/TLA 参数，支持四种输出；每次执行状态独立，另有依赖扫描 API | AST 编辑、可重用 VM 配置与共享缓存生命周期、导入查询接口 |
 | 格式化器、静态分析工具 | 已有 `cmd/deps` 静态依赖工具；格式化器与 lint 缺失 | 扩大依赖扫描语料；建立格式化/lint/工具接口语料，纳入整体覆盖状态 |
 | 平台与交付 | native；实测 macOS arm64 | Linux 持续验证；其余参考平台和分发能力逐项核验，不凭本机结果推断 |
 
@@ -186,6 +186,14 @@ CLI 默认限制 context 为 20；正数保留两端，0 不裁剪，主错误�
 1112/1130，原 18 项失败保留。重复使用与错误恢复由本地 API 测试验证，本批
 没有新增 Go VM 缓存生命周期差分；可编辑 AST、AST 参数及共享 VM 缓存仍待实现。
 详见 [Program 接口验收](../reports/GO-JSONNET-PROGRAM.md)。
+
+AST 参数批次加入 `ext_programs` / `tla_programs`，所有字符串及 Program 输出
+入口、文件宿主均可接收。惰性参数保留 AST 的诊断/导入起点，`std.thisFile`
+按绑定名称合成；参数优先级为 Program、代码、JSON。固定 Go API 对照 30/30，
+独立记录于 `_build/parameters/report.json`，不与原有 CLI 1112/1130 混算。
+新增 5 项本地回归后测试 163/163，覆盖当前预算、匿名起点、失败恢复和跨次隔离。
+可编辑 AST 与共享 VM 生命周期仍未补齐，详见
+[AST 参数验收](../reports/GO-JSONNET-PROGRAM-PARAMETERS.md)。
 
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
 MoonBit 求值器执行。每次 evaluate 解析一次，导入共享 AST，各文件的 `thisFile`
