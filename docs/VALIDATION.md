@@ -97,12 +97,17 @@ moon run tools/lint-cli.mbtx _build/native/release/build/cmd/lint/lint.exe /tmp/
 
 The API runner compares complete ordered diagnostic messages and found flags,
 retains full diagnostics, pins Go checkout/build metadata, and writes
-`_build/lint/report.json`. Current results are 46/81 (19/19 focused, 27/62 upstream);
-35 missing type-inference diagnoses remain failures and cause exit 1. This is not
-diagnostic location/range parity. CLI checks cover file/option/search/exit behavior;
+`_build/lint/report.json`. Current results are 114/114 (62 upstream, 19 original
+focused and 33 additional type/boundary inputs). The previous 35 missing type
+diagnoses now pass; earlier failure evidence remains documented. This is not
+diagnostic location/range parity. CLI checks cover file/option/search/exit behavior
+and four type-diagnostic categories, 23 checks per binary;
 omitting the Go checkout checks the local CLI only, as used by ASan. ASan also
-executes all local lint tests, but does not mark the failing API corpus passed.
-See the [lint baseline report](../reports/GO-JSONNET-LINT.md).
+executes all local lint tests; the full Go API differential is a separate release
+binary run. `lint_type_test.mbt` covers recursive graphs, arity, standard-library
+declarations, budgets and Go string escaping. See the historical
+[lint baseline](../reports/GO-JSONNET-LINT.md) and current
+[lint type report](../reports/GO-JSONNET-LINT-TYPES.md).
 
 Reference interpreter (development only; not a runtime dependency):
 
