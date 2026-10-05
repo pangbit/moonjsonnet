@@ -88,6 +88,19 @@ test "readme native callback and trace" {
 }
 ```
 
+## Source formatting
+
+`format_source` and `ParsedSource::format` format source without evaluating it or
+resolving imports. Formatting support is partial; import sorting and some comment
+and alignment rules still differ from Go. See [parity status](docs/GO-PARITY.md).
+
+```mbt check
+///|
+test "readme source formatting" {
+  assert_eq(@moonjsonnet.format_source("{\"a\":[1,2]}"), "{ a: [1, 2] }\n")
+}
+```
+
 ## Run from source
 
 Validated toolchain: Moon 0.1.20260920 / MoonBit v0.10.14+7d59c7ec9.

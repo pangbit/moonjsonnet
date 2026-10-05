@@ -323,9 +323,36 @@ indentation, numeric spelling, CRLF, shebangs and comments are retained.
 
 The `ast()` result is an independent semantic view. Editing that view or a returned
 parts array does not rewrite the retained document. This is source retention and
-raw parsing, not an implementation of Go's Fodder normalization, editable raw AST,
-formatting options, FormatNode or jsonnetfmt. Ordinary Program parsing does not
-retain trivia.
+raw parsing; it does not expose Go's Fodder normalization or editable raw AST.
+Ordinary Program parsing does not retain trivia.
+
+`format_source(source, filename?, options?, limits?)` and
+`ParsedSource::format(options?, limits?)` provide partial native source formatting.
+They never evaluate expressions, resolve imports or mutate the retained document.
+The result ends with LF. Source/depth limits apply before formatting; emission
+also enforces UTF-8 output-byte and token/trivia step limits.
+
+`FormatOptions::default()` selects two-space indentation, at most two blank lines,
+single quotes, slash comments, pretty field names, unpadded arrays, padded objects
+and implicit object addition. String styles are `DoubleQuotes`, `SingleQuotes`
+and `PreserveQuotes`; comments use `HashComments`, `SlashComments` and
+`PreserveComments`. Strings containing one quote kind use the other to avoid
+escaping; strings containing both kinds, verbatim strings and text blocks retain
+their spelling. Nonpositive indentation/blank-line options preserve the original
+indentation or disable blank-line limiting, following Go.
+
+The strip flags follow Go precedence: `strip_comments`, then
+`strip_all_but_comments`, then `strip_everything`. Keeping only comments replaces
+the expression with `null` and drops inline line comments. Stripping everything
+removes comments/newlines but still inserts normal token spacing; text-block
+content remains intact. Since trailing-comma and string-style passes run before
+stripping or pretty-name rewriting, some Go outputs are themselves non-idempotent.
+
+**Incomplete:** `sort_imports` is currently reserved and does not sort imports.
+Local-binding alignment, comment placement/removal and broader formatting rules
+remain under differential validation. `FormatNode` and a jsonnetfmt CLI are not
+provided yet. See [the overall parity status](GO-PARITY.md); the available options
+do not imply complete formatter compatibility.
 
 ## Reusable evaluator
 

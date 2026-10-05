@@ -1,0 +1,70 @@
+import {
+  "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell",
+  "moonbitlang/core/env", "moonbitlang/core/json",
+}
+
+fn field(value : Json, key : String, fallback : Json) -> Json {
+  match value {Object(fields)=>fields.get(key).unwrap_or(fallback);_=>fallback}
+}
+
+fn text(value : Json) -> String raise {
+  guard value is String(text) else {fail("expected string")}
+  text
+}
+
+async fn command(program : String, args : Array[String]) -> String {
+  let result=@shell.Cmd(program,args).output()
+  result.check()
+  result.stdout().trim().to_owned()
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==3 else {fail("Usage: moon run tools/formatter-integration.mbtx PROBE GO_CHECKOUT")}
+  let cli=@fs.realpath(args[1])
+  let work=@fs.tmpdir(prefix="moonjsonnet-formatter-")
+  let checkout=@fs.realpath(args[2])
+  assert_eq(command("git",["-C",checkout,"rev-parse","HEAD"]),"67968688d9952f50662e979fab1bef889d0d3e57")
+  assert_eq(command("git",["-C",checkout,"status","--porcelain"]),"")
+  let adapter=@fs.realpath("tests/reference/formatter.go")
+  let reference=work+"/go-formatter"
+  @shell.Cmd("go",["-C",checkout,"build","-o",reference,adapter],env=Map([("GOTOOLCHAIN","go1.24.0"),("GOWORK","off"),("GOPROXY","off")])).run()
+  assert_true(command("go",["version","-m",reference]).contains("go1.24.0"))
+  guard @json.parse(@fs.read_file("tests/go-formatter.json").text()) is Array(cases) else {fail("expected fixtures")}
+  let rows : Array[Json]=[]
+  let mut passed=0
+  for case in cases {
+    let runs : Array[Json]=[]
+    let mut ok=true
+    for program in [cli,reference] {
+      let result=@shell.Cmd(program,[],stdin=@shell.Text(case.stringify())).output(timeout_ms=10000)
+      let outcome=try @json.parse(result.stdout()) catch {_=>Json::null()}
+      let outcome_ok=match field(case,"error_contains",Json::null()) {
+        Array(parts)=>field(outcome,"error",Json::null()) is String(message) && !message.is_empty() && parts.all(part=>message.contains(text(part)))
+        _=>field(outcome,"error",Json::null())==Json::string("") && field(outcome,"result",Json::null())==field(case,"expected",Json::null())
+      }
+      let invariants = field(case,"error_contains",Json::null()) is Array(_) ||
+        (field(outcome,"valid",Json::null())==Json::boolean(true) &&
+         field(outcome,"idempotent",Json::null())==field(case,"idempotent",Json::boolean(true)))
+      let run_ok=result.exit_code()==0 && result.stderr()=="" && outcome_ok && invariants
+      ok=ok && run_ok
+      runs.push({"program":program,"exit":result.exit_code(),"stdout":result.stdout(),"stderr":result.stderr(),"passed":run_ok})
+    }
+    if ok {passed+=1} else {println("FAIL formatter "+text(field(case,"name",Json::null())))}
+    rows.push({"fixture":case,"passed":ok,"runs":runs})
+  }
+  @fs.mkdir("_build/formatter",recursive=true,allow_exist=true)
+  let report : Json={
+    "source_commit":command("git",["rev-parse","HEAD"]),
+    "source_dirty":command("git",["status","--porcelain"])!="",
+    "reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57",
+    "reference_sha256":command("shasum",["-a","256",reference]),
+    "reference_build":command("go",["version","-m",reference]),
+    "local_sha256":command("shasum",["-a","256",cli]),
+    "adapter_sha256":command("shasum",["-a","256",adapter]),
+    "total":cases.length(),"passed":passed,"failed":cases.length()-passed,"cases":rows,
+  }
+  @fs.write_file("_build/formatter/report.json",report.stringify(indent=2)+"\n")
+  println("Formatter: \{passed}/\{cases.length()}; evidence: \{work}")
+  if passed!=cases.length() {fail("Formatter differences retained in _build/formatter/report.json")}
+}

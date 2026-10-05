@@ -1,0 +1,907 @@
+[
+  {
+    "name": "scalar",
+    "source": " 42 ",
+    "options": {},
+    "expected": "42\n",
+    "idempotent": true
+  },
+  {
+    "name": "number",
+    "source": "1.20E+003",
+    "options": {},
+    "expected": "1.20E+003\n",
+    "idempotent": true
+  },
+  {
+    "name": "overflow-number",
+    "source": "1e309",
+    "options": {},
+    "expected": "1e309\n",
+    "idempotent": true
+  },
+  {
+    "name": "free-name",
+    "source": "unknown",
+    "options": {},
+    "expected": "unknown\n",
+    "idempotent": true
+  },
+  {
+    "name": "string",
+    "source": "\"abc\"",
+    "options": {},
+    "expected": "'abc'\n",
+    "idempotent": true
+  },
+  {
+    "name": "quote-single",
+    "source": "\"it's\"",
+    "options": {},
+    "expected": "\"it's\"\n",
+    "idempotent": true
+  },
+  {
+    "name": "quote-double",
+    "source": "'a\"b'",
+    "options": {},
+    "expected": "'a\"b'\n",
+    "idempotent": true
+  },
+  {
+    "name": "both-quotes",
+    "source": "\"a'\\\"b\"",
+    "options": {},
+    "expected": "\"a'\\\"b\"\n",
+    "idempotent": true
+  },
+  {
+    "name": "escaped-string",
+    "source": "\"a\\u0062\\/\\n\\t\\u007f\\u009f中😀\"",
+    "options": {},
+    "expected": "'ab/\\n\\t\\u007f\\u009f中😀'\n",
+    "idempotent": true
+  },
+  {
+    "name": "verbatim",
+    "source": "@\"it's\"",
+    "options": {},
+    "expected": "@\"it's\"\n",
+    "idempotent": true
+  },
+  {
+    "name": "block",
+    "source": "|||\n  one\n  two\n|||",
+    "options": {},
+    "expected": "|||\n  one\n  two\n|||\n",
+    "idempotent": true
+  },
+  {
+    "name": "block-chomp",
+    "source": "|||-\n  one\n|||",
+    "options": {},
+    "expected": "|||-\n  one\n|||\n",
+    "idempotent": true
+  },
+  {
+    "name": "array",
+    "source": " [1,2, 3,] ",
+    "options": {},
+    "expected": "[1, 2, 3]\n",
+    "idempotent": true
+  },
+  {
+    "name": "object",
+    "source": "{\"a\":1,'b-c':2,hidden::3, add+:4}",
+    "options": {},
+    "expected": "{ a: 1, 'b-c': 2, hidden:: 3, add+: 4 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "empty",
+    "source": "[{ },[ ],function( )null]",
+    "options": {},
+    "expected": "[{}, [], function() null]\n",
+    "idempotent": true
+  },
+  {
+    "name": "arithmetic",
+    "source": "1+2*3/4%5",
+    "options": {},
+    "expected": "1 + 2 * 3 / 4 % 5\n",
+    "idempotent": true
+  },
+  {
+    "name": "unary",
+    "source": "[- -1,+ +2,!!false,~ ~1]",
+    "options": {},
+    "expected": "[--1, ++2, !!false, ~~1]\n",
+    "idempotent": true
+  },
+  {
+    "name": "operators",
+    "source": "a==b&&c!=d||e>=f",
+    "options": {},
+    "expected": "a == b && c != d || e >= f\n",
+    "idempotent": true
+  },
+  {
+    "name": "bits",
+    "source": "a<<2|b&c^~d",
+    "options": {},
+    "expected": "a << 2 | b & c ^ ~d\n",
+    "idempotent": true
+  },
+  {
+    "name": "if",
+    "source": "if true then 1 else 2",
+    "options": {},
+    "expected": "if true then 1 else 2\n",
+    "idempotent": true
+  },
+  {
+    "name": "error",
+    "source": "error 'not evaluated'",
+    "options": {},
+    "expected": "error 'not evaluated'\n",
+    "idempotent": true
+  },
+  {
+    "name": "assert",
+    "source": "assert true:'ok';42",
+    "options": {},
+    "expected": "assert true : 'ok'; 42\n",
+    "idempotent": true
+  },
+  {
+    "name": "assert-object",
+    "source": "{assert true:'ok',a:1}",
+    "options": {},
+    "expected": "{ assert true : 'ok', a: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "local",
+    "source": "local a=1,b=2;a+b",
+    "options": {},
+    "expected": "local a = 1, b = 2; a + b\n",
+    "idempotent": true
+  },
+  {
+    "name": "local-function",
+    "source": "local f(x=1,y=2)=x+y;f(y=3)",
+    "options": {},
+    "expected": "local f(x=1, y=2) = x + y; f(y=3)\n",
+    "idempotent": true
+  },
+  {
+    "name": "function",
+    "source": "function(x=1,y) [x,y]",
+    "options": {},
+    "expected": "function(x=1, y) [x, y]\n",
+    "idempotent": true
+  },
+  {
+    "name": "method",
+    "source": "{f(x=1):x}",
+    "options": {},
+    "expected": "{ f(x=1): x }\n",
+    "idempotent": true
+  },
+  {
+    "name": "call",
+    "source": "f(1,x=2,) tailstrict",
+    "options": {},
+    "expected": "f(1, x=2,) tailstrict\n",
+    "idempotent": true
+  },
+  {
+    "name": "index",
+    "source": "a[1]+a['field']+a[\"x-y\"]",
+    "options": {},
+    "expected": "a[1] + a.field + a['x-y']\n",
+    "idempotent": true
+  },
+  {
+    "name": "slice",
+    "source": "[a[1:2:3],a[::],a[:2:],a[1::2]]",
+    "options": {},
+    "expected": "[a[1:2:3], a[:], a[:2], a[1::2]]\n",
+    "idempotent": true
+  },
+  {
+    "name": "computed-field",
+    "source": "{['x']:1,[\"y-z\"]:2,[x]:3}",
+    "options": {},
+    "expected": "{ x: 1, 'y-z': 2, [x]: 3 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "escaped-field",
+    "source": "{'\\u0061':1}",
+    "options": {},
+    "expected": "{ 'a': 1 }\n",
+    "idempotent": false
+  },
+  {
+    "name": "keyword-field",
+    "source": "{'if':1}",
+    "options": {},
+    "expected": "{ 'if': 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "array-comp",
+    "source": "[x+y for x in [1,2] if x>0 for y in [3]]",
+    "options": {},
+    "expected": "[x + y for x in [1, 2] if x > 0 for y in [3]]\n",
+    "idempotent": true
+  },
+  {
+    "name": "object-comp",
+    "source": "{local y=1,[x]:y for x in ['a']}",
+    "options": {},
+    "expected": "{ local y = 1, [x]: y for x in ['a'] }\n",
+    "idempotent": true
+  },
+  {
+    "name": "object-local",
+    "source": "{local x=1,y:x}",
+    "options": {},
+    "expected": "{ local x = 1, y: x }\n",
+    "idempotent": true
+  },
+  {
+    "name": "self-super",
+    "source": "{x:self.y+super.y+$['z']}",
+    "options": {},
+    "expected": "{ x: self.y + super.y + $.z }\n",
+    "idempotent": true
+  },
+  {
+    "name": "import",
+    "source": "import \"not-read\"",
+    "options": {},
+    "expected": "import 'not-read'\n",
+    "idempotent": true
+  },
+  {
+    "name": "import-str",
+    "source": "importstr 'missing'",
+    "options": {},
+    "expected": "importstr 'missing'\n",
+    "idempotent": true
+  },
+  {
+    "name": "import-bin",
+    "source": "importbin 'missing'",
+    "options": {},
+    "expected": "importbin 'missing'\n",
+    "idempotent": true
+  },
+  {
+    "name": "implicit-plus",
+    "source": "a {b:1}",
+    "options": {},
+    "expected": "a { b: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "explicit-plus",
+    "source": "a+{b:1}",
+    "options": {},
+    "expected": "a { b: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "parens",
+    "source": "((1+2))",
+    "options": {},
+    "expected": "(1 + 2)\n",
+    "idempotent": true
+  },
+  {
+    "name": "binary-parens",
+    "source": "(a+b)*c",
+    "options": {},
+    "expected": "(a + b) * c\n",
+    "idempotent": true
+  },
+  {
+    "name": "multiline-array",
+    "source": "[\n1,2,\n3\n]",
+    "options": {},
+    "expected": "[\n  1,\n  2,\n  3,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "multiline-object",
+    "source": "{\na:1,b:2\n}",
+    "options": {},
+    "expected": "{\n  a: 1,\n  b: 2,\n}\n",
+    "idempotent": true
+  },
+  {
+    "name": "multiline-local",
+    "source": "local a=1,\nb=2;\na+b",
+    "options": {},
+    "expected": "local a = 1,\n      b = 2;\na + b\n",
+    "idempotent": true
+  },
+  {
+    "name": "multiline-function",
+    "source": "function(\nx=1,\ny=2\n) x+y",
+    "options": {},
+    "expected": "function(\n  x=1,\n  y=2\n) x + y\n",
+    "idempotent": true
+  },
+  {
+    "name": "multiline-call",
+    "source": "f(1,\n2,3)",
+    "options": {},
+    "expected": "f(1,\n  2,\n  3)\n",
+    "idempotent": true
+  },
+  {
+    "name": "multiline-parens",
+    "source": "(\n1+2)",
+    "options": {},
+    "expected": "(\n  1 + 2\n)\n",
+    "idempotent": true
+  },
+  {
+    "name": "nested-lines",
+    "source": "[{a:\n1}]",
+    "options": {},
+    "expected": "[{ a:\n  1 }]\n",
+    "idempotent": true
+  },
+  {
+    "name": "array-comp-lines",
+    "source": "[x\nfor x in [1,2]\nif x>0]",
+    "options": {},
+    "expected": "[\n  x\n  for x in [1, 2]\n  if x > 0\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "comment-head",
+    "source": "# heading\n42",
+    "options": {},
+    "expected": "// heading\n42\n",
+    "idempotent": true
+  },
+  {
+    "name": "comment-tail",
+    "source": "42 // trailing",
+    "options": {},
+    "expected": "42  // trailing\n",
+    "idempotent": true
+  },
+  {
+    "name": "comment-middle",
+    "source": "1/* plus */+2",
+    "options": {},
+    "expected": "1 /* plus */ + 2\n",
+    "idempotent": true
+  },
+  {
+    "name": "comment-paragraph",
+    "source": "/* first\n * second\n */\n42",
+    "options": {},
+    "expected": "/* first\n * second\n */\n42\n",
+    "idempotent": true
+  },
+  {
+    "name": "comment-empty",
+    "source": "/**/\n42",
+    "options": {},
+    "expected": "/**/\n42\n",
+    "idempotent": true
+  },
+  {
+    "name": "comment-array",
+    "source": "[1,// one\n2]",
+    "options": {},
+    "expected": "[\n  1,  // one\n  2,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "hashbang",
+    "source": "#!/usr/bin/env jsonnet\n# next\n42",
+    "options": {},
+    "expected": "#!/usr/bin/env jsonnet\n// next\n42\n",
+    "idempotent": true
+  },
+  {
+    "name": "late-hashbang",
+    "source": "\n#! late\n42",
+    "options": {},
+    "expected": "#! late\n42\n",
+    "idempotent": true
+  },
+  {
+    "name": "blank-lines",
+    "source": "\n\n42\n\n\n",
+    "options": {},
+    "expected": "42\n",
+    "idempotent": true
+  },
+  {
+    "name": "blank-middle",
+    "source": "[\n1,\n\n\n\n2\n]",
+    "options": {},
+    "expected": "[\n  1,\n\n\n  2,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "crlf",
+    "source": "# hi\r\n{a:1}\r\n",
+    "options": {},
+    "expected": "// hi\n{ a: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "sort-imports",
+    "source": "local z=import 'z';\nlocal a=import 'a';\n[z,a]",
+    "options": {},
+    "expected": "local a = import 'a';\nlocal z = import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "sort-imports-binding",
+    "source": "local z=import 'z',a=import 'a';[z,a]",
+    "options": {},
+    "expected": "local a = import 'a';\nlocal z = import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "import-blank-groups",
+    "source": "local z=import 'z';\n\nlocal a=import 'a';\n[z,a]",
+    "options": {},
+    "expected": "local z = import 'z';\n\nlocal a = import 'a';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "import-comment-groups",
+    "source": "local z=import 'z';\n// next\nlocal a=import 'a';\n[z,a]",
+    "options": {},
+    "expected": "local z = import 'z';\n// next\nlocal a = import 'a';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "import-shadow",
+    "source": "local a=import 'z'; local a=import 'a'; a",
+    "options": {},
+    "expected": "local a = import 'z';\nlocal a = import 'a';\na\n",
+    "idempotent": true
+  },
+  {
+    "name": "mixed-import-bindings",
+    "source": "local z=import 'z',a=1;[z,a]",
+    "options": {},
+    "expected": "local z = import 'z', a = 1; [z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "ordinary-importstr",
+    "source": "local z=importstr 'z';local a=importstr 'a';[z,a]",
+    "options": {},
+    "expected": "local z = importstr 'z'; local a = importstr 'a'; [z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "nested-local-imports",
+    "source": "function() local z=import 'z';local a=import 'a';[z,a]",
+    "options": {},
+    "expected": "function() local z = import 'z'; local a = import 'a'; [z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "index-plus",
+    "source": "a.b+{x:1}",
+    "options": {},
+    "expected": "a.b { x: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "precedence-plus",
+    "source": "a*b+{x:1}",
+    "options": {},
+    "expected": "a * b + { x: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "parenthesized-plus",
+    "source": "(a)+{x:1}",
+    "options": {},
+    "expected": "(a) + { x: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "parenthesized-rhs-plus",
+    "source": "a+({x:1})",
+    "options": {},
+    "expected": "a + ({ x: 1 })\n",
+    "idempotent": true
+  },
+  {
+    "name": "call-plus",
+    "source": "f()+{x:1}",
+    "options": {},
+    "expected": "f() + { x: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "object-plus",
+    "source": "{a:1}+{b:2}",
+    "options": {},
+    "expected": "{ a: 1 } + { b: 2 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "comment-plus",
+    "source": "a /*a*/ + /*b*/ {x:1}",
+    "options": {},
+    "expected": "a /*a*/ /*b*/ { x: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "nested-parens-call",
+    "source": "f((1+2))",
+    "options": {},
+    "expected": "f((1 + 2))\n",
+    "idempotent": true
+  },
+  {
+    "name": "local-inside-array",
+    "source": "[local a=1,b=2; a+b,\n4]",
+    "options": {},
+    "expected": "[\n  local a = 1, b = 2; a + b,\n  4,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "assert-without-message",
+    "source": "[assert true; {a:1}]",
+    "options": {},
+    "expected": "[assert true; { a: 1 }]\n",
+    "idempotent": true
+  },
+  {
+    "name": "comments-in-index",
+    "source": "a[/* key */'x'/* end */]",
+    "options": {},
+    "expected": "a./* key */x\n",
+    "idempotent": true
+  },
+  {
+    "name": "comments-in-computed-field",
+    "source": "{[/* key */'x'/* end */]:1}",
+    "options": {},
+    "expected": "{ /* key */ x/* end */: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "computed-method",
+    "source": "{['f'](x):x}",
+    "options": {},
+    "expected": "{ f(x): x }\n",
+    "idempotent": true
+  },
+  {
+    "name": "additive-computed-field",
+    "source": "{['x']+:1}",
+    "options": {},
+    "expected": "{ x+: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "nested-comments",
+    "source": "[/* one */1,/*two*/2]",
+    "options": {},
+    "expected": "[/* one */ 1, /*two*/ 2]\n",
+    "idempotent": true
+  },
+  {
+    "name": "trailing-comma-comment",
+    "source": "[1,/* tail */]",
+    "options": {},
+    "expected": "[1 /* tail */]\n",
+    "idempotent": true
+  },
+  {
+    "name": "multiline-empty",
+    "source": "[\n]",
+    "options": {},
+    "expected": "[\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "multiline-object-empty",
+    "source": "{\n}",
+    "options": {},
+    "expected": "{\n}\n",
+    "idempotent": true
+  },
+  {
+    "name": "multiline-object-assert",
+    "source": "{\nassert true,\na:1\n}",
+    "options": {},
+    "expected": "{\n  assert true,\n  a: 1,\n}\n",
+    "idempotent": true
+  },
+  {
+    "name": "comprehension-comma",
+    "source": "[x,\nfor x in [1,2]]",
+    "options": {},
+    "expected": "[\n  x\n  for x in [1, 2]\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "object-comprehension-comma",
+    "source": "{[x]:1,\nfor x in ['a']}",
+    "options": {},
+    "expected": "{\n  [x]: 1\n  for x in ['a']\n}\n",
+    "idempotent": true
+  },
+  {
+    "name": "call-alignment",
+    "source": "longFunctionName(1,\n2,3)",
+    "options": {},
+    "expected": "longFunctionName(1,\n                 2,\n                 3)\n",
+    "idempotent": true
+  },
+  {
+    "name": "double-blank-comment",
+    "source": "// head\n\n\n42",
+    "options": {},
+    "expected": "// head\n\n\n42\n",
+    "idempotent": true
+  },
+  {
+    "name": "trailing-newline-comment",
+    "source": "42\n// end\n\n",
+    "options": {},
+    "expected": "42\n// end\n",
+    "idempotent": true
+  },
+  {
+    "name": "double-quotes",
+    "source": "['abc','a\"b',\"it's\"]",
+    "options": {
+      "StringStyle": 0
+    },
+    "expected": "[\"abc\", 'a\"b', \"it's\"]\n",
+    "idempotent": true
+  },
+  {
+    "name": "preserve-quotes",
+    "source": "[\"abc\",'abc','\\u0061']",
+    "options": {
+      "StringStyle": 2
+    },
+    "expected": "[\"abc\", 'abc', '\\u0061']\n",
+    "idempotent": true
+  },
+  {
+    "name": "hash-comments",
+    "source": "// head\n42 // tail",
+    "options": {
+      "CommentStyle": 0
+    },
+    "expected": "# head\n42  # tail\n",
+    "idempotent": true
+  },
+  {
+    "name": "preserve-comments",
+    "source": "# head\n42 //tail",
+    "options": {
+      "CommentStyle": 2
+    },
+    "expected": "# head\n42  //tail\n",
+    "idempotent": true
+  },
+  {
+    "name": "no-pretty",
+    "source": "{'a':1,['b']:2}.a['b']",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{ 'a': 1, ['b']: 2 }.a['b']\n",
+    "idempotent": true
+  },
+  {
+    "name": "pad-arrays",
+    "source": "[1,[2],[],a[1:2]]",
+    "options": {
+      "PadArrays": true
+    },
+    "expected": "[ 1, [ 2 ], [], a[1:2] ]\n",
+    "idempotent": true
+  },
+  {
+    "name": "no-pad-objects",
+    "source": "{a:{b:1},c:{}}",
+    "options": {
+      "PadObjects": false
+    },
+    "expected": "{a: {b: 1}, c: {}}\n",
+    "idempotent": true
+  },
+  {
+    "name": "indent-four",
+    "source": "{\na:[\n1,\n2\n]\n}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{\n    a: [\n        1,\n        2,\n    ],\n}\n",
+    "idempotent": true
+  },
+  {
+    "name": "indent-zero",
+    "source": "{\n a:1\n}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{\n a: 1,\n}\n",
+    "idempotent": true
+  },
+  {
+    "name": "indent-negative",
+    "source": "{\n a:1\n}",
+    "options": {
+      "Indent": -1
+    },
+    "expected": "{\n a: 1,\n}\n",
+    "idempotent": true
+  },
+  {
+    "name": "one-blank",
+    "source": "[\n1,\n\n\n\n2\n]",
+    "options": {
+      "MaxBlankLines": 1
+    },
+    "expected": "[\n  1,\n\n  2,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "zero-blank-limit",
+    "source": "[\n1,\n\n\n\n2\n]",
+    "options": {
+      "MaxBlankLines": 0
+    },
+    "expected": "[\n  1,\n\n\n\n  2,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "negative-blank-limit",
+    "source": "[\n1,\n\n\n\n2\n]",
+    "options": {
+      "MaxBlankLines": -1
+    },
+    "expected": "[\n  1,\n\n\n\n  2,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "no-sort-imports",
+    "source": "local z=import 'z';\nlocal a=import 'a';\n[z,a]",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "local z = import 'z';\nlocal a = import 'a';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "explicit-plus-style",
+    "source": "a {b:1}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "a + { b: 1 }\n",
+    "idempotent": true
+  },
+  {
+    "name": "strip-comments",
+    "source": "# head\n[1, //one\n/* two */2]\n//end",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[\n  1,\n  \n  2,\n]\n",
+    "idempotent": false
+  },
+  {
+    "name": "strip-everything",
+    "source": "# head\n[1, //one\n/* two */2]\n//end",
+    "options": {
+      "StripEverything": true
+    },
+    "expected": "[1, 2,]\n",
+    "idempotent": false
+  },
+  {
+    "name": "only-comments",
+    "source": "# head\n[1, //one\n/* two */2]\n//end",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "// head\n/* two */\n//end\nnull\n",
+    "idempotent": true
+  },
+  {
+    "name": "strip-precedence",
+    "source": "# head\n[1,\n2]",
+    "options": {
+      "StripComments": true,
+      "StripEverything": true,
+      "StripAllButComments": true
+    },
+    "expected": "[\n  1,\n  2,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "only-precedence",
+    "source": "# head\n42",
+    "options": {
+      "StripAllButComments": true,
+      "StripEverything": true
+    },
+    "expected": "// head\nnull\n",
+    "idempotent": true
+  },
+  {
+    "name": "nested-unary",
+    "source": "-/* hi */ -1",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "--1\n",
+    "idempotent": true
+  },
+  {
+    "name": "duplicate-local",
+    "source": "local x=1,x=2;42",
+    "options": {},
+    "error_contains": [
+      "Duplicate local var: x"
+    ]
+  },
+  {
+    "name": "duplicate-field",
+    "source": "{a:1,a:2}",
+    "options": {},
+    "error_contains": [
+      "Duplicate field: a"
+    ]
+  },
+  {
+    "name": "invalid-escape",
+    "source": "'\\q'",
+    "options": {},
+    "error_contains": [
+      "Unknown escape sequence"
+    ]
+  },
+  {
+    "name": "unterminated-comment",
+    "source": "/*",
+    "options": {},
+    "error_contains": [
+      "Multi-line comment has no terminating */"
+    ]
+  },
+  {
+    "name": "unexpected-eof",
+    "source": "[1,",
+    "options": {},
+    "error_contains": [
+      "Unexpected end of file"
+    ]
+  },
+  {
+    "name": "duplicate-before-body",
+    "source": "{a:1,a:}",
+    "options": {},
+    "error_contains": [
+      "Duplicate field: a"
+    ]
+  }
+]

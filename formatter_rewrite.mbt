@@ -1,0 +1,102 @@
+///|
+fn format_name(token : Token) -> String? {
+  match token.value {
+    Some(String(name)) if is_name(name) &&
+      name.to_array().all(c => identifier_start(c) || digit(c)) => Some(name)
+    _ => None
+  }
+}
+
+///|
+fn format_rewrite(
+  tokens : Array[Token],
+  root : Expr,
+  options : FormatOptions,
+) -> Array[Token] {
+  let layout = format_layout(tokens)
+  let edited = tokens.copy()
+  let skip = Array::make(tokens.length(), false)
+  let insert_plus = Array::make(tokens.length(), false)
+  format_plus_edits(root, tokens, skip, insert_plus, options.use_implicit_plus)
+  for i, token in tokens {
+    let end = layout.close[i]
+    if token.text == "[" &&
+      end == i + 2 &&
+      tokens[i + 1].text == "<string>" &&
+      options.pretty_field_names {
+      let key = tokens[i + 1]
+      let field = end + 1 < tokens.length() &&
+        (
+          tokens[end + 1].text.has_prefix(":") ||
+          tokens[end + 1].text.has_prefix("+:") ||
+          (tokens[end + 1].text == "(" && layout.parameter[end + 1])
+        )
+      if field || (layout.index[i] && format_name(key) is Some(_)) {
+        if field {
+          skip[i] = true
+        } else {
+          edited[i] = { ..token, text: ".", raw: ".", }
+        }
+        skip[end] = true
+        if format_name(key) is Some(name) {
+          edited[i + 1] = { ..key, text: name, raw: name, value: None, }
+        }
+      }
+    }
+    if token.text == "[" && layout.index[i] && end > i + 1 {
+      let last = tokens[end - 1]
+      if last.text == "::" {
+        edited[end - 1] = { ..last, text: ":", raw: ":", }
+      } else if last.text == ":" {
+        // Only remove the second colon of a slice; the first is required.
+        for j = i + 1; j < end - 1; {
+          if tokens[j].text == ":" {
+            skip[end - 1] = true
+            break
+          }
+          let close = layout.close[j]
+          continue if close > j { close + 1 } else { j + 1 }
+        }
+      }
+    }
+    if token.text == "(" &&
+      end > i + 2 &&
+      tokens[i + 1].text == "(" &&
+      layout.close[i + 1] == end - 1 {
+      let previous = if i == 0 { "" } else { tokens[i - 1].text }
+      let call = i > 0 &&
+        (
+          is_name(previous) ||
+          previous == ")" ||
+          previous == "]" ||
+          previous == "}" ||
+          previous == "function" ||
+          tokens[i - 1].value is Some(_)
+        )
+      if !call {
+        skip[i + 1] = true
+        skip[end - 1] = true
+      }
+    }
+  }
+  let result : Array[Token] = []
+  let pending : Array[Trivia] = []
+  for i, token in edited {
+    pending.append(token.leading)
+    if !skip[i] {
+      if insert_plus[i] {
+        result.push({
+          ..token,
+          text: "+",
+          raw: "+",
+          value: None,
+          leading: pending.copy(),
+        })
+        pending.clear()
+      }
+      result.push({ ..token, leading: pending.copy(), })
+      pending.clear()
+    }
+  }
+  result
+}

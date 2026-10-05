@@ -80,6 +80,10 @@ async fn main {
     #|  assert_true(parts[0].kind is BlockComment)
     #|  assert_eq(parts.map(p=>p.text).join(""),raw_source)
     #|  assert_eq(parsed.ast().loc.file,"consumer")
+    #|  let format_options : @moonjsonnet.FormatOptions = {..@moonjsonnet.FormatOptions::default(),string_style:DoubleQuotes}
+    #|  assert_true(format_options.string_style == @moonjsonnet.DoubleQuotes)
+    #|  assert_eq(@moonjsonnet.format_source("'abc'",options=format_options),"\"abc\"\n")
+    #|  assert_eq(@moonjsonnet.ParsedSource::parse("[1,2]").format(),"[1, 2]\n")
     #|  assert_eq(ranged.source_range().unwrap().format(),"consumer:1:1-6")
     #|  let manual : @moonjsonnet.Ast = {kind:Literal(42),loc:ranged.loc,end:None}
     #|  assert_eq(@moonjsonnet.Program::from_ast(manual).evaluate(),42)

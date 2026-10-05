@@ -99,6 +99,11 @@ Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 Repeated parameter binding and default selection in eval.mbt follow go-jsonnet
 value.go checkArguments and thunks.go closure.evalCall at that same revision.
 
+formatter*.mbt implement formatting rules from internal/formatter and
+internal/parser/string_util.go at the same pinned go-jsonnet revision.
+Copyright Google Inc.; Apache License 2.0 (see LICENSE). This partial native
+formatter does not bundle or invoke Go at runtime.
+
 internal/yaml contains the syntax/event parser from moonbit-community/yaml.mbt,
 commit e2f1129249a7cc707aa1c9c39bd8bfe207c93821 (0.0.7 source):
 https://github.com/moonbit-community/yaml.mbt

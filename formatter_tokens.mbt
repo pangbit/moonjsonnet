@@ -1,0 +1,314 @@
+///|
+priv struct FormatOutput {
+  out : StringBuilder
+  limits : Limits
+  loc : Location
+  mut bytes : Int
+  mut steps : Int
+  mut line_start : Bool
+  mut column : Int
+}
+
+///|
+fn FormatOutput::write(
+  self : FormatOutput,
+  text : String,
+) -> Unit raise JsonnetError {
+  let size = @utf8.encode(text).length()
+  if size > self.limits.output_bytes - self.bytes {
+    raise problem(Limit, self.loc, "format output byte limit exceeded")
+  }
+  self.bytes += size
+  self.out.write_string(text)
+  if !text.is_empty() {
+    self.line_start = text.has_suffix("\n")
+    for c in text.to_array() {
+      self.column = if c == '\n' {
+        0
+      } else {
+        self.column + @utf8.encode(c.to_string()).length()
+      }
+    }
+  }
+}
+
+///|
+fn FormatOutput::tick(self : FormatOutput) -> Unit raise JsonnetError {
+  self.steps += 1
+  if self.steps > self.limits.steps {
+    raise problem(Limit, self.loc, "format step limit exceeded")
+  }
+}
+
+///|
+fn FormatOutput::indent(
+  self : FormatOutput,
+  spaces : Int,
+) -> Unit raise JsonnetError {
+  if self.line_start {
+    if spaces > self.limits.output_bytes - self.bytes {
+      raise problem(Limit, self.loc, "format output byte limit exceeded")
+    }
+    for _ in 0..<spaces {
+      self.write(" ")
+    }
+  }
+}
+
+///|
+priv struct FormatGroup {
+  open : String
+  parameter : Bool
+  index : Bool
+  expanded : Bool
+  align : Int
+}
+
+///|
+fn format_tokens(
+  tokens : Array[Token],
+  root : Expr,
+  options : FormatOptions,
+  limits : Limits,
+  loc : Location,
+) -> String raise JsonnetError {
+  let tokens = format_rewrite(tokens, root, options)
+  let writer : FormatOutput = {
+    out: StringBuilder(),
+    limits,
+    loc,
+    bytes: 0,
+    steps: 0,
+    line_start: true,
+    column: 0,
+  }
+  let groups : Array[FormatGroup] = []
+  let layout = format_layout(tokens)
+  let mut previous = ""
+  let mut ends_expr = false
+  let mut tight_after = false
+  let mut first_comment = true
+  let mut last_line = 0
+  let assertions : Array[Int] = []
+  let only_comments = !options.strip_comments && options.strip_all_but_comments
+  let strip_all = !options.strip_comments &&
+    !only_comments &&
+    options.strip_everything
+  for i, token in tokens {
+    writer.tick()
+    let t = token.text
+    let closing = t == ")" || t == "]" || t == "}"
+    let mut level = groups.filter(g => g.expanded).length()
+    if closing && groups.last() is Some({ expanded: true, .. }) {
+      level -= 1
+    }
+    if !closing &&
+      token.has_newline() &&
+      !layout.newline[i] &&
+      !groups.is_empty() {
+      level += 1
+    }
+    let mut spaces = if options.indent > 0 &&
+      level <= limits.output_bytes / options.indent {
+      level * options.indent
+    } else if options.indent > 0 {
+      limits.output_bytes
+    } else {
+      token.loc.column - 1
+    }
+    if options.indent > 0 &&
+      !closing &&
+      layout.newline[i] &&
+      groups.last() is Some({ open: "(", expanded: false, align, .. }) {
+      spaces = align
+    }
+    if layout.trailing_comma[i] && !only_comments {
+      writer.write(",")
+    }
+    let mut newline_count = 0
+    let mut interstitial = false
+    for trivia in token.leading {
+      writer.tick()
+      match trivia.kind {
+        Whitespace =>
+          if !strip_all && !only_comments {
+            newline_count += trivia.raw
+              .to_array()
+              .filter(c => c == '\n')
+              .length()
+          }
+        LineComment | BlockComment => {
+          if strip_all || options.strip_comments {
+            continue
+          }
+          let inline = last_line == trivia.range.begin.line && last_line > 0
+          if only_comments && inline && trivia.kind == LineComment {
+            continue
+          }
+          if newline_count > 0 || (only_comments && !writer.line_start) {
+            if !writer.line_start {
+              writer.write("\n")
+            }
+            newline_count = 0
+          }
+          writer.indent(spaces)
+          if !writer.line_start && !previous.is_empty() && inline {
+            writer.write(if trivia.kind == LineComment { "  " } else { " " })
+          }
+          let comment = format_comment(
+            trivia.raw.trim_end().to_owned(),
+            options.comment_style,
+            first_comment,
+          )
+          writer.write(comment)
+          first_comment = false
+          if trivia.kind == LineComment ||
+            trivia.raw.contains("\n") ||
+            only_comments {
+            writer.write("\n")
+          } else {
+            interstitial = true
+          }
+        }
+        TokenText => ()
+      }
+    }
+    if only_comments {
+      last_line = token.end.line
+      continue
+    }
+    if t == "<eof>" {
+      if !writer.line_start {
+        writer.write("\n")
+      }
+      break
+    }
+    if layout.skip[i] {
+      continue
+    }
+    if !strip_all &&
+      layout.newline[i] &&
+      newline_count == 0 &&
+      !writer.line_start {
+      newline_count = 1
+    }
+    if newline_count > 0 && (writer.bytes > 0 || !previous.is_empty()) {
+      let count = if options.max_blank_lines > 0 &&
+        options.max_blank_lines < newline_count - 1 {
+        options.max_blank_lines + 1
+      } else {
+        newline_count
+      }
+      for n in 0..<count {
+        if n > 0 || !writer.line_start {
+          writer.write("\n")
+        }
+      }
+    }
+    let inside = groups.last()
+    let compact_equal = t == "=" && inside is Some({ open: "(", .. })
+    let prefix = (t == "+" || t == "-" || t == "!" || t == "~") && !ends_expr
+    let compact_colon = (t == ":" || t == "::") &&
+      inside is Some({ index: true, .. })
+    let empty_close = closing &&
+      (
+        (previous == "(" && t == ")") ||
+        (previous == "[" && t == "]") ||
+        (previous == "{" && t == "}")
+      )
+    if t == "assert" {
+      assertions.push(groups.length())
+    }
+    if (t == "," || t == ";") && assertions.last() == Some(groups.length()) {
+      ignore(assertions.pop())
+    }
+    let assertion_colon = t == ":" && assertions.last() == Some(groups.length())
+    if assertion_colon {
+      ignore(assertions.pop())
+    }
+    let spaced = if previous.is_empty() || writer.line_start || empty_close {
+      false
+    } else if t == "," || t == ";" || t == "." || t == ")" {
+      false
+    } else if t == "]" {
+      inside is Some({ index: false, .. }) && options.pad_arrays
+    } else if t == "}" {
+      options.pad_objects
+    } else if assertion_colon {
+      true
+    } else if t == ":" ||
+      t == "::" ||
+      t == ":::" ||
+      t == "+:" ||
+      t == "+::" ||
+      t == "+:::" {
+      false
+    } else if compact_equal {
+      false
+    } else if t == "(" {
+      !ends_expr && previous != "function" && previous != "(" && !tight_after
+    } else if t == "[" && ends_expr {
+      false
+    } else if tight_after || previous == "." || previous == "(" {
+      false
+    } else if previous == "[" {
+      inside is Some({ index: false, .. }) && options.pad_arrays
+    } else if previous == "{" {
+      options.pad_objects
+    } else {
+      true
+    }
+    writer.indent(spaces)
+    if spaced ||
+      (interstitial && !writer.line_start && !closing && t != "," && t != ";") {
+      writer.write(" ")
+    }
+    let mut raw = format_string(token, options.string_style)
+    if options.pretty_field_names &&
+      token.text == "<string>" &&
+      tokens.get(i + 1) is Some(next) &&
+      (
+        next.text == ":" ||
+        next.text == "::" ||
+        next.text == ":::" ||
+        next.text == "+:"
+      ) {
+      if token.value is Some(String(name)) &&
+        is_name(name) &&
+        name.to_array().all(c => identifier_start(c) || digit(c)) {
+        raw = name
+      }
+    }
+    writer.write(raw)
+    if t == "(" || t == "[" || t == "{" {
+      groups.push({
+        open: t,
+        parameter: layout.parameter[i],
+        index: layout.index[i],
+        expanded: layout.expanded[i],
+        align: writer.column,
+      })
+      ends_expr = false
+    } else if closing {
+      let group = groups.pop().unwrap()
+      ends_expr = !group.parameter
+    } else {
+      ends_expr = token.value is Some(_) ||
+        t == "<number>" ||
+        is_name(t) ||
+        t == "true" ||
+        t == "false" ||
+        t == "null" ||
+        t == "self" ||
+        t == "super" ||
+        t == "$"
+    }
+    tight_after = prefix || compact_equal || compact_colon
+    previous = t
+    last_line = token.end.line
+  }
+  if only_comments {
+    writer.write("null\n")
+  }
+  writer.out.to_string()
+}
