@@ -26,6 +26,11 @@ async fn main {
     #|///|
     #|test "independent archive consumer" {
     #|  let limits = @moonjsonnet.Limits::default()
+    #|  let program = @moonjsonnet.Program::parse("std.extVar('x')")
+    #|  assert_eq(program.evaluate(ext_vars=Map([("x",42)])),42)
+    #|  assert_eq(program.evaluate_text(ext_vars=Map([("x",Json::string("raw"))]),string_output=true),"raw\n")
+    #|  assert_eq(program.evaluate_stream(ext_vars=Map([("x",[1,2])])),["1\n","2\n"])
+    #|  assert_eq(program.evaluate_multi(ext_vars=Map([("x",{"a":42})]))["a"],"42\n")
     #|  assert_eq(limits.stack,500)
     #|  assert_eq(@moonjsonnet.evaluate("local f(n)=if n==0 then 42 else f(n-1) tailstrict; f(1000) tailstrict",limits={..limits,stack:2}),42)
     #|  let json = @moonjsonnet.evaluate("local f(x=21)=x*2; f()", limits~)

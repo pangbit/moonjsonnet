@@ -38,13 +38,15 @@ async fn main {
       @fs.write_file(dest, patched)
     }
   }
-  let environment = Map([("MOON_HOME", shadow), ("ASAN_OPTIONS", "detect_leaks=0:fast_unwind_on_malloc=0")])
+  // Keep sanitizer failures distinct from expected interpreter errors (exit 1).
+  let asan_options = "detect_leaks=0:fast_unwind_on_malloc=0:exitcode=99"
+  let environment = Map([("MOON_HOME", shadow), ("ASAN_OPTIONS", asan_options)])
   @shell.Cmd("moon", ["test", "--target", "native", "--deny-warn"], cwd=checkout, env=environment).run()
   @shell.Cmd("moon", ["run", "--build-only", "--target", "native", "cmd/main"], cwd=checkout, env=environment).run()
   @shell.Cmd("moon", ["run", repo + "/tools/integration.mbtx", checkout + "/_build/native/debug/build/cmd/main/main.exe"], cwd=checkout,
-    env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", "detect_leaks=0:fast_unwind_on_malloc=0")])).run()
+    env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", asan_options)])).run()
   @shell.Cmd("moon", ["run", "--build-only", "--target", "native", "cmd/deps"], cwd=checkout, env=environment).run()
   @shell.Cmd("moon", ["run", repo + "/tools/dependency-integration.mbtx", checkout + "/_build/native/debug/build/cmd/deps/deps.exe"], cwd=checkout,
-    env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", "detect_leaks=0:fast_unwind_on_malloc=0")])).run()
+    env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", asan_options)])).run()
   println("ASan tests and host integration passed with isolated toolchain: \{work}; leak detection disabled")
 }

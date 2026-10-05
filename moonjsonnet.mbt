@@ -27,11 +27,37 @@ pub fn evaluate(
   binary_resolver? : (String, String) -> BinarySource raise,
   limits? : Limits = Limits::default(),
 ) -> Json raise JsonnetError {
+  Program::parse(source, filename~, anonymous~, limits~).evaluate(
+    ext_vars~,
+    ext_code~,
+    tla_vars~,
+    tla_code~,
+    native_functions~,
+    trace~,
+    resolver?,
+    binary_resolver?,
+    limits~,
+  )
+}
+
+///|
+/// Execute this validated program with fresh evaluation state. Options and output
+/// match `evaluate`; source filename and anonymous mode were fixed when parsed.
+pub fn Program::evaluate(
+  self : Program,
+  ext_vars? : Map[String, Json] = Map([]),
+  ext_code? : Map[String, String] = Map([]),
+  tla_vars? : Map[String, Json] = Map([]),
+  tla_code? : Map[String, String] = Map([]),
+  native_functions? : Map[String, NativeFunction] = Map([]),
+  trace? : (Location, String) -> Unit = default_trace,
+  resolver? : (String, String) -> Source raise,
+  binary_resolver? : (String, String) -> BinarySource raise,
+  limits? : Limits = Limits::default(),
+) -> Json raise JsonnetError {
   evaluate_with_output(
-    source,
+    self,
     (vm, value, loc) => vm.manifest(value, loc, 0),
-    filename~,
-    anonymous~,
     ext_vars~,
     ext_code~,
     tla_vars~,
@@ -46,10 +72,8 @@ pub fn evaluate(
 
 ///|
 fn[T] evaluate_with_output(
-  source : String,
+  program : Program,
   output : (Vm, Value, Location) -> T raise,
-  filename? : String = "<input>",
-  anonymous? : Bool = false,
   ext_vars? : Map[String, Json] = Map([]),
   ext_code? : Map[String, String] = Map([]),
   tla_vars? : Map[String, Json] = Map([]),
@@ -60,12 +84,15 @@ fn[T] evaluate_with_output(
   binary_resolver? : (String, String) -> BinarySource raise,
   limits? : Limits = Limits::default(),
 ) -> T raise JsonnetError {
+  let filename = program.filename
+  let anonymous = program.anonymous
   let loc : Location = { file: filename, line: 1, column: 1, }
   try {
     check_limits(limits, loc)
-    if @utf8.encode(source).length() > limits.source_bytes {
+    if program.source_bytes > limits.source_bytes {
       raise problem(Limit, loc, "source byte limit exceeded")
     }
+    check_ast_depth(program.expression, limits.depth)
     let vm : Vm = {
       library: standard_library_expression(),
       thunks: [],
@@ -90,7 +117,7 @@ fn[T] evaluate_with_output(
     for name, id in ext {
       vm.ext[name] = id
     }
-    let expression = parse(source, filename, limits.depth)
+    let expression = program.expression
     let value = vm.eval_frame(
       expression,
       vm.base_env(file=if anonymous { "" } else { filename }),

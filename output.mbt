@@ -26,8 +26,38 @@ pub fn evaluate_text(
   binary_resolver? : (String, String) -> BinarySource raise,
   limits? : Limits = Limits::default(),
 ) -> String raise JsonnetError {
+  Program::parse(source, filename~, anonymous~, limits~).evaluate_text(
+    string_output~,
+    ext_vars~,
+    ext_code~,
+    tla_vars~,
+    tla_code~,
+    native_functions~,
+    trace~,
+    resolver?,
+    binary_resolver?,
+    limits~,
+  )
+}
+
+///|
+/// Execute this validated program with fresh evaluation state. Options and output
+/// match `evaluate_text`; source filename and anonymous mode were fixed when parsed.
+pub fn Program::evaluate_text(
+  self : Program,
+  string_output? : Bool = false,
+  ext_vars? : Map[String, Json] = Map([]),
+  ext_code? : Map[String, String] = Map([]),
+  tla_vars? : Map[String, Json] = Map([]),
+  tla_code? : Map[String, String] = Map([]),
+  native_functions? : Map[String, NativeFunction] = Map([]),
+  trace? : (Location, String) -> Unit = default_trace,
+  resolver? : (String, String) -> Source raise,
+  binary_resolver? : (String, String) -> BinarySource raise,
+  limits? : Limits = Limits::default(),
+) -> String raise JsonnetError {
   evaluate_with_output(
-    source,
+    self,
     (vm, value, loc) => {
       if string_output {
         guard value is Str(text) else {
@@ -40,8 +70,6 @@ pub fn evaluate_text(
         cli_json(json, vm.limits.output_bytes, loc) + "\n"
       }
     },
-    filename~,
-    anonymous~,
     ext_vars~,
     ext_code~,
     tla_vars~,
@@ -79,8 +107,36 @@ pub fn evaluate_stream(
   binary_resolver? : (String, String) -> BinarySource raise,
   limits? : Limits = Limits::default(),
 ) -> Array[String] raise JsonnetError {
+  Program::parse(source, filename~, anonymous~, limits~).evaluate_stream(
+    ext_vars~,
+    ext_code~,
+    tla_vars~,
+    tla_code~,
+    native_functions~,
+    trace~,
+    resolver?,
+    binary_resolver?,
+    limits~,
+  )
+}
+
+///|
+/// Execute this validated program with fresh evaluation state. Options and output
+/// match `evaluate_stream`; source filename and anonymous mode were fixed when parsed.
+pub fn Program::evaluate_stream(
+  self : Program,
+  ext_vars? : Map[String, Json] = Map([]),
+  ext_code? : Map[String, String] = Map([]),
+  tla_vars? : Map[String, Json] = Map([]),
+  tla_code? : Map[String, String] = Map([]),
+  native_functions? : Map[String, NativeFunction] = Map([]),
+  trace? : (Location, String) -> Unit = default_trace,
+  resolver? : (String, String) -> Source raise,
+  binary_resolver? : (String, String) -> BinarySource raise,
+  limits? : Limits = Limits::default(),
+) -> Array[String] raise JsonnetError {
   evaluate_with_output(
-    source,
+    self,
     (vm, value, loc) => {
       let json = vm.manifest(value, loc, 0)
       guard json is Array(documents) else {
@@ -97,8 +153,6 @@ pub fn evaluate_stream(
         text + "\n"
       })
     },
-    filename~,
-    anonymous~,
     ext_vars~,
     ext_code~,
     tla_vars~,

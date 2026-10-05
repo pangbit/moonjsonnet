@@ -157,6 +157,44 @@ a default context limit of 20 and rejects negative option values. These are
 limits on this API's context list, not a claim that its locations equal Go's
 complete named/synthetic frame set. See [CLI](CLI.md).
 
+## Parsed programs
+
+`Program::parse(source, filename?, anonymous?, limits?) -> Program raise JsonnetError`
+lexes, parses and statically validates an entry program without executing code,
+reading imports or invoking callbacks. The public `Program` has private fields;
+callers cannot construct or mutate its AST. It retains the entry AST, source
+identity and byte count, rather than the original source text.
+
+`Program::evaluate`, `evaluate_text`, `evaluate_stream` and `evaluate_multi` accept
+the same parameters, resolvers, native functions, trace sink and execution limits
+as their string counterparts. Text/multi methods also accept `string_output`.
+They do not take `filename` or `anonymous`: these are fixed when parsing and govern
+locations, `std.thisFile` and relative import origins for every execution.
+The existing string APIs keep their signatures and delegate through this path.
+
+```mbt
+let program = @moonjsonnet.Program::parse("function(n=2) std.extVar('x') * n")
+let first = program.evaluate(ext_vars=Map([("x", 21)])) // 42
+let second = program.evaluate(ext_vars=Map([("x", 3)])) // 6
+```
+
+Only the entry AST is reused. Every execution creates new thunks, objects,
+import/source caches and resource counters, including after failure. Changing
+parameters, callbacks or a custom resolver's results affects the next execution.
+An explicitly reused `FileHost` still retains its own byte cache; this API does
+not invalidate host state. Imported code and code parameters remain lazy and are
+parsed within that execution; the standard library follows its existing setup.
+
+Creation checks source bytes and parser/AST depth. Execution validates its own
+limits, rechecks the saved byte count and AST depth, and applies the ordinary
+runtime budgets. It does not replay lexer/parser nesting checks on source syntax
+that is no longer present, such as redundant parentheses.
+
+This provides the parse-then-evaluate role of Go's `SnippetToAST` and AST-based
+`Evaluate`/`EvaluateStream`/`EvaluateMulti`. Go's mutable public AST editing,
+ExtNode/TLANode parameters, reusable VM settings and shared import value cache
+lifecycles are not implemented by `Program`; they remain separate parity work.
+
 ## Static dependencies
 
 `find_dependencies(imported_from, imported_paths, resolver~, limits?) -> Array[String] raise JsonnetError`

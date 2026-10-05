@@ -26,8 +26,38 @@ pub fn evaluate_multi(
   binary_resolver? : (String, String) -> BinarySource raise,
   limits? : Limits = Limits::default(),
 ) -> Map[String, String] raise JsonnetError {
+  Program::parse(source, filename~, anonymous~, limits~).evaluate_multi(
+    string_output~,
+    ext_vars~,
+    ext_code~,
+    tla_vars~,
+    tla_code~,
+    native_functions~,
+    trace~,
+    resolver?,
+    binary_resolver?,
+    limits~,
+  )
+}
+
+///|
+/// Execute this validated program with fresh evaluation state. Options and output
+/// match `evaluate_multi`; source filename and anonymous mode were fixed when parsed.
+pub fn Program::evaluate_multi(
+  self : Program,
+  string_output? : Bool = false,
+  ext_vars? : Map[String, Json] = Map([]),
+  ext_code? : Map[String, String] = Map([]),
+  tla_vars? : Map[String, Json] = Map([]),
+  tla_code? : Map[String, String] = Map([]),
+  native_functions? : Map[String, NativeFunction] = Map([]),
+  trace? : (Location, String) -> Unit = default_trace,
+  resolver? : (String, String) -> Source raise,
+  binary_resolver? : (String, String) -> BinarySource raise,
+  limits? : Limits = Limits::default(),
+) -> Map[String, String] raise JsonnetError {
   evaluate_with_output(
-    source,
+    self,
     (vm, value, loc) => {
       let json = vm.manifest(value, loc, 0)
       guard json is Object(fields) else {
@@ -57,8 +87,6 @@ pub fn evaluate_multi(
       }
       files
     },
-    filename~,
-    anonymous~,
     ext_vars~,
     ext_code~,
     tla_vars~,

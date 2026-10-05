@@ -81,6 +81,15 @@ pub(all) struct NativeFunction {
   callback : (Array[Json]) -> Json raise
 }
 
+pub struct Program {
+  // private fields
+}
+pub fn Program::evaluate(Self, ext_vars? : Map[String, Json], ext_code? : Map[String, String], tla_vars? : Map[String, Json], tla_code? : Map[String, String], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Json raise JsonnetError
+pub fn Program::evaluate_multi(Self, string_output? : Bool, ext_vars? : Map[String, Json], ext_code? : Map[String, String], tla_vars? : Map[String, Json], tla_code? : Map[String, String], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Map[String, String] raise JsonnetError
+pub fn Program::evaluate_stream(Self, ext_vars? : Map[String, Json], ext_code? : Map[String, String], tla_vars? : Map[String, Json], tla_code? : Map[String, String], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Array[String] raise JsonnetError
+pub fn Program::evaluate_text(Self, string_output? : Bool, ext_vars? : Map[String, Json], ext_code? : Map[String, String], tla_vars? : Map[String, Json], tla_code? : Map[String, String], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> String raise JsonnetError
+pub fn Program::parse(String, filename? : String, anonymous? : Bool, limits? : Limits) -> Self raise JsonnetError
+
 pub(all) struct Source {
   id : String
   text : String
