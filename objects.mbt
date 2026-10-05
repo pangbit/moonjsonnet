@@ -1,13 +1,21 @@
 ///|
 fn Vm::object_value(self : Vm, layers : Array[Layer]) -> Value {
-  let id = self.objects.length()
-  self.objects.push({
+  let obj = {
     layers,
     cache: Map([]),
     scopes: Map([]),
     assertion_state: 0,
+    assertion_error: None,
     standard: false,
-  })
+  }
+  let id = if self.free_objects.pop() is Some(id) {
+    self.objects[id] = obj
+    id
+  } else {
+    let id = self.objects.length()
+    self.objects.push(obj)
+    id
+  }
   ObjectValue(id, layers.length())
 }
 
@@ -39,6 +47,9 @@ fn Vm::layer_scope(self : Vm, id : Int, layer : Int) -> Env {
 ///|
 fn Vm::check_assertions(self : Vm, id : Int, loc : Location) -> Unit raise {
   let obj = self.objects[id]
+  if obj.assertion_error is Some(error) {
+    raise copy_evaluation_error(error)
+  }
   if obj.assertion_state != 0 {
     return
   }
@@ -46,12 +57,21 @@ fn Vm::check_assertions(self : Vm, id : Int, loc : Location) -> Unit raise {
   errdefer {
     obj.assertion_state = 0
   }
-  for i in 0..<obj.layers.length() {
-    let env = self.layer_scope(id, i)
-    for (cond, msg) in obj.layers[i].assertions {
-      self.push_frame(cond.loc, false)
-      defer ignore(self.frames.pop())
-      self.assertion(cond, msg, env)
+  try {
+    for i in 0..<obj.layers.length() {
+      let env = self.layer_scope(id, i)
+      for (cond, msg) in obj.layers[i].assertions {
+        self.push_frame(cond.loc, false)
+        defer ignore(self.frames.pop())
+        self.assertion(cond, msg, env)
+      }
+    }
+  } catch {
+    e => {
+      if self.persistent {
+        obj.assertion_error = Some(copy_evaluation_error(e))
+      }
+      raise copy_evaluation_error(e)
     }
   }
   obj.assertion_state = 2

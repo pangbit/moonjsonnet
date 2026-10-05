@@ -64,18 +64,7 @@ pub fn Program::evaluate_text(
 ) -> String raise JsonnetError {
   evaluate_with_output(
     self,
-    (vm, value, loc) => {
-      if string_output {
-        guard value is Str(text) else {
-          raise problem(Type, loc, "expected string result")
-        }
-        vm.account_output(@utf8.encode(text).length(), loc)
-        text + "\n"
-      } else {
-        let json = vm.manifest(value, loc, 0)
-        cli_json(json, vm.limits.output_bytes, loc) + "\n"
-      }
-    },
+    (vm, value, loc) => vm.render_text(value, loc, string_output),
     ext_vars~,
     ext_code~,
     ext_programs~,
@@ -151,22 +140,7 @@ pub fn Program::evaluate_stream(
 ) -> Array[String] raise JsonnetError {
   evaluate_with_output(
     self,
-    (vm, value, loc) => {
-      let json = vm.manifest(value, loc, 0)
-      guard json is Array(documents) else {
-        raise problem(Type, loc, "stream mode requires a top-level array")
-      }
-      vm.output_bytes = 0
-      documents.map(document => {
-        let text = cli_json(
-          document,
-          vm.limits.output_bytes - vm.output_bytes,
-          loc,
-        )
-        vm.account_output(@utf8.encode(text).length(), loc)
-        text + "\n"
-      })
-    },
+    (vm, value, loc) => vm.render_stream(value, loc),
     ext_vars~,
     ext_code~,
     ext_programs~,
@@ -241,4 +215,41 @@ fn write_cli_json(
     String(text) => output.write(manifest_text_quote(text))
     _ => output.write(json.stringify())
   }
+}
+
+///|
+fn Vm::render_text(
+  vm : Vm,
+  value : Value,
+  loc : Location,
+  string_output : Bool,
+) -> String raise {
+  if string_output {
+    guard value is Str(text) else {
+      raise problem(Type, loc, "expected string result")
+    }
+    vm.account_output(@utf8.encode(text).length(), loc)
+    text + "\n"
+  } else {
+    let json = vm.manifest(value, loc, 0)
+    cli_json(json, vm.limits.output_bytes, loc) + "\n"
+  }
+}
+
+///|
+fn Vm::render_stream(
+  vm : Vm,
+  value : Value,
+  loc : Location,
+) -> Array[String] raise {
+  let json = vm.manifest(value, loc, 0)
+  guard json is Array(documents) else {
+    raise problem(Type, loc, "stream mode requires a top-level array")
+  }
+  vm.output_bytes = 0
+  documents.map(document => {
+    let text = cli_json(document, vm.limits.output_bytes - vm.output_bytes, loc)
+    vm.account_output(@utf8.encode(text).length(), loc)
+    text + "\n"
+  })
 }

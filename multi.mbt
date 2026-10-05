@@ -64,35 +64,7 @@ pub fn Program::evaluate_multi(
 ) -> Map[String, String] raise JsonnetError {
   evaluate_with_output(
     self,
-    (vm, value, loc) => {
-      let json = vm.manifest(value, loc, 0)
-      guard json is Object(fields) else {
-        raise problem(Type, loc, "multi mode requires a top-level object")
-      }
-      vm.output_bytes = 0
-      let files : Map[String, String] = Map([])
-      let keys = fields.keys().collect()
-      keys.sort_by(compare_unicode)
-      for key in keys {
-        let text = if string_output {
-          guard fields[key] is String(text) else {
-            raise problem(Type, loc, "multi mode requires string values")
-          }
-          vm.account_output(@utf8.encode(text).length(), loc)
-          text
-        } else {
-          let text = cli_json(
-            fields[key],
-            vm.limits.output_bytes - vm.output_bytes,
-            loc,
-          )
-          vm.account_output(@utf8.encode(text).length(), loc)
-          text + "\n"
-        }
-        files[key] = text
-      }
-      files
-    },
+    (vm, value, loc) => vm.render_multi(value, loc, string_output),
     ext_vars~,
     ext_code~,
     ext_programs~,
@@ -105,4 +77,40 @@ pub fn Program::evaluate_multi(
     binary_resolver?,
     limits~,
   )
+}
+
+///|
+fn Vm::render_multi(
+  vm : Vm,
+  value : Value,
+  loc : Location,
+  string_output : Bool,
+) -> Map[String, String] raise {
+  let json = vm.manifest(value, loc, 0)
+  guard json is Object(fields) else {
+    raise problem(Type, loc, "multi mode requires a top-level object")
+  }
+  vm.output_bytes = 0
+  let files : Map[String, String] = Map([])
+  let keys = fields.keys().collect()
+  keys.sort_by(compare_unicode)
+  for key in keys {
+    let text = if string_output {
+      guard fields[key] is String(text) else {
+        raise problem(Type, loc, "multi mode requires string values")
+      }
+      vm.account_output(@utf8.encode(text).length(), loc)
+      text
+    } else {
+      let text = cli_json(
+        fields[key],
+        vm.limits.output_bytes - vm.output_bytes,
+        loc,
+      )
+      vm.account_output(@utf8.encode(text).length(), loc)
+      text + "\n"
+    }
+    files[key] = text
+  }
+  files
 }

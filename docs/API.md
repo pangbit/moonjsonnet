@@ -212,9 +212,71 @@ the parameter is forced against that execution's limits; unused parameters do
 not consume these runtime budgets.
 
 This provides the parse-then-evaluate role of Go's `SnippetToAST` and AST-based
-`Evaluate`/`EvaluateStream`/`EvaluateMulti`. Go's mutable public AST editing,
-reusable VM settings and shared import value cache lifecycles remain separate
-parity work.
+`Evaluate`/`EvaluateStream`/`EvaluateMulti`. Go's mutable public AST editing
+remains separate parity work. Reusable VM settings and import value
+caches are provided by `Evaluator` below.
+
+## Reusable evaluator
+
+`Evaluator::new()` creates a configurable interpreter with persistent imported
+sources, parsed imports and evaluated code imports. Its `evaluate(program)`,
+`evaluate_text(program)`, `evaluate_stream(program)` and `evaluate_multi(program)`
+accept an already parsed `Program`; entry programs execute each time. Existing
+global and `Program` methods still create independent execution state.
+
+```mbt
+let evaluator = @moonjsonnet.Evaluator::new()
+evaluator.ext_var("answer", 42)
+let program = @moonjsonnet.Program::parse("std.extVar('answer')")
+let first = evaluator.evaluate(program)
+evaluator.ext_code("answer", "6*7")
+let second = evaluator.evaluate(program)
+```
+
+`ext_var` / `ext_code` / `ext_program` and their `tla_` counterparts bind one name.
+Each setter replaces the name's previous representation; `ext_reset` and
+`tla_reset` clear their respective bindings. The `var` methods accept JSON,
+including strings. `native_function(name, function)` registers or replaces a
+callback. Do not mutate supplied JSON containers or callback parameter arrays
+after registration; use setters to notify the interpreter of changes.
+
+| Configuration change | Retained cache |
+| --- | --- |
+| ext setter/reset or native registration, even with the same value | Sources and parsed imports; evaluated imports and their reachable runtime values are cleared |
+| TLA setter/reset, trace sink, string-output mode or limits | Sources, ASTs and evaluated imports |
+| `set_importer(resolver?, binary_resolver?)` | None; replaces callbacks and clears all import state |
+
+`set_trace` changes the sink used by subsequent trace calls, including previously
+unforced cached fields. A field already evaluated does not emit its trace again.
+`set_string_output(true)` selects raw strings for text/multi output; JSON and
+stream methods retain their types. `set_limits` validates the supplied Limits
+without clearing caches. Each execution has fresh step/frame/output/import
+counters, and source bytes for directly requested cached imports are checked
+again. Cached successful values need not reexecute their original computation.
+
+Imports are disabled initially. Configure both text and binary resolvers to use
+all three import forms, or supply a `FileHost`'s methods. Source requests are
+cached by `(from,path)` and source kind; resolved identities must refer to stable
+contents. Replacing the importer clears these caches, but cannot clear caches
+owned by a reused external `FileHost` or custom callback. Use a new host when its
+files should be reread. These policies do not imply Go's unrestricted filesystem
+or callback invocation-count parity.
+
+Successful imported fields and closures remain lazy/cached across calls, even
+when a different field or output operation fails. Failed computations retry on
+the next execution. Object assertion failures are the exception: Go retains
+their errors, and this interpreter retains an isolated diagnostic snapshot until
+the object/value cache is invalidated. Reusing the error does not mutate earlier
+diagnostic results.
+Temporary entry values are released after execution; reachable imports keep
+stable internal IDs and freed slots are reused. The cache can still grow with
+new import identities or newly demanded retained values. This is not an RSS or
+leak guarantee.
+
+Evaluation and configuration changes reject reentry on the same Evaluator from
+a callback. Separate instances can be used independently. This API does not
+yet provide Go's ResolveImport/ImportData/ImportAST queries or dependency scans
+sharing its state, public mutable ASTs, or an EvalHook API.
 
 ## Static dependencies
 
@@ -238,8 +300,8 @@ binary resolver, library search, canonical root and byte cache. API entries may
 use library search, matching Go's VM method; the separate dependency CLI checks
 that entry paths exist directly. Every scan has fresh request/AST caches, while
 an existing `FileHost` retains its own immutable byte cache across scans.
-This is independent of evaluation; a reusable VM with shared AST/evaluation caches
-and import query methods is still pending.
+This scan is independent of evaluation; integrating it with Evaluator's shared
+AST cache and adding import query methods remain pending.
 
 Scanning applies `source_bytes`, `import_bytes` and `imports` to all distinct
 requests, including entries and aliases; repeated identical `(from,path)` requests

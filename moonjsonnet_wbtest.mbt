@@ -1,6 +1,12 @@
 ///|
 test "thunk cache computes once and remembers failure" {
   let vm : Vm = {
+    free_thunks: [],
+    free_objects: [],
+    persistent: false,
+    retries: Map([]),
+    accessed_sources: Map([]),
+    parsed_imports: Map([]),
     library: standard_library_expression(),
     thunks: [],
     objects: [],

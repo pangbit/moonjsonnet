@@ -55,6 +55,28 @@ pub fn ErrorKind::equal(Self, Self) -> Bool
 pub fn ErrorKind::not_equal(Self, Self) -> Bool
 pub fn ErrorKind::to_repr(Self) -> @debug.Repr
 
+pub struct Evaluator {
+  // private fields
+}
+pub fn Evaluator::evaluate(Self, Program) -> Json raise JsonnetError
+pub fn Evaluator::evaluate_multi(Self, Program) -> Map[String, String] raise JsonnetError
+pub fn Evaluator::evaluate_stream(Self, Program) -> Array[String] raise JsonnetError
+pub fn Evaluator::evaluate_text(Self, Program) -> String raise JsonnetError
+pub fn Evaluator::ext_code(Self, String, String) -> Unit raise JsonnetError
+pub fn Evaluator::ext_program(Self, String, Program) -> Unit raise JsonnetError
+pub fn Evaluator::ext_reset(Self) -> Unit raise JsonnetError
+pub fn Evaluator::ext_var(Self, String, Json) -> Unit raise JsonnetError
+pub fn Evaluator::native_function(Self, String, NativeFunction) -> Unit raise JsonnetError
+pub fn Evaluator::new() -> Self
+pub fn Evaluator::set_importer(Self, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise) -> Unit raise JsonnetError
+pub fn Evaluator::set_limits(Self, Limits) -> Unit raise JsonnetError
+pub fn Evaluator::set_string_output(Self, Bool) -> Unit raise JsonnetError
+pub fn Evaluator::set_trace(Self, (Location, String) -> Unit) -> Unit raise JsonnetError
+pub fn Evaluator::tla_code(Self, String, String) -> Unit raise JsonnetError
+pub fn Evaluator::tla_program(Self, String, Program) -> Unit raise JsonnetError
+pub fn Evaluator::tla_reset(Self) -> Unit raise JsonnetError
+pub fn Evaluator::tla_var(Self, String, Json) -> Unit raise JsonnetError
+
 pub(all) struct Limits {
   steps : Int
   depth : Int

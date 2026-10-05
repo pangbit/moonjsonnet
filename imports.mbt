@@ -10,8 +10,7 @@ fn Vm::import_file(
   let source = match self.sources.get(request) {
     Some(s) => s
     None => {
-      if self.sources.length() + self.binary_sources.length() >=
-        self.limits.imports {
+      if self.accessed_sources.length() >= self.limits.imports {
         raise problem(Limit, loc, "import count limit exceeded")
       }
       guard self.resolver is Some(resolve) else {
@@ -24,15 +23,18 @@ fn Vm::import_file(
         }
         e => raise problem(Import, loc, e.to_string())
       }
-      let size = @utf8.encode(s.text).length()
-      if size > self.limits.source_bytes ||
-        size > self.limits.import_bytes - self.imported_bytes {
-        raise problem(Limit, loc, "import byte limit exceeded")
-      }
-      self.imported_bytes += size
-      self.sources[request] = s
       s
     }
+  }
+  if !self.accessed_sources.contains((from, path, false)) {
+    self.account_import(
+      from,
+      path,
+      false,
+      @utf8.encode(source.text).length(),
+      loc,
+    )
+    self.sources[request] = source
   }
   let key = (source.id, raw)
   if self.imports.get(key) is Some(t) {
@@ -46,7 +48,16 @@ fn Vm::import_file(
     self.imports[key] = self.store(Ready(v))
     return v
   }
-  let expression = parse(source.text, source.id, self.limits.depth) catch {
+  let expression = try {
+    if self.parsed_imports.get(source.id) is Some(expr) {
+      check_ast_depth(expr, self.limits.depth)
+      expr
+    } else {
+      let expr = parse(source.text, source.id, self.limits.depth)
+      self.parsed_imports[source.id] = expr
+      expr
+    }
+  } catch {
     Error(d) => {
       d.context.push(loc)
       raise Error(d)
@@ -121,8 +132,7 @@ fn Vm::import_binary(
   let source = match self.binary_sources.get(request) {
     Some(s) => s
     None => {
-      if self.sources.length() + self.binary_sources.length() >=
-        self.limits.imports {
+      if self.accessed_sources.length() >= self.limits.imports {
         raise problem(Limit, loc, "import count limit exceeded")
       }
       guard self.binary_resolver is Some(resolve) else {
@@ -139,15 +149,12 @@ fn Vm::import_binary(
         }
         e => raise problem(Import, loc, e.to_string())
       }
-      let size = s.bytes.length()
-      if size > self.limits.source_bytes ||
-        size > self.limits.import_bytes - self.imported_bytes {
-        raise problem(Limit, loc, "import byte limit exceeded")
-      }
-      self.imported_bytes += size
-      self.binary_sources[request] = s
       s
     }
+  }
+  if !self.accessed_sources.contains((from, path, true)) {
+    self.account_import(from, path, true, source.bytes.length(), loc)
+    self.binary_sources[request] = source
   }
   if self.binary_imports.get(source.id) is Some(t) {
     return self.force(t, loc)

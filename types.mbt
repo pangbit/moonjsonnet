@@ -134,7 +134,7 @@ pub fn Limits::default() -> Limits {
 }
 
 ///|
-fn problem(kind : ErrorKind, loc : Location, message : String) -> Error {
+fn problem(kind : ErrorKind, loc : Location, message : String) -> JsonnetError {
   Error({ kind, message, location: loc, context: [], })
 }
 

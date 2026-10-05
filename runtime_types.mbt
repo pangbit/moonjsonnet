@@ -65,6 +65,7 @@ priv struct ObjectData {
   cache : Map[(Int, String), Int]
   scopes : Map[Int, Env]
   mut assertion_state : Int
+  mut assertion_error : Error?
   mut standard : Bool
 }
 
@@ -73,6 +74,12 @@ priv struct Vm {
   library : Expr
   thunks : Array[Thunk]
   objects : Array[ObjectData]
+  free_thunks : Array[Int]
+  free_objects : Array[Int]
+  persistent : Bool
+  retries : Map[Int, Thunk]
+  accessed_sources : Map[(String, String, Bool), Unit]
+  parsed_imports : Map[String, Expr]
   limits : Limits
   ext : Map[String, Int]
   native_functions : Map[String, NativeFunction]
@@ -100,6 +107,10 @@ fn Vm::tick(self : Vm, loc : Location) -> Unit raise {
 
 ///|
 fn Vm::store(self : Vm, t : Thunk) -> Int {
+  if self.free_thunks.pop() is Some(id) {
+    self.thunks[id] = t
+    return id
+  }
   let id = self.thunks.length()
   self.thunks.push(t)
   id
@@ -113,12 +124,19 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
     Busy => raise problem(Runtime, loc, "cyclic evaluation of a lazy value")
     Failed(e) => raise e
     Pending(expr, env) => {
+      if self.persistent {
+        self.retries[id] = self.thunks[id]
+      }
       self.thunks[id] = Busy
       let v = self.eval_frame(expr, env) catch { e => self.failure(id, e) }
       self.thunks[id] = Ready(v)
+      ignore(self.retries.remove(id))
       v
     }
     Code(source, origin) => {
+      if self.persistent {
+        self.retries[id] = self.thunks[id]
+      }
       self.thunks[id] = Busy
       let v = try {
         if @utf8.encode(source).length() > self.limits.source_bytes {
@@ -130,9 +148,13 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
         e => self.failure(id, e)
       }
       self.thunks[id] = Ready(v)
+      ignore(self.retries.remove(id))
       v
     }
     ParsedParameter(program, origin) => {
+      if self.persistent {
+        self.retries[id] = self.thunks[id]
+      }
       self.thunks[id] = Busy
       let v = try {
         if program.source_bytes > self.limits.source_bytes {
@@ -150,6 +172,7 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
         e => self.failure(id, e)
       }
       self.thunks[id] = Ready(v)
+      ignore(self.retries.remove(id))
       v
     }
   }

@@ -95,6 +95,7 @@ fn[T] evaluate_with_output(
   resolver? : (String, String) -> Source raise,
   binary_resolver? : (String, String) -> BinarySource raise,
   limits? : Limits = Limits::default(),
+  session? : Evaluator,
 ) -> T raise JsonnetError {
   let filename = program.filename
   let anonymous = program.anonymous
@@ -105,26 +106,42 @@ fn[T] evaluate_with_output(
       raise problem(Limit, loc, "source byte limit exceeded")
     }
     check_ast_depth(program.expression, limits.depth)
+    let previous : Vm? = match session {
+      Some(s) => s.state
+      None => None
+    }
     let vm : Vm = {
-      library: standard_library_expression(),
-      thunks: [],
-      objects: [],
+      library: previous
+      .map(vm => vm.library)
+      .unwrap_or_else(standard_library_expression),
+      thunks: previous.map(vm => vm.thunks).unwrap_or([]),
+      free_thunks: previous.map(vm => vm.free_thunks).unwrap_or([]),
+      free_objects: previous.map(vm => vm.free_objects).unwrap_or([]),
+      retries: Map([]),
+      persistent: session is Some(_),
+      accessed_sources: Map([]),
+      parsed_imports: previous.map(vm => vm.parsed_imports).unwrap_or(Map([])),
+      objects: previous.map(vm => vm.objects).unwrap_or([]),
       limits,
       ext: Map([]),
       native_functions,
       trace,
       resolver,
       binary_resolver,
-      binary_sources: Map([]),
+      binary_sources: previous.map(vm => vm.binary_sources).unwrap_or(Map([])),
       binary_imports: Map([]),
-      sources: Map([]),
-      imports: Map([]),
+      sources: previous.map(vm => vm.sources).unwrap_or(Map([])),
+      imports: previous.map(vm => vm.imports).unwrap_or(Map([])),
       steps: 0,
       depth: 0,
       frames: [],
       imported_bytes: 0,
       output_bytes: 0,
     }
+    defer (if session is Some(owner) {
+      vm.retain_imports()
+      owner.state = Some(vm)
+    })
     let ext = vm.prepare_parameters(ext_vars, ext_code, ext_programs, "extvar")
     for name, id in ext {
       vm.ext[name] = id

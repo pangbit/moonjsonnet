@@ -1,0 +1,859 @@
+[
+  {
+    "name": "cache-invalidation",
+    "files": {
+      "dep": "std.native('tick')()+std.extVar('x')"
+    },
+    "steps": [
+      {
+        "op": "native",
+        "value": 40
+      },
+      {
+        "op": "ext_var",
+        "value": 2
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "tla_var",
+        "value": 1
+      },
+      {
+        "op": "tla_reset"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "files",
+        "value": {
+          "dep": "99"
+        }
+      },
+      {
+        "op": "ext_code",
+        "source": "3"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "ext_program",
+        "source": "4"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "native",
+        "value": 1
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "importer"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "ext_reset"
+      },
+      {
+        "op": "evaluate",
+        "source": "std.extVar('x')"
+      }
+    ],
+    "expected": [
+      {
+        "value": 42,
+        "calls": 1,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 42,
+        "calls": 1,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 42,
+        "calls": 1,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 43,
+        "calls": 2,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 44,
+        "calls": 3,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 5,
+        "calls": 4,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 99,
+        "calls": 4,
+        "reads": 2,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": null,
+        "calls": 4,
+        "reads": 2,
+        "error": true,
+        "trace": []
+      }
+    ],
+    "diagnostic_fragments": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "x"
+    ]
+  },
+  {
+    "name": "lazy-fields-and-trace",
+    "files": {
+      "dep": "local x=21; {f(n):x*n, later:std.trace('late',42)}"
+    },
+    "steps": [
+      {
+        "op": "evaluate",
+        "source": "(import 'dep').f(2)"
+      },
+      {
+        "op": "trace",
+        "label": "1"
+      },
+      {
+        "op": "evaluate",
+        "source": "(import 'dep').later"
+      },
+      {
+        "op": "evaluate",
+        "source": "(import 'dep').later"
+      },
+      {
+        "op": "evaluate",
+        "source": "local o=(import 'dep')+{later:1}; [o.f(2),o.later]"
+      }
+    ],
+    "expected": [
+      {
+        "value": 42,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 42,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": [
+          "1:late"
+        ]
+      },
+      {
+        "value": 42,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": [
+          "1:late"
+        ]
+      },
+      {
+        "value": [
+          42,
+          1
+        ],
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": [
+          "1:late"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "retry-values-and-fields",
+    "files": {
+      "value": "local x=std.native('tick')(); if x==1 then error 'retry' else x",
+      "object": "{x:local a=std.native('tick')(); if a==3 then error 'retry field' else a}"
+    },
+    "steps": [
+      {
+        "op": "native",
+        "increment": true
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'value'"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'value'"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'value'"
+      },
+      {
+        "op": "evaluate",
+        "source": "(import 'object').x"
+      },
+      {
+        "op": "evaluate",
+        "source": "(import 'object').x"
+      },
+      {
+        "op": "evaluate",
+        "source": "(import 'object').x"
+      }
+    ],
+    "expected": [
+      {
+        "value": null,
+        "calls": 1,
+        "reads": 1,
+        "error": true,
+        "trace": []
+      },
+      {
+        "value": 2,
+        "calls": 2,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 2,
+        "calls": 2,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": null,
+        "calls": 3,
+        "reads": 2,
+        "error": true,
+        "trace": []
+      },
+      {
+        "value": 4,
+        "calls": 4,
+        "reads": 2,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 4,
+        "calls": 4,
+        "reads": 2,
+        "error": false,
+        "trace": []
+      }
+    ],
+    "diagnostic_fragments": [
+      "retry",
+      "",
+      "",
+      "retry field",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "outputs-and-tla",
+    "files": {},
+    "steps": [
+      {
+        "op": "evaluate",
+        "source": "function(x=1) x"
+      },
+      {
+        "op": "tla_var",
+        "value": 2
+      },
+      {
+        "op": "evaluate",
+        "source": "function(x) x",
+        "mode": "text"
+      },
+      {
+        "op": "tla_code",
+        "source": "[3]"
+      },
+      {
+        "op": "evaluate",
+        "source": "function(x) x",
+        "mode": "stream"
+      },
+      {
+        "op": "tla_program",
+        "source": "{a:'raw'}"
+      },
+      {
+        "op": "evaluate",
+        "source": "function(x) x",
+        "mode": "multi"
+      },
+      {
+        "op": "string_output",
+        "value": true
+      },
+      {
+        "op": "evaluate",
+        "source": "function(x) x",
+        "mode": "multi"
+      },
+      {
+        "op": "tla_var",
+        "value": "raw"
+      },
+      {
+        "op": "evaluate",
+        "source": "function(x) x",
+        "mode": "text"
+      },
+      {
+        "op": "string_output",
+        "value": false
+      },
+      {
+        "op": "tla_reset"
+      },
+      {
+        "op": "evaluate",
+        "source": "function(x=1) x"
+      }
+    ],
+    "expected": [
+      {
+        "value": 1,
+        "calls": 0,
+        "reads": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": "2\n",
+        "calls": 0,
+        "reads": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": [
+          "3\n"
+        ],
+        "calls": 0,
+        "reads": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "a": "\"raw\"\n"
+        },
+        "calls": 0,
+        "reads": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "a": "raw"
+        },
+        "calls": 0,
+        "reads": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": "raw\n",
+        "calls": 0,
+        "reads": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 1,
+        "calls": 0,
+        "reads": 0,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "recursive-closures",
+    "files": {
+      "f": "local f(n)=if n==0 then 42 else f(n-1) tailstrict; f"
+    },
+    "steps": [
+      {
+        "op": "evaluate",
+        "source": "(import 'f')(100) tailstrict"
+      },
+      {
+        "op": "evaluate",
+        "source": "(import 'f')(100) tailstrict"
+      },
+      {
+        "op": "tla_code",
+        "source": "2"
+      },
+      {
+        "op": "evaluate",
+        "source": "function(x) (import 'f')(x) tailstrict"
+      }
+    ],
+    "expected": [
+      {
+        "value": 42,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 42,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 42,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "hidden-locals-and-inheritance",
+    "files": {
+      "o": "{local x=std.trace('local',21), hidden::[1,2,3], a:x*2,b:self.a}"
+    },
+    "steps": [
+      {
+        "op": "evaluate",
+        "source": "(import 'o').a"
+      },
+      {
+        "op": "evaluate",
+        "source": "local o=import 'o'; [o.b,std.length(o.hidden)]"
+      },
+      {
+        "op": "evaluate",
+        "source": "(import 'o')+{a:7}"
+      },
+      {
+        "op": "evaluate",
+        "source": "(import 'o').b"
+      }
+    ],
+    "expected": [
+      {
+        "value": 42,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": [
+          "0:local"
+        ]
+      },
+      {
+        "value": [
+          42,
+          3
+        ],
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": [
+          "0:local"
+        ]
+      },
+      {
+        "value": {
+          "a": 7,
+          "b": 7
+        },
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": [
+          "0:local"
+        ]
+      },
+      {
+        "value": 42,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": [
+          "0:local"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "same-value-ext-rebind-invalidates",
+    "files": {
+      "dep": "std.native('tick')()"
+    },
+    "steps": [
+      {
+        "op": "native",
+        "increment": true
+      },
+      {
+        "op": "ext_var",
+        "value": 1
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "ext_var",
+        "value": 1
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "ext_reset"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "ext_reset"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      }
+    ],
+    "expected": [
+      {
+        "value": 1,
+        "calls": 1,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 2,
+        "calls": 2,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 3,
+        "calls": 3,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 4,
+        "calls": 4,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "partial-success-survives-output-error",
+    "files": {
+      "dep": "{good:std.native('tick')(),bad:error 'bad field'}"
+    },
+    "steps": [
+      {
+        "op": "native",
+        "increment": true
+      },
+      {
+        "op": "evaluate",
+        "source": "(import 'dep').good"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "evaluate",
+        "source": "(import 'dep').good"
+      }
+    ],
+    "expected": [
+      {
+        "value": 1,
+        "calls": 1,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": null,
+        "calls": 1,
+        "reads": 1,
+        "error": true,
+        "trace": []
+      },
+      {
+        "value": 1,
+        "calls": 1,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      }
+    ],
+    "diagnostic_fragments": [
+      "",
+      "bad field",
+      ""
+    ]
+  },
+  {
+    "name": "retained-array-mutation",
+    "files": {
+      "dep": "[1,2,3]"
+    },
+    "steps": [
+      {
+        "op": "evaluate",
+        "source": "[std.removeAt(import 'dep',0),import 'dep']"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "ext_var",
+        "value": 1
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      }
+    ],
+    "expected": [
+      {
+        "value": [
+          [
+            2,
+            3
+          ],
+          [
+            2,
+            3,
+            3
+          ]
+        ],
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": [
+          2,
+          3,
+          3
+        ],
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": [
+          1,
+          2,
+          3
+        ],
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "cached-object-assertion-failure",
+    "files": {
+      "dep": "{assert std.native('tick')()>1:'assert retry',a:42}"
+    },
+    "steps": [
+      {
+        "op": "native",
+        "increment": true
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "ext_var",
+        "name": "invalidate",
+        "value": 1
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      }
+    ],
+    "expected": [
+      {
+        "value": null,
+        "calls": 1,
+        "reads": 1,
+        "error": true,
+        "trace": []
+      },
+      {
+        "value": null,
+        "calls": 1,
+        "reads": 1,
+        "error": true,
+        "trace": []
+      },
+      {
+        "value": null,
+        "calls": 1,
+        "reads": 1,
+        "error": true,
+        "trace": []
+      },
+      {
+        "value": {
+          "a": 42
+        },
+        "calls": 2,
+        "reads": 1,
+        "error": false,
+        "trace": []
+      }
+    ],
+    "diagnostic_fragments": [
+      "assert retry",
+      "assert retry",
+      "assert retry",
+      ""
+    ]
+  },
+  {
+    "name": "cached-top-level-function-tla",
+    "files": {
+      "dep": "std.trace('module',function(x=1) x)"
+    },
+    "steps": [
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "tla_var",
+        "value": 2
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      },
+      {
+        "op": "tla_reset"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'dep'"
+      }
+    ],
+    "expected": [
+      {
+        "value": 1,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": [
+          "0:module"
+        ]
+      },
+      {
+        "value": 2,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": [
+          "0:module"
+        ]
+      },
+      {
+        "value": 1,
+        "calls": 0,
+        "reads": 1,
+        "error": false,
+        "trace": [
+          "0:module"
+        ]
+      }
+    ]
+  }
+]

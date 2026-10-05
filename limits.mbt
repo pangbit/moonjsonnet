@@ -1,5 +1,5 @@
 ///|
-fn check_limits(limits : Limits, loc : Location) -> Unit raise Error {
+fn check_limits(limits : Limits, loc : Location) -> Unit raise JsonnetError {
   if limits.steps <= 0 ||
     limits.depth <= 0 ||
     limits.depth > 512 ||
