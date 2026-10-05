@@ -23,6 +23,45 @@ pub(all) suberror JsonnetError {
 pub fn JsonnetError::to_repr(Self) -> @debug.Repr
 
 // Types and methods
+pub(all) struct Ast {
+  kind : AstKind
+  loc : Location
+}
+pub fn Ast::clone(Self, limits? : Limits) -> Self raise JsonnetError
+
+pub(all) enum AstClause {
+  For(String, Ast)
+  When(Ast)
+}
+
+pub(all) struct AstField {
+  key : Ast
+  value : Ast
+  visibility : Int
+  additive : Bool
+}
+
+pub(all) enum AstKind {
+  Literal(Json)
+  Var(String)
+  Local(Array[(String, Ast)], Ast)
+  If(Ast, Ast, Ast)
+  Func(Array[(String, Ast?)], Ast)
+  Call(Ast, Array[(String?, Ast)], Bool)
+  Arr(Array[Ast])
+  Obj(Array[AstField], Array[(String, Ast)], Array[(Ast, Ast?)])
+  ArrayComp(Ast, Array[AstClause])
+  ObjectComp(Ast, Ast, Array[AstClause], Array[(String, Ast)])
+  Index(Ast, Ast)
+  Slice(Ast, Ast?, Ast?, Ast?)
+  Unary(String, Ast)
+  Binary(String, Ast, Ast)
+  Assert(Ast, Ast?, Ast)
+  Fail(Ast)
+  ImportFile(String, Bool)
+  ImportBinary(String)
+}
+
 pub(all) struct BinarySource {
   id : String
   bytes : Bytes
@@ -110,10 +149,12 @@ pub(all) struct NativeFunction {
 pub struct Program {
   // private fields
 }
+pub fn Program::ast(Self) -> Ast
 pub fn Program::evaluate(Self, ext_vars? : Map[String, Json], ext_code? : Map[String, String], ext_programs? : Map[String, Self], tla_vars? : Map[String, Json], tla_code? : Map[String, String], tla_programs? : Map[String, Self], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Json raise JsonnetError
 pub fn Program::evaluate_multi(Self, string_output? : Bool, ext_vars? : Map[String, Json], ext_code? : Map[String, String], ext_programs? : Map[String, Self], tla_vars? : Map[String, Json], tla_code? : Map[String, String], tla_programs? : Map[String, Self], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Map[String, String] raise JsonnetError
 pub fn Program::evaluate_stream(Self, ext_vars? : Map[String, Json], ext_code? : Map[String, String], ext_programs? : Map[String, Self], tla_vars? : Map[String, Json], tla_code? : Map[String, String], tla_programs? : Map[String, Self], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Array[String] raise JsonnetError
 pub fn Program::evaluate_text(Self, string_output? : Bool, ext_vars? : Map[String, Json], ext_code? : Map[String, String], ext_programs? : Map[String, Self], tla_vars? : Map[String, Json], tla_code? : Map[String, String], tla_programs? : Map[String, Self], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> String raise JsonnetError
+pub fn Program::from_ast(Ast, filename? : String, anonymous? : Bool, limits? : Limits) -> Self raise JsonnetError
 pub fn Program::parse(String, filename? : String, anonymous? : Bool, limits? : Limits) -> Self raise JsonnetError
 
 pub(all) struct Source {

@@ -134,7 +134,7 @@ fn Parser::binding(self : Parser) -> (String, Expr) raise Error {
 
 ///|
 fn Parser::clauses(self : Parser) -> Array[Clause] raise Error {
-  let out = []
+  let out : Array[Clause] = []
   while self.peek().text == "for" || self.peek().text == "if" {
     if self.eat("for") {
       let n = self.name()
@@ -200,7 +200,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
         1
       }
       let body = self.expr(0)
-      let value = match params {
+      let value : Expr = match params {
         Some(p) => { kind: Func(p, body), loc: key.loc, }
         None => body
       }

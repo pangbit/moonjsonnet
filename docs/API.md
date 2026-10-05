@@ -212,9 +212,43 @@ the parameter is forced against that execution's limits; unused parameters do
 not consume these runtime budgets.
 
 This provides the parse-then-evaluate role of Go's `SnippetToAST` and AST-based
-`Evaluate`/`EvaluateStream`/`EvaluateMulti`. Go's mutable public AST editing
-remains separate parity work. Reusable VM settings and import value
+`Evaluate`/`EvaluateStream`/`EvaluateMulti`. Reusable VM settings and import value
 caches are provided by `Evaluator` below.
+
+## Editable semantic AST
+
+`Program::ast() -> Ast` returns a deep, editable copy. `Ast` contains `kind` and
+`loc`; public `AstKind`, `AstField` and `AstClause` represent every supported
+expression form. Replace records with `{ ..node, kind: ... }` and edit child
+arrays to construct transformations. `Ast::clone(limits?)` makes another isolated
+copy, including subtrees with free variables. No runtime objects are exposed.
+
+`Program::from_ast(tree, filename?, anonymous?, limits?)` copies the tree,
+validates node shapes and lexical scopes, and creates a reusable Program.
+Edits to either the input or a later exported tree cannot change that Program,
+another copy, or an Evaluator's imported AST/value cache. The resulting Program
+works with every output mode and ext/TLA Program bindings.
+
+```mbt
+let node = @moonjsonnet.Program::parse("21").ast()
+let edited = { ..node, kind: @moonjsonnet.AstKind::Binary("+", node, node), }
+let result = @moonjsonnet.Program::from_ast(edited).evaluate() // 42
+```
+
+Literal nodes contain only scalar Json; use Arr/Obj for collections. Field
+visibility is 1 (inherit), 2 (hidden), or 3 (visible); ImportFile's Bool selects
+string versus code import, and Call's Bool is tailstrict. Function/default/local
+bindings and comprehension clauses retain their lexical scope rules.
+
+Conversion checks `depth` and uses `steps` as a node-copy budget; cyclic child
+arrays and excessive width/depth return Limit. Manually constructed programs
+have no source text and a saved source-byte count of zero; this does not exempt
+later imports, steps, stack, depth or output from execution limits. Filename
+defaults to the root location file, while explicit `filename`/`anonymous` control
+the entry/import identity. Individual diagnostic locations remain unchanged.
+Trees contain semantic syntax, not comments, whitespace, original number spelling,
+source ranges or Go's desugared/free-variable metadata. Source-preserving tooling
+and complete Go AST metadata compatibility remain pending.
 
 ## Reusable evaluator
 
@@ -276,8 +310,8 @@ new import identities or newly demanded retained values. This is not an RSS or
 leak guarantee.
 
 Evaluation and configuration changes reject reentry on the same Evaluator from
-a callback. Separate instances can be used independently. Public mutable ASTs
-and an EvalHook API remain pending.
+a callback. Separate instances can be used independently. An EvalHook/debugger
+API remains pending.
 
 The following queries share source/AST caches and never execute Jsonnet, apply
 parameters or invoke native/trace callbacks:

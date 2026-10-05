@@ -1,0 +1,70 @@
+import {
+  "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell",
+  "moonbitlang/core/env", "moonbitlang/core/json",
+}
+
+fn field(value : Json, key : String, fallback : Json) -> Json {
+  match value {Object(fields)=>fields.get(key).unwrap_or(fallback);_=>fallback}
+}
+
+fn text(value : Json) -> String raise {
+  guard value is String(text) else {fail("expected string")}
+  text
+}
+
+async fn command(program : String, args : Array[String]) -> String {
+  let result=@shell.Cmd(program,args).output()
+  result.check()
+  result.stdout().trim().to_owned()
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==2 || args.length()==3 else {fail("Usage: moon run tools/ast-integration.mbtx PROBE [GO_CHECKOUT]")}
+  let cli=@fs.realpath(args[1])
+  let work=@fs.tmpdir(prefix="moonjsonnet-ast-")
+  let reference=if args.length()==3 {
+    let checkout=@fs.realpath(args[2])
+    assert_eq(command("git",["-C",checkout,"rev-parse","HEAD"]),"67968688d9952f50662e979fab1bef889d0d3e57")
+    assert_eq(command("git",["-C",checkout,"status","--porcelain"]),"")
+    let adapter=@fs.realpath("tests/reference/ast.go")
+    let binary=work+"/go-ast"
+    @shell.Cmd("go",["-C",checkout,"build","-o",binary,adapter],env=Map([("GOTOOLCHAIN","go1.24.0"),("GOWORK","off"),("GOPROXY","off")])).run()
+    assert_true(command("go",["version","-m",binary]).contains("go1.24.0"))
+    Some(binary)
+  } else {None}
+  guard @json.parse(@fs.read_file("tests/go-ast.json").text()) is Array(cases) else {fail("expected fixtures")}
+  let rows : Array[Json]=[]
+  let mut passed=0
+  for case in cases {
+    let programs=match reference {Some(reference)=>[cli,reference];None=>[cli]}
+    let runs : Array[Json]=[]
+    let mut ok=true
+    for program in programs {
+      let result=@shell.Cmd(program,[],stdin=@shell.Text(case.stringify())).output(timeout_ms=10000)
+      let outcome=try @json.parse(result.stdout()) catch {_=>Json::null()}
+      let error=field(outcome,"error",Json::null())
+      let outcome_ok=match field(case,"error_contains",Json::null()) {
+        Array(parts)=>error is String(message) && !message.is_empty() && !message.contains("(CRASH)") && !message.contains("INTERNAL ERROR") && parts.all(part=>message.contains(text(part))) && field(outcome,"result",Json::boolean(true))==Json::null()
+        _=>error==Json::string("") && field(outcome,"result",Json::null())==field(case,"expected",Json::null())
+      }
+      let run_ok=result.exit_code()==0 && result.stderr()=="" && outcome_ok &&
+        field(outcome,"requests",Json::null())==field(case,"requests",[]) &&
+        field(outcome,"trace",Json::null())==field(case,"trace",Json::string("")) &&
+        field(outcome,"native_calls",Json::null())==field(case,"native_calls",0)
+      ok=ok && run_ok
+      runs.push({"program":program,"exit":result.exit_code(),"stdout":result.stdout(),"stderr":result.stderr(),"passed":run_ok})
+    }
+    if ok {passed+=1} else {println("FAIL AST "+text(field(case,"name",Json::null())))}
+    rows.push({"fixture":case,"passed":ok,"runs":runs})
+  }
+  @fs.mkdir("_build/ast",recursive=true,allow_exist=true)
+  // The ASan copy contains tracked sources but no .git directory.
+  let commit=@shell.Cmd("git",["rev-parse","HEAD"]).output()
+  let dirty=@shell.Cmd("git",["status","--porcelain"]).output()
+  let report : Json={"source_commit":if commit.exit_code()==0 {Json::string(commit.stdout().trim().to_owned())} else {Json::null()},"source_dirty":if dirty.exit_code()==0 {Json::boolean(!dirty.stdout().is_empty())} else {Json::null()},"reference_commit":if reference is Some(_) {Json::string("67968688d9952f50662e979fab1bef889d0d3e57")} else {Json::null()},"reference_sha256":match reference {Some(binary)=>Json::string(command("shasum",["-a","256",binary]));None=>Json::null()},"reference_build":match reference {Some(binary)=>Json::string(command("go",["version","-m",binary]));None=>Json::null()},"local_sha256":command("shasum",["-a","256",cli]),"adapter_sha256":command("shasum",["-a","256","tests/reference/ast.go"]),"total":cases.length(),"passed":passed,"failed":cases.length()-passed,"cases":rows}
+  let report_path=if reference is Some(_) {"_build/ast/report.json"} else {"_build/ast/local-report.json"}
+  @fs.write_file(report_path,report.stringify(indent=2)+"\n")
+  println("AST: \{passed}/\{cases.length()}; evidence: \{work}")
+  if passed!=cases.length() {fail("AST differences retained in "+report_path)}
+}

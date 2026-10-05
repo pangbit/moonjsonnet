@@ -93,7 +93,7 @@ fn Vm::defer_call(
   loc : Location,
 ) -> Int {
   let names = Map([("f", self.store(Ready(func)))])
-  let params = []
+  let params : Array[(String?, Expr)] = []
   for i, t in args {
     let name = i.to_string()
     names[name] = t

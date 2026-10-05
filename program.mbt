@@ -1,5 +1,5 @@
 ///|
-/// A validated program with fixed source identity. Its AST is private and can be
+/// A validated program with fixed source identity. Its AST is isolated and can be
 /// reused across evaluations; values, imports and resource counters are not shared.
 pub struct Program {
   priv expression : Expr
@@ -49,4 +49,60 @@ pub fn Program::parse(
         context: [],
       })
   }
+}
+
+///|
+/// Return an editable deep copy of the program's semantic AST. Mutating this
+/// tree cannot alter the program, imported caches, or another returned copy.
+pub fn Program::ast(self : Program) -> Ast {
+  export_ast(self.expression)
+}
+
+///|
+/// Copy and validate a manually constructed or edited AST without execution.
+/// Depth and steps bound conversion, including cycles in caller-owned arrays.
+/// There is no source text byte count for a synthetic AST. Evaluation retains
+/// all ordinary runtime limits. Filename defaults to the root location's file;
+/// individual node locations are retained for diagnostics.
+///
+/// ```mbt check
+/// test {
+///   let tree = @moonjsonnet.Program::parse("21").ast()
+///   let edited = { ..tree, kind: @moonjsonnet.AstKind::Binary("*", tree, tree), }
+///   assert_eq(@moonjsonnet.Program::from_ast(edited).evaluate(), 441)
+/// }
+/// ```
+pub fn Program::from_ast(
+  tree : Ast,
+  filename? : String,
+  anonymous? : Bool = false,
+  limits? : Limits = Limits::default(),
+) -> Program raise JsonnetError {
+  try {
+    check_limits(limits, tree.loc)
+    let reader : AstReader = { limits, nodes: 0, }
+    let expression = reader.read(tree, 0)
+    validate(expression, ["std"], false)
+    {
+      expression,
+      filename: filename.unwrap_or(tree.loc.file),
+      anonymous,
+      source_bytes: 0,
+    }
+  } catch {
+    Error(d) => raise Error(d)
+    e => raise problem(Runtime, tree.loc, e.to_string())
+  }
+}
+
+///|
+/// Copy a tree (including a subtree with free variables), checking shape and
+/// depth/node budgets. Scope validation happens when constructing a Program.
+pub fn Ast::clone(
+  self : Ast,
+  limits? : Limits = Limits::default(),
+) -> Ast raise JsonnetError {
+  check_limits(limits, self.loc)
+  let reader : AstReader = { limits, nodes: 0, }
+  export_ast(reader.read(self, 0))
 }

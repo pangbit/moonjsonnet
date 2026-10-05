@@ -54,5 +54,8 @@ async fn main {
   @shell.Cmd("moon", ["run", "--build-only", "--target", "native", "examples/evaluator-probe"], cwd=checkout, env=environment).run()
   @shell.Cmd("moon", ["run", repo + "/tools/evaluator-integration.mbtx", checkout + "/_build/native/debug/build/examples/evaluator-probe/evaluator-probe.exe"], cwd=checkout,
     env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", asan_options)])).run()
+  @shell.Cmd("moon", ["run", "--build-only", "--target", "native", "examples/ast-probe"], cwd=checkout, env=environment).run()
+  @shell.Cmd("moon", ["run", repo + "/tools/ast-integration.mbtx", checkout + "/_build/native/debug/build/examples/ast-probe/ast-probe.exe"], cwd=checkout,
+    env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", asan_options)])).run()
   println("ASan tests and host integration passed with isolated toolchain: \{work}; leak detection disabled")
 }

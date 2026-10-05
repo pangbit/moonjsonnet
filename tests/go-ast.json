@@ -1,0 +1,246 @@
+[
+  {
+    "name": "literals",
+    "source": "[null,true,false,1,'é']",
+    "expected": [
+      [
+        null,
+        true,
+        false,
+        1,
+        "é"
+      ],
+      [
+        null,
+        true,
+        false,
+        1,
+        "é"
+      ]
+    ]
+  },
+  {
+    "name": "function",
+    "source": "local f(x=2)=if x>0 then x*21 else error 'bad'; f() tailstrict",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "assert-slice",
+    "source": "assert 1==1:'bad'; [~1,!false,-2,+3][1:4:2]",
+    "expected": [
+      [
+        true,
+        3
+      ],
+      [
+        true,
+        3
+      ]
+    ]
+  },
+  {
+    "name": "object",
+    "source": "{local x=21, assert self.a==42:'bad',a:x*2, hidden::1, visible:::2}",
+    "expected": [
+      {
+        "a": 42,
+        "visible": 2
+      },
+      {
+        "a": 42,
+        "visible": 2
+      }
+    ]
+  },
+  {
+    "name": "inheritance",
+    "source": "({x:1}+{x+:2,y:super.x,z:'x' in super})",
+    "expected": [
+      {
+        "x": 3,
+        "y": 1,
+        "z": true
+      },
+      {
+        "x": 3,
+        "y": 1,
+        "z": true
+      }
+    ]
+  },
+  {
+    "name": "array-comp",
+    "source": "[[x,y] for x in [1,2] if x>1 for y in [3]]",
+    "expected": [
+      [
+        [
+          2,
+          3
+        ]
+      ],
+      [
+        [
+          2,
+          3
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "object-comp",
+    "source": "{local a=21,[x]:a*2 for x in ['answer']}",
+    "expected": [
+      {
+        "answer": 42
+      },
+      {
+        "answer": 42
+      }
+    ]
+  },
+  {
+    "name": "this-file",
+    "source": "std.thisFile",
+    "expected": [
+      "entry",
+      "entry"
+    ]
+  },
+  {
+    "name": "dollar",
+    "source": "{x:42,y:{z:$.x}}",
+    "expected": [
+      {
+        "x": 42,
+        "y": {
+          "z": 42
+        }
+      },
+      {
+        "x": 42,
+        "y": {
+          "z": 42
+        }
+      }
+    ]
+  },
+  {
+    "name": "index",
+    "source": "{x:[21,42]}.x[1]",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "clone-array-edit",
+    "source": "[1,2]",
+    "op": "array-first",
+    "replacement": "6*7",
+    "expected": [
+      [
+        1,
+        2
+      ],
+      [
+        42,
+        2
+      ]
+    ]
+  },
+  {
+    "name": "construct-add",
+    "source": "21",
+    "op": "add",
+    "replacement": "21",
+    "expected": [
+      21,
+      42
+    ]
+  },
+  {
+    "name": "construct-merge",
+    "source": "{x:1}",
+    "op": "add",
+    "replacement": "{y:2}",
+    "expected": [
+      {
+        "x": 1
+      },
+      {
+        "x": 1,
+        "y": 2
+      }
+    ]
+  },
+  {
+    "name": "ext-node",
+    "source": "6*7",
+    "op": "ext",
+    "expected": 42
+  },
+  {
+    "name": "tla-node",
+    "source": "[21,42]",
+    "op": "tla",
+    "expected": [
+      21,
+      42
+    ]
+  },
+  {
+    "name": "stream",
+    "source": "[1,2]",
+    "mode": "stream",
+    "expected": [
+      [
+        "1\n",
+        "2\n"
+      ],
+      [
+        "1\n",
+        "2\n"
+      ]
+    ]
+  },
+  {
+    "name": "multi",
+    "source": "{a:42}",
+    "mode": "multi",
+    "expected": [
+      {
+        "a": "42\n"
+      },
+      {
+        "a": "42\n"
+      }
+    ]
+  },
+  {
+    "name": "text",
+    "source": "42",
+    "mode": "text",
+    "expected": [
+      "42\n",
+      "42\n"
+    ]
+  },
+  {
+    "name": "failure",
+    "source": "error 'boom'",
+    "error_contains": [
+      "boom"
+    ]
+  },
+  {
+    "name": "lazy",
+    "source": "local unused=error 'boom';42",
+    "expected": [
+      42,
+      42
+    ]
+  }
+]
