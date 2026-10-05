@@ -201,7 +201,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
       } else {
         let t = self.take()
         if t.value is Some(String(_)) {
-          { kind: Literal(t.value.unwrap()), loc: t.loc, end: Some(t.end), }
+          { kind: t.literal_kind(), loc: t.loc, end: Some(t.end), }
         } else if is_name(t.text) {
           { kind: Literal(Json::string(t.text)), loc: t.loc, end: None, }
         } else {
@@ -291,7 +291,7 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
   let token = self.take()
   let loc = token.loc
   let mut left : Expr = match token.value {
-    Some(value) => { kind: Literal(value), loc, end: None, }
+    Some(_) => { kind: token.literal_kind(), loc, end: None, }
     None =>
       match token.text {
         "true" => { kind: Literal(Json::boolean(true)), loc, end: None, }

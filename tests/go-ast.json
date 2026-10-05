@@ -1303,5 +1303,213 @@
         "entry:1:1-28"
       ]
     ]
+  },
+  {
+    "name": "string-decode-value-1",
+    "source": "['\\u0000','\\u007f','\\u00e9','\\u4e2d','\\uFFFF']",
+    "op": "clone",
+    "expected": [
+      [
+        "\u0000",
+        "",
+        "é",
+        "中",
+        "￿"
+      ],
+      [
+        "\u0000",
+        "",
+        "é",
+        "中",
+        "￿"
+      ]
+    ]
+  },
+  {
+    "name": "string-decode-value-2",
+    "source": "'\\uD83D\\uDE00'",
+    "op": "clone",
+    "expected": [
+      "😀",
+      "😀"
+    ]
+  },
+  {
+    "name": "string-decode-value-3",
+    "source": "'\\uD800\\u0041'",
+    "op": "clone",
+    "expected": [
+      "�",
+      "�"
+    ]
+  },
+  {
+    "name": "string-decode-value-4",
+    "source": "'\\uDC00\\uDC00'",
+    "op": "clone",
+    "expected": [
+      "�",
+      "�"
+    ]
+  },
+  {
+    "name": "string-decode-value-5",
+    "source": "'\\uD800\\uD800'",
+    "op": "clone",
+    "expected": [
+      "�",
+      "�"
+    ]
+  },
+  {
+    "name": "string-decode-value-6",
+    "source": "'\\uDC00\\uD800'",
+    "op": "clone",
+    "expected": [
+      "�",
+      "�"
+    ]
+  },
+  {
+    "name": "string-decode-value-7",
+    "source": "['\\uD800\\uDC00','\\uDBFF\\uDFFF']",
+    "op": "clone",
+    "expected": [
+      [
+        "𐀀",
+        "􏿿"
+      ],
+      [
+        "𐀀",
+        "􏿿"
+      ]
+    ]
+  },
+  {
+    "name": "string-decode-value-8",
+    "source": "['\\\"','\\'','\\\\','\\/','\\b','\\f','\\n','\\r','\\t']",
+    "op": "clone",
+    "expected": [
+      [
+        "\"",
+        "'",
+        "\\",
+        "/",
+        "\b",
+        "\f",
+        "\n",
+        "\r",
+        "\t"
+      ],
+      [
+        "\"",
+        "'",
+        "\\",
+        "/",
+        "\b",
+        "\f",
+        "\n",
+        "\r",
+        "\t"
+      ]
+    ]
+  },
+  {
+    "name": "string-decode-value-9",
+    "source": "'é中😀'",
+    "op": "clone",
+    "expected": [
+      "é中😀",
+      "é中😀"
+    ]
+  },
+  {
+    "name": "string-decode-value-10",
+    "source": "'a\nb'",
+    "op": "clone",
+    "expected": [
+      "a\nb",
+      "a\nb"
+    ]
+  },
+  {
+    "name": "string-decode-value-11",
+    "source": "'﻿x\\n﻿y'",
+    "op": "clone",
+    "expected": [
+      "﻿x\n﻿y",
+      "﻿x\n﻿y"
+    ]
+  },
+  {
+    "name": "string-decode-value-12",
+    "source": "@'\\uD800'",
+    "op": "clone",
+    "expected": [
+      "\\uD800",
+      "\\uD800"
+    ]
+  },
+  {
+    "name": "string-decode-value-13",
+    "source": "@'a''b'",
+    "op": "clone",
+    "expected": [
+      "a'b",
+      "a'b"
+    ]
+  },
+  {
+    "name": "string-decode-value-14",
+    "source": "{'\\u0061':42}.a",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "string-decode-value-15",
+    "source": "{['\\u0061']:42}.a",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "string-decode-value-16",
+    "source": "local f(x='\\u0061')=x;f()",
+    "op": "clone",
+    "expected": [
+      "a",
+      "a"
+    ]
+  },
+  {
+    "name": "string-decode-value-17",
+    "source": "['\\u0061' for x in [1]]",
+    "op": "clone",
+    "expected": [
+      [
+        "a"
+      ],
+      [
+        "a"
+      ]
+    ]
+  },
+  {
+    "name": "string-decode-value-18",
+    "source": "{[x]:'\\u0061' for x in ['k']}",
+    "op": "clone",
+    "expected": [
+      {
+        "k": "a"
+      },
+      {
+        "k": "a"
+      }
+    ]
   }
 ]

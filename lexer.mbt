@@ -165,65 +165,8 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
           }
           let esc = chars[i]
           i += 1
-          match esc {
-            '"' | '\'' | '\\' | '/' => b.write_char(esc)
-            'n' => b.write_char('\n')
-            'r' => b.write_char('\r')
-            't' => b.write_char('\t')
-            'b' => b.write_char('\b')
-            'f' => b.write_char('\u000c')
-            'u' => {
-              // Delegate scalar/pair validation to the core JSON decoder.
-              let escaped = StringBuilder()
-              escaped.write_string("\"\\u")
-              let mut code = 0
-              for _ in 0..<4 {
-                guard i < chars.length() else {
-                  raise problem(Syntax, loc, "short unicode escape")
-                }
-                escaped.write_char(chars[i])
-                let c = chars[i].to_int()
-                code = code * 16 +
-                  (if c >= 48 && c <= 57 {
-                    c - 48
-                  } else if c >= 65 && c <= 70 {
-                    c - 55
-                  } else if c >= 97 && c <= 102 {
-                    c - 87
-                  } else {
-                    0
-                  })
-                i += 1
-              }
-              if code >= 0xd800 &&
-                code <= 0xdbff &&
-                chars.get(i) == Some('\\') &&
-                chars.get(i + 1) == Some('u') {
-                escaped.write_string("\\u")
-                i += 2
-                for _ in 0..<4 {
-                  guard i < chars.length() else {
-                    raise problem(Syntax, loc, "short unicode escape")
-                  }
-                  escaped.write_char(chars[i])
-                  i += 1
-                }
-              }
-              escaped.write_char('"')
-              let decoded = @json.parse(escaped.to_string()) catch {
-                _ =>
-                  raise problem(
-                    Syntax,
-                    loc,
-                    "invalid or unpaired Unicode escape",
-                  )
-              }
-              if decoded is String(s) {
-                b.write_string(s)
-              }
-            }
-            _ => raise problem(Syntax, loc, "invalid escape")
-          }
+          b.write_char('\\')
+          b.write_char(esc)
         } else {
           b.write_char(ch)
         }

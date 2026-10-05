@@ -37,6 +37,8 @@ from linter/internal/types at the same pinned go-jsonnet revision.
 lint_lower.mbt adapts analysis-only lowering from internal/program/desugarer.go.
 token.mbt, lexer_number.mbt and the lexer/parser diagnostic and operator-token paths adapt
 internal/parser/lexer.go and parser.go at the same revision.
+string_literal.mbt adapts internal/parser/string_util.go at that revision;
+normal quoted strings are validated and decoded when consumed by the parser.
 Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 tools/embed-lint-stdlib.mbtx verifies the reference revision and source hash.
 

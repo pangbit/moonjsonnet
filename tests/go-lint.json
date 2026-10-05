@@ -3754,6 +3754,1158 @@
           9
         ]
       ]
+    },
+    {
+      "name": "string-decode-1",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\q'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-5 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-2",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\u'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-5 Truncated unicode escape sequence in string literal."
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-3",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\u1'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-6 Truncated unicode escape sequence in string literal."
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-4",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\u123'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-8 Truncated unicode escape sequence in string literal."
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-5",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\u12xz'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-9 Unicode escape sequence was malformed: \\u12"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-6",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'ab\\u12xz'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-11 Unicode escape sequence was malformed: ab\\u"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-7",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'中\\u12xz'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-12 Unicode escape sequence was malformed: 中\\"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-8",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'é中\\u12xz'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-14 Unicode escape sequence was malformed: é��"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-9",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'😀\\u12xz'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-13 Unicode escape sequence was malformed: 😀"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-10",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\u中xxx'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-11 Unicode escape sequence was malformed: \\u��"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-11",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\u😀'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-9 Unicode escape sequence was malformed: \\u��"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-12",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\uD800'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-9 Truncated unicode surrogate pair escape sequence in string literal."
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-13",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\uDC00'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-9 Truncated unicode surrogate pair escape sequence in string literal."
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-14",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\uD800x'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-10 Truncated unicode surrogate pair escape sequence in string literal."
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-15",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\uD800123456'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-15 Unicode surrogate pair escape sequence missing low surrogate in string literal."
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-16",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\uD800\\u12xz'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-15 Unicode low surrogate escape sequence was malformed: \\uD8"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-17",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'abc\\uD800\\u12xz'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-18 Unicode low surrogate escape sequence was malformed: abc\\"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-18",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\uDC00\\uDC00'"
+        }
+      ],
+      "files": {},
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "string-decode-19",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\uD800\\u0041'"
+        }
+      ],
+      "files": {},
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "string-decode-20",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\中'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-7 Unknown escape sequence in string literal: \\中"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-21",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\😀'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-8 Unknown escape sequence in string literal: \\😀"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-22",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\\n'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:(1:1)-(2:2) Unknown escape sequence in string literal: \\\n"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-23",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\q"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unterminated String"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-24",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\u1"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unterminated String"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-25",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['\\q', ?]"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '?'"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-26",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['\\q', 1e+]"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after exponent sign: ']'"
+      ],
+      "locations": [
+        [
+          1,
+          11
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-27",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['\\q', 'unclosed"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unterminated String"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-28",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['\\q' 42]"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:2-6 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-29",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\q' 42"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-5 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-30",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local 'x'=1;'\\q'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Expected token IDENTIFIER but got (STRING_SINGLE, \"x\")"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-31",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['\\a','\\v']"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:2-6 Unknown escape sequence in string literal: \\a"
+      ],
+      "locations": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-32",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['\\q',unknown]"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:2-6 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-33",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[unknown,'\\q']"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:10-14 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          10
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-34",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "assert '\\q': '\\w'; '\\e'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:8-12 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-35",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "assert true: '\\w'; '\\e'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:14-18 Unknown escape sequence in string literal: \\w"
+      ],
+      "locations": [
+        [
+          1,
+          14
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-36",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\q' in '\\w'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-5 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-37",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\q' + '\\w'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-5 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-38",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "if '\\q' then '\\w' else '\\e'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:4-8 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-39",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "if true then '\\w' else '\\e'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:14-18 Unknown escape sequence in string literal: \\w"
+      ],
+      "locations": [
+        [
+          1,
+          14
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-40",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a:'\\q',local b='\\w',assert '\\e'}"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:4-8 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-41",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a:'\\q',local b='\\w'}"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:4-8 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-42",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{'\\q':'\\w'}"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:2-6 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-43",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{f(x='\\q'):'\\w'}"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:6-10 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          6
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-44",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['\\q' for x in '\\w' if '\\e']"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:2-6 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-45",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[x for x in '\\w' if '\\e']"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:13-17 Unknown escape sequence in string literal: \\w"
+      ],
+      "locations": [
+        [
+          1,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-46",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[x for x in '\\w' if '\\e' for y in '\\r' if '\\q']"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:13-17 Unknown escape sequence in string literal: \\w"
+      ],
+      "locations": [
+        [
+          1,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-47",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{['\\q']:'\\w' for x in '\\e'}"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:3-7 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-48",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local y='\\q',[x]:'\\w' for x in '\\e'}"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:10-14 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          10
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-49",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local f(x='\\q')='\\w';'\\e'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:11-15 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          11
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-50",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x) x)('\\q')"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:17-21 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          17
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-51",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'\\q'[0]"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:1-5 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-52",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[1]['\\q':]"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:5-9 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          5
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-53",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "import '\\q'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:8-12 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-54",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "importstr '\\q'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:11-15 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          11
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-55",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "importbin '\\q'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:11-15 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          11
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-56",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "import ('\\q')"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:9-13 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          9
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-57",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "import '\\q'+'x'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "entry:1:8-12 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "string-decode-58",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{['\\u0061']:42}.a"
+        }
+      ],
+      "files": {},
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "string-decode-59",
+      "group": "string-decode",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "@'\\q'"
+        }
+      ],
+      "files": {},
+      "expected": [],
+      "locations": []
     }
   ]
 }

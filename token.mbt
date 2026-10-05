@@ -24,6 +24,22 @@ fn operator_char(c : Char) -> Bool {
 }
 
 ///|
+fn Token::literal_kind(self : Token) -> ExprKind raise JsonnetError {
+  match self.value.unwrap() {
+    String(raw) if self.text == "<string>" && !self.raw.has_prefix("@") => {
+      let decoded = unescape_literal(raw, self.loc) catch {
+        Error(d) => {
+          let range : SourceRange = { begin: self.loc, end: self.end, }
+          raise problem(Syntax, self.loc, range.format() + " " + d.message)
+        }
+      }
+      Literal(Json::string(decoded))
+    }
+    value => Literal(value)
+  }
+}
+
+///|
 fn Token::is_operator(self : Token) -> Bool {
   self.value is None &&
   self.text != "<eof>" &&
