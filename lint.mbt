@@ -174,8 +174,8 @@ fn LintScan::loops(self : LintScan, e : Expr) -> Unit raise JsonnetError {
 
 ///|
 /// Check snippets without execution. Returns parse/static/import findings,
-/// unused local bindings and eager local-definition cycles. Type inference
-/// checks are not yet implemented; an empty result is not a complete Go lint pass.
+/// unused bindings, eager cycles, and conservative inferred-type findings for
+/// calls, arguments, indexing and unary operators. No Jsonnet code is executed.
 /// Imports are checked recursively, but only entry snippets receive lint checks.
 /// Limits abort analysis with JsonnetError instead of returning a partial result.
 ///
@@ -194,12 +194,13 @@ pub fn lint(
   check_limits(limits, loc)
   let scan : LintScan = { limits, steps: 0, bindings: [], diagnostics: [], }
   let entries : Array[(String, Expr)] = []
-  let roots : Map[String, Bool] = Map([])
+  let roots : Map[String, Expr] = Map([])
+  let imported : Map[(String, String), String] = Map([])
   for source in snippets {
     try {
       let program = Program::parse(source.text, filename=source.id, limits~)
       entries.push((source.id, program.expression))
-      roots[source.id] = true
+      roots[source.id] = program.expression
     } catch {
       Error(d) =>
         if d.kind == Limit {
@@ -239,8 +240,9 @@ pub fn lint(
         }
         if code {
           let (program, id) = evaluator.import_program(from, path)
+          imported[(from, path)] = id
           if !roots.contains(id) {
-            roots[id] = true
+            roots[id] = program.expression
             pending.push((id, program.expression))
           }
         }
@@ -259,7 +261,16 @@ pub fn lint(
       }
     }
   }
-  for (_, e) in entries {
+  let graph = LintGraph::new(scan, imported)
+  for name, _ in roots {
+    graph.roots[name] = graph.add()
+  }
+  let typed : Map[String, LintTyped] = Map([])
+  for name, e in roots {
+    typed[name] = graph.build(e, Map([("std", 11)]), name, id=graph.roots[name])
+  }
+  graph.solve()
+  for (name, e) in entries {
     scan.bindings.clear()
     scan.variables(e, Map([]))
     for b in scan.bindings {
@@ -267,6 +278,7 @@ pub fn lint(
         scan.report(b.loc, "Unused variable: " + b.name)
       }
     }
+    graph.check(typed[name])
     scan.loops(e)
   }
   scan.diagnostics

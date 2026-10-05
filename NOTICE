@@ -32,6 +32,16 @@ adapt lexical-use and eager local-cycle analysis from linter/internal/variables,
 linter/internal/traversal and internal/parser/context.go at that same revision.
 Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 
+lint_type_*.mbt adapt conservative type-graph inference, checks and declarations
+from linter/internal/types at the same pinned go-jsonnet revision.
+Copyright Google Inc.; Apache License 2.0 (see LICENSE).
+tools/embed-lint-stdlib.mbtx verifies the reference revision and source hash.
+
+lint_quote.mbt and lint_print.mbt adapt Go 1.24.0 src/strconv/quote.go and
+src/strconv/isprint.go. Copyright 2009 The Go Authors. All rights reserved.
+BSD 3-Clause terms: licenses/GO-BSD-3-Clause.txt.
+tools/embed-lint-print.mbtx verifies the exact source SHA-256 before extraction.
+
 manifest_toml.mbt, manifest_yaml.mbt and manifest_text.mbt adapt the native
 TOML/YAML rendering contracts and control flow in the pinned go-jsonnet
 builtins.go and interpreter.go to MoonBit, including quoting and key recognition.

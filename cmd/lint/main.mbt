@@ -54,7 +54,7 @@ fn run(given : Array[String]) -> Unit raise {
     match arg {
       "--help" | "-h" => {
         println(
-          "Usage: moonjsonnet-lint [-J/--jpath DIR] [--root DIR] [--] FILE...\nChecks syntax, imports, unused locals and eager local cycles without execution.\nSubset: type inference checks remain pending. JSONNET_PATH is supported.\nExit: 0 no implemented findings; 1 input/resource failure; 2 findings.",
+          "Usage: moonjsonnet-lint [-J/--jpath DIR] [--root DIR] [--] FILE...\nChecks syntax, imports, unused locals, eager cycles and inferred types without execution.\nJSONNET_PATH is supported. Diagnostic range parity remains incomplete.\nExit: 0 no findings; 1 input/resource failure; 2 findings.",
         )
         return
       }

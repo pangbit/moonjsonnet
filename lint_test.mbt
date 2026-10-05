@@ -76,8 +76,8 @@ test "lint imports check dead branches and raw bytes but not imported warnings" 
   let issues = @moonjsonnet.lint([
     { id: "entry", text: "{assert (import 'missing')==1,a:42}", },
   ])
-  assert_eq(issues.length(), 1)
-  assert_true(issues[0].message.contains("imports disabled"))
+  // Fixed Go linter traversal skips imports in object assertions.
+  assert_eq(issues.length(), 0)
 }
 
 ///|

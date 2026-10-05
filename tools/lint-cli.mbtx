@@ -22,6 +22,15 @@ async fn main {
     (["-J","a","-J","b","entry"],2,""),(["--","-dash"],0,""),(["-"],0,""),
     ([],1,""),(["--bad"],1,""),(["-J"],1,""),(["-J","","entry"],1,""),
   ]
+  for (name,source,message) in [
+    ("type-call","42()","Called value must be a function"),
+    ("type-index","{}.missing","Indexed object has no field"),
+    ("type-unary","!42","Operand is not a boolean"),
+    ("type-argument","(function(x) x)()","Missing argument: x"),
+  ] {
+    @fs.write_file(work+"/"+name,source)
+    cases.push(([name],2,message))
+  }
   let rows : Array[Json]=[]
   for binary in binaries {
     for (arguments,exit,fragment) in cases {
@@ -39,5 +48,5 @@ async fn main {
     let help=@shell.Cmd(binary,["-h"],cwd=work).output();help.check();assert_true(help.stdout().contains("lint"))
   }
   @fs.write_file(work+"/results.json",Json::array(rows).stringify(indent=2)+"\n")
-  println("Lint CLI: 19 checks per binary, \{binaries.length()} binaries; evidence: \{work}")
+  println("Lint CLI: \{cases.length()+3} checks per binary, \{binaries.length()} binaries; evidence: \{work}")
 }
