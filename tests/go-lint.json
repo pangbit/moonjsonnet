@@ -1295,6 +1295,630 @@
         }
       ],
       "files": {}
+    },
+    {
+      "name": "mod-result",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(42%2)()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "mod-string-result",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "('%s'%42)()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "equal-result",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(1==2)()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "not-equal-result",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "~(1!=2)"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "member-result",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "('a' in {})()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "slice-result",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'abc'[1:]()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "slice-invalid-args",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "42[true:'bad':false]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "assert-order",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "assert 42(): 'x'(); !'a'"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "assert-result",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(assert true; 42)()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "array-comp-value",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[x() for x in [42]]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "array-comp-result",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42 for x in [1]][0]()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "array-comp-invalid-source",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[x for x in 42]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "array-comp-body-error",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42() for x in [1]]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "array-comp-filter-error",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42() for x in [1] if 'a'()]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "array-comp-nested-source",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[x for x in [42] for y in x()]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "object-comp-value",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{[x]:42 for x in ['a']}.a()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "object-comp-invalid-source",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{[x]:x for x in 42}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "object-comp-body-error",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{[x]:42() for x in ['a']}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "object-comp-filter-order",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{[42()]:true() for x in ['a'] if 'x'()}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "object-comp-locals",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local f=42,[x]:f() for x in ['a']}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "shadow-stdlib-mod",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local std={};(42%2)()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "shadow-stdlib-slice",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local std={};[42][:][0]()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "shadow-stdlib-comprehension",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local std={};[x() for x in [42]]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "unused-comp-variable",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42 for unused in [1]]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "object-null-field",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{[null]:42}.missing"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "function-default-error-order",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "function(x=42()) 'a'()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "local-body-error-order",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=42();'a'()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "object-key-body-error-order",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{[42()]:true(),['a'()]:null()}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "assert-local-loop",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=assert true; x; x"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "object-comp-local-unused",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local unused=42,[x]:x for x in ['a']}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-entry-different",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "42()"
+        },
+        {
+          "id": "entry",
+          "text": "true()"
+        }
+      ],
+      "files": {
+        "b": "true"
+      }
+    },
+    {
+      "name": "duplicate-entry-same",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "42()"
+        },
+        {
+          "id": "entry",
+          "text": "42()"
+        }
+      ],
+      "files": {
+        "b": "true"
+      }
+    },
+    {
+      "name": "distinct-entry-cross-import",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(import 'b')()"
+        },
+        {
+          "id": "b",
+          "text": "42"
+        }
+      ],
+      "files": {
+        "b": "true"
+      }
+    },
+    {
+      "name": "duplicate-entry-quiet-final",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "42()"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-entry-three",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "!42"
+        },
+        {
+          "id": "entry",
+          "text": "{}['a']"
+        },
+        {
+          "id": "entry",
+          "text": "true()"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-entry-unused",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local unused=42;1()"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-entry-function",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x) x)(1)"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-entry-stdlib",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "std.length([])"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-entry-syntax-final",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "42()"
+        },
+        {
+          "id": "entry",
+          "text": "local"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-entry-nested-checks",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a: !42, b: 1[false], assert 42()}"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-mod",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "42%2"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-in",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'a' in {}"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-slice",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42][:]"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-array-comp",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[x for x in [42]]"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-object-comp",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{[x]:42 for x in ['a']}"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "duplicate-assert",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "assert true; 42"
+        },
+        {
+          "id": "entry",
+          "text": "42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "comp-source-body-order",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42() for x in 'a'()]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "comp-nested-filter-order",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42() for x in true() if null() if 'x'() for y in false() if 43()]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "object-comp-source-body-order",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{[42()]:true() for x in 'a'()}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "member-operand-order",
+      "group": "lowering",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "42() in 'a'()"
+        }
+      ],
+      "files": {}
     }
   ]
 }

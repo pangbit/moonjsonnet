@@ -269,8 +269,23 @@ pub fn lint(
   for name, e in roots {
     typed[name] = graph.build(e, Map([("std", 11)]), name, id=graph.roots[name])
   }
+  // Go keys inference roots by filename: only the last entry at a path has
+  // inferred types. Earlier entries still receive checks on their own syntax,
+  // using the empty type bound rather than the later entry's expression tree.
+  let last : Map[String, Int] = Map([])
+  for i, (name, _) in entries {
+    last[name] = i
+  }
+  let checks = []
+  for i, (name, e) in entries {
+    if last[name] == i {
+      checks.push((typed[name], false))
+    } else {
+      checks.push((graph.build(e, Map([("std", 11)]), name), true))
+    }
+  }
   graph.solve()
-  for (name, e) in entries {
+  for i, (_, e) in entries {
     scan.bindings.clear()
     scan.variables(e, Map([]))
     for b in scan.bindings {
@@ -278,7 +293,8 @@ pub fn lint(
         scan.report(b.loc, "Unused variable: " + b.name)
       }
     }
-    graph.check(typed[name])
+    let (node, untyped) = checks[i]
+    graph.check(node, untyped~)
     scan.loops(e)
   }
   scan.diagnostics

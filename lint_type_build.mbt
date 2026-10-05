@@ -5,12 +5,16 @@ fn LintGraph::build(
   scope : Map[String, Int],
   from : String,
   id? : Int,
+  depth? : Int = 0,
 ) -> LintTyped raise JsonnetError {
+  if depth >= self.scan.limits.depth {
+    raise problem(Limit, e.loc, "lint type expression depth exceeded")
+  }
   self.scan.tick(e)
   let id = id.unwrap_or_else(() => self.add())
   let children = []
   let visit = fn(e : Expr, scope : Map[String, Int]) raise JsonnetError {
-    let node = self.build(e, scope, from)
+    let node = self.build(e, scope, from, depth=depth + 1)
     children.push(node)
     node.id
   }
@@ -28,6 +32,7 @@ fn LintGraph::build(
         },
       )
     Var("self" | "super" | "$") => refs.push(9)
+    Var("$std") => refs.push(11)
     Var(n) => refs.push(scope.get(n).unwrap_or(1))
     Local(bs, body) => {
       let inner = scope.copy()
@@ -36,7 +41,7 @@ fn LintGraph::build(
       }
       refs.push(visit(body, inner))
       for (n, x) in bs {
-        children.push(self.build(x, inner, from, id=inner[n]))
+        children.push(self.build(x, inner, from, id=inner[n], depth=depth + 1))
       }
     }
     Func(ps, body) => {
@@ -93,7 +98,7 @@ fn LintGraph::build(
         ignore(visit(f.key, scope))
       }
       for (n, x) in bs {
-        children.push(self.build(x, inner, from, id=inner[n]))
+        children.push(self.build(x, inner, from, id=inner[n], depth=depth + 1))
       }
       for f in fs {
         let value = visit(f.value, inner)
@@ -111,6 +116,22 @@ fn LintGraph::build(
       ignore(visit(a, scope))
       refs.push(2)
     }
+    Binary("%", a, b) =>
+      return self.build(
+        lint_std_call("mod", [a, b], e.loc),
+        scope,
+        from,
+        id~,
+        depth~,
+      )
+    Binary("in", a, b) =>
+      return self.build(
+        lint_std_call("objectHasAll", [b, a], e.loc),
+        scope,
+        from,
+        id~,
+        depth~,
+      )
     Index({ kind: Var("super"), .. }, key) => {
       ignore(visit(key, scope))
       refs.push(1)
@@ -139,7 +160,7 @@ fn LintGraph::build(
       if op == "+" {
         self.slots[id].plus = Some((a, b))
       } else {
-        refs.push(if op == "in" { 2 } else { 1 })
+        refs.push(1)
       }
     }
     Unary(op, x) => {
@@ -155,49 +176,41 @@ fn LintGraph::build(
       }
     }
     Slice(a, b, c, d) => {
-      ignore(visit(a, scope))
-      for value in [b, c, d] {
-        if value is Some(x) {
-          ignore(visit(x, scope))
-        }
-      }
-      refs.push(6)
+      let null : Expr = { kind: Literal(Json::null()), loc: e.loc, }
+      return self.build(
+        lint_std_call(
+          "slice",
+          [a, b.unwrap_or(null), c.unwrap_or(null), d.unwrap_or(null)],
+          e.loc,
+        ),
+        scope,
+        from,
+        id~,
+        depth~,
+      )
     }
     ArrayComp(body, cs) => {
-      let inner = scope.copy()
-      for c in cs {
-        match c {
-          For(n, x) => {
-            ignore(visit(x, inner))
-            inner[n] = 1
-          }
-          When(x) => ignore(visit(x, inner))
-        }
-      }
-      ignore(visit(body, inner))
-      refs.push(6)
+      self.work(cs.length())
+      return self.build(lint_comp(body, cs, e.loc), scope, from, id~, depth~)
     }
     ObjectComp(key, body, cs, bs) => {
-      let inner = scope.copy()
-      for c in cs {
-        match c {
-          For(n, x) => {
-            ignore(visit(x, inner))
-            inner[n] = 1
-          }
-          When(x) => ignore(visit(x, inner))
-        }
+      self.work(cs.length())
+      let value = if bs.is_empty() {
+        body
+      } else {
+        Expr::{ kind: Local(bs, body), loc: body.loc, }
       }
-      ignore(visit(key, inner))
-      inner["$"] = 9
-      for (n, _) in bs {
-        inner[n] = self.add()
+      let object : Expr = {
+        kind: Obj([{ key, value, visibility: 1, additive: false, }], [], []),
+        loc: e.loc,
       }
-      for (n, x) in bs {
-        children.push(self.build(x, inner, from, id=inner[n]))
-      }
-      ignore(visit(body, inner))
-      refs.push(9)
+      return self.build(
+        lint_std_call("$objectFlatMerge", [lint_comp(object, cs, e.loc)], e.loc),
+        scope,
+        from,
+        id~,
+        depth~,
+      )
     }
     ImportFile(path, false) =>
       refs.push(

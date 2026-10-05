@@ -1,4 +1,63 @@
 ///|
+test "lint lowering checks implicit calls and bounds synthesized depth" {
+  for source in ["42%2", "'a' in {}", "[42][:]", "[x for x in [42]]"] {
+    assert_eq(
+      @moonjsonnet.lint([
+        { id: "same", text: source, },
+        { id: "same", text: "42", },
+      ]).map(d => d.message),
+      [
+        "Indexed value is neither an array nor an object nor a string", "Called value must be a function, but it is assumed to be void",
+      ],
+    )
+  }
+  let source = "[x " + Array::make(40, "for x in [42]").join(" ") + "]"
+  try
+    @moonjsonnet.lint([{ id: "entry", text: source, }], limits={
+      ..@moonjsonnet.Limits::default(),
+      depth: 30,
+    })
+  catch {
+    @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Limit)
+  } noraise {
+    _ => fail("expected synthesized analysis depth limit")
+  }
+}
+
+///|
+test "lint duplicate filenames retain their own checks with Go empty types" {
+  let sources : Array[@moonjsonnet.Source] = [
+    { id: "same", text: "local unused=42;\n!42", },
+    { id: "same", text: "{}['a']", },
+    { id: "same", text: "true()", },
+  ]
+  let issues = @moonjsonnet.lint(sources)
+  assert_eq(issues.map(d => d.message), [
+    "Unused variable: unused", "Operand is not a boolean, it is assumed to be void",
+    "Indexed value is neither an array nor an object nor a string", "Called value must be a function, but it is assumed to be a bool",
+  ])
+  assert_eq(issues[1].location.line, 2)
+  assert_eq(
+    @moonjsonnet.lint([
+      { id: "same", text: "42()", },
+      { id: "same", text: "42", },
+    ]).map(d => d.message),
+    ["Called value must be a function, but it is assumed to be void"],
+  )
+}
+
+///|
+test "lint entry import collisions stay bounded despite reference panic" {
+  let issues = @moonjsonnet.lint(
+    [{ id: "entry", text: "(import 'b')()", }, { id: "b", text: "42", }],
+    resolver=fn(_, path) { { id: path, bytes: b"true", } },
+  )
+  assert_eq(issues.map(d => d.message), [
+    "Called value must be a function, but it is assumed to be a number",
+  ])
+}
+
+///|
 test "lint infers recursive values and function results without execution" {
   for
     source in [

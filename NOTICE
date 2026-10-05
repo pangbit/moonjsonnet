@@ -34,6 +34,7 @@ Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 
 lint_type_*.mbt adapt conservative type-graph inference, checks and declarations
 from linter/internal/types at the same pinned go-jsonnet revision.
+lint_lower.mbt adapts analysis-only lowering from internal/program/desugarer.go.
 Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 tools/embed-lint-stdlib.mbtx verifies the reference revision and source hash.
 

@@ -42,14 +42,17 @@ fn LintGraph::check_args(
 fn LintGraph::check(
   self : LintGraph,
   node : LintTyped,
+  untyped? : Bool = false,
 ) -> Unit raise JsonnetError {
   self.scan.tick(node.expression)
   for child in node.children {
-    self.check(child)
+    self.check(child, untyped~)
   }
   let e = node.expression
   let report = fn(message) { self.scan.report(e.loc, message) }
-  let child = fn(index) { self.bounds[node.children[index].id] }
+  let child = fn(index) {
+    self.bounds[if untyped { 0 } else { node.children[index].id }]
+  }
   match e.kind {
     Call(_, args, _) => {
       let t = child(0)

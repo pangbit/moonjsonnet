@@ -359,6 +359,15 @@ dynamic object fields remain abstract as in Go. The lint declarations deliberate
 preserve Go's approximations even where runtime return types differ. An empty
 result does not prove runtime safety or complete diagnostic compatibility.
 
+Analysis lowers `%`, `in`, slices and comprehensions to the pinned hidden
+standard-library calls, preserving nested diagnostic order even when `std` is
+shadowed. Synthesized expression depth also consumes the depth budget.
+For duplicate entry filenames, only the last successfully parsed entry provides
+inferred types; earlier entries are checked on their own syntax with `void`
+types, following Go. If an explicit entry is also imported under the same identity,
+the local graph uses the entry root; the observed Go panic remains a differential
+failure, not an accepted compatibility exception.
+
 Limits abort analysis with JsonnetError; parse/import findings otherwise collect
 across entries. Source, depth, import bytes/count and analysis steps are bounded.
 The local-cycle and type-component graph walks are iterative; recursive index
