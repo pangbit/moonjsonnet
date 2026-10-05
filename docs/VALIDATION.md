@@ -82,15 +82,19 @@ moon run tools/ast-integration.mbtx _build/native/release/build/examples/ast-pro
 
 It uses the same pinned checkout/build checks, writes `_build/ast/report.json`,
 and supports local-only ASan validation via `local-report.json`. Current AST
-results are 145/145, including 37 Go-derived coordinate cases for UTF-8 byte columns,
+results are 173/173, including 37 Go-derived coordinate cases for UTF-8 byte columns,
 exclusive ends, parentheses, synthetic nodes and nested tailstrict, and 18 string
 escape/surrogate value cases, 23 numeric spelling/range/deferred conversion cases,
 16 local-binding range cases, 16 parameter-range cases and 15 repeated-parameter
-evaluation cases. Public range
+evaluation cases, plus 28 raw-parsing/source-retention cases. The latter use
+Go formatter.SnippetToRawAST for acceptance/errors and check exact local source
+reconstruction; they do not compare formatter output or Go Fodder layout. Public range
 validation and round trips are also covered by `source_range_test.mbt` and the
 archive consumer. These are independently counted from parameters, Evaluator
-sequences and CLI cases. Comments, formatting and complete AST metadata remain
-outside this evidence. See the [source-range report](../reports/GO-JSONNET-SOURCE-RANGES.md)
+sequences and CLI cases. ParsedSource retains lexical comments and spelling, but
+formatting and complete raw AST metadata remain outside this evidence. See the
+[source-retention report](../reports/GO-JSONNET-SOURCE-FIDELITY.md),
+[source-range report](../reports/GO-JSONNET-SOURCE-RANGES.md)
 and historical [AST report](../reports/GO-JSONNET-AST.md).
 
 `lint_test.mbt` checks lexical scopes, unused bindings, eager cycles, nonexecution,
@@ -104,16 +108,16 @@ moon run tools/lint-cli.mbtx _build/native/release/build/cmd/lint/lint.exe /tmp/
 
 The API runner compares complete ordered diagnostic messages and found flags,
 retains full diagnostics, pins Go checkout/build metadata, and writes
-`_build/lint/report.json`. Current results are 401/402 (62 upstream, 19 original
+`_build/lint/report.json`. Current results are 409/410 (62 upstream, 19 original
 focused, 33 type/boundary, 50 lowering/multiple-entry, 56 parser, 62 lexical,
-59 string, 21 numeric, 20 binding-location and 20 repeated-parameter inputs). The
+59 string, 21 numeric, 20 binding-location, 20 repeated-parameter and 8 duplicate-declaration inputs). The
 previous 35 missing type diagnoses and known parser-wording difference now pass.
 One failure remains: a reference panic on entry/import identity collision.
 The unused binding location (`number-literal-8`) now matches the reference.
 The runner counts reference panics separately while retaining them as failures
-and exits 1. Earlier failure evidence remains documented. The 182 cases with frozen locations
+and exits 1. Earlier failure evidence remains documented. The 190 cases with frozen locations
 also compare diagnostic start line/column against the frozen Go results; the
-report counts these separately as `location_total` and `location_passed` (182/182). This
+report counts these separately as `location_total` and `location_passed` (190/190). This
 does not establish location/range parity for all diagnostics. CLI checks cover file/option/search/exit behavior
 and four type-diagnostic categories, 23 checks per binary;
 omitting the Go checkout checks the local CLI only, as used by ASan. ASan also
@@ -127,12 +131,13 @@ declarations, budgets and Go string escaping. See the historical
 [lexer diagnostic report](../reports/GO-JSONNET-LEXER-DIAGNOSTICS.md),
 [string-literal report](../reports/GO-JSONNET-STRING-LITERALS.md),
 [number-literal report](../reports/GO-JSONNET-NUMBER-LITERALS.md),
-[binding-range report](../reports/GO-JSONNET-BINDING-RANGES.md), and current
-[parameter-range report](../reports/GO-JSONNET-PARAMETER-RANGES.md).
-The parameter batch added 20 CLI cases and reran both corpora and the language suite: Go
+[binding-range report](../reports/GO-JSONNET-BINDING-RANGES.md),
+[parameter-range report](../reports/GO-JSONNET-PARAMETER-RANGES.md), and current
+[source-retention report](../reports/GO-JSONNET-SOURCE-FIDELITY.md).
+The source-retention batch reran both CLI corpora and the language suite: Go
 1132/1150 with the same 18 failed input names; C++ 98 passes plus 10 declared
 differences and no failures; upstream language 303/303. These runs bind to
-0375bfd with clean source state. Native debug/release each pass 219 tests;
+0e4892e with clean source state. Native debug/release each pass 224 tests;
 the archive consumer passes 22 tests. See the batch report for isolated ASan evidence.
 
 Reference interpreter (development only; not a runtime dependency):
