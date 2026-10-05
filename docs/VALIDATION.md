@@ -86,6 +86,24 @@ results are 20/20, independently counted from parameters, Evaluator sequences an
 CLI cases. Comments, formatting and complete AST metadata are outside this
 semantic-tree evidence. See the [AST report](../reports/GO-JSONNET-AST.md).
 
+`lint_test.mbt` checks lexical scopes, unused bindings, eager cycles, nonexecution,
+import traversal, limits and a 2,000-binding cycle. The full pinned upstream lint
+corpus is frozen in `tests/go-lint.json`, including shared imported source files:
+
+```sh
+moon run tools/lint-integration.mbtx _build/native/release/build/examples/lint-probe/lint-probe.exe /tmp/go-jsonnet-v0.21.0
+moon run tools/lint-cli.mbtx _build/native/release/build/cmd/lint/lint.exe /tmp/go-jsonnet-v0.21.0
+```
+
+The API runner compares complete ordered diagnostic messages and found flags,
+retains full diagnostics, pins Go checkout/build metadata, and writes
+`_build/lint/report.json`. Current results are 46/81 (19/19 focused, 27/62 upstream);
+35 missing type-inference diagnoses remain failures and cause exit 1. This is not
+diagnostic location/range parity. CLI checks cover file/option/search/exit behavior;
+omitting the Go checkout checks the local CLI only, as used by ASan. ASan also
+executes all local lint tests, but does not mark the failing API corpus passed.
+See the [lint baseline report](../reports/GO-JSONNET-LINT.md).
+
 Reference interpreter (development only; not a runtime dependency):
 
 ```sh
