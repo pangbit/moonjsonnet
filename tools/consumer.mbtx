@@ -54,6 +54,7 @@ async fn main {
     #|  assert_eq(evaluator.find_dependencies("",["answer"]),[])
     #|  let ast=program.ast().clone()
     #|  assert_eq(@moonjsonnet.Program::from_ast(ast).evaluate(ext_vars=Map([("x",42)])),42)
+    #|  assert_eq(@moonjsonnet.lint([{id:"lint",text:"local unused=1;42"}])[0].message,"Unused variable: unused")
     #|  assert_eq(limits.stack,500)
     #|  assert_eq(@moonjsonnet.evaluate("local f(n)=if n==0 then 42 else f(n-1) tailstrict; f(1000) tailstrict",limits={..limits,stack:2}),42)
     #|  let json = @moonjsonnet.evaluate("local f(x=21)=x*2; f()", limits~)

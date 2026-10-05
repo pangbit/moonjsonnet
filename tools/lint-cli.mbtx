@@ -1,0 +1,43 @@
+import {"moonbitlang/async","moonbitlang/async/fs","moonbitlang/async/shell","moonbitlang/core/env"}
+async fn main {
+  let args=@env.args()
+  guard args.length()==2 || args.length()==3 else {fail("Usage: moon run tools/lint-cli.mbtx CLI [GO_CHECKOUT]")}
+  let cli=@fs.realpath(args[1]);let work=@fs.tmpdir(prefix="moonjsonnet-lint-cli-")
+  let binaries=[cli]
+  if args.length()==3 {
+    let checkout=@fs.realpath(args[2])
+    let commit=@shell.Cmd("git",["-C",checkout,"rev-parse","HEAD"]).output();commit.check()
+    assert_eq(commit.stdout().trim().to_owned(),"67968688d9952f50662e979fab1bef889d0d3e57")
+    let dirty=@shell.Cmd("git",["-C",checkout,"status","--porcelain"]).output();dirty.check();assert_eq(dirty.stdout(),"")
+    let reference=work+"/go-lint"
+    @shell.Cmd("go",["-C",checkout,"build","-o",reference,"./cmd/jsonnet-lint"],env=Map([("GOTOOLCHAIN","go1.24.0"),("GOWORK","off"),("GOPROXY","off")])).run()
+    binaries.push(reference)
+  }
+  for dir in ["a","b"] {@fs.mkdir(work+"/"+dir)}
+  for (name,source) in [("clean","42"),("unused","local x=1;42"),("loop","local x=x;42"),("bad","unknown"),("parse","local"),("entry","import 'lib'"),("a/lib","42"),("b/lib","unknown"),("-","42"),("-dash","42"),("effect","std.trace('must not run',error 'boom')")] {@fs.write_file(work+"/"+name,source)}
+  let cases : Array[(Array[String],Int,String)] = [
+    (["clean"],0,""),(["unused"],2,"Unused variable: x"),(["loop"],2,"Endless loop in local definition"),
+    (["bad"],2,""),(["parse"],2,""),(["effect"],0,""),(["missing"],1,""),
+    (["unused","clean"],2,"Unused variable: x"),(["-J","b","-J","a","entry"],0,""),
+    (["-J","a","-J","b","entry"],2,""),(["--","-dash"],0,""),(["-"],0,""),
+    ([],1,""),(["--bad"],1,""),(["-J"],1,""),(["-J","","entry"],1,""),
+  ]
+  let rows : Array[Json]=[]
+  for binary in binaries {
+    for (arguments,exit,fragment) in cases {
+      let result=@shell.Cmd(binary,arguments,cwd=work,env=Map([("JSONNET_PATH","")])).output(timeout_ms=10000)
+      rows.push({"binary":binary,"args":Json::array(arguments.map(Json::string)),"exit":result.exit_code(),"stdout":result.stdout(),"stderr":result.stderr()})
+      assert_eq(result.exit_code(),exit,msg=result.stderr())
+      assert_eq(result.stdout(),"")
+      assert_true(result.stderr().contains(fragment))
+      if exit==0 {assert_eq(result.stderr(),"")}
+      if exit==2 {assert_true(result.stderr().contains("Problems found!"))}
+    }
+    let envresult=@shell.Cmd(binary,["entry"],cwd=work,env=Map([("JSONNET_PATH","a:b")])).output()
+    envresult.check();assert_eq(envresult.stdout(),"");assert_eq(envresult.stderr(),"")
+    let version=@shell.Cmd(binary,["-v"],cwd=work).output();version.check();assert_true(!version.stdout().is_empty())
+    let help=@shell.Cmd(binary,["-h"],cwd=work).output();help.check();assert_true(help.stdout().contains("lint"))
+  }
+  @fs.write_file(work+"/results.json",Json::array(rows).stringify(indent=2)+"\n")
+  println("Lint CLI: 19 checks per binary, \{binaries.length()} binaries; evidence: \{work}")
+}

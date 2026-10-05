@@ -16,6 +16,8 @@ pub fn evaluate_text(String, string_output? : Bool, filename? : String, anonymou
 
 pub fn find_dependencies(String, Array[String], resolver~ : (String, String) -> BinarySource raise, limits? : Limits) -> Array[String] raise JsonnetError
 
+pub fn lint(Array[Source], resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Array[Diagnostic] raise JsonnetError
+
 // Errors
 pub(all) suberror JsonnetError {
   Error(Diagnostic)

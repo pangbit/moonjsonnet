@@ -339,7 +339,44 @@ repeated requests continue to report the parse/static error. Go v0.21.0 can
 instead return a successful nil AST on a repeated ImportAST after such a failure;
 the differential input remains a failure, not an accepted parity exception.
 
+## Lint analysis (partial)
+
+`lint(snippets: Array[Source], resolver?, limits?) -> Array[Diagnostic] raise JsonnetError`
+checks entry snippets without executing Jsonnet. It reports syntax/static errors,
+import errors, unused local/object-local bindings, and eager local-definition
+cycles. All lexical references count, including dead branches and references
+from other unused bindings. Function parameters and comprehension variables do
+not produce unused-binding warnings. Imported code is parsed and its imports
+checked recursively, but only explicitly supplied entries receive lint warnings.
+Raw imports need not be UTF-8; code imports do. Runtime/native/trace effects are
+never invoked.
+
+Type inference, call signatures and index/type diagnostics remain pending.
+An empty result therefore does **not** establish a full Go linter pass. Full
+upstream inputs remain in the failing differential corpus rather than being
+restricted to implemented checks.
+
+Limits abort analysis with JsonnetError; parse/import findings otherwise collect
+across entries. Source, depth, import bytes/count and analysis steps are bounded.
+The local-cycle graph walk is iterative. Location points use the current AST;
+unused bindings point to their initializer because declaration ranges are not
+yet represented. Diagnostic location/text formatting parity remains incomplete.
+
+`cmd/lint` supports multiple files, `-J`/`--jpath`, `JSONNET_PATH`, `--`, short
+option expansion, help/version, and the local `--root` confinement option. Exit 0
+means no implemented findings, 2 means findings, and 1 means input/resource failure.
+As in the pinned Go CLI implementation, `-` is opened as a file; this does not
+implement the stdin behavior claimed by Go's help text. Entry files do not fall
+back to library search. Example:
+
+```sh
+moon run --target native cmd/lint -- -J lib config.jsonnet
+```
+
 ## Static dependencies
+
+Static dependency scanning and the lint API below never evaluate code. Their
+traversal rules differ: lint checks imports inside object assertions as well.
 
 `find_dependencies(imported_from, imported_paths, resolver~, limits?) -> Array[String] raise JsonnetError`
 statically scans all entry files and transitive imports without evaluating Jsonnet.

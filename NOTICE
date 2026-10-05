@@ -9,8 +9,9 @@ https://github.com/google/jsonnet
 Copyright Google Inc.; Apache License 2.0.
 Pinned commit: bbb38f1020be1f5aed560928fb839b2c448cefb4.
 No upstream interpreter is bundled or linked.
-The committed differential inputs and example fixtures are original project
-material, distributed under this project's Apache-2.0 license. The reference
+Except for the attributed upstream lint inputs below, the committed differential
+inputs and example fixtures are original project material, distributed under this
+project's Apache-2.0 license. The reference
 checkout retains its own LICENSE and third-party notices outside this package.
 tools/upstream-language.mbtx executes selected upstream Apache-2.0 test files
 and extracts individual formatting assertions into temporary test artifacts.
@@ -23,6 +24,13 @@ Copyright Google Inc.; Apache License 2.0.
 Pinned commit: 67968688d9952f50662e979fab1bef889d0d3e57.
 The Go interpreter executable is used only for development-time behavioral
 comparisons; no Go interpreter or Go runtime is bundled or linked into this package.
+
+tests/go-lint.json includes the pinned go-jsonnet linter/testdata/*.jsonnet inputs.
+Copyright Google Inc.; Apache License 2.0 (see LICENSE). These development-only
+fixtures are excluded from the published package. lint.mbt and lint_children.mbt
+adapt lexical-use and eager local-cycle analysis from linter/internal/variables,
+linter/internal/traversal and internal/parser/context.go at that same revision.
+Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 
 manifest_toml.mbt, manifest_yaml.mbt and manifest_text.mbt adapt the native
 TOML/YAML rendering contracts and control flow in the pinned go-jsonnet

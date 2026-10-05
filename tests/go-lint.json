@@ -1,0 +1,937 @@
+{
+  "reference_commit": "67968688d9952f50662e979fab1bef889d0d3e57",
+  "files": {
+    "testdata/42.jsonnet": "42\n",
+    "testdata/obj.jsonnet": "local unknown = \"a\" + \"b\";\nlocal obj = if true then\n    {\n        [unknown]: 42\n    }\nelse\n    {\n        foo: [1]\n    }\n    ;\nobj.bar[0]\n",
+    "testdata/unary.jsonnet": "[\n    ~false,\n    -\"42\",\n    +\"42\",\n    !42,\n]\n",
+    "testdata/dollar.jsonnet": "{ num: 1, obj: $.num }\n",
+    "testdata/import.jsonnet": "import \"call_integer.jsonnet\"\n",
+    "testdata/import2.jsonnet": "(import '42.jsonnet')(17)\n",
+    "testdata/not_any.jsonnet": "[\n    2,\n    true,\n    \"str\",\n    null,\n    {},\n    function() null,\n    []\n][1+3].foo\n",
+    "testdata/not_any2.jsonnet": "[\n    2,\n    true,\n    \"str\",\n    null,\n    {},\n    function() null,\n    []\n][4].foo\n",
+    "testdata/plussuper.jsonnet": "{\n    a +:: {},\n}.a\n",
+    "testdata/plussuper2.jsonnet": "{\n    a +:: {},\n}.a + 3\n",
+    "testdata/array_widen.jsonnet": "if true then\n    []\nelse\n    [1]\n",
+    "testdata/call_integer.jsonnet": "42(17)\n",
+    "testdata/endless_loop.jsonnet": "local x = x; 42\n",
+    "testdata/library-like.jsonnet": "local lib = {\n    number: import \"42.jsonnet\",\n    addTwoNumbers(x, y): x + y,\n    addTwoNumbers2: lib.addTwoNumbers,\n    addTwoNumbers3: self.addTwoNumbers,\n    nested: {\n        twoObjects(): [{a: \"a\"}, {b: \"b\"}],\n    }\n}; lib\n",
+    "testdata/endless_loop2.jsonnet": "local x = y, y = x; 42\n",
+    "testdata/endless_loop3.jsonnet": "local x = x + 1; 42\n",
+    "testdata/endless_loop4.jsonnet": "local x = if x then true else false; 42\n",
+    "testdata/index_function.jsonnet": "(function(x) x)[42]",
+    "testdata/multiple_errors.jsonnet": "local foo = {}[42];\n[][\"foo\"]",
+    "testdata/string_indexing.jsonnet": "[\n    \"foo\"[2][0],\n    \"foo\"[1+1][0],\n    -(\"foo\"[2]),\n    -(\"foo\"[1+1]),\n]\n",
+    "testdata/subtract-arrays.jsonnet": "[] - []\n",
+    "testdata/argcheck_missing.jsonnet": "local f(x) = 42;\nf()\n",
+    "testdata/library-like-use.jsonnet": "local lib = import \"library-like.jsonnet\";\n[\n    lib.number,\n    lib.number(),\n    lib.addTwoNumbers(1, 2),\n    lib.addTwoNumbers(1, 2, 3),\n    lib.addTwoNumbers(\"a\", \"b\"),\n    lib.addTwoNumbers(1, 2)[2],\n    lib.addTwoNumbers2(1, 2)[2],\n    lib.addTwoNumbers2(1, 2, 3),\n    lib.addTwoNumbers3(1, 2)[2],\n    lib.addTwoNumbers3(1, 2, 3),\n    lib.nested.twoObjects[0].a,\n    lib.nested.twoObjects[0].b,\n    lib.nested.twoObjects[1].a,\n    lib.nested.twoObjects[1].b,\n    lib.nested.nonexistent,\n    lib.nonexistent,\n]\n",
+    "testdata/widen_any_object.jsonnet": "local unknown = (function(x) x)({});\nif true then\n    unknown\nelse {\n    foo: \"bar\"\n}\n",
+    "testdata/super_index_array.jsonnet": "local foo = { config: [{ x: 'y' }] };\nfoo {\n  config: [super.config[0] { a: 'b' }],\n}\n",
+    "testdata/index_any_with_any.jsonnet": "(std.extVar('foo'))[std.extVar('bar')]",
+    "testdata/max_arity_violated.jsonnet": "local f = if true then function(x) 42 else function(y) 42;\nf(1, 2)\n",
+    "testdata/min_arity_violated.jsonnet": "local f = if true then function(x) 42 else function(y) 42;\nf()\n",
+    "testdata/argcheck_additional.jsonnet": "local f() = 42;\nf(1)\n",
+    "testdata/argcheck_wrong_name.jsonnet": "local f(x) = 42;\nf(y=17)\n",
+    "testdata/from_tuple_call_int.jsonnet": "local arr = [function() 42, 42];\n[\n    arr[0](),\n    arr[1](),\n]\n",
+    "testdata/stdlib_return_types.jsonnet": "!std.setMember([1, 2, 3], 1)",
+    "testdata/call_imported_number.jsonnet": "(import \"42.jsonnet\")()\n",
+    "testdata/object_index_unknown.jsonnet": "{\n    \"a\": 1\n}.b\n",
+    "testdata/indirect_call_integer.jsonnet": "local f = 1,\n      g = f;\ng()\n",
+    "testdata/stdlib_manifestYamlDoc.jsonnet": "std.manifestYamlDoc({\n  hello: 'world',\n}, indent_array_in_object=false, quote_keys=true)\n",
+    "testdata/deep_array_call_integer.jsonnet": "[[1]][0][0]()\n",
+    "testdata/from_array_call_integer.jsonnet": "[42][0]()\n",
+    "testdata/index_array_with_number.jsonnet": "[1,2,3][1]",
+    "testdata/index_array_with_string.jsonnet": "[1,2,3][\"foo\"]",
+    "testdata/local_used_in_assertion.jsonnet": "{\n    local input = [1,2,3],\n    local knownItems = [1,2],\n    local unknownItems = std.filter(function(i) !(i in knownItems), input),\n    assert unknownItems == [] : \"unexpected items: %s\" % std.join(\",\",unknownItems)\n}",
+    "testdata/stdlib_return_type_test.jsonnet": "!std.setMember([1, 2, 3], 1)",
+    "testdata/argcheck_missed_required.jsonnet": "local f(x, y=17) = 42;\nf(y=17)\n",
+    "testdata/from_object_call_integer.jsonnet": "{\n    a: 42\n}.a()\n",
+    "testdata/index_object_with_number.jsonnet": "{}[42]",
+    "testdata/index_object_with_string.jsonnet": "{}[\"foo\"]\n",
+    "testdata/index_string_with_string.jsonnet": "\"foo\"[\"foo\"]",
+    "testdata/object_or_array_indexing.jsonnet": "local foo = if true then {\"foo\": \"bar\"} else [\"f\", \"o\", \"o\"];\n[\n    foo[0],\n    foo[\"foo\"]\n]\n",
+    "testdata/deeper_array_call_integer.jsonnet": "[[[[1]]]][0][0][0][0]()\n",
+    "testdata/from_object_call_integer2.jsonnet": "{\n    a: 1,\n    b: function() 42\n}.a()\n",
+    "testdata/index_string_with_integer.jsonnet": "\"foo\"[1]",
+    "testdata/object_or_string_indexing.jsonnet": "local foo = if true then {\"foo\": \"bar\"} else \"foo\";\n[\n    foo[0],\n    foo[\"foo\"]\n]\n",
+    "testdata/stdlib_manifestYamlStream.jsonnet": "std.manifestYamlDoc([\n  { foo: \"bar\" },\n  { baz: \"qux\" },\n], indent_array_in_object=false, quote_keys=true)\n",
+    "testdata/deepest_array_call_integer.jsonnet": "local arr = [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[1]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]];\nlocal num = arr[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0];\nnum()\n",
+    "testdata/deepest_array_call_integer2.jsonnet": "local arr = [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[{num: 1, arr: arr}]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]];\nlocal obj = arr[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0];\nlocal obj2 = obj.arr[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0];\n[\n    obj.num(),\n    obj2.num(),\n]\n",
+    "testdata/stdlib_call_returned_integer.jsonnet": "std.abs(1)()\n",
+    "testdata/from_object_local_call_integer.jsonnet": "{\n    local foo = 1,\n    bar: foo(),\n}\n",
+    "testdata/from_object_multiple_field_types.jsonnet": "local obj = {\n    num: 1,\n    str: \"str\"\n};\n\n[\n    obj.num + 17,\n    obj.str[0],\n    obj.num + 17,\n    obj.str[0]\n]\n",
+    "testdata/stdlib_call_returned_numberarray.jsonnet": "!std.range(1, 3)[0]\n",
+    "testdata/from_function_result_call_integer.jsonnet": "(function() 42)()()\n",
+    "testdata/from_recursive_array_call_integer.jsonnet": "local arr = [0, arr];\n\n[\n    arr[0](),\n    arr[1][0](),\n    arr[1][1][0](),\n    arr[1][1][1][1][1][1][1][0](),\n]\n",
+    "testdata/index_array_or_string_with_string.jsonnet": "(if true then \"foo\" else [])[\"bar\"]"
+  },
+  "cases": [
+    {
+      "name": "testdata/42.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/42.jsonnet",
+          "text": "42\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/obj.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/obj.jsonnet",
+          "text": "local unknown = \"a\" + \"b\";\nlocal obj = if true then\n    {\n        [unknown]: 42\n    }\nelse\n    {\n        foo: [1]\n    }\n    ;\nobj.bar[0]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/unary.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/unary.jsonnet",
+          "text": "[\n    ~false,\n    -\"42\",\n    +\"42\",\n    !42,\n]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/dollar.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/dollar.jsonnet",
+          "text": "{ num: 1, obj: $.num }\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/import.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/import.jsonnet",
+          "text": "import \"call_integer.jsonnet\"\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/import2.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/import2.jsonnet",
+          "text": "(import '42.jsonnet')(17)\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/not_any.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/not_any.jsonnet",
+          "text": "[\n    2,\n    true,\n    \"str\",\n    null,\n    {},\n    function() null,\n    []\n][1+3].foo\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/not_any2.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/not_any2.jsonnet",
+          "text": "[\n    2,\n    true,\n    \"str\",\n    null,\n    {},\n    function() null,\n    []\n][4].foo\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/plussuper.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/plussuper.jsonnet",
+          "text": "{\n    a +:: {},\n}.a\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/plussuper2.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/plussuper2.jsonnet",
+          "text": "{\n    a +:: {},\n}.a + 3\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/array_widen.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/array_widen.jsonnet",
+          "text": "if true then\n    []\nelse\n    [1]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/call_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/call_integer.jsonnet",
+          "text": "42(17)\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/endless_loop.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/endless_loop.jsonnet",
+          "text": "local x = x; 42\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/library-like.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/library-like.jsonnet",
+          "text": "local lib = {\n    number: import \"42.jsonnet\",\n    addTwoNumbers(x, y): x + y,\n    addTwoNumbers2: lib.addTwoNumbers,\n    addTwoNumbers3: self.addTwoNumbers,\n    nested: {\n        twoObjects(): [{a: \"a\"}, {b: \"b\"}],\n    }\n}; lib\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/endless_loop2.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/endless_loop2.jsonnet",
+          "text": "local x = y, y = x; 42\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/endless_loop3.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/endless_loop3.jsonnet",
+          "text": "local x = x + 1; 42\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/endless_loop4.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/endless_loop4.jsonnet",
+          "text": "local x = if x then true else false; 42\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/index_function.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/index_function.jsonnet",
+          "text": "(function(x) x)[42]"
+        }
+      ]
+    },
+    {
+      "name": "testdata/multiple_errors.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/multiple_errors.jsonnet",
+          "text": "local foo = {}[42];\n[][\"foo\"]"
+        }
+      ]
+    },
+    {
+      "name": "testdata/string_indexing.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/string_indexing.jsonnet",
+          "text": "[\n    \"foo\"[2][0],\n    \"foo\"[1+1][0],\n    -(\"foo\"[2]),\n    -(\"foo\"[1+1]),\n]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/subtract-arrays.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/subtract-arrays.jsonnet",
+          "text": "[] - []\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/argcheck_missing.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/argcheck_missing.jsonnet",
+          "text": "local f(x) = 42;\nf()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/library-like-use.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/library-like-use.jsonnet",
+          "text": "local lib = import \"library-like.jsonnet\";\n[\n    lib.number,\n    lib.number(),\n    lib.addTwoNumbers(1, 2),\n    lib.addTwoNumbers(1, 2, 3),\n    lib.addTwoNumbers(\"a\", \"b\"),\n    lib.addTwoNumbers(1, 2)[2],\n    lib.addTwoNumbers2(1, 2)[2],\n    lib.addTwoNumbers2(1, 2, 3),\n    lib.addTwoNumbers3(1, 2)[2],\n    lib.addTwoNumbers3(1, 2, 3),\n    lib.nested.twoObjects[0].a,\n    lib.nested.twoObjects[0].b,\n    lib.nested.twoObjects[1].a,\n    lib.nested.twoObjects[1].b,\n    lib.nested.nonexistent,\n    lib.nonexistent,\n]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/widen_any_object.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/widen_any_object.jsonnet",
+          "text": "local unknown = (function(x) x)({});\nif true then\n    unknown\nelse {\n    foo: \"bar\"\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/super_index_array.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/super_index_array.jsonnet",
+          "text": "local foo = { config: [{ x: 'y' }] };\nfoo {\n  config: [super.config[0] { a: 'b' }],\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/index_any_with_any.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/index_any_with_any.jsonnet",
+          "text": "(std.extVar('foo'))[std.extVar('bar')]"
+        }
+      ]
+    },
+    {
+      "name": "testdata/max_arity_violated.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/max_arity_violated.jsonnet",
+          "text": "local f = if true then function(x) 42 else function(y) 42;\nf(1, 2)\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/min_arity_violated.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/min_arity_violated.jsonnet",
+          "text": "local f = if true then function(x) 42 else function(y) 42;\nf()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/argcheck_additional.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/argcheck_additional.jsonnet",
+          "text": "local f() = 42;\nf(1)\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/argcheck_wrong_name.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/argcheck_wrong_name.jsonnet",
+          "text": "local f(x) = 42;\nf(y=17)\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/from_tuple_call_int.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/from_tuple_call_int.jsonnet",
+          "text": "local arr = [function() 42, 42];\n[\n    arr[0](),\n    arr[1](),\n]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/stdlib_return_types.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/stdlib_return_types.jsonnet",
+          "text": "!std.setMember([1, 2, 3], 1)"
+        }
+      ]
+    },
+    {
+      "name": "testdata/call_imported_number.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/call_imported_number.jsonnet",
+          "text": "(import \"42.jsonnet\")()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/object_index_unknown.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/object_index_unknown.jsonnet",
+          "text": "{\n    \"a\": 1\n}.b\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/indirect_call_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/indirect_call_integer.jsonnet",
+          "text": "local f = 1,\n      g = f;\ng()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/stdlib_manifestYamlDoc.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/stdlib_manifestYamlDoc.jsonnet",
+          "text": "std.manifestYamlDoc({\n  hello: 'world',\n}, indent_array_in_object=false, quote_keys=true)\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/deep_array_call_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/deep_array_call_integer.jsonnet",
+          "text": "[[1]][0][0]()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/from_array_call_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/from_array_call_integer.jsonnet",
+          "text": "[42][0]()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/index_array_with_number.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/index_array_with_number.jsonnet",
+          "text": "[1,2,3][1]"
+        }
+      ]
+    },
+    {
+      "name": "testdata/index_array_with_string.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/index_array_with_string.jsonnet",
+          "text": "[1,2,3][\"foo\"]"
+        }
+      ]
+    },
+    {
+      "name": "testdata/local_used_in_assertion.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/local_used_in_assertion.jsonnet",
+          "text": "{\n    local input = [1,2,3],\n    local knownItems = [1,2],\n    local unknownItems = std.filter(function(i) !(i in knownItems), input),\n    assert unknownItems == [] : \"unexpected items: %s\" % std.join(\",\",unknownItems)\n}"
+        }
+      ]
+    },
+    {
+      "name": "testdata/stdlib_return_type_test.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/stdlib_return_type_test.jsonnet",
+          "text": "!std.setMember([1, 2, 3], 1)"
+        }
+      ]
+    },
+    {
+      "name": "testdata/argcheck_missed_required.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/argcheck_missed_required.jsonnet",
+          "text": "local f(x, y=17) = 42;\nf(y=17)\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/from_object_call_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/from_object_call_integer.jsonnet",
+          "text": "{\n    a: 42\n}.a()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/index_object_with_number.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/index_object_with_number.jsonnet",
+          "text": "{}[42]"
+        }
+      ]
+    },
+    {
+      "name": "testdata/index_object_with_string.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/index_object_with_string.jsonnet",
+          "text": "{}[\"foo\"]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/index_string_with_string.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/index_string_with_string.jsonnet",
+          "text": "\"foo\"[\"foo\"]"
+        }
+      ]
+    },
+    {
+      "name": "testdata/object_or_array_indexing.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/object_or_array_indexing.jsonnet",
+          "text": "local foo = if true then {\"foo\": \"bar\"} else [\"f\", \"o\", \"o\"];\n[\n    foo[0],\n    foo[\"foo\"]\n]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/deeper_array_call_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/deeper_array_call_integer.jsonnet",
+          "text": "[[[[1]]]][0][0][0][0]()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/from_object_call_integer2.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/from_object_call_integer2.jsonnet",
+          "text": "{\n    a: 1,\n    b: function() 42\n}.a()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/index_string_with_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/index_string_with_integer.jsonnet",
+          "text": "\"foo\"[1]"
+        }
+      ]
+    },
+    {
+      "name": "testdata/object_or_string_indexing.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/object_or_string_indexing.jsonnet",
+          "text": "local foo = if true then {\"foo\": \"bar\"} else \"foo\";\n[\n    foo[0],\n    foo[\"foo\"]\n]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/stdlib_manifestYamlStream.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/stdlib_manifestYamlStream.jsonnet",
+          "text": "std.manifestYamlDoc([\n  { foo: \"bar\" },\n  { baz: \"qux\" },\n], indent_array_in_object=false, quote_keys=true)\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/deepest_array_call_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/deepest_array_call_integer.jsonnet",
+          "text": "local arr = [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[1]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]];\nlocal num = arr[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0];\nnum()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/deepest_array_call_integer2.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/deepest_array_call_integer2.jsonnet",
+          "text": "local arr = [[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[{num: 1, arr: arr}]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]];\nlocal obj = arr[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0];\nlocal obj2 = obj.arr[0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0];\n[\n    obj.num(),\n    obj2.num(),\n]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/stdlib_call_returned_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/stdlib_call_returned_integer.jsonnet",
+          "text": "std.abs(1)()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/from_object_local_call_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/from_object_local_call_integer.jsonnet",
+          "text": "{\n    local foo = 1,\n    bar: foo(),\n}\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/from_object_multiple_field_types.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/from_object_multiple_field_types.jsonnet",
+          "text": "local obj = {\n    num: 1,\n    str: \"str\"\n};\n\n[\n    obj.num + 17,\n    obj.str[0],\n    obj.num + 17,\n    obj.str[0]\n]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/stdlib_call_returned_numberarray.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/stdlib_call_returned_numberarray.jsonnet",
+          "text": "!std.range(1, 3)[0]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/from_function_result_call_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/from_function_result_call_integer.jsonnet",
+          "text": "(function() 42)()()\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/from_recursive_array_call_integer.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/from_recursive_array_call_integer.jsonnet",
+          "text": "local arr = [0, arr];\n\n[\n    arr[0](),\n    arr[1][0](),\n    arr[1][1][0](),\n    arr[1][1][1][1][1][1][1][0](),\n]\n"
+        }
+      ]
+    },
+    {
+      "name": "testdata/index_array_or_string_with_string.jsonnet",
+      "group": "upstream",
+      "snippets": [
+        {
+          "id": "testdata/index_array_or_string_with_string.jsonnet",
+          "text": "(if true then \"foo\" else [])[\"bar\"]"
+        }
+      ]
+    },
+    {
+      "name": "unused",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1;42"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unused variable: x"
+      ]
+    },
+    {
+      "name": "shadow",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1;local x=2;x"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unused variable: x"
+      ]
+    },
+    {
+      "name": "unused-reference",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1,y=x;42"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unused variable: y"
+      ]
+    },
+    {
+      "name": "parameter-shadow",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1;function(x) x"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unused variable: x"
+      ]
+    },
+    {
+      "name": "default",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1;function(y=x) 42"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "dead-code",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1;if false then x else 42"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "key-scope",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x='a';{local x=1,[x]:42}"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unused variable: x"
+      ]
+    },
+    {
+      "name": "unused-parameter",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "function(x)42"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "unused-comp",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42 for x in [1]]"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "array-cycle",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=[x];42"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "func-cycle",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=function() x;42"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "object-cycle",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x={a:x};42"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "mod-cycle",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1%x;42"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "slice-cycle",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=[1][x:];42"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "strict-cycle",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=(function(a) 1)(x) tailstrict;42"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "runtime-not-forced",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "error 'boom'"
+        }
+      ],
+      "files": {},
+      "expected": []
+    },
+    {
+      "name": "imported-unused-not-checked",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "import 'lib'"
+        }
+      ],
+      "files": {
+        "lib": "local unused=1;42"
+      },
+      "expected": []
+    },
+    {
+      "name": "import-in-dead-branch",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "if false then import 'missing' else 42"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "missing import: missing"
+      ]
+    },
+    {
+      "name": "multiple-entries",
+      "group": "focused",
+      "snippets": [
+        {
+          "id": "one",
+          "text": "local x=1;42"
+        },
+        {
+          "id": "two",
+          "text": "local y=1;42"
+        }
+      ],
+      "expected": [
+        "Unused variable: x",
+        "Unused variable: y"
+      ]
+    }
+  ]
+}
