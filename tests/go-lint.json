@@ -1919,6 +1919,622 @@
         }
       ],
       "files": {}
+    },
+    {
+      "name": "parse-empty",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": ""
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-eof-expression",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x="
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-eof",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-keyword",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local true=1;true"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-number",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local 12.50e2=1;42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-string",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local 'a\\nb'=1;42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-double",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local \"a\\tb\"=1;42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-verbatim",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local @'a''b'=1;42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-empty-string",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local ''=1;42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-operator",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local +=1;42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-punctuation",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local ,=1;42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-dot-name",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{}.42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-missing-equals",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x 42; x"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-missing-then",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "if true 42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-missing-paren",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-missing-index-end",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42][0"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-missing-local-semi",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=42 x"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-terminal-comma",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": ","
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-terminal-brace",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-terminal-keyword",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "then"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-terminal-colon",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": ":"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-extra-token",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "42 43"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-extra-keyword",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "42 then"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-parameter-eof",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "function("
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-parameter-keyword",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "function(true) 42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-parameter-comma",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "function(x y) x"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-argument-comma",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x)x)(1 2)"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-array-comma",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[1 2]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-object-comma",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a:1 b:2}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-function-paren",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "function x"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-assert-semi",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "assert true 42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-missing-field-name",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{42:1}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-missing-field-separator",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a 1}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-positional-after-named",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x)x)(x=1,2)"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-computed-import",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "import 42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-incomplete-array",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42,"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-incomplete-object",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a:42,"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-incomplete-call",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x)x)(42,"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-operator-run",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1+==2"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-operator-unary-run",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "!==1"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-operator-comment",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1+/*comment*/2"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-operator-unary-suffix",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[1+-2,!!true,~-1]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-operator-block",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'a'+|||\n  b\n|||"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-operator-assignment",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1=2"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-field-separated-add",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a+ :1}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-field-invalid-op",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{a::::1}"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-field-hidden-add",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "({a::1}+{a+:::2}).a"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-empty-parameter-string",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "function('') 42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-verbatim-double",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local @\"a\"\"b\"=1;42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-name-block",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local |||\n  line\n|||=1;42"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-import-expression",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "import 'a'+'b'"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-import-parentheses",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "importstr ('a')"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-import-array",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "importbin [42]"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-import-eof",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "import"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-import-block",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "import |||\n  a\n|||"
+        }
+      ],
+      "files": {}
+    },
+    {
+      "name": "parse-positional-invalid",
+      "group": "parser",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x)x)(x=1,then)"
+        }
+      ],
+      "files": {}
     }
   ]
 }

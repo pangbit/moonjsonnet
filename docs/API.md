@@ -160,6 +160,13 @@ complete named/synthetic frame set. See [CLI](CLI.md).
 
 ## Parsed programs
 
+Parser diagnostics preserve token spelling, including number notation, quote
+kind and raw escapes, and use the pinned Go token names and delimiter messages.
+Operator runs follow Go boundaries, including unary suffixes and adjacent
+comments. Import operands must parse as direct string literals; computed and
+parenthesized operands are rejected. Token spelling is retained during parsing
+only; this does not add source-preserving AST metadata or complete error ranges.
+
 `Program::parse(source, filename?, anonymous?, limits?) -> Program raise JsonnetError`
 lexes, parses and statically validates an entry program without executing code,
 reading imports or invoking callbacks. The public `Program` has private fields;

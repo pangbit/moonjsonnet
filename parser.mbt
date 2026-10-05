@@ -36,7 +36,14 @@ fn Parser::expect(self : Parser, text : String) -> Unit raise Error {
     raise problem(
       Syntax,
       self.peek().loc,
-      "expected '\{text}', got '\{self.peek().text}'",
+      (if text == "<eof>" {
+        "Did not expect: "
+      } else if text == "=" || text == ":" {
+        "Expected operator " + text + " but got "
+      } else {
+        "Expected token " + token_kind_name(text) + " but got "
+      }) +
+      self.peek().describe(),
     )
   }
 }
@@ -70,10 +77,16 @@ fn is_name(s : String) -> Bool {
 }
 
 ///|
-fn Parser::name(self : Parser) -> String raise Error {
+fn Parser::name(self : Parser, parameter? : Bool = false) -> String raise Error {
   let t = self.take()
   if !is_name(t.text) {
-    raise problem(Syntax, t.loc, "expected identifier")
+    raise problem(
+      Syntax,
+      t.loc,
+      "Expected token IDENTIFIER but got " +
+      t.describe() +
+      (if parameter { " while parsing parameter" } else { "" }),
+    )
   }
   t.text
 }
@@ -96,12 +109,15 @@ fn precedence(op : String) -> Int {
 }
 
 ///|
-fn Parser::params(self : Parser) -> Array[(String, Expr?)] raise Error {
+fn Parser::params(
+  self : Parser,
+  is_method? : Bool = false,
+) -> Array[(String, Expr?)] raise Error {
   self.expect("(")
   let params = []
   let names : Map[String, Bool] = Map([])
   while !self.eat(")") {
-    let n = self.name()
+    let n = self.name(parameter=true)
     if names.contains(n) {
       raise problem(Static, self.peek().loc, "duplicate parameter '\{n}'")
     }
@@ -109,7 +125,14 @@ fn Parser::params(self : Parser) -> Array[(String, Expr?)] raise Error {
     let default = if self.eat("=") { Some(self.expr(0)) } else { None }
     params.push((n, default))
     if !self.eat(",") {
-      self.expect(")")
+      self.end_list(
+        ")",
+        if is_method {
+          "method parameter"
+        } else {
+          "function parameter"
+        },
+      )
       break
     }
   }
@@ -175,29 +198,46 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
         } else if is_name(t.text) {
           { kind: Literal(Json::string(t.text)), loc: t.loc, }
         } else {
-          raise problem(Syntax, t.loc, "expected field name")
+          raise problem(
+            Syntax,
+            t.loc,
+            "Unexpected: " + t.describe() + " while parsing field definition",
+          )
         }
       }
       let params = if self.peek().text == "(" {
-        Some(self.params())
+        Some(self.params(is_method=true))
       } else {
         None
       }
-      let additive = self.eat("+")
+      let op = self.take()
+      if !op.is_operator() {
+        raise problem(
+          Syntax,
+          op.loc,
+          "Expected token OPERATOR but got " + op.describe(),
+        )
+      }
+      let (additive, visibility) = match op.text {
+        ":" => (false, 1)
+        "::" => (false, 2)
+        ":::" => (false, 3)
+        "+:" => (true, 1)
+        "+::" => (true, 2)
+        "+:::" => (true, 3)
+        _ =>
+          raise problem(
+            Syntax,
+            op.loc,
+            "Expected one of :, ::, :::, +:, +::, +:::, got: " + op.text,
+          )
+      }
       if additive && params is Some(_) {
         raise problem(
           Syntax,
           key.loc,
           "method cannot use additive field syntax",
         )
-      }
-      let visibility = if self.eat(":::") {
-        3
-      } else if self.eat("::") {
-        2
-      } else {
-        self.expect(":")
-        1
       }
       let body = self.expr(0)
       let value : Expr = match params {
@@ -227,7 +267,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
       }
     }
     if !comma {
-      self.expect("}")
+      self.end_list("}", "field", describe=false)
       break
     }
   }
@@ -259,7 +299,13 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           while self.eat(",") {
             bindings.push(self.binding())
           }
-          self.expect(";")
+          if !self.eat(";") {
+            raise problem(
+              Syntax,
+              self.peek().loc,
+              "Expected , or ; but got " + self.peek().describe(),
+            )
+          }
           { kind: Local(bindings, self.expr(0)), loc, }
         }
         "if" => {
@@ -274,6 +320,13 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           { kind: If(c, yes, no), loc, }
         }
         "function" => {
+          if self.peek().text != "(" {
+            raise problem(
+              Syntax,
+              self.peek().loc,
+              "Expected ( but got " + self.peek().describe(),
+            )
+          }
           let p = self.params()
           { kind: Func(p, self.expr(0)), loc, }
         }
@@ -285,12 +338,17 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
         }
         "error" => { kind: Fail(self.expr(0)), loc, }
         "import" | "importstr" | "importbin" => {
-          let t = self.take()
-          guard t.value is Some(String(path)) else {
-            raise problem(Syntax, t.loc, "import requires a string literal")
+          let t = self.peek()
+          let body = self.expr(0)
+          guard t.value is Some(String(_)) && body.kind is Literal(String(path)) else {
+            raise problem(Syntax, t.loc, "Computed imports are not allowed")
           }
           if t.text == "<block>" {
-            raise problem(Syntax, t.loc, "imports cannot use text blocks")
+            raise problem(
+              Syntax,
+              t.loc,
+              "Block string literals not allowed in imports",
+            )
           }
           {
             kind: if token.text == "importbin" {
@@ -319,12 +377,12 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
                 while !self.eat("]") {
                   items.push(self.expr(0))
                   if !self.eat(",") {
-                    self.expect("]")
+                    self.end_list("]", "array element", describe=false)
                     break
                   }
                 }
               } else {
-                self.expect("]")
+                self.end_list("]", "array element", describe=false)
               }
               { kind: Arr(items), loc, }
             }
@@ -335,7 +393,17 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           if is_name(n) {
             { kind: Var(n), loc, }
           } else {
-            raise problem(Syntax, loc, "unexpected token '\{n}'")
+            raise problem(
+              Syntax,
+              loc,
+              if n == "<eof>" {
+                "Unexpected end of file"
+              } else if token.is_operator() {
+                "Not a unary operator: " + n
+              } else {
+                "Unexpected: " + token.describe() + " while parsing terminal"
+              },
+            )
           }
       }
   }
@@ -387,6 +455,7 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
       let args = []
       let mut named = false
       while !self.eat(")") {
+        let arg_loc = self.peek().loc
         let name = if is_name(self.peek().text) &&
           self.tokens[self.pos + 1].text == "=" {
           let n = self.name()
@@ -394,18 +463,19 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           named = true
           Some(n)
         } else {
-          if named {
-            raise problem(
-              Static,
-              self.peek().loc,
-              "positional argument after named argument",
-            )
-          }
           None
         }
-        args.push((name, self.expr(0)))
+        let value = self.expr(0)
+        if name is None && named {
+          raise problem(
+            Static,
+            arg_loc,
+            "Positional argument after a named argument is not allowed",
+          )
+        }
+        args.push((name, value))
         if !self.eat(",") {
-          self.expect(")")
+          self.end_list(")", "function argument")
           break
         }
       }
@@ -415,6 +485,9 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
       left = { kind: Binary("+", left, self.object(t.loc)), loc, }
     } else {
       let prec = precedence(t.text)
+      if prec == 0 && t.is_operator() && t.text != ":" && t.text != "::" {
+        raise problem(Syntax, t.loc, "Not a binary operator: " + t.text)
+      }
       if prec == 0 || prec < min_prec {
         break
       }

@@ -3,6 +3,7 @@ priv struct Token {
   text : String
   value : Json?
   loc : Location
+  raw : String
 }
 
 ///|
@@ -26,6 +27,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
     let c = chars[i]
     let loc : Location = { file, line, column, }
     let start = i
+    let count = out.length()
     if c == ' ' || c == '\t' || c == '\r' || c == '\n' {
       i += 1
     } else if c == '#' || (c == '/' && chars.get(i + 1) == Some('/')) {
@@ -122,6 +124,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         text: "<block>",
         value: Some(Json::string(b.to_string())),
         loc,
+        raw: "",
       })
     } else if c == '"' || c == '\'' || c == '@' {
       let verbatim = c == '@'
@@ -222,6 +225,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         text: "<string>",
         value: Some(Json::string(b.to_string())),
         loc,
+        raw: "",
       })
     } else if identifier_start(c) {
       let b = StringBuilder()
@@ -230,7 +234,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         b.write_char(chars[i])
         i += 1
       }
-      out.push({ text: b.to_string(), value: None, loc, })
+      out.push({ text: b.to_string(), value: None, loc, raw: "", })
     } else if digit(c) {
       let b = StringBuilder()
       while i < chars.length() &&
@@ -256,28 +260,45 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       if v.is_inf() || v.is_nan() {
         raise problem(Runtime, loc, "non-finite number")
       }
-      out.push({ text: "<number>", value: Some(n), loc, })
+      out.push({ text: "<number>", value: Some(n), loc, raw: "", })
     } else {
       let b = StringBuilder()
-      b.write_char(c)
       i += 1
-      if c == ':' && chars.get(i) == Some(':') {
-        b.write_char(':')
-        i += 1
-        if chars.get(i) == Some(':') {
-          b.write_char(':')
+      if operator_char(c) {
+        while i < chars.length() && operator_char(chars[i]) {
+          if chars[i] == '/' &&
+            (chars.get(i + 1) == Some('/') || chars.get(i + 1) == Some('*')) {
+            break
+          }
+          if chars[i] == '|' &&
+            chars.get(i + 1) == Some('|') &&
+            chars.get(i + 2) == Some('|') {
+            break
+          }
           i += 1
         }
-      } else if (c == '=' || c == '!' || c == '<' || c == '>') &&
-        chars.get(i) == Some('=') {
-        b.write_char('=')
-        i += 1
-      } else if (c == '&' || c == '|' || c == '<' || c == '>') &&
-        chars.get(i) == Some(c) {
-        b.write_char(c)
-        i += 1
+        while i > start + 1 &&
+              (
+                chars[i - 1] == '+' ||
+                chars[i - 1] == '-' ||
+                chars[i - 1] == '~' ||
+                chars[i - 1] == '!' ||
+                chars[i - 1] == '$'
+              ) {
+          i -= 1
+        }
       }
-      out.push({ text: b.to_string(), value: None, loc, })
+      for j in start..<i {
+        b.write_char(chars[j])
+      }
+      out.push({ text: b.to_string(), value: None, loc, raw: "", })
+    }
+    if out.length() > count {
+      let raw = StringBuilder()
+      for j in start..<i {
+        raw.write_char(chars[j])
+      }
+      out[count] = { ..out[count], raw: raw.to_string(), }
     }
     for j in start..<i {
       if chars[j] == '\n' {
@@ -288,6 +309,11 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       }
     }
   }
-  out.push({ text: "<eof>", value: None, loc: { file, line, column, }, })
+  out.push({
+    text: "<eof>",
+    value: None,
+    loc: { file, line, column, },
+    raw: "",
+  })
   out
 }
