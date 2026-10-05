@@ -42,14 +42,14 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | 字符串、编码、摘要 | 对应成员均已注册；5 种摘要均有 MoonBit 实现 | 更广泛输入、边界及诊断验证 |
 | 输出标准函数 | JSON、INI、Python、XML JSONML、YAML 和 TOML 对应成员已注册 | 扩大输出边界与诊断验证，保留 YAML 参考崩溃差异 |
 | YAML 解析 | 已注册 `parseYaml`，覆盖块/流语法、标签、别名、合并及 YAML 1.1 转换 | 扩大 YAML 语料；保留空输入参考崩溃，注册不代表通用 YAML 等价 |
-| 扩展参数 | JSON/字符串、独立作用域的惰性代码及已解析 Program；CLI 文件/环境变量形式 | 可重用 VM 的重置和缓存语义；扩大 AST 参数语料 |
-| 顶层参数 TLA | JSON/字符串/代码/已解析 Program 及 CLI 文件/环境变量形式，顶层函数调用、默认值与错误传播 | 扩大语料；可重用 VM 的 TLA/reset 接口仍待实现 |
-| 原生回调与 trace | 已实现按名注册、JSON 回调、可配置 sink 及默认 stderr | 扩大宿主边界验证；可重用 VM 的 sink 配置及诊断路径/帧行为仍待补齐 |
-| 导入器 | 定制文本/二进制解析、限定目录宿主、`-J`/`JSONNET_PATH` 搜索、正负缓存及静态依赖扫描 | 可重用 VM 的共享缓存与导入查询；继续核验路径身份、扫描遍历顺序与宿主政策差异 |
+| 扩展参数 | JSON/字符串、独立作用域的惰性代码及已解析 Program；CLI 文件/环境变量形式；Evaluator 替换/reset 及值缓存失效 | 扩大 AST 参数和跨次求值语料 |
+| 顶层参数 TLA | JSON/字符串/代码/已解析 Program 及 CLI 文件/环境变量形式，顶层函数调用、默认值与错误传播；Evaluator 替换/reset 保留导入缓存 | 扩大跨次调用和参数边界语料 |
+| 原生回调与 trace | 已实现按名注册、JSON 回调、可配置 sink 及默认 stderr；Evaluator native 变更清值缓存、sink 变更保留缓存 | 扩大宿主边界验证；完整诊断路径/帧及 EvalHook 仍待补齐 |
+| 导入器 | 定制文本/二进制解析、限定目录宿主、`-J`/`JSONNET_PATH` 搜索、正负缓存及静态依赖扫描；Evaluator 共享 source/AST/value 缓存 | 导入查询及共享缓存的依赖扫描；继续核验路径身份、扫描遍历顺序与宿主政策差异 |
 | 输入模式 | 文件、CLI `-e`、stdin、`--`、短选项展开和匿名源码求值 | 扩大输入/诊断边界，保留宿主资源与 UTF-8 政策 |
 | 输出模式 | 单个 JSON/文件、字符串、文档流、multi 与目录创建；对应嵌入方法已提供 | 扩大文件状态与 I/O 边界验证，保留执行预算政策 |
 | CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、错误 context 裁剪、独立 `-s`/`--max-stack` 帧预算、短选项及退出 1 行为；其余部分 | 扩大帧边界语料、Go 诊断帧集合及剩余选项 |
-| VM/AST 接口 | 不透明 `Program` 解析/重复执行及 ext/TLA 参数，支持四种输出；每次执行状态独立，另有依赖扫描 API | AST 编辑、可重用 VM 配置与共享缓存生命周期、导入查询接口 |
+| VM/AST 接口 | 不透明 Program 及 ext/TLA 参数；可重用 Evaluator 配置、分层导入缓存与四种输出；原 Program API 仍每次独立 | AST 编辑、导入查询/共享依赖扫描、EvalHook 及完整诊断配置能力 |
 | 格式化器、静态分析工具 | 已有 `cmd/deps` 静态依赖工具；格式化器与 lint 缺失 | 扩大依赖扫描语料；建立格式化/lint/工具接口语料，纳入整体覆盖状态 |
 | 平台与交付 | native；实测 macOS arm64 | Linux 持续验证；其余参考平台和分发能力逐项核验，不凭本机结果推断 |
 
@@ -195,9 +195,17 @@ AST 参数批次加入 `ext_programs` / `tla_programs`，所有字符串及 Prog
 可编辑 AST 与共享 VM 生命周期仍未补齐，详见
 [AST 参数验收](../reports/GO-JSONNET-PROGRAM-PARAMETERS.md)。
 
+可重用解释器批次加入 `Evaluator`，ext/native 配置变更仅清求值缓存，TLA/trace
+变更保留缓存，替换 importer 则清全部导入状态。11 组固定 Go 序列全部通过，
+包含 49 次求值（7 次预期错误）；普通失败重试，对象断言失败则随对象缓存保留。
+内部堆回收不可达入口临时值并复用槽位，连续 200 次固定工作量执行槽位数稳定，
+不据此声明 RSS 或泄漏结论。测试 174/174，Go CLI 差分仍为 1112/1130，
+原 18 项失败保留。导入查询、共享依赖扫描、AST 编辑与 EvalHook 等仍待推进，
+详见 [Evaluator 验收](../reports/GO-JSONNET-EVALUATOR.md)。
+
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
-MoonBit 求值器执行。每次 evaluate 解析一次，导入共享 AST，各文件的 `thisFile`
-独立绑定。仅启用已验证依赖的成员，原生函数覆盖对应字段；源码提取工具校验参考
+MoonBit 求值器执行。一次性入口与 Evaluator 采用各自的 AST/值缓存生命周期，
+各文件的 `thisFile` 独立绑定。仅启用已验证依赖的成员，原生函数覆盖对应字段；源码提取工具校验参考
 提交和源文件状态，来源与许可保留在 NOTICE 和内嵌头部。
 
 ## 完成标准
