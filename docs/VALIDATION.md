@@ -13,6 +13,13 @@ moon doc
 moon build --target native --release --deny-warn
 ```
 
+`program_test.mbt` checks parsing without execution, reuse with changed parameters,
+callbacks and importers, all four output modes, error recovery, fixed source identity,
+independent budgets and object/thunk state. The existing string APIs now use the
+same parsed-program execution path. These local API tests establish the documented
+fresh-state contract; they do not establish reusable Go VM cache-lifecycle parity.
+The archive consumer also compiles and calls all four public `Program` methods.
+
 Reference interpreter (development only; not a runtime dependency):
 
 ```sh
@@ -152,8 +159,9 @@ Trace fixtures additionally compare exact stderr on success and the exact trace
 prefix before an error diagnostic. Both programs receive the same absolute
 input path for these cases; relative/alias diagnostic-path parity is not implied.
 
-See the [dependency-scan report](../reports/GO-JSONNET-DEPENDENCIES.md) for current
+See the [parsed-program report](../reports/GO-JSONNET-PROGRAM.md) for current
 commit-bound results and the retained differences. The earlier
+[dependency-scan report](../reports/GO-JSONNET-DEPENDENCIES.md),
 [runtime-frame report](../reports/GO-JSONNET-STACK.md),
 [diagnostic report](../reports/GO-JSONNET-DIAGNOSTICS.md),
 [import-search report](../reports/GO-JSONNET-IMPORT-SEARCH.md),
@@ -201,7 +209,9 @@ moon run tools/asan.mbtx
 ```
 
 Leak detection is disabled for portability with Apple Clang; this check covers
-address errors, not a LeakSanitizer proof. Test scripts use MoonBit script mode
+address errors, not a LeakSanitizer proof. The script sets ASan `exitcode=99` for
+tests and both CLI integration suites so a sanitizer failure cannot satisfy an
+expected application-error exit code of 1. Test scripts use MoonBit script mode
 and `moonbitlang/async`; commands may need access to Moon's dependency cache.
 `tools/consumer.mbtx` extracts the actual Mooncakes archive into a temporary
 workspace and compiles/tests a separate module using only public APIs.
