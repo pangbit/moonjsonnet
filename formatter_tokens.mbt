@@ -65,6 +65,15 @@ priv struct FormatGroup {
 }
 
 ///|
+priv struct FormatLocal {
+  depth : Int
+  column : Int
+  in_object : Bool
+  mut binding : Bool
+  mut equal_pending : Bool
+}
+
+///|
 fn format_tokens(
   tokens : Array[Token],
   root : Expr,
@@ -73,6 +82,11 @@ fn format_tokens(
   loc : Location,
 ) -> String raise JsonnetError {
   let tokens = format_rewrite(tokens, root, options)
+  let tokens = if options.sort_imports {
+    format_sort_imports(tokens)
+  } else {
+    tokens
+  }
   let writer : FormatOutput = {
     out: StringBuilder(),
     limits,
@@ -83,6 +97,7 @@ fn format_tokens(
     column: 0,
   }
   let groups : Array[FormatGroup] = []
+  let locals : Array[FormatLocal] = []
   let layout = format_layout(tokens)
   let mut previous = ""
   let mut ends_expr = false
@@ -122,23 +137,37 @@ fn format_tokens(
       groups.last() is Some({ open: "(", expanded: false, align, .. }) {
       spaces = align
     }
+    if options.indent > 0 &&
+      locals.last() is Some(scope) &&
+      scope.binding &&
+      scope.depth == groups.length() {
+      spaces = scope.column
+    }
     if layout.trailing_comma[i] && !only_comments {
       writer.write(",")
     }
     let mut newline_count = 0
     let mut interstitial = false
+    let mut stripped_tail = false
     for trivia in token.leading {
       writer.tick()
       match trivia.kind {
-        Whitespace =>
+        Whitespace => {
+          if trivia.raw.contains("\n") {
+            stripped_tail = false
+          }
           if !strip_all && !only_comments {
             newline_count += trivia.raw
               .to_array()
               .filter(c => c == '\n')
               .length()
           }
+        }
         LineComment | BlockComment => {
           if strip_all || options.strip_comments {
+            stripped_tail = options.strip_comments &&
+              trivia.kind == BlockComment &&
+              !trivia.raw.contains("\n")
             continue
           }
           let inline = last_line == trivia.range.begin.line && last_line > 0
@@ -153,7 +182,22 @@ fn format_tokens(
           }
           writer.indent(spaces)
           if !writer.line_start && !previous.is_empty() && inline {
-            writer.write(if trivia.kind == LineComment { "  " } else { " " })
+            let crowded = t != ";" &&
+              t != "," &&
+              t != "." &&
+              t != ")" &&
+              !t.has_prefix(":") &&
+              !t.has_prefix("+:") &&
+              !(t == "]" && groups.last() is Some({ index: true, .. })) &&
+              previous != "." &&
+              previous != "(" &&
+              (previous != "[" || options.pad_arrays) &&
+              (previous != "{" || options.pad_objects)
+            if trivia.kind == LineComment {
+              writer.write("  ")
+            } else if crowded {
+              writer.write(" ")
+            }
           }
           let comment = format_comment(
             trivia.raw.trim_end().to_owned(),
@@ -204,9 +248,22 @@ fn format_tokens(
           writer.write("\n")
         }
       }
+      // FixNewlines runs before StripComments in Go. A final interstitial
+      // causes a separate clean line ending; stripping the comment leaves
+      // both line endings, including the indentation on the empty line.
+      if stripped_tail && layout.newline[i] && token.has_newline() {
+        writer.indent(spaces)
+        writer.write("\n")
+      }
     }
     let inside = groups.last()
-    let compact_equal = t == "=" && inside is Some({ open: "(", .. })
+    let local_equal = t == "=" &&
+      locals.last() is Some(scope) &&
+      scope.equal_pending &&
+      scope.depth == groups.length()
+    let compact_equal = t == "=" &&
+      !local_equal &&
+      inside is Some({ open: "(", .. })
     let prefix = (t == "+" || t == "-" || t == "!" || t == "~") && !ends_expr
     let compact_colon = (t == ":" || t == "::") &&
       inside is Some({ index: true, .. })
@@ -260,7 +317,17 @@ fn format_tokens(
     }
     writer.indent(spaces)
     if spaced ||
-      (interstitial && !writer.line_start && !closing && t != "," && t != ";") {
+      (
+        interstitial &&
+        !writer.line_start &&
+        !closing &&
+        t != "," &&
+        t != ";" &&
+        !t.has_prefix(":") &&
+        !t.has_prefix("+:") &&
+        t != "." &&
+        previous != "."
+      ) {
       writer.write(" ")
     }
     let mut raw = format_string(token, options.string_style)
@@ -280,6 +347,37 @@ fn format_tokens(
       }
     }
     writer.write(raw)
+    if locals.last() is Some(scope) && scope.depth == groups.length() {
+      if scope.binding && is_name(t) {
+        scope.binding = false
+      }
+      if local_equal {
+        scope.equal_pending = false
+      }
+      if t == ";" || (t == "," && scope.in_object) {
+        ignore(locals.pop())
+      } else if t == "," {
+        scope.binding = true
+        scope.equal_pending = true
+      }
+    }
+    if t == "local" {
+      let separate_line = tokens.get(i + 1) is Some(next) && next.has_newline()
+      locals.push({
+        depth: groups.length(),
+        column: if separate_line &&
+          options.indent > 0 &&
+          spaces <= limits.output_bytes - options.indent {
+          spaces + options.indent
+        } else {
+          writer.column + 1
+        },
+        in_object: inside is Some({ open: "{", .. }) &&
+        (previous == "{" || previous == ","),
+        binding: true,
+        equal_pending: true,
+      })
+    }
     if t == "(" || t == "[" || t == "{" {
       groups.push({
         open: t,

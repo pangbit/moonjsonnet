@@ -84,6 +84,7 @@ async fn main {
     #|  assert_true(format_options.string_style == @moonjsonnet.DoubleQuotes)
     #|  assert_eq(@moonjsonnet.format_source("'abc'",options=format_options),"\"abc\"\n")
     #|  assert_eq(@moonjsonnet.ParsedSource::parse("[1,2]").format(),"[1, 2]\n")
+    #|  assert_eq(@moonjsonnet.format_source("local z=import 'z';local a=import 'a';[z,a]"),"local a = import 'a';\nlocal z = import 'z';\n[z, a]\n")
     #|  assert_eq(ranged.source_range().unwrap().format(),"consumer:1:1-6")
     #|  let manual : @moonjsonnet.Ast = {kind:Literal(42),loc:ranged.loc,end:None}
     #|  assert_eq(@moonjsonnet.Program::from_ast(manual).evaluate(),42)

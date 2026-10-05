@@ -903,5 +903,402 @@
     "error_contains": [
       "Duplicate field: a"
     ]
+  },
+  {
+    "name": "imports-single",
+    "source": "local a=import 'a';a",
+    "options": {},
+    "expected": "local a = import 'a';\na\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-path-length",
+    "source": "local z=import 'z';local a=import 'aaa-long';[z,a]",
+    "options": {},
+    "expected": "local a = import 'aaa-long';\nlocal z = import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-three",
+    "source": "local z=import 'z';local m=import 'm';local a=import 'a';[z,m,a]",
+    "options": {},
+    "expected": "local a = import 'a';\nlocal m = import 'm';\nlocal z = import 'z';\n[z, m, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-binding-three",
+    "source": "local z=import 'z',m=import 'm',a=import 'a';[z,m,a]",
+    "options": {},
+    "expected": "local a = import 'a';\nlocal m = import 'm';\nlocal z = import 'z';\n[z, m, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-mixed-statements",
+    "source": "local z=import 'z',a=import 'a';local m=import 'm';[z,a,m]",
+    "options": {},
+    "expected": "local a = import 'a';\nlocal m = import 'm';\nlocal z = import 'z';\n[z, a, m]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-same-path",
+    "source": "local z=import 'same';local a=import 'same';[z,a]",
+    "options": {},
+    "expected": "local z = import 'same';\nlocal a = import 'same';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-shadow-three",
+    "source": "local a=import 'z';local b=import 'b';local a=import 'a';[a,b]",
+    "options": {},
+    "expected": "local a = import 'z';\nlocal b = import 'b';\nlocal a = import 'a';\n[a, b]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-utf8",
+    "source": "local x=import '𐀀';local y=import '';[x,y]",
+    "options": {},
+    "expected": "local y = import '';\nlocal x = import '𐀀';\n[x, y]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-raw-escape",
+    "source": "local x=import '\\u0062';local y=import 'a';[x,y]",
+    "options": {},
+    "expected": "local x = import 'b';\nlocal y = import 'a';\n[x, y]\n",
+    "idempotent": false
+  },
+  {
+    "name": "imports-verbatim",
+    "source": "local x=import @'z''s';local y=import 'a';[x,y]",
+    "options": {},
+    "expected": "local y = import 'a';\nlocal x = import @'z''s';\n[x, y]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-header",
+    "source": "# header\nlocal z=import 'z';local a=import 'a';[z,a]",
+    "options": {},
+    "expected": "// header\nlocal a = import 'a';\nlocal z = import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-shebang",
+    "source": "#!/usr/bin/env jsonnet\nlocal z=import 'z';local a=import 'a';[z,a]",
+    "options": {},
+    "expected": "#!/usr/bin/env jsonnet\nlocal a = import 'a';\nlocal z = import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-inline-comments",
+    "source": "local z=import 'z'; // z\nlocal a=import 'a'; // a\n[z,a]",
+    "options": {},
+    "expected": "local a = import 'a';  // a\nlocal z = import 'z';  // z\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-binding-inline-comments",
+    "source": "local z=import 'z', // z\n a=import 'a'; // a\n[z,a]",
+    "options": {},
+    "expected": "local a = import 'a';  // a\nlocal z = import 'z';  // z\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-blank-groups",
+    "source": "local z=import 'z';local y=import 'y';\n\nlocal b=import 'b';local a=import 'a';[z,y,b,a]",
+    "options": {},
+    "expected": "local y = import 'y';\nlocal z = import 'z';\n\nlocal a = import 'a';\nlocal b = import 'b';\n[z, y, b, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-comment-groups",
+    "source": "local z=import 'z';local y=import 'y';\n// group 2\nlocal b=import 'b';local a=import 'a';[z,y,b,a]",
+    "options": {},
+    "expected": "local y = import 'y';\nlocal z = import 'z';\n// group 2\nlocal a = import 'a';\nlocal b = import 'b';\n[z, y, b, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-binding-comments",
+    "source": "local z=import 'z',\n// a\n a=import 'a';[z,a]",
+    "options": {},
+    "expected": "local\n  // a\n  a = import 'a';\nlocal z = import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-before-name",
+    "source": "local /*z*/ z=import 'z';local /*a*/ a=import 'a';[z,a]",
+    "options": {},
+    "expected": "local /*a*/ a = import 'a';\nlocal /*z*/ z = import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-before-equal",
+    "source": "local z /*z*/ = import 'z';local a /*a*/ = import 'a';[z,a]",
+    "options": {},
+    "expected": "local a /*a*/ = import 'a';\nlocal z /*z*/ = import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-before-import",
+    "source": "local z= /*z*/ import 'z';local a= /*a*/ import 'a';[z,a]",
+    "options": {},
+    "expected": "local a = /*a*/ import 'a';\nlocal z = /*z*/ import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-before-path",
+    "source": "local z=import /*z*/ 'z';local a=import /*a*/ 'a';[z,a]",
+    "options": {},
+    "expected": "local a = import /*a*/ 'a';\nlocal z = import /*z*/ 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-before-semicolon",
+    "source": "local z=import 'z' /*z*/;local a=import 'a' /*a*/;[z,a]",
+    "options": {},
+    "expected": "local a = import 'a'/*a*/;\nlocal z = import 'z'/*z*/;\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-after-semicolon",
+    "source": "local z=import 'z'; /*z*/ local a=import 'a'; /*a*/ [z,a]",
+    "options": {},
+    "expected": "local a = import 'a'; /*a*/\nlocal z = import 'z'; /*z*/\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-block-between",
+    "source": "local z=import 'z'; /*z\nmore*/\nlocal a=import 'a';[z,a]",
+    "options": {},
+    "expected": "local z = import 'z';\n/*z\nmore*/\nlocal a = import 'a';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-block-paragraph",
+    "source": "local z=import 'z';\n/* a\n * doc\n */\nlocal a=import 'a';[z,a]",
+    "options": {},
+    "expected": "local z = import 'z';\n/* a\n * doc\n */\nlocal a = import 'a';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-body-comment",
+    "source": "local z=import 'z';local a=import 'a';\n// body\n[z,a]",
+    "options": {},
+    "expected": "local a = import 'a';\nlocal z = import 'z';\n// body\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-crlf",
+    "source": "local z=import 'z'; // z\r\nlocal a=import 'a'; // a\r\n[z,a]",
+    "options": {},
+    "expected": "local a = import 'a';  // a\nlocal z = import 'z';  // z\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-parenthesized-root",
+    "source": "(local z=import 'z';local a=import 'a';[z,a])",
+    "options": {},
+    "expected": "(local z = import 'z'; local a = import 'a'; [z, a])\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-parenthesized-import",
+    "source": "local z=(import 'z');local a=import 'a';[z,a]",
+    "options": {},
+    "expected": "local z = (import 'z'); local a = import 'a'; [z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-partial-prefix",
+    "source": "local z=import 'z';local a=import 'a',v=1;[z,a,v]",
+    "options": {},
+    "expected": "local z = import 'z';\nlocal a = import 'a', v = 1; [z, a, v]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-binary-import",
+    "source": "local z=import 'z';local a=importbin 'a';[z,a]",
+    "options": {},
+    "expected": "local z = import 'z';\nlocal a = importbin 'a'; [z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-stops-at-local",
+    "source": "local z=import 'z';local v=1;local a=import 'a';[z,a,v]",
+    "options": {},
+    "expected": "local z = import 'z';\nlocal v = 1; local a = import 'a'; [z, a, v]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-function-body",
+    "source": "local z=import 'z';function() local a=import 'a';[z,a]",
+    "options": {},
+    "expected": "local z = import 'z';\nfunction() local a = import 'a'; [z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-binding-head-line-comment",
+    "source": "local // head\n z=import 'z';local a=import 'a';[z,a]",
+    "options": {},
+    "expected": "local a = import 'a';\nlocal  // head\n  z = import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-binding-initial-newline",
+    "source": "local\n z=import 'z';local a=import 'a';[z,a]",
+    "options": {},
+    "expected": "local a = import 'a';\nlocal\n  z = import 'z';\n[z, a]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-trailing-blank",
+    "source": "local z=import 'z';\n\n\n42",
+    "options": {},
+    "expected": "local z = import 'z';\n\n\n42\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-nonimport-parameter",
+    "source": "(local f(x=1)=x; f())",
+    "options": {},
+    "expected": "(local f(x=1) = x; f())\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-nested-local",
+    "source": "local a=local b=1,\nc=2;b+c,\nd=3;a+d",
+    "options": {},
+    "expected": "local a = local b = 1,\n                c = 2; b + c,\n      d = 3; a + d\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-object-local",
+    "source": "{\nlocal a=1,\nx:a\n}",
+    "options": {},
+    "expected": "{\n  local a = 1,\n  x: a,\n}\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-call-local-default",
+    "source": "f(x=local a=1;a)",
+    "options": {},
+    "expected": "f(x=local a = 1; a)\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-plain-comment-comma",
+    "source": "[1/* x */,2]",
+    "options": {},
+    "expected": "[1/* x */, 2]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-plain-comment-index",
+    "source": "a[1/* x */]",
+    "options": {},
+    "expected": "a[1/* x */]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-plain-comment-paren",
+    "source": "(1/* x */)",
+    "options": {},
+    "expected": "(1/* x */)\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-plain-comment-dot",
+    "source": "a/* x */.b",
+    "options": {},
+    "expected": "a/* x */.b\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-plain-comment-array-end",
+    "source": "[1/* x */]",
+    "options": {},
+    "expected": "[1 /* x */]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-plain-comment-object-end",
+    "source": "{x:1/* x */}",
+    "options": {},
+    "expected": "{ x: 1 /* x */ }\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-strip-tail-interstitial",
+    "source": "[1,\n/* x */2]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[\n  1,\n  \n  2,\n]\n",
+    "idempotent": false
+  },
+  {
+    "name": "imports-strip-interstitial-followed-newline",
+    "source": "[1,\n/* x */\n2]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[\n  1,\n  \n  2,\n]\n",
+    "idempotent": false
+  },
+  {
+    "name": "imports-strip-inline-interstitial",
+    "source": "[1/* x */,\n2]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[\n  1,\n  2,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-strip-first-interstitial",
+    "source": "[/* x */1,\n2]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[\n  1,\n  2,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-strip-paragraph",
+    "source": "[1,\n/* x\n * y */\n2]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[\n  1,\n  2,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-strip-line-paragraph",
+    "source": "[1,\n// x\n2]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[\n  1,\n  2,\n]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-equal-paths-13",
+    "source": "local x0=import '0';local x1=import '2';local x2=import '4';local x3=import '1';local x4=import '3';local x5=import '0';local x6=import '2';local x7=import '4';local x8=import '1';local x9=import '3';local x10=import '0';local x11=import '2';local x12=import '4';[x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12]",
+    "options": {},
+    "expected": "local x5 = import '0';\nlocal x10 = import '0';\nlocal x0 = import '0';\nlocal x8 = import '1';\nlocal x3 = import '1';\nlocal x6 = import '2';\nlocal x1 = import '2';\nlocal x11 = import '2';\nlocal x4 = import '3';\nlocal x9 = import '3';\nlocal x7 = import '4';\nlocal x2 = import '4';\nlocal x12 = import '4';\n[x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-equal-paths-32",
+    "source": "local x0=import '0';local x1=import '2';local x2=import '4';local x3=import '1';local x4=import '3';local x5=import '0';local x6=import '2';local x7=import '4';local x8=import '1';local x9=import '3';local x10=import '0';local x11=import '2';local x12=import '4';local x13=import '1';local x14=import '3';local x15=import '0';local x16=import '2';local x17=import '4';local x18=import '1';local x19=import '3';local x20=import '0';local x21=import '2';local x22=import '4';local x23=import '1';local x24=import '3';local x25=import '0';local x26=import '2';local x27=import '4';local x28=import '1';local x29=import '3';local x30=import '0';local x31=import '2';[x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31]",
+    "options": {},
+    "expected": "local x20 = import '0';\nlocal x30 = import '0';\nlocal x15 = import '0';\nlocal x0 = import '0';\nlocal x25 = import '0';\nlocal x5 = import '0';\nlocal x10 = import '0';\nlocal x23 = import '1';\nlocal x8 = import '1';\nlocal x18 = import '1';\nlocal x13 = import '1';\nlocal x3 = import '1';\nlocal x28 = import '1';\nlocal x16 = import '2';\nlocal x21 = import '2';\nlocal x31 = import '2';\nlocal x11 = import '2';\nlocal x1 = import '2';\nlocal x26 = import '2';\nlocal x6 = import '2';\nlocal x9 = import '3';\nlocal x19 = import '3';\nlocal x24 = import '3';\nlocal x4 = import '3';\nlocal x14 = import '3';\nlocal x29 = import '3';\nlocal x7 = import '4';\nlocal x22 = import '4';\nlocal x27 = import '4';\nlocal x2 = import '4';\nlocal x17 = import '4';\nlocal x12 = import '4';\n[x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31]\n",
+    "idempotent": true
+  },
+  {
+    "name": "imports-equal-paths-64",
+    "source": "local x0=import '0';local x1=import '2';local x2=import '4';local x3=import '1';local x4=import '3';local x5=import '0';local x6=import '2';local x7=import '4';local x8=import '1';local x9=import '3';local x10=import '0';local x11=import '2';local x12=import '4';local x13=import '1';local x14=import '3';local x15=import '0';local x16=import '2';local x17=import '4';local x18=import '1';local x19=import '3';local x20=import '0';local x21=import '2';local x22=import '4';local x23=import '1';local x24=import '3';local x25=import '0';local x26=import '2';local x27=import '4';local x28=import '1';local x29=import '3';local x30=import '0';local x31=import '2';local x32=import '4';local x33=import '1';local x34=import '3';local x35=import '0';local x36=import '2';local x37=import '4';local x38=import '1';local x39=import '3';local x40=import '0';local x41=import '2';local x42=import '4';local x43=import '1';local x44=import '3';local x45=import '0';local x46=import '2';local x47=import '4';local x48=import '1';local x49=import '3';local x50=import '0';local x51=import '2';local x52=import '4';local x53=import '1';local x54=import '3';local x55=import '0';local x56=import '2';local x57=import '4';local x58=import '1';local x59=import '3';local x60=import '0';local x61=import '2';local x62=import '4';local x63=import '1';[x0,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,x16,x17,x18,x19,x20,x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56,x57,x58,x59,x60,x61,x62,x63]",
+    "options": {},
+    "expected": "local x45 = import '0';\nlocal x35 = import '0';\nlocal x60 = import '0';\nlocal x25 = import '0';\nlocal x30 = import '0';\nlocal x5 = import '0';\nlocal x55 = import '0';\nlocal x20 = import '0';\nlocal x40 = import '0';\nlocal x50 = import '0';\nlocal x10 = import '0';\nlocal x15 = import '0';\nlocal x0 = import '0';\nlocal x58 = import '1';\nlocal x18 = import '1';\nlocal x48 = import '1';\nlocal x8 = import '1';\nlocal x38 = import '1';\nlocal x53 = import '1';\nlocal x43 = import '1';\nlocal x63 = import '1';\nlocal x33 = import '1';\nlocal x13 = import '1';\nlocal x23 = import '1';\nlocal x28 = import '1';\nlocal x3 = import '1';\nlocal x31 = import '2';\nlocal x16 = import '2';\nlocal x26 = import '2';\nlocal x1 = import '2';\nlocal x61 = import '2';\nlocal x56 = import '2';\nlocal x6 = import '2';\nlocal x21 = import '2';\nlocal x51 = import '2';\nlocal x11 = import '2';\nlocal x36 = import '2';\nlocal x46 = import '2';\nlocal x41 = import '2';\nlocal x54 = import '3';\nlocal x34 = import '3';\nlocal x29 = import '3';\nlocal x24 = import '3';\nlocal x14 = import '3';\nlocal x44 = import '3';\nlocal x59 = import '3';\nlocal x39 = import '3';\nlocal x4 = import '3';\nlocal x19 = import '3';\nlocal x49 = import '3';\nlocal x9 = import '3';\nlocal x37 = import '4';\nlocal x52 = import '4';\nlocal x7 = import '4';\nlocal x27 = import '4';\nlocal x32 = import '4';\nlocal x22 = import '4';\nlocal x57 = import '4';\nlocal x47 = import '4';\nlocal x12 = import '4';\nlocal x2 = import '4';\nlocal x42 = import '4';\nlocal x62 = import '4';\nlocal x17 = import '4';\n[x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21, x22, x23, x24, x25, x26, x27, x28, x29, x30, x31, x32, x33, x34, x35, x36, x37, x38, x39, x40, x41, x42, x43, x44, x45, x46, x47, x48, x49, x50, x51, x52, x53, x54, x55, x56, x57, x58, x59, x60, x61, x62, x63]\n",
+    "idempotent": true
   }
 ]

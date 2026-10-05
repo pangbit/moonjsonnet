@@ -23,7 +23,7 @@ pub(all) struct FormatOptions {
   pretty_field_names : Bool
   pad_arrays : Bool
   pad_objects : Bool
-  /// Reserved for Go option compatibility; import sorting is not implemented yet.
+  /// Sort groups of top-level code imports; groups with duplicate names retain order.
   sort_imports : Bool
   use_implicit_plus : Bool
   strip_everything : Bool

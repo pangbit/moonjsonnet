@@ -36,6 +36,9 @@ fn format_rewrite(
           skip[i] = true
         } else {
           edited[i] = { ..token, text: ".", raw: ".", }
+          // Go replaces RightBracketFodder with the string's opening fodder,
+          // so comments before the removed closing bracket are discarded.
+          edited[end] = { ..tokens[end], leading: [], }
         }
         skip[end] = true
         if format_name(key) is Some(name) {

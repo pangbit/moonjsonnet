@@ -91,8 +91,8 @@ test "readme native callback and trace" {
 ## Source formatting
 
 `format_source` and `ParsedSource::format` format source without evaluating it or
-resolving imports. Formatting support is partial; import sorting and some comment
-and alignment rules still differ from Go. See [parity status](docs/GO-PARITY.md).
+resolving imports. Formatting support is partial; import ordering edge cases and
+some comment/layout rules remain under validation. See [parity status](docs/GO-PARITY.md).
 
 ```mbt check
 ///|

@@ -348,11 +348,20 @@ removes comments/newlines but still inserts normal token spacing; text-block
 content remains intact. Since trailing-comma and string-style passes run before
 stripping or pretty-name rewriting, some Go outputs are themselves non-idempotent.
 
-**Incomplete:** `sort_imports` is currently reserved and does not sort imports.
-Local-binding alignment, comment placement/removal and broader formatting rules
-remain under differential validation. `FormatNode` and a jsonnetfmt CLI are not
-provided yet. See [the overall parity status](GO-PARITY.md); the available options
-do not imply complete formatter compatibility.
+`sort_imports` arranges consecutive groups of top-level code imports by their raw
+UTF-8 path spelling, before string normalization. Blank lines and paragraph
+comments separate groups; adjacent comments travel with their import. A group
+containing duplicate variable names retains its order. A multi-binding import
+local becomes separate local declarations. Ordinary bindings, parenthesized
+imports, `importstr`/`importbin`, and imports inside functions are not sorted.
+Setting the option to false disables this pass. Escaped paths can therefore
+produce another Go non-idempotence case: string normalization changes the sort
+key used by a subsequent format call.
+
+**Incomplete:** equal-path ordering, complete comment placement/removal and
+broader layout rules remain under differential validation. `FormatNode` and a
+jsonnetfmt CLI are not provided yet. See [the overall parity status](GO-PARITY.md);
+the available options do not imply complete formatter compatibility.
 
 ## Reusable evaluator
 
