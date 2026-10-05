@@ -71,6 +71,21 @@ nil AST in Go v0.21.0, while MoonJsonnet continues to report the static error.
 This remains a failing case; local-only expectations pass 21/21. See the
 [import-query report](../reports/GO-JSONNET-IMPORT-QUERIES.md).
 
+`ast_test.mbt` and `ast_cache_test.mbt` exercise all semantic node forms, scope
+and shape rejection, cycle/depth/node budgets, edits and copy isolation from
+Program and imported caches. The separate AST corpus compares parsed/cloned and
+edited trees using the public Go AST/VM APIs:
+
+```sh
+moon run tools/ast-integration.mbtx _build/native/release/build/examples/ast-probe/ast-probe.exe /tmp/go-jsonnet-v0.21.0
+```
+
+It uses the same pinned checkout/build checks, writes `_build/ast/report.json`,
+and supports local-only ASan validation via `local-report.json`. Current AST
+results are 20/20, independently counted from parameters, Evaluator sequences and
+CLI cases. Comments, formatting and complete AST metadata are outside this
+semantic-tree evidence. See the [AST report](../reports/GO-JSONNET-AST.md).
+
 Reference interpreter (development only; not a runtime dependency):
 
 ```sh
@@ -263,7 +278,7 @@ moon run tools/asan.mbtx
 
 Leak detection is disabled for portability with Apple Clang; this check covers
 address errors, not a LeakSanitizer proof. The script sets ASan `exitcode=99` for
-tests, both CLI integration suites and the parameter/evaluator API probes so a sanitizer
+tests, both CLI integration suites and the parameter/evaluator/AST API probes so a sanitizer
 failure cannot satisfy an expected application-error exit code. Test scripts use MoonBit script mode
 and `moonbitlang/async`; commands may need access to Moon's dependency cache.
 `tools/consumer.mbtx` extracts the actual Mooncakes archive into a temporary

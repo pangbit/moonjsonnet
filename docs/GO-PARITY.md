@@ -49,7 +49,7 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | 输入模式 | 文件、CLI `-e`、stdin、`--`、短选项展开和匿名源码求值 | 扩大输入/诊断边界，保留宿主资源与 UTF-8 政策 |
 | 输出模式 | 单个 JSON/文件、字符串、文档流、multi 与目录创建；对应嵌入方法已提供 | 扩大文件状态与 I/O 边界验证，保留执行预算政策 |
 | CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、错误 context 裁剪、独立 `-s`/`--max-stack` 帧预算、短选项及退出 1 行为；其余部分 | 扩大帧边界语料、Go 诊断帧集合及剩余选项 |
-| VM/AST 接口 | 不透明 Program 及 ext/TLA 参数；可重用 Evaluator 配置、分层导入缓存、四种输出及导入查询/共享依赖扫描；原 Program API 仍每次独立 | AST 编辑、EvalHook/调试器及完整诊断配置能力 |
+| VM/AST 接口 | 已验证 Program、可编辑语义 AST、深复制及 ext/TLA 参数；可重用 Evaluator 配置、分层导入缓存、四种输出及导入查询/共享依赖扫描 | AST 源码保真/元数据、EvalHook/调试器及完整诊断配置能力 |
 | 格式化器、静态分析工具 | 已有 `cmd/deps` 静态依赖工具；格式化器与 lint 缺失 | 扩大依赖扫描语料；建立格式化/lint/工具接口语料，纳入整体覆盖状态 |
 | 平台与交付 | native；实测 macOS arm64 | Linux 持续验证；其余参考平台和分发能力逐项核验，不凭本机结果推断 |
 
@@ -210,6 +210,13 @@ Go 在失败解析后缓存 nil AST，第二次 ImportAST 返回成功，本项�
 该输入继续计为失败，未算作已接受例外。本地 21/21 序列、181/181 测试通过；
 CLI 差分仍为 1112/1130，原 18 项失败单独保留。详见
 [导入查询验收](../reports/GO-JSONNET-IMPORT-QUERIES.md)。
+
+语义 AST 批次提供 `Program::ast`、公开节点/字段/推导式结构、`Ast::clone` 和
+`Program::from_ast`。构造和修改后重新验证作用域，深复制隔离已有 Program 及
+导入缓存；覆盖循环树/宽度/深度预算、所有语义节点及参数/输出接口。固定 Go
+AST Clone/修改对照 20/20，本地测试 188/188；原 CLI 18 项和导入查询 1 项失败
+分别保留。注释、排版、数字原文、源码范围及完整 AST 元数据仍待实现，不能将
+语义树往返当作源码保真。详见 [AST 验收](../reports/GO-JSONNET-AST.md)。
 
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
 MoonBit 求值器执行。一次性入口与 Evaluator 采用各自的 AST/值缓存生命周期，
