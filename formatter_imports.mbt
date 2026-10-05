@@ -143,7 +143,7 @@ fn format_sort_imports(
         names[entry.name] = true
       }
       if !duplicated {
-        entries.sort_by((a, b) => a.key.lexical_compare(b.key))
+        format_import_sort(entries)
       }
       for entry in entries {
         out.write_string("local ")

@@ -83,3 +83,28 @@ test "formatter enforces resource limits and propagates parse errors" {
     _ => fail("expected syntax error")
   }
 }
+
+///|
+test "formatter stripping distinguishes paragraph and interstitial line endings" {
+  let options = {
+    ..@moonjsonnet.FormatOptions::default(),
+    strip_comments: true,
+  }
+  for
+    (source, expected) in [
+      ("[1,\n/* x */\n2]", "[\n  1,\n  \n  2,\n]\n"),
+      ("[1,\n/* x\n * y */\n2]", "[\n  1,\n  2,\n]\n"),
+      ("[1,\n// x\n2]", "[\n  1,\n  2,\n]\n"),
+    ] {
+    let formatted = @moonjsonnet.format_source(source, options~)
+    assert_eq(formatted, expected)
+    assert_eq(@moonjsonnet.evaluate(formatted), @moonjsonnet.evaluate(source))
+  }
+  assert_eq(
+    @moonjsonnet.format_source("1 + /* one\n more */ 2", options={
+      ..options,
+      indent: 0,
+    }),
+    "1 +\n2\n",
+  )
+}

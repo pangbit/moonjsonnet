@@ -148,26 +148,18 @@ fn format_tokens(
     }
     let mut newline_count = 0
     let mut interstitial = false
-    let mut stripped_tail = false
     for trivia in token.leading {
       writer.tick()
       match trivia.kind {
-        Whitespace => {
-          if trivia.raw.contains("\n") {
-            stripped_tail = false
-          }
-          if !strip_all && !only_comments {
+        Whitespace =>
+          if !strip_all && !only_comments && !options.strip_comments {
             newline_count += trivia.raw
               .to_array()
               .filter(c => c == '\n')
               .length()
           }
-        }
         LineComment | BlockComment => {
           if strip_all || options.strip_comments {
-            stripped_tail = options.strip_comments &&
-              trivia.kind == BlockComment &&
-              !trivia.raw.contains("\n")
             continue
           }
           let inline = last_line == trivia.range.begin.line && last_line > 0
@@ -221,6 +213,25 @@ fn format_tokens(
       last_line = token.end.line
       continue
     }
+    if options.strip_comments {
+      let lines = format_stripped_lines(
+        token,
+        previous.is_empty(),
+        layout.newline[i],
+        options.max_blank_lines,
+      )
+      for n, (count, original_indent) in lines {
+        for _ in 0..<count {
+          writer.write("\n")
+        }
+        let indent = if options.indent > 0 { spaces } else { original_indent }
+        if n + 1 < lines.length() {
+          writer.indent(indent)
+        } else if options.indent <= 0 {
+          spaces = indent
+        }
+      }
+    }
     if t == "<eof>" {
       if !writer.line_start {
         writer.write("\n")
@@ -231,6 +242,7 @@ fn format_tokens(
       continue
     }
     if !strip_all &&
+      !options.strip_comments &&
       layout.newline[i] &&
       newline_count == 0 &&
       !writer.line_start {
@@ -247,13 +259,6 @@ fn format_tokens(
         if n > 0 || !writer.line_start {
           writer.write("\n")
         }
-      }
-      // FixNewlines runs before StripComments in Go. A final interstitial
-      // causes a separate clean line ending; stripping the comment leaves
-      // both line endings, including the indentation on the empty line.
-      if stripped_tail && layout.newline[i] && token.has_newline() {
-        writer.indent(spaces)
-        writer.write("\n")
       }
     }
     let inside = groups.last()

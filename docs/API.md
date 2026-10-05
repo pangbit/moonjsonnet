@@ -358,8 +358,14 @@ Setting the option to false disables this pass. Escaped paths can therefore
 produce another Go non-idempotence case: string normalization changes the sort
 key used by a subsequent format call.
 
-**Incomplete:** equal-path ordering, complete comment placement/removal and
-broader layout rules remain under differential validation. `FormatNode` and a
+Equal paths follow the fixed Go 1.24.0 `sort.Slice` permutation, including its
+unstable ordering. Comment stripping distinguishes line endings, paragraphs and
+interstitial comments before removing text; distinct retained line endings can
+leave indented empty lines, just as in Go. Tabs count as eight spaces when
+retaining indentation for stripped comments.
+
+**Incomplete:** complete comment placement and broader layout rules remain
+under differential validation. `FormatNode` and a
 jsonnetfmt CLI are not provided yet. See [the overall parity status](GO-PARITY.md);
 the available options do not imply complete formatter compatibility.
 
