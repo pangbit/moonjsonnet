@@ -1,0 +1,73 @@
+import {
+  "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell",
+  "moonbitlang/core/json", "moonbitlang/core/env",
+}
+
+fn field(value : Json, key : String) -> Json {
+  match value { Object(fields) => fields.get(key).unwrap_or(Json::null()); _ => Json::null() }
+}
+
+async fn command(program : String, args : Array[String]) -> String {
+  let out=@shell.Cmd(program,args).output()
+  out.check()
+  out.stdout().trim().to_owned()
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==4 else {fail("Usage: moon run tools/upstream-formatter.mbtx PROBE GO_CHECKOUT CPP_INPUT_CHECKOUT")}
+  let cli=@fs.realpath(args[1])
+  let go=@fs.realpath(args[2])
+  let cpp=@fs.realpath(args[3])
+  assert_eq(command("git",["-C",cpp,"rev-parse","HEAD"]),"bbb38f1020be1f5aed560928fb839b2c448cefb4")
+  assert_eq(command("git",["-C",cpp,"status","--porcelain"]),"")
+  assert_eq(command("git",["-C",go,"rev-parse","HEAD"]),"67968688d9952f50662e979fab1bef889d0d3e57")
+  assert_eq(command("git",["-C",go,"status","--porcelain"]),"")
+  let work=@fs.tmpdir(prefix="moonjsonnet-upstream-formatter-")
+  let reference=work+"/go-formatter"
+  let adapter=@fs.realpath("tests/reference/formatter.go")
+  @shell.Cmd("go",["-C",go,"build","-o",reference,adapter],env=Map([("GOTOOLCHAIN","go1.24.0"),("GOWORK","off"),("GOPROXY","off")])).run()
+  assert_true(command("go",["version","-m",reference]).contains("go1.24.0"))
+  let paths=command("git",["-C",cpp,"ls-files","*.jsonnet"]).split("\n").map(path=>path.to_owned()).collect()
+  let rows : Array[Json]=[]
+  let mut passed=0
+  let mut reference_errors=0
+  let mut local_errors=0
+  for path in paths {
+    guard path.rev_find("/") is Some(slash) else {continue}
+    let parent=path[:slash].to_owned()
+    let name=path[slash+1:].to_owned()
+    if !["test_suite","examples","examples/terraform","benchmarks","gc_stress"].contains(parent) || name.has_prefix("error.parse.") {continue}
+    let source=@fs.read_file(cpp+"/"+path).text()
+    let input : Json={"source":source,"options":{}}
+    let a=@shell.Cmd(reference,[],stdin=@shell.Text(input.stringify())).output(timeout_ms=30000)
+    let b=@shell.Cmd(cli,[],stdin=@shell.Text(input.stringify())).output(timeout_ms=30000)
+    let expected=try @json.parse(a.stdout()) catch {_=>Json::null()}
+    let actual=try @json.parse(b.stdout()) catch {_=>Json::null()}
+    let go_error=field(expected,"error")!=Json::string("")
+    let local_error=field(actual,"error")!=Json::string("")
+    if go_error {reference_errors+=1}
+    if local_error {local_errors+=1}
+    let ok=a.exit_code()==0 && b.exit_code()==0 && a.stderr()=="" && b.stderr()=="" &&
+      !go_error && !local_error && field(expected,"result")==field(actual,"result") &&
+      field(expected,"idempotent")==field(actual,"idempotent")
+    if ok {passed+=1}
+    rows.push({"path":path,"source":source,"passed":ok,"go_exit":a.exit_code(),"moon_exit":b.exit_code(),"go":expected,"moon":actual,"go_stderr":a.stderr(),"moon_stderr":b.stderr()})
+  }
+  let report : Json={
+    "source_commit":command("git",["rev-parse","HEAD"]),
+    "source_dirty":command("git",["status","--porcelain"])!="",
+    "input_commit":"bbb38f1020be1f5aed560928fb839b2c448cefb4",
+    "reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57",
+    "reference_sha256":command("shasum",["-a","256",reference]),
+    "reference_build":command("go",["version","-m",reference]),
+    "adapter_sha256":command("shasum",["-a","256",adapter]),
+    "local_sha256":command("shasum",["-a","256",cli]),
+    "total":rows.length(),"passed":passed,"failed":rows.length()-passed,
+    "reference_errors":reference_errors,"local_errors":local_errors,"cases":rows,
+  }
+  @fs.mkdir("_build/upstream-formatter",recursive=true,allow_exist=true)
+  @fs.write_file("_build/upstream-formatter/report.json",report.stringify(indent=2)+"\n")
+  println("Upstream formatting: \{passed}/\{rows.length()}; Go errors=\{reference_errors}, local errors=\{local_errors}; evidence: \{work}")
+  if passed!=rows.length() {fail("Upstream formatter differences retained in _build/upstream-formatter/report.json")}
+}
