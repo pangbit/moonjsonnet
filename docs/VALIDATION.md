@@ -97,9 +97,12 @@ moon run tools/lint-cli.mbtx _build/native/release/build/cmd/lint/lint.exe /tmp/
 
 The API runner compares complete ordered diagnostic messages and found flags,
 retains full diagnostics, pins Go checkout/build metadata, and writes
-`_build/lint/report.json`. Current results are 114/114 (62 upstream, 19 original
-focused and 33 additional type/boundary inputs). The previous 35 missing type
-diagnoses now pass; earlier failure evidence remains documented. This is not
+`_build/lint/report.json`. Current results are 162/164 (62 upstream, 19 original
+focused, 33 type/boundary and 50 lowering/multiple-entry inputs). The previous 35
+missing type diagnoses and all original 114 inputs pass. Two new failures remain:
+a reference panic on entry/import identity collision, and parser error wording.
+The runner counts reference panics separately while retaining them as failures
+and exits 1. Earlier failure evidence remains documented. This is not
 diagnostic location/range parity. CLI checks cover file/option/search/exit behavior
 and four type-diagnostic categories, 23 checks per binary;
 omitting the Go checkout checks the local CLI only, as used by ASan. ASan also
@@ -107,7 +110,8 @@ executes all local lint tests; the full Go API differential is a separate releas
 binary run. `lint_type_test.mbt` covers recursive graphs, arity, standard-library
 declarations, budgets and Go string escaping. See the historical
 [lint baseline](../reports/GO-JSONNET-LINT.md) and current
-[lint type report](../reports/GO-JSONNET-LINT-TYPES.md).
+[lint type report](../reports/GO-JSONNET-LINT-TYPES.md), followed by the current
+[lowering report](../reports/GO-JSONNET-LINT-LOWERING.md).
 
 Reference interpreter (development only; not a runtime dependency):
 
