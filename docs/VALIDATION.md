@@ -82,10 +82,11 @@ moon run tools/ast-integration.mbtx _build/native/release/build/examples/ast-pro
 
 It uses the same pinned checkout/build checks, writes `_build/ast/report.json`,
 and supports local-only ASan validation via `local-report.json`. Current AST
-results are 114/114, including 37 Go-derived coordinate cases for UTF-8 byte columns,
+results are 145/145, including 37 Go-derived coordinate cases for UTF-8 byte columns,
 exclusive ends, parentheses, synthetic nodes and nested tailstrict, and 18 string
 escape/surrogate value cases, 23 numeric spelling/range/deferred conversion cases,
-and 16 local-binding range cases. Public range
+16 local-binding range cases, 16 parameter-range cases and 15 repeated-parameter
+evaluation cases. Public range
 validation and round trips are also covered by `source_range_test.mbt` and the
 archive consumer. These are independently counted from parameters, Evaluator
 sequences and CLI cases. Comments, formatting and complete AST metadata remain
@@ -103,16 +104,16 @@ moon run tools/lint-cli.mbtx _build/native/release/build/cmd/lint/lint.exe /tmp/
 
 The API runner compares complete ordered diagnostic messages and found flags,
 retains full diagnostics, pins Go checkout/build metadata, and writes
-`_build/lint/report.json`. Current results are 381/382 (62 upstream, 19 original
+`_build/lint/report.json`. Current results are 401/402 (62 upstream, 19 original
 focused, 33 type/boundary, 50 lowering/multiple-entry, 56 parser, 62 lexical,
-59 string, 21 numeric and 20 binding-location inputs). The
+59 string, 21 numeric, 20 binding-location and 20 repeated-parameter inputs). The
 previous 35 missing type diagnoses and known parser-wording difference now pass.
 One failure remains: a reference panic on entry/import identity collision.
 The unused binding location (`number-literal-8`) now matches the reference.
 The runner counts reference panics separately while retaining them as failures
-and exits 1. Earlier failure evidence remains documented. The 162 cases with frozen locations
+and exits 1. Earlier failure evidence remains documented. The 182 cases with frozen locations
 also compare diagnostic start line/column against the frozen Go results; the
-report counts these separately as `location_total` and `location_passed` (162/162). This
+report counts these separately as `location_total` and `location_passed` (182/182). This
 does not establish location/range parity for all diagnostics. CLI checks cover file/option/search/exit behavior
 and four type-diagnostic categories, 23 checks per binary;
 omitting the Go checkout checks the local CLI only, as used by ASan. ASan also
@@ -125,12 +126,13 @@ declarations, budgets and Go string escaping. See the historical
 [parser diagnostic report](../reports/GO-JSONNET-PARSER-DIAGNOSTICS.md),
 [lexer diagnostic report](../reports/GO-JSONNET-LEXER-DIAGNOSTICS.md),
 [string-literal report](../reports/GO-JSONNET-STRING-LITERALS.md),
-[number-literal report](../reports/GO-JSONNET-NUMBER-LITERALS.md), and current
-[binding-range report](../reports/GO-JSONNET-BINDING-RANGES.md).
-The binding batch reran both CLI corpora and the upstream language suite: Go
-1112/1130 with the same 18 failed input names; C++ 98 passes plus 10 declared
+[number-literal report](../reports/GO-JSONNET-NUMBER-LITERALS.md),
+[binding-range report](../reports/GO-JSONNET-BINDING-RANGES.md), and current
+[parameter-range report](../reports/GO-JSONNET-PARAMETER-RANGES.md).
+The parameter batch added 20 CLI cases and reran both corpora and the language suite: Go
+1132/1150 with the same 18 failed input names; C++ 98 passes plus 10 declared
 differences and no failures; upstream language 303/303. These runs bind to
-cd99f8c with clean source state. Native debug/release each pass 216 tests;
+0375bfd with clean source state. Native debug/release each pass 219 tests;
 the archive consumer passes 22 tests. See the batch report for isolated ASan evidence.
 
 Reference interpreter (development only; not a runtime dependency):
