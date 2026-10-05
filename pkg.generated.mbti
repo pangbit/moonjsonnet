@@ -33,6 +33,12 @@ pub(all) struct Ast {
 pub fn Ast::clone(Self, limits? : Limits) -> Self raise JsonnetError
 pub fn Ast::source_range(Self) -> SourceRange?
 
+pub(all) struct AstBinding {
+  name : String
+  value : Ast
+  range : SourceRange?
+}
+
 pub(all) enum AstClause {
   For(String, Ast)
   When(Ast)
@@ -49,14 +55,14 @@ pub(all) enum AstKind {
   NumberLiteral(String)
   Literal(Json)
   Var(String)
-  Local(Array[(String, Ast)], Ast)
+  Local(Array[AstBinding], Ast)
   If(Ast, Ast, Ast)
   Func(Array[(String, Ast?)], Ast)
   Call(Ast, Array[(String?, Ast)], Bool)
   Arr(Array[Ast])
-  Obj(Array[AstField], Array[(String, Ast)], Array[(Ast, Ast?)])
+  Obj(Array[AstField], Array[AstBinding], Array[(Ast, Ast?)])
   ArrayComp(Ast, Array[AstClause])
-  ObjectComp(Ast, Ast, Array[AstClause], Array[(String, Ast)])
+  ObjectComp(Ast, Ast, Array[AstClause], Array[AstBinding])
   Index(Ast, Ast)
   Slice(Ast, Ast?, Ast?, Ast?)
   Unary(String, Ast)

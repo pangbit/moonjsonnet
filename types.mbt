@@ -173,18 +173,25 @@ priv struct Expr {
 }
 
 ///|
+priv struct ExprBinding {
+  name : String
+  value : Expr
+  range : SourceRange?
+}
+
+///|
 priv enum ExprKind {
   NumberLiteral(String)
   Literal(Json)
   Var(String)
-  Local(Array[(String, Expr)], Expr)
+  Local(Array[ExprBinding], Expr)
   If(Expr, Expr, Expr)
   Func(Array[(String, Expr?)], Expr)
   Call(Expr, Array[(String?, Expr)], Bool)
   Arr(Array[Expr])
-  Obj(Array[Field], Array[(String, Expr)], Array[(Expr, Expr?)])
+  Obj(Array[Field], Array[ExprBinding], Array[(Expr, Expr?)])
   ArrayComp(Expr, Array[Clause])
-  ObjectComp(Expr, Expr, Array[Clause], Array[(String, Expr)])
+  ObjectComp(Expr, Expr, Array[Clause], Array[ExprBinding])
   Index(Expr, Expr)
   Slice(Expr, Expr?, Expr?, Expr?)
   Unary(String, Expr)

@@ -88,6 +88,34 @@ func run(f fixture) (interface{}, error) {
 		return nil, err
 	}
 	edited := ast.Clone(original)
+	if f.Op == "bindings" {
+		result := []interface{}{}
+		for _, path := range f.Paths {
+			var binds ast.LocalBinds
+			switch n := rangeNode(edited, path).(type) {
+			case *ast.Local:
+				binds = n.Binds
+			case *ast.DesugaredObject:
+				binds = n.Locals
+			default:
+				return nil, fmt.Errorf("expected local bindings")
+			}
+			rows := []interface{}{}
+			for _, b := range binds {
+				if b.Variable == "$" {
+					continue
+				}
+				r := b.LocRange
+				var loc interface{}
+				if r.IsSet() {
+					loc = []interface{}{r.Begin.Line, r.Begin.Column, r.End.Line, r.End.Column, r.String()}
+				}
+				rows = append(rows, []interface{}{string(b.Variable), loc})
+			}
+			result = append(result, rows)
+		}
+		return result, nil
+	}
 	if f.Op == "numbers" {
 		result := []string{}
 		for _, path := range f.Paths {

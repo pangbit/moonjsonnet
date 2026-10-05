@@ -1,4 +1,38 @@
 ///|
+fn binding_ranges(root : @moonjsonnet.Ast, input : Json) -> Json raise {
+  guard input is Object(fields) && fields.get("paths") is Some(Array(paths)) else {
+    fail("binding paths")
+  }
+  Json::array(
+    paths.map(path => {
+      guard path is String(path) else { fail("binding path") }
+      let bs = match range_node(root, path).kind {
+        Local(bs, _) | Obj(_, bs, _) => bs
+        _ => fail("expected local bindings")
+      }
+      Json::array(
+        bs.map(b => {
+          Json::array([
+            Json::string(b.name),
+            match b.range {
+              None => Json::null()
+              Some(r) =>
+                Json::array([
+                  Json::number(r.begin.line.to_double()),
+                  Json::number(r.begin.column.to_double()),
+                  Json::number(r.end.line.to_double()),
+                  Json::number(r.end.column.to_double()),
+                  Json::string(r.format()),
+                ])
+            },
+          ])
+        }),
+      )
+    }),
+  )
+}
+
+///|
 fn number_spellings(root : @moonjsonnet.Ast, input : Json) -> Json raise {
   guard input is Object(fields) && fields.get("paths") is Some(Array(paths)) else {
     fail("number paths")
@@ -38,7 +72,7 @@ fn range_node(root : @moonjsonnet.Ast, path : String) -> @moonjsonnet.Ast raise 
       | ("operand", Unary(_, a))
       | ("operand", Fail(a)) => a
       (_, Arr(xs)) if key.has_prefix("item:") => xs[number("item:")]
-      (_, Local(bs, _)) if key.has_prefix("bind:") => bs[number("bind:")].1
+      (_, Local(bs, _)) if key.has_prefix("bind:") => bs[number("bind:")].value
       (_, Func(ps, _)) if key.has_prefix("default:") =>
         ps[number("default:")].1.unwrap()
       (_, Call(_, args, _)) if key.has_prefix("arg:") => args[number("arg:")].1

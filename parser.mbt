@@ -147,19 +147,29 @@ fn Parser::last_end(self : Parser) -> Location {
 }
 
 ///|
-fn Parser::binding(self : Parser) -> (String, Expr) raise Error {
+fn Parser::binding(
+  self : Parser,
+  in_object? : Bool = false,
+) -> ExprBinding raise Error {
   let loc = self.peek().loc
   let name = self.name()
   let params = if self.peek().text == "(" { Some(self.params()) } else { None }
   self.expect("=")
   let value = self.expr(0)
-  (
+  {
     name,
-    match params {
+    value: match params {
       Some(p) => { kind: Func(p, value), loc, end: Some(self.expression_end), }
       None => value
     },
-  )
+    // Go's local-function lowering drops the binding range, while object
+    // methods retain the object-local declaration range.
+    range: if params is Some(_) && !in_object {
+      None
+    } else {
+      Some({ begin: loc, end: self.expression_end, })
+    },
+  }
 }
 
 ///|
@@ -186,7 +196,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
   let mut computed_field = false
   while !self.eat("}") {
     if self.eat("local") {
-      locals.push(self.binding())
+      locals.push(self.binding(in_object=true))
     } else if self.eat("assert") {
       let cond = self.expr(0)
       let message = if self.eat(":") { Some(self.expr(0)) } else { None }

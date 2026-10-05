@@ -1770,5 +1770,381 @@
         "entry:1:1-6"
       ]
     ]
+  },
+  {
+    "name": "binding-range-1",
+    "source": "local x=1;42",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            7,
+            1,
+            10,
+            "entry:1:7-10"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-2",
+    "source": "local x = (42); null",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            7,
+            1,
+            15,
+            "entry:1:7-15"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-3",
+    "source": "local f(x)=x;42",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "f",
+          null
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-4",
+    "source": "local x=1, y=2;42",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            7,
+            1,
+            10,
+            "entry:1:7-10"
+          ]
+        ],
+        [
+          "y",
+          [
+            1,
+            12,
+            1,
+            15,
+            "entry:1:12-15"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-5",
+    "source": "local x=\n  42; null",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            7,
+            2,
+            5,
+            "entry:(1:7)-(2:5)"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-6",
+    "source": "/*😀*/ local x=1;42",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            16,
+            1,
+            19,
+            "entry:1:16-19"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-7",
+    "source": "local x=1,\n y=2;42",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            7,
+            1,
+            10,
+            "entry:1:7-10"
+          ]
+        ],
+        [
+          "y",
+          [
+            2,
+            2,
+            2,
+            5,
+            "entry:2:2-5"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-8",
+    "source": "local x = if true then 1 else 2;42",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            7,
+            1,
+            32,
+            "entry:1:7-32"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-9",
+    "source": "{local x=1,a:42}",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            8,
+            1,
+            11,
+            "entry:1:8-11"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-10",
+    "source": "{local x=1,local y=2,a:42}",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            8,
+            1,
+            11,
+            "entry:1:8-11"
+          ]
+        ],
+        [
+          "y",
+          [
+            1,
+            18,
+            1,
+            21,
+            "entry:1:18-21"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-11",
+    "source": "{local f(x)=x,a:42}",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "f",
+          [
+            1,
+            8,
+            1,
+            14,
+            "entry:1:8-14"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-12",
+    "source": "{local x=\n 42,a:null}",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            8,
+            2,
+            4,
+            "entry:(1:8)-(2:4)"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-13",
+    "source": "local x=(function()42)() tailstrict;42",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            7,
+            1,
+            25,
+            "entry:1:7-25"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-14",
+    "source": "local x=1e309;42",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            7,
+            1,
+            14,
+            "entry:1:7-14"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-15",
+    "source": "local x=(42 /*end*/);42",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            7,
+            1,
+            21,
+            "entry:1:7-21"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "binding-range-16",
+    "source": "local x=1 /*end*/;42",
+    "op": "bindings",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          [
+            1,
+            7,
+            1,
+            10,
+            "entry:1:7-10"
+          ]
+        ]
+      ]
+    ]
   }
 ]

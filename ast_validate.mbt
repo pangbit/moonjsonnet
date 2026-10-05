@@ -13,23 +13,30 @@ fn ast_name(name : String, loc : Location) -> Unit raise JsonnetError {
 }
 
 ///|
+fn check_ast_range(begin : Location, end : Location) -> Unit raise JsonnetError {
+  if end.file != begin.file ||
+    begin.line < 1 ||
+    begin.column < 1 ||
+    end.line < begin.line ||
+    end.column < 1 ||
+    (end.line == begin.line && end.column < begin.column) {
+    raise problem(Static, begin, "invalid AST source range")
+  }
+}
+
+///|
 // Parser checks which must also hold for manually constructed syntax trees.
 fn check_ast_shape(e : Ast) -> Unit raise JsonnetError {
-  if e.end is Some(end) &&
-    (
-      end.file != e.loc.file ||
-      e.loc.line < 1 ||
-      e.loc.column < 1 ||
-      end.line < e.loc.line ||
-      end.column < 1 ||
-      (end.line == e.loc.line && end.column < e.loc.column)
-    ) {
-    raise problem(Static, e.loc, "invalid AST source range")
+  if e.end is Some(end) {
+    check_ast_range(e.loc, end)
   }
   let name = fn(n) raise JsonnetError { ast_name(n, e.loc) }
-  let bindings = fn(bs : Array[(String, Ast)]) raise JsonnetError {
-    for (n, _) in bs {
-      name(n)
+  let bindings = fn(bs : Array[AstBinding]) raise JsonnetError {
+    for b in bs {
+      name(b.name)
+      if b.range is Some(r) {
+        check_ast_range(r.begin, r.end)
+      }
     }
   }
   let clauses = fn(cs : Array[AstClause]) raise JsonnetError {

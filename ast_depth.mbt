@@ -24,7 +24,7 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
       | StandardFunction(_)
       | StandardValue(_) => ()
       Local(bs, body) => {
-        for (_, v) in bs {
+        for { value: v, .. } in bs {
           push(v)
         }
         push(body)
@@ -57,7 +57,7 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
           push(f.key)
           push(f.value)
         }
-        for (_, v) in bs {
+        for { value: v, .. } in bs {
           push(v)
         }
         for (c, m) in assertions {
@@ -72,7 +72,7 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
         clauses(cs)
       }
       ObjectComp(key, body, cs, bs) => {
-        for (_, v) in bs {
+        for { value: v, .. } in bs {
           push(v)
         }
         push(key)

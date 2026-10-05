@@ -19,11 +19,13 @@ fn run(input : Json) -> Json {
       filename="entry",
     )
     let tree = original.ast().clone()
-    if text(input, "op", "") == "ranges" || text(input, "op", "") == "numbers" {
+    if ["ranges", "numbers", "bindings"].contains(text(input, "op", "")) {
       let copied = @moonjsonnet.Program::from_ast(tree).ast()
       return {
         "result": if text(input, "op", "") == "numbers" {
           number_spellings(copied, input)
+        } else if text(input, "op", "") == "bindings" {
+          binding_ranges(copied, input)
         } else {
           range_result(copied, input)
         },

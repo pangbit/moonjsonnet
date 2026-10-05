@@ -44,7 +44,16 @@ test "AST edits and copies do not mutate validated programs or other copies" {
   let variable : @moonjsonnet.Ast = { kind: Var("x"), loc, end: None, }
   ignore(variable.clone())
   let program = @moonjsonnet.Program::from_ast({
-    kind: Local([("x", { kind: Literal(42), loc, end: None, })], variable),
+    kind: Local(
+      [
+        {
+          name: "x",
+          value: { kind: Literal(42), loc, end: None, },
+          range: None,
+        },
+      ],
+      variable,
+    ),
     loc,
     end: None,
   })
@@ -63,8 +72,14 @@ test "AST construction validates names scopes operators and shapes" {
     kind in [
       @moonjsonnet.AstKind::Var("unknown"),
       Var("bad-name"),
-      Local([("if", one)], one),
-      Local([("x", one), ("x", one)], one),
+      Local([{ name: "if", value: one, range: None, }], one),
+      Local(
+        [
+          { name: "x", value: one, range: None, },
+          { name: "x", value: one, range: None, },
+        ],
+        one,
+      ),
       Func([("x", None), ("x", None)], one),
       Call(one, [(Some("x"), one), (None, one)], false),
       Call(one, [(Some("x"), one), (Some("x"), one)], false),

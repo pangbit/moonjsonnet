@@ -11,8 +11,10 @@ fn AstReader::read(
   check_ast_shape(e)
   let visit = fn(child : Ast) raise JsonnetError { self.read(child, depth + 1) }
   let optional = fn(child : Ast?) raise JsonnetError { child.map(visit) }
-  let bindings = fn(bs : Array[(String, Ast)]) raise JsonnetError {
-    bs.map(b => (b.0, visit(b.1)))
+  let bindings = fn(
+    bs : Array[AstBinding],
+  ) -> Array[ExprBinding] raise JsonnetError {
+    bs.map(b => { name: b.name, value: visit(b.value), range: b.range, })
   }
   let clauses = fn(cs : Array[AstClause]) -> Array[Clause] raise JsonnetError {
     cs.map(c => {
@@ -62,8 +64,8 @@ fn AstReader::read(
 fn export_ast(e : Expr) -> Ast {
   let visit = fn(child : Expr) { export_ast(child) }
   let optional = fn(child : Expr?) { child.map(visit) }
-  let bindings = fn(bs : Array[(String, Expr)]) {
-    bs.map(b => (b.0, visit(b.1)))
+  let bindings = fn(bs : Array[ExprBinding]) -> Array[AstBinding] {
+    bs.map(b => { name: b.name, value: visit(b.value), range: b.range, })
   }
   let clauses = fn(cs : Array[Clause]) -> Array[AstClause] {
     cs.map(c => {

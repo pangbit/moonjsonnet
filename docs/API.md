@@ -260,6 +260,16 @@ Field visibility is 1 (inherit), 2 (hidden), or 3 (visible); ImportFile's Bool s
 string versus code import, and Call's Bool is tailstrict. Function/default/local
 bindings and comprehension clauses retain their lexical scope rules.
 
+Local, Obj and ObjectComp now hold `Array[AstBinding]` instead of name/value
+tuples. Each binding has `name`, `value` and `range: SourceRange?`. Parsed ranges
+begin at the declaration name and end after its initializer, independently of
+the initializer node's own range. Following Go's semantic AST, sugared local
+functions (`local f(x)=x`) have no binding range after lowering; object-local
+functions retain it. Clone and Program conversion preserve these distinctions;
+manual/synthetic bindings may use `range: None`. This pre-1.0 change requires
+updating tuple construction and access to named record fields. Invalid binding
+ranges are rejected by the same shape checks as node ranges.
+
 Conversion checks `depth` and uses `steps` as a node-copy budget; cyclic child
 arrays and excessive width/depth return Limit. Manually constructed programs
 have no source text and a saved source-byte count of zero; this does not exempt
@@ -283,7 +293,7 @@ The pre-1.0 `Ast` record now requires `end` in manual record literals: use
 Parentheses are omitted from the inner node's range; calls exclude `tailstrict`.
 Implicit null, identifier/dot field keys, method wrappers and assertion wrappers
 have no range, matching Go's semantic AST. Coordinates do not retain source
-text, comments, declaration/parameter spans, or complete diagnostic end ranges.
+text, comments, parameter spans, or complete diagnostic end ranges.
 
 ## Reusable evaluator
 

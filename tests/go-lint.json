@@ -5242,6 +5242,417 @@
       "group": "number-literal",
       "expected": [],
       "locations": []
+    },
+    {
+      "name": "binding-location-1",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1;42"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-2",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x = (42); null"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-3",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local f(x)=x;42"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: f"
+      ],
+      "locations": [
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-4",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1, y=2;42"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x",
+        "Unused variable: y"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ],
+        [
+          1,
+          12
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-5",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1;local x=2;42"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x",
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ],
+        [
+          1,
+          17
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-6",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=\n  42; null"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-7",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "/*😀*/ local x=1;42"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          16
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-8",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1,\n y=2;42"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x",
+        "Unused variable: y"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ],
+        [
+          2,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-9",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x = if true then 1 else 2;42"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-10",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local x=1,a:42}"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-11",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local x=1,local y=2,a:42}"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x",
+        "Unused variable: y"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ],
+        [
+          1,
+          18
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-12",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local f(x)=x,a:42}"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: f"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-13",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local x=1,[k]:42 for k in ['a']}"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-14",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local x=1,[k]:x for k in ['a']}"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "binding-location-15",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local x=\n 42,a:null}"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-16",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{local x=1,[x]:42}"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unknown variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          13
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-17",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local f(x)=x, y=1;f(y)"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "binding-location-18",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=42;{local x=1,a:42}"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x",
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ],
+        [
+          1,
+          19
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-19",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local f()=42;local x=f() tailstrict;42"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          20
+        ]
+      ]
+    },
+    {
+      "name": "binding-location-20",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=(function()42)() tailstrict;42"
+        }
+      ],
+      "files": {},
+      "group": "binding-location",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ]
+      ]
     }
   ]
 }

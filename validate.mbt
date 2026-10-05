@@ -1,12 +1,12 @@
 ///|
 fn binding_scope(
-  bindings : Array[(String, Expr)],
+  bindings : Array[ExprBinding],
   names : Array[String],
   loc : Location,
 ) -> Array[String] raise Error {
   let result = names.copy()
   let seen : Map[String, Bool] = Map([])
-  for (n, _) in bindings {
+  for { name: n, .. } in bindings {
     if seen.contains(n) {
       raise problem(Static, loc, "duplicate binding '\{n}'")
     }
@@ -41,12 +41,12 @@ fn validate(
         return
       }
       if !names.contains(n) {
-        raise problem(Static, e.loc, "unknown variable '\{n}'")
+        raise problem(Static, e.loc, "Unknown variable: \{n}")
       }
     }
     Local(bs, body) => {
       let scope = binding_scope(bs, names, e.loc)
-      for (_, v) in bs {
+      for { value: v, .. } in bs {
         validate(v, scope, in_object)
       }
       validate(body, scope, in_object)
@@ -89,7 +89,7 @@ fn validate(
       let outer = names.copy()
       outer.push("$")
       let scope = binding_scope(bs, outer, e.loc)
-      for (_, v) in bs {
+      for { value: v, .. } in bs {
         validate(v, scope, true)
       }
       let keys : Map[String, Bool] = Map([])
@@ -119,7 +119,7 @@ fn validate(
       validate(key, scope, in_object)
       scope.push("$")
       let inner = binding_scope(bs, scope, e.loc)
-      for (_, v) in bs {
+      for { value: v, .. } in bs {
         validate(v, inner, true)
       }
       validate(body, inner, true)

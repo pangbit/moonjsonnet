@@ -42,14 +42,17 @@ fn LintScan::bind(
 ///|
 fn LintScan::locals(
   self : LintScan,
-  bs : Array[(String, Expr)],
+  bs : Array[ExprBinding],
   scope : Map[String, Int],
 ) -> Map[String, Int] raise JsonnetError {
   let inner = scope.copy()
-  for (n, e) in bs {
-    self.bind(inner, n, e.loc, true)
+  for b in bs {
+    let loc = b.range
+      .map(r => r.begin)
+      .unwrap_or({ file: "", line: 0, column: 0, })
+    self.bind(inner, b.name, loc, true)
   }
-  for (_, e) in bs {
+  for { value: e, .. } in bs {
     self.variables(e, inner)
   }
   inner
@@ -159,9 +162,9 @@ fn LintScan::looping(
 fn LintScan::loops(self : LintScan, e : Expr) -> Unit raise JsonnetError {
   self.tick(e)
   if e.kind is Local(bs, _) {
-    let vars = Map::from_array(bs)
+    let vars = Map::from_array(bs.map(b => (b.name, b.value)))
     let runs = Map([])
-    for i, (_, body) in bs {
+    for i, { value: body, .. } in bs {
       if self.looping(body, vars, runs, i) {
         break
       }

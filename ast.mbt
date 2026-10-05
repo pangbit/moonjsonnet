@@ -16,14 +16,14 @@ pub(all) enum AstKind {
   NumberLiteral(String)
   Literal(Json)
   Var(String)
-  Local(Array[(String, Ast)], Ast)
+  Local(Array[AstBinding], Ast)
   If(Ast, Ast, Ast)
   Func(Array[(String, Ast?)], Ast)
   Call(Ast, Array[(String?, Ast)], Bool)
   Arr(Array[Ast])
-  Obj(Array[AstField], Array[(String, Ast)], Array[(Ast, Ast?)])
+  Obj(Array[AstField], Array[AstBinding], Array[(Ast, Ast?)])
   ArrayComp(Ast, Array[AstClause])
-  ObjectComp(Ast, Ast, Array[AstClause], Array[(String, Ast)])
+  ObjectComp(Ast, Ast, Array[AstClause], Array[AstBinding])
   Index(Ast, Ast)
   Slice(Ast, Ast?, Ast?, Ast?)
   Unary(String, Ast)
@@ -32,6 +32,15 @@ pub(all) enum AstKind {
   Fail(Ast)
   ImportFile(String, Bool)
   ImportBinary(String)
+}
+
+///|
+/// Local declaration metadata is independent of the initializer's location.
+pub(all) struct AstBinding {
+  name : String
+  value : Ast
+  /// Declaration name through initializer; None for synthetic or lowered local functions.
+  range : SourceRange?
 }
 
 ///|

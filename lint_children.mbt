@@ -7,7 +7,7 @@ fn lint_children(e : Expr, direct? : Bool = false) -> Array[Expr] {
   match e.kind {
     Local(bs, body) =>
       if !direct {
-        for (_, x) in bs {
+        for { value: x, .. } in bs {
           out.push(x)
         }
         out.push(body)
@@ -48,7 +48,7 @@ fn lint_children(e : Expr, direct? : Bool = false) -> Array[Expr] {
         out.push(f.key)
       }
       if !direct {
-        for (_, x) in bs {
+        for { value: x, .. } in bs {
           out.push(x)
         }
         for f in fs {
@@ -81,7 +81,7 @@ fn lint_children(e : Expr, direct? : Bool = false) -> Array[Expr] {
       if !direct {
         out.push(key)
         out.push(body)
-        for (_, x) in bs {
+        for { value: x, .. } in bs {
           out.push(x)
         }
         for c in cs {

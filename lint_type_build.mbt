@@ -37,11 +37,11 @@ fn LintGraph::build(
     Var(n) => refs.push(scope.get(n).unwrap_or(1))
     Local(bs, body) => {
       let inner = scope.copy()
-      for (n, _) in bs {
+      for { name: n, .. } in bs {
         inner[n] = self.add()
       }
       refs.push(visit(body, inner))
-      for (n, x) in bs {
+      for { name: n, value: x, .. } in bs {
         children.push(self.build(x, inner, from, id=inner[n], depth=depth + 1))
       }
     }
@@ -88,7 +88,7 @@ fn LintGraph::build(
     Obj(fs, bs, _) => {
       let inner = scope.copy()
       inner["$"] = 9
-      for (n, _) in bs {
+      for { name: n, .. } in bs {
         inner[n] = self.add()
       }
       let fields : Map[String, Array[Int]] = Map([])
@@ -98,7 +98,7 @@ fn LintGraph::build(
       for f in fs {
         ignore(visit(f.key, scope))
       }
-      for (n, x) in bs {
+      for { name: n, value: x, .. } in bs {
         children.push(self.build(x, inner, from, id=inner[n], depth=depth + 1))
       }
       for f in fs {

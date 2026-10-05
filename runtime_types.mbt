@@ -54,7 +54,7 @@ priv struct LayerField {
 ///|
 priv struct Layer {
   fields : Map[String, LayerField]
-  locals : Array[(String, Expr)]
+  locals : Array[ExprBinding]
   assertions : Array[(Expr, Expr?)]
   env : Env
 }
@@ -185,9 +185,9 @@ fn Vm::failure(self : Vm, id : Int, error : Error) -> Value raise {
 }
 
 ///|
-fn Vm::bind(self : Vm, bindings : Array[(String, Expr)], outer : Env) -> Env {
+fn Vm::bind(self : Vm, bindings : Array[ExprBinding], outer : Env) -> Env {
   let env = outer.child()
-  for (name, expr) in bindings {
+  for { name, value: expr, .. } in bindings {
     env.names[name] = self.store(Pending(expr, env))
   }
   env

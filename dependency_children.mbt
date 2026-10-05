@@ -25,7 +25,7 @@ fn dependency_children(expr : Expr) -> Array[Expr] {
     | StandardValue(_) => ()
     Local(bindings, body) => {
       children.push(body)
-      for (_, e) in bindings {
+      for { value: e, .. } in bindings {
         children.push(e)
       }
     }
@@ -54,7 +54,7 @@ fn dependency_children(expr : Expr) -> Array[Expr] {
       for field in fields {
         children.push(field.value)
       }
-      for (_, e) in locals {
+      for { value: e, .. } in locals {
         children.push(e)
       }
     }
@@ -66,7 +66,7 @@ fn dependency_children(expr : Expr) -> Array[Expr] {
       clauses(items)
       children.push(key)
       children.push(body)
-      for (_, e) in locals {
+      for { value: e, .. } in locals {
         children.push(e)
       }
     }
