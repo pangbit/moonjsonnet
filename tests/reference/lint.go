@@ -6,17 +6,27 @@ import (
 	"encoding/json"
 	"fmt"
 	jsonnet "github.com/google/go-jsonnet"
+	"github.com/google/go-jsonnet/ast"
 	"github.com/google/go-jsonnet/linter"
 	"os"
 	"path"
 	"strings"
 )
 
-type formatter struct{ Messages, Diagnostics []string }
+type formatter struct {
+	Messages, Diagnostics []string
+	Locations             [][]int
+}
 
 func (f *formatter) Format(err error) string {
 	raw := err.Error()
 	f.Diagnostics = append(f.Diagnostics, raw)
+	if located, ok := err.(interface{ Loc() ast.LocationRange }); ok {
+		loc := located.Loc()
+		f.Locations = append(f.Locations, []int{loc.Begin.Line, loc.Begin.Column})
+	} else {
+		f.Locations = append(f.Locations, nil)
+	}
 	_, message, ok := strings.Cut(raw, " ")
 	if !ok {
 		message = raw
@@ -53,7 +63,7 @@ func main() {
 		panic(err)
 	}
 	vm := jsonnet.MakeVM()
-	f := &formatter{Messages: []string{}, Diagnostics: []string{}}
+	f := &formatter{Messages: []string{}, Diagnostics: []string{}, Locations: [][]int{}}
 	vm.ErrorFormatter = f
 	vm.Importer(importer{input.Files, map[string]jsonnet.Contents{}})
 	snippets := []linter.Snippet{}
@@ -61,7 +71,7 @@ func main() {
 		snippets = append(snippets, linter.Snippet{FileName: s.ID, Code: s.Text})
 	}
 	found := linter.LintSnippet(vm, &bytes.Buffer{}, snippets)
-	if err := json.NewEncoder(os.Stdout).Encode(map[string]interface{}{"messages": f.Messages, "diagnostics": f.Diagnostics, "found": found}); err != nil {
+	if err := json.NewEncoder(os.Stdout).Encode(map[string]interface{}{"messages": f.Messages, "diagnostics": f.Diagnostics, "locations": f.Locations, "found": found}); err != nil {
 		panic(err)
 	}
 }

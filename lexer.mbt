@@ -41,7 +41,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         i += 1
       }
       if i + 1 >= chars.length() {
-        raise problem(Syntax, loc, "unterminated comment")
+        raise problem(Syntax, loc, "Multi-line comment has no terminating */")
       }
       i += 2
     } else if c == '|' &&
@@ -58,7 +58,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         i += 1
       }
       guard chars.get(i) == Some('\n') else {
-        raise problem(Syntax, loc, "text block requires newline after |||")
+        raise problem(Syntax, loc, "Text block requires new line after |||.")
       }
       i += 1
       let content : Array[Char] = []
@@ -72,12 +72,16 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       }
       let indent = chars[indent_start:i].to_owned()
       guard !indent.is_empty() else {
-        raise problem(Syntax, loc, "text block requires indentation")
+        raise problem(
+          Syntax,
+          loc,
+          "Text block's first line must start with whitespace",
+        )
       }
       while true {
         while chars.get(i) != Some('\n') {
           guard i < chars.length() else {
-            raise problem(Syntax, loc, "unterminated text block")
+            raise problem(Syntax, loc, "Unexpected EOF")
           }
           content.push(chars[i])
           i += 1
@@ -105,11 +109,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         guard chars.get(i) == Some('|') &&
           chars.get(i + 1) == Some('|') &&
           chars.get(i + 2) == Some('|') else {
-          raise problem(
-            Syntax,
-            loc,
-            "text block must end with ||| at lesser indentation",
-          )
+          raise problem(Syntax, loc, "Text block not terminated with |||")
         }
         i += 3
         break
@@ -134,7 +134,15 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         i += 1
       }
       guard i < chars.length() && (chars[i] == '"' || chars[i] == '\'') else {
-        raise problem(Syntax, loc, "expected quote")
+        let code = match chars.get(i) {
+          Some(c) => c.to_int()
+          None => -1
+        }
+        raise problem(
+          Syntax,
+          loc,
+          "Couldn't lex verbatim string, junk after '@': \{code}",
+        )
       }
       let quote = chars[i]
       i += 1
@@ -153,7 +161,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
           }
         } else if ch == '\\' && !verbatim {
           guard i < chars.length() else {
-            raise problem(Syntax, loc, "unterminated escape")
+            raise problem(Syntax, loc, "Unterminated String")
           }
           let esc = chars[i]
           i += 1
@@ -221,7 +229,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
         }
       }
       if !closed {
-        raise problem(Syntax, loc, "unterminated string")
+        raise problem(Syntax, loc, "Unterminated String")
       }
       out.push({
         text: "<string>",
@@ -239,20 +247,10 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       }
       out.push({ text: b.to_string(), value: None, loc, raw: "", end: loc, })
     } else if digit(c) {
+      i = number_end(chars, start, loc)
       let b = StringBuilder()
-      while i < chars.length() &&
-            (
-              digit(chars[i]) ||
-              chars[i] == '.' ||
-              chars[i] == 'e' ||
-              chars[i] == 'E' ||
-              (
-                (chars[i] == '+' || chars[i] == '-') &&
-                (chars.get(i - 1) == Some('e') || chars.get(i - 1) == Some('E'))
-              )
-            ) {
-        b.write_char(chars[i])
-        i += 1
+      for j in start..<i {
+        b.write_char(chars[j])
       }
       let n = @json.parse(b.to_string()) catch {
         _ => raise problem(Syntax, loc, "invalid number")
@@ -265,6 +263,22 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       }
       out.push({ text: "<number>", value: Some(n), loc, raw: "", end: loc, })
     } else {
+      if !operator_char(c) &&
+        c != '{' &&
+        c != '}' &&
+        c != '[' &&
+        c != ']' &&
+        c != '(' &&
+        c != ')' &&
+        c != ',' &&
+        c != ';' &&
+        c != '.' {
+        raise problem(
+          Syntax,
+          loc,
+          "Could not lex the character " + quote_lex_char(Some(c)),
+        )
+      }
       let b = StringBuilder()
       i += 1
       if operator_char(c) {

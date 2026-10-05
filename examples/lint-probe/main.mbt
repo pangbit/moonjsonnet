@@ -43,6 +43,14 @@ fn run(input : Json) -> Json raise {
   let issues = @moonjsonnet.lint(sources, resolver~)
   {
     "messages": Json::array(issues.map(d => Json::string(d.message))),
+    "locations": Json::array(
+      issues.map(d => {
+        Json::array([
+          Json::number(d.location.line.to_double()),
+          Json::number(d.location.column.to_double()),
+        ])
+      }),
+    ),
     "diagnostics": Json::array(issues.map(d => Json::string(d.format()))),
     "found": !issues.is_empty(),
   }

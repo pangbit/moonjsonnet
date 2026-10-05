@@ -21,6 +21,7 @@ async fn main {
   assert_eq(field(fixture,"reference_commit",null),Json::string("67968688d9952f50662e979fab1bef889d0d3e57"))
   let rows : Array[Json]=[];let mut passed=0;let mut focused_passed=0;let mut focused_total=0
   let mut reference_crashes=0
+  let mut location_total=0;let mut location_passed=0
   for case in cases {
     let input=match case {Object(fields)=>Json::object(fields.copy());_=>Json::null()}
     if input is Object(fields) && !fields.contains("files") {fields["files"]=field(fixture,"files",{})}
@@ -38,14 +39,19 @@ async fn main {
       outcomes.push(outcome)
     }
     let actual=field(outcomes[0],"messages",null);let expected=field(outcomes[1],"messages",null)
-    let ok=valid && actual==expected && field(case,"expected",expected)==expected
+    let locations_ok=match field(case,"locations",null) {
+      Array(locations)=>field(outcomes[0],"locations",null)==Json::array(locations) && field(outcomes[1],"locations",null)==Json::array(locations)
+      _=>true
+    }
+    let ok=valid && actual==expected && field(case,"expected",expected)==expected && locations_ok
+    if field(case,"locations",null) is Array(_) {location_total+=1;if ok {location_passed+=1}}
     let focused=field(case,"group",null)==Json::string("focused")
     if focused {focused_total+=1;if ok {focused_passed+=1}}
     if ok {passed+=1} else {println("FAIL lint "+field(case,"name",null).stringify())}
     rows.push({"fixture":case,"passed":ok,"runs":runs})
   }
   @fs.mkdir("_build/lint",recursive=true,allow_exist=true)
-  let report : Json={"source_commit":command("git",["rev-parse","HEAD"]),"source_dirty":command("git",["status","--porcelain"])!="","reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57","local_sha256":command("shasum",["-a","256",cli]),"reference_sha256":command("shasum",["-a","256",reference]),"adapter_sha256":command("shasum",["-a","256",adapter]),"reference_build":build,"total":cases.length(),"passed":passed,"failed":cases.length()-passed,"reference_crashes":reference_crashes,"focused_total":focused_total,"focused_passed":focused_passed,"cases":rows}
+  let report : Json={"source_commit":command("git",["rev-parse","HEAD"]),"source_dirty":command("git",["status","--porcelain"])!="","reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57","local_sha256":command("shasum",["-a","256",cli]),"reference_sha256":command("shasum",["-a","256",reference]),"adapter_sha256":command("shasum",["-a","256",adapter]),"reference_build":build,"total":cases.length(),"passed":passed,"failed":cases.length()-passed,"reference_crashes":reference_crashes,"focused_total":focused_total,"focused_passed":focused_passed,"location_total":location_total,"location_passed":location_passed,"cases":rows}
   @fs.write_file("_build/lint/report.json",report.stringify(indent=2)+"\n")
   println("Lint: \{passed}/\{cases.length()}; focused \{focused_passed}/\{focused_total}; reference crashes: \{reference_crashes}; evidence: \{work}")
   if passed!=cases.length() {fail("lint differences retained in _build/lint/report.json")}

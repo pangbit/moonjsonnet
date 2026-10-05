@@ -2535,6 +2535,1225 @@
         }
       ],
       "files": {}
+    },
+    {
+      "name": "lexer-boundary-1",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "01"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Did not expect: (NUMBER, \"1\")"
+      ],
+      "locations": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-2",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "00"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Did not expect: (NUMBER, \"0\")"
+      ],
+      "locations": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-3",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "01e2"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Did not expect: (NUMBER, \"1e2\")"
+      ],
+      "locations": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-4",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "0x10"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Did not expect: (IDENTIFIER, \"x10\")"
+      ],
+      "locations": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-5",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.2.3"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Expected token IDENTIFIER but got (NUMBER, \"3\")"
+      ],
+      "locations": [
+        [
+          1,
+          5
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-6",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e2e3"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Did not expect: (IDENTIFIER, \"e3\")"
+      ],
+      "locations": [
+        [
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-7",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e2.3"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Expected token IDENTIFIER but got (NUMBER, \"3\")"
+      ],
+      "locations": [
+        [
+          1,
+          5
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-8",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1."
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: '\\ufffd'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-9",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "0."
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: '\\ufffd'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-10",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.e2"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: 'e'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-11",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.e"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: 'e'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-12",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.中"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: '\\u4e2d'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-13",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.😀"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: '\\U0001f600'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-14",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.\n"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: '\\n'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-15",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.\t"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: '\\t'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-16",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.'"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: '\\''"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-17",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.\\"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: '\\\\'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-18",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.\u0000"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: '\\x00'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-19",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1."
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after decimal point: '\\x7f'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-20",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after 'E': '\\ufffd'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-21",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1E"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after 'E': '\\ufffd'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-22",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e+"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after exponent sign: '\\ufffd'"
+      ],
+      "locations": [
+        [
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-23",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1E-"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after exponent sign: '\\ufffd'"
+      ],
+      "locations": [
+        [
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-24",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1eX"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after 'E': 'X'"
+      ],
+      "locations": [
+        [
+          1,
+          3
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-25",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e+中"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after exponent sign: '\\u4e2d'"
+      ],
+      "locations": [
+        [
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-26",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e-\n"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after exponent sign: '\\n'"
+      ],
+      "locations": [
+        [
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-27",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['中', 1e+]"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex number, junk after exponent sign: ']'"
+      ],
+      "locations": [
+        [
+          1,
+          12
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-28",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "`"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '`'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-29",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "?"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '?'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-30",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "\\"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '\\\\'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-31",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "é"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '\\u00e9'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-32",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "中"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '\\u4e2d'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-33",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "😀"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '\\U0001f600'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-34",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "\u0000"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '\\x00'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-35",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "\u000b"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '\\v'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-36",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "\f"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '\\f'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-37",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": ""
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '\\x7f'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-38",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": " "
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '\\u00a0'"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-39",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['中',\n ?]"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '?'"
+      ],
+      "locations": [
+        [
+          2,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-40",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "/*"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Multi-line comment has no terminating */"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-41",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "/* a\n 中"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Multi-line comment has no terminating */"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-42",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "42 /*"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Multi-line comment has no terminating */"
+      ],
+      "locations": [
+        [
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-43",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "\"abc"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unterminated String"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-44",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "'abc"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unterminated String"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-45",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "\"abc\\"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unterminated String"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-46",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "@'abc"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unterminated String"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-47",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "@"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex verbatim string, junk after '@': -1"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-48",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "@x"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex verbatim string, junk after '@': 120"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-49",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "@中"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex verbatim string, junk after '@': 20013"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-50",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "@\n"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Couldn't lex verbatim string, junk after '@': 10"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-51",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "|||"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Text block requires new line after |||."
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-52",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "||| x\n"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Text block requires new line after |||."
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-53",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "|||\nnoindent\n|||"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Text block's first line must start with whitespace"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-54",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "|||\n  text"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Unexpected EOF"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-55",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "|||\n  text\n"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Text block not terminated with |||"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-56",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "|||\n  text\n bad\n|||"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Text block not terminated with |||"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-57",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "|||\n\n|||"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Text block's first line must start with whitespace"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-58",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "|||-\n\ttext\n|||"
+        }
+      ],
+      "files": {},
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "lexer-boundary-59",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[0,10,0.5,1e2,1e-2,0E+2]"
+        }
+      ],
+      "files": {},
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "lexer-boundary-60",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['中', 01]"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Expected a comma before next array element"
+      ],
+      "locations": [
+        [
+          1,
+          10
+        ]
+      ]
+    },
+    {
+      "name": "lexer-boundary-61",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[1, // comment\n 2]"
+        }
+      ],
+      "files": {},
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "lexer-boundary-62",
+      "group": "lexer",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "/*中*/ ?"
+        }
+      ],
+      "files": {},
+      "expected": [
+        "Could not lex the character '?'"
+      ],
+      "locations": [
+        [
+          1,
+          9
+        ]
+      ]
     }
   ]
 }
