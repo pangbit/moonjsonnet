@@ -166,6 +166,10 @@ Operator runs follow Go boundaries, including unary suffixes and adjacent
 comments. Import operands must parse as direct string literals; computed and
 parenthesized operands are rejected. Token spelling is retained during parsing
 only; this does not add source-preserving AST metadata or complete error ranges.
+Normal quoted strings keep raw escapes during lexing and decode as their tokens
+are parsed. Full-source lexical errors therefore precede escape errors, while
+later syntax errors may not. Escape-error messages retain Go's embedded source
+range prefix; the complete Diagnostic/CLI formatting is still not identical.
 
 `Program::parse(source, filename?, anonymous?, limits?) -> Program raise JsonnetError`
 lexes, parses and statically validates an entry program without executing code,
