@@ -69,7 +69,7 @@ trace locations and `std.thisFile`. Their imports pass an empty `from` to the
 resolver, so `FileHost` resolves them relative to its root. Origins are preserved
 in lexical environments independently of diagnostic names. A file option
 imports the supplied file normally, giving it its own identity and relative
-imports. Parameter code shares step/depth/output/import budgets and is checked
+imports. Parameter code shares step/depth/stack/output/import budgets and is checked
 against `source_bytes` when forced. Each `evaluate` call starts fresh; reusable
 VM/AST interfaces and their reset/cache lifecycle are still pending.
 
@@ -165,6 +165,7 @@ Use `Limits::default()` and a record update to change selected fields.
 | --- | ---: | --- |
 | `steps` | 1,000,000 | Expression evaluation, forcing, loops, comparisons and manifestation |
 | `depth` | 200 | Parser/AST, evaluation, comparison, JSON and manifestation depth; allowed 1–512 |
+| `stack` | 500 | Active clean evaluation frames, object assertion/additive frames and JSON manifestation |
 | `source_bytes` | 1,048,576 | UTF-8 bytes per entry/import/forced parameter code source; raw bytes per binary import |
 | `import_bytes` | 4,194,304 | Cumulative resolved request bytes per evaluation |
 | `imports` | 128 | Distinct `(from,path)` requests per text/binary mode, including aliases |
@@ -175,6 +176,14 @@ the output/step budgets to reject exponential intermediates. Standard-library
 string manifestation consumes the output budget during evaluation, then final
 manifestation starts a fresh output counter. This is intentionally conservative;
 limits are execution budgets, not reference Jsonnet language semantics.
+`stack` is independent of `depth`: ordinary AST traversal does not add a runtime
+frame, but forcing an uncomputed thunk does. Ready strings supplied through
+`ext_vars`/`tla_vars`, cached values and injected standard-library fields add no
+frame. Other JSON parameter values retain lazy conversion as an embedding
+extension. A tail call may discard a frame entered with `tailstrict`, before
+forcing its arguments. Stack exhaustion has kind `Limit`; `max_trace` only
+controls diagnostic rendering. Existing full `Limits` record literals must add
+`stack`; prefer record updates from `Limits::default()`.
 Text output's final newline is outside the payload byte count. Stream document
 payloads share one budget, excluding their final newlines; the CLI additionally
 counts all YAML delimiters and document newlines.

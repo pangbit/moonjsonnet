@@ -12,7 +12,12 @@ fn Vm::prepare_parameters(
   for name, json in values {
     if !code.contains(name) {
       let loc : Location = { file: "<\{kind}:\{name}>", line: 1, column: 1, }
-      result[name] = self.store(Pending({ kind: Literal(json), loc, }, env))
+      result[name] = self.store(
+        match json {
+          String(text) => Ready(Str(text))
+          _ => Pending({ kind: Literal(json), loc, }, env)
+        },
+      )
     }
   }
   for name, source in code {

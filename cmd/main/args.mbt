@@ -1,19 +1,27 @@
 ///|
 // Go uses decimal Atoi, without underscores, spaces or radix prefixes.
 fn trace_limit(value : String) -> Int raise {
+  decimal_limit(value, "--max-trace", 0)
+}
+
+///|
+fn decimal_limit(value : String, option : String, minimum : Int) -> Int raise {
   let digits = if value.has_prefix("+") || value.has_prefix("-") {
     value[1:]
   } else {
     value[:]
   }
   if digits.is_empty() || !digits.iter().all(c => c >= '0' && c <= '9') {
-    fail("invalid --max-trace integer")
+    fail("invalid \{option} integer")
   }
   let n = @string.parse_int64(value, base=10)
-  if n < 0L {
-    fail("--max-trace must be nonnegative")
+  if n < minimum.to_int64() {
+    if minimum == 0 {
+      fail("\{option} must be nonnegative")
+    }
+    fail("\{option} must be positive")
   }
-  // Context arrays cannot have more than INT_MAX elements; preserve the
+  // Frame/context arrays cannot have more than INT_MAX elements; preserve the
   // effect of Go's wider int range without narrowing an out-of-range value.
   if n > 2147483647L {
     2147483647

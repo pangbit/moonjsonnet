@@ -26,6 +26,8 @@ async fn main {
     #|///|
     #|test "independent archive consumer" {
     #|  let limits = @moonjsonnet.Limits::default()
+    #|  assert_eq(limits.stack,500)
+    #|  assert_eq(@moonjsonnet.evaluate("local f(n)=if n==0 then 42 else f(n-1) tailstrict; f(1000) tailstrict",limits={..limits,stack:2}),42)
     #|  let json = @moonjsonnet.evaluate("local f(x=21)=x*2; f()", limits~)
     #|  assert_eq(json, Json::number(42))
     #|  assert_eq(@moonjsonnet.evaluate("std.set([2,1,2])").stringify(), "[1,2]")

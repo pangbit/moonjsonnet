@@ -102,9 +102,18 @@ pub extend BinarySource with @debug.Debug::{to_repr}
 
 ///|
 /// Limits are per evaluation. Byte limits count UTF-8; all must be positive.
+/// `stack` counts runtime frames independently of the syntax/evaluation `depth`.
+///
+/// ```mbt check
+/// test {
+///   let limits = { ..@moonjsonnet.Limits::default(), stack: 2, }
+///   assert_eq(@moonjsonnet.evaluate("local x=42; x", limits~), 42)
+/// }
+/// ```
 pub(all) struct Limits {
   steps : Int
   depth : Int
+  stack : Int
   source_bytes : Int
   import_bytes : Int
   imports : Int
@@ -116,6 +125,7 @@ pub fn Limits::default() -> Limits {
   {
     steps: 1000000,
     depth: 200,
+    stack: 500,
     source_bytes: 1048576,
     import_bytes: 4194304,
     imports: 128,
@@ -182,6 +192,7 @@ priv enum ExprKind {
   ImportFile(String, Bool)
   ImportBinary(String)
   StandardFunction(String)
+  StandardValue(Json)
 }
 
 ///|

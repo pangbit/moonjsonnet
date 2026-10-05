@@ -56,6 +56,7 @@ pub fn ErrorKind::to_repr(Self) -> @debug.Repr
 pub(all) struct Limits {
   steps : Int
   depth : Int
+  stack : Int
   source_bytes : Int
   import_bytes : Int
   imports : Int

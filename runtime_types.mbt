@@ -84,6 +84,7 @@ priv struct Vm {
   imports : Map[(String, Bool), Int]
   mut steps : Int
   mut depth : Int
+  frames : Array[Bool]
   mut imported_bytes : Int
   mut output_bytes : Int
 }
@@ -112,7 +113,7 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
     Failed(e) => raise e
     Pending(expr, env) => {
       self.thunks[id] = Busy
-      let v = self.eval(expr, env) catch { e => self.failure(id, e) }
+      let v = self.eval_frame(expr, env) catch { e => self.failure(id, e) }
       self.thunks[id] = Ready(v)
       v
     }
@@ -123,7 +124,7 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
           raise problem(Limit, origin, "parameter source byte limit exceeded")
         }
         let expr = parse(source, origin.file, self.limits.depth)
-        self.eval(expr, self.base_env(file=origin.file, import_from=""))
+        self.eval_frame(expr, self.base_env(file=origin.file, import_from=""))
       } catch {
         e => self.failure(id, e)
       }

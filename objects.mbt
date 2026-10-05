@@ -49,6 +49,8 @@ fn Vm::check_assertions(self : Vm, id : Int, loc : Location) -> Unit raise {
   for i in 0..<obj.layers.length() {
     let env = self.layer_scope(id, i)
     for (cond, msg) in obj.layers[i].assertions {
+      self.push_frame(cond.loc, false)
+      defer ignore(self.frames.pop())
       self.assertion(cond, msg, env)
     }
   }
@@ -125,7 +127,15 @@ fn Vm::field(
         self.layer_scope(id, layer)
       }
       let v = try {
-        let rhs = self.eval(f.field.value, env)
+        if f.field.additive {
+          self.push_frame(loc, false)
+        }
+        defer (if f.field.additive { ignore(self.frames.pop()) })
+        let rhs = match f.field.value.kind {
+          StandardFunction(_) | StandardValue(_) =>
+            self.eval(f.field.value, env)
+          _ => self.eval_frame(f.field.value, env)
+        }
         if f.field.additive && self.has_field(id, layer, name) {
           self.binary("+", self.field(id, layer, name, loc), rhs, loc)
         } else {

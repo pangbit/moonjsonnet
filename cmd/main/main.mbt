@@ -50,6 +50,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       println(
         "-t/--max-trace N crops error context (default 20; 0 is unlimited).",
       )
+      println("-s/--max-stack N limits runtime frames (default 500; positive).")
       return
     }
     if arg == "--version" || arg == "-v" {
@@ -83,6 +84,8 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       match arg {
         "--root" => root = value
         "-t" | "--max-trace" => diagnostics.max_trace = trace_limit(value)
+        "-s" | "--max-stack" =>
+          limits = { ..limits, stack: decimal_limit(value, "--max-stack", 1), }
         "-J" | "--jpath" => {
           if value.is_empty() {
             fail("jpath must not be empty")

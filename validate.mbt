@@ -23,7 +23,11 @@ fn validate(
   in_object : Bool,
 ) -> Unit raise Error {
   match e.kind {
-    Literal(_) | ImportFile(_, _) | ImportBinary(_) | StandardFunction(_) => ()
+    Literal(_)
+    | ImportFile(_, _)
+    | ImportBinary(_)
+    | StandardFunction(_)
+    | StandardValue(_) => ()
     Var(n) => {
       if n == "super" {
         raise problem(

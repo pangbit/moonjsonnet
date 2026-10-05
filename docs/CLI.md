@@ -9,6 +9,7 @@ For development use `moon run cmd/main -- OPTIONS INPUT`.
 | `--root DIR` | Allowed filesystem root, default current directory |
 | `-J DIR`, `--jpath DIR` | Add a library search directory; the rightmost path wins |
 | `-t N`, `--max-trace N` | Crop error context to N locations; default 20, zero is unlimited |
+| `-s N`, `--max-stack N` | Runtime frame budget; default 500, strictly positive |
 | `-e`, `--exec` | Interpret the one input argument as Jsonnet source |
 | `-S`, `--string` | Require a string result and emit its contents followed by one newline |
 | `-y`, `--yaml-stream` | Require an array and emit its elements as JSON documents with YAML stream delimiters |
@@ -65,8 +66,19 @@ is stricter than Go's default unrestricted filesystem importer.
 Top-level functions are called once using named TLAs, with ordinary lazy/default
 parameter behavior. Missing and unknown argument names are errors. Non-function
 top-level values ignore TLAs. See [API](API.md) for code parameter filenames and
-shared budgets. `-s`/`--max-stack` is still pending; it needs runtime frame
-accounting and is separate from the existing evaluation-depth budget.
+shared budgets.
+
+`-s` counts active top-level/function bodies, unforced lazy values (including
+code parameters/imports), object fields/assertions, additive-field wrappers and
+JSON manifestation. Cached values and native builtin dispatch do not add frames.
+A tail call removes the current function frame only if that frame was entered
+with `tailstrict`; arguments are forced after removal. String output skips JSON
+manifestation. Exhaustion is a `Limit` error, before output files are opened.
+Positive decimal integers use the same syntax/range rules as `-t`; repeated
+values use the last assignment. Embedding callers set `Limits.stack`.
+The independent depth, step and byte budgets remain in force, so increasing
+`-s` does not allow unlimited AST or native recursion. Exact Go frame thresholds
+across all standard-library implementations and diagnostics remain unproven.
 
 `-t` accepts a nonnegative decimal integer in the pinned 64-bit Go range. Signs
 and leading zeroes are accepted; radix prefixes, underscores, whitespace,

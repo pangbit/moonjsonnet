@@ -65,6 +65,7 @@ fn[T] evaluate_with_output(
     if limits.steps <= 0 ||
       limits.depth <= 0 ||
       limits.depth > 512 ||
+      limits.stack <= 0 ||
       limits.source_bytes <= 0 ||
       limits.import_bytes <= 0 ||
       limits.imports <= 0 ||
@@ -94,6 +95,7 @@ fn[T] evaluate_with_output(
       imports: Map([]),
       steps: 0,
       depth: 0,
+      frames: [],
       imported_bytes: 0,
       output_bytes: 0,
     }
@@ -102,7 +104,7 @@ fn[T] evaluate_with_output(
       vm.ext[name] = id
     }
     let expression = parse(source, filename, limits.depth)
-    let value = vm.eval(
+    let value = vm.eval_frame(
       expression,
       vm.base_env(file=if anonymous { "" } else { filename }),
     )

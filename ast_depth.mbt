@@ -20,7 +20,8 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
       | Var(_)
       | ImportFile(_, _)
       | ImportBinary(_)
-      | StandardFunction(_) => ()
+      | StandardFunction(_)
+      | StandardValue(_) => ()
       Local(bs, body) => {
         for (_, v) in bs {
           push(v)

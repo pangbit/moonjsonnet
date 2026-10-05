@@ -1,0 +1,1032 @@
+[
+  {
+    "name": "stack-literal-1",
+    "source": "1",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-arithmetic-1",
+    "source": "1+2*3",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 7
+  },
+  {
+    "name": "stack-local-1",
+    "source": "local x=1; x",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-local-2",
+    "source": "local x=1; x",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-local-chain-2",
+    "source": "local x=1,y=x; y",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-local-chain-3",
+    "source": "local x=1,y=x; y",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-local-cache-1",
+    "source": "local x=1; x+x",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-local-cache-2",
+    "source": "local x=1; x+x",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 2
+  },
+  {
+    "name": "stack-array-1",
+    "source": "[1]",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-array-2",
+    "source": "[1]",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": [
+      1
+    ]
+  },
+  {
+    "name": "stack-nested-array-2",
+    "source": "[[1]]",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-nested-array-3",
+    "source": "[[1]]",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": [
+      [
+        1
+      ]
+    ]
+  },
+  {
+    "name": "stack-object-1",
+    "source": "{a:1}",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-object-2",
+    "source": "{a:1}",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": {
+      "a": 1
+    }
+  },
+  {
+    "name": "stack-object-local-2",
+    "source": "{local x=1,a:x}",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-object-local-3",
+    "source": "{local x=1,a:x}",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": {
+      "a": 1
+    }
+  },
+  {
+    "name": "stack-field-chain-2",
+    "source": "{a:1,b:self.a}.b",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-field-chain-3",
+    "source": "{a:1,b:self.a}.b",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-assertion-1",
+    "source": "{assert true,a:1}",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-assertion-2",
+    "source": "{assert true,a:1}",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": {
+      "a": 1
+    }
+  },
+  {
+    "name": "stack-assertion-call-2",
+    "source": "{assert (function() true)(),a:1}",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-assertion-call-3",
+    "source": "{assert (function() true)(),a:1}",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": {
+      "a": 1
+    }
+  },
+  {
+    "name": "stack-assert-tailstrict-2",
+    "source": "{assert (function() true)() tailstrict,a:1}",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-assert-tailstrict-3",
+    "source": "{assert (function() true)() tailstrict,a:1}",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": {
+      "a": 1
+    }
+  },
+  {
+    "name": "stack-additive-2",
+    "source": "({a:1}+{a+:2}).a",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-additive-3",
+    "source": "({a:1}+{a+:2}).a",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 3
+  },
+  {
+    "name": "stack-function-1",
+    "source": "(function() 1)()",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-function-2",
+    "source": "(function() 1)()",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-argument-2",
+    "source": "(function(x) x)(1)",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-argument-3",
+    "source": "(function(x) x)(1)",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-default-2",
+    "source": "(function(x=1) x)()",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-default-3",
+    "source": "(function(x=1) x)()",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-tailstrict-1",
+    "source": "(function(x) x)(1) tailstrict",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-tailstrict-2",
+    "source": "(function(x) x)(1) tailstrict",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-tail-loop-1",
+    "source": "local f(n)=if n==0 then 42 else f(n-1) tailstrict; f(1000) tailstrict",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-tail-loop-2",
+    "source": "local f(n)=if n==0 then 42 else f(n-1) tailstrict; f(1000) tailstrict",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "stack-tail-enter-2",
+    "source": "local f(n)=if n==0 then 42 else f(n-1) tailstrict; f(1000)",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-tail-enter-3",
+    "source": "local f(n)=if n==0 then 42 else f(n-1) tailstrict; f(1000)",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "stack-strict-child-1",
+    "source": "1+(function(x) x)(1) tailstrict",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-strict-child-2",
+    "source": "1+(function(x) x)(1) tailstrict",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 2
+  },
+  {
+    "name": "stack-strict-normal-4",
+    "source": "local f(n)=if n==0 then 42 else f(n-1); f(3) tailstrict",
+    "args": [
+      "-s",
+      "4",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-strict-normal-5",
+    "source": "local f(n)=if n==0 then 42 else f(n-1); f(3) tailstrict",
+    "args": [
+      "-s",
+      "5",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "stack-recursion-5",
+    "source": "local f(n)=if n==0 then 42 else f(n-1); f(3)",
+    "args": [
+      "-s",
+      "5",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-recursion-6",
+    "source": "local f(n)=if n==0 then 42 else f(n-1); f(3)",
+    "args": [
+      "-s",
+      "6",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "stack-builtin-1",
+    "source": "std.length('abc')",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-builtin-2",
+    "source": "std.length('abc')",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 3
+  },
+  {
+    "name": "stack-this-file-1",
+    "source": "std.thisFile",
+    "args": [
+      "-s",
+      "1",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": ""
+  },
+  {
+    "name": "stack-ext-str-1",
+    "source": "std.extVar('x')",
+    "args": [
+      "-s",
+      "1",
+      "-e",
+      "-V",
+      "x=a"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-ext-str-2",
+    "source": "std.extVar('x')",
+    "args": [
+      "-s",
+      "2",
+      "-e",
+      "-V",
+      "x=a"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": "a"
+  },
+  {
+    "name": "stack-ext-code-1",
+    "source": "std.extVar('x')",
+    "args": [
+      "-s",
+      "1",
+      "-e",
+      "--ext-code",
+      "x=1"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-ext-code-2",
+    "source": "std.extVar('x')",
+    "args": [
+      "-s",
+      "2",
+      "-e",
+      "--ext-code",
+      "x=1"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-tla-str-1",
+    "source": "function(x) x",
+    "args": [
+      "-s",
+      "1",
+      "-e",
+      "-A",
+      "x=a"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": "a"
+  },
+  {
+    "name": "stack-tla-code-1",
+    "source": "function(x) x",
+    "args": [
+      "-s",
+      "1",
+      "-e",
+      "--tla-code",
+      "x=1"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-tla-code-2",
+    "source": "function(x) x",
+    "args": [
+      "-s",
+      "2",
+      "-e",
+      "--tla-code",
+      "x=1"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-string-1",
+    "source": "'a'",
+    "args": [
+      "-s",
+      "1",
+      "-e",
+      "-S"
+    ],
+    "input": "exec",
+    "expect": "text-output",
+    "stdout": "a\n"
+  },
+  {
+    "name": "stack-stream-1",
+    "source": "[1]",
+    "args": [
+      "-s",
+      "1",
+      "-e",
+      "-y"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-stream-2",
+    "source": "[1]",
+    "args": [
+      "-s",
+      "2",
+      "-e",
+      "-y"
+    ],
+    "input": "exec",
+    "expect": "text-output",
+    "stdout": "---\n1\n...\n"
+  },
+  {
+    "name": "stack-stdlib-5",
+    "source": "std.map(function(x) x+1,[1])",
+    "args": [
+      "-s",
+      "5",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-stdlib-6",
+    "source": "std.map(function(x) x+1,[1])",
+    "args": [
+      "-s",
+      "6",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": [
+      2
+    ]
+  },
+  {
+    "name": "stack-comprehension-2",
+    "source": "[x for x in [1]]",
+    "args": [
+      "-s",
+      "2",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-comprehension-3",
+    "source": "[x for x in [1]]",
+    "args": [
+      "-s",
+      "3",
+      "-e"
+    ],
+    "input": "exec",
+    "expect": "success",
+    "result": [
+      1
+    ]
+  },
+  {
+    "name": "stack-invalid-61",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "0",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-62",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "-0",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-63",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "-1",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-64",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-65",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "+",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-66",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "1_0",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-67",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "0x10",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-68",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      " 1",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-69",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "1 ",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-70",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "1.5",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-71",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "1e2",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-72",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "１２",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-invalid-73",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "9223372036854775808",
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "stack-integer-74",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "+1",
+      "-e"
+    ],
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-integer-75",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "001",
+      "-e"
+    ],
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-integer-76",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "2147483648",
+      "-e"
+    ],
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-integer-77",
+    "source": "1",
+    "input": "exec",
+    "args": [
+      "--max-stack",
+      "9223372036854775807",
+      "-e"
+    ],
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-option-last-wins",
+    "source": "(function() 1)()",
+    "input": "exec",
+    "args": [
+      "-s",
+      "1",
+      "--max-stack",
+      "2",
+      "-e"
+    ],
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-stdin",
+    "source": "[1]",
+    "input": "stdin",
+    "args": [
+      "--max-stack",
+      "1"
+    ],
+    "expect": "error",
+    "reference_error": "max stack frames exceeded.",
+    "moonjsonnet_error": "Limit"
+  },
+  {
+    "name": "stack-file",
+    "source": "local x=1; x",
+    "args": [
+      "--max-stack",
+      "2"
+    ],
+    "expect": "success",
+    "result": 1
+  },
+  {
+    "name": "stack-missing-value",
+    "source": "1",
+    "input_arg": "--max-stack",
+    "expect": "error"
+  }
+]

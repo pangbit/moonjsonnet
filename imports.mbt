@@ -88,7 +88,7 @@ fn Vm::base_env(
   fields["thisFile"] = {
     field: {
       key: { kind: Literal(Json::string("thisFile")), loc, },
-      value: { kind: Literal(Json::string(file)), loc, },
+      value: { kind: StandardValue(Json::string(file)), loc, },
       visibility: 2,
       additive: false,
     },

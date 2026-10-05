@@ -16,6 +16,7 @@ test "thunk cache computes once and remembers failure" {
     imports: Map([]),
     steps: 0,
     depth: 0,
+    frames: [],
     imported_bytes: 0,
     output_bytes: 0,
   }
@@ -39,4 +40,19 @@ test "thunk cache computes once and remembers failure" {
     _ => fail("expected failure")
   }
   assert_eq(vm.steps, steps + 1)
+  assert_eq(vm.frames.length(), 0)
+  for
+    source in [
+      "(function() error 'strict')() tailstrict", "(function() (function() error 'inner')())() tailstrict",
+      "local f(n)=f(n+1); f(0)",
+    ] {
+    let expr = parse(source, "unwind", 100)
+    try vm.eval_frame(expr, vm.base_env()) catch {
+      _ => ()
+    } noraise {
+      _ => fail("expected failure")
+    }
+    assert_eq(vm.frames.length(), 0)
+    assert_eq(vm.depth, 0)
+  }
 }

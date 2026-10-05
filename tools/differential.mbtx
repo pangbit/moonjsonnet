@@ -48,6 +48,9 @@ async fn main {
     let diagnostics = @json.parse(@fs.read_file("tests/go-cli-diagnostics.json").text())
     guard diagnostics is Array(diagnostics) else { fail("expected Go diagnostic case array") }
     for case in diagnostics { cases.push(case) }
+    let stack = @json.parse(@fs.read_file("tests/go-cli-stack.json").text())
+    guard stack is Array(stack) else { fail("expected Go stack case array") }
+    for case in stack { cases.push(case) }
   }
   let work = if is_go { "_build/go-differential" } else { "_build/differential" }
   @fs.mkdir(work, recursive=true, allow_exist=true)

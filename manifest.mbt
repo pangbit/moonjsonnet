@@ -14,6 +14,8 @@ fn Vm::manifest(
   depth : Int,
 ) -> Json raise {
   self.tick(loc)
+  self.push_frame(loc, false)
+  defer ignore(self.frames.pop())
   if depth >= self.limits.depth {
     raise problem(
       Limit,

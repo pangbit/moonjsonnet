@@ -1,0 +1,68 @@
+import {
+  "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==2 else {fail("Usage: moon run tools/stack-integration.mbtx CLI")}
+  let cli=@fs.realpath(args[1])
+  let root=@fs.tmpdir(prefix="moonjsonnet-stack-tests-")
+  let env=Map([("JSONNET_PATH","")])
+  @fs.write_file(root+"/one.jsonnet","1")
+  @fs.write_file(root+"/nested.jsonnet","import 'one.jsonnet'")
+  let mut passed=0
+  for (source,minimum) in [
+    ("import 'one.jsonnet'",2),
+    ("import 'nested.jsonnet'",3),
+    ("local x=import 'one.jsonnet'; x+x",3),
+    ("[importbin 'one.jsonnet']",3),
+    ("{a+:1}",3),
+    ("{assert (function() true)() tailstrict,a:1}",3),
+  ] {
+    for limit in [minimum-1,minimum] {
+      let result=@shell.Cmd(cli,["--root",root,"-s",limit.to_string(),"-e",source],env~).output()
+      if limit==minimum {result.check()} else {
+        assert_eq(result.exit_code(),1)
+        assert_eq(result.stdout(),"")
+        assert_true(result.stderr().contains(": Limit: max stack frames exceeded."))
+      }
+      passed+=1
+    }
+  }
+  let output=root+"/output"
+  @fs.write_file(output,"preserve")
+  for (source,options) in [
+    ("[1]",["-o",output]),
+    ("[1]",["-y","-o",output]),
+    ("{a:1}",["-cm",root+"/multi"]),
+    ("{a:'x'}",["-Scm",root+"/multi"]),
+  ] {
+    let result=@shell.Cmd(cli,["--root",root,"--max-stack","1"]+options+["-e",source],env~).output()
+    assert_eq(result.exit_code(),1)
+    assert_eq(result.stdout(),"")
+    assert_true(result.stderr().contains(": Limit: max stack frames exceeded."))
+    assert_eq(@fs.read_file(output).text(),"preserve")
+    assert_true(!@fs.exists(root+"/multi"))
+    passed+=1
+  }
+  for option in ["--max-depth","--max-steps"] {
+    let result=@shell.Cmd(cli,["--root",root,"-s","9223372036854775807",option,"20","-e","local f(n)=f(n+1); f(0)"],env~).output()
+    assert_eq(result.exit_code(),1)
+    assert_true(result.stderr().contains(": Limit:"))
+    assert_true(!result.stderr().contains("max stack frames exceeded."))
+    passed+=1
+  }
+  let recursive="local f(n)=if n==0 then 42 else f(n-1); f(10)"
+  let cropped=@shell.Cmd(cli,["--root",root,"-s","4","-t","1","-e",recursive],env~).output()
+  assert_eq(cropped.exit_code(),1)
+  assert_true(cropped.stderr().contains(": Limit: max stack frames exceeded."))
+  assert_eq(cropped.stderr().split("\n").filter(s=>s.has_prefix("  at ")).count(),1)
+  assert_true(cropped.stderr().contains("  ..."))
+  passed+=1
+  let help=@shell.Cmd(cli,["--help"],env~).output()
+  help.check()
+  assert_true(help.stdout().contains("--max-stack"))
+  passed+=1
+  println("Stack integration: \{passed} passed; imports, output protection, independent budgets and diagnostics")
+}

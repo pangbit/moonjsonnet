@@ -1,5 +1,10 @@
 ///|
-fn Vm::eval(self : Vm, expr : Expr, env : Env) -> Value raise {
+fn Vm::eval(
+  self : Vm,
+  expr : Expr,
+  env : Env,
+  tail? : Bool = false,
+) -> Value raise {
   self.tick(expr.loc)
   if self.depth >= self.limits.depth {
     raise problem(Limit, expr.loc, "evaluation depth limit exceeded")
@@ -8,13 +13,24 @@ fn Vm::eval(self : Vm, expr : Expr, env : Env) -> Value raise {
   defer {
     self.depth -= 1
   }
-  self.eval_inner(expr, env)
+  self.eval_inner(expr, env, tail~)
 }
 
 ///|
-fn Vm::eval_inner(self : Vm, expr : Expr, env : Env) -> Value raise {
+fn Vm::eval_inner(
+  self : Vm,
+  expr : Expr,
+  env : Env,
+  tail~ : Bool,
+) -> Value raise {
   let mut expr = expr
   let mut env = env
+  let mut tail = tail
+  let frame_base = self.frames.length()
+  // The loop owns any strict function frame added above its entry frame.
+  defer (while self.frames.length() > frame_base {
+    ignore(self.frames.pop())
+  })
   while true {
     self.tick(expr.loc)
     let loc = expr.loc
@@ -38,6 +54,9 @@ fn Vm::eval_inner(self : Vm, expr : Expr, env : Env) -> Value raise {
       Call(f, args, strict) => {
         let function = self.eval(f, env)
         let thunks = args.map(pair => (pair.0, self.store(Pending(pair.1, env))))
+        if tail && self.frames.last() == Some(true) {
+          ignore(self.frames.pop())
+        }
         if strict && function is Closure(params, body, outer) {
           let scope = try {
             let scope = self.call_env(params, thunks, outer, loc)
@@ -54,6 +73,8 @@ fn Vm::eval_inner(self : Vm, expr : Expr, env : Env) -> Value raise {
           }
           expr = body
           env = scope
+          self.push_frame(loc, true)
+          tail = true
           continue
         }
         self.call(function, thunks, loc, strict~) catch {
@@ -157,6 +178,7 @@ fn Vm::eval_inner(self : Vm, expr : Expr, env : Env) -> Value raise {
       ImportFile(path, raw) => self.import_file(path, raw, env.import_from, loc)
       ImportBinary(path) => self.import_binary(path, env.import_from, loc)
       StandardFunction(name) => Builtin(name)
+      StandardValue(json) => self.from_json(json, loc)
     }
   } nobreak {
     abort("unreachable evaluator loop")
@@ -215,7 +237,7 @@ fn Vm::call(
           ignore(self.force(env.names[n], loc))
         }
       }
-      self.eval(body, env)
+      self.eval_frame(body, env, trimmable=strict)
     }
     _ => raise problem(Type, loc, "expected function")
   }
