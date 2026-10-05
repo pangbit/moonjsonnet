@@ -360,11 +360,21 @@ moon run tools/formatter-integration.mbtx _build/native/release/build/examples/f
 The runner validates exact frozen output, parse-error fragments, reparse success
 and Go's idempotence behavior. It records both outputs and all failures in
 `_build/formatter/report.json`; a nonzero exit is expected while differences remain.
-Implementation `de430a0` passes 171/177 fixtures, with six retained differences;
-the original 122 cases all pass. Native debug/release tests pass 232/232, and the
+Implementation `3cfaa54` passes 359/359 fixtures, including the six previously
+retained differences. Native debug/release tests pass 235/235, and the
 archive consumer passes 23/23.
 The ASan run includes the new formatter black-box tests, not the complete Go
-formatter differential corpus. See the [formatter import report](../reports/GO-JSONNET-FORMATTER-IMPORTS.md)
+formatter differential corpus. The broader upstream input survey passes 126/178,
+with 52 retained failures (zero Go errors and three local probe errors):
+
+```sh
+moon run tools/upstream-formatter.mbtx _build/native/release/build/examples/formatter-probe/formatter-probe.exe ${LOCAL_PATH_012} ${LOCAL_PATH_006}
+```
+
+This tool pins both checkouts, uses C++ only as an input source, and compares
+exact output and idempotence against Go. It retains every input and both outcomes
+in `_build/upstream-formatter/report.json`, returning nonzero on differences.
+See the [sort/strip report](../reports/GO-JSONNET-FORMATTER-SORT-STRIP.md)
 for exact hashes, accepted checks and remaining work.
 
 See the repository's `reports/` directory for commit-bound acceptance evidence.
