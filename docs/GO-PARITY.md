@@ -44,11 +44,11 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | YAML 解析 | 已注册 `parseYaml`，覆盖块/流语法、标签、别名、合并及 YAML 1.1 转换 | 扩大 YAML 语料；保留空输入参考崩溃，注册不代表通用 YAML 等价 |
 | 扩展参数 | JSON/字符串及独立作用域的惰性 Jsonnet 代码；CLI 文件/环境变量形式 | 可重用 VM 的重置和缓存语义、AST 参数接口仍待实现 |
 | 顶层参数 TLA | JSON/字符串/代码及 CLI 文件/环境变量形式，顶层函数调用、默认值与错误传播 | 扩大语料；可重用 VM 的 TLA/reset/AST 接口仍待实现 |
-| 原生回调与 trace | 已实现按名注册、JSON 回调、可配置 sink 及默认 stderr | 扩大宿主边界验证；CLI trace 重定向选项与诊断路径行为仍待补齐 |
+| 原生回调与 trace | 已实现按名注册、JSON 回调、可配置 sink 及默认 stderr | 扩大宿主边界验证；可重用 VM 的 sink 配置及诊断路径/帧行为仍待补齐 |
 | 导入器 | 定制文本/二进制解析、限定目录宿主、`-J`/`JSONNET_PATH` 搜索及正负缓存 | 依赖发现、导入查询接口；继续核验路径身份与宿主政策差异 |
 | 输入模式 | 文件、CLI `-e`、stdin、`--`、短选项展开和匿名源码求值 | 扩大输入/诊断边界，保留宿主资源与 UTF-8 政策 |
 | 输出模式 | 单个 JSON/文件、字符串、文档流、multi 与目录创建；对应嵌入方法已提供 | 扩大文件状态与 I/O 边界验证，保留执行预算政策 |
-| CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、短选项及退出 1 行为；其余部分 | 与参考完整 help 核对 stack/trace 及剩余选项 |
+| CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、错误 context 裁剪、短选项及退出 1 行为；其余部分 | `-s`/`--max-stack` 调用帧预算、Go 诊断帧集合及剩余选项 |
 | VM/AST 接口 | 一次性 evaluate | 可重用 VM、AST 解析/执行、缓存生命周期、依赖扫描的 MoonBit 等价接口 |
 | 格式化器、静态分析工具 | 缺失 | 单独建立格式化/lint/工具接口语料，纳入整体覆盖状态 |
 | 平台与交付 | native；实测 macOS arm64 | Linux 持续验证；其余参考平台和分发能力逐项核验，不凭本机结果推断 |
@@ -148,12 +148,19 @@ CLI 输入批次新增 38 项差分，全部通过；当时完整 Go 差分 862/
 VM/AST、格式化及分析工具等能力仍待实现。
 详见 [多文件输出验收](../reports/GO-JSONNET-MULTI-OUTPUT.md)。
 
-导入搜索批次新增 37 项差分，全部通过；当前完整 Go 差分 989/1007，18 项
+导入搜索批次新增 37 项差分，全部通过；当时完整 Go 差分 989/1007，18 项
 历史失败继续保留。加入 `-J`/`JSONNET_PATH`、嵌入宿主 `jpaths`、不搜索库的
 入口 load，以及成功/缺失候选缓存。只有 ENOENT 回退，权限、ENOTDIR、目录、
 语法、UTF-8 与资源错误均停止查找。保留 root/canonical 政策，不声明其与
 Go 无限制文件宿主或所有路径身份等价。依赖发现、导入查询及 VM/AST 等仍待
 补齐。详见 [导入搜索验收](../reports/GO-JSONNET-IMPORT-SEARCH.md)。
+
+诊断裁剪批次加入 `-t`/`--max-trace` 与 `Diagnostic::format`，新增 41 项对照
+用例符合各自固定预期。当前 Go runner 为 1030/1048，原有 18 项失败保留。
+CLI 默认限制 context 为 20；正数保留两端，0 不裁剪，主错误行始终保留。
+两边诊断分别固定，不代表 stderr 字节或帧集合相同；Go 的命名/合成帧模型
+仍待实现。失败计数不是全部诊断差距的计数。`--max-stack` 也仍缺失，不能用
+现有 `--max-depth` 代替。详见 [诊断裁剪验收](../reports/GO-JSONNET-DIAGNOSTICS.md)。
 
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
 MoonBit 求值器执行。每次 evaluate 解析一次，导入共享 AST，各文件的 `thisFile`

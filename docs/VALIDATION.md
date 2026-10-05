@@ -49,8 +49,8 @@ moon run tools/differential.mbtx /tmp/go-jsonnet-v0.21.0/jsonnet _build/native/r
 
 The Go run includes the shared `tests/differential.json` corpus plus Go-specific
 cases in `tests/go-differential.json`, `tests/go-parameters.json`,
-`tests/go-cli-input.json`, `tests/go-cli-output.json`, `tests/go-cli-multi.json`
-and `tests/go-cli-imports.json`.
+`tests/go-cli-input.json`, `tests/go-cli-output.json`, `tests/go-cli-multi.json`,
+`tests/go-cli-imports.json` and `tests/go-cli-diagnostics.json`.
 Fixtures can supply `args`, `files`, `env`, an
 `input` mode (`file`, `exec` or `stdin`), literal `input_arg`, explicit `stdin`,
 `cwd` and pinned JSON `result` or error diagnostic checks. The `<work>` marker
@@ -93,6 +93,14 @@ mutate files between calls to verify positive/negative host-cache stability and
 fresh-host behavior. The archive consumer calls `jpaths` and entry `load` from
 the actual packaged module, including its executable documentation.
 
+`tools/diagnostic-integration.mbtx` checks context cropping through file/anonymous
+inputs, nested imports and output modes, preserving prior output files, trace
+messages and evaluation budgets. Diagnostic fixtures can separately pin complete
+`reference_stderr` and `moonjsonnet_stderr`; the runner stores `stderr_fixture`
+alongside both actual outputs. Matching each program's own fixed expectation
+does not establish equal diagnostic text or frame sets. Those gaps remain in the
+overall parity inventory; ordinary error-outcome pass counts are not byte-parity counts.
+
 The runner checks Go binary build metadata for commit
 `67968688d9952f50662e979fab1bef889d0d3e57` and an unmodified checkout. Build the
 binary before writing other files into that checkout. Go results are written to
@@ -118,8 +126,9 @@ Trace fixtures additionally compare exact stderr on success and the exact trace
 prefix before an error diagnostic. Both programs receive the same absolute
 input path for these cases; relative/alias diagnostic-path parity is not implied.
 
-See the [import-search report](../reports/GO-JSONNET-IMPORT-SEARCH.md) for current
+See the [diagnostic report](../reports/GO-JSONNET-DIAGNOSTICS.md) for current
 commit-bound results and the retained differences. The earlier
+[import-search report](../reports/GO-JSONNET-IMPORT-SEARCH.md),
 [multi-output report](../reports/GO-JSONNET-MULTI-OUTPUT.md),
 [CLI output report](../reports/GO-JSONNET-CLI-OUTPUT.md),
 [CLI input report](../reports/GO-JSONNET-CLI-INPUT.md),
