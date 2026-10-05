@@ -62,20 +62,7 @@ fn[T] evaluate_with_output(
 ) -> T raise JsonnetError {
   let loc : Location = { file: filename, line: 1, column: 1, }
   try {
-    if limits.steps <= 0 ||
-      limits.depth <= 0 ||
-      limits.depth > 512 ||
-      limits.stack <= 0 ||
-      limits.source_bytes <= 0 ||
-      limits.import_bytes <= 0 ||
-      limits.imports <= 0 ||
-      limits.output_bytes <= 0 {
-      raise problem(
-        Limit,
-        loc,
-        "limits must be positive; depth must be at most 512",
-      )
-    }
+    check_limits(limits, loc)
     if @utf8.encode(source).length() > limits.source_bytes {
       raise problem(Limit, loc, "source byte limit exceeded")
     }

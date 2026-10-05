@@ -65,6 +65,8 @@ async fn main {
     #|  assert_true(!host.load("moon.mod").text.is_empty())
     #|  assert_eq(@fs.evaluate_file("search.jsonnet",jpaths=["library"]),42)
     #|  assert_eq(host.resolve("","answer").text,"42")
+    #|  assert_eq(host.find_dependencies(["search.jsonnet"]),[host.resolve("","answer").id])
+    #|  assert_eq(@moonjsonnet.find_dependencies("",["main"],resolver=fn(_,path) { {id:path,bytes:if path=="main" {b"importbin 'bytes'"} else {b"\xff"}} }),["bytes"])
     #|  let binary = @moonjsonnet.evaluate("importbin 'data'", binary_resolver=fn(_, _) { {id: "data", bytes: b"\x00\xff"} })
     #|  assert_eq(binary.stringify(), "[0,255]")
     #|  try @moonjsonnet.evaluate("1/0") catch {

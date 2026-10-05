@@ -158,3 +158,23 @@ earlier CLI argument/output exit code 2. Diagnostics go to stderr.
 Evaluation failure does not open or truncate the output file. On successful
 evaluation `-o` overwrites its destination; output I/O is not transactional.
 The import root controls reads, not the explicitly selected output path.
+
+## Static dependency tool
+
+Build `cmd/deps` with `moon build --target native --release cmd/deps`, then run
+`_build/native/release/build/cmd/deps/deps.exe [-J DIR] [-o FILE] [--root DIR] [--] FILE...`.
+It lists canonical absolute transitive dependencies, sorted one per line, excluding
+all entries. Empty results emit no bytes. Multiple entries, `--jpath`,
+`--output-file`, `JSONNET_PATH`, byte-wise combined short options, help and version
+are supported. `-` is a literal filename, not stdin. Entries must exist directly;
+library fallback applies to nested imports. The API additionally permits library
+entry lookup, as Go's VM method does.
+
+No Jsonnet code runs. The pinned Go scanner omits object assertion imports and
+does not recurse into an identity already encountered as raw data; these behaviors
+are preserved and tested. See [API](API.md) for scan limits and cache lifetime.
+The tool uses the default resource budgets and the existing canonical root policy.
+It opens the output only after successful scanning, preserving an existing file
+on scan failure; a successful empty list truncates a selected output to zero bytes.
+Errors exit 1 and successful scans exit 0. Diagnostic formatting and all possible
+desugared traversal/error orders are not yet proven equivalent to Go.

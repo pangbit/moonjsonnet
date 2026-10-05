@@ -14,6 +14,8 @@ pub fn evaluate_stream(String, filename? : String, anonymous? : Bool, ext_vars? 
 
 pub fn evaluate_text(String, string_output? : Bool, filename? : String, anonymous? : Bool, ext_vars? : Map[String, Json], ext_code? : Map[String, String], tla_vars? : Map[String, Json], tla_code? : Map[String, String], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> String raise JsonnetError
 
+pub fn find_dependencies(String, Array[String], resolver~ : (String, String) -> BinarySource raise, limits? : Limits) -> Array[String] raise JsonnetError
+
 // Errors
 pub(all) suberror JsonnetError {
   Error(Diagnostic)

@@ -157,6 +157,39 @@ a default context limit of 20 and rejects negative option values. These are
 limits on this API's context list, not a claim that its locations equal Go's
 complete named/synthetic frame set. See [CLI](CLI.md).
 
+## Static dependencies
+
+`find_dependencies(imported_from, imported_paths, resolver~, limits?) -> Array[String] raise JsonnetError`
+statically scans all entry files and transitive imports without evaluating Jsonnet.
+The required resolver returns `BinarySource` for every import form. Only code is
+UTF-8 decoded and parsed; `importstr` and `importbin` dependencies can contain
+arbitrary bytes. Results contain sorted unique resolved `id` values, excluding
+all entry identities. Entries are parsed before traversal; cycles and aliases
+terminate through identity deduplication. Stable immutable identities are required.
+
+The walk follows pinned Go v0.21.0 `FindDependencies`, including two limitations:
+object assertions are omitted, and a path seen first as raw data suppresses later
+recursive code traversal (the later code is still parsed for syntax/static errors).
+Unexecuted branches, local bindings and function defaults are scanned. It does
+not execute external/native functions or inspect externally supplied parameter code.
+It is not a complete dependency list for every possible runtime execution.
+
+`FileHost::find_dependencies(paths, imported_from?, limits?)` installs the host's
+binary resolver, library search, canonical root and byte cache. API entries may
+use library search, matching Go's VM method; the separate dependency CLI checks
+that entry paths exist directly. Every scan has fresh request/AST caches, while
+an existing `FileHost` retains its own immutable byte cache across scans.
+This is independent of evaluation; a reusable VM with shared AST/evaluation caches
+and import query methods is still pending.
+
+Scanning applies `source_bytes`, `import_bytes` and `imports` to all distinct
+requests, including entries and aliases; repeated identical `(from,path)` requests
+are cached. `depth` bounds parsing/ASTs, `steps` bounds visited AST nodes, and
+`output_bytes` bounds dependency identities including one UTF-8 newline per result.
+Graph traversal is iterative; runtime `stack` is not consumed. All limit values
+are validated. Go has no equivalent scan resource budgets. Failure returns no list;
+diagnostic text/context is not claimed identical to Go.
+
 ## Limits
 
 Use `Limits::default()` and a record update to change selected fields.

@@ -19,6 +19,7 @@ pub struct FileHost {
   binary_cache : Map[String, @moonjsonnet.BinarySource]
   attempts : Map[String, @moonjsonnet.BinarySource?]
 }
+pub fn FileHost::find_dependencies(Self, Array[String], imported_from? : String, limits? : @moonjsonnet.Limits) -> Array[String] raise @moonjsonnet.JsonnetError
 pub fn FileHost::load(Self, String) -> @moonjsonnet.Source raise @moonjsonnet.JsonnetError
 pub fn FileHost::new(String, jpaths? : Array[String], max_bytes? : Int) -> Self raise @moonjsonnet.JsonnetError
 pub fn FileHost::resolve(Self, String, String) -> @moonjsonnet.Source raise @moonjsonnet.JsonnetError

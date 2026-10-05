@@ -1,0 +1,112 @@
+import {
+  "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell",
+  "moonbitlang/core/env", "moonbitlang/core/json",
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==2 || args.length()==3 else {fail("Usage: moon run tools/dependency-integration.mbtx CLI [GO_DEPS]")}
+  let cli=@fs.realpath(args[1])
+  let reference=if args.length()==3 {Some(@fs.realpath(args[2]))} else {None}
+  if reference is Some(reference) {
+    let metadata=@shell.Cmd("go",["version","-m",reference]).output()
+    metadata.check()
+    assert_true(metadata.stdout().contains("vcs.revision=67968688d9952f50662e979fab1bef889d0d3e57"))
+    assert_true(metadata.stdout().contains("vcs.modified=false"))
+    let version=@shell.Cmd(reference,["--version"]).output()
+    version.check()
+    assert_eq(version.stdout(),"Jsonnet static dependency parser v0.21.0\n")
+  }
+  let root=@fs.realpath(@fs.tmpdir(prefix="moonjsonnet-dependencies-"))
+  guard @json.parse(@fs.read_file("tests/go-dependencies.json").text()) is Array(cases) else {fail("expected cases")}
+  let rows : Array[Json]=[]
+  let mut passed=0
+  for case in cases {
+    guard case is {"name":String(name),"files":Object(files),"inputs":Array(inputs),..} else {fail("invalid case")}
+    let work=root+"/"+name
+    @fs.mkdir(work)
+    @fs.write_file(work+"/raw",b"\xff\x00")
+    for path,text in files {
+      guard text is String(text) else {fail("expected text")}
+      if path.rev_find("/") is Some(i) {@fs.mkdir(work+"/"+path[:i].to_owned(),recursive=true,allow_exist=true)}
+      @fs.write_file(work+"/"+path,text)
+    }
+    if case is {"links":Object(links),..} {
+      for path,target in links {guard target is String(target) else {fail("expected link")}; @fs.symlink(target~,work+"/"+path)}
+    }
+    let options=match case {{"args":Array(args),..}=>args.map(as_string);_=>[]}
+    let invocation=options+inputs.map(as_string)
+    let env=Map([("JSONNET_PATH","")])
+    if case is {"env":Object(values),..} {for key,value in values {env[key]=as_string(value)}}
+    let error=case is {"error":True,..}
+    let expected=match case {
+      {"dependencies":Array(paths),..}=>{
+        let paths=paths.map(path=>work+"/"+as_string(path))
+        if paths.is_empty() {""} else {paths.join("\n")+"\n"}
+      }
+      _=>""
+    }
+    let runs : Array[Json]=[]
+    let mut ok=true
+    let programs=match reference {Some(reference)=>[cli,reference];None=>[cli]}
+    for program in programs {
+      let result=@shell.Cmd(program,invocation,cwd=work,env~).output(timeout_ms=10000)
+      let status_ok=if error {result.exit_code()==1 && !result.stderr().is_empty() && !result.stderr().contains("INTERNAL ERROR") && !result.stderr().contains("(CRASH)")} else {result.exit_code()==0 && result.stderr().is_empty()}
+      // Separate output files prove that failures preserve the preexisting file.
+      let output=work+(if program==cli {"/moon-output"} else {"/go-output"})
+      @fs.write_file(output,"preserve")
+      let file=@shell.Cmd(program,["-o",output]+invocation,cwd=work,env~).output(timeout_ms=10000)
+      let contents=@fs.read_file(output).text()
+      let file_ok=file.exit_code()==result.exit_code() && file.stdout()=="" && contents==(if error {"preserve"} else {expected})
+      ok=ok && status_ok && result.stdout()==expected && file_ok
+      runs.push({"program":program,"args":invocation,"exit":result.exit_code(),"stdout":result.stdout(),"stderr":result.stderr(),"file_exit":file.exit_code(),"file_stdout":file.stdout(),"file_stderr":file.stderr(),"file_contents":contents})
+    }
+    if ok {passed+=1} else {println("FAIL dependency \{name}")}
+    rows.push({"fixture":case,"cwd":work,"passed":ok,"runs":runs})
+  }
+  let env=Map([("JSONNET_PATH","")])
+  let mut cli_checks=0
+  for options in [[],["--unknown"],["-J"],["-J",""],["-o"],["-o",""],["-e","1"]] {
+    let result=@shell.Cmd(cli,options,cwd=root,env~).output()
+    assert_eq(result.exit_code(),1)
+    assert_eq(result.stdout(),"")
+    cli_checks+=1
+  }
+  for option in ["--help","-h","--version","-v"] {
+    let result=@shell.Cmd(cli,[option],cwd=root,env~).output()
+    result.check()
+    assert_true(result.stdout().contains("moonjsonnet"))
+    cli_checks+=1
+  }
+  @fs.mkdir(root+"/confined")
+  @fs.write_file(root+"/outside","1")
+  @fs.write_file(root+"/confined/main","import '../outside'")
+  let escape=@shell.Cmd(cli,["--root",root+"/confined","main"],env~).output()
+  assert_eq(escape.exit_code(),1)
+  assert_true(escape.stderr().contains(": Import:"))
+  cli_checks+=1
+  @fs.write_file(root+"/plain","1")
+  let failure=@shell.Cmd(cli,["--root",root,"-o",root,"plain"],env~).output()
+  assert_eq(failure.exit_code(),1)
+  assert_eq(failure.stdout(),"")
+  cli_checks+=1
+  if reference is Some(reference) {
+    let commit=@shell.Cmd("git",["rev-parse","HEAD"]).output()
+    let dirty=@shell.Cmd("git",["status","--porcelain"]).output()
+    let hashes=@shell.Cmd("shasum",["-a","256",reference,cli]).output()
+    commit.check();dirty.check();hashes.check()
+    @fs.mkdir("_build/dependencies",recursive=true,allow_exist=true)
+    @fs.write_file("_build/dependencies/report.json",Json::object(Map([
+      ("source_commit",Json::string(commit.stdout().trim().to_owned())),("source_dirty",Json::boolean(!dirty.stdout().is_empty())),
+      ("binary_sha256",Json::string(hashes.stdout())),("total",Json::number(cases.length().to_double())),("passed",Json::number(passed.to_double())),
+      ("failed",Json::number((cases.length()-passed).to_double())),("cli_checks",Json::number(cli_checks.to_double())),("cases",Json::array(rows)),
+    ])).stringify(indent=2))
+  }
+  println("Dependencies: \{passed}/\{cases.length()} fixtures; \{cli_checks} local CLI checks; evidence: \{root}")
+  assert_eq(passed,cases.length())
+}
+
+fn as_string(value : Json) -> String raise {
+  guard value is String(text) else {fail("expected string")}
+  text
+}
