@@ -50,7 +50,8 @@ moon run tools/differential.mbtx /tmp/go-jsonnet-v0.21.0/jsonnet _build/native/r
 The Go run includes the shared `tests/differential.json` corpus plus Go-specific
 cases in `tests/go-differential.json`, `tests/go-parameters.json`,
 `tests/go-cli-input.json`, `tests/go-cli-output.json`, `tests/go-cli-multi.json`,
-`tests/go-cli-imports.json` and `tests/go-cli-diagnostics.json`.
+`tests/go-cli-imports.json`, `tests/go-cli-diagnostics.json` and
+`tests/go-cli-stack.json`.
 Fixtures can supply `args`, `files`, `env`, an
 `input` mode (`file`, `exec` or `stdin`), literal `input_arg`, explicit `stdin`,
 `cwd` and pinned JSON `result` or error diagnostic checks. The `<work>` marker
@@ -101,6 +102,14 @@ alongside both actual outputs. Matching each program's own fixed expectation
 does not establish equal diagnostic text or frame sets. Those gaps remain in the
 overall parity inventory; ordinary error-outcome pass counts are not byte-parity counts.
 
+`tests/go-cli-stack.json` pins runtime-frame thresholds from the fixed Go
+reference, including normal/strict calls, lazy values, object assertions/addition,
+manifestation, ready string versus code TLAs and CLI integer boundaries.
+`tools/stack-integration.mbtx` checks imports, preserved output files and absent
+multi directories on exhaustion, independent step/depth limits and trace cropping.
+It is included in the main integration and isolated ASan runs. Passing these
+cases does not prove every standard-library implementation uses identical frames.
+
 The runner checks Go binary build metadata for commit
 `67968688d9952f50662e979fab1bef889d0d3e57` and an unmodified checkout. Build the
 binary before writing other files into that checkout. Go results are written to
@@ -126,8 +135,9 @@ Trace fixtures additionally compare exact stderr on success and the exact trace
 prefix before an error diagnostic. Both programs receive the same absolute
 input path for these cases; relative/alias diagnostic-path parity is not implied.
 
-See the [diagnostic report](../reports/GO-JSONNET-DIAGNOSTICS.md) for current
+See the [runtime-frame report](../reports/GO-JSONNET-STACK.md) for current
 commit-bound results and the retained differences. The earlier
+[diagnostic report](../reports/GO-JSONNET-DIAGNOSTICS.md),
 [import-search report](../reports/GO-JSONNET-IMPORT-SEARCH.md),
 [multi-output report](../reports/GO-JSONNET-MULTI-OUTPUT.md),
 [CLI output report](../reports/GO-JSONNET-CLI-OUTPUT.md),

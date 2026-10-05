@@ -48,7 +48,7 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | 导入器 | 定制文本/二进制解析、限定目录宿主、`-J`/`JSONNET_PATH` 搜索及正负缓存 | 依赖发现、导入查询接口；继续核验路径身份与宿主政策差异 |
 | 输入模式 | 文件、CLI `-e`、stdin、`--`、短选项展开和匿名源码求值 | 扩大输入/诊断边界，保留宿主资源与 UTF-8 政策 |
 | 输出模式 | 单个 JSON/文件、字符串、文档流、multi 与目录创建；对应嵌入方法已提供 | 扩大文件状态与 I/O 边界验证，保留执行预算政策 |
-| CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、错误 context 裁剪、短选项及退出 1 行为；其余部分 | `-s`/`--max-stack` 调用帧预算、Go 诊断帧集合及剩余选项 |
+| CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、错误 context 裁剪、独立 `-s`/`--max-stack` 帧预算、短选项及退出 1 行为；其余部分 | 扩大帧边界语料、Go 诊断帧集合及剩余选项 |
 | VM/AST 接口 | 一次性 evaluate | 可重用 VM、AST 解析/执行、缓存生命周期、依赖扫描的 MoonBit 等价接口 |
 | 格式化器、静态分析工具 | 缺失 | 单独建立格式化/lint/工具接口语料，纳入整体覆盖状态 |
 | 平台与交付 | native；实测 macOS arm64 | Linux 持续验证；其余参考平台和分发能力逐项核验，不凭本机结果推断 |
@@ -156,11 +156,19 @@ Go 无限制文件宿主或所有路径身份等价。依赖发现、导入查�
 补齐。详见 [导入搜索验收](../reports/GO-JSONNET-IMPORT-SEARCH.md)。
 
 诊断裁剪批次加入 `-t`/`--max-trace` 与 `Diagnostic::format`，新增 41 项对照
-用例符合各自固定预期。当前 Go runner 为 1030/1048，原有 18 项失败保留。
+用例符合各自固定预期。当时 Go runner 为 1030/1048，原有 18 项失败保留。
 CLI 默认限制 context 为 20；正数保留两端，0 不裁剪，主错误行始终保留。
 两边诊断分别固定，不代表 stderr 字节或帧集合相同；Go 的命名/合成帧模型
-仍待实现。失败计数不是全部诊断差距的计数。`--max-stack` 也仍缺失，不能用
-现有 `--max-depth` 代替。详见 [诊断裁剪验收](../reports/GO-JSONNET-DIAGNOSTICS.md)。
+仍待实现。失败计数不是全部诊断差距的计数。当时 `--max-stack` 尚未实现，
+详见 [诊断裁剪验收](../reports/GO-JSONNET-DIAGNOSTICS.md)。
+
+运行时帧预算批次加入 `-s`/`--max-stack` 和 `Limits.stack`，默认 500。
+对干净实现提交新增 82 项 Go 差分全部通过，当前完整结果 1112/1130，原有
+18 项失败继续保留。计数覆盖顶层/函数、未求值 thunk、对象字段/断言/`+:`
+及 JSON 展开；`tailstrict` 帧可在尾调用时释放，缓存与已就绪字符串不加帧。
+现有 depth/steps/字节政策保持独立，不声明所有标准库或深度输入的帧边界
+已经等价，诊断位置也没有改成 Go 的命名/合成帧。VM/AST 生命周期、依赖
+扫描、格式化/分析工具等仍待推进。详见 [帧预算验收](../reports/GO-JSONNET-STACK.md)。
 
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
 MoonBit 求值器执行。每次 evaluate 解析一次，导入共享 AST，各文件的 `thisFile`
