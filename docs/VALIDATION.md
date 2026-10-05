@@ -82,9 +82,13 @@ moon run tools/ast-integration.mbtx _build/native/release/build/examples/ast-pro
 
 It uses the same pinned checkout/build checks, writes `_build/ast/report.json`,
 and supports local-only ASan validation via `local-report.json`. Current AST
-results are 20/20, independently counted from parameters, Evaluator sequences and
-CLI cases. Comments, formatting and complete AST metadata are outside this
-semantic-tree evidence. See the [AST report](../reports/GO-JSONNET-AST.md).
+results are 57/57, including 37 Go-derived coordinate cases for UTF-8 byte columns,
+exclusive ends, parentheses, synthetic nodes and nested tailstrict. Public range
+validation and round trips are also covered by `source_range_test.mbt` and the
+archive consumer. These are independently counted from parameters, Evaluator
+sequences and CLI cases. Comments, formatting and complete AST metadata remain
+outside this evidence. See the [source-range report](../reports/GO-JSONNET-SOURCE-RANGES.md)
+and historical [AST report](../reports/GO-JSONNET-AST.md).
 
 `lint_test.mbt` checks lexical scopes, unused bindings, eager cycles, nonexecution,
 import traversal, limits and a 2,000-binding cycle. The full pinned upstream lint

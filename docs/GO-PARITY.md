@@ -49,7 +49,7 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | 输入模式 | 文件、CLI `-e`、stdin、`--`、短选项展开和匿名源码求值 | 扩大输入/诊断边界，保留宿主资源与 UTF-8 政策 |
 | 输出模式 | 单个 JSON/文件、字符串、文档流、multi 与目录创建；对应嵌入方法已提供 | 扩大文件状态与 I/O 边界验证，保留执行预算政策 |
 | CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、错误 context 裁剪、独立 `-s`/`--max-stack` 帧预算、短选项及退出 1 行为；其余部分 | 扩大帧边界语料、Go 诊断帧集合及剩余选项 |
-| VM/AST 接口 | 已验证 Program、可编辑语义 AST、深复制及 ext/TLA 参数；可重用 Evaluator 配置、分层导入缓存、四种输出及导入查询/共享依赖扫描 | AST 源码保真/元数据、EvalHook/调试器及完整诊断配置能力 |
+| VM/AST 接口 | 已验证 Program、可编辑语义 AST、深复制、UTF-8 字节源码范围及 ext/TLA 参数；可重用 Evaluator 配置、分层导入缓存、四种输出及导入查询/共享依赖扫描 | AST 源码保真及剩余元数据、EvalHook/调试器及完整诊断配置能力 |
 | 格式化器、静态分析工具 | 已有 `cmd/deps`；lint API/CLI 实现词法绑定、循环、导入、类型和降级检查，加入 token/解析诊断后差分 219/220 | 保留 1 项 Go 入口/导入碰撞崩溃；其余诊断、位置/范围及格式化器仍待补齐 |
 | 平台与交付 | native；实测 macOS arm64 | Linux 持续验证；其余参考平台和分发能力逐项核验，不凭本机结果推断 |
 
@@ -247,6 +247,14 @@ CLI 两边各 23 项通过，本地 debug/release 各 199/199。消息数组等�
 debug/release 各 204/204；本批重跑 Go CLI 1112/1130、C++ 98+10 声明差异、
 上游语言 303/303，Go 18 项失败集合未变。token 原文仅用于解析期，尚非源码
 保真 AST 或完整诊断模型。详见 [解析诊断验收](../reports/GO-JSONNET-PARSER-DIAGNOSTICS.md)。
+
+源码范围批次新增 `Ast.end`、`Ast::source_range` 和 `SourceRange`，位置列号
+改为一基 UTF-8 字节偏移。解析/克隆/Program 转换保留范围，区分原始括号、
+`tailstrict` 边界与无范围合成节点；手工记录需填写 `end`。37 个范围用例加入
+原 AST 语料后为 57/57，native 双模式各 207/207；Go CLI 1112/1130、lint
+219/220 的失败保留，C++ 98+10 声明差异且 0 失败，上游语言 303/303。
+注释/源码文本、声明范围、完整诊断及格式化仍未完成。详见
+[源码范围验收](../reports/GO-JSONNET-SOURCE-RANGES.md)。
 
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
 MoonBit 求值器执行。一次性入口与 Evaluator 采用各自的 AST/值缓存生命周期，
