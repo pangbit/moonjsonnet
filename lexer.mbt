@@ -191,20 +191,7 @@ fn lex(source : String, file : String) -> Array[Token] raise Error {
       out.push({ text: b.to_string(), value: None, loc, raw: "", end: loc, })
     } else if digit(c) {
       i = number_end(chars, start, loc)
-      let b = StringBuilder()
-      for j in start..<i {
-        b.write_char(chars[j])
-      }
-      let n = @json.parse(b.to_string()) catch {
-        _ => raise problem(Syntax, loc, "invalid number")
-      }
-      guard n is Number(v, ..) else {
-        raise problem(Syntax, loc, "invalid number")
-      }
-      if v.is_inf() || v.is_nan() {
-        raise problem(Runtime, loc, "non-finite number")
-      }
-      out.push({ text: "<number>", value: Some(n), loc, raw: "", end: loc, })
+      out.push({ text: "<number>", value: None, loc, raw: "", end: loc, })
     } else {
       if !operator_char(c) &&
         c != '{' &&

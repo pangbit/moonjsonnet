@@ -21,6 +21,7 @@ fn LintGraph::build(
   let refs = self.slots[id].refs
   let t = self.slots[id].concrete
   match e.kind {
+    NumberLiteral(_) => refs.push(3)
     Literal(v) =>
       refs.push(
         match v {
@@ -141,6 +142,14 @@ fn LintGraph::build(
       ignore(visit(b, scope))
       let index = match b.kind {
         Literal(String(s)) => StringIndex(s)
+        NumberLiteral(raw) => {
+          let parsed = Some(@string.parse_double(raw)) catch { _ => None }
+          if parsed is Some(n) && n >= 0 && n < 5 && n == n.to_int().to_double() {
+            IntIndex(n.to_int())
+          } else {
+            AnyIndex
+          }
+        }
         Literal(Number(n, ..)) if n >= 0 && n < 5 && n == n.to_int().to_double() =>
           IntIndex(n.to_int())
         _ => AnyIndex

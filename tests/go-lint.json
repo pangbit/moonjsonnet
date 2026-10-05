@@ -4906,6 +4906,342 @@
       "files": {},
       "expected": [],
       "locations": []
+    },
+    {
+      "name": "number-literal-1",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e309"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-2",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e-99999"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-3",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "0e99999"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-4",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e99999999999999999999999999999999"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-5",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e309()"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [
+        "Called value must be a function, but it is assumed to be a number"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "number-literal-6",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42,function()42][0e99999]()"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [
+        "Called value must be a function, but it is assumed to be a number"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "number-literal-7",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[42,function()42][1e309]()"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-8",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local x=1e309;42"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [
+        "Unused variable: x"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "number-literal-9",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "if false then 1e309 else 42"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-10",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local 1e309=1;42"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [
+        "Expected token IDENTIFIER but got (NUMBER, \"1e309\")"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "number-literal-11",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e309 ?"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [
+        "Could not lex the character '?'"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "number-literal-12",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1e309 42"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [
+        "Did not expect: (NUMBER, \"42\")"
+      ],
+      "locations": [
+        [
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "name": "number-literal-13",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "['\\q',1e309]"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [
+        "entry:1:2-6 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "name": "number-literal-14",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[1e309,'\\q']"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [
+        "entry:1:8-12 Unknown escape sequence in string literal: \\q"
+      ],
+      "locations": [
+        [
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "name": "number-literal-15",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "[1e309,1e+]"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [
+        "Couldn't lex number, junk after exponent sign: ']'"
+      ],
+      "locations": [
+        [
+          1,
+          11
+        ]
+      ]
+    },
+    {
+      "name": "number-literal-16",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "std.length([1e309])"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-17",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x)42)(1e309)"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-18",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.20E+003"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-19",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "0.0000e99999"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-20",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.7976931348623157e308"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "number-literal-21",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "1.7976931348623159e308"
+        }
+      ],
+      "files": {},
+      "group": "number-literal",
+      "expected": [],
+      "locations": []
     }
   ]
 }

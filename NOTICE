@@ -39,6 +39,8 @@ token.mbt, lexer_number.mbt and the lexer/parser diagnostic and operator-token p
 internal/parser/lexer.go and parser.go at the same revision.
 string_literal.mbt adapts internal/parser/string_util.go at that revision;
 normal quoted strings are validated and decoded when consumed by the parser.
+Numeric literal spelling and deferred overflow follow ast/ast.go and the
+LiteralNumber evaluation path in interpreter.go at the same pinned revision.
 Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 tools/embed-lint-stdlib.mbtx verifies the reference revision and source hash.
 

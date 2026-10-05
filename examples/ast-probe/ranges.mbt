@@ -1,4 +1,20 @@
 ///|
+fn number_spellings(root : @moonjsonnet.Ast, input : Json) -> Json raise {
+  guard input is Object(fields) && fields.get("paths") is Some(Array(paths)) else {
+    fail("number paths")
+  }
+  Json::array(
+    paths.map(path => {
+      guard path is String(path) &&
+        range_node(root, path).kind is NumberLiteral(raw) else {
+        fail("number node")
+      }
+      Json::string(raw)
+    }),
+  )
+}
+
+///|
 fn range_node(root : @moonjsonnet.Ast, path : String) -> @moonjsonnet.Ast raise {
   let mut node = root
   if path.is_empty() {

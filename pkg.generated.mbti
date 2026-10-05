@@ -46,6 +46,7 @@ pub(all) struct AstField {
 }
 
 pub(all) enum AstKind {
+  NumberLiteral(String)
   Literal(Json)
   Var(String)
   Local(Array[(String, Ast)], Ast)

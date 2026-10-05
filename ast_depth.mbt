@@ -17,6 +17,7 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
     }
     match e.kind {
       Literal(_)
+      | NumberLiteral(_)
       | Var(_)
       | ImportFile(_, _)
       | ImportBinary(_)

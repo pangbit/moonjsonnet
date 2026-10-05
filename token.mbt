@@ -43,6 +43,7 @@ fn Token::literal_kind(self : Token) -> ExprKind raise JsonnetError {
 fn Token::is_operator(self : Token) -> Bool {
   self.value is None &&
   self.text != "<eof>" &&
+  self.text != "<number>" &&
   self.text != "$" &&
   self.text.to_array().get(0) is Some(c) &&
   operator_char(c)

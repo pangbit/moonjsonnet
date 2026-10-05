@@ -24,6 +24,7 @@ fn validate(
 ) -> Unit raise Error {
   match e.kind {
     Literal(_)
+    | NumberLiteral(_)
     | ImportFile(_, _)
     | ImportBinary(_)
     | StandardFunction(_)

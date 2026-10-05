@@ -50,7 +50,10 @@ are checked on field access/manifestation, including inherited assertions bound 
 the final object. An unused error or failed assertion is not evaluated.
 
 Numbers use IEEE-754 binary64. Division by zero and non-finite ordinary arithmetic
-results are errors. As in the pinned Go reference, `sum`/`avg` retain overflow
+results are errors. Numeric tokens retain their original spelling and convert
+when evaluated: overflow is a runtime error, unused overflow literals stay lazy,
+and underflow can produce zero, matching the pinned Go reference.
+As in the pinned Go reference, `sum`/`avg` retain overflow
 Infinity/NaN, which unary signs, comparisons and string conversion can consume;
 integer precision is not guaranteed above 2^53. Strings/indexing/length/substrings
 use Unicode code points, not bytes, UTF-16 units or grapheme clusters. Paired Unicode

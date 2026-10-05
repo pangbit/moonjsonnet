@@ -1511,5 +1511,264 @@
         "k": "a"
       }
     ]
+  },
+  {
+    "name": "number-value-1",
+    "source": "1e309",
+    "op": "clone",
+    "error_contains": [
+      "overflow"
+    ]
+  },
+  {
+    "name": "number-value-2",
+    "source": "-1e309",
+    "op": "clone",
+    "error_contains": [
+      "overflow"
+    ]
+  },
+  {
+    "name": "number-value-3",
+    "source": "if false then 1e309 else 42",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "number-value-4",
+    "source": "local x=1e309;42",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "number-value-5",
+    "source": "(function(x)42)(1e309)",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "number-value-6",
+    "source": "(function(x)42)(1e309) tailstrict",
+    "op": "clone",
+    "error_contains": [
+      "overflow"
+    ]
+  },
+  {
+    "name": "number-value-7",
+    "source": "std.length([1e309])",
+    "op": "clone",
+    "expected": [
+      1,
+      1
+    ]
+  },
+  {
+    "name": "number-value-8",
+    "source": "{hidden::1e309,a:42}",
+    "op": "clone",
+    "expected": [
+      {
+        "a": 42
+      },
+      {
+        "a": 42
+      }
+    ]
+  },
+  {
+    "name": "number-value-9",
+    "source": "[1e309,42][1]",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "number-value-10",
+    "source": "false && 1e309",
+    "op": "clone",
+    "expected": [
+      false,
+      false
+    ]
+  },
+  {
+    "name": "number-value-11",
+    "source": "true || 1e309",
+    "op": "clone",
+    "expected": [
+      true,
+      true
+    ]
+  },
+  {
+    "name": "number-value-12",
+    "source": "[1e309]",
+    "op": "clone",
+    "error_contains": [
+      "overflow"
+    ]
+  },
+  {
+    "name": "number-value-13",
+    "source": "(function(x=1e309)42)()",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "number-value-14",
+    "source": "[1e-99999,0e99999,0.0000e99999]",
+    "op": "clone",
+    "expected": [
+      [
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "name": "number-value-15",
+    "source": "1e99999999999999999999999999999999",
+    "op": "clone",
+    "error_contains": [
+      "overflow"
+    ]
+  },
+  {
+    "name": "number-value-16",
+    "source": "1e-99999999999999999999999999999999",
+    "op": "clone",
+    "expected": [
+      0,
+      0
+    ]
+  },
+  {
+    "name": "number-value-17",
+    "source": "[1.7976931348623157e308,2.2250738585072014e-308,5e-324,2e-324]",
+    "op": "clone",
+    "expected": [
+      [
+        1.7976931348623157e+308,
+        2.2250738585072014e-308,
+        5e-324,
+        0
+      ],
+      [
+        1.7976931348623157e+308,
+        2.2250738585072014e-308,
+        5e-324,
+        0
+      ]
+    ]
+  },
+  {
+    "name": "number-value-18",
+    "source": "1.7976931348623159e308",
+    "op": "clone",
+    "error_contains": [
+      "overflow"
+    ]
+  },
+  {
+    "name": "number-value-19",
+    "source": "[9007199254740991,9007199254740992,9007199254740993]",
+    "op": "clone",
+    "expected": [
+      [
+        9007199254740991,
+        9007199254740992,
+        9007199254740992
+      ],
+      [
+        9007199254740991,
+        9007199254740992,
+        9007199254740992
+      ]
+    ]
+  },
+  {
+    "name": "number-value-20",
+    "source": "[0,0.00,1.20E+003]",
+    "op": "clone",
+    "expected": [
+      [
+        0,
+        0,
+        1200
+      ],
+      [
+        0,
+        0,
+        1200
+      ]
+    ]
+  },
+  {
+    "name": "number-spelling-array",
+    "source": "[0,1.20E+003,1e309,1e-99999,0e99999]",
+    "op": "numbers",
+    "paths": [
+      "item:0",
+      "item:1",
+      "item:2",
+      "item:3",
+      "item:4"
+    ],
+    "expected": [
+      "0",
+      "1.20E+003",
+      "1e309",
+      "1e-99999",
+      "0e99999"
+    ]
+  },
+  {
+    "name": "number-spelling-negative",
+    "source": "-1.20E+003",
+    "op": "numbers",
+    "paths": [
+      "operand"
+    ],
+    "expected": [
+      "1.20E+003"
+    ]
+  },
+  {
+    "name": "number-range-overflow",
+    "source": "1e309",
+    "op": "ranges",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        1,
+        1,
+        1,
+        6,
+        "entry:1:1-6"
+      ]
+    ]
   }
 ]

@@ -294,6 +294,7 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
     Some(_) => { kind: token.literal_kind(), loc, end: None, }
     None =>
       match token.text {
+        "<number>" => { kind: NumberLiteral(token.raw), loc, end: None, }
         "true" => { kind: Literal(Json::boolean(true)), loc, end: None, }
         "false" => { kind: Literal(Json::boolean(false)), loc, end: None, }
         "null" => { kind: Literal(Json::null()), loc, end: None, }

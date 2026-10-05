@@ -17,6 +17,7 @@ fn dependency_children(expr : Expr) -> Array[Expr] {
   }
   match expr.kind {
     Literal(_)
+    | NumberLiteral(_)
     | Var(_)
     | ImportFile(_, _)
     | ImportBinary(_)

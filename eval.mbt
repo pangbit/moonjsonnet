@@ -35,6 +35,12 @@ fn Vm::eval_inner(
     self.tick(expr.loc)
     let loc = expr.loc
     return match expr.kind {
+      NumberLiteral(raw) => {
+        let n = @string.parse_double(raw) catch {
+          _ => raise problem(Runtime, loc, "overflow")
+        }
+        Num(n)
+      }
       Literal(j) => self.from_json(j, loc)
       Var(n) =>
         match env.lookup(n) {

@@ -23,6 +23,7 @@ fn AstReader::read(
     })
   }
   let kind : ExprKind = match e.kind {
+    NumberLiteral(raw) => NumberLiteral(raw)
     Literal(v) => Literal(v)
     Var(n) => Var(n)
     Local(bs, b) => Local(bindings(bs), visit(b))
@@ -73,6 +74,7 @@ fn export_ast(e : Expr) -> Ast {
     })
   }
   let kind : AstKind = match e.kind {
+    NumberLiteral(raw) => NumberLiteral(raw)
     Literal(v) => Literal(v)
     Var(n) => Var(n)
     Local(bs, b) => Local(bindings(bs), visit(b))

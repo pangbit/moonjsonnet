@@ -55,6 +55,10 @@ async fn main {
     #|  let ast=program.ast().clone()
     #|  assert_eq(ast.source_range(),program.ast().source_range())
     #|  let ranged=@moonjsonnet.Program::parse("'中'",filename="consumer").ast()
+    #|  let numeric=@moonjsonnet.Program::parse("1.20E+003").ast().clone()
+    #|  assert_true(numeric.kind is NumberLiteral("1.20E+003"))
+    #|  assert_eq(@moonjsonnet.Program::from_ast(numeric).evaluate(),1200)
+    #|  assert_eq(@moonjsonnet.evaluate("std.length([1e309])"),1)
     #|  assert_eq(ranged.source_range().unwrap().format(),"consumer:1:1-6")
     #|  let manual : @moonjsonnet.Ast = {kind:Literal(42),loc:ranged.loc,end:None}
     #|  assert_eq(@moonjsonnet.Program::from_ast(manual).evaluate(),42)

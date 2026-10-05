@@ -88,6 +88,13 @@ func run(f fixture) (interface{}, error) {
 		return nil, err
 	}
 	edited := ast.Clone(original)
+	if f.Op == "numbers" {
+		result := []string{}
+		for _, path := range f.Paths {
+			result = append(result, rangeNode(edited, path).(*ast.LiteralNumber).OriginalString)
+		}
+		return result, nil
+	}
 	if f.Op == "ranges" {
 		result := []interface{}{}
 		for _, path := range f.Paths {

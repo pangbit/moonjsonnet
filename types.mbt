@@ -174,6 +174,7 @@ priv struct Expr {
 
 ///|
 priv enum ExprKind {
+  NumberLiteral(String)
   Literal(Json)
   Var(String)
   Local(Array[(String, Expr)], Expr)

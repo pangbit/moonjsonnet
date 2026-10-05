@@ -246,8 +246,17 @@ let edited = { ..node, kind: @moonjsonnet.AstKind::Binary("+", node, node), }
 let result = @moonjsonnet.Program::from_ast(edited).evaluate() // 42
 ```
 
-Literal nodes contain only scalar Json; use Arr/Obj for collections. Field
-visibility is 1 (inherit), 2 (hidden), or 3 (visible); ImportFile's Bool selects
+Literal nodes contain only scalar Json; use Arr/Obj for collections.
+Numbers parsed from source use `NumberLiteral(String)` to retain the original
+unsigned decimal token (for example `1.20E+003`). Conversion and overflow happen
+only when that node is evaluated. `Literal(Json::number(...))` remains available
+for manually constructed numeric values. In this pre-1.0 API, consumers matching
+parsed numbers must handle `NumberLiteral`; clone and `from_ast` retain its spelling.
+Manual numeric tokens must match Jsonnet's unsigned number grammar, with no
+whitespace, leading sign or extra token. `from_ast` validates this syntax without
+forcing conversion; represent a leading minus with `Unary`.
+
+Field visibility is 1 (inherit), 2 (hidden), or 3 (visible); ImportFile's Bool selects
 string versus code import, and Call's Bool is tailstrict. Function/default/local
 bindings and comprehension clauses retain their lexical scope rules.
 
@@ -257,7 +266,7 @@ have no source text and a saved source-byte count of zero; this does not exempt
 later imports, steps, stack, depth or output from execution limits. Filename
 defaults to the root location file, while explicit `filename`/`anonymous` control
 the entry/import identity. Individual diagnostic locations remain unchanged.
-Trees contain semantic syntax, not comments, whitespace, original number spelling,
+Trees contain semantic syntax and numeric token spelling, not comments, whitespace,
 or Go's desugared/free-variable metadata. Source-preserving tooling
 and complete Go AST metadata compatibility remain pending.
 

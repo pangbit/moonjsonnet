@@ -43,6 +43,17 @@ fn check_ast_shape(e : Ast) -> Unit raise JsonnetError {
     }
   }
   match e.kind {
+    NumberLiteral(raw) => {
+      let chars = raw.to_array()
+      let valid = chars.get(0) is Some(c) &&
+        digit(c) &&
+        (try number_end(chars, 0, e.loc) == chars.length() catch {
+          _ => false
+        })
+      if !valid {
+        raise problem(Static, e.loc, "invalid AST numeric literal")
+      }
+    }
     Literal(Array(_) | Object(_)) =>
       raise problem(Static, e.loc, "AST literal must be scalar")
     Var(n) => if n != "self" && n != "super" && n != "$" { name(n) }

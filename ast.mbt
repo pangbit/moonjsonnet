@@ -12,6 +12,8 @@ pub(all) struct Ast {
 /// Scalar Literal values only; use Arr/Obj for containers. Field visibility is
 /// 1 (inherit), 2 (hidden), or 3 (visible). Call's Bool denotes tailstrict.
 pub(all) enum AstKind {
+  /// Unsigned decimal token spelling, converted only when evaluated.
+  NumberLiteral(String)
   Literal(Json)
   Var(String)
   Local(Array[(String, Ast)], Ast)
