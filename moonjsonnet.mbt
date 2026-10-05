@@ -2,8 +2,10 @@
 /// Evaluate Jsonnet source into JSON. Imports are disabled unless a resolver is
 /// provided. Each call has independent caches and resource counters.
 /// `ext_code` and `tla_code` contain lazy Jsonnet expressions in clean scopes.
-/// Code overrides JSON for duplicate names. A top-level function is applied once
-/// with named TLAs; other top-level values ignore them.
+/// Parsed `ext_programs`/`tla_programs` override code, which overrides JSON for
+/// duplicate names. Parsed parameters are lazy, with synthetic std.thisFile but
+/// their original diagnostic location and import origin. A top-level function is
+/// applied once with named TLAs; other top-level values ignore them.
 /// With `anonymous=true`, filename is diagnostic-only: std.thisFile and the
 /// entry import origin are empty, matching Go's EvaluateAnonymousSnippet.
 ///
@@ -19,8 +21,10 @@ pub fn evaluate(
   anonymous? : Bool = false,
   ext_vars? : Map[String, Json] = Map([]),
   ext_code? : Map[String, String] = Map([]),
+  ext_programs? : Map[String, Program] = Map([]),
   tla_vars? : Map[String, Json] = Map([]),
   tla_code? : Map[String, String] = Map([]),
+  tla_programs? : Map[String, Program] = Map([]),
   native_functions? : Map[String, NativeFunction] = Map([]),
   trace? : (Location, String) -> Unit = default_trace,
   resolver? : (String, String) -> Source raise,
@@ -30,8 +34,10 @@ pub fn evaluate(
   Program::parse(source, filename~, anonymous~, limits~).evaluate(
     ext_vars~,
     ext_code~,
+    ext_programs~,
     tla_vars~,
     tla_code~,
+    tla_programs~,
     native_functions~,
     trace~,
     resolver?,
@@ -47,8 +53,10 @@ pub fn Program::evaluate(
   self : Program,
   ext_vars? : Map[String, Json] = Map([]),
   ext_code? : Map[String, String] = Map([]),
+  ext_programs? : Map[String, Program] = Map([]),
   tla_vars? : Map[String, Json] = Map([]),
   tla_code? : Map[String, String] = Map([]),
+  tla_programs? : Map[String, Program] = Map([]),
   native_functions? : Map[String, NativeFunction] = Map([]),
   trace? : (Location, String) -> Unit = default_trace,
   resolver? : (String, String) -> Source raise,
@@ -60,8 +68,10 @@ pub fn Program::evaluate(
     (vm, value, loc) => vm.manifest(value, loc, 0),
     ext_vars~,
     ext_code~,
+    ext_programs~,
     tla_vars~,
     tla_code~,
+    tla_programs~,
     native_functions~,
     trace~,
     resolver?,
@@ -76,8 +86,10 @@ fn[T] evaluate_with_output(
   output : (Vm, Value, Location) -> T raise,
   ext_vars? : Map[String, Json] = Map([]),
   ext_code? : Map[String, String] = Map([]),
+  ext_programs? : Map[String, Program] = Map([]),
   tla_vars? : Map[String, Json] = Map([]),
   tla_code? : Map[String, String] = Map([]),
+  tla_programs? : Map[String, Program] = Map([]),
   native_functions? : Map[String, NativeFunction] = Map([]),
   trace? : (Location, String) -> Unit = default_trace,
   resolver? : (String, String) -> Source raise,
@@ -113,7 +125,7 @@ fn[T] evaluate_with_output(
       imported_bytes: 0,
       output_bytes: 0,
     }
-    let ext = vm.prepare_parameters(ext_vars, ext_code, "extvar")
+    let ext = vm.prepare_parameters(ext_vars, ext_code, ext_programs, "extvar")
     for name, id in ext {
       vm.ext[name] = id
     }
@@ -124,7 +136,9 @@ fn[T] evaluate_with_output(
     )
     let value = match value {
       Closure(_, _, _) | Builtin(_) | Native(_) => {
-        let tla = vm.prepare_parameters(tla_vars, tla_code, "top-level-arg")
+        let tla = vm.prepare_parameters(
+          tla_vars, tla_code, tla_programs, "top-level-arg",
+        )
         let names = tla.keys().collect()
         names.sort()
         vm.call(value, names.map(name => (Some(name), tla[name])), loc)

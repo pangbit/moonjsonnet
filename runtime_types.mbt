@@ -39,6 +39,7 @@ fn Env::lookup(self : Env, name : String) -> Int? {
 priv enum Thunk {
   Pending(Expr, Env)
   Code(String, Location)
+  ParsedParameter(Program, Location)
   Ready(Value)
   Busy
   Failed(Error)
@@ -125,6 +126,26 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
         }
         let expr = parse(source, origin.file, self.limits.depth)
         self.eval_frame(expr, self.base_env(file=origin.file, import_from=""))
+      } catch {
+        e => self.failure(id, e)
+      }
+      self.thunks[id] = Ready(v)
+      v
+    }
+    ParsedParameter(program, origin) => {
+      self.thunks[id] = Busy
+      let v = try {
+        if program.source_bytes > self.limits.source_bytes {
+          raise problem(Limit, origin, "parameter source byte limit exceeded")
+        }
+        check_ast_depth(program.expression, self.limits.depth)
+        self.eval_frame(
+          program.expression,
+          self.base_env(
+            file=origin.file,
+            import_from=if program.anonymous { "" } else { program.filename },
+          ),
+        )
       } catch {
         e => self.failure(id, e)
       }

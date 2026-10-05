@@ -6,7 +6,7 @@ import {
 }
 
 // Values
-pub fn evaluate_file(String, root? : String, jpaths? : Array[String], ext_vars? : Map[String, Json], ext_code? : Map[String, String], tla_vars? : Map[String, Json], tla_code? : Map[String, String], native_functions? : Map[String, @moonjsonnet.NativeFunction], trace? : (@moonjsonnet.Location, String) -> Unit, limits? : @moonjsonnet.Limits) -> Json raise @moonjsonnet.JsonnetError
+pub fn evaluate_file(String, root? : String, jpaths? : Array[String], ext_vars? : Map[String, Json], ext_code? : Map[String, String], ext_programs? : Map[String, @moonjsonnet.Program], tla_vars? : Map[String, Json], tla_code? : Map[String, String], tla_programs? : Map[String, @moonjsonnet.Program], native_functions? : Map[String, @moonjsonnet.NativeFunction], trace? : (@moonjsonnet.Location, String) -> Unit, limits? : @moonjsonnet.Limits) -> Json raise @moonjsonnet.JsonnetError
 
 // Errors
 

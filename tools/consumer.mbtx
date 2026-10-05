@@ -31,6 +31,10 @@ async fn main {
     #|  assert_eq(program.evaluate_text(ext_vars=Map([("x",Json::string("raw"))]),string_output=true),"raw\n")
     #|  assert_eq(program.evaluate_stream(ext_vars=Map([("x",[1,2])])),["1\n","2\n"])
     #|  assert_eq(program.evaluate_multi(ext_vars=Map([("x",{"a":42})]))["a"],"42\n")
+    #|  let parameter = @moonjsonnet.Program::parse("21*2",filename="parameter.jsonnet")
+    #|  assert_eq(program.evaluate(ext_programs=Map([("x",parameter)])),42)
+    #|  assert_eq(@moonjsonnet.evaluate("function(x) x",tla_programs=Map([("x",parameter)])),42)
+    #|  assert_eq(@fs.evaluate_file("parameter.jsonnet",ext_programs=Map([("x",parameter)])),42)
     #|  assert_eq(limits.stack,500)
     #|  assert_eq(@moonjsonnet.evaluate("local f(n)=if n==0 then 42 else f(n-1) tailstrict; f(1000) tailstrict",limits={..limits,stack:2}),42)
     #|  let json = @moonjsonnet.evaluate("local f(x=21)=x*2; f()", limits~)
@@ -83,6 +87,7 @@ async fn main {
     #|  assert_eq(d.context.length(),3)
     #|}
   @fs.write_file(work + "/consumer/consumer_test.mbt", test_source)
+  @fs.write_file(work + "/consumer/parameter.jsonnet", "std.extVar('x')")
   @fs.mkdir(work+"/consumer/library")
   @fs.write_file(work+"/consumer/library/answer","42")
   @fs.write_file(work+"/consumer/search.jsonnet","import 'answer'")

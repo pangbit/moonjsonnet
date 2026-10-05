@@ -4,7 +4,7 @@ Import `pangbit/moonjsonnet` for source evaluation and `pangbit/moonjsonnet/fs`
 for the POSIX file host. Generated signatures are in `pkg.generated.mbti` and
 `fs/pkg.generated.mbti`; regenerate with `moon info`.
 
-`evaluate(source, filename?, anonymous?, ext_vars?, ext_code?, tla_vars?, tla_code?, native_functions?, trace?, resolver?, binary_resolver?, limits?) -> Json raise JsonnetError`
+`evaluate(source, filename?, anonymous?, ext_vars?, ext_code?, ext_programs?, tla_vars?, tla_code?, tla_programs?, native_functions?, trace?, resolver?, binary_resolver?, limits?) -> Json raise JsonnetError`
 owns a fresh evaluation state on every call. `filename` defaults to `<input>` and
 is passed to the importer. `ext_vars` is a `Map[String, Json]` read by
 `std.extVar`; strings and JSON values are never implicitly parsed as Jsonnet.
@@ -53,12 +53,13 @@ objects and imports. Code runs in an independent lexical environment containing
 `std`; it can read other external variables but cannot read entry-file locals.
 Each external value is a memoized thunk shared by imports and the entry program.
 Unused code, including syntax errors, remains unforced. Cyclic forcing is a
-`Runtime` error. If a name appears in both `ext_vars` and `ext_code`, code wins.
+`Runtime` error. If a name appears in both `ext_vars` and `ext_code`, code wins;
+`ext_programs` takes precedence over both (see [Parsed programs](#parsed-programs)).
 Do not mutate parameter maps or their JSON containers during evaluation.
 
 A top-level function is called once, even when no TLA is supplied. Named
 arguments come from `tla_vars: Map[String, Json]` and `tla_code: Map[String, String]`;
-code wins for overlapping names. Default parameters use the function's normal
+code wins for overlapping names, and `tla_programs` overrides both. Default parameters use the function's normal
 scope. Code arguments have independent scopes and can read `std.extVar`, but
 cannot refer directly to other TLAs. Unused argument values stay lazy; missing
 required and unknown arguments are errors. A returned function cannot be
@@ -170,7 +171,7 @@ the same parameters, resolvers, native functions, trace sink and execution limit
 as their string counterparts. Text/multi methods also accept `string_output`.
 They do not take `filename` or `anonymous`: these are fixed when parsing and govern
 locations, `std.thisFile` and relative import origins for every execution.
-The existing string APIs keep their signatures and delegate through this path.
+The existing string APIs delegate through this path.
 
 ```mbt
 let program = @moonjsonnet.Program::parse("function(n=2) std.extVar('x') * n")
@@ -178,7 +179,7 @@ let first = program.evaluate(ext_vars=Map([("x", 21)])) // 42
 let second = program.evaluate(ext_vars=Map([("x", 3)])) // 6
 ```
 
-Only the entry AST is reused. Every execution creates new thunks, objects,
+Entry and explicitly supplied parameter ASTs are reused. Every execution creates new thunks, objects,
 import/source caches and resource counters, including after failure. Changing
 parameters, callbacks or a custom resolver's results affects the next execution.
 An explicitly reused `FileHost` still retains its own byte cache; this API does
@@ -190,10 +191,30 @@ limits, rechecks the saved byte count and AST depth, and applies the ordinary
 runtime budgets. It does not replay lexer/parser nesting checks on source syntax
 that is no longer present, such as redundant parentheses.
 
+All string and `Program` output methods, plus `fs.evaluate_file`, accept optional
+`ext_programs` and `tla_programs` maps of names to `Program`. These provide Go's
+ExtNode/TLANode role without exposing mutable AST internals. For duplicate names,
+programs override code, which overrides JSON. A supplied program is evaluated
+lazily once per binding per execution in a clean scope. It can reference other
+external variables and the current native callbacks. An unused binding has no
+runtime effects; parsing/static validation has already happened when it was built.
+
+```mbt
+let argument = @moonjsonnet.Program::parse("21*2", filename="args/answer.jsonnet")
+let result = @moonjsonnet.evaluate("function(x) x", tla_programs=Map([("x", argument)]))
+```
+
+For these parameter programs, `std.thisFile` is `<extvar:NAME>` or
+`<top-level-arg:NAME>`, while diagnostics and trace retain the original AST
+locations. Imports use the program's filename, or an empty origin when it was
+parsed with `anonymous=true`. Source-byte and AST-depth limits are checked when
+the parameter is forced against that execution's limits; unused parameters do
+not consume these runtime budgets.
+
 This provides the parse-then-evaluate role of Go's `SnippetToAST` and AST-based
 `Evaluate`/`EvaluateStream`/`EvaluateMulti`. Go's mutable public AST editing,
-ExtNode/TLANode parameters, reusable VM settings and shared import value cache
-lifecycles are not implemented by `Program`; they remain separate parity work.
+reusable VM settings and shared import value cache lifecycles remain separate
+parity work.
 
 ## Static dependencies
 
