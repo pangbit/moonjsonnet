@@ -855,5 +855,657 @@
         ]
       }
     ]
+  },
+  {
+    "name": "queries-do-not-execute",
+    "files": {
+      "main": "std.trace('run',std.native('tick')())+(import 'dep')",
+      "dep": "1"
+    },
+    "steps": [
+      {
+        "op": "native",
+        "value": 42
+      },
+      {
+        "op": "resolve"
+      },
+      {
+        "op": "program"
+      },
+      {
+        "op": "dependencies",
+        "paths": [
+          "main"
+        ]
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'main'"
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'main'"
+      },
+      {
+        "op": "evaluate_imported"
+      },
+      {
+        "op": "ext_reset"
+      },
+      {
+        "op": "dependencies",
+        "paths": [
+          "main"
+        ]
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'main'"
+      }
+    ],
+    "expected": [
+      {
+        "value": "main",
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "id": "main",
+          "nil": false
+        },
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": [
+          "dep"
+        ],
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 43,
+        "reads": 2,
+        "calls": 1,
+        "error": false,
+        "trace": [
+          "0:run"
+        ]
+      },
+      {
+        "value": 43,
+        "reads": 2,
+        "calls": 1,
+        "error": false,
+        "trace": [
+          "0:run"
+        ]
+      },
+      {
+        "value": 43,
+        "reads": 2,
+        "calls": 2,
+        "error": false,
+        "trace": [
+          "0:run",
+          "0:run"
+        ]
+      },
+      {
+        "value": [
+          "dep"
+        ],
+        "reads": 2,
+        "calls": 2,
+        "error": false,
+        "trace": [
+          "0:run",
+          "0:run"
+        ]
+      },
+      {
+        "value": 43,
+        "reads": 2,
+        "calls": 3,
+        "error": false,
+        "trace": [
+          "0:run",
+          "0:run",
+          "0:run"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "resolve-snapshots-data",
+    "files": {
+      "main": "42"
+    },
+    "steps": [
+      {
+        "op": "resolve"
+      },
+      {
+        "op": "files",
+        "value": {
+          "main": "99"
+        }
+      },
+      {
+        "op": "data"
+      },
+      {
+        "op": "program",
+        "name": "old"
+      },
+      {
+        "op": "evaluate_imported",
+        "name": "old"
+      },
+      {
+        "op": "importer"
+      },
+      {
+        "op": "data"
+      },
+      {
+        "op": "program",
+        "name": "new"
+      },
+      {
+        "op": "evaluate_imported",
+        "name": "new"
+      },
+      {
+        "op": "evaluate_imported",
+        "name": "old"
+      }
+    ],
+    "expected": [
+      {
+        "value": "main",
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "id": "main",
+          "bytes": [
+            52,
+            50
+          ]
+        },
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "id": "main",
+          "nil": false
+        },
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 42,
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "id": "main",
+          "bytes": [
+            57,
+            57
+          ]
+        },
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "id": "main",
+          "nil": false
+        },
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 99,
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 42,
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "raw-query-without-parsing",
+    "files": {
+      "raw": "raw\u0000é"
+    },
+    "steps": [
+      {
+        "op": "resolve",
+        "path": "raw"
+      },
+      {
+        "op": "data",
+        "path": "raw"
+      },
+      {
+        "op": "evaluate",
+        "source": "importstr 'raw'"
+      }
+    ],
+    "expected": [
+      {
+        "value": "raw",
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "id": "raw",
+          "bytes": [
+            114,
+            97,
+            119,
+            0,
+            195,
+            169
+          ]
+        },
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": "raw\u0000é",
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "query-after-evaluation",
+    "files": {
+      "main": "std.native('tick')()"
+    },
+    "steps": [
+      {
+        "op": "native",
+        "value": 42
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'main'"
+      },
+      {
+        "op": "program"
+      },
+      {
+        "op": "dependencies",
+        "paths": [
+          "main"
+        ]
+      },
+      {
+        "op": "evaluate",
+        "source": "import 'main'"
+      }
+    ],
+    "expected": [
+      {
+        "value": 42,
+        "reads": 1,
+        "calls": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "id": "main",
+          "nil": false
+        },
+        "reads": 1,
+        "calls": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": [],
+        "reads": 1,
+        "calls": 1,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 42,
+        "reads": 1,
+        "calls": 1,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "query-program-identity-and-parameters",
+    "files": {
+      "main": "function(x=std.extVar('x')) [std.thisFile,x]"
+    },
+    "steps": [
+      {
+        "op": "program"
+      },
+      {
+        "op": "ext_var",
+        "value": 42
+      },
+      {
+        "op": "evaluate_imported"
+      },
+      {
+        "op": "tla_var",
+        "value": 7
+      },
+      {
+        "op": "evaluate_imported"
+      }
+    ],
+    "expected": [
+      {
+        "value": {
+          "id": "main",
+          "nil": false
+        },
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": [
+          "main",
+          42
+        ],
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": [
+          "main",
+          7
+        ],
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "shared-scan-cycles-and-roots",
+    "files": {
+      "a": "import 'b'",
+      "b": "import 'a'"
+    },
+    "steps": [
+      {
+        "op": "dependencies",
+        "paths": [
+          "a"
+        ]
+      },
+      {
+        "op": "dependencies",
+        "paths": [
+          "a",
+          "b"
+        ]
+      },
+      {
+        "op": "program",
+        "path": "b"
+      }
+    ],
+    "expected": [
+      {
+        "value": [
+          "b"
+        ],
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": [],
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "id": "b",
+          "nil": false
+        },
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "shared-scan-raw-before-code",
+    "files": {
+      "main": "[importstr 'a',import 'a']",
+      "a": "import 'b'",
+      "b": "42"
+    },
+    "steps": [
+      {
+        "op": "dependencies",
+        "paths": [
+          "main"
+        ]
+      },
+      {
+        "op": "dependencies",
+        "paths": [
+          "a"
+        ]
+      }
+    ],
+    "expected": [
+      {
+        "value": [
+          "a"
+        ],
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": [
+          "b"
+        ],
+        "reads": 3,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "shared-scan-does-not-run-assertions",
+    "files": {
+      "main": "{assert import 'missing',a:1}"
+    },
+    "steps": [
+      {
+        "op": "dependencies",
+        "paths": [
+          "main"
+        ]
+      },
+      {
+        "op": "program"
+      }
+    ],
+    "expected": [
+      {
+        "value": [],
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "id": "main",
+          "nil": false
+        },
+        "reads": 1,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      }
+    ]
+  },
+  {
+    "name": "query-missing-file-retry",
+    "files": {},
+    "steps": [
+      {
+        "op": "resolve"
+      },
+      {
+        "op": "files",
+        "value": {
+          "main": "42"
+        }
+      },
+      {
+        "op": "resolve"
+      },
+      {
+        "op": "program"
+      },
+      {
+        "op": "evaluate_imported"
+      }
+    ],
+    "expected": [
+      {
+        "value": null,
+        "reads": 1,
+        "calls": 0,
+        "error": true,
+        "trace": []
+      },
+      {
+        "value": "main",
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": {
+          "id": "main",
+          "nil": false
+        },
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      },
+      {
+        "value": 42,
+        "reads": 2,
+        "calls": 0,
+        "error": false,
+        "trace": []
+      }
+    ],
+    "diagnostic_fragments": [
+      "missing import",
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "name": "import-program-failed-parse-retry",
+    "files": {
+      "main": "missing"
+    },
+    "steps": [
+      {
+        "op": "program"
+      },
+      {
+        "op": "program"
+      }
+    ],
+    "expected": [
+      {
+        "value": null,
+        "reads": 1,
+        "calls": 0,
+        "error": true,
+        "trace": []
+      },
+      {
+        "value": null,
+        "reads": 1,
+        "calls": 0,
+        "error": true,
+        "trace": []
+      }
+    ],
+    "diagnostic_fragments": [
+      "missing",
+      "missing"
+    ],
+    "known_difference": "Go caches nil AST after a static parse failure and the second ImportAST returns success with nil; MoonJsonnet retains the static failure."
   }
 ]

@@ -20,14 +20,20 @@ fn run(input : Json) -> Json raise {
   let results : Array[Json] = []
   let diagnostics : Array[Json] = []
   let traces : Array[Json] = []
+  let imported : Map[String, @moonjsonnet.Program] = Map([])
   let mut calls = 0
   let mut reads = 0
   let mut files = field(input, "files", Json::object(Map([])))
+  let contents : Map[String, String] = Map([])
   let resolver : (String, String) -> @moonjsonnet.Source raise = (_, path) => {
+    if contents.get(path) is Some(source) {
+      return { id: path, text: source, }
+    }
     reads += 1
     guard field(files, path, Json::null()) is String(source) else {
       fail("missing import: " + path)
     }
+    contents[path] = source
     { id: path, text: source, }
   }
   evaluator.set_importer(resolver~)
@@ -63,7 +69,10 @@ fn run(input : Json) -> Json raise {
         )
       "tla_reset" => evaluator.tla_reset()
       "files" => files = field(step, "value", Json::null())
-      "importer" => evaluator.set_importer(resolver~)
+      "importer" => {
+        contents.clear()
+        evaluator.set_importer(resolver~)
+      }
       "trace" => {
         let label = text(step, "label", "0")
         evaluator.set_trace(fn(_, message) {
@@ -90,13 +99,72 @@ fn run(input : Json) -> Json raise {
         evaluator.set_string_output(
           field(step, "value", Json::boolean(false)) == Json::boolean(true),
         )
-      "evaluate" => {
+      "resolve" | "data" | "program" | "dependencies" => {
         let mut error = ""
         let value = try {
-          let program = @moonjsonnet.Program::parse(
-            text(step, "source", ""),
-            filename="entry",
-          )
+          let from = text(step, "from", "entry")
+          let path = text(step, "path", "main")
+          match text(step, "op", "") {
+            "resolve" => Json::string(evaluator.resolve_import(from, path))
+            "data" => {
+              let source = evaluator.import_data(from, path)
+              {
+                "id": source.id,
+                "bytes": Json::array(
+                  source.bytes
+                  .iter()
+                  .map(b => Json::number(b.to_int().to_double()))
+                  .collect(),
+                ),
+              }
+            }
+            "program" => {
+              let (program, id) = evaluator.import_program(from, path)
+              imported[name] = program
+              { "id": id, "nil": false }
+            }
+            _ => {
+              let paths = match field(step, "paths", Json::null()) {
+                Array(paths) =>
+                  paths.map(value => {
+                    match value {
+                      String(s) => s
+                      _ => ""
+                    }
+                  })
+                _ => []
+              }
+              Json::array(
+                evaluator.find_dependencies(from, paths).map(Json::string),
+              )
+            }
+          }
+        } catch {
+          @moonjsonnet.Error(d) => {
+            error = d.format()
+            Json::null()
+          }
+        }
+        diagnostics.push(Json::string(error))
+        results.push({
+          "value": value,
+          "error": !error.is_empty(),
+          "calls": calls,
+          "reads": reads,
+          "trace": Json::array(traces.copy()),
+        })
+      }
+      "evaluate" | "evaluate_imported" => {
+        let mut error = ""
+        let value = try {
+          let program = if text(step, "op", "") == "evaluate_imported" {
+            imported[name]
+          } else {
+            @moonjsonnet.Program::parse(
+              text(step, "source", ""),
+              filename="entry",
+            )
+          }
           match text(step, "mode", "json") {
             "text" => Json::string(evaluator.evaluate_text(program))
             "stream" =>

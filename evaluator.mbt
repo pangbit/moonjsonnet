@@ -11,6 +11,9 @@ pub struct Evaluator {
   priv tla_codes : Map[String, String]
   priv tla_nodes : Map[String, Program]
   priv natives : Map[String, NativeFunction]
+  priv sources : Map[(String, String), Source]
+  priv binary_sources : Map[(String, String), BinarySource]
+  priv parsed_imports : Map[String, Expr]
   priv mut trace : (Location, String) -> Unit
   priv mut resolver : ((String, String) -> Source raise)?
   priv mut binary_resolver : ((String, String) -> BinarySource raise)?
@@ -42,6 +45,9 @@ pub fn Evaluator::new() -> Evaluator {
     tla_codes: Map([]),
     tla_nodes: Map([]),
     natives: Map([]),
+    sources: Map([]),
+    binary_sources: Map([]),
+    parsed_imports: Map([]),
     trace: default_trace,
     resolver: None,
     binary_resolver: None,
@@ -77,7 +83,8 @@ fn Evaluator::invalidate_values(self : Evaluator) -> Unit {
 
 ///|
 /// Replace import callbacks and invalidate all imported sources, ASTs and values.
-/// Omitting both callbacks disables imports.
+/// A binary callback is authoritative for all forms; otherwise the text callback
+/// supplies UTF-8 bytes. Omitting both callbacks disables imports.
 pub fn Evaluator::set_importer(
   self : Evaluator,
   resolver? : (String, String) -> Source raise,
@@ -87,6 +94,9 @@ pub fn Evaluator::set_importer(
   self.resolver = resolver
   self.binary_resolver = binary_resolver
   self.state = None
+  self.sources.clear()
+  self.binary_sources.clear()
+  self.parsed_imports.clear()
 }
 
 ///|
@@ -140,6 +150,7 @@ fn[T] Evaluator::run(
   defer {
     self.busy = false
   }
+  let reader = self.reader()
   evaluate_with_output(
     program,
     output,
@@ -151,8 +162,8 @@ fn[T] Evaluator::run(
     tla_programs=self.tla_nodes,
     native_functions=self.natives,
     trace=self.trace,
-    resolver?=self.resolver,
-    binary_resolver?=self.binary_resolver,
+    resolver=(from, path) => reader.load_text(from, path),
+    binary_resolver=(from, path) => reader.load_data(from, path),
     limits=self.limits,
     session=self,
   )

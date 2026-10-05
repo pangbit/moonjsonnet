@@ -37,6 +37,23 @@ pub fn find_dependencies(
   resolver~ : (String, String) -> BinarySource raise,
   limits? : Limits = Limits::default(),
 ) -> Array[String] raise JsonnetError {
+  find_dependencies_with_cache(
+    imported_from,
+    imported_paths,
+    resolver~,
+    limits~,
+    parsed=Map([]),
+  )
+}
+
+///|
+fn find_dependencies_with_cache(
+  imported_from : String,
+  imported_paths : Array[String],
+  resolver~ : (String, String) -> BinarySource raise,
+  limits~ : Limits,
+  parsed~ : Map[String, Expr],
+) -> Array[String] raise JsonnetError {
   let loc : Location = { file: imported_from, line: 1, column: 1, }
   try {
     check_limits(limits, loc)
@@ -44,7 +61,7 @@ pub fn find_dependencies(
       resolver,
       limits,
       requests: Map([]),
-      parsed: Map([]),
+      parsed,
       found: Map([]),
       bytes: 0,
       steps: 0,
@@ -149,6 +166,7 @@ fn DependencyScan::code(
   source : BinarySource,
 ) -> Expr raise {
   if self.parsed.get(source.id) is Some(expr) {
+    check_ast_depth(expr, self.limits.depth)
     return expr
   }
   let text = @utf8.decode(source.bytes) catch {

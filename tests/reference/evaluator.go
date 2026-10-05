@@ -5,12 +5,15 @@ import (
 	"encoding/json"
 	"fmt"
 	jsonnet "github.com/google/go-jsonnet"
+	"github.com/google/go-jsonnet/ast"
 	"os"
 	"strings"
 )
 
 type step struct {
 	Op, Name, Source, Mode, Label string
+	From, Path                    string
+	Paths                         []string
 	Value                         json.RawMessage
 	Increment                     bool
 }
@@ -67,6 +70,7 @@ func run(f fixture) (interface{}, error) {
 	traces := []string{}
 	results := []observation{}
 	diagnostics := []string{}
+	imported := map[string]ast.Node{}
 	replaceImporter := func() { vm.Importer(importer{&f.Files, map[string]jsonnet.Contents{}, &reads}) }
 	replaceImporter()
 	vm.SetTraceOut(traceSink{"0", &traces})
@@ -127,9 +131,61 @@ func run(f fixture) (interface{}, error) {
 			if e := json.Unmarshal(s.Value, &vm.StringOutput); e != nil {
 				return nil, e
 			}
-		case "evaluate":
+		case "resolve", "data", "program", "dependencies":
+			from, path := s.From, s.Path
+			if from == "" {
+				from = "entry"
+			}
+			if path == "" {
+				path = "main"
+			}
 			var value interface{}
-			n, err := jsonnet.SnippetToAST("entry", s.Source)
+			var err error
+			switch s.Op {
+			case "resolve":
+				value, err = vm.ResolveImport(from, path)
+			case "data":
+				var data, id string
+				data, id, err = vm.ImportData(from, path)
+				if err == nil {
+					bytes := make([]int, len(data))
+					for i, b := range []byte(data) {
+						bytes[i] = int(b)
+					}
+					value = map[string]interface{}{"id": id, "bytes": bytes}
+				}
+			case "program":
+				var n ast.Node
+				var id string
+				n, id, err = vm.ImportAST(from, path)
+				if err == nil {
+					imported[name] = n
+					value = map[string]interface{}{"id": id, "nil": n == nil}
+				}
+			case "dependencies":
+				value, err = vm.FindDependencies(from, s.Paths)
+			}
+			diagnostic := ""
+			if err != nil {
+				// Query APIs return importer errors directly. ErrorFormatter is for
+				// interpreter diagnostics and labels ordinary Go errors INTERNAL ERROR.
+				diagnostic = err.Error()
+				value = nil
+			}
+			diagnostics = append(diagnostics, diagnostic)
+			results = append(results, observation{value, err != nil, calls, reads, append([]string{}, traces...)})
+		case "evaluate", "evaluate_imported":
+			var value interface{}
+			var n ast.Node
+			var err error
+			if s.Op == "evaluate_imported" {
+				n = imported[name]
+				if n == nil {
+					err = fmt.Errorf("nil imported AST")
+				}
+			} else {
+				n, err = jsonnet.SnippetToAST("entry", s.Source)
+			}
 			if err == nil {
 				switch s.Mode {
 				case "stream":

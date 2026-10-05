@@ -37,10 +37,20 @@ async fn main {
   let rows : Array[Json]=[]
   let mut passed=0
   let mut evaluations=0
+  let mut queries=0
+  let mut observations=0
   let mut expected_errors=0
   for case in cases {
     guard field(case,"expected",Json::null()) is Array(expected) else {fail("expected sequence outcomes")}
-    evaluations+=expected.length()
+    observations+=expected.length()
+    guard field(case,"steps",Json::null()) is Array(steps) else {fail("expected steps")}
+    for step in steps {
+      match field(step,"op",Json::null()) {
+        String("evaluate" | "evaluate_imported")=>evaluations+=1
+        String("resolve" | "data" | "program" | "dependencies")=>queries+=1
+        _=>()
+      }
+    }
     expected_errors+=expected.filter(value=>field(value,"error",Json::boolean(false))==Json::boolean(true)).length()
     let programs=match reference {Some(reference)=>[cli,reference];None=>[cli]}
     let runs : Array[Json]=[]
@@ -74,7 +84,11 @@ async fn main {
   let dirty=@shell.Cmd("git",["status","--porcelain"]).output()
   let report : Json={"source_commit":if commit.exit_code()==0 {Json::string(commit.stdout().trim().to_owned())} else {Json::null()},"source_dirty":if dirty.exit_code()==0 {Json::boolean(!dirty.stdout().is_empty())} else {Json::null()},"reference_commit":if reference is Some(_) {Json::string("67968688d9952f50662e979fab1bef889d0d3e57")} else {Json::null()},"reference_sha256":match reference {Some(binary)=>Json::string(command("shasum",["-a","256",binary]));None=>Json::null()},"reference_build":match reference {Some(binary)=>Json::string(command("go",["version","-m",binary]));None=>Json::null()},"local_sha256":command("shasum",["-a","256",cli]),"adapter_sha256":command("shasum",["-a","256","tests/reference/evaluator.go"]),"total":cases.length(),"evaluations":evaluations,"expected_errors":expected_errors,"passed":passed,"failed":cases.length()-passed,"cases":rows}
   let report_path=if reference is Some(_) {"_build/evaluators/report.json"} else {"_build/evaluators/local-report.json"}
+  if report is Object(fields) {
+    fields["observations"]=Json::number(observations.to_double())
+    fields["queries"]=Json::number(queries.to_double())
+  }
   @fs.write_file(report_path,report.stringify(indent=2)+"\n")
-  println("Evaluator sequences: \{passed}/\{cases.length()}; \{evaluations} evaluations, \{expected_errors} expected errors; evidence: \{work}")
+  println("Evaluator sequences: \{passed}/\{cases.length()}; \{observations} observations (\{evaluations} evaluations, \{queries} queries), \{expected_errors} expected errors; evidence: \{work}")
   if passed!=cases.length() {fail("evaluator differences retained in "+report_path)}
 }

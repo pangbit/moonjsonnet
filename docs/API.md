@@ -254,10 +254,12 @@ without clearing caches. Each execution has fresh step/frame/output/import
 counters, and source bytes for directly requested cached imports are checked
 again. Cached successful values need not reexecute their original computation.
 
-Imports are disabled initially. Configure both text and binary resolvers to use
-all three import forms, or supply a `FileHost`'s methods. Source requests are
-cached by `(from,path)` and source kind; resolved identities must refer to stable
-contents. Replacing the importer clears these caches, but cannot clear caches
+Imports are disabled initially. A binary resolver supplies bytes for all three
+import forms; when it is absent, a text resolver supplies UTF-8 bytes. If both
+are supplied, the binary resolver is authoritative. Source bytes are cached by
+`(from,path)` and shared by queries and execution; text is decoded from those
+same bytes. Code and string imports retain strict UTF-8 validation. Resolved
+identities must refer to stable contents. Replacing the importer clears these caches, but cannot clear caches
 owned by a reused external `FileHost` or custom callback. Use a new host when its
 files should be reread. These policies do not imply Go's unrestricted filesystem
 or callback invocation-count parity.
@@ -274,9 +276,34 @@ new import identities or newly demanded retained values. This is not an RSS or
 leak guarantee.
 
 Evaluation and configuration changes reject reentry on the same Evaluator from
-a callback. Separate instances can be used independently. This API does not
-yet provide Go's ResolveImport/ImportData/ImportAST queries or dependency scans
-sharing its state, public mutable ASTs, or an EvalHook API.
+a callback. Separate instances can be used independently. Public mutable ASTs
+and an EvalHook API remain pending.
+
+The following queries share source/AST caches and never execute Jsonnet, apply
+parameters or invoke native/trace callbacks:
+
+- `resolve_import(imported_from, imported_path) -> String` returns the resolved
+  identity and caches the underlying bytes immediately, without parsing them.
+- `import_data(imported_from, imported_path) -> BinarySource` returns the same
+  identity and raw bytes. It preserves invalid UTF-8 and NUL, corresponding to
+  the byte contents of Go's string-returning ImportData.
+- `import_program(imported_from, imported_path) -> (Program, String)` parses and
+  validates source, returning the program and resolved identity. Evaluation of
+  the returned Program is a separate operation, so it executes its entry anew;
+  importing that identity within an expression still uses the import value cache.
+- `find_dependencies(imported_from, imported_paths) -> Array[String]` uses the
+  static scanner below with the Evaluator's shared source/AST cache. Traversal
+  state and scan budgets are fresh each time, and cached runtime values are not
+  forced or cleared by the scan.
+
+Queries apply current source/import-byte limits; parsed programs and scans also
+recheck cached AST depth. Scans account cumulative bytes and request counts as
+usual. Querying does not initialize the runtime or consume evaluation steps.
+All four methods raise `JsonnetError` and use the same non-reentry guard as
+execution. Failed parses retain source bytes but do not install an invalid AST;
+repeated requests continue to report the parse/static error. Go v0.21.0 can
+instead return a successful nil AST on a repeated ImportAST after such a failure;
+the differential input remains a failure, not an accepted parity exception.
 
 ## Static dependencies
 
@@ -300,8 +327,9 @@ binary resolver, library search, canonical root and byte cache. API entries may
 use library search, matching Go's VM method; the separate dependency CLI checks
 that entry paths exist directly. Every scan has fresh request/AST caches, while
 an existing `FileHost` retains its own immutable byte cache across scans.
-This scan is independent of evaluation; integrating it with Evaluator's shared
-AST cache and adding import query methods remain pending.
+This standalone scan is independent of evaluation. Use `Evaluator::find_dependencies`
+to share source/AST caches with that interpreter; the two methods use the same
+traversal rules and resource accounting.
 
 Scanning applies `source_bytes`, `import_bytes` and `imports` to all distinct
 requests, including entries and aliases; repeated identical `(from,path)` requests
