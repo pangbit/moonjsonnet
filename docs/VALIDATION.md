@@ -110,6 +110,23 @@ multi directories on exhaustion, independent step/depth limits and trace croppin
 It is included in the main integration and isolated ASan runs. Passing these
 cases does not prove every standard-library implementation uses identical frames.
 
+Static dependency scanning has a separate corpus and reference executable:
+
+```sh
+GOTOOLCHAIN=go1.24.0 go -C /tmp/go-jsonnet-v0.21.0 build -o /tmp/jsonnet-deps-v0.21.0 ./cmd/jsonnet-deps
+moon build --target native --release cmd/deps
+moon run tools/dependency-integration.mbtx _build/native/release/build/cmd/deps/deps.exe /tmp/jsonnet-deps-v0.21.0
+```
+
+The runner checks version/build metadata and freezes expected results in
+`tests/go-dependencies.json`. Each fixture compares complete stdout and checks
+an independent `-o` output file on both programs, including preservation after
+scan failure and truncation on successful empty results. It retains full inputs,
+outputs, file contents, source identity and binary hashes in
+`_build/dependencies/report.json`. These tool cases are separate from interpreter
+expression parity. Omitting the reference argument runs the local integration
+checks, also invoked by the isolated ASan script after building `cmd/deps`.
+
 The runner checks Go binary build metadata for commit
 `67968688d9952f50662e979fab1bef889d0d3e57` and an unmodified checkout. Build the
 binary before writing other files into that checkout. Go results are written to
@@ -135,8 +152,9 @@ Trace fixtures additionally compare exact stderr on success and the exact trace
 prefix before an error diagnostic. Both programs receive the same absolute
 input path for these cases; relative/alias diagnostic-path parity is not implied.
 
-See the [runtime-frame report](../reports/GO-JSONNET-STACK.md) for current
+See the [dependency-scan report](../reports/GO-JSONNET-DEPENDENCIES.md) for current
 commit-bound results and the retained differences. The earlier
+[runtime-frame report](../reports/GO-JSONNET-STACK.md),
 [diagnostic report](../reports/GO-JSONNET-DIAGNOSTICS.md),
 [import-search report](../reports/GO-JSONNET-IMPORT-SEARCH.md),
 [multi-output report](../reports/GO-JSONNET-MULTI-OUTPUT.md),
