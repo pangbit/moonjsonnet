@@ -65,16 +65,13 @@ fn check_ast_shape(e : Ast) -> Unit raise JsonnetError {
       raise problem(Static, e.loc, "AST literal must be scalar")
     Var(n) => if n != "self" && n != "super" && n != "$" { name(n) }
     Local(bs, _) => bindings(bs)
-    Func(ps, _) => {
-      let seen : Map[String, Bool] = Map([])
-      for (n, _) in ps {
-        name(n)
-        if seen.contains(n) {
-          raise problem(Static, e.loc, "duplicate parameter '\{n}'")
+    Func(ps, _) =>
+      for p in ps {
+        name(p.name)
+        if p.range is Some(r) {
+          check_ast_range(r.begin, r.end)
         }
-        seen[n] = true
       }
-    }
     Call(_, args, _) => {
       let mut named = false
       for (n, _) in args {

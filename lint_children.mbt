@@ -14,7 +14,7 @@ fn lint_children(e : Expr, direct? : Bool = false) -> Array[Expr] {
       }
     Func(ps, body) =>
       if !direct {
-        for (_, x) in ps {
+        for { default_value: x, .. } in ps {
           optional(x)
         }
         out.push(body)

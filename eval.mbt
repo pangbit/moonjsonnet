@@ -66,7 +66,7 @@ fn Vm::eval_inner(
         if strict && function is Closure(params, body, outer) {
           let scope = try {
             let scope = self.call_env(params, thunks, outer, loc)
-            for (n, _) in params {
+            for { name: n, .. } in params {
               ignore(self.force(scope.names[n], loc))
             }
             scope
@@ -243,7 +243,7 @@ fn Vm::call(
     Closure(params, body, outer) => {
       let env = self.call_env(params, args, outer, loc)
       if strict {
-        for (n, _) in params {
+        for { name: n, .. } in params {
           ignore(self.force(env.names[n], loc))
         }
       }
@@ -256,7 +256,7 @@ fn Vm::call(
 ///|
 fn Vm::call_env(
   self : Vm,
-  params : Array[(String, Expr?)],
+  params : Array[ExprParameter],
   args : Array[(String?, Int)],
   outer : Env,
   loc : Location,
@@ -266,7 +266,7 @@ fn Vm::call_env(
   for i, (name, t) in args {
     let n = match name {
       Some(n) => {
-        if !params.any(p => p.0 == n) {
+        if !params.any(p => p.name == n) {
           raise problem(Runtime, loc, "unknown argument '\{n}'")
         }
         n
@@ -275,21 +275,25 @@ fn Vm::call_env(
         if i >= params.length() {
           raise problem(Runtime, loc, "too many arguments")
         }
-        params[i].0
+        params[i].name
       }
     }
-    if assigned.contains(n) {
+    if name is Some(_) && assigned.contains(n) {
       raise problem(Runtime, loc, "duplicate argument '\{n}'")
     }
     assigned[n] = true
     env.names[n] = t
   }
-  for (n, d) in params {
-    if !assigned.contains(n) {
-      match d {
-        Some(e) => env.names[n] = self.store(Pending(e, env))
-        None => raise problem(Runtime, loc, "missing argument '\{n}'")
-      }
+  // Check every required parameter before inserting defaults. Repeated names
+  // share one slot: last positional argument, or first available default.
+  for p in params {
+    if p.default_value is None && !assigned.contains(p.name) {
+      raise problem(Runtime, loc, "missing argument '\{p.name}'")
+    }
+  }
+  for { name: n, default_value: d, .. } in params {
+    if !env.names.contains(n) && d is Some(e) {
+      env.names[n] = self.store(Pending(e, env))
     }
   }
   env

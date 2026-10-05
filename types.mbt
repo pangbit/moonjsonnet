@@ -180,13 +180,20 @@ priv struct ExprBinding {
 }
 
 ///|
+priv struct ExprParameter {
+  name : String
+  default_value : Expr?
+  range : SourceRange?
+}
+
+///|
 priv enum ExprKind {
   NumberLiteral(String)
   Literal(Json)
   Var(String)
   Local(Array[ExprBinding], Expr)
   If(Expr, Expr, Expr)
-  Func(Array[(String, Expr?)], Expr)
+  Func(Array[ExprParameter], Expr)
   Call(Expr, Array[(String?, Expr)], Bool)
   Arr(Array[Expr])
   Obj(Array[Field], Array[ExprBinding], Array[(Expr, Expr?)])

@@ -1,4 +1,37 @@
 ///|
+fn parameter_ranges(root : @moonjsonnet.Ast, input : Json) -> Json raise {
+  guard input is Object(fields) && fields.get("paths") is Some(Array(paths)) else {
+    fail("parameter paths")
+  }
+  Json::array(
+    paths.map(path => {
+      guard path is String(path) && range_node(root, path).kind is Func(ps, _) else {
+        fail("expected function")
+      }
+      Json::array(
+        ps.map(p => {
+          Json::array([
+            Json::string(p.name),
+            Json::boolean(p.default_value is Some(_)),
+            match p.range {
+              None => Json::null()
+              Some(r) =>
+                Json::array([
+                  Json::number(r.begin.line.to_double()),
+                  Json::number(r.begin.column.to_double()),
+                  Json::number(r.end.line.to_double()),
+                  Json::number(r.end.column.to_double()),
+                  Json::string(r.format()),
+                ])
+            },
+          ])
+        }),
+      )
+    }),
+  )
+}
+
+///|
 fn binding_ranges(root : @moonjsonnet.Ast, input : Json) -> Json raise {
   guard input is Object(fields) && fields.get("paths") is Some(Array(paths)) else {
     fail("binding paths")
@@ -74,7 +107,7 @@ fn range_node(root : @moonjsonnet.Ast, path : String) -> @moonjsonnet.Ast raise 
       (_, Arr(xs)) if key.has_prefix("item:") => xs[number("item:")]
       (_, Local(bs, _)) if key.has_prefix("bind:") => bs[number("bind:")].value
       (_, Func(ps, _)) if key.has_prefix("default:") =>
-        ps[number("default:")].1.unwrap()
+        ps[number("default:")].default_value.unwrap()
       (_, Call(_, args, _)) if key.has_prefix("arg:") => args[number("arg:")].1
       (_, Obj(fs, _, _)) if key.has_prefix("field:") =>
         fs[number("field:")].value

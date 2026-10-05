@@ -29,7 +29,7 @@ fn lint_comp(body : Expr, clauses : Array[Clause], loc : Location) -> Expr {
           }
         }
         let function : Expr = {
-          kind: Func([(name, None)], inside),
+          kind: Func([{ name, default_value: None, range: None, }], inside),
           loc,
           end: None,
         }

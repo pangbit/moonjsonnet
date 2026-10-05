@@ -57,7 +57,7 @@ pub(all) enum AstKind {
   Var(String)
   Local(Array[AstBinding], Ast)
   If(Ast, Ast, Ast)
-  Func(Array[(String, Ast?)], Ast)
+  Func(Array[AstParameter], Ast)
   Call(Ast, Array[(String?, Ast)], Bool)
   Arr(Array[Ast])
   Obj(Array[AstField], Array[AstBinding], Array[(Ast, Ast?)])
@@ -71,6 +71,12 @@ pub(all) enum AstKind {
   Fail(Ast)
   ImportFile(String, Bool)
   ImportBinary(String)
+}
+
+pub(all) struct AstParameter {
+  name : String
+  default_value : Ast?
+  range : SourceRange?
 }
 
 pub(all) struct BinarySource {

@@ -30,7 +30,7 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
         push(body)
       }
       Func(ps, body) => {
-        for (_, v) in ps {
+        for { default_value: v, .. } in ps {
           if v is Some(x) {
             push(x)
           }

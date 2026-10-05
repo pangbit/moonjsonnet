@@ -20,7 +20,7 @@ fn Vm::call_native(
   loc : Location,
 ) -> Value raise {
   let env = self.call_env(
-    function.params.map(n => (n, None)),
+    function.params.map(n => { name: n, default_value: None, range: None, }),
     args,
     { parent: None, names: Map([]), import_from: "", },
     loc,

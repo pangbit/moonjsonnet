@@ -2146,5 +2146,568 @@
         ]
       ]
     ]
+  },
+  {
+    "name": "parameter-range-1",
+    "source": "function() 42",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      []
+    ]
+  },
+  {
+    "name": "parameter-range-2",
+    "source": "function(x) x",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          false,
+          [
+            1,
+            10,
+            1,
+            11,
+            "entry:1:10-11"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-3",
+    "source": "function(x,y=42) x+y",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          false,
+          [
+            1,
+            10,
+            1,
+            11,
+            "entry:1:10-11"
+          ]
+        ],
+        [
+          "y",
+          true,
+          [
+            1,
+            12,
+            1,
+            16,
+            "entry:1:12-16"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-4",
+    "source": "function(x=\n42) x",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            10,
+            2,
+            3,
+            "entry:(1:10)-(2:3)"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-5",
+    "source": "/*😀*/ function(x='中') x",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            19,
+            1,
+            26,
+            "entry:1:19-26"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-6",
+    "source": "function(x=(42)) x",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            10,
+            1,
+            16,
+            "entry:1:10-16"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-7",
+    "source": "function(x=(42 /*end*/)) x",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            10,
+            1,
+            24,
+            "entry:1:10-24"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-8",
+    "source": "function(x=42 /*end*/,y=1,) x",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            10,
+            1,
+            14,
+            "entry:1:10-14"
+          ]
+        ],
+        [
+          "y",
+          true,
+          [
+            1,
+            23,
+            1,
+            26,
+            "entry:1:23-26"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-9",
+    "source": "function(x=(function()42)() tailstrict) x",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            10,
+            1,
+            28,
+            "entry:1:10-28"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-10",
+    "source": "local f(x=1,y)=x;f",
+    "op": "parameters",
+    "paths": [
+      "bind:0"
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            9,
+            1,
+            12,
+            "entry:1:9-12"
+          ]
+        ],
+        [
+          "y",
+          false,
+          [
+            1,
+            13,
+            1,
+            14,
+            "entry:1:13-14"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-11",
+    "source": "{f(x=1,y):x}",
+    "op": "parameters",
+    "paths": [
+      "field:0"
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            4,
+            1,
+            7,
+            "entry:1:4-7"
+          ]
+        ],
+        [
+          "y",
+          false,
+          [
+            1,
+            8,
+            1,
+            9,
+            "entry:1:8-9"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-12",
+    "source": "function(x=function(y=42) y) x",
+    "op": "parameters",
+    "paths": [
+      "default:0"
+    ],
+    "expected": [
+      [
+        [
+          "y",
+          true,
+          [
+            1,
+            21,
+            1,
+            25,
+            "entry:1:21-25"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-13",
+    "source": "function(x,x=42) x",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          false,
+          [
+            1,
+            10,
+            1,
+            11,
+            "entry:1:10-11"
+          ]
+        ],
+        [
+          "x",
+          true,
+          [
+            1,
+            12,
+            1,
+            16,
+            "entry:1:12-16"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-14",
+    "source": "function(x=1e309) 42",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            10,
+            1,
+            17,
+            "entry:1:10-17"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-15",
+    "source": "function(x=if true then 1 else 2) x",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            10,
+            1,
+            33,
+            "entry:1:10-33"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-range-16",
+    "source": "function(x = {a:42},\n y=[1,2]) x",
+    "op": "parameters",
+    "paths": [
+      ""
+    ],
+    "expected": [
+      [
+        [
+          "x",
+          true,
+          [
+            1,
+            10,
+            1,
+            20,
+            "entry:1:10-20"
+          ]
+        ],
+        [
+          "y",
+          true,
+          [
+            2,
+            2,
+            2,
+            9,
+            "entry:2:2-9"
+          ]
+        ]
+      ]
+    ]
+  },
+  {
+    "name": "parameter-value-1",
+    "source": "std.length(function(x,x) x)",
+    "op": "clone",
+    "expected": [
+      2,
+      2
+    ]
+  },
+  {
+    "name": "parameter-value-2",
+    "source": "(function(x,x) x)(1)",
+    "op": "clone",
+    "expected": [
+      1,
+      1
+    ]
+  },
+  {
+    "name": "parameter-value-3",
+    "source": "(function(x,x) x)(1,2)",
+    "op": "clone",
+    "expected": [
+      2,
+      2
+    ]
+  },
+  {
+    "name": "parameter-value-4",
+    "source": "(function(x,x) x)(x=42)",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "parameter-value-5",
+    "source": "(function(x=1,x=2) x)()",
+    "op": "clone",
+    "expected": [
+      1,
+      1
+    ]
+  },
+  {
+    "name": "parameter-value-6",
+    "source": "(function(x=1,x=2) x)(42)",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "parameter-value-9",
+    "source": "(function(x=1,x) x)(42)",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "parameter-value-10",
+    "source": "(function(x,x=2) x)(42)",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "parameter-value-14",
+    "source": "local f(x,x)=x;f(1,2)",
+    "op": "clone",
+    "expected": [
+      2,
+      2
+    ]
+  },
+  {
+    "name": "parameter-value-15",
+    "source": "{f(x,x):x}.f(1,2)",
+    "op": "clone",
+    "expected": [
+      2,
+      2
+    ]
+  },
+  {
+    "name": "parameter-value-16",
+    "source": "(function(x,x,y) [x,y])(1,2,3)",
+    "op": "clone",
+    "expected": [
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        3
+      ]
+    ]
+  },
+  {
+    "name": "parameter-value-17",
+    "source": "(function(x=42,x=error 'later') x)()",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "parameter-value-18",
+    "source": "(function(x,x) x)(error 'earlier',42) tailstrict",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "parameter-value-19",
+    "source": "std.length(function(x=1,x) x)",
+    "op": "clone",
+    "expected": [
+      1,
+      1
+    ]
+  },
+  {
+    "name": "parameter-value-20",
+    "source": "(function(x=42,x=x) x)()",
+    "op": "clone",
+    "expected": [
+      42,
+      42
+    ]
   }
 ]

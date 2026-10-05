@@ -270,6 +270,17 @@ manual/synthetic bindings may use `range: None`. This pre-1.0 change requires
 updating tuple construction and access to named record fields. Invalid binding
 ranges are rejected by the same shape checks as node ranges.
 
+`Func` holds `Array[AstParameter]` rather than name/default tuples. Each parameter
+has `name`, `default_value: Ast?` and `range: SourceRange?`; a parsed range covers
+the name through its default expression, or only the name when required. Clone
+and Program conversion preserve it; synthetic parameters can use None. Consumers
+must migrate tuple access to named fields. Repeated formal names are accepted as
+in Go: positional arguments sharing a name use the last argument, absent optional
+names use the first default, and every required occurrence still needs an explicit
+argument. Named arguments may not rebind an already supplied name. Unselected
+arguments/defaults remain lazy, including overwritten positional arguments under
+tailstrict.
+
 Conversion checks `depth` and uses `steps` as a node-copy budget; cyclic child
 arrays and excessive width/depth return Limit. Manually constructed programs
 have no source text and a saved source-byte count of zero; this does not exempt
@@ -293,7 +304,7 @@ The pre-1.0 `Ast` record now requires `end` in manual record literals: use
 Parentheses are omitted from the inner node's range; calls exclude `tailstrict`.
 Implicit null, identifier/dot field keys, method wrappers and assertion wrappers
 have no range, matching Go's semantic AST. Coordinates do not retain source
-text, comments, parameter spans, or complete diagnostic end ranges.
+text, comments, or complete diagnostic end ranges.
 
 ## Reusable evaluator
 

@@ -88,6 +88,26 @@ func run(f fixture) (interface{}, error) {
 		return nil, err
 	}
 	edited := ast.Clone(original)
+	if f.Op == "parameters" {
+		result := []interface{}{}
+		for _, path := range f.Paths {
+			function, ok := rangeNode(edited, path).(*ast.Function)
+			if !ok {
+				return nil, fmt.Errorf("expected function")
+			}
+			rows := []interface{}{}
+			for _, p := range function.Parameters {
+				r := p.LocRange
+				var loc interface{}
+				if r.IsSet() {
+					loc = []interface{}{r.Begin.Line, r.Begin.Column, r.End.Line, r.End.Column, r.String()}
+				}
+				rows = append(rows, []interface{}{string(p.Name), p.DefaultArg != nil, loc})
+			}
+			result = append(result, rows)
+		}
+		return result, nil
+	}
 	if f.Op == "bindings" {
 		result := []interface{}{}
 		for _, path := range f.Paths {

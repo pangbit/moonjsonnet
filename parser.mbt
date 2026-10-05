@@ -114,18 +114,25 @@ fn precedence(op : String) -> Int {
 fn Parser::params(
   self : Parser,
   is_method? : Bool = false,
-) -> Array[(String, Expr?)] raise Error {
+) -> Array[ExprParameter] raise Error {
   self.expect("(")
-  let params = []
-  let names : Map[String, Bool] = Map([])
+  let params : Array[ExprParameter] = []
   while !self.eat(")") {
+    let token = self.peek()
     let n = self.name(parameter=true)
-    if names.contains(n) {
-      raise problem(Static, self.peek().loc, "duplicate parameter '\{n}'")
-    }
-    names[n] = true
     let default = if self.eat("=") { Some(self.expr(0)) } else { None }
-    params.push((n, default))
+    params.push({
+      name: n,
+      default_value: default,
+      range: Some({
+        begin: token.loc,
+        end: if default is Some(_) {
+          self.expression_end
+        } else {
+          token.end
+        },
+      }),
+    })
     if !self.eat(",") {
       self.end_list(
         ")",

@@ -80,7 +80,7 @@ test "AST construction validates names scopes operators and shapes" {
         ],
         one,
       ),
-      Func([("x", None), ("x", None)], one),
+      Func([{ name: "bad-name", default_value: None, range: None, }], one),
       Call(one, [(Some("x"), one), (None, one)], false),
       Call(one, [(Some("x"), one), (Some("x"), one)], false),
       Unary("bad", one),

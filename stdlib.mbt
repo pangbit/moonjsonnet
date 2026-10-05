@@ -450,7 +450,7 @@ fn Vm::builtin(
           ArrayValue(a) => a.length().to_double()
           ObjectValue(id, top) => self.keys(id, top, false).length().to_double()
           Closure(ps, _, _) =>
-            ps.iter().filter(p => p.1 is None).count().to_double()
+            ps.iter().filter(p => p.default_value is None).count().to_double()
           Native(f) => f.params.length().to_double()
           Builtin(n) =>
             if n == "sort" ||

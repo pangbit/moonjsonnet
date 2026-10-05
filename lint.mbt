@@ -89,10 +89,10 @@ fn LintScan::variables(
     Local(bs, body) => self.variables(body, self.locals(bs, scope))
     Func(ps, body) => {
       let inner = scope.copy()
-      for (n, _) in ps {
+      for { name: n, .. } in ps {
         self.bind(inner, n, e.loc, false)
       }
-      for (_, x) in ps {
+      for { default_value: x, .. } in ps {
         if x is Some(x) {
           self.variables(x, inner)
         }

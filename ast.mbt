@@ -18,7 +18,7 @@ pub(all) enum AstKind {
   Var(String)
   Local(Array[AstBinding], Ast)
   If(Ast, Ast, Ast)
-  Func(Array[(String, Ast?)], Ast)
+  Func(Array[AstParameter], Ast)
   Call(Ast, Array[(String?, Ast)], Bool)
   Arr(Array[Ast])
   Obj(Array[AstField], Array[AstBinding], Array[(Ast, Ast?)])
@@ -40,6 +40,14 @@ pub(all) struct AstBinding {
   name : String
   value : Ast
   /// Declaration name through initializer; None for synthetic or lowered local functions.
+  range : SourceRange?
+}
+
+///|
+/// A formal parameter; repeated names are allowed, as in go-jsonnet.
+pub(all) struct AstParameter {
+  name : String
+  default_value : Ast?
   range : SourceRange?
 }
 

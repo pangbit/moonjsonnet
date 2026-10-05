@@ -66,6 +66,13 @@ async fn main {
     #|  assert_eq(binding.name,"x")
     #|  bs[0]={..binding,range:None}
     #|  assert_eq(@moonjsonnet.Program::from_ast(bound).evaluate(),42)
+    #|  let function=@moonjsonnet.Program::parse("function(x=42) x",filename="consumer").ast().clone()
+    #|  guard function.kind is Func(ps,_) else {fail("parameters")}
+    #|  let parameter : @moonjsonnet.AstParameter = ps[0]
+    #|  assert_eq(parameter.range.unwrap().format(),"consumer:1:10-14")
+    #|  assert_true(parameter.default_value.unwrap().kind is NumberLiteral("42"))
+    #|  assert_eq(@moonjsonnet.Program::from_ast(function).evaluate(),42)
+    #|  assert_eq(@moonjsonnet.evaluate("(function(x,x) x)(1,42)"),42)
     #|  assert_eq(ranged.source_range().unwrap().format(),"consumer:1:1-6")
     #|  let manual : @moonjsonnet.Ast = {kind:Literal(42),loc:ranged.loc,end:None}
     #|  assert_eq(@moonjsonnet.Program::from_ast(manual).evaluate(),42)

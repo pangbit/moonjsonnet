@@ -53,10 +53,10 @@ fn validate(
     }
     Func(ps, body) => {
       let scope = names.copy()
-      for (n, _) in ps {
+      for { name: n, .. } in ps {
         scope.push(n)
       }
-      for (_, d) in ps {
+      for { default_value: d, .. } in ps {
         if d is Some(v) {
           validate(v, scope, in_object)
         }

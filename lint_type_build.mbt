@@ -47,11 +47,11 @@ fn LintGraph::build(
     }
     Func(ps, body) => {
       let inner = scope.copy()
-      for (n, _) in ps {
+      for { name: n, .. } in ps {
         inner[n] = 1
       }
       let result = visit(body, inner)
-      for (_, value) in ps {
+      for { default_value: value, .. } in ps {
         if value is Some(x) {
           ignore(visit(x, inner))
         }
@@ -61,9 +61,9 @@ fn LintGraph::build(
         params: if ps.is_empty() {
           None
         } else {
-          Some(ps.map(p => (p.0, p.1 is Some(_))))
+          Some(ps.map(p => (p.name, p.default_value is Some(_))))
         },
-        min: ps.filter(p => p.1 is Some(_)).length(),
+        min: ps.filter(p => p.default_value is Some(_)).length(),
         max: ps.length(),
       })
     }

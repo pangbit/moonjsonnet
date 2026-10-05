@@ -5653,6 +5653,301 @@
           7
         ]
       ]
+    },
+    {
+      "name": "parameter-duplicate-1",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "std.length(function(x,x) x)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-2",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x,x) x)(1)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-3",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x,x) x)(1,2)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-4",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x,x) x)(x=42)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-5",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x=1,x=2) x)()"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-6",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x=1,x=2) x)(42)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-7",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x=1,x) x)()"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [
+        "Missing argument: x"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "parameter-duplicate-8",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x,x=2) x)()"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [
+        "Missing argument: x"
+      ],
+      "locations": [
+        [
+          1,
+          1
+        ]
+      ]
+    },
+    {
+      "name": "parameter-duplicate-9",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x=1,x) x)(42)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-10",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x,x=2) x)(42)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-11",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x,x) x)(1,x=2)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [
+        "Argument x already provided"
+      ],
+      "locations": [
+        [
+          1,
+          23
+        ]
+      ]
+    },
+    {
+      "name": "parameter-duplicate-12",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x,x) x)(1,2,3)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [
+        "Too many arguments, there can be at most 2, but 3 provided"
+      ],
+      "locations": [
+        [
+          1,
+          23
+        ]
+      ]
+    },
+    {
+      "name": "parameter-duplicate-13",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x,x) x)(y=42)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [
+        "function has no parameter y"
+      ],
+      "locations": [
+        [
+          1,
+          21
+        ]
+      ]
+    },
+    {
+      "name": "parameter-duplicate-14",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "local f(x,x)=x;f(1,2)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-15",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "{f(x,x):x}.f(1,2)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-16",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x,x,y) [x,y])(1,2,3)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-17",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x=42,x=error 'later') x)()"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-18",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x,x) x)(error 'earlier',42) tailstrict"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-19",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "std.length(function(x=1,x) x)"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
+    },
+    {
+      "name": "parameter-duplicate-20",
+      "snippets": [
+        {
+          "id": "entry",
+          "text": "(function(x=42,x=x) x)()"
+        }
+      ],
+      "files": {},
+      "group": "parameter-duplicate",
+      "expected": [],
+      "locations": []
     }
   ]
 }

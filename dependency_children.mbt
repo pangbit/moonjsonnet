@@ -31,7 +31,7 @@ fn dependency_children(expr : Expr) -> Array[Expr] {
     }
     Func(params, body) => {
       children.push(body)
-      for (_, e) in params {
+      for { default_value: e, .. } in params {
         optional(e)
       }
     }

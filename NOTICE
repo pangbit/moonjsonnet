@@ -84,12 +84,15 @@ tools/embed-unicode.mbtx verifies the exact source SHA-256 before extraction.
 
 MoonBit core is provided by the user's toolchain, not vendored here.
 
-source_range.mbt and parser.mbt source-span and local-binding range rules follow
+source_range.mbt and parser.mbt source-span, local-binding and parameter range rules follow
 go-jsonnet v0.21.0 ast/location.go, ast/ast.go, internal/parser/parser.go and
 internal/program/desugarer.go at commit
 67968688d9952f50662e979fab1bef889d0d3e57:
 https://github.com/google/go-jsonnet/tree/v0.21.0
 Copyright Google Inc.; Apache License 2.0 (see LICENSE).
+
+Repeated parameter binding and default selection in eval.mbt follow go-jsonnet
+value.go checkArguments and thunks.go closure.evalCall at that same revision.
 
 internal/yaml contains the syntax/event parser from moonbit-community/yaml.mbt,
 commit e2f1129249a7cc707aa1c9c39bd8bfe207c93821 (0.0.7 source):

@@ -30,7 +30,15 @@ fn AstReader::read(
     Var(n) => Var(n)
     Local(bs, b) => Local(bindings(bs), visit(b))
     If(a, b, c) => If(visit(a), visit(b), visit(c))
-    Func(ps, b) => Func(ps.map(p => (p.0, optional(p.1))), visit(b))
+    Func(ps, b) =>
+      Func(
+        ps.map(p => {
+          name: p.name,
+          default_value: optional(p.default_value),
+          range: p.range,
+        }),
+        visit(b),
+      )
     Call(f, args, strict) =>
       Call(visit(f), args.map(a => (a.0, visit(a.1))), strict)
     Arr(xs) => Arr(xs.map(visit))
@@ -81,7 +89,15 @@ fn export_ast(e : Expr) -> Ast {
     Var(n) => Var(n)
     Local(bs, b) => Local(bindings(bs), visit(b))
     If(a, b, c) => If(visit(a), visit(b), visit(c))
-    Func(ps, b) => Func(ps.map(p => (p.0, optional(p.1))), visit(b))
+    Func(ps, b) =>
+      Func(
+        ps.map(p => {
+          name: p.name,
+          default_value: optional(p.default_value),
+          range: p.range,
+        }),
+        visit(b),
+      )
     Call(f, args, strict) =>
       Call(visit(f), args.map(a => (a.0, visit(a.1))), strict)
     Arr(xs) => Arr(xs.map(visit))

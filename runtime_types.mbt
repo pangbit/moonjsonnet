@@ -6,7 +6,7 @@ priv enum Value {
   Str(String)
   ArrayValue(Array[Int])
   ObjectValue(Int, Int)
-  Closure(Array[(String, Expr?)], Expr, Env)
+  Closure(Array[ExprParameter], Expr, Env)
   Builtin(String)
   Native(NativeFunction)
 }
