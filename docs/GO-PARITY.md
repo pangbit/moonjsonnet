@@ -296,6 +296,14 @@ Go CLI 1132/1150、AST 145/145、lint 401/402，原失败集合保留。native �
 源码输入基础，尚无格式化输出或完整原始 AST 编辑能力，详见
 [源码保真验收](../reports/GO-JSONNET-SOURCE-FIDELITY.md)。
 
+格式化首批提供 `format_source`、`ParsedSource::format` 与选项类型，覆盖引号、
+注释风格、多行容器、尾逗号、切片、括号、字段简写和对象相加风格；不执行源码。
+冻结语料 114/122，八项导入整理、局部绑定缩进及注释差异保留，`sort_imports`
+尚未实现。有效输出均重新解析，并核验参考自身两项非幂等行为；20 个本地语义
+用例验证格式化前后求值相同。native 双模式各 229/229，独立消费者 23/23，
+ASan 通过；既有 Go CLI、AST、lint 和 C++ 差分未新增失败。
+详见 [格式化首批验收](../reports/GO-JSONNET-FORMATTER-BASELINE.md)。
+
 集合与合并使用固定 Go 参考内嵌的 Apache-2.0 Jsonnet 标准库源码，由本项目
 MoonBit 求值器执行。一次性入口与 Evaluator 采用各自的 AST/值缓存生命周期，
 各文件的 `thisFile` 独立绑定。仅启用已验证依赖的成员，原生函数覆盖对应字段；源码提取工具校验参考

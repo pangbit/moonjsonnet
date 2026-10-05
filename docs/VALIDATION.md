@@ -351,6 +351,21 @@ runtime map and 2,880 test pairs. To reproduce, download the exact source from
 The Go differential suite evaluates every generated pair on both interpreters;
 separate fixtures cover non-equivalent characters and multi-character folding.
 
+Source formatting has a separate pinned Go corpus:
+
+```sh
+moon run tools/formatter-integration.mbtx _build/native/release/build/examples/formatter-probe/formatter-probe.exe ${LOCAL_PATH_012}
+```
+
+The runner validates exact frozen output, parse-error fragments, reparse success
+and Go's idempotence behavior. It records both outputs and all failures in
+`_build/formatter/report.json`; a nonzero exit is expected while differences remain.
+Implementation `a29b225` passes 114/122 fixtures, with eight retained differences;
+native debug/release tests pass 229/229, and the archive consumer passes 23/23.
+The ASan run includes the new formatter black-box tests, not the complete Go
+formatter differential corpus. See the [formatter baseline report](../reports/GO-JSONNET-FORMATTER-BASELINE.md)
+for exact hashes, accepted checks and remaining work.
+
 See the repository's `reports/` directory for commit-bound acceptance evidence.
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
 
@@ -359,3 +374,5 @@ behavioral corpus. `tools/parity.mbtx` compares all 163 reflected Go standard-li
 members against a frozen reference snapshot and the local CLI, writing
 `_build/parity/report.json`. It records registration gaps, not behavioral passes;
 zero unsupported cases in the smaller differential corpus does not imply full parity.
+
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
