@@ -54,6 +54,15 @@ fn Vm::retain_imports(self : Vm) -> Unit {
       thunks[id] = true
       match self.thunks[id] {
         Pending(_, env) => retain_environment(env, pending)
+        GeneratedCall(function, arguments, _) => {
+          for id in arguments {
+            pending.push((false, id))
+          }
+          match function {
+            Closure(_, _, env) => retain_environment(env, pending)
+            _ => ()
+          }
+        }
         Ready(ArrayValue(items)) =>
           for id in items {
             pending.push((false, id))

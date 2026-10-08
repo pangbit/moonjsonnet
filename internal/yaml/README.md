@@ -22,3 +22,9 @@ Percent-escaped multibyte tag characters decode UTF-8 payload bits rather than
 combining raw octets as a code point. Overlong sequences use a replacement
 character to preserve Go's unknown-tag behavior without turning malformed bytes
 into a recognized built-in tag name.
+Parser failures now have a separate `ParserError` variant so the Jsonnet wrapper
+can preserve goyaml.v2's parser/scanner line-number distinction. Unknown-anchor
+errors retain the name, YAML directives enforce version 1.1, and distinct tag
+directives remain in scope while duplicate handles are rejected. These changes
+follow sigs.k8s.io/yaml v1.4.0's goyaml.v2 decoder/parser; see root `NOTICE` and
+`licenses/GOYAML-LIBYAML-MIT.txt` for the additional provenance.

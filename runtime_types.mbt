@@ -46,6 +46,7 @@ fn Env::lookup(self : Env, name : String) -> Int? {
 ///|
 priv enum Thunk {
   Pending(Expr, Env)
+  GeneratedCall(Value, Array[Int], Location)
   Code(String, Location)
   ParsedParameter(Program, Location)
   Ready(Value)
@@ -144,6 +145,38 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
       }
       self.thunks[id] = Busy
       let v = self.eval_frame(expr, env) catch { e => self.failure(id, e) }
+      self.thunks[id] = Ready(v)
+      ignore(self.retries.remove(id))
+      v
+    }
+    GeneratedCall(function, args, origin) => {
+      if self.persistent {
+        self.retries[id] = self.thunks[id]
+      }
+      self.thunks[id] = Busy
+      let v = try {
+        self.push_frame(origin, false)
+        defer self.pop_frame()
+        if self.depth >= self.limits.depth {
+          raise self.trace_problem(
+            Limit,
+            origin,
+            "evaluation depth limit exceeded",
+          )
+        }
+        self.depth += 1
+        defer {
+          self.depth -= 1
+        }
+        self.tick(origin)
+        self.current_trace = Some({ location: Synthetic(""), name: "", })
+        self.call(function, args.map(arg => (None, arg)), origin) catch {
+          Error(d) => raise Error(self.traced(d))
+          e => raise self.trace_problem(Runtime, origin, e.to_string())
+        }
+      } catch {
+        e => self.failure(id, e)
+      }
       self.thunks[id] = Ready(v)
       ignore(self.retries.remove(id))
       v
@@ -283,7 +316,12 @@ fn finite(n : Double, loc : Location) -> Value raise {
 fn boolean(v : Value, loc : Location) -> Bool raise {
   match v {
     Bool(b) => b
-    _ => raise problem(Type, loc, "expected boolean")
+    _ =>
+      raise problem(
+        Type,
+        loc,
+        "Unexpected type " + value_type(v) + ", expected boolean",
+      )
   }
 }
 
@@ -291,7 +329,12 @@ fn boolean(v : Value, loc : Location) -> Bool raise {
 fn text_value(v : Value, loc : Location) -> String raise {
   match v {
     Str(s) => s
-    _ => raise problem(Type, loc, "expected string")
+    _ =>
+      raise problem(
+        Type,
+        loc,
+        "Unexpected type " + value_type(v) + ", expected string",
+      )
   }
 }
 
@@ -299,7 +342,12 @@ fn text_value(v : Value, loc : Location) -> String raise {
 fn number_value(v : Value, loc : Location) -> Double raise {
   match v {
     Num(n) => n
-    _ => raise problem(Type, loc, "expected number")
+    _ =>
+      raise problem(
+        Type,
+        loc,
+        "Unexpected type " + value_type(v) + ", expected number",
+      )
   }
 }
 
@@ -307,6 +355,11 @@ fn number_value(v : Value, loc : Location) -> Double raise {
 fn array_value(v : Value, loc : Location) -> Array[Int] raise {
   match v {
     ArrayValue(a) => a
-    _ => raise problem(Type, loc, "expected array")
+    _ =>
+      raise problem(
+        Type,
+        loc,
+        "Unexpected type " + value_type(v) + ", expected array",
+      )
   }
 }

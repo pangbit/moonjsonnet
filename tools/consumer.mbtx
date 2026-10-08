@@ -9,7 +9,7 @@ async fn main {
   let archive = @fs.realpath("_build/publish/pangbit-moonjsonnet-0.1.0.zip")
   let listing = @shell.Cmd("unzip", ["-Z1", archive]).output()
   listing.check()
-  for required in ["NOTICE", "licenses/GO-BSD-3-Clause.txt", "licenses/GO-MATH-NOTICES.txt", "licenses/YAML-MIT.txt", "internal/yaml/parser.mbt", "stdlib_source.mbt", "unicode_fold.mbt"] {
+  for required in ["NOTICE", "licenses/GO-BSD-3-Clause.txt", "licenses/GO-MATH-NOTICES.txt", "licenses/YAML-MIT.txt", "licenses/GOYAML-LIBYAML-MIT.txt", "internal/yaml/parser.mbt", "json_diagnostic.mbt", "stdlib_source.mbt", "unicode_fold.mbt"] {
     assert_true(listing.stdout().split("\n").any(path => path == required), msg="missing archive attribution: " + required)
   }
   for path in listing.stdout().split("\n") {

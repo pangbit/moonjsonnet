@@ -28,7 +28,17 @@ fn Vm::binary(
         }
         (Str(x), _) => self.join_string(x, self.coerce_string(b, loc), loc)
         (_, Str(y)) => self.join_string(self.coerce_string(a, loc), y, loc)
-        _ => raise problem(Type, loc, "incompatible operands for +")
+        _ => {
+          let message = match a {
+            Num(_) => "Unexpected type " + value_type(b) + ", expected number"
+            ArrayValue(_) =>
+              "Unexpected type " + value_type(b) + ", expected array"
+            ObjectValue(_, _) =>
+              "Unexpected type " + value_type(b) + ", expected object"
+            _ => "Unexpected type " + value_type(a)
+          }
+          raise problem(Type, loc, message)
+        }
       }
     "-" => finite(number_value(a, loc) - number_value(b, loc), loc)
     "*" => finite(number_value(a, loc) * number_value(b, loc), loc)
@@ -39,7 +49,7 @@ fn Vm::binary(
       let x = number_value(a, loc)
       let y = number_value(b, loc)
       if y == 0 {
-        raise problem(Runtime, loc, "division by zero")
+        raise problem(Runtime, loc, "Division by zero.")
       }
       finite(if op == "/" { x / y } else { x % y }, loc)
     }

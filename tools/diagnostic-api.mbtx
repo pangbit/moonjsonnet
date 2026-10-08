@@ -53,7 +53,73 @@ async fn main {
     ("unicode-file",{"source":"local 中=1;error 'failed'","filename":"path/中"}),
     ("syntax-crlf",{"source":"[1,\r\n2 3]"}),
     ("syntax-computed-import",{"source":"import ('a'+\n'b')"}),
+    ("error-number",{"source":"error 1"}),
+    ("error-boolean",{"source":"error true"}),
+    ("error-null",{"source":"error null"}),
+    ("error-empty-array",{"source":"error []"}),
+    ("error-empty-object",{"source":"error {}"}),
+    ("error-array",{"source":"error [1,false,null]"}),
+    ("error-object",{"source":"error {b:2,a:1,hidden::error 'unused'}"}),
+    ("error-controls",{"source":"error ['\\u007f\\u0080\\u009f']"}),
+    ("error-function",{"source":"error function() 42"}),
+    ("error-nested",{"source":"error [error 'nested']"}),
+    ("assert-number",{"source":"assert false:1;42"}),
+    ("assert-array",{"source":"assert false:[1,2];42"}),
+    ("assert-object",{"source":"assert false:{a:1};42"}),
+    ("assert-default-message",{"source":"assert false;42"}),
+    ("assert-lazy-message",{"source":"assert true:error 'unused';42"}),
+    ("object-assert-number",{"source":"{assert false:1,a:42}"}),
+    ("object-assert-array",{"source":"{assert false:[1,2],a:42}"}),
+    ("object-assert-object",{"source":"{assert false:{a:1},a:42}"}),
+    ("object-assert-default-message",{"source":"{assert false,a:42}"}),
+    ("object-assert-lazy-message",{"source":"{assert true:error 'unused',a:42}"}),
+    ("boundary-length-argument",{"source":"std.length(error 'failed')"}),
+    ("boundary-map",{"source":"std.map(function(x) error 'failed',[1])"}),
+    ("boundary-filter",{"source":"std.filter(function(x) error 'failed',[1])"}),
+    ("boundary-fold",{"source":"std.foldl(function(a,b) error 'failed',[1],0)"}),
+    ("boundary-sort",{"source":"std.sort([2,1],function(x) error 'failed')"}),
+    ("boundary-range",{"source":"std.range(error 'failed',3)"}),
+    ("boundary-trace",{"source":"std.trace(error 'failed',42)"}),
+    ("boundary-assert-equal",{"source":"std.assertEqual(1,2)"}),
+    ("boundary-json",{"source":"std.parseJson('{')"}),
+    ("boundary-yaml",{"source":"std.parseYaml('[broken')"}),
+    ("boundary-length-type",{"source":"std.length(42)"}),
+    ("boundary-floor",{"source":"std.floor('x')"}),
+    ("boundary-unknown-standard-field",{"source":"std.substring('abc',-1,1)"}),
+    ("boundary-array-comp-body",{"source":"[error 'failed' for x in [1]]"}),
+    ("boundary-array-comp-source",{"source":"[x for x in error 'failed']"}),
+    ("boundary-array-comp-condition",{"source":"[x for x in [1] if error 'failed']"}),
+    ("boundary-object-comp-body",{"source":"{[x]:error 'failed' for x in ['a']}"}),
+    ("boundary-object-comp-key",{"source":"{[error 'failed']:42 for x in ['a']}"}),
+    ("boundary-index-argument",{"source":"[1,2][error 'failed']"}),
+    ("boundary-slice-argument",{"source":"[1,2][::error 'failed']"}),
+    ("boundary-slice-zero",{"source":"[1,2][0:1:0]"}),
+    ("boundary-additive",{"source":"{a:1}+{a+:error 'failed'}"}),
+    ("boundary-call-missing",{"source":"local f(x)=x;f()"}),
+    ("boundary-call-extra",{"source":"local f(x)=x;f(1,2)"}),
+    ("boundary-call-name",{"source":"local f(x)=x;f(y=1)"}),
+    ("boundary-add-type",{"source":"true+1"}),
+    ("boundary-division-zero",{"source":"1/0"}),
+    ("boundary-field-missing",{"source":"{a:1}.missing"}),
+    ("boundary-index-bounds",{"source":"[1][2]"}),
+    ("boundary-error-number",{"source":"error 1"}),
+    ("boundary-assert-type",{"source":"assert 1;42"}),
+    ("boundary-object-assert-type",{"source":"{assert 1,a:42}"}),
+    ("boundary-field-assert",{"source":"local o={assert false:'failed',a:1};o.a"}),
+    ("boundary-json-manifest",{"source":"std.manifestJson({a:error 'failed'})"}),
+    ("boundary-object-fields",{"source":"std.objectFields(error 'failed')"}),
+    ("boundary-get-lazy",{"source":"std.get({a:1},'a',error 'failed')"}),
+    ("boundary-recursion",{"source":"local f(n)=if n==0 then error 'failed' else f(n-1);f(3)"}),
+    ("boundary-self",{"source":"local o={a:self.b,b:error 'failed'};o.a"}),
   ]
+  let json_errors=[""," ","{","[","\"","-","1.","1e","1e+","t","tr","tru","truth","falsex","nullx","nul","{x:1}","{\"x\"1}","{\"x\":}","{\"x\":1 x}","[1 x]","[1,]","{\"x\":1,}","\"\\q\"","\"\\u12xz\"","\"control\n\"","true false","01","--1","é","\u007f","[true}"]
+  for index,data in json_errors {
+    sources.push(("json-error-"+index.to_string(),{"source":"std.parseJson("+Json::string(data).stringify()+")"}))
+  }
+  let yaml_inputs=["[","[broken","{broken","[\n broken","a:\n [broken","[{broken]","{a: [broken}","- a\n b","[\n,\n]","*missing","\"\\q\"","%YAML 1.1\n%YAML 1.1\n---\na","!unknown!a x","\u0001","a:\n\t1","root:\n  - a\n wrong","%YAML 1.2\n---\na","%TAG !a! tag:example.com,2026:\n%TAG !a! tag:other.com,2026:\n---\nx","%YAML 1.1\n---\na","%TAG !a! tag:example.com,2026:\n%TAG !b! tag:other.com,2026:\n---\n!a!foo x"]
+  for index,data in yaml_inputs {
+    sources.push(("yaml-diagnostic-"+index.to_string(),{"source":"std.parseYaml("+Json::string(data).stringify()+")"}))
+  }
   let inputs : Array[Json]=[]
   for (name,source) in sources {
     for size in [Json::null(),Json::number(-1),Json::number(0),Json::number(1),Json::number(2),Json::number(3),Json::number(2147483647)] {
@@ -81,7 +147,7 @@ async fn main {
     if field(expected,"error",false)==Json::boolean(true) {reference_errors+=1}
     if field(actual,"error",false)==Json::boolean(true) {local_errors+=1}
     let ok=output.exit_code()==0 && output.stderr()=="" && expected==actual
-    if ok {passed+=1} else {println("FAIL diagnostic "+field(input,"name",null).stringify()+" size="+field(input,"trace_size",null).stringify()+" actual="+actual.stringify()+" expected="+expected.stringify())}
+    if ok {passed+=1} else {println("FAIL diagnostic "+field(input,"name",null).stringify()+" size="+field(input,"trace_size",null).stringify()+"; complete bytes/frames retained in report")}
     rows.push({"input":input,"expected":expected,"actual":actual,"passed":ok,"exit":output.exit_code(),"stderr":output.stderr()})
   }
   if args.length()==4 {@fs.write_file("tests/go-diagnostic-api.json",Json::array(fixtures).stringify(indent=2)+"\n")}

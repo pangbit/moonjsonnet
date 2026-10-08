@@ -96,27 +96,5 @@ fn Vm::defer_call(
   args : Array[Int],
   loc : Location,
 ) -> Int {
-  let names = Map([("f", self.store(Ready(func)))])
-  let params : Array[(String?, Expr)] = []
-  for i, t in args {
-    let name = i.to_string()
-    names[name] = t
-    params.push((None, { kind: Var(name), loc, end: None, }))
-  }
-  self.store(
-    Pending(
-      {
-        kind: Call({ kind: Var("f"), loc, end: None, }, params, false),
-        loc,
-        end: None,
-      },
-      {
-        parent: None,
-        names,
-        import_from: "",
-        debug_visible: None,
-        diagnostic_context: ("$", "anonymous"),
-      },
-    ),
-  )
+  self.store(GeneratedCall(func, args, loc))
 }

@@ -56,7 +56,7 @@ fn Vm::manifest(
         Json::object(fields)
       }
       Closure(_, _, _) | Builtin(_) | Native(_) =>
-        raise problem(Type, loc, "cannot manifest a function or std")
+        raise problem(Type, loc, "couldn't manifest function as JSON")
       _ => {
         let j = match value {
           Nil => Json::null()

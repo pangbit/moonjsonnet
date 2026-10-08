@@ -59,6 +59,11 @@ src/strconv/isprint.go. Copyright 2009 The Go Authors. All rights reserved.
 BSD 3-Clause terms: licenses/GO-BSD-3-Clause.txt.
 tools/embed-lint-print.mbtx verifies the exact source SHA-256 before extraction.
 
+json_diagnostic.mbt adapts Go 1.24.0 src/encoding/json/scanner.go's iterative
+syntax/error transition rules. Copyright 2010 The Go Authors. All rights reserved.
+BSD 3-Clause terms: licenses/GO-BSD-3-Clause.txt. JSON values continue to be
+parsed by MoonBit core; the diagnostic scan only runs after parsing fails.
+
 manifest_toml.mbt, manifest_yaml.mbt and manifest_text.mbt adapt the native
 TOML/YAML rendering contracts and control flow in the pinned go-jsonnet
 builtins.go and interpreter.go to MoonBit, including quoting and key recognition.
@@ -144,6 +149,13 @@ Copyright 2025 International Digital Economy Academy. MIT terms are retained in
 licenses/YAML-MIT.txt. Parser::next_token is exposed for bounded event consumption;
 the plain-scalar colon rule follows go-yaml v2. The dependency's JSON schema
 resolver and emitter are not used.
+
+The parser/scanner diagnostic distinction, line rendering, anchor names and
+directive checks in parse_yaml.mbt and internal/yaml/parser.mbt follow the pinned
+reference's sigs.k8s.io/yaml v1.4.0 goyaml.v2 decode.go/parserc.go contracts.
+Go YAML code is Apache-2.0 (see LICENSE); parserc.go retains libyaml's MIT terms,
+Copyright (c) 2006 Kirill Simonov, copied to licenses/GOYAML-LIBYAML-MIT.txt.
+These changed paths execute solely in the MoonBit parser and interpreter.
 
 Automation scripts use moonbitlang/async (Apache-2.0), resolved by Moon script mode; it is not
 a library runtime dependency. Official examples informed the package layout:

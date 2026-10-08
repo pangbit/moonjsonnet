@@ -10,6 +10,7 @@ import {
 // Errors
 pub suberror YamlError {
   YamlError(mark~ : Marker, info~ : String)
+  ParserError(mark~ : Marker, info~ : String)
 } derive(@debug.Debug)
 pub fn YamlError::to_repr(Self) -> @debug.Repr
 

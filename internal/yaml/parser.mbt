@@ -159,7 +159,7 @@ fn Parser::scan_next_token(self : Parser) -> Token raise YamlError {
     None =>
       match self.lexer.get_error() {
         None =>
-          raise YamlError::YamlError(
+          raise YamlError::ParserError(
             mark=self.lexer.get_marker(),
             info="unexpected eof",
           )
@@ -199,7 +199,7 @@ pub fn[R : MarkedEventReceiver] Parser::load(
   if !self.lexer.stream_started() {
     let (ev, mark) = self.next_token()
     if ev != Event::StreamStart {
-      raise YamlError::YamlError(
+      raise YamlError::ParserError(
         mark~,
         info="did not find expected <stream-start>",
       )
@@ -234,7 +234,7 @@ fn[R : MarkedEventReceiver] Parser::load_document(
   recv : R,
 ) -> Unit raise YamlError {
   if first_ev != Event::DocumentStart {
-    raise YamlError::YamlError(
+    raise YamlError::ParserError(
       mark~,
       info="did not find expected <document-start>",
     )
@@ -366,7 +366,7 @@ fn Parser::flow_mapping_key(
         match self.peek_token() {
           { marker: _, token_type: TokenType::FlowEntry, } => self.skip()
           { marker, token_type: _, } =>
-            raise YamlError::YamlError(
+            raise YamlError::ParserError(
               mark=marker,
               info="while parsing a flow mapping, did not find expected ',' or '}'",
             )
@@ -474,7 +474,7 @@ fn Parser::block_mapping_key(
       (Event::MappingEnd, marker)
     }
     { marker, token_type: _, } =>
-      raise YamlError::YamlError(
+      raise YamlError::ParserError(
         mark=marker,
         info="while parsing a block mapping, did not find expected key",
       )
@@ -527,7 +527,7 @@ fn Parser::flow_sequence_entry(
     }
     { marker: _, token_type: TokenType::FlowEntry, } if !first => self.skip()
     { marker, token_type: _, } if !first =>
-      raise YamlError::YamlError(
+      raise YamlError::ParserError(
         mark=marker,
         info="while parsing a flow sequence, expected ',' or ']'",
       )
@@ -661,7 +661,7 @@ fn Parser::block_sequence_entry(
       }
     }
     { marker, token_type: _, } =>
-      raise YamlError::YamlError(
+      raise YamlError::ParserError(
         mark=marker,
         info="while parsing a block collection, did not find expected '-' indicator",
       )
@@ -691,7 +691,7 @@ fn Parser::document_end(self : Parser) -> (Event, Marker) raise YamlError {
         token_type: TokenType::VersionDirective(..)
         | TokenType::TagDirective(..),
       } {
-      raise YamlError::YamlError(
+      raise YamlError::ParserError(
         mark=marker,
         info="missing explicit document end marker before directive",
       )
@@ -734,9 +734,9 @@ fn Parser::parse_node(
       if self.fetch_token() is { marker, token_type: TokenType::Alias(name), } {
         match self.anchors.get(name) {
           None =>
-            raise YamlError::YamlError(
+            raise YamlError::ParserError(
               mark=marker,
-              info="while parsing node, found unknown anchor",
+              info="unknown anchor '" + name + "' referenced",
             )
           Some(id) => return (Event::Alias(id~), marker)
         }
@@ -808,7 +808,7 @@ fn Parser::parse_node(
       (Event::empty_scalar_with_anchor(anchor_id, tag), marker)
     }
     { marker, token_type: _, } =>
-      raise YamlError::YamlError(
+      raise YamlError::ParserError(
         mark=marker,
         info="while parsing a node, did not find expected node content",
       )
@@ -848,7 +848,7 @@ fn Parser::resolve_tag(
     } else if handle.length() >= 2 &&
       handle.has_prefix("!") &&
       handle.has_suffix("!") {
-      raise YamlError::YamlError(mark~, info="the handle wasn't declared")
+      raise YamlError::ParserError(mark~, info="the handle wasn't declared")
     } else {
       Tag::{ handle, suffix, }
     }
@@ -929,7 +929,7 @@ fn Parser::explicit_document_start(
       (Event::DocumentStart, marker)
     }
     { marker, .. } =>
-      raise YamlError::YamlError(
+      raise YamlError::ParserError(
         mark=marker,
         info="did not find expected <document-start>",
       )
@@ -939,22 +939,27 @@ fn Parser::explicit_document_start(
 ///|
 fn Parser::parser_process_directives(self : Parser) -> Unit raise YamlError {
   let mut version_directive_received = false
+  let tags = @hashmap.HashMap([])
   while true {
-    let tags = @hashmap.HashMap([])
     match self.peek_token() {
-      { marker, token_type: TokenType::VersionDirective(..), } => {
-        // XXX parsing with warning according to spec
+      { marker, token_type: TokenType::VersionDirective(major~, minor~), } => {
         if version_directive_received {
-          raise YamlError::YamlError(
+          raise YamlError::ParserError(
             mark=marker,
             info="duplicate version directive",
+          )
+        }
+        if major != 1 || minor != 1 {
+          raise YamlError::ParserError(
+            mark=marker,
+            info="found incompatible YAML document",
           )
         }
         version_directive_received = true
       }
       { marker, token_type: TokenType::TagDirective(handle~, prefix~), } => {
         if tags.contains(handle) {
-          raise YamlError::YamlError(
+          raise YamlError::ParserError(
             mark=marker,
             info="the TAG directive must only be given at most once per handle in the same document",
           )
@@ -977,7 +982,7 @@ fn Parser::stream_start(self : Parser) -> (Event, Marker) raise YamlError {
       (Event::StreamStart, marker)
     }
     { marker, .. } =>
-      raise YamlError::YamlError(
+      raise YamlError::ParserError(
         mark=marker,
         info="did not find expected <stream-start>",
       )

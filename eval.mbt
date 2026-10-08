@@ -175,7 +175,7 @@ fn Vm::eval_loop(
         }
         ArrayComp(body, clauses) => {
           let out = []
-          self.comprehend(clauses, 0, env, loc, scope => {
+          self.comprehend_expression(expr, clauses, env, scope => {
             out.push(
               self.store(
                 Pending(body, scope.debug_capture([body]).trace_thunk()),
@@ -186,7 +186,7 @@ fn Vm::eval_loop(
         }
         ObjectComp(key, body, clauses, locals) => {
           let fs : Map[String, LayerField] = Map([])
-          self.comprehend(clauses, 0, env, loc, scope => {
+          self.comprehend_expression(expr, clauses, env, scope => {
             match self.eval(key, scope) {
               Nil => ()
               Str(k) => {
@@ -227,14 +227,27 @@ fn Vm::eval_loop(
         }
         Index(a, b) => self.index(self.eval(a, env), self.eval(b, env), loc)
         Slice(a, start, end, step) => {
-          let v = self.eval(a, env)
-          let bound = fn(e : Expr?) raise {
-            match e {
-              Some(x) => self.eval(x, env)
-              None => Nil
+          self.current_trace = Some({
+            location: Source({
+              begin: expr.loc,
+              end: diagnostic_expr_end(expr),
+            }),
+            name: "",
+          })
+          let library = self.force(env.lookup("$std").unwrap(), loc)
+          let function = self.index(library, Str("slice"), loc)
+          let argument_env = env.trace_context("")
+          let arguments = [Some(a), start, end, step].map(expression => {
+            let thunk = match expression {
+              Some(expression) =>
+                self.store(
+                  Pending(expression, argument_env.debug_capture([expression])),
+                )
+              None => self.store(Ready(Nil))
             }
-          }
-          self.slice(v, bound(start), bound(end), bound(step), loc)
+            (None, thunk)
+          })
+          self.call(function, arguments, loc)
         }
         Unary(op, e) => {
           let v = self.eval(e, env)
@@ -256,19 +269,29 @@ fn Vm::eval_loop(
           }
         }
         Assert(c, m, body) => {
-          self.assertion(c, m, env, failure_frame={
-            location: Source({
-              begin: expr.loc,
-              end: diagnostic_expr_end(expr),
-            }),
-            name: "",
-          })
+          self.assertion(
+            c,
+            m,
+            env,
+            condition_frame={ location: Synthetic(""), name: "", },
+            failure_frame={
+              location: Source({
+                begin: expr.loc,
+                end: diagnostic_expr_end(expr),
+              }),
+              name: "",
+            },
+          )
           expr = body
           env = env.trace_context(env.diagnostic_context.0)
           continue
         }
         Fail(e) =>
-          raise problem(Runtime, loc, text_value(self.eval(e, env), loc))
+          raise problem(
+            Runtime,
+            loc,
+            self.coerce_string(self.eval(e, env), loc),
+          )
         ImportFile(path, raw) =>
           self.import_file(path, raw, env.import_from, loc)
         ImportBinary(path) => self.import_binary(path, env.import_from, loc)
@@ -282,6 +305,29 @@ fn Vm::eval_loop(
   } nobreak {
     abort("unreachable evaluator loop")
   }
+}
+
+///|
+fn Vm::comprehend_expression(
+  self : Vm,
+  expression : Expr,
+  clauses : Array[Clause],
+  environment : Env,
+  emit : (Env) -> Unit raise,
+) -> Unit raise {
+  // Go lowers a comprehension to a call at the whole expression's range.
+  // Its input/condition/key evaluation has a clean frame under that call.
+  self.with_trace(
+    Source({ begin: expression.loc, end: diagnostic_expr_end(expression), }),
+    () => {
+      self.push_frame(expression.loc, false)
+      defer self.pop_frame()
+      self.comprehend(clauses, 0, environment, expression.loc, emit) catch {
+        Error(d) => raise Error(self.traced(d))
+        e => raise e
+      }
+    },
+  )
 }
 
 ///|
@@ -364,13 +410,18 @@ fn Vm::call_env(
     let n = match name {
       Some(n) => {
         if !params.any(p => p.name == n) {
-          raise problem(Runtime, loc, "unknown argument '\{n}'")
+          raise problem(Runtime, loc, "function has no parameter " + n)
         }
         n
       }
       None => {
         if i >= params.length() {
-          raise problem(Runtime, loc, "too many arguments")
+          let positional = args.iter().filter(pair => pair.0 is None).count()
+          raise problem(
+            Runtime,
+            loc,
+            "function expected \{params.length()} positional argument(s), but got \{positional}",
+          )
         }
         params[i].name
       }
@@ -385,7 +436,7 @@ fn Vm::call_env(
   // share one slot: last positional argument, or first available default.
   for p in params {
     if p.default_value is None && !assigned.contains(p.name) {
-      raise problem(Runtime, loc, "missing argument '\{p.name}'")
+      raise problem(Runtime, loc, "Missing argument: " + p.name)
     }
   }
   for { name: n, default_value: d, .. } in params {
@@ -421,9 +472,13 @@ fn Vm::index(
 ///|
 fn array_index(key : Value, length : Int, loc : Location) -> Int raise {
   let number = number_value(key, loc)
-  let n = if number.is_nan() { 0.0 } else { number.trunc() }
-  if n < 0 || n >= length.to_double() {
-    raise problem(Runtime, loc, "index out of bounds")
+  let n = reference_int64(number)
+  if n < 0L || n >= length.to_int64() {
+    raise problem(
+      Runtime,
+      loc,
+      "Index \{n} out of bounds, not within [0, \{length})",
+    )
   }
   n.to_int()
 }

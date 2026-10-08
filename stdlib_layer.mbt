@@ -1,6 +1,22 @@
 ///|
 // Enable upstream definitions only after their dependencies and behavior have
 // been validated. Native fields override the source layer in Vm::base_env.
+fn source_standard_function(name : String) -> Bool {
+  match name {
+    "map"
+    | "mapWithIndex"
+    | "assertEqual"
+    | "objectFields"
+    | "objectFieldsAll"
+    | "objectHas"
+    | "objectHasAll"
+    | "manifestJson"
+    | "slice" => true
+    _ => false
+  }
+}
+
+///|
 fn standard_library_expression() -> Expr raise {
   let source = parse(standard_library_source(), "<std>", 512)
   guard source.kind is Obj(fields, locals, assertions, assertion_sites) else {
@@ -9,7 +25,8 @@ fn standard_library_expression() -> Expr raise {
   let enabled = fields.filter(fn(field) {
     match field.key.kind {
       Literal(String(name)) =>
-        match name {
+        source_standard_function(name) ||
+        (match name {
           "uniq"
           | "set"
           | "setUnion"
@@ -69,7 +86,7 @@ fn standard_library_expression() -> Expr raise {
           | "manifestIni"
           | "manifestXmlJsonml" => true
           _ => false
-        }
+        })
       _ => false
     }
   })

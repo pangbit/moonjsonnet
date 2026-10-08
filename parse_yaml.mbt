@@ -20,7 +20,11 @@ fn Vm::parse_yaml(self : Vm, source : String, loc : Location) -> Value raise {
       (c >= '\u00a0' && c <= '\ud7ff') ||
       (c >= '\ue000' && c <= '\ufffd') ||
       c >= '\u{10000}') {
-      raise problem(Runtime, loc, "YAML contains a non-printable character")
+      raise problem(
+        Runtime,
+        loc,
+        "failed to parse YAML: error converting YAML to JSON: yaml: control characters are not allowed",
+      )
     }
   }
   // Go splits only on an unindented --- followed by whitespace, then decodes
@@ -83,7 +87,20 @@ fn Vm::yaml_document(self : Vm, source : String, loc : Location) -> Json raise {
     let (event, _) = parser.next_token() catch {
       @yaml.YamlError(info="recursion limit exceeded", ..) =>
         raise problem(Limit, loc, "YAML nesting depth limit exceeded")
-      e => raise problem(Runtime, loc, "failed to parse YAML: \{Repr(e)}")
+      @yaml.ParserError(mark~, info~) =>
+        raise problem(
+          Runtime,
+          loc,
+          "failed to parse YAML: error converting YAML to JSON: " +
+          yaml_parser_error(mark.line, info),
+        )
+      @yaml.YamlError(mark~, info~) =>
+        raise problem(
+          Runtime,
+          loc,
+          "failed to parse YAML: error converting YAML to JSON: " +
+          yaml_scanner_error(mark.line, info),
+        )
     }
     let (node, anchor) = match event {
       StreamStart | DocumentStart => continue
@@ -127,6 +144,50 @@ fn Vm::yaml_document(self : Vm, source : String, loc : Location) -> Json raise {
     return Json::null()
   }
   self.yaml_to_json(nodes, root, Map([]), 0, loc)
+}
+
+///|
+// The fixed goyaml.v2 decoder reports parser problem lines without the scanner's
+// extra increment. Internal Marker lines are one-based; first-line errors omit
+// a line prefix in that decoder. Preserve the parser/scanner distinction.
+fn yaml_parser_error(line : Int, info : String) -> String {
+  let problem = if info.has_prefix("while parsing ") {
+    match info.find(", ") {
+      Some(index) => info[index + 2:].to_owned()
+      None => info
+    }
+  } else {
+    info
+  }
+  let problem = match problem {
+    "duplicate version directive" => "found duplicate %YAML directive"
+    "did not find expected <document-start>" =>
+      "did not find expected <document start>"
+    "the handle wasn't declared" => "found undefined tag handle"
+    "the TAG directive must only be given at most once per handle in the same document" =>
+      "found duplicate %TAG directive"
+    _ if problem.has_prefix("expected ") => "did not find " + problem
+    _ => problem
+  }
+  "yaml: " + (if line > 1 { "line \{line-1}: " } else { "" }) + problem
+}
+
+///|
+fn yaml_scanner_error(line : Int, info : String) -> String {
+  let problem = if info.has_prefix("while ") {
+    match info.find(", ") {
+      Some(index) => info[index + 2:].to_owned()
+      None => info
+    }
+  } else {
+    info
+  }
+  let problem = match problem {
+    "tabs disallowed within this context (block indentation)" =>
+      "found character that cannot start any token"
+    _ => problem
+  }
+  "yaml: " + (if line > 1 { "line \{line}: " } else { "" }) + problem
 }
 
 ///|

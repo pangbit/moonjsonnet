@@ -187,6 +187,23 @@ legacy `Diagnostic::format` retain their prior header/context format. These
 interfaces do not claim every runtime message or CLI diagnostic is byte-identical
 to Go outside the checked diagnostic corpus.
 
+`error value` and a failed assertion's optional message use Jsonnet string
+conversion: strings remain unchanged, while other values are manifested as
+compact JSON with Go's spaces and control-character quoting. Conversion retains
+the existing depth, work and output budgets. Successful assertions do not force
+their messages. Source definitions of `map`, `mapWithIndex`, `assertEqual`,
+object field/has helpers, `manifestJson` and `slice` preserve standard-library
+source frames and argument laziness. An explicit `error` in those definitions
+has kind `Runtime`; a native type guard has kind `Type`.
+
+Malformed JSON diagnostics follow the pinned Go 1.24 scanner's first-error and
+EOF rules, including byte-to-character quoting. YAML diagnostics distinguish
+scanner/parser origins and preserve the pinned decoder's line numbering,
+anchor names and directive errors. `parseYaml` retains Go's document splitting;
+a `%YAML` directive separated from its `---` by that split can fail even when
+the unsplit document is legal YAML. These checks cover a finite corpus and do
+not establish every JSON/YAML decoding error as equal to Go.
+
 ## Parsed programs
 
 Parser diagnostics preserve token spelling, including number notation, quote

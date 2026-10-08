@@ -27,6 +27,9 @@ fn Vm::scope(self : Vm, id : Int, layer : Int, outer : Env) -> Env {
     .trace_context("object <" + outer.diagnostic_context.1 + ">")
   env.names["self"] = self.store(Ready(ObjectValue(id, obj.layers.length())))
   env.names["super"] = self.store(Ready(ObjectValue(id, layer)))
+  if obj.standard {
+    env.names["$std"] = env.names["self"]
+  }
   if env.lookup("$") is None {
     env.names["$"] = env.names["self"]
   }
@@ -65,18 +68,24 @@ fn Vm::check_assertions(self : Vm, id : Int, loc : Location) -> Unit raise {
       for index, (cond, msg) in obj.layers[i].assertions {
         self.push_frame(cond.loc, false)
         defer self.pop_frame()
-        self.assertion(cond, msg, env, failure_frame={
-          location: Source(
-            obj.layers[i].assertion_sites
-            .get(index)
-            .bind(site => site)
-            .unwrap_or({
-              begin: cond.loc,
-              end: diagnostic_expr_end(msg.unwrap_or(cond)),
-            }),
-          ),
-          name: "",
-        })
+        self.assertion(
+          cond,
+          msg,
+          env,
+          default_message="Object assertion failed.",
+          failure_frame={
+            location: Source(
+              obj.layers[i].assertion_sites
+              .get(index)
+              .bind(site => site)
+              .unwrap_or({
+                begin: cond.loc,
+                end: diagnostic_expr_end(msg.unwrap_or(cond)),
+              }),
+            ),
+            name: "",
+          },
+        )
       }
     }
   } catch {
@@ -196,7 +205,7 @@ fn Vm::field(
       Runtime
     },
     loc,
-    "field '\{name}' does not exist",
+    "Field does not exist: " + name,
   )
 }
 
@@ -207,11 +216,24 @@ fn Vm::assertion(
   msg : Expr?,
   env : Env,
   failure_frame? : TraceFrame,
+  condition_frame? : TraceFrame,
+  default_message? : String = "Assertion failed",
 ) -> Unit raise {
-  if !boolean(self.eval(cond, env), cond.loc) {
+  let condition = self.eval(cond, env)
+  let holds = boolean(condition, cond.loc) catch {
+    Error(d) => {
+      self.current_trace = match condition_frame {
+        Some(frame) => Some(frame)
+        None => failure_frame
+      }
+      raise Error(self.traced(d))
+    }
+    e => raise e
+  }
+  if !holds {
     let message = match msg {
-      Some(m) => text_value(self.eval(m, env), m.loc)
-      None => "assertion failed"
+      Some(m) => self.coerce_string(self.eval(m, env), m.loc)
+      None => default_message
     }
     if failure_frame is Some(frame) {
       self.current_trace = Some(frame)

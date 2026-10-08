@@ -184,7 +184,7 @@ test "top-level arguments defaults named calls and one application" {
   catch {
     @moonjsonnet.Error(d) => {
       assert_eq(d.kind, @moonjsonnet.Runtime)
-      assert_true(d.message.contains("unknown argument"))
+      assert_eq(d.message, "function has no parameter unknown")
     }
   } noraise {
     _ => fail("expected unknown argument")

@@ -463,7 +463,7 @@ fn Lexer::next(self : Lexer) -> Token? {
     return None
   }
   let tok = self.next_token() catch {
-    YamlError(_) as err => {
+    YamlError(_) | ParserError(_) as err => {
       self.error = Some(err)
       return None
     }

@@ -487,12 +487,17 @@ moon run tools/diagnostic-api.mbtx _build/native/release/build/examples/diagnost
 
 The adapter observes public VM ErrorFormatter calls and static `Loc()` values.
 It compares complete bytes, ordered locations/names, color callbacks and error/
-output results in 273 frozen cases against fresh pinned Go. Seven trace-size
+output results in 1043 frozen cases against fresh pinned Go. Seven trace-size
 settings include the default, negative/zero unlimited, odd/even cropping and the
 maximum Int. Cases cover local/function/object contexts, aliases, recursive and
 tailstrict calls, imports/ext/TLA code, manifestations, additive fields, assertions,
-UTF-8/CRLF, malformed Unicode and multiline static snippets. No diagnostic text
-normalization is used in comparisons. Omitting the checkout is explicitly local
+UTF-8/CRLF, malformed Unicode and multiline static snippets. The expanded corpus
+also covers non-string
+error/assertion messages, selected standard-library wrappers, generated array
+calls, comprehension/slice lowering, type/call/index boundaries, 32 malformed
+JSON inputs and 20 YAML error/directive inputs. Go's `parseYaml` splitting can
+reject a legal unsplit directive document; those failures remain comparisons.
+No diagnostic text normalization is used in comparisons. Omitting the checkout is explicitly local
 frozen verification, also used on the isolated ASan probe.
 
 The [overall parity plan](GO-PARITY.md) tracks capabilities outside the existing

@@ -59,7 +59,7 @@ fn render_json(
       }
       for i, key in keys {
         separator(i == 0)
-        write(Json::string(key).stringify())
+        write(manifest_text_quote(key))
         write(": ")
         write(render_json(fields[key], pretty, depth + 1, limit - bytes, loc))
       }
@@ -80,6 +80,7 @@ fn render_json(
       }
       write(text)
     }
+    String(text) => write(manifest_text_quote(text))
     _ => write(j.stringify())
   }
   b.to_string()

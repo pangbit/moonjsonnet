@@ -92,6 +92,9 @@ fn Vm::base_env(
   let loc : Location = { file, line: 1, column: 1, }
   let fields : Map[String, LayerField] = Map([])
   for name in builtin_names() {
+    if source_standard_function(name) {
+      continue
+    }
     fields[name] = {
       field: {
         key: { kind: Literal(Json::string(name)), loc, end: None, },
@@ -120,9 +123,10 @@ fn Vm::base_env(
   if value is ObjectValue(id, _) {
     self.objects[id].standard = true
   }
+  let library_thunk = self.store(Ready(value))
   {
     parent: None,
-    names: Map([("std", self.store(Ready(value)))]),
+    names: Map([("std", library_thunk), ("$std", library_thunk)]),
     import_from,
     debug_visible: Some(_tick => ["$std", "std"]),
     diagnostic_context: ("$", "anonymous"),

@@ -463,12 +463,7 @@ fn Vm::builtin(
             } else {
               builtin_params(n).length().to_double()
             }
-          _ =>
-            raise problem(
-              Type,
-              loc,
-              "std.length: expected string, array, object or function",
-            )
+          _ => raise problem(Type, loc, "Unexpected type " + value_type(x))
         },
       )
     "objectFields"
@@ -478,7 +473,11 @@ fn Vm::builtin(
     | "objectFieldsEx"
     | "objectHasEx" => {
       guard x is ObjectValue(id, top) else {
-        raise problem(Type, loc, "expected object")
+        raise problem(
+          Type,
+          loc,
+          "Unexpected type " + value_type(x) + ", expected object",
+        )
       }
       let hidden = match name {
         "objectFieldsEx" => boolean(values[1], loc)
@@ -646,7 +645,12 @@ fn Vm::builtin(
       let s = text_value(x, loc)
       check_json_depth(s, self.limits.depth, loc)
       let j = @json.parse(s) catch {
-        _ => raise problem(Runtime, loc, "invalid JSON")
+        _ =>
+          raise problem(
+            Runtime,
+            loc,
+            "failed to parse JSON: " + self.json_syntax_error(s, loc),
+          )
       }
       self.from_json(j, loc)
     }
