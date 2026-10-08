@@ -1,0 +1,90 @@
+import { "moonbitlang/async", "moonbitlang/async/shell", "moonbitlang/async/fs", "moonbitlang/core/env" }
+
+async fn command(program : String, args : Array[String]) -> String {
+  let output = @shell.Cmd(program,args).output()
+  output.check()
+  output.stdout().trim().to_owned()
+}
+
+fn shell_quote(value : String) -> String {
+  "'" + value.replace_all(old="'",new="'\"'\"'") + "'"
+}
+
+fn terminal_args(platform : String, program : String, source : String) -> Array[String] {
+  if platform=="Darwin" {
+    ["-q","/dev/null",program,"-e",source]
+  } else {
+    // util-linux script takes one shell command. Quote each argv item; source
+    // syntax and paths must never become shell substitutions or operators.
+    ["--quiet","--return","--echo","never","--command",shell_quote(program)+" -e "+shell_quote(source),"/dev/null"]
+  }
+}
+
+async fn main {
+  let args = @env.args()
+  guard args.length()==3 else {fail("Usage: moon run tools/diagnostic-terminal.mbtx CLI GO_REFERENCE")}
+  let platform=command("uname",["-s"])
+  guard platform=="Darwin" || platform=="Linux" else {fail("terminal harness requires BSD or util-linux script")}
+  let candidate = @fs.realpath(args[1])
+  let reference = @fs.realpath(args[2])
+  let checkout = reference[:reference.rev_find("/").unwrap()].to_owned()
+  assert_eq(command("git",["-C",checkout,"rev-parse","HEAD"]),"67968688d9952f50662e979fab1bef889d0d3e57")
+  assert_eq(command("git",["-C",checkout,"status","--porcelain"]),"")
+  let reference_build = command("go",["version","-m",reference])
+  assert_true(reference_build.contains("go1.24.0"))
+  let sources = [
+    ("syntax","[1 2]",true),
+    ("static","unknown",true),
+    ("multiline","[\n1 2\n]",true),
+    ("unicode","['é中' 2]",true),
+    ("runtime","error 'failed'",false),
+  ]
+  let work = @fs.tmpdir(prefix="moonjsonnet-diagnostic-terminal-")
+  let rows : Array[Json] = []
+  let mut passed = 0
+  for (mode,terminal,enabled,environment) in [
+    ("terminal",true,true,Map([("TERM","xterm"),("NO_COLOR","")])),
+    ("empty-term",true,true,Map([("TERM",""),("NO_COLOR","")])),
+    ("dumb",true,false,Map([("TERM","dumb"),("NO_COLOR","")])),
+    ("disabled",true,false,Map([("TERM","xterm"),("NO_COLOR","1")])),
+    ("captured",false,false,Map([("TERM","xterm"),("NO_COLOR","")])),
+  ] {
+    for (name,source,static_error) in sources {
+      let input = ["-e",source]
+      let expected = if terminal {
+        @shell.Cmd("script",terminal_args(platform,reference,source),env=environment).output(timeout_ms=10000)
+      } else { @shell.Cmd(reference,input,env=environment).output(timeout_ms=10000) }
+      let actual = if terminal {
+        @shell.Cmd("script",terminal_args(platform,candidate,source),env=environment).output(timeout_ms=10000)
+      } else { @shell.Cmd(candidate,input,env=environment).output(timeout_ms=10000) }
+      let oracle_color = expected.stdout().contains("\u001b[31m") || expected.stderr().contains("\u001b[31m")
+      assert_eq(oracle_color,enabled && static_error)
+      let ok = expected.exit_code()==1 && actual.exit_code()==1 && expected.stdout()==actual.stdout() && expected.stderr()==actual.stderr()
+      if ok { passed += 1 } else { println("FAIL "+mode+"/"+name) }
+      let prefix = work+"/"+rows.length().to_string()
+      @fs.write_file(prefix+".go.stdout",expected.stdout())
+      @fs.write_file(prefix+".go.stderr",expected.stderr())
+      @fs.write_file(prefix+".local.stdout",actual.stdout())
+      @fs.write_file(prefix+".local.stderr",actual.stderr())
+      rows.push({"name":mode+"/"+name,"source":source,"passed":ok,"terminal":terminal,"reference_color":oracle_color,"reference_exit":expected.exit_code(),"local_exit":actual.exit_code(),"reference_stdout":expected.stdout(),"local_stdout":actual.stdout(),"reference_stderr":expected.stderr(),"local_stderr":actual.stderr()})
+    }
+  }
+  let commit = @shell.Cmd("git",["rev-parse","HEAD"]).output()
+  let dirty = @shell.Cmd("git",["status","--porcelain"]).output()
+  let report : Json = {
+    "source_commit":if commit.exit_code()==0 {Json::string(commit.stdout().trim().to_owned())} else {null},
+    "source_dirty":if dirty.exit_code()==0 {Json::boolean(!dirty.stdout().is_empty())} else {null},
+    "platform":platform,
+    "pty_harness":if platform=="Darwin" {"BSD script"} else {"util-linux script; argv individually quoted"},
+    "reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57",
+    "reference_build":reference_build,
+    "reference_sha256":command("shasum",["-a","256",reference]),
+    "local_sha256":command("shasum",["-a","256",candidate]),
+    "comparison":"complete PTY transcript or captured stdout/stderr; exit and actual Go ANSI color; no normalization",
+    "evidence":work,"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"skipped":0,"cases":rows,
+  }
+  @fs.mkdir("_build/diagnostic-terminal",recursive=true,allow_exist=true)
+  @fs.write_file("_build/diagnostic-terminal/report.json",report.stringify(indent=2)+"\n")
+  println("Diagnostic terminal: "+passed.to_string()+"/"+rows.length().to_string()+"; evidence: "+work)
+  if passed!=rows.length() {fail("terminal diagnostic differences retained")}
+}

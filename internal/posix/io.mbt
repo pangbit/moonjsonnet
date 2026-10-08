@@ -74,6 +74,14 @@ extern "c" fn stderr_ffi(data : Bytes) -> Unit = "mj_stderr"
 extern "c" fn stdout_ffi(data : Bytes) -> Int = "mj_stdout"
 
 ///|
+extern "c" fn stdout_is_terminal_ffi() -> Int = "mj_stdout_is_terminal"
+
+///|
+pub fn stdout_is_terminal() -> Bool {
+  stdout_is_terminal_ffi() == 1
+}
+
+///|
 pub fn stdout(text : String) -> Bool {
   stdout_ffi(@utf8.encode(text)) == 0
 }

@@ -171,6 +171,10 @@ MOONBIT_FFI_EXPORT void mj_stderr(moonbit_bytes_t data) {
   fputc('\n', stderr);
 }
 
+MOONBIT_FFI_EXPORT int32_t mj_stdout_is_terminal(void) {
+  return isatty(STDOUT_FILENO) ? 1 : 0;
+}
+
 /* Borrow the buffer for this call; stdout remains owned by the process. */
 MOONBIT_FFI_EXPORT int32_t mj_stdout(moonbit_bytes_t data) {
   size_t size = Moonbit_array_length(data);

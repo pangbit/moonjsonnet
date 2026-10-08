@@ -313,6 +313,13 @@ fn main {
     max_trace: 20,
     formatter: @moonjsonnet.DiagnosticFormatter::new(),
   }
+  if @posix.stdout_is_terminal() &&
+    @env.get_env_var("TERM").unwrap_or("") != "dumb" &&
+    @env.get_env_var("NO_COLOR").unwrap_or("").is_empty() {
+    diagnostics.formatter.set_color(color=fragment => {
+      "\u001b[31m" + fragment + "\u001b[0m"
+    })
+  }
   run(@env.args(), diagnostics) catch {
     @moonjsonnet.Error(d) => {
       if (d.kind == @moonjsonnet.Import || d.kind == @moonjsonnet.Limit) &&

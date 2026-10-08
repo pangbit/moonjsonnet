@@ -53,6 +53,8 @@ async fn main {
     let go_checkout = @fs.realpath(args[1])
     @shell.Cmd("moon", ["run", repo + "/tools/diagnostic-cli.mbtx", checkout + "/_build/native/debug/build/cmd/main/main.exe", go_checkout], cwd=checkout,
       env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", asan_options)])).run()
+    @shell.Cmd("moon", ["run", repo + "/tools/diagnostic-terminal.mbtx", checkout + "/_build/native/debug/build/cmd/main/main.exe", go_checkout + "/jsonnet"], cwd=checkout,
+      env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", asan_options)])).run()
   }
   @shell.Cmd("moon", ["run", "--build-only", "--target", "native", "cmd/deps"], cwd=checkout, env=environment).run()
   @shell.Cmd("moon", ["run", repo + "/tools/dependency-integration.mbtx", checkout + "/_build/native/debug/build/cmd/deps/deps.exe"], cwd=checkout,

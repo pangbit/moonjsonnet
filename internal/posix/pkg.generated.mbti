@@ -28,6 +28,8 @@ pub fn stderr_bytes(Bytes) -> Unit
 
 pub fn stdout(String) -> Bool
 
+pub fn stdout_is_terminal() -> Bool
+
 pub fn write(String, String) -> Bool
 
 pub fn write_output(Int, String) -> Bool
