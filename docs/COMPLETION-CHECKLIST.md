@@ -51,6 +51,12 @@ MoonBit 接口按功能等价，不要求复制 Go 类型。
 Evaluator 仍保留 18+1+1 项差异。见 [原始树验收](../reports/GO-JSONNET-RAW-AST.md)，
 不能据此标记整体目标完成。
 
+随后干净 `bc098b5` 加入 EvalHook、租期内值检查和同步调试器，实际 Go 调试器
+26/26，native 双模式各 280/280，独立消费者 27/27，含新调试器的完整隔离 ASan
+通过。既有格式化、AST、jsonnetfmt 全量复验通过；CLI/lint/Evaluator 继续保留
+18+1+1 项失败。见 [Hook/调试器验收](../reports/GO-JSONNET-DEBUGGER.md)。
+完整命名/合成诊断帧、配置与 Linux 平台仍待完成，整体目标没有标记完成。
+
 - GO-PARITY 完成标准第 5–7 项：18 项 Go CLI/标准库崩溃、失败解析后的 AST
   缓存差异、lint 入口/导入碰撞 panic 不复制崩溃，当前仍未被用户接受为例外。
   已向用户请求决定；答复前继续保留为失败，不阻塞其他功能实施。
