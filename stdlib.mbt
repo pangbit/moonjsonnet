@@ -401,18 +401,33 @@ fn Vm::builtin(
     "char" => {
       let number = number_value(x, loc)
       let n = if number.is_nan() { 0.0 } else { number }
-      if n <= -1 || n >= 1114112 {
-        raise problem(Runtime, loc, "invalid character code")
+      if n > 1114111 {
+        raise problem(
+          Runtime,
+          loc,
+          "Invalid unicode codepoint, got " + diagnostic_number(n),
+        )
       }
-      guard n.to_int().to_char() is Some(c) else {
-        raise problem(Runtime, loc, "invalid Unicode scalar")
+      if n < 0 {
+        raise problem(
+          Runtime,
+          loc,
+          "Codepoints must be >= 0, got " + diagnostic_number(n),
+        )
       }
+      // Go's rune-to-string conversion replaces surrogate code points.
+      let c = n.to_int().to_char().unwrap_or('�')
       Str(c.to_string())
     }
     "codepoint" => {
       let chars = text_value(x, loc).to_array()
       if chars.length() != 1 {
-        raise problem(Runtime, loc, "expected one code point")
+        raise problem(
+          Runtime,
+          loc,
+          "codepoint takes a string of length 1, got length " +
+          chars.length().to_string(),
+        )
       }
       Num(chars[0].to_int().to_double())
     }

@@ -1,0 +1,51 @@
+import { "moonbitlang/async", "moonbitlang/async/shell", "moonbitlang/async/fs", "moonbitlang/core/env" }
+
+async fn command(program:String,args:Array[String])->String {
+  let output=@shell.Cmd(program,args).output();output.check();output.stdout().trim().to_owned()
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==3 else {fail("Usage: moon run tools/standard-character-diagnostics.mbtx CLI GO_REFERENCE")}
+  let candidate=@fs.realpath(args[1]);let reference=@fs.realpath(args[2])
+  let checkout=reference[:reference.rev_find("/").unwrap()].to_owned()
+  assert_eq(command("git",["-C",checkout,"rev-parse","HEAD"]),"67968688d9952f50662e979fab1bef889d0d3e57")
+  assert_eq(command("git",["-C",checkout,"status","--porcelain"]),"")
+  let build=command("go",["version","-m",reference]);assert_true(build.contains("go1.24.0"))
+  let sources=[
+    "std.char(-1)","std.char(1114112)","std.char(65.5)","std.char(55296)","std.codepoint('')","std.codepoint('ab')",
+    "std.char(-0.5)","std.char(1114111.5)","std.char(-1e-5)","std.char(-1e-4)","std.char(-999999)","std.char(-1e6)",
+    "std.char(1e20)","std.char(-1e20)","std.char(1.7976931348623157e308)","std.char(-5e-324)",
+    "std.char(std.sum([1e308,1e308]))","std.char(std.sum([-1e308,-1e308]))",
+    "local inf=std.sum([1e308,1e308]); std.codepoint(std.char(std.sum([inf,-inf])))",
+    "[std.char(0),std.char(-0),std.char(1114111),std.char(55295),std.char(57343),std.char(57344)]",
+    "std.char('x')","std.codepoint(1)","std.codepoint('😀')","std.codepoint('é😀')",
+  ]
+  let work=@fs.realpath(@fs.tmpdir(prefix="moonjsonnet-standard-character-"))
+  let rows:Array[Json]=[];let mut passed=0
+  for index,source in sources {
+    let file=work+"/"+index.to_string()+".jsonnet";@fs.write_file(file,source)
+    for mode in ["exec","stdin","file"] {
+      let input=if mode=="exec" {["-e",source]} else if mode=="stdin" {["-"]} else {[file]}
+      let stdin=if mode=="stdin" {source} else {""}
+      let expected=@shell.Cmd(reference,input,cwd=work,stdin=@shell.Text(stdin)).output()
+      let actual=@shell.Cmd(candidate,input,cwd=work,stdin=@shell.Text(stdin)).output()
+      let ok=expected.exit_code()==actual.exit_code() && expected.stdout()==actual.stdout() && expected.stderr()==actual.stderr()
+      if ok {passed+=1} else {println("FAIL "+mode+" "+source)}
+      rows.push({"source":source,"mode":mode,"passed":ok,"go_exit":expected.exit_code(),"local_exit":actual.exit_code(),"go_stdout":expected.stdout(),"local_stdout":actual.stdout(),"go_stderr":expected.stderr(),"local_stderr":actual.stderr()})
+    }
+  }
+  let commit=@shell.Cmd("git",["rev-parse","HEAD"]).output();let dirty=@shell.Cmd("git",["status","--porcelain"]).output()
+  let report:Json={
+    "source_commit":if commit.exit_code()==0 {Json::string(commit.stdout().trim().to_owned())} else {null},
+    "source_dirty":if dirty.exit_code()==0 {Json::boolean(!dirty.stdout().is_empty())} else {null},
+    "reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57","reference_build":build,
+    "reference_sha256":command("shasum",["-a","256",reference]),"local_sha256":command("shasum",["-a","256",candidate]),
+    "comparison":"same explicit char/codepoint branches in exec/stdin/absolute file; complete stdout/stderr and exit; no normalization",
+    "evidence":work,"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"skipped":0,"cases":rows,
+  }
+  @fs.mkdir("_build/standard-character",recursive=true,allow_exist=true)
+  @fs.write_file("_build/standard-character/report.json",report.stringify(indent=2)+"\n")
+  println("Standard character: "+passed.to_string()+"/"+rows.length().to_string()+"; evidence: "+work)
+  if passed!=rows.length() {fail("standard character differences retained")}
+}
