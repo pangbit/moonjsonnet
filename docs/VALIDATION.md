@@ -422,6 +422,15 @@ and the isolated ASan test/host integration suite. Public admission budgets and
 interfaces remain unchanged. See the [iterative export report](../reports/GO-JSONNET-AST-ITERATIVE-EXPORT.md).
 
 See the repository's `reports/` directory for commit-bound acceptance evidence.
+Clean implementation `824fd43f418b32340a4540b173eddacda5301c4c` adds explicit
+independent syntax admission. The formatter probe now uses `format_syntax_source`
+with default `SyntaxLimits`, passing **736/736** frozen and **178/178** upstream
+inputs with zero Go/local errors. Native debug/release tests each pass **256/256**,
+Go AST passes **173/173**, CLI retains **1132/1150** and the same 18 failures,
+archive consumer passes **24/24**, and isolated ASan native/host checks pass.
+Old evaluator/ParsedSource/format_source admission remains unchanged. See the
+[independent syntax limits report](../reports/GO-JSONNET-SYNTAX-LIMITS.md).
+
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
 
 The [overall parity plan](GO-PARITY.md) tracks capabilities outside the existing
