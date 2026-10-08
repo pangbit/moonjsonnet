@@ -473,8 +473,9 @@ moon run tools/debugger-integration.mbtx _build/native/release/build/examples/de
 This adapter uses the pinned public Go debugger, checks its clean checkout and
 compares ordered stop reasons/ranges/variables/scalar lookups, output/error flags
 and breakpoint state against both frozen fixtures and a fresh Go run. Full
-diagnostic text is retained independently and is not claimed equal. Go raw AST
-breakpoint enumeration and synthetic desugaring are not covered by this corpus.
+diagnostic text is retained independently and is not claimed equal. Additional
+parenthesis/assert/comprehension/slice breakpoint enumeration and lowering maps
+are not covered by this corpus; Go's public enumeration uses its analyzed AST.
 Omitting the checkout runs local frozen verification and writes a separate
 `local-report.json`; isolated ASan runs this mode on its instrumented binary.
 No input is skipped or declared an accepted exception.
@@ -543,6 +544,20 @@ and actual ANSI color across TERM/NO_COLOR modes. No bytes are normalized. Linux
 util-linux branch is written but has not been executed. Passing the Go checkout to
 ASan now includes this comparison on the instrumented CLI. See the
 [terminal diagnostic report](../reports/GO-JSONNET-TERMINAL-DIAGNOSTICS.md).
+
+CLI parameter failures have 65 separate full-byte cases and two independent
+branded-help checks:
+
+```sh
+moon run tools/cli-argument-diagnostics.mbtx _build/native/release/build/cmd/main/main.exe ${LOCAL_PATH_012}/jsonnet
+```
+
+The runner checks unknown/missing/empty options, file bindings, undefined
+environment variables, integer grammar/range and multiple inputs against fresh
+pinned Go. Branded help outputs are retained and counted separately. The existing
+45 multi inputs and Go expectations are unchanged; only one local rendering
+fragment was refreshed. ASan with a Go checkout includes the new runner. See
+[CLI argument error acceptance](../reports/GO-JSONNET-CLI-ARGUMENT-ERRORS.md).
 
 The [overall parity plan](GO-PARITY.md) tracks capabilities outside the existing
 behavioral corpus. `tools/parity.mbtx` compares all 163 reflected Go standard-library

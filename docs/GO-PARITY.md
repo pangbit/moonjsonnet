@@ -51,7 +51,7 @@ moon run tools/parity.mbtx ${LOCAL_PATH_012}/jsonnet _build/native/release/build
 | 导入器 | 定制文本/二进制解析、限定目录宿主、`-J`/`JSONNET_PATH` 搜索、正负缓存及静态依赖扫描；Evaluator 提供导入查询和共享 source/AST/value 缓存 | 继续核验路径身份、扫描遍历顺序、失败 AST 缓存与宿主政策差异 |
 | 输入模式 | 文件、CLI `-e`、stdin、`--`、短选项展开和匿名源码求值 | 扩大输入/诊断边界，保留宿主资源与 UTF-8 政策 |
 | 输出模式 | 单个 JSON/文件、字符串、文档流、multi 与目录创建；对应嵌入方法已提供 | 扩大文件状态与 I/O 边界验证，保留执行预算政策 |
-| CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、命名/合成诊断裁剪、独立 `-s`/`--max-stack` 帧预算、短选项及退出 1；语言错误字节/源码片段、导入编译帧、四类惰性重入与终端着色已对照 | 核对既有 I/O/参数错误分支与预算位置；保留宿主策略和默认非尾部深度预算 |
+| CLI 参数兼容 | 已补齐参数、输入、输出模式、库路径、命名/合成诊断裁剪、独立 `-s`/`--max-stack` 帧预算、短选项及退出1；语言错误、四类惰性重入、终端着色及65项参数错误字节已对照 | 核对既有I/O错误分支与预算位置；保留宿主策略、品牌帮助和默认非尾部深度预算 |
 | VM/AST 接口 | 已验证 Program、可编辑语义 AST、深复制、数字原文、UTF-8 字节源码及局部绑定/形参范围、ext/TLA 参数；新增 RawAst 可编辑无损树、独立复制及 FormatNode 等价入口；可重用 Evaluator 配置、分层导入缓存、四种输出及导入查询/共享依赖扫描 | 扩大原始节点编辑、Hook/调试与诊断边界，保留失败解析后的缓存差异 |
 | 格式化器、静态分析工具 | 已有 `cmd/deps`、源码/节点格式化及独立深树契约；干净 63c6f00 的 jsonnetfmt CLI 严格对照 255/255，冻结 736/736、上游真实输入 178/178，旧求值预算保留；lint API/CLI 差分历史 409/410，消息与开始位置 190/190 | 保留 Go 入口/导入碰撞崩溃；更广语料、完整 I/O 及其余诊断待补齐 |
 | 平台与交付 | native；实测 macOS arm64 | Linux 持续验证；其余参考平台和分发能力逐项核验，不凭本机结果推断 |
@@ -368,5 +368,11 @@ TTY 缺少静态片段颜色，真实终端对照 25/25，API 1323/1323、捕获
 见 [重入验收](../reports/GO-JSONNET-LAZY-REENTRY.md)、
 [终端验收](../reports/GO-JSONNET-TERMINAL-DIAGNOSTICS.md)和
 [有限剩余范围](../reports/GO-JSONNET-REMAINING-SCOPE.md)；仍未标记整体完成。
+
+随后实现 `1faad82`、快照补修 `9c65e8a` 对齐65项CLI参数错误，另2项品牌帮助
+独立检查；native双模式各302/302，完整隔离ASan通过。同一干净提交复验旧
+语料仍为API1323/1323、CLI4095/4095及原整体18+1+1失败。另char/codepoint
+六项原生分支定位到五项未修复差异，不能以旧语料全绿推断所有标准库异常对齐。
+见 [参数错误与剩余分支验收](../reports/GO-JSONNET-CLI-ARGUMENT-ERRORS.md)。
 
 > Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
