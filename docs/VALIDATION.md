@@ -487,7 +487,7 @@ moon run tools/diagnostic-api.mbtx _build/native/release/build/examples/diagnost
 
 The adapter observes public VM ErrorFormatter calls and static `Loc()` values.
 It compares complete bytes, ordered locations/names, color callbacks and error/
-output results in 1141 frozen cases against fresh pinned Go. Seven trace-size
+output results in 1260 frozen cases against fresh pinned Go. Seven trace-size
 settings include the default, negative/zero unlimited, odd/even cropping and the
 maximum Int. Cases cover local/function/object contexts, aliases, recursive and
 tailstrict calls, imports/ext/TLA code, manifestations, additive fields, assertions,
@@ -498,6 +498,13 @@ calls, comprehension/slice lowering, type/call/index/output boundaries, import
 compile failures, 32 malformed
 JSON inputs and 20 YAML error/directive inputs. Go's `parseYaml` splitting can
 reject a legal unsplit directive document; those failures remain comparisons.
+Argument cases validate builtin/closure binding before forcing invalid arguments.
+Optional `stack_size` gives both interpreters identical explicit frame budgets;
+returned external-code cycles include self/mutual references, local/if paths,
+the default 500 frames and caps 1/2/3/8. Native tests separately verify finite
+forwarding executes callbacks and caches results, independent step/depth limits,
+hook cleanup and reusable-evaluator recovery. Earlier 1211 cases and complete
+expectations remain unchanged. See the [cycle acceptance report](../reports/GO-JSONNET-PARAMETER-CYCLES.md).
 No diagnostic text normalization is used in comparisons. Omitting the checkout is explicitly local
 frozen verification, also used on the isolated ASan probe.
 
@@ -509,7 +516,7 @@ moon run tools/asan.mbtx ${LOCAL_PATH_012}
 ```
 
 Every distinct diagnostic API input, including color-call variants, runs as
-exec, stdin and a canonical absolute file under seven CLI trace settings: 3549
+exec, stdin and a canonical absolute file under seven CLI trace settings: 3906
 checks. Both CLIs receive identical source/options and absolute file/import
 identities. Complete stdout/stderr bytes and exit codes are compared without
 output normalization. Stderr is captured to files to preserve invalid UTF-8.

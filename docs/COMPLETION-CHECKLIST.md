@@ -93,8 +93,19 @@ Evaluator/lint 原各 1 项失败未变。没有将新失败或宿主循环政�
 整体 CLI/Evaluator/lint 仍为 1131/1150、20/21、409/410，没有新增失败。
 见 [参数诊断验收](../reports/GO-JSONNET-ARGUMENT-DIAGNOSTICS.md)。循环参数错误
 作为独立缺口继续推进，不等待旧参考缺陷的例外决定。Linux 的官方工具来源、
-隔离位置及精确 socket 权限阻碍见 [Linux 方案](../reports/LINUX-ACCEPTANCE-PLAN.md)，
+隔离位置及已核实环境见 [Linux 方案](../reports/LINUX-ACCEPTANCE-PLAN.md)，
 未经安装授权不执行。
+
+随后干净 `d7888ff` 在求值循环内执行返回的外部参数代码，保留真实独立作用域、
+调用帧、步骤预算、hook 和失败恢复，修复独立的 `parameters-ext-cycle`。
+整体 CLI 恢复 1132/1150，仅原 18 项失败；Evaluator/lint 原各 1 项失败未变。
+native 双模式各 297/297，实际 Go API 1260/1260、CLI 字节 3906/3906，消费者
+29/29，格式化冻结 736/736、上游 178/178；完整隔离 ASan 通过，14 个副本
+源码/语料哈希已核对。十一份实际 Go 报告绑定同一干净实现，并保留完整副本
+与 manifest。见 [参数循环验收](../reports/GO-JSONNET-PARAMETER-CYCLES.md)。
+一般非尾部循环、其他诊断/调试范围及平台继续推进，不标记整体完成。
+只读 Docker 元数据已获审批，核实已有 `postgres:17.11` 为 Linux arm64 /
+Debian trixie；官方工具来源、固定版本和隔离路径已备妥，安装授权仍待答复。
 
 - GO-PARITY 完成标准第 5–7 项：18 项 Go CLI/标准库崩溃、失败解析后的 AST
   缓存差异、lint 入口/导入碰撞 panic 不复制崩溃，当前仍未被用户接受为例外。
