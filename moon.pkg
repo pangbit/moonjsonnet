@@ -2,6 +2,7 @@ import {
   "moonbitlang/core/math",
   "moonbitlang/core/string",
   "pangbit/moonjsonnet/internal/number",
+  "pangbit/moonjsonnet/internal/quote",
   "pangbit/moonjsonnet/internal/posix",
   "pangbit/moonjsonnet/internal/yaml",
   "moonbitlang/core/json",

@@ -209,6 +209,9 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
   } else if path == "-" {
     let (status, bytes) = @posix.read_stdin(limits.source_bytes)
     if status != 0 {
+      if status == 1 && @posix.io_error("<stdin>", input=true) is Some(message) {
+        raise Message(message + "\n")
+      }
       raise @moonjsonnet.Error({
         kind: if status == 3 || status == 2 {
           @moonjsonnet.Limit
@@ -233,7 +236,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
     }
     { id: "<stdin>", text, }
   } else {
-    host.load(path)
+    load_input(host, path)
   }
   diagnostics.formatter.set_source(source)
   for name, text in ext_code {
@@ -246,9 +249,18 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
     })
   }
   let resolver = fn(from : String, path : String) raise {
-    let source = host.resolve(from, path)
+    @posix.clear_io_error()
+    let source = host.resolve(from, path) catch {
+      @moonjsonnet.Error(d) => raise import_failure(d, from, path, jpaths)
+    }
     diagnostics.formatter.set_source(source)
     source
+  }
+  let binary_resolver = fn(from : String, path : String) raise {
+    @posix.clear_io_error()
+    host.resolve_binary(from, path) catch {
+      @moonjsonnet.Error(d) => raise import_failure(d, from, path, jpaths)
+    }
   }
   if multi is Some(directory) {
     let files = @moonjsonnet.evaluate_multi(
@@ -262,7 +274,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       tla_code~,
       limits~,
       resolver~,
-      binary_resolver=(from, path) => host.resolve_binary(from, path),
+      binary_resolver~,
     )
     write_multi(files, directory, output, create_dirs, limits.output_bytes, {
       file: source.id,
@@ -282,7 +294,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       tla_code~,
       limits~,
       resolver~,
-      binary_resolver=(from, path) => host.resolve_binary(from, path),
+      binary_resolver~,
     )
     let output = StringBuilder()
     let mut bytes = 0
@@ -320,17 +332,23 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       tla_code~,
       limits~,
       resolver~,
-      binary_resolver=(from, path) => host.resolve_binary(from, path),
+      binary_resolver~,
     )
   }
   match output {
-    None => if !@posix.stdout(result) { fail("cannot write stdout") }
+    None =>
+      if !@posix.stdout(result) {
+        io_failure("/dev/stdout", "cannot write stdout")
+      }
     Some(path) => {
       if create_dirs && !stream && !@posix.mkdir_all(output_parent(path)) {
-        fail("cannot create output directories: " + path)
+        io_failure(
+          output_parent(path),
+          "cannot create output directories: " + path,
+        )
       }
       if !@posix.write(path, result) {
-        fail("cannot write output: \{path}")
+        io_failure(path, "cannot write output: " + path)
       }
     }
   }

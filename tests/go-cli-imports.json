@@ -509,7 +509,7 @@
       "search-file-lib/not-dir": "file"
     },
     "reference_error": "not a directory",
-    "moonjsonnet_error": "Import"
+    "moonjsonnet_cli_error": "not a directory"
   },
   {
     "input": "exec",
@@ -608,7 +608,7 @@
       "search-missing/lib"
     ],
     "reference_error": "no match locally or in the Jsonnet library paths",
-    "moonjsonnet_error": "Import"
+    "moonjsonnet_cli_error": "no match locally or in the Jsonnet library paths"
   },
   {
     "input": "exec",
@@ -631,7 +631,7 @@
       "search-dir/high/value/child": "1"
     },
     "reference_error": "is a directory",
-    "moonjsonnet_error": "Import"
+    "moonjsonnet_cli_error": "is a directory"
   },
   {
     "input": "exec",

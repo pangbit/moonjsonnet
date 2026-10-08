@@ -1,4 +1,31 @@
 ///|
+pub extern "c" fn clear_io_error() -> Unit = "mj_clear_io_error"
+
+///|
+#borrow(path)
+extern "c" fn io_error_ffi(path : Bytes, input : Int) -> Bytes = "mj_io_error"
+
+///|
+// Consume the OS failure captured by the immediately preceding operation.
+// Policy failures have no OS error and continue through their structured path.
+pub fn io_error(path : String, input? : Bool = false) -> String? {
+  if path.contains("\u0000") {
+    clear_io_error()
+    return Some(
+      (if input { "Opening input file: " } else { "open " }) +
+      path +
+      ": invalid argument",
+    )
+  }
+  let bytes = io_error_ffi(@utf8.encode(path), if input { 1 } else { 0 })
+  if bytes.is_empty() {
+    None
+  } else {
+    Some(@utf8.decode_lossy(bytes))
+  }
+}
+
+///|
 #borrow(path)
 extern "c" fn realpath_ffi(path : Bytes) -> Bytes = "mj_realpath"
 

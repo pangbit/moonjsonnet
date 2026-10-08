@@ -58,7 +58,10 @@ fn write_multi(
     Some(path) => @posix.open_output(path)
   }
   if fd < 0 {
-    fail("cannot open output filename list")
+    io_failure(
+      manifest.unwrap_or("/dev/stdout"),
+      "cannot open output filename list",
+    )
   }
   let mut closed = false
   defer (if manifest is Some(_) && !closed { ignore(@posix.close_output(fd)) })
@@ -67,26 +70,35 @@ fn write_multi(
     // Go lists each filename before reading/writing it, preserving partial
     // progress on I/O errors. Evaluation errors are already resolved here.
     if !@posix.write_output(fd, filename + "\n") {
-      fail("cannot write output filename list")
+      io_failure(
+        manifest.unwrap_or("/dev/stdout"),
+        "cannot write output filename list",
+      )
     }
     match @posix.output_same(filename, files[key]) {
       1 => ()
       0 => {
         if create_dirs && !@posix.mkdir_all(output_parent(filename)) {
-          fail("cannot create output directories: " + filename)
+          io_failure(
+            output_parent(filename),
+            "cannot create output directories: " + filename,
+          )
         }
         if !@posix.write(filename, files[key]) {
-          fail("cannot write output: " + filename)
+          io_failure(filename, "cannot write output: " + filename)
         }
       }
-      _ => fail("cannot read existing output: " + filename)
+      _ => io_failure(filename, "cannot read existing output: " + filename)
     }
   }
   if manifest is Some(_) {
     let ok = @posix.close_output(fd)
     closed = true
     if !ok {
-      fail("cannot close output filename list")
+      io_failure(
+        manifest.unwrap_or("/dev/stdout"),
+        "cannot close output filename list",
+      )
     }
   }
 }

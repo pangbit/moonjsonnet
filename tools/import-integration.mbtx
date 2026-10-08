@@ -53,20 +53,20 @@ async fn main {
   for item in [
     (["-J","low","-J","high"],"importstr 'raw'","Import","invalid UTF-8"),
     (["-J","low","-J","high","--max-source-bytes","22"],"import 'large'","Limit","file byte limit exceeded"),
-    (["-J","low","-J","high"],"import 'directory'","Import","expected regular file"),
+    (["-J","low","-J","high"],"import 'directory'","Runtime","is a directory"),
     (["-J","low","-J","high"],"import 'escape'","Import","escapes allowed root"),
-    (["-J","low","-J","high"],"import 'loop'","Import","cannot resolve file"),
-    (["-J","low","-J","high"],"import 'denied'","Import","cannot open file"),
-    (["-J","low","-J","not-dir"],"import 'value'","Import","cannot resolve file"),
+    (["-J","low","-J","high"],"import 'loop'","Runtime","too many levels of symbolic links"),
+    (["-J","low","-J","high"],"import 'denied'","Runtime","permission denied"),
+    (["-J","low","-J","not-dir"],"import 'value'","Runtime","not a directory"),
     (["-J",work],"import 'outside'","Import","escapes allowed root"),
     (["-J","high"],"import @'"+work+"/outside'","Import","escapes allowed root"),
-    (["-J","high"],"import @'"+root+"/missing'","Import","no match locally"),
+    (["-J","high"],"import @'"+root+"/missing'","Runtime","no match locally"),
   ] {
     let (options,source,kind,message) = item
     let result = @shell.Cmd(cli,["--root",root]+options+["-e",source],env~).output()
     assert_eq(result.exit_code(),1)
     assert_eq(result.stdout(),"")
-    assert_true(result.stderr().contains(": "+kind+":"))
+    assert_true(result.stderr().contains(if kind=="Runtime" {"RUNTIME ERROR:"} else {": "+kind+":"}))
     assert_true(result.stderr().contains(message))
     passed+=1
   }
@@ -77,7 +77,8 @@ async fn main {
   passed+=1
   let missing_entry = @shell.Cmd(cli,["--root",root,"-J","high","value"],env~).output()
   assert_eq(missing_entry.exit_code(),1)
-  assert_true(missing_entry.stderr().contains("entry file"))
+  assert_true(missing_entry.stderr().contains("Opening input file:"))
+  assert_true(missing_entry.stderr().contains("no such file or directory"))
   passed+=1
   let environment = @shell.Cmd(cli,["--root",root,"-e","import 'value'"],env=Map([("JSONNET_PATH","high:low")])).output()
   environment.check()

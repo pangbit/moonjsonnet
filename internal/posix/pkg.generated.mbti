@@ -6,9 +6,13 @@ pub fn canonical(String) -> String?
 
 pub fn canonical_result(String) -> (Int, String)
 
+pub fn clear_io_error() -> Unit
+
 pub fn close_output(Int) -> Bool
 
 pub fn exit(Int) -> Unit
+
+pub fn io_error(String, input? : Bool) -> String?
 
 pub fn mkdir_all(String) -> Bool
 

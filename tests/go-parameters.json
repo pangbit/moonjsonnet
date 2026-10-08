@@ -534,7 +534,7 @@
     ],
     "expect": "error",
     "reference_error": "RUNTIME ERROR",
-    "moonjsonnet_error": "Import"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: "
   },
   {
     "name": "parameters-file-relative-import",

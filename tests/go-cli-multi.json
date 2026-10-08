@@ -569,7 +569,7 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "no such file or directory",
-    "moonjsonnet_cli_error": "cannot write output"
+    "moonjsonnet_cli_error": "no such file or directory"
   },
   {
     "name": "multi-manifest-parent",
@@ -589,7 +589,7 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "no such file or directory",
-    "moonjsonnet_cli_error": "cannot open output filename list"
+    "moonjsonnet_cli_error": "no such file or directory"
   },
   {
     "name": "multi-partial-write",
@@ -611,7 +611,7 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "not a directory",
-    "moonjsonnet_cli_error": "cannot create output directories"
+    "moonjsonnet_cli_error": "not a directory"
   },
   {
     "name": "multi-existing-directory",
@@ -629,7 +629,7 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "is a directory",
-    "moonjsonnet_cli_error": "cannot read existing output"
+    "moonjsonnet_cli_error": "is a directory"
   },
   {
     "name": "multi-empty-directory-option",
@@ -659,7 +659,7 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "is a directory",
-    "moonjsonnet_cli_error": "cannot read existing output"
+    "moonjsonnet_cli_error": "is a directory"
   },
   {
     "name": "multi-nul-filename",
@@ -674,7 +674,7 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "invalid argument",
-    "moonjsonnet_cli_error": "cannot read existing output"
+    "moonjsonnet_cli_error": "invalid argument"
   },
   {
     "name": "create-single-disabled",
@@ -691,7 +691,7 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "no such file or directory",
-    "moonjsonnet_cli_error": "cannot write output"
+    "moonjsonnet_cli_error": "no such file or directory"
   },
   {
     "name": "create-stream-ignored",
@@ -708,7 +708,7 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "no such file or directory",
-    "moonjsonnet_cli_error": "cannot write output"
+    "moonjsonnet_cli_error": "no such file or directory"
   },
   {
     "name": "create-clean-parent-raw-write",
@@ -725,7 +725,7 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "no such file or directory",
-    "moonjsonnet_cli_error": "cannot write output"
+    "moonjsonnet_cli_error": "no such file or directory"
   },
   {
     "name": "create-file-parent",
@@ -746,6 +746,6 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "not a directory",
-    "moonjsonnet_cli_error": "cannot create output directories"
+    "moonjsonnet_cli_error": "not a directory"
   }
 ]

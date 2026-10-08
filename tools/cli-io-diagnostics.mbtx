@@ -1,0 +1,85 @@
+import { "moonbitlang/async", "moonbitlang/async/shell", "moonbitlang/async/fs", "moonbitlang/core/env" }
+
+async fn command(program:String,args:Array[String])->String {
+  let output=@shell.Cmd(program,args).output();output.check();output.stdout().trim().to_owned()
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==3 else {fail("Usage: moon run tools/cli-io-diagnostics.mbtx CLI GO_REFERENCE")}
+  let candidate=@fs.realpath(args[1]);let reference=@fs.realpath(args[2])
+  let checkout=reference[:reference.rev_find("/").unwrap()].to_owned()
+  assert_eq(command("git",["-C",checkout,"rev-parse","HEAD"]),"67968688d9952f50662e979fab1bef889d0d3e57")
+  assert_eq(command("git",["-C",checkout,"status","--porcelain"]),"")
+  let build=command("go",["version","-m",reference]);assert_true(build.contains("go1.24.0"))
+  let inputs:Array[(String,Array[String])]=[
+    ("input-missing",["missing"]),("input-missing-absolute",["<work>/missing"]),
+    ("input-directory",["input-dir"]),("input-not-directory",["block/child"]),
+    ("input-permission",["locked-input"]),("input-loop",["loop"]),("input-unicode",["不存在.jsonnet"]),
+    ("output-missing",["-o","missing/result","-e","1"]),
+    ("output-directory",["-o","input-dir","-e","1"]),
+    ("output-not-directory",["-o","block/child","-e","1"]),
+    ("output-permission",["-o","locked-dir/result","-e","1"]),
+    ("mkdir-not-directory",["-c","-o","block/a/result","-e","1"]),
+    ("mkdir-unicode-ancestor",["-c","-o","é中😀/a/result","-e","1"]),
+    ("mkdir-permission",["-c","-o","locked-dir/a/result","-e","1"]),
+    ("stream-open",["-y","-o","missing/result","-e","[1]"]),
+    ("multi-open",["-m","missing","-e","{x:1}"]),
+    ("multi-read-directory",["-m","output-dir","-e","{x:1}"]),
+    ("multi-read-directory-manifest",["-m","output-dir","-o","manifest","-e","{x:1}"]),
+    ("multi-manifest-open",["-m","output-dir","-o","missing/manifest","-e","{x:1}"]),
+    ("multi-manifest-directory",["-m","output-dir","-o","input-dir","-e","{x:1}"]),
+    ("multi-mkdir",["-c","-m","block/a","-e","{x:1}"]),
+    ("multi-partial",["-m","output-dir","-e","{a:1,'z/path':2}"]),
+    ("multi-nul",["-m","output-dir","-e","{'nul\\u0000x':1}"]),
+    ("import-preserves-output",["-o","manifest","-e","import 'missing'"]),
+    ("ext-file-missing",["--ext-str-file","x=missing","-e","std.extVar('x')"]),
+  ]
+  for kind in ["import","importstr","importbin"] {
+    for path in ["missing","input-dir","block/child","locked-input","loop"] {
+      inputs.push((kind+"-"+path,["-e",kind+" '"+path+"'"]))
+    }
+  }
+  for quoted in ["'missing\\u0001file'","'missing\\u007ffile'","'missing\\u00a0file'","'missing\\u200dfile'"] {
+    inputs.push(("import-quote-"+quoted,["-e","import "+quoted]))
+  }
+  inputs.push(("import-library-permission",["-J","locked-dir","-e","import 'child'"]))
+  let work=@fs.realpath(@fs.tmpdir(prefix="moonjsonnet-cli-io-diagnostics-"))
+  let rows:Array[Json]=[];let mut passed=0
+  for index,(name,original) in inputs {
+    let root=work+"/"+index.to_string();@fs.mkdir(root)
+    @fs.mkdir(root+"/input-dir");@fs.mkdir(root+"/output-dir");@fs.mkdir(root+"/output-dir/x");@fs.mkdir(root+"/locked-dir")
+    @fs.write_file(root+"/block","unchanged");@fs.write_file(root+"/é中😀","unchanged");@fs.write_file(root+"/locked-input","1")
+    @fs.symlink(target="loop",root+"/loop")
+    let input=original.map(value=>value.replace_all(old="<work>",new=root))
+    let observations:Array[Json]=[]
+    for binary in [reference,candidate] {
+      @shell.Cmd("rm",["-f",root+"/output-dir/a"]).run()
+      @fs.write_file(root+"/manifest","previous\n")
+      @shell.Cmd("chmod",["000",root+"/locked-input"]).run()
+      @shell.Cmd("chmod",[if name=="import-library-permission" {"000"} else {"500"},root+"/locked-dir"]).run()
+      let output=@shell.Cmd(binary,input,cwd=root).output(timeout_ms=10000)
+      @shell.Cmd("chmod",["600",root+"/locked-input"]).run()
+      @shell.Cmd("chmod",["700",root+"/locked-dir"]).run()
+      let files:Json={"manifest":@fs.read_file(root+"/manifest").text(),"partial":if @fs.exists(root+"/output-dir/a") {Json::string(@fs.read_file(root+"/output-dir/a").text())} else {null}}
+      observations.push({"exit":output.exit_code(),"stdout":output.stdout(),"stderr":output.stderr(),"files":files})
+    }
+    let ok=observations[0]==observations[1] && (observations[0] is {"exit":1,..})
+    if ok {passed+=1} else {println("FAIL "+name)}
+    let row:Json={"name":name,"args":input,"passed":ok,"go":observations[0],"local":observations[1]}
+    @fs.write_file(root+"/report.json",row.stringify(indent=2)+"\n");rows.push(row)
+  }
+  let commit=@shell.Cmd("git",["rev-parse","HEAD"]).output();let dirty=@shell.Cmd("git",["status","--porcelain"]).output()
+  let report:Json={
+    "source_commit":if commit.exit_code()==0 {Json::string(commit.stdout().trim().to_owned())} else {null},
+    "source_dirty":if dirty.exit_code()==0 {Json::boolean(!dirty.stdout().is_empty())} else {null},
+    "reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57","reference_build":build,
+    "reference_sha256":command("shasum",["-a","256",reference]),"local_sha256":command("shasum",["-a","256",candidate]),
+    "comparison":"same actual paths and prepared state; complete stdout/stderr, exit 1 and observed files; no normalization",
+    "evidence":work,"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"skipped":0,"cases":rows,
+  }
+  @fs.mkdir("_build/cli-io-diagnostics",recursive=true,allow_exist=true)
+  @fs.write_file("_build/cli-io-diagnostics/report.json",report.stringify(indent=2)+"\n")
+  println("CLI I/O diagnostics: "+passed.to_string()+"/"+rows.length().to_string()+"; evidence: "+work)
+  if passed!=rows.length() {fail("CLI I/O differences retained")}
+}
