@@ -3159,5 +3159,991 @@
     "expected": "f(\n   1, 2\n)\n",
     "idempotent": true,
     "provenance": "Fresh pinned Go v0.21.0 formatter output, stage4 parenthesis rows and comma fodder."
+  },
+  {
+    "name": "continuation2-binary-root-right-0",
+    "source": "1 +\n2 *\n3",
+    "options": {},
+    "expected": "1 +\n2 *\n3\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-right-1",
+    "source": "1 +\n2 *\n3",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "1 +\n2 *\n3\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-right-2",
+    "source": "1 +\n2 *\n3",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "1 +\n2 *\n3\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-right-3",
+    "source": "1 +\n2 *\n3",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "1 +\n2 *\n3\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-right-4",
+    "source": "1 +\n2 *\n3",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "1 +\n2 *\n3\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-right-5",
+    "source": "1 +\n2 *\n3",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-operator-0",
+    "source": "1\n+ 2\n+ 3",
+    "options": {},
+    "expected": "1\n+ 2\n+ 3\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-operator-1",
+    "source": "1\n+ 2\n+ 3",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "1\n+ 2\n+ 3\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-operator-2",
+    "source": "1\n+ 2\n+ 3",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "1\n+ 2\n+ 3\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-operator-3",
+    "source": "1\n+ 2\n+ 3",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "1\n+ 2\n+ 3\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-operator-4",
+    "source": "1\n+ 2\n+ 3",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "1\n+ 2\n+ 3\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-root-operator-5",
+    "source": "1\n+ 2\n+ 3",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-0",
+    "source": "{\nx: 1 +\n2,\ny: 3\n* 4\n}",
+    "options": {},
+    "expected": "{\n  x: 1 +\n     2,\n  y: 3\n     * 4,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-1",
+    "source": "{\nx: 1 +\n2,\ny: 3\n* 4\n}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{\n    x: 1 +\n       2,\n    y: 3\n       * 4,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-2",
+    "source": "{\nx: 1 +\n2,\ny: 3\n* 4\n}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{\nx: 1 +\n2,\ny: 3\n* 4,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-3",
+    "source": "{\nx: 1 +\n2,\ny: 3\n* 4\n}",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "{\n  x: 1 +\n     2,\n  y: 3\n     * 4,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-4",
+    "source": "{\nx: 1 +\n2,\ny: 3\n* 4\n}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{\n  x: 1 +\n     2,\n  y: 3\n     * 4,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-5",
+    "source": "{\nx: 1 +\n2,\ny: 3\n* 4\n}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-nested-precedence-0",
+    "source": "{x: 1 + 2 *\n3}",
+    "options": {},
+    "expected": "{ x: 1 + 2 *\n         3 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-nested-precedence-1",
+    "source": "{x: 1 + 2 *\n3}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ x: 1 + 2 *\n         3 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-nested-precedence-2",
+    "source": "{x: 1 + 2 *\n3}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ x: 1 + 2 *\n3 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-nested-precedence-3",
+    "source": "{x: 1 + 2 *\n3}",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "{ x: 1 + 2 *\n         3 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-nested-precedence-4",
+    "source": "{x: 1 + 2 *\n3}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ x: 1 + 2 *\n         3 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-nested-precedence-5",
+    "source": "{x: 1 + 2 *\n3}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-parens-0",
+    "source": "{x: (1 +\n2) *\n3}",
+    "options": {},
+    "expected": "{ x: (1 +\n      2) *\n     3 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-parens-1",
+    "source": "{x: (1 +\n2) *\n3}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ x: (1 +\n      2) *\n     3 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-parens-2",
+    "source": "{x: (1 +\n2) *\n3}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ x: (1 +\n2) *\n3 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-parens-3",
+    "source": "{x: (1 +\n2) *\n3}",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "{ x: (1 +\n      2) *\n     3 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-parens-4",
+    "source": "{x: (1 +\n2) *\n3}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ x: (1 +\n      2) *\n     3 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-parens-5",
+    "source": "{x: (1 +\n2) *\n3}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-unicode-0",
+    "source": "{'中': 'a' +\n'b'}",
+    "options": {},
+    "expected": "{ '中': 'a' +\n         'b' }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-unicode-1",
+    "source": "{'中': 'a' +\n'b'}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ '中': 'a' +\n         'b' }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-unicode-2",
+    "source": "{'中': 'a' +\n'b'}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ '中': 'a' +\n'b' }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-unicode-3",
+    "source": "{'中': 'a' +\n'b'}",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "{ '中': 'a' +\n         'b' }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-unicode-4",
+    "source": "{'中': 'a' +\n'b'}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ '中': 'a' +\n         'b' }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-unicode-5",
+    "source": "{'中': 'a' +\n'b'}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-comment-0",
+    "source": "{x: 1 + // right\n2, y: 3\n/* before op */ + 4}",
+    "options": {},
+    "expected": "{ x: 1 +  // right\n     2, y: 3\n           /* before op */ + 4 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-comment-1",
+    "source": "{x: 1 + // right\n2, y: 3\n/* before op */ + 4}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ x: 1 +  // right\n     2, y: 3\n           /* before op */ + 4 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-comment-2",
+    "source": "{x: 1 + // right\n2, y: 3\n/* before op */ + 4}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ x: 1 +  // right\n2, y: 3\n/* before op */ + 4 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-comment-3",
+    "source": "{x: 1 + // right\n2, y: 3\n/* before op */ + 4}",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "{ x: 1 +  // right\n     2, y: 3\n           /* before op */ + 4 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-comment-4",
+    "source": "{x: 1 + // right\n2, y: 3\n/* before op */ + 4}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ x: 1 +\n     2, y: 3\n           + 4 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-comment-5",
+    "source": "{x: 1 + // right\n2, y: 3\n/* before op */ + 4}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* before op */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-opening-comment-0",
+    "source": "/* left */ 1 +\n2",
+    "options": {},
+    "expected": "/* left */ 1 +\n2\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-opening-comment-1",
+    "source": "/* left */ 1 +\n2",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "/* left */ 1 +\n2\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-opening-comment-2",
+    "source": "/* left */ 1 +\n2",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "/* left */ 1 +\n2\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-opening-comment-3",
+    "source": "/* left */ 1 +\n2",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "/* left */ 1 +\n2\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-opening-comment-4",
+    "source": "/* left */ 1 +\n2",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "1 +\n2\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-opening-comment-5",
+    "source": "/* left */ 1 +\n2",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* left */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-opening-comment-0",
+    "source": "{x: /* left */ 1 +\n2}",
+    "options": {},
+    "expected": "{ x: /* left */ 1 +\n     2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-opening-comment-1",
+    "source": "{x: /* left */ 1 +\n2}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ x: /* left */ 1 +\n     2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-opening-comment-2",
+    "source": "{x: /* left */ 1 +\n2}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ x: /* left */ 1 +\n2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-opening-comment-3",
+    "source": "{x: /* left */ 1 +\n2}",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "{ x: /* left */ 1 +\n     2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-opening-comment-4",
+    "source": "{x: /* left */ 1 +\n2}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ x: 1 +\n     2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-binary-field-opening-comment-5",
+    "source": "{x: /* left */ 1 +\n2}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* left */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-inline-0",
+    "source": "1 + /* one\n       two */ 2",
+    "options": {},
+    "expected": "1 +\n/* one\n   two */\n2\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-inline-1",
+    "source": "1 + /* one\n       two */ 2",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "1 +\n/* one\n   two */\n2\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-inline-2",
+    "source": "1 + /* one\n       two */ 2",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "1 +\n/* one\n   two */\n2\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-inline-3",
+    "source": "1 + /* one\n       two */ 2",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "1 +\n/* one\n   two */\n2\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-inline-4",
+    "source": "1 + /* one\n       two */ 2",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "1 +\n2\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-inline-5",
+    "source": "1 + /* one\n       two */ 2",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* one\n   two */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-field-0",
+    "source": "{\nx: /* one\n        two */ 1\n}",
+    "options": {},
+    "expected": "{\n  x:\n    /* one\n         two */\n    1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-field-1",
+    "source": "{\nx: /* one\n        two */ 1\n}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{\n    x:\n        /* one\n             two */\n        1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-field-2",
+    "source": "{\nx: /* one\n        two */ 1\n}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{\nx:\n/* one\n     two */\n1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-field-3",
+    "source": "{\nx: /* one\n        two */ 1\n}",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "{\n  x:\n    /* one\n         two */\n    1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-field-4",
+    "source": "{\nx: /* one\n        two */ 1\n}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{\n  x:\n    1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-field-5",
+    "source": "{\nx: /* one\n        two */ 1\n}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* one\n     two */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-close-0",
+    "source": "[\n1\n/* end\n   comment */\n]",
+    "options": {},
+    "expected": "[\n  1,\n  /* end\n     comment */\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-close-1",
+    "source": "[\n1\n/* end\n   comment */\n]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "[\n    1,\n    /* end\n       comment */\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-close-2",
+    "source": "[\n1\n/* end\n   comment */\n]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "[\n1,\n/* end\n   comment */\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-close-3",
+    "source": "[\n1\n/* end\n   comment */\n]",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "[\n  1,\n  /* end\n     comment */\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-close-4",
+    "source": "[\n1\n/* end\n   comment */\n]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[\n  1,\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-close-5",
+    "source": "[\n1\n/* end\n   comment */\n]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* end\n   comment */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-crlf-0",
+    "source": "/* one\r\n   two \r\n */\r\n42",
+    "options": {},
+    "expected": "/* one\n   two\n */\n42\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-crlf-1",
+    "source": "/* one\r\n   two \r\n */\r\n42",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "/* one\n   two\n */\n42\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-crlf-2",
+    "source": "/* one\r\n   two \r\n */\r\n42",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "/* one\n   two\n */\n42\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-crlf-3",
+    "source": "/* one\r\n   two \r\n */\r\n42",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "/* one\n   two\n */\n42\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-crlf-4",
+    "source": "/* one\r\n   two \r\n */\r\n42",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "42\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-crlf-5",
+    "source": "/* one\r\n   two \r\n */\r\n42",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* one\n   two\n */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-tabs-0",
+    "source": "{x: /* one\n\t\t* two \t\n\t */ 1}",
+    "options": {},
+    "expected": "{ x:\n  /* one\n  * two\n  */\n  1 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-tabs-1",
+    "source": "{x: /* one\n\t\t* two \t\n\t */ 1}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ x:\n    /* one\n    * two\n    */\n    1 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-tabs-2",
+    "source": "{x: /* one\n\t\t* two \t\n\t */ 1}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ x:\n/* one\n* two\n*/\n1 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-tabs-3",
+    "source": "{x: /* one\n\t\t* two \t\n\t */ 1}",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "{ x:\n  /* one\n  * two\n  */\n  1 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-tabs-4",
+    "source": "{x: /* one\n\t\t* two \t\n\t */ 1}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ x:\n  1 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-tabs-5",
+    "source": "{x: /* one\n\t\t* two \t\n\t */ 1}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* one\n* two\n*/\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-margin-0",
+    "source": "local /* bbb\n         bbb\n         bbb */ b=import 'b';\nlocal a=import 'a'; [b,a]",
+    "options": {},
+    "expected": "local a = import 'a';\nlocal\n  /* bbb\n     bbb\n     bbb */\n  b = import 'b';\n[b, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-margin-1",
+    "source": "local /* bbb\n         bbb\n         bbb */ b=import 'b';\nlocal a=import 'a'; [b,a]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "local a = import 'a';\nlocal\n    /* bbb\n       bbb\n       bbb */\n    b = import 'b';\n[b, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-margin-2",
+    "source": "local /* bbb\n         bbb\n         bbb */ b=import 'b';\nlocal a=import 'a'; [b,a]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "local a = import 'a';\nlocal\n/* bbb\n   bbb\n   bbb */\nb = import 'b';\n[b, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-margin-3",
+    "source": "local /* bbb\n         bbb\n         bbb */ b=import 'b';\nlocal a=import 'a'; [b,a]",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "local\n  /* bbb\n     bbb\n     bbb */\n  b = import 'b';\nlocal a = import 'a'; [b, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-margin-4",
+    "source": "local /* bbb\n         bbb\n         bbb */ b=import 'b';\nlocal a=import 'a'; [b,a]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "local a = import 'a';\nlocal\n  b = import 'b';\n[b, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-margin-5",
+    "source": "local /* bbb\n         bbb\n         bbb */ b=import 'b';\nlocal a=import 'a'; [b,a]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* bbb\n   bbb\n   bbb */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-same-text-0",
+    "source": "local z=import /* same\n    same */ 'z';\nlocal a = import /* same\n    same */ 'a';[z,a]",
+    "options": {},
+    "expected": "local a = import\n  /* same\n  same */\n  'a';\nlocal z = import\n  /* same\n  same */\n  'z';\n[z, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-same-text-1",
+    "source": "local z=import /* same\n    same */ 'z';\nlocal a = import /* same\n    same */ 'a';[z,a]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "local a = import\n    /* same\n    same */\n    'a';\nlocal z = import\n    /* same\n    same */\n    'z';\n[z, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-same-text-2",
+    "source": "local z=import /* same\n    same */ 'z';\nlocal a = import /* same\n    same */ 'a';[z,a]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "local a = import\n/* same\nsame */\n'a';\nlocal z = import\n/* same\nsame */\n'z';\n[z, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-same-text-3",
+    "source": "local z=import /* same\n    same */ 'z';\nlocal a = import /* same\n    same */ 'a';[z,a]",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "local z = import\n  /* same\n  same */\n  'z';\nlocal a = import\n  /* same\n  same */\n  'a'; [z, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-same-text-4",
+    "source": "local z=import /* same\n    same */ 'z';\nlocal a = import /* same\n    same */ 'a';[z,a]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "local a = import\n  'a';\nlocal z = import\n  'z';\n[z, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-same-text-5",
+    "source": "local z=import /* same\n    same */ 'z';\nlocal a = import /* same\n    same */ 'a';[z,a]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* same\nsame */\n/* same\nsame */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-distinct-margin-0",
+    "source": "local z=import /* same\n                  same */ '中';\nlocal a = import /* same\n                  same */ 'a';[z,a]",
+    "options": {},
+    "expected": "local a = import\n  /* same\n   same */\n  'a';\nlocal z = import\n  /* same\n     same */\n  '中';\n[z, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-distinct-margin-1",
+    "source": "local z=import /* same\n                  same */ '中';\nlocal a = import /* same\n                  same */ 'a';[z,a]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "local a = import\n    /* same\n     same */\n    'a';\nlocal z = import\n    /* same\n       same */\n    '中';\n[z, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-distinct-margin-2",
+    "source": "local z=import /* same\n                  same */ '中';\nlocal a = import /* same\n                  same */ 'a';[z,a]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "local a = import\n/* same\n same */\n'a';\nlocal z = import\n/* same\n   same */\n'中';\n[z, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-distinct-margin-3",
+    "source": "local z=import /* same\n                  same */ '中';\nlocal a = import /* same\n                  same */ 'a';[z,a]",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "local z = import\n  /* same\n     same */\n  '中';\nlocal a = import\n  /* same\n   same */\n  'a'; [z, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-distinct-margin-4",
+    "source": "local z=import /* same\n                  same */ '中';\nlocal a = import /* same\n                  same */ 'a';[z,a]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "local a = import\n  'a';\nlocal z = import\n  '中';\n[z, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation2-paragraph-import-distinct-margin-5",
+    "source": "local z=import /* same\n                  same */ '中';\nlocal a = import /* same\n                  same */ 'a';[z,a]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* same\n same */\n/* same\n   same */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
   }
 ]

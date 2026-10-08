@@ -13,6 +13,8 @@ priv struct Trivia {
   kind : SourcePartKind
   raw : String
   range : SourceRange
+  // Formatting retains this margin when imports move and are re-lexed.
+  margin : Int
 }
 
 ///|
@@ -324,6 +326,7 @@ fn lex(
         },
         raw,
         range: { begin: loc, end: { file, line, column, }, },
+        margin: loc.column - 1,
       })
     }
   }

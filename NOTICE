@@ -99,8 +99,8 @@ Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 Repeated parameter binding and default selection in eval.mbt follow go-jsonnet
 value.go checkArguments and thunks.go closure.evalCall at that same revision.
 
-formatter*.mbt (except formatter_sort*.mbt) implement formatting rules from internal/formatter and
-internal/parser/string_util.go at the same pinned go-jsonnet revision.
+formatter*.mbt (except formatter_sort*.mbt) implement formatting rules from internal/formatter,
+internal/parser/lexer.go and internal/parser/string_util.go at the same pinned go-jsonnet revision.
 Copyright Google Inc.; Apache License 2.0 (see LICENSE). This partial native
 formatter does not bundle or invoke Go at runtime.
 

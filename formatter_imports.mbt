@@ -12,8 +12,8 @@ priv struct FormatImportEntry {
   name : String
   key : Bytes
   start : Int
-  before : String
-  after : String
+  before : Array[Trivia]
+  after : Array[Trivia]
 }
 
 ///|
@@ -49,39 +49,42 @@ fn format_trivia_text(trivia : Array[Trivia]) -> String {
 }
 
 ///|
+fn format_import_newline(loc : Location) -> Trivia {
+  { kind: Whitespace, raw: "\n", range: { begin: loc, end: loc, }, margin: 0, }
+}
+
+///|
 // Split after the first physical line ending outside a comment. Never split
 // within a multiline block comment. The remainder belongs to the next binding
 // or import group; adjacent comments travel with the previous import.
-fn format_split_import_trivia(trivia : Array[Trivia]) -> (String, String) {
-  let before = StringBuilder()
-  let after = StringBuilder()
+fn format_split_import_trivia(
+  trivia : Array[Trivia],
+  loc : Location,
+) -> (Array[Trivia], Array[Trivia]) {
+  let before : Array[Trivia] = []
+  let after : Array[Trivia] = []
   let mut split = false
   for part in trivia {
     if split {
-      after.write_string(part.raw)
+      after.push(part)
     } else if part.kind == BlockComment && part.raw.contains("\n") {
       // Go represents a multiline comment as a paragraph, with an implicit
       // line ending before it. It starts a new import group.
-      before.write_string("\n")
-      after.write_string(part.raw)
+      before.push(format_import_newline(loc))
+      after.push(part)
       split = true
     } else if part.kind == Whitespace && part.raw.find("\n") is Some(i) {
-      before.write_string(part.raw[:i + 1].to_owned())
-      after.write_string(part.raw[i + 1:].to_owned())
+      before.push({ ..part, raw: part.raw[:i + 1].to_owned(), })
+      after.push({ ..part, raw: part.raw[i + 1:].to_owned(), })
       split = true
     } else {
-      before.write_string(part.raw)
+      before.push(part)
     }
   }
-  let before = before.to_string()
-  (
-    if before.has_suffix("\n") {
-      before
-    } else {
-      before + "\n"
-    },
-    after.to_string(),
-  )
+  if !format_trivia_text(before).has_suffix("\n") {
+    before.push(format_import_newline(loc))
+  }
+  (before, after)
 }
 
 ///|
@@ -97,12 +100,16 @@ fn format_sort_imports(
   if locals.is_empty() {
     return tokens
   }
-  let out = StringBuilder()
-  out.write_string(format_trivia_text(tokens[0].leading))
+  let out : FormatImportOutput = {
+    out: StringBuilder(),
+    margins: Map([]),
+    offset: 0,
+  }
+  out.write_trivia(tokens[0].leading)
   let entries : Array[FormatImportEntry] = []
   for n, statement in locals {
-    let mut before = format_trivia_text(tokens[statement.bindings[0]].leading)
-    let mut next_group = ""
+    let mut before = tokens[statement.bindings[0]].leading.copy()
+    let mut next_group : Array[Trivia] = []
     for b, start in statement.bindings {
       let next = if b + 1 < statement.bindings.length() {
         statement.bindings[b + 1]
@@ -111,6 +118,7 @@ fn format_sort_imports(
       }
       let (after, next_before) = format_split_import_trivia(
         tokens[next].leading,
+        tokens[next].loc,
       )
       guard tokens[start + 3].value is Some(String(key)) else { continue }
       entries.push({
@@ -120,19 +128,19 @@ fn format_sort_imports(
         before,
         after,
       })
-      let paragraph = next_before.trim_start()
+      let paragraph = format_trivia_text(next_before).trim_start()
       before = if paragraph.has_prefix("//") ||
         paragraph.has_prefix("#") ||
         (paragraph.has_prefix("/*") && paragraph.contains("\n")) {
-        "\n" + next_before
+        [format_import_newline(tokens[next].loc)] + next_before
       } else {
         next_before
       }
       next_group = next_before
     }
     let boundary = n + 1 == locals.length() ||
-      next_group.contains("\n") ||
-      !next_group.trim().is_empty()
+      format_trivia_text(next_group).contains("\n") ||
+      !format_trivia_text(next_group).trim().is_empty()
     if boundary {
       let names : Map[String, Bool] = Map([])
       let mut duplicated = false
@@ -147,10 +155,10 @@ fn format_sort_imports(
       }
       for entry in entries {
         out.write_string("local ")
-        out.write_string(entry.before)
+        out.write_trivia(entry.before)
         for i in entry.start..<=(entry.start + 4) {
           if i > entry.start {
-            out.write_string(format_trivia_text(tokens[i].leading))
+            out.write_trivia(tokens[i].leading)
           }
           out.write_string(
             if i == entry.start + 4 {
@@ -160,12 +168,16 @@ fn format_sort_imports(
             },
           )
         }
-        out.write_string(entry.after)
+        out.write_trivia(entry.after)
       }
-      out.write_string(next_group)
+      out.write_trivia(next_group)
       // Go ensures a clean line ending after the final interstitial in the
       // next group's opening fodder, even when it originally preceded local.
-      let last_line = next_group.split("\n").collect().last().unwrap_or("")
+      let last_line = format_trivia_text(next_group)
+        .split("\n")
+        .collect()
+        .last()
+        .unwrap_or("")
       if last_line.trim().has_suffix("*/") {
         out.write_string("\n")
       }
@@ -174,14 +186,16 @@ fn format_sort_imports(
   }
   for i in end..<tokens.length() {
     if i > end {
-      out.write_string(format_trivia_text(tokens[i].leading))
+      out.write_trivia(tokens[i].leading)
     }
     out.write_string(tokens[i].raw)
   }
   // Rebase locations after moving imports so inline-comment classification
   // continues to describe the new lexical order.
-  lex(out.to_string(), tokens[0].loc.file, retain_trivia=true) catch {
+  let result = lex(out.out.to_string(), tokens[0].loc.file, retain_trivia=true) catch {
     Error(d) => raise Error(d)
     e => raise problem(Runtime, tokens[0].loc, e.to_string())
   }
+  out.restore_margins(result)
+  result
 }

@@ -93,3 +93,38 @@ test "formatter import switch source isolation and reference non-idempotence" {
     "local y = import 'a';\nlocal x = import 'b';\n[x, y]\n",
   )
 }
+
+///|
+test "formatter moved imports retain each original paragraph margin" {
+  for
+    (source, expected) in [
+      (
+        "local /* bbb\n         bbb\n         bbb */ b=import 'b';\nlocal a=import 'a'; [b,a]",
+        "local a = import 'a';\nlocal\n  /* bbb\n     bbb\n     bbb */\n  b = import 'b';\n[b, a]\n",
+      ),
+      (
+        "local z=import /* same\n    same */ 'z';\nlocal a = import /* same\n    same */ 'a';[z,a]",
+        "local a = import\n  /* same\n  same */\n  'a';\nlocal z = import\n  /* same\n  same */\n  'z';\n[z, a]\n",
+      ),
+    ] {
+    let document = @moonjsonnet.ParsedSource::parse(source)
+    let formatted = document.format()
+    assert_eq(formatted, expected)
+    assert_eq(document.text(), source)
+    assert_eq(document.format(), formatted)
+    ignore(@moonjsonnet.ParsedSource::parse(formatted))
+    assert_eq(@moonjsonnet.format_source(formatted), formatted)
+    let original_requests : Array[String] = []
+    let formatted_requests : Array[String] = []
+    let original = @moonjsonnet.evaluate(source, resolver=fn(_, path) {
+      original_requests.push(path)
+      { id: path, text: Json::string(path).stringify(), }
+    })
+    let actual = @moonjsonnet.evaluate(formatted, resolver=fn(_, path) {
+      formatted_requests.push(path)
+      { id: path, text: Json::string(path).stringify(), }
+    })
+    assert_eq(actual, original)
+    assert_eq(formatted_requests, original_requests)
+  }
+}

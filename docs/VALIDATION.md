@@ -389,6 +389,17 @@ The prior ASan, consumer and unrelated CLI/API/lint results were not rerun in
 this batch. See the [continuation report](../reports/GO-JSONNET-FORMATTER-CONTINUATION.md)
 for commits, hashes, the full failure list and depth analysis.
 
+The next local continuation was validated before commit, based on `1c75ed8` with
+uncommitted changes, passing
+**504/504** frozen fixtures and **151/178** upstream inputs after rebuilding and
+running pinned Go. Reports record `source_dirty=true`. All original 402 fixtures
+are unchanged and pass; all previously passing 148 upstream inputs still pass.
+Native debug/release tests each pass **243/243**, and checks, release build,
+interface generation, formatting and documentation generation pass with no public
+interface changes. The **27 retained failures** include the same two AST depth
+errors. CLI/API/lint, ASan, consumer and cross-platform acceptance were not rerun.
+See the [binary continuation and paragraph margin report](../reports/GO-JSONNET-FORMATTER-CONTINUATION2.md).
+
 See the repository's `reports/` directory for commit-bound acceptance evidence.
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
 

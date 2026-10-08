@@ -99,6 +99,12 @@ fn format_tokens(
   let groups : Array[FormatGroup] = []
   let locals : Array[FormatLocal] = []
   let layout = format_layout(tokens)
+  let expression = parse_tokens(tokens, limits.depth) catch {
+    Error(d) => raise Error(d)
+    e => raise problem(Runtime, loc, e.to_string())
+  }
+  let continuation = format_binary_continuations(tokens, expression)
+  let columns = Array::make(tokens.length(), 0)
   let mut previous = ""
   let mut ends_expr = false
   let mut tight_after = false
@@ -120,7 +126,12 @@ fn format_tokens(
     if !closing &&
       token.has_newline() &&
       !layout.newline[i] &&
-      !groups.is_empty() {
+      (
+        !groups.is_empty() ||
+        previous == "import" ||
+        previous == "importstr" ||
+        previous == "importbin"
+      ) {
       level += 1
     }
     let mut spaces = if options.indent > 0 &&
@@ -143,11 +154,15 @@ fn format_tokens(
       scope.depth == groups.length() {
       spaces = scope.column
     }
+    if options.indent > 0 && continuation[i] >= 0 {
+      spaces = columns[continuation[i]]
+    }
     if layout.trailing_comma[i] && !only_comments {
       writer.write(",")
     }
     let mut newline_count = 0
     let mut interstitial = false
+    let mut comment_column : Int? = None
     for trivia in token.leading {
       writer.tick()
       match trivia.kind {
@@ -162,7 +177,12 @@ fn format_tokens(
           if strip_all || options.strip_comments {
             continue
           }
-          let inline = last_line == trivia.range.begin.line && last_line > 0
+          let paragraph = trivia.kind == BlockComment &&
+            trivia.raw.contains("\n")
+          let inline = !paragraph &&
+            last_line == trivia.range.begin.line &&
+            last_line > 0
+          let original_newline = newline_count > 0
           if only_comments && inline && trivia.kind == LineComment {
             continue
           }
@@ -181,11 +201,26 @@ fn format_tokens(
               }
             }
             newline_count = 0
-          } else if only_comments && !writer.line_start {
+          } else if (only_comments || paragraph) && !writer.line_start {
             writer.write("\n")
           }
           let comment_indent = if options.indent > 0 {
-            spaces
+            if closing &&
+              groups.last() is Some({ expanded: true, .. }) &&
+              spaces <= limits.output_bytes - options.indent {
+              spaces + options.indent
+            } else {
+              spaces
+            }
+          } else if paragraph && !original_newline {
+            // A paragraph that originally flowed after a token acquires an
+            // implicit line ending. Go takes its indent from the following
+            // physical line, or zero when that line ending is also implicit.
+            if trivia.range.end.line == token.loc.line {
+              0
+            } else {
+              token.loc.column - 1
+            }
           } else {
             trivia.range.begin.column - 1
           }
@@ -216,12 +251,30 @@ fn format_tokens(
             options.comment_style,
             first_comment,
           )
-          writer.write(comment)
+          if !paragraph && trivia.kind == BlockComment && comment_column is None {
+            comment_column = Some(writer.column)
+          }
+          if paragraph {
+            for line in format_comment_lines(trivia) {
+              if !line.is_empty() {
+                writer.indent(comment_indent)
+                writer.write(line)
+              }
+              writer.write("\n")
+            }
+            if options.indent <= 0 && trivia.range.end.line == token.loc.line {
+              spaces = 0
+            }
+          } else {
+            writer.write(comment)
+          }
           first_comment = false
           if trivia.kind == LineComment ||
             trivia.raw.contains("\n") ||
             only_comments {
-            writer.write("\n")
+            if !paragraph {
+              writer.write("\n")
+            }
           } else {
             interstitial = true
           }
@@ -353,6 +406,9 @@ fn format_tokens(
     if spaced || comment_space {
       writer.write(" ")
     }
+    // Opening interstitial comments belong to the expression's fodder. Their
+    // width does not move the expression's continuation anchor.
+    columns[i] = comment_column.unwrap_or(writer.column)
     let mut raw = format_string(token, options.string_style)
     if options.pretty_field_names &&
       token.text == "<string>" &&

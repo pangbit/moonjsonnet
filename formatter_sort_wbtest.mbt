@@ -4,8 +4,8 @@ fn formatter_sort_fixture(keys : Array[Int]) -> Array[FormatImportEntry] {
     name: "x\{i}",
     key: @utf8.encode(key.to_string()),
     start: i,
-    before: "",
-    after: "",
+    before: [],
+    after: [],
   })
 }
 

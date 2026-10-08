@@ -190,3 +190,52 @@ test "formatter retains AST depth budgets for flat expression chains" {
   let formatted = @moonjsonnet.format_source(beyond, limits=expanded)
   ignore(@moonjsonnet.ParsedSource::parse(formatted, limits=expanded))
 }
+
+///|
+test "formatter aligns binary continuations with the complete expression" {
+  for
+    (source, expected) in [
+      ("1 +\n2 *\n3", "1 +\n2 *\n3\n"),
+      ("1\n+ 2\n+ 3", "1\n+ 2\n+ 3\n"),
+      ("/* left */ 1 +\n2", "/* left */ 1 +\n2\n"),
+      ("{x: /* left */ 1 +\n2}", "{ x: /* left */ 1 +\n     2 }\n"),
+      (
+        "{\nx: 1 +\n2,\ny: 3\n* 4\n}", "{\n  x: 1 +\n     2,\n  y: 3\n     * 4,\n}\n",
+      ),
+      ("{x: 1 + 2 *\n3}", "{ x: 1 + 2 *\n         3 }\n"),
+      ("{x: (1 +\n2) *\n3}", "{ x: (1 +\n      2) *\n     3 }\n"),
+      ("{'中': 'a' +\n'b'}", "{ '中': 'a' +\n         'b' }\n"),
+    ] {
+    let document = @moonjsonnet.ParsedSource::parse(source)
+    let formatted = document.format()
+    assert_eq(formatted, expected)
+    assert_eq(document.text(), source)
+    assert_eq(@moonjsonnet.evaluate(formatted), @moonjsonnet.evaluate(source))
+    assert_eq(@moonjsonnet.format_source(formatted), formatted)
+  }
+}
+
+///|
+test "formatter normalizes paragraph margins and closing fodder" {
+  for
+    (source, expected) in [
+      ("1 + /* one\n       two */ 2", "1 +\n/* one\n   two */\n2\n"),
+      (
+        "[\n1\n/* end\n   comment */\n]", "[\n  1,\n  /* end\n     comment */\n]\n",
+      ),
+      ("/* one\r\n   two \r\n */\r\n42", "/* one\n   two\n */\n42\n"),
+      (
+        "{x: /* one\n\t\t* two \t\n\t */ 1}", "{ x:\n  /* one\n  * two\n  */\n  1 }\n",
+      ),
+    ] {
+    let formatted = @moonjsonnet.format_source(source)
+    assert_eq(formatted, expected)
+    assert_eq(@moonjsonnet.evaluate(formatted), @moonjsonnet.evaluate(source))
+    assert_eq(@moonjsonnet.format_source(formatted), formatted)
+  }
+  let options = { ..@moonjsonnet.FormatOptions::default(), indent: 0, }
+  assert_eq(
+    @moonjsonnet.format_source("1 + /* one\n       two */ 2", options~),
+    "1 +\n/* one\n   two */\n2\n",
+  )
+}
