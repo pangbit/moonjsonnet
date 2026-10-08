@@ -644,7 +644,7 @@
     "input": "exec",
     "expect": "io-error",
     "reference_error": "-m argument was empty string",
-    "moonjsonnet_cli_error": "multi directory must not be empty"
+    "moonjsonnet_cli_error": "-m argument was empty string"
   },
   {
     "name": "multi-empty-filename",
