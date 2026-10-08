@@ -166,13 +166,31 @@ fn format_tokens(
           if only_comments && inline && trivia.kind == LineComment {
             continue
           }
-          if newline_count > 0 || (only_comments && !writer.line_start) {
-            if !writer.line_start {
-              writer.write("\n")
+          if newline_count > 0 {
+            let count = if options.max_blank_lines > 0 &&
+              options.max_blank_lines < newline_count - 1 {
+              options.max_blank_lines + 1
+            } else {
+              newline_count
+            }
+            if writer.bytes > 0 {
+              for n in 0..<count {
+                if n > 0 || !writer.line_start {
+                  writer.write("\n")
+                }
+              }
             }
             newline_count = 0
+          } else if only_comments && !writer.line_start {
+            writer.write("\n")
           }
-          writer.indent(spaces)
+          writer.indent(
+            if options.indent > 0 {
+              spaces
+            } else {
+              trivia.range.begin.column - 1
+            },
+          )
           if !writer.line_start && !previous.is_empty() && inline {
             let crowded = t != ";" &&
               t != "," &&

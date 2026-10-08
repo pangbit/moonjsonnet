@@ -133,6 +133,25 @@ test "formatter keeps multiline computed keys parseable and preserves values" {
 }
 
 ///|
+test "formatter retains blank lines before paragraph comments" {
+  for
+    (source, expected) in [
+      (
+        "{}\n\n// a\n\n// b\n\n/* C\n\n*/\n", "{}\n\n// a\n\n// b\n\n/* C\n\n*/\n",
+      ),
+      ("[\n1,\n\n// second\n2\n]", "[\n  1,\n\n  // second\n  2,\n]\n"),
+      (
+        "local z=import 'z';\n\n// next group\nlocal a=import 'a';[z,a]", "local z = import 'z';\n\n// next group\nlocal a = import 'a';\n[z, a]\n",
+      ),
+    ] {
+    let formatted = @moonjsonnet.format_source(source)
+    assert_eq(formatted, expected)
+    ignore(@moonjsonnet.ParsedSource::parse(formatted))
+    assert_eq(@moonjsonnet.format_source(formatted), formatted)
+  }
+}
+
+///|
 test "formatter retains AST depth budgets for flat expression chains" {
   let limits = @moonjsonnet.Limits::default()
   let within = "0" + "+1".repeat(limits.depth - 1)
