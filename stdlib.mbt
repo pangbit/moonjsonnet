@@ -422,14 +422,7 @@ fn Vm::builtin(
       }
       Bool(true)
     }
-    "extVar" => {
-      let key = text_value(x, loc)
-      match self.ext.get(key) {
-        Some(t) => self.force(t, loc)
-        None =>
-          raise problem(Runtime, loc, "undefined external variable '\{key}'")
-      }
-    }
+    "extVar" => self.force(self.external_parameter(x, loc), loc)
     "type" => Str(value_type(x))
     "isArray" => Bool(value_type(x) == "array")
     "isBoolean" => Bool(value_type(x) == "boolean")

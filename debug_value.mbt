@@ -30,7 +30,7 @@ fn Vm::debug_thunk(
   self.tick(writer.loc)
   match self.thunks[id] {
     Ready(value) => self.debug_display(value, writer, depth)
-    Busy => writer.write("<evaluating>")
+    Busy | RunningParameter(_, _) => writer.write("<evaluating>")
     Failed(_) => writer.write("<failed>")
     _ => writer.write("<unevaluated>")
   }

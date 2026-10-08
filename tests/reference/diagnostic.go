@@ -41,6 +41,7 @@ func main() {
 	var input struct {
 		Source, Mode, Filename string
 		TraceSize              *int `json:"trace_size"`
+		StackSize              *int `json:"stack_size"`
 		Color                  bool
 		StringOutput           bool `json:"string_output"`
 		Files                  map[string]string
@@ -54,6 +55,9 @@ func main() {
 		input.Filename = "entry"
 	}
 	vm := jsonnet.MakeVM()
+	if input.StackSize != nil {
+		vm.MaxStack = *input.StackSize
+	}
 	cap := &capture{vm.ErrorFormatter, []map[string]string{}}
 	vm.ErrorFormatter = cap
 	vm.Importer(importer{input.Files})

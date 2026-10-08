@@ -37,10 +37,17 @@ fn Vm::eval_inner(
     self.current_trace = previous_trace
   }
   let events : Array[EvalHookFrame] = []
-  let result = self.eval_loop(expr, env, tail~, events~) catch {
+  let forwarded : Array[(Int, Location)] = []
+  let result = self.eval_loop(expr, env, tail~, events~, forwarded~) catch {
     Error(d) => {
+      for i = forwarded.length() - 1; i >= 0; i = i - 1 {
+        d.context.push(forwarded[i].1)
+      }
       let d = self.traced(d)
       self.hook_after(events, None, Some(Error(d)))
+      for (id, _) in forwarded {
+        self.thunks[id] = Failed(Error(d))
+      }
       raise Error(d)
     }
     error => {
@@ -49,6 +56,10 @@ fn Vm::eval_inner(
     }
   }
   self.hook_after(events, Some(result), None)
+  for (id, _) in forwarded {
+    self.thunks[id] = Ready(result)
+    ignore(self.retries.remove(id))
+  }
   result
 }
 
@@ -59,6 +70,7 @@ fn Vm::eval_loop(
   env : Env,
   tail~ : Bool,
   events~ : Array[EvalHookFrame],
+  forwarded~ : Array[(Int, Location)],
 ) -> Value raise {
   let mut expr = expr
   let mut env = env
@@ -114,6 +126,35 @@ fn Vm::eval_loop(
           if tail &&
             self.frames.last().map(frame => frame.trimmable) == Some(true) {
             ignore(self.frames.pop())
+          }
+          if tail && function is Builtin("extVar") {
+            self.tick(loc)
+            let id = try {
+              let bound = bind_arguments([("x", true)], thunks, loc)
+              self.external_parameter(self.force(bound["x"], loc), loc)
+            } catch {
+              Error(d) => {
+                d.context.push(loc)
+                raise Error(d)
+              }
+              error => raise error
+            }
+            if self.forward_parameter(id) is Some((next, scope)) {
+              forwarded.push((id, loc))
+              self.push_frame(next.loc, false)
+              if self.depth >= self.limits.depth {
+                raise self.trace_problem(
+                  Limit,
+                  next.loc,
+                  "evaluation depth limit exceeded",
+                )
+              }
+              self.tick(next.loc)
+              expr = next
+              env = scope
+              continue
+            }
+            return self.force(id, loc)
           }
           if strict && function is Closure(params, body, outer) {
             let scope = try {

@@ -31,6 +31,12 @@ fn run(input : Json) -> Json raise {
     })
   }
   let evaluator = @moonjsonnet.Evaluator::new()
+  if field(input, "stack_size", null) is Number(size, ..) {
+    evaluator.set_limits({
+      ..@moonjsonnet.Limits::default(),
+      stack: size.to_int(),
+    })
+  }
   evaluator.set_diagnostic_formatter(formatter~)
   let files = field(input, "files", {})
   if files is Object(files) {

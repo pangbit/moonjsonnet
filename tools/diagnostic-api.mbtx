@@ -47,6 +47,9 @@ async fn main {
     ("import",{"source":"import 'library'","files":{"library":"error 'failed'"}}),
     ("import-array",{"source":"[import 'library']","files":{"library":"{a:error 'failed'}"}}),
     ("ext-code",{"source":"std.extVar('x')","ext_code":{"x":"error 'failed'"}}),
+    ("parameter-cycle-default",{"source":"std.extVar('x')","ext_code":{"x":"std.extVar('x')"}}),
+    ("parameter-cycle-mutual",{"source":"std.extVar('x')","ext_code":{"x":"std.extVar('y')","y":"std.extVar('x')"},"stack_size":8}),
+    ("parameter-cycle-conditional",{"source":"std.extVar('x')","ext_code":{"x":"local a=1;if a==1 then std.extVar('x') else 42"},"stack_size":8}),
     ("tla-code",{"source":"function(x) x","tla_code":{"x":"error 'failed'"}}),
     ("tla-body",{"source":"function() error 'failed'"}),
     ("syntax-token",{"source":"[1 2]"}),
@@ -137,6 +140,9 @@ async fn main {
     ("boundary-self",{"source":"local o={a:self.b,b:error 'failed'};o.a"}),
   ]
   let json_errors=[""," ","{","[","\"","-","1.","1e","1e+","t","tr","tru","truth","falsex","nullx","nul","{x:1}","{\"x\"1}","{\"x\":}","{\"x\":1 x}","[1 x]","[1,]","{\"x\":1,}","\"\\q\"","\"\\u12xz\"","\"control\n\"","true false","01","--1","é","\u007f","[true}"]
+  for stack in [1,2,3,8] {
+    sources.push(("parameter-cycle-stack-"+stack.to_string(),{"source":"std.extVar('x')","ext_code":{"x":"std.extVar('x')"},"stack_size":stack}))
+  }
   for index,data in json_errors {
     sources.push(("json-error-"+index.to_string(),{"source":"std.parseJson("+Json::string(data).stringify()+")"}))
   }

@@ -229,7 +229,10 @@ test "parameters retain laziness isolate scopes and reset per evaluation" {
       ext_code=Map([("cycle", "std.extVar('cycle')")]),
     )
   catch {
-    @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Runtime)
+    @moonjsonnet.Error(d) => {
+      assert_eq(d.kind, @moonjsonnet.Limit)
+      assert_eq(d.message, "max stack frames exceeded.")
+    }
   } noraise {
     _ => fail("expected cyclic parameter error")
   }

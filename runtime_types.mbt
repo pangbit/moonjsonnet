@@ -49,6 +49,7 @@ priv enum Thunk {
   GeneratedCall(Value, Array[Int], Location)
   Code(String, Location)
   ParsedParameter(Program, Location)
+  RunningParameter(Expr, Env)
   Ready(Value)
   Busy
   Failed(Error)
@@ -137,7 +138,8 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
   self.tick(loc)
   match self.thunks[id] {
     Ready(v) => v
-    Busy => raise problem(Runtime, loc, "cyclic evaluation of a lazy value")
+    Busy | RunningParameter(_, _) =>
+      raise problem(Runtime, loc, "cyclic evaluation of a lazy value")
     Failed(e) => raise e
     Pending(expr, env) => {
       if self.persistent {
@@ -191,7 +193,9 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
           raise problem(Limit, origin, "parameter source byte limit exceeded")
         }
         let expr = parse(source, origin.file, self.limits.depth)
-        self.eval_frame(expr, self.base_env(file=origin.file, import_from=""))
+        let env = self.base_env(file=origin.file, import_from="")
+        self.thunks[id] = RunningParameter(expr, env)
+        self.eval_frame(expr, env)
       } catch {
         e => self.failure(id, e)
       }
@@ -209,13 +213,12 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
           raise problem(Limit, origin, "parameter source byte limit exceeded")
         }
         check_ast_depth(program.expression, self.limits.depth)
-        self.eval_frame(
-          program.expression,
-          self.base_env(
-            file=origin.file,
-            import_from=if program.anonymous { "" } else { program.filename },
-          ),
+        let env = self.base_env(
+          file=origin.file,
+          import_from=if program.anonymous { "" } else { program.filename },
         )
+        self.thunks[id] = RunningParameter(program.expression, env)
+        self.eval_frame(program.expression, env)
       } catch {
         e => self.failure(id, e)
       }
@@ -227,7 +230,7 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
 }
 
 ///|
-fn Vm::failure(self : Vm, id : Int, error : Error) -> Value raise {
+fn[T] Vm::failure(self : Vm, id : Int, error : Error) -> T raise {
   self.thunks[id] = Failed(error)
   raise error
 }
