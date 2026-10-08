@@ -83,6 +83,11 @@ fn Vm::eval_loop(
     self.pop_frame()
   })
   while true {
+    if !self.hooks_suppressed &&
+      self.eval_hook is Some(_) &&
+      (expr.kind is ArrayComp(_, _) || expr.kind is ObjectComp(_, _, _, _)) {
+      expr = debugger_lower_comprehension(expr)
+    }
     self.trace_expression(expr, env)
     self.tick(expr.loc)
     self.hook_before(expr, env, events) catch {
@@ -117,11 +122,22 @@ fn Vm::eval_loop(
         Func(ps, body) => Closure(ps, body, env)
         Call(f, args, strict) => {
           let function = self.eval(f, env)
+          let lowered_call = f.end is None &&
+            f.kind
+            is Index(
+              { kind: Var("$std"), .. },
+              { kind: Literal(String(_)), .. }
+            )
           let thunks = args.map(pair => {
             (
               pair.0,
               self.store(
-                Pending(pair.1, env.debug_capture([pair.1]).trace_thunk()),
+                Pending(
+                  pair.1,
+                  env
+                  .debug_capture(if lowered_call { [expr] } else { [pair.1] })
+                  .trace_thunk(),
+                ),
               ),
             )
           })

@@ -243,13 +243,37 @@ fn Vm::assertion(
     e => raise e
   }
   if !holds {
-    let message = match msg {
-      Some(m) => self.coerce_string(self.eval(m, env), m.loc)
-      None => default_message
+    let events : Array[EvalHookFrame] = []
+    if failure_frame is Some({ location: Source(range), .. }) {
+      self.hook_before(
+        {
+          kind: Fail(
+            msg.unwrap_or({
+              kind: Literal(Json::string(default_message)),
+              loc: range.begin,
+              end: None,
+            }),
+          ),
+          loc: range.begin,
+          end: Some(range.end),
+        },
+        env,
+        events,
+      )
     }
-    if failure_frame is Some(frame) {
-      self.current_trace = Some(frame)
+    let error : Error = try {
+      let message = match msg {
+        Some(m) => self.coerce_string(self.eval(m, env), m.loc)
+        None => default_message
+      }
+      if failure_frame is Some(frame) {
+        self.current_trace = Some(frame)
+      }
+      self.trace_problem(Assertion, cond.loc, message)
+    } catch {
+      e => e
     }
-    raise self.trace_problem(Assertion, cond.loc, message)
+    self.hook_after(events, None, Some(error))
+    raise error
   }
 }

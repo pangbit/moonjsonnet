@@ -1856,5 +1856,2428 @@
         ]
       }
     }
+  },
+  {
+    "input": {
+      "name": "mapping-parentheses-continue",
+      "source": "local x=21;\n((x*2))",
+      "line": 2,
+      "column": 3,
+      "locations": true,
+      "commands": []
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            8
+          ],
+          [
+            2,
+            3,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            2,
+            4
+          ],
+          [
+            2,
+            5,
+            2,
+            6
+          ],
+          [
+            1,
+            9,
+            1,
+            11
+          ]
+        ],
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              3,
+              2,
+              6
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-parentheses-step",
+      "source": "local x=21;\n((x*2))",
+      "line": 2,
+      "column": 3,
+      "locations": true,
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            8
+          ],
+          [
+            2,
+            3,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            2,
+            4
+          ],
+          [
+            2,
+            5,
+            2,
+            6
+          ],
+          [
+            1,
+            9,
+            1,
+            11
+          ]
+        ],
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              3,
+              2,
+              6
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              3,
+              2,
+              4
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-parentheses-finish",
+      "source": "local x=21;\n((x*2))",
+      "line": 2,
+      "column": 3,
+      "locations": true,
+      "commands": [
+        "finish",
+        "finish"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            8
+          ],
+          [
+            2,
+            3,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            2,
+            4
+          ],
+          [
+            2,
+            5,
+            2,
+            6
+          ],
+          [
+            1,
+            9,
+            1,
+            11
+          ]
+        ],
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              3,
+              2,
+              6
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-assert-continue",
+      "source": "assert 1+1==2 : 'bad';\n21*2",
+      "line": 1,
+      "column": 8,
+      "locations": true,
+      "commands": []
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            8,
+            1,
+            14
+          ],
+          [
+            1,
+            8,
+            1,
+            11
+          ],
+          [
+            1,
+            8,
+            1,
+            9
+          ],
+          [
+            1,
+            10,
+            1,
+            11
+          ],
+          [
+            1,
+            13,
+            1,
+            14
+          ],
+          [
+            2,
+            1,
+            2,
+            5
+          ],
+          [
+            2,
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            4,
+            2,
+            5
+          ],
+          [
+            1,
+            1,
+            2,
+            5
+          ],
+          [
+            1,
+            17,
+            1,
+            22
+          ]
+        ],
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              8,
+              1,
+              14
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-assert-step",
+      "source": "assert 1+1==2 : 'bad';\n21*2",
+      "line": 1,
+      "column": 8,
+      "locations": true,
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            8,
+            1,
+            14
+          ],
+          [
+            1,
+            8,
+            1,
+            11
+          ],
+          [
+            1,
+            8,
+            1,
+            9
+          ],
+          [
+            1,
+            10,
+            1,
+            11
+          ],
+          [
+            1,
+            13,
+            1,
+            14
+          ],
+          [
+            2,
+            1,
+            2,
+            5
+          ],
+          [
+            2,
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            4,
+            2,
+            5
+          ],
+          [
+            1,
+            1,
+            2,
+            5
+          ],
+          [
+            1,
+            17,
+            1,
+            22
+          ]
+        ],
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              8,
+              1,
+              14
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              8,
+              1,
+              11
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              5
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-assert-finish",
+      "source": "assert 1+1==2 : 'bad';\n21*2",
+      "line": 1,
+      "column": 8,
+      "locations": true,
+      "commands": [
+        "finish",
+        "finish"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            8,
+            1,
+            14
+          ],
+          [
+            1,
+            8,
+            1,
+            11
+          ],
+          [
+            1,
+            8,
+            1,
+            9
+          ],
+          [
+            1,
+            10,
+            1,
+            11
+          ],
+          [
+            1,
+            13,
+            1,
+            14
+          ],
+          [
+            2,
+            1,
+            2,
+            5
+          ],
+          [
+            2,
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            4,
+            2,
+            5
+          ],
+          [
+            1,
+            1,
+            2,
+            5
+          ],
+          [
+            1,
+            17,
+            1,
+            22
+          ]
+        ],
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              8,
+              1,
+              14
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              5
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-array-comp-continue",
+      "source": "local n=2;\n[x*2 for x in [1,n] if x>0]",
+      "line": 2,
+      "column": 1,
+      "locations": true,
+      "commands": []
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            28
+          ],
+          [
+            2,
+            1,
+            2,
+            28
+          ],
+          [
+            2,
+            24,
+            2,
+            27
+          ],
+          [
+            2,
+            24,
+            2,
+            25
+          ],
+          [
+            2,
+            26,
+            2,
+            27
+          ],
+          [
+            2,
+            2,
+            2,
+            5
+          ],
+          [
+            2,
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            4,
+            2,
+            5
+          ],
+          [
+            2,
+            15,
+            2,
+            20
+          ],
+          [
+            2,
+            16,
+            2,
+            17
+          ],
+          [
+            2,
+            18,
+            2,
+            19
+          ],
+          [
+            1,
+            9,
+            1,
+            10
+          ]
+        ],
+        "output": "[\n   2,\n   4\n]\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              28
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "n",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-array-comp-step",
+      "source": "local n=2;\n[x*2 for x in [1,n] if x>0]",
+      "line": 2,
+      "column": 1,
+      "locations": true,
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            28
+          ],
+          [
+            2,
+            1,
+            2,
+            28
+          ],
+          [
+            2,
+            24,
+            2,
+            27
+          ],
+          [
+            2,
+            24,
+            2,
+            25
+          ],
+          [
+            2,
+            26,
+            2,
+            27
+          ],
+          [
+            2,
+            2,
+            2,
+            5
+          ],
+          [
+            2,
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            4,
+            2,
+            5
+          ],
+          [
+            2,
+            15,
+            2,
+            20
+          ],
+          [
+            2,
+            16,
+            2,
+            17
+          ],
+          [
+            2,
+            18,
+            2,
+            19
+          ],
+          [
+            1,
+            9,
+            1,
+            10
+          ]
+        ],
+        "output": "[\n   2,\n   4\n]\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              28
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "n",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              15,
+              2,
+              20
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "n"
+            ]
+          },
+          {
+            "range": [
+              2,
+              24,
+              2,
+              27
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              24,
+              2,
+              25
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              24,
+              2,
+              27
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              24,
+              2,
+              25
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              18,
+              2,
+              19
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "n"
+            ]
+          },
+          {
+            "range": [
+              2,
+              2,
+              2,
+              5
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              2,
+              2,
+              3
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-array-comp-finish",
+      "source": "local n=2;\n[x*2 for x in [1,n] if x>0]",
+      "line": 2,
+      "column": 1,
+      "locations": true,
+      "commands": [
+        "finish",
+        "finish"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            28
+          ],
+          [
+            2,
+            1,
+            2,
+            28
+          ],
+          [
+            2,
+            24,
+            2,
+            27
+          ],
+          [
+            2,
+            24,
+            2,
+            25
+          ],
+          [
+            2,
+            26,
+            2,
+            27
+          ],
+          [
+            2,
+            2,
+            2,
+            5
+          ],
+          [
+            2,
+            2,
+            2,
+            3
+          ],
+          [
+            2,
+            4,
+            2,
+            5
+          ],
+          [
+            2,
+            15,
+            2,
+            20
+          ],
+          [
+            2,
+            16,
+            2,
+            17
+          ],
+          [
+            2,
+            18,
+            2,
+            19
+          ],
+          [
+            1,
+            9,
+            1,
+            10
+          ]
+        ],
+        "output": "[\n   2,\n   4\n]\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              28
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "n",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              2,
+              2,
+              5
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              2,
+              2,
+              5
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-object-comp-continue",
+      "source": "local n=2;\n{[std.toString(x)]: x*2 for x in [1,n] if x>0}",
+      "line": 2,
+      "column": 1,
+      "locations": true,
+      "commands": []
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            43,
+            2,
+            46
+          ],
+          [
+            2,
+            43,
+            2,
+            44
+          ],
+          [
+            2,
+            45,
+            2,
+            46
+          ],
+          [
+            2,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            3,
+            2,
+            18
+          ],
+          [
+            2,
+            3,
+            2,
+            15
+          ],
+          [
+            2,
+            3,
+            2,
+            6
+          ],
+          [
+            2,
+            16,
+            2,
+            17
+          ],
+          [
+            2,
+            21,
+            2,
+            24
+          ],
+          [
+            2,
+            21,
+            2,
+            22
+          ],
+          [
+            2,
+            23,
+            2,
+            24
+          ],
+          [
+            2,
+            34,
+            2,
+            39
+          ],
+          [
+            2,
+            35,
+            2,
+            36
+          ],
+          [
+            2,
+            37,
+            2,
+            38
+          ],
+          [
+            1,
+            9,
+            1,
+            10
+          ]
+        ],
+        "output": "{\n   \"1\": 2,\n   \"2\": 4\n}\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "n",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "n",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-object-comp-step",
+      "source": "local n=2;\n{[std.toString(x)]: x*2 for x in [1,n] if x>0}",
+      "line": 2,
+      "column": 1,
+      "locations": true,
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            43,
+            2,
+            46
+          ],
+          [
+            2,
+            43,
+            2,
+            44
+          ],
+          [
+            2,
+            45,
+            2,
+            46
+          ],
+          [
+            2,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            3,
+            2,
+            18
+          ],
+          [
+            2,
+            3,
+            2,
+            15
+          ],
+          [
+            2,
+            3,
+            2,
+            6
+          ],
+          [
+            2,
+            16,
+            2,
+            17
+          ],
+          [
+            2,
+            21,
+            2,
+            24
+          ],
+          [
+            2,
+            21,
+            2,
+            22
+          ],
+          [
+            2,
+            23,
+            2,
+            24
+          ],
+          [
+            2,
+            34,
+            2,
+            39
+          ],
+          [
+            2,
+            35,
+            2,
+            36
+          ],
+          [
+            2,
+            37,
+            2,
+            38
+          ],
+          [
+            1,
+            9,
+            1,
+            10
+          ]
+        ],
+        "output": "{\n   \"1\": 2,\n   \"2\": 4\n}\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "n",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "n",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              34,
+              2,
+              39
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "n",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              43,
+              2,
+              46
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              43,
+              2,
+              44
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              43,
+              2,
+              46
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              43,
+              2,
+              44
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              37,
+              2,
+              38
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "n"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-object-comp-finish",
+      "source": "local n=2;\n{[std.toString(x)]: x*2 for x in [1,n] if x>0}",
+      "line": 2,
+      "column": 1,
+      "locations": true,
+      "commands": [
+        "finish",
+        "finish"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            43,
+            2,
+            46
+          ],
+          [
+            2,
+            43,
+            2,
+            44
+          ],
+          [
+            2,
+            45,
+            2,
+            46
+          ],
+          [
+            2,
+            1,
+            2,
+            47
+          ],
+          [
+            2,
+            3,
+            2,
+            18
+          ],
+          [
+            2,
+            3,
+            2,
+            15
+          ],
+          [
+            2,
+            3,
+            2,
+            6
+          ],
+          [
+            2,
+            16,
+            2,
+            17
+          ],
+          [
+            2,
+            21,
+            2,
+            24
+          ],
+          [
+            2,
+            21,
+            2,
+            22
+          ],
+          [
+            2,
+            23,
+            2,
+            24
+          ],
+          [
+            2,
+            34,
+            2,
+            39
+          ],
+          [
+            2,
+            35,
+            2,
+            36
+          ],
+          [
+            2,
+            37,
+            2,
+            38
+          ],
+          [
+            1,
+            9,
+            1,
+            10
+          ]
+        ],
+        "output": "{\n   \"1\": 2,\n   \"2\": 4\n}\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "n",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "n",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              2,
+              1,
+              2,
+              47
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-slice-continue",
+      "source": "local a=[0,21,42];\na[1+0:3:1]",
+      "line": 2,
+      "column": 1,
+      "locations": true,
+      "commands": []
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            11
+          ],
+          [
+            2,
+            1,
+            2,
+            11
+          ],
+          [
+            2,
+            1,
+            2,
+            2
+          ],
+          [
+            2,
+            3,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            2,
+            4
+          ],
+          [
+            2,
+            5,
+            2,
+            6
+          ],
+          [
+            2,
+            7,
+            2,
+            8
+          ],
+          [
+            2,
+            9,
+            2,
+            10
+          ],
+          [
+            1,
+            9,
+            1,
+            18
+          ],
+          [
+            1,
+            10,
+            1,
+            11
+          ],
+          [
+            1,
+            12,
+            1,
+            14
+          ],
+          [
+            1,
+            15,
+            1,
+            17
+          ]
+        ],
+        "output": "[\n   21,\n   42\n]\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              11
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "a",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-slice-step",
+      "source": "local a=[0,21,42];\na[1+0:3:1]",
+      "line": 2,
+      "column": 1,
+      "locations": true,
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            11
+          ],
+          [
+            2,
+            1,
+            2,
+            11
+          ],
+          [
+            2,
+            1,
+            2,
+            2
+          ],
+          [
+            2,
+            3,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            2,
+            4
+          ],
+          [
+            2,
+            5,
+            2,
+            6
+          ],
+          [
+            2,
+            7,
+            2,
+            8
+          ],
+          [
+            2,
+            9,
+            2,
+            10
+          ],
+          [
+            1,
+            9,
+            1,
+            18
+          ],
+          [
+            1,
+            10,
+            1,
+            11
+          ],
+          [
+            1,
+            12,
+            1,
+            14
+          ],
+          [
+            1,
+            15,
+            1,
+            17
+          ]
+        ],
+        "output": "[\n   21,\n   42\n]\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              11
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "a",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              206,
+              5,
+              245,
+              66
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "end",
+              "index",
+              "indexable",
+              "std",
+              "step"
+            ]
+          },
+          {
+            "range": [
+              231,
+              12,
+              231,
+              27
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "end",
+              "index",
+              "indexable",
+              "invar",
+              "std",
+              "step"
+            ]
+          },
+          {
+            "range": [
+              231,
+              12,
+              231,
+              22
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "end",
+              "index",
+              "indexable",
+              "invar",
+              "std",
+              "step"
+            ]
+          },
+          {
+            "range": [
+              231,
+              12,
+              231,
+              17
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "end",
+              "index",
+              "indexable",
+              "invar",
+              "std",
+              "step"
+            ]
+          },
+          {
+            "range": [
+              208,
+              7,
+              230,
+              8
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "end",
+              "index",
+              "indexable",
+              "invar",
+              "std",
+              "step"
+            ]
+          },
+          {
+            "range": [
+              225,
+              11,
+              227,
+              20
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "end",
+              "index",
+              "indexable",
+              "std",
+              "step"
+            ]
+          },
+          {
+            "range": [
+              225,
+              14,
+              225,
+              26
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "end",
+              "index",
+              "indexable",
+              "std",
+              "step"
+            ]
+          },
+          {
+            "range": [
+              225,
+              14,
+              225,
+              18
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "end",
+              "index",
+              "indexable",
+              "std",
+              "step"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-slice-finish",
+      "source": "local a=[0,21,42];\na[1+0:3:1]",
+      "line": 2,
+      "column": 1,
+      "locations": true,
+      "commands": [
+        "finish",
+        "finish"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            11
+          ],
+          [
+            2,
+            1,
+            2,
+            11
+          ],
+          [
+            2,
+            1,
+            2,
+            2
+          ],
+          [
+            2,
+            3,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            2,
+            4
+          ],
+          [
+            2,
+            5,
+            2,
+            6
+          ],
+          [
+            2,
+            7,
+            2,
+            8
+          ],
+          [
+            2,
+            9,
+            2,
+            10
+          ],
+          [
+            1,
+            9,
+            1,
+            18
+          ],
+          [
+            1,
+            10,
+            1,
+            11
+          ],
+          [
+            1,
+            12,
+            1,
+            14
+          ],
+          [
+            1,
+            15,
+            1,
+            17
+          ]
+        ],
+        "output": "[\n   21,\n   42\n]\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              11
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "a",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              242,
+              22,
+              242,
+              42
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "cur",
+              "invar"
+            ]
+          },
+          {
+            "range": [
+              242,
+              22,
+              242,
+              42
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "cur",
+              "invar"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-parentheses-invalid",
+      "source": "local x=21;\n((x*2))",
+      "line": 2,
+      "column": 1,
+      "locations": true
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 0,
+        "cleared": 0,
+        "error": false,
+        "locations": [
+          [
+            1,
+            1,
+            2,
+            8
+          ],
+          [
+            2,
+            3,
+            2,
+            6
+          ],
+          [
+            2,
+            3,
+            2,
+            4
+          ],
+          [
+            2,
+            5,
+            2,
+            6
+          ],
+          [
+            1,
+            9,
+            1,
+            11
+          ]
+        ],
+        "output": "42\n",
+        "set": false,
+        "stops": []
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "mapping-assert-failed",
+      "source": "assert 1+1==3 : 'bad';\n21*2",
+      "line": 1,
+      "column": 1,
+      "locations": true
+    },
+    "expected": {
+      "diagnostics": [
+        "RUNTIME ERROR: bad\n\tentry:(1:1)-(2:5)\t\n\tDuring evaluation\t\n",
+        "RUNTIME ERROR: bad\n\tentry:(1:1)-(2:5)\t\n\tDuring evaluation\t\n",
+        "RUNTIME ERROR: bad\n\tentry:(1:1)-(2:5)\t\n\tDuring evaluation\t\n"
+      ],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": true,
+        "locations": [
+          [
+            1,
+            8,
+            1,
+            14
+          ],
+          [
+            1,
+            8,
+            1,
+            11
+          ],
+          [
+            1,
+            8,
+            1,
+            9
+          ],
+          [
+            1,
+            10,
+            1,
+            11
+          ],
+          [
+            1,
+            13,
+            1,
+            14
+          ],
+          [
+            2,
+            1,
+            2,
+            5
+          ],
+          [
+            2,
+            1,
+            2,
+            3
+          ],
+          [
+            2,
+            4,
+            2,
+            5
+          ],
+          [
+            1,
+            1,
+            2,
+            5
+          ],
+          [
+            1,
+            17,
+            1,
+            22
+          ]
+        ],
+        "output": "",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              2,
+              5
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              1,
+              2,
+              5
+            ],
+            "reason": "exception",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "reason": "exception",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
   }
 ]

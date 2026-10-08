@@ -42,6 +42,19 @@ async fn main {
     {"name":"capture-object-local","source":"local x=21;{local y=x,a:y*2}","commands":["step","step","step","step","step","step"]},
     {"name":"capture-object-function","source":"local x=21;{f(y):x+y}.f(21)","commands":["step","step","step","step","step","step","step","step"]},
   ]
+  for (name,source,line,column) in [
+    ("parentheses","local x=21;\n((x*2))",2,3),
+    ("assert","assert 1+1==2 : 'bad';\n21*2",1,8),
+    ("array-comp","local n=2;\n[x*2 for x in [1,n] if x>0]",2,1),
+    ("object-comp","local n=2;\n{[std.toString(x)]: x*2 for x in [1,n] if x>0}",2,1),
+    ("slice","local a=[0,21,42];\na[1+0:3:1]",2,1),
+  ] {
+    for (mode,commands) in [("continue",[]),("step",["step","step","step","step","step","step","step","step"]),("finish",["finish","finish"])] {
+      inputs.push({"name":"mapping-"+name+"-"+mode,"source":source,"line":line,"column":column,"locations":true,"commands":commands})
+    }
+  }
+  inputs.push({"name":"mapping-parentheses-invalid","source":"local x=21;\n((x*2))","line":2,"column":1,"locations":true})
+  inputs.push({"name":"mapping-assert-failed","source":"assert 1+1==3 : 'bad';\n21*2","line":1,"column":1,"locations":true})
   let frozen=if args.length()==4 {[]} else {guard @json.parse(@fs.read_file("tests/go-debugger.json").text()) is Array(cases) else {fail("debugger fixtures")};assert_eq(cases.length(),inputs.length());cases}
   let fixtures : Array[Json]=[];let rows : Array[Json]=[];let mut passed=0;let mut reference_errors=0;let mut local_errors=0
   for i,input in inputs {

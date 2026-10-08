@@ -113,3 +113,71 @@ test "debugger callback rejects reentry and retains caller configuration" {
   )
   assert_eq(evaluator.evaluate(program), 42)
 }
+
+///|
+test "breakpoint enumeration follows lowered order and preserves owned ranges" {
+  let program = @moonjsonnet.Program::parse(
+    "local x=21;\n((x*2))",
+    filename="entry",
+  )
+  let locations = @moonjsonnet.Debugger::breakpoint_locations(program)
+  assert_eq(locations.map(range => range.format()), [
+    "entry:(1:1)-(2:8)", "entry:2:3-6", "entry:2:3-4", "entry:2:5-6", "entry:1:9-11",
+  ])
+  locations.clear()
+  assert_eq(@moonjsonnet.Debugger::breakpoint_locations(program).length(), 5)
+}
+
+///|
+test "assert failures expose their lowered error breakpoint and parent exception" {
+  let program = @moonjsonnet.Program::parse(
+    "assert false : 'bad';42",
+    filename="entry",
+  )
+  let debugger = @moonjsonnet.Debugger::new()
+  ignore(debugger.set_breakpoint(program, 1, column=1))
+  let reasons : Array[@moonjsonnet.DebugStopReason] = []
+  let ranges : Array[String?] = []
+  try
+    debugger.run(program, on_stop=stop => {
+      reasons.push(stop.reason)
+      ranges.push(stop.context.source_range().map(range => range.format()))
+      Continue
+    })
+  catch {
+    @moonjsonnet.Error(d) => assert_eq(d.message, "bad")
+  } noraise {
+    _ => fail("assert failure was swallowed")
+  }
+  assert_eq(reasons, [Breakpoint, Exception, Exception])
+  assert_eq(ranges, [Some("entry:1:1-24"), Some("entry:1:1-24"), None])
+}
+
+///|
+test "Finish preserves object comprehension breakpoints and capture scopes" {
+  let program = @moonjsonnet.Program::parse(
+    "local n=2;\n{[std.toString(x)]: x*2 for x in [1,n] if x>0}",
+    filename="entry",
+  )
+  let debugger = @moonjsonnet.Debugger::new()
+  ignore(debugger.set_breakpoint(program, 2, column=1))
+  let reasons : Array[@moonjsonnet.DebugStopReason] = []
+  let names : Array[Array[String]] = []
+  let output = debugger.run(program, on_stop=stop => {
+    reasons.push(stop.reason)
+    names.push(stop.context.variables())
+    if reasons.length() <= 2 {
+      Finish
+    } else {
+      Continue
+    }
+  })
+  assert_eq(@json.parse(output), { "1": 2, "2": 4 })
+  assert_eq(reasons, [Breakpoint, Breakpoint, Step, Breakpoint])
+  assert_eq(names, [
+    ["$std", "n", "std"],
+    ["$std", "n", "std"],
+    ["std", "x"],
+    ["std", "x"],
+  ])
+}

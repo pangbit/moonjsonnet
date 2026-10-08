@@ -17,6 +17,7 @@ func main() {
 		Source            string
 		Line, Column      int
 		Lookups, Commands []string
+		Locations         bool
 	}
 	if err := json.NewDecoder(os.Stdin).Decode(&input); err != nil {
 		panic(err)
@@ -108,6 +109,17 @@ events:
 	active := len(debugger.ActiveBreakpoints())
 	debugger.ClearBreakpoints(file)
 	result := map[string]any{"output": output, "error": failed, "stops": stops, "set": set, "active": active, "cleared": len(debugger.ActiveBreakpoints())}
+	if input.Locations {
+		ranges, err := debugger.BreakpointLocations(file)
+		if err != nil {
+			panic(err)
+		}
+		locations := [][]int{}
+		for _, loc := range ranges {
+			locations = append(locations, []int{loc.Begin.Line, loc.Begin.Column, loc.End.Line, loc.End.Column})
+		}
+		result["locations"] = locations
+	}
 	bytes, err := json.Marshal(map[string]any{"result": result, "diagnostics": diagnostics})
 	if err != nil {
 		panic(err)

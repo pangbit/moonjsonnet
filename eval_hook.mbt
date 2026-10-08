@@ -233,6 +233,12 @@ fn Vm::hook_before(
   environment : Env,
   frames : Array[EvalHookFrame],
 ) -> Unit raise {
+  // These field values are runtime implementation nodes, not exportable source
+  // expressions. Compiler sugar may reach them while resolving its builtins.
+  if expression.kind is StandardFunction(_) ||
+    expression.kind is StandardValue(_) {
+    return
+  }
   if !self.hooks_suppressed && self.eval_hook is Some(hook) {
     let active = Ref(true)
     let serial = self.hook_serial

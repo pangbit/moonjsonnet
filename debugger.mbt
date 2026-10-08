@@ -54,7 +54,8 @@ pub fn Debugger::new(evaluator? : Evaluator = Evaluator::new()) -> Debugger {
 }
 
 ///|
-/// Independent ranges in semantic traversal order. Synthetic nodes are omitted.
+/// Independent ranges in lowered semantic traversal order. Nodes without a
+/// source range are omitted; repeated ranges from compiler sugar are retained.
 pub fn Debugger::breakpoint_locations(program : Program) -> Array[SourceRange] {
   let ranges = []
   let stack = [program.expression]
@@ -62,7 +63,7 @@ pub fn Debugger::breakpoint_locations(program : Program) -> Array[SourceRange] {
     if node.end is Some(end) {
       ranges.push({ begin: node.loc, end, })
     }
-    let children = ast_export_children(node)
+    let children = debugger_children(node)
     for i = children.length() - 1; i >= 0; i = i - 1 {
       stack.push(children[i])
     }
@@ -115,7 +116,7 @@ pub fn Debugger::clear_breakpoints(self : Debugger, filename : String) -> Unit {
 
 ///|
 fn debugger_stoppable(ctx : EvalContext) -> Bool {
-  if ctx.source_range() is None || ctx.location().file == "<std>" {
+  if ctx.source_range() is None {
     return false
   }
   match ctx.expression.kind {
@@ -167,6 +168,7 @@ pub fn Debugger::run(
   self.stepping = start_with_step
   self.finishing = None
   self.terminated = false
+  let mut entered_source = false
   let previous = self.evaluator.eval_hook
   defer {
     self.evaluator.eval_hook = previous
@@ -174,8 +176,11 @@ pub fn Debugger::run(
   }
   self.evaluator.set_eval_hook(hook={
     before: ctx => {
-      if !self.terminated && self.finishing is None && debugger_stoppable(ctx) {
-        if self.stepping {
+      if ctx.location().file != "<std>" {
+        entered_source = true
+      }
+      if entered_source && !self.terminated && debugger_stoppable(ctx) {
+        if self.stepping && self.finishing is None {
           self.stepping = false
           self.continue_from(
             { reason: Step, context: ctx, outcome: None, },

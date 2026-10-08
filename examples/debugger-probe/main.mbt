@@ -36,7 +36,12 @@ fn run(input : Json) -> Json raise {
     if stops.length() >= 100 {
       fail("too many debugger stops")
     }
-    let range = stop.context.source_range().unwrap()
+    let range = stop.context
+      .source_range()
+      .unwrap_or({
+        begin: { file: "", line: 0, column: 0, },
+        end: { file: "", line: 0, column: 0, },
+      })
     let values : Map[String, Json] = Map([])
     if field(input, "lookups", []) is Array(names) {
       for name in names {
@@ -85,17 +90,30 @@ fn run(input : Json) -> Json raise {
   }
   let active = debugger.active_breakpoints().map(_ => true)
   debugger.clear_breakpoints("entry")
-  {
-    "result": {
-      "output": output,
-      "error": failed,
-      "stops": stops,
-      "set": !breakpoint.is_empty(),
-      "active": active.length(),
-      "cleared": debugger.active_breakpoints().length(),
-    },
-    "diagnostics": diagnostics,
+  let result : Map[String, Json] = Map([
+    ("output", Json::string(output)),
+    ("error", Json::boolean(failed)),
+    ("stops", Json::array(stops)),
+    ("set", Json::boolean(!breakpoint.is_empty())),
+    ("active", Json::number(active.length().to_double())),
+    (
+      "cleared",
+      Json::number(debugger.active_breakpoints().length().to_double()),
+    ),
+  ])
+  if field(input, "locations", false) == Json::boolean(true) {
+    result["locations"] = Json::array(
+      @moonjsonnet.Debugger::breakpoint_locations(program).map(range => {
+        Json::array([
+          Json::number(range.begin.line.to_double()),
+          Json::number(range.begin.column.to_double()),
+          Json::number(range.end.line.to_double()),
+          Json::number(range.end.column.to_double()),
+        ])
+      }),
+    )
   }
+  { "result": Json::object(result), "diagnostics": diagnostics }
 }
 
 ///|
