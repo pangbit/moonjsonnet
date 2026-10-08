@@ -3077,5 +3077,87 @@
     "expected": "[\n  1, /* first */ /* second */\n  2,\n]\n",
     "idempotent": true,
     "provenance": "Fresh pinned Go v0.21.0 formatter output, stage3 interstitial comments and import groups."
+  },
+  {
+    "name": "upstream-parenthesis-layout-test_suite/error.args_commafodder.jsonnet",
+    "source": "foo(\n  bar()\n  ,\n  baz=qux\n)\n",
+    "options": {},
+    "expected": "foo(\n  bar()\n  ,\n  baz=qux\n)\n",
+    "idempotent": true,
+    "provenance": "Go v0.21.0 commit 67968688d9952f50662e979fab1bef889d0d3e57, fresh stage4 upstream run; original copyright retained."
+  },
+  {
+    "name": "paren-call-first-newline",
+    "source": "f(\n1,2)",
+    "options": {},
+    "expected": "f(\n  1, 2\n)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage4 parenthesis rows and comma fodder."
+  },
+  {
+    "name": "paren-call-close-newline",
+    "source": "f(1,2\n)",
+    "options": {},
+    "expected": "f(\n  1, 2\n)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage4 parenthesis rows and comma fodder."
+  },
+  {
+    "name": "paren-function-first-newline",
+    "source": "function(\nx,y) x",
+    "options": {},
+    "expected": "function(\n  x, y\n) x\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage4 parenthesis rows and comma fodder."
+  },
+  {
+    "name": "paren-function-close-newline",
+    "source": "function(x,y\n) x",
+    "options": {},
+    "expected": "function(\n  x, y\n) x\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage4 parenthesis rows and comma fodder."
+  },
+  {
+    "name": "paren-call-expanded-rows",
+    "source": "f(\n1,2,\n3)",
+    "options": {},
+    "expected": "f(\n  1,\n  2,\n  3\n)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage4 parenthesis rows and comma fodder."
+  },
+  {
+    "name": "paren-comma-separate-line",
+    "source": "foo(\nbar()\n,\nbaz=qux\n)",
+    "options": {},
+    "expected": "foo(\n  bar()\n  ,\n  baz=qux\n)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage4 parenthesis rows and comma fodder."
+  },
+  {
+    "name": "paren-comma-after-line-comment",
+    "source": "foo(1 // before comma\n,2)",
+    "options": {},
+    "expected": "foo(1  // before comma\n    , 2)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage4 parenthesis rows and comma fodder."
+  },
+  {
+    "name": "paren-call-continued-row",
+    "source": "foo(1,\n2)",
+    "options": {},
+    "expected": "foo(1,\n    2)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage4 parenthesis rows and comma fodder."
+  },
+  {
+    "name": "paren-call-indent-three",
+    "source": "f(\n1,2)",
+    "options": {
+      "Indent": 3
+    },
+    "expected": "f(\n   1, 2\n)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage4 parenthesis rows and comma fodder."
   }
 ]

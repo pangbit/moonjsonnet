@@ -92,6 +92,9 @@ fn format_layout(tokens : Array[Token]) -> FormatLayout {
       if t == "," && local_depth == 0 && i + 1 < end {
         boundaries.push(i + 1)
       }
+      if token.text == "(" && t == "," && tokens[i].has_newline() {
+        layout.newline[i] = true
+      }
       if t == "for" || t == "if" {
         // A comprehension has a top-level 'for'; its later clauses are
         // added below only after that marker is found.
@@ -126,7 +129,7 @@ fn format_layout(tokens : Array[Token]) -> FormatLayout {
         layout.newline[start + 1] = true
         layout.newline[end] = true
       }
-      if outer_newline || inner_newline {
+      if inner_newline {
         for i in boundaries {
           layout.newline[i] = true
         }

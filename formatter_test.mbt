@@ -152,6 +152,27 @@ test "formatter retains blank lines before paragraph comments" {
 }
 
 ///|
+test "formatter keeps compact argument rows and aligns comma fodder" {
+  for
+    (source, expected) in [
+      ("f(\n1,2)", "f(\n  1, 2\n)\n"),
+      ("function(\nx,y) x+y", "function(\n  x, y\n) x + y\n"),
+      ("foo(\nbar()\n,\nbaz=qux\n)", "foo(\n  bar()\n  ,\n  baz=qux\n)\n"),
+      ("foo(1 // before comma\n,2)", "foo(1  // before comma\n    , 2)\n"),
+    ] {
+    let formatted = @moonjsonnet.format_source(source)
+    assert_eq(formatted, expected)
+    ignore(@moonjsonnet.ParsedSource::parse(formatted))
+    assert_eq(@moonjsonnet.format_source(formatted), formatted)
+  }
+  let source = "(function(\nx,y) x+y)(\n1,2)"
+  assert_eq(
+    @moonjsonnet.evaluate(@moonjsonnet.format_source(source)),
+    @moonjsonnet.evaluate(source),
+  )
+}
+
+///|
 test "formatter retains AST depth budgets for flat expression chains" {
   let limits = @moonjsonnet.Limits::default()
   let within = "0" + "+1".repeat(limits.depth - 1)
