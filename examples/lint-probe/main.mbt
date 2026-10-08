@@ -36,6 +36,7 @@ fn run(input : Json) -> Json raise {
         location: { file: from, line: 1, column: 1, },
         message: "missing import: " + id,
         context: [],
+        trace: [],
       })
     }
     { id, bytes: @utf8.encode(source), }

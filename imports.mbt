@@ -87,6 +87,7 @@ fn Vm::base_env(
     names: Map([]),
     import_from,
     debug_visible: None,
+    diagnostic_context: ("$", "anonymous"),
   }
   let loc : Location = { file, line: 1, column: 1, }
   let fields : Map[String, LayerField] = Map([])
@@ -114,7 +115,7 @@ fn Vm::base_env(
     raise problem(Runtime, loc, "standard library must be an object")
   }
   let layers = self.objects[library_id].layers.copy()
-  layers.push({ fields, locals: [], assertions: [], env, })
+  layers.push({ fields, locals: [], assertions: [], assertion_sites: [], env, })
   let value = self.object_value(layers)
   if value is ObjectValue(id, _) {
     self.objects[id].standard = true
@@ -124,6 +125,7 @@ fn Vm::base_env(
     names: Map([("std", self.store(Ready(value)))]),
     import_from,
     debug_visible: Some(_tick => ["$std", "std"]),
+    diagnostic_context: ("$", "anonymous"),
   }
 }
 

@@ -12,6 +12,7 @@ fn Vm::defer_index(
     names: Map([("a", self.store(Ready(value)))]),
     import_from: "",
     debug_visible: None,
+    diagnostic_context: ("$", "anonymous"),
   }
   self.store(
     Pending(
@@ -109,7 +110,13 @@ fn Vm::defer_call(
         loc,
         end: None,
       },
-      { parent: None, names, import_from: "", debug_visible: None, },
+      {
+        parent: None,
+        names,
+        import_from: "",
+        debug_visible: None,
+        diagnostic_context: ("$", "anonymous"),
+      },
     ),
   )
 }

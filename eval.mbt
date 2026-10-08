@@ -4,16 +4,25 @@ fn Vm::eval(
   expr : Expr,
   env : Env,
   tail? : Bool = false,
+  preserve_binding? : Bool = false,
 ) -> Value raise {
   self.tick(expr.loc)
   if self.depth >= self.limits.depth {
-    raise problem(Limit, expr.loc, "evaluation depth limit exceeded")
+    raise self.trace_problem(Limit, expr.loc, "evaluation depth limit exceeded")
   }
   self.depth += 1
   defer {
     self.depth -= 1
   }
-  self.eval_inner(expr, env, tail~)
+  self.eval_inner(
+    expr,
+    if preserve_binding {
+      env
+    } else {
+      env.trace_context(env.diagnostic_context.0)
+    },
+    tail~,
+  )
 }
 
 ///|
@@ -23,9 +32,14 @@ fn Vm::eval_inner(
   env : Env,
   tail~ : Bool,
 ) -> Value raise {
+  let previous_trace = self.current_trace
+  defer {
+    self.current_trace = previous_trace
+  }
   let events : Array[EvalHookFrame] = []
   let result = self.eval_loop(expr, env, tail~, events~) catch {
     Error(d) => {
+      let d = self.traced(d)
       self.hook_after(events, None, Some(Error(d)))
       raise Error(d)
     }
@@ -52,173 +66,218 @@ fn Vm::eval_loop(
   let frame_base = self.frames.length()
   // The loop owns any strict function frame added above its entry frame.
   defer (while self.frames.length() > frame_base {
-    ignore(self.frames.pop())
+    self.pop_frame()
   })
   while true {
+    self.trace_expression(expr, env)
     self.tick(expr.loc)
-    self.hook_before(expr, env, events)
+    self.hook_before(expr, env, events) catch {
+      Error(d) => raise Error(self.traced(d))
+      e => raise self.trace_problem(Runtime, expr.loc, e.to_string())
+    }
     let loc = expr.loc
-    return match expr.kind {
-      NumberLiteral(raw) => {
-        let n = @string.parse_double(raw) catch {
-          _ => raise problem(Runtime, loc, "overflow")
+    return try {
+      match expr.kind {
+        NumberLiteral(raw) => {
+          let n = @string.parse_double(raw) catch {
+            _ => raise problem(Runtime, loc, "overflow")
+          }
+          Num(n)
         }
-        Num(n)
-      }
-      Literal(j) => self.from_json(j, loc)
-      Var(n) =>
-        match env.lookup(n) {
-          Some(t) => self.force(t, loc)
-          None => raise problem(Static, loc, "unknown variable '\{n}'")
+        Literal(j) => self.from_json(j, loc)
+        Var(n) =>
+          match env.lookup(n) {
+            Some(t) => self.force(t, loc)
+            None => raise problem(Static, loc, "unknown variable '\{n}'")
+          }
+        Local(bs, body) => {
+          env = self.bind(bs, env, debug_expression=expr)
+          expr = body
+          continue
         }
-      Local(bs, body) => {
-        env = self.bind(bs, env, debug_expression=expr)
-        expr = body
-        continue
-      }
-      If(c, yes, no) => {
-        expr = if boolean(self.eval(c, env), c.loc) { yes } else { no }
-        continue
-      }
-      Func(ps, body) => Closure(ps, body, env)
-      Call(f, args, strict) => {
-        let function = self.eval(f, env)
-        let thunks = args.map(pair => {
-          (pair.0, self.store(Pending(pair.1, env.debug_capture([pair.1]))))
-        })
-        if tail && self.frames.last() == Some(true) {
-          ignore(self.frames.pop())
+        If(c, yes, no) => {
+          expr = if boolean(self.eval(c, env), c.loc) { yes } else { no }
+          env = env.trace_context(env.diagnostic_context.0)
+          continue
         }
-        if strict && function is Closure(params, body, outer) {
-          let scope = try {
-            let scope = self.call_env(params, thunks, outer, loc, body~)
-            for { name: n, .. } in params {
-              ignore(self.force(scope.names[n], loc))
+        Func(ps, body) => Closure(ps, body, env)
+        Call(f, args, strict) => {
+          let function = self.eval(f, env)
+          let thunks = args.map(pair => {
+            (
+              pair.0,
+              self.store(
+                Pending(pair.1, env.debug_capture([pair.1]).trace_thunk()),
+              ),
+            )
+          })
+          if tail &&
+            self.frames.last().map(frame => frame.trimmable) == Some(true) {
+            ignore(self.frames.pop())
+          }
+          if strict && function is Closure(params, body, outer) {
+            let scope = try {
+              let scope = self.call_env(params, thunks, outer, loc, body~)
+              for { name: n, .. } in params {
+                ignore(self.force(scope.names[n], loc))
+              }
+              scope
+            } catch {
+              Error(d) => {
+                d.context.push(loc)
+                raise Error(d)
+              }
+              e => raise e
             }
-            scope
-          } catch {
+            expr = body
+            env = scope
+            self.push_frame(loc, true)
+            tail = true
+            continue
+          }
+          self.call(function, thunks, loc, strict~) catch {
             Error(d) => {
               d.context.push(loc)
               raise Error(d)
             }
             e => raise e
           }
+        }
+        Arr(items) =>
+          ArrayValue(
+            items.map(e => {
+              self.store(Pending(e, env.debug_capture([e]).trace_thunk()))
+            }),
+          )
+        Obj(fields, locals, assertions, assertion_sites) => {
+          let captured = env.debug_capture([expr])
+          let fs : Map[String, LayerField] = Map([])
+          for f in fields {
+            match self.eval(f.key, env) {
+              Nil => ()
+              Str(k) => {
+                if fs.contains(k) {
+                  raise problem(Runtime, f.key.loc, "duplicate field '\{k}'")
+                }
+                fs[k] = { field: f, env: captured, }
+              }
+              _ =>
+                raise problem(
+                  Type,
+                  f.key.loc,
+                  "field name must be string or null",
+                )
+            }
+          }
+          self.object_value([
+            { fields: fs, locals, assertions, assertion_sites, env: captured, },
+          ])
+        }
+        ArrayComp(body, clauses) => {
+          let out = []
+          self.comprehend(clauses, 0, env, loc, scope => {
+            out.push(
+              self.store(
+                Pending(body, scope.debug_capture([body]).trace_thunk()),
+              ),
+            )
+          })
+          ArrayValue(out)
+        }
+        ObjectComp(key, body, clauses, locals) => {
+          let fs : Map[String, LayerField] = Map([])
+          self.comprehend(clauses, 0, env, loc, scope => {
+            match self.eval(key, scope) {
+              Nil => ()
+              Str(k) => {
+                if fs.contains(k) {
+                  raise problem(Runtime, key.loc, "duplicate field '\{k}'")
+                }
+                fs[k] = {
+                  field: {
+                    key,
+                    value: {
+                      kind: Local(locals, body),
+                      loc: body.loc,
+                      end: body.end,
+                    },
+                    visibility: 1,
+                    additive: false,
+                  },
+                  env: scope,
+                }
+              }
+              _ =>
+                raise problem(
+                  Type,
+                  key.loc,
+                  "field name must be string or null",
+                )
+            }
+          })
+          self.object_value([
+            {
+              fields: fs,
+              locals: [],
+              assertions: [],
+              assertion_sites: [],
+              env,
+            },
+          ])
+        }
+        Index(a, b) => self.index(self.eval(a, env), self.eval(b, env), loc)
+        Slice(a, start, end, step) => {
+          let v = self.eval(a, env)
+          let bound = fn(e : Expr?) raise {
+            match e {
+              Some(x) => self.eval(x, env)
+              None => Nil
+            }
+          }
+          self.slice(v, bound(start), bound(end), bound(step), loc)
+        }
+        Unary(op, e) => {
+          let v = self.eval(e, env)
+          match op {
+            "!" => Bool(!boolean(v, loc))
+            "-" => Num(-number_value(v, loc))
+            "+" => Num(number_value(v, loc))
+            _ => Num(reference_int64(number_value(v, loc)).lnot().to_double())
+          }
+        }
+        Binary(op, a, b) => {
+          let left = self.eval(a, env)
+          if op == "&&" {
+            Bool(boolean(left, loc) && boolean(self.eval(b, env), loc))
+          } else if op == "||" {
+            Bool(boolean(left, loc) || boolean(self.eval(b, env), loc))
+          } else {
+            self.binary(op, left, self.eval(b, env), loc)
+          }
+        }
+        Assert(c, m, body) => {
+          self.assertion(c, m, env, failure_frame={
+            location: Source({
+              begin: expr.loc,
+              end: diagnostic_expr_end(expr),
+            }),
+            name: "",
+          })
           expr = body
-          env = scope
-          self.push_frame(loc, true)
-          tail = true
+          env = env.trace_context(env.diagnostic_context.0)
           continue
         }
-        self.call(function, thunks, loc, strict~) catch {
-          Error(d) => {
-            d.context.push(loc)
-            raise Error(d)
-          }
-          e => raise e
-        }
+        Fail(e) =>
+          raise problem(Runtime, loc, text_value(self.eval(e, env), loc))
+        ImportFile(path, raw) =>
+          self.import_file(path, raw, env.import_from, loc)
+        ImportBinary(path) => self.import_binary(path, env.import_from, loc)
+        StandardFunction(name) => Builtin(name)
+        StandardValue(json) => self.from_json(json, loc)
       }
-      Arr(items) =>
-        ArrayValue(
-          items.map(e => self.store(Pending(e, env.debug_capture([e])))),
-        )
-      Obj(fields, locals, assertions) => {
-        let captured = env.debug_capture([expr])
-        let fs : Map[String, LayerField] = Map([])
-        for f in fields {
-          match self.eval(f.key, env) {
-            Nil => ()
-            Str(k) => {
-              if fs.contains(k) {
-                raise problem(Runtime, f.key.loc, "duplicate field '\{k}'")
-              }
-              fs[k] = { field: f, env: captured, }
-            }
-            _ =>
-              raise problem(
-                Type,
-                f.key.loc,
-                "field name must be string or null",
-              )
-          }
-        }
-        self.object_value([{ fields: fs, locals, assertions, env: captured, }])
-      }
-      ArrayComp(body, clauses) => {
-        let out = []
-        self.comprehend(clauses, 0, env, loc, scope => {
-          out.push(self.store(Pending(body, scope.debug_capture([body]))))
-        })
-        ArrayValue(out)
-      }
-      ObjectComp(key, body, clauses, locals) => {
-        let fs : Map[String, LayerField] = Map([])
-        self.comprehend(clauses, 0, env, loc, scope => {
-          match self.eval(key, scope) {
-            Nil => ()
-            Str(k) => {
-              if fs.contains(k) {
-                raise problem(Runtime, key.loc, "duplicate field '\{k}'")
-              }
-              fs[k] = {
-                field: {
-                  key,
-                  value: {
-                    kind: Local(locals, body),
-                    loc: body.loc,
-                    end: body.end,
-                  },
-                  visibility: 1,
-                  additive: false,
-                },
-                env: scope,
-              }
-            }
-            _ =>
-              raise problem(Type, key.loc, "field name must be string or null")
-          }
-        })
-        self.object_value([{ fields: fs, locals: [], assertions: [], env, }])
-      }
-      Index(a, b) => self.index(self.eval(a, env), self.eval(b, env), loc)
-      Slice(a, start, end, step) => {
-        let v = self.eval(a, env)
-        let bound = fn(e : Expr?) raise {
-          match e {
-            Some(x) => self.eval(x, env)
-            None => Nil
-          }
-        }
-        self.slice(v, bound(start), bound(end), bound(step), loc)
-      }
-      Unary(op, e) => {
-        let v = self.eval(e, env)
-        match op {
-          "!" => Bool(!boolean(v, loc))
-          "-" => Num(-number_value(v, loc))
-          "+" => Num(number_value(v, loc))
-          _ => Num(reference_int64(number_value(v, loc)).lnot().to_double())
-        }
-      }
-      Binary(op, a, b) => {
-        let left = self.eval(a, env)
-        if op == "&&" {
-          Bool(boolean(left, loc) && boolean(self.eval(b, env), loc))
-        } else if op == "||" {
-          Bool(boolean(left, loc) || boolean(self.eval(b, env), loc))
-        } else {
-          self.binary(op, left, self.eval(b, env), loc)
-        }
-      }
-      Assert(c, m, body) => {
-        self.assertion(c, m, env)
-        expr = body
-        continue
-      }
-      Fail(e) => raise problem(Runtime, loc, text_value(self.eval(e, env), loc))
-      ImportFile(path, raw) => self.import_file(path, raw, env.import_from, loc)
-      ImportBinary(path) => self.import_binary(path, env.import_from, loc)
-      StandardFunction(name) => Builtin(name)
-      StandardValue(json) => self.from_json(json, loc)
+    } catch {
+      Error(d) => raise Error(self.traced(d))
+      e => raise self.trace_problem(Runtime, loc, e.to_string())
     }
   } nobreak {
     abort("unreachable evaluator loop")
@@ -296,7 +355,10 @@ fn Vm::call_env(
   if body is Some(body) {
     roots.push(body)
   }
-  let env = outer.debug_capture(roots, bound=params.map(p => p.name)).child()
+  let env = outer
+    .debug_capture(roots, bound=params.map(p => p.name))
+    .child()
+    .trace_context("function <" + outer.diagnostic_context.1 + ">")
   let assigned : Map[String, Bool] = Map([])
   for i, (name, t) in args {
     let n = match name {

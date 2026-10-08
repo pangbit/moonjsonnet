@@ -43,7 +43,7 @@ fn lint_children(e : Expr, direct? : Bool = false) -> Array[Expr] {
     }
     Unary(_, a) | Fail(a) => out.push(a)
     Arr(xs) => if !direct { out.append(xs) }
-    Obj(fs, bs, _) => {
+    Obj(fs, bs, _, _) => {
       for f in fs {
         out.push(f.key)
       }

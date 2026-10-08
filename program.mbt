@@ -47,6 +47,7 @@ pub fn Program::parse(
         location: loc,
         message: e.to_string(),
         context: [],
+        trace: [],
       })
   }
 }
@@ -77,10 +78,11 @@ pub fn Program::from_ast(
   filename? : String,
   anonymous? : Bool = false,
   limits? : Limits = Limits::default(),
+  assertion_ranges? : Map[String, SourceRange] = Map([]),
 ) -> Program raise JsonnetError {
   try {
     check_limits(limits, tree.loc)
-    let reader : AstReader = { limits, nodes: 0, }
+    let reader : AstReader = { limits, nodes: 0, assertion_ranges, }
     let expression = reader.read(tree, 0)
     validate(expression, ["std"], false)
     {
@@ -103,6 +105,6 @@ pub fn Ast::clone(
   limits? : Limits = Limits::default(),
 ) -> Ast raise JsonnetError {
   check_limits(limits, self.loc)
-  let reader : AstReader = { limits, nodes: 0, }
+  let reader : AstReader = { limits, nodes: 0, assertion_ranges: Map([]), }
   export_ast(reader.read(self, 0))
 }

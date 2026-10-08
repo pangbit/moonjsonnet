@@ -299,17 +299,24 @@ fn Vm::hook_after(
     let outcome = match (result, error) {
       (Some(value), _) =>
         Success({ vm: self, value, active, location: frame.expression.loc, })
-      (_, Some(Error(d))) => Failure({ ..d, context: d.context.copy(), })
+      (_, Some(Error(d))) =>
+        Failure({ ..d, context: d.context.copy(), trace: d.trace.copy(), })
       (_, Some(e)) =>
         Failure({
           kind: Runtime,
           message: e.to_string(),
           location: frame.expression.loc,
           context: [],
+          trace: [],
         })
       _ => abort("missing evaluation hook outcome")
     }
-    (hook.after)(context, outcome)
+    self.trace_expression(frame.expression, frame.environment)
+    (hook.after)(context, outcome) catch {
+      Error(d) => raise Error(self.traced(d))
+      e =>
+        raise self.trace_problem(Runtime, frame.expression.loc, e.to_string())
+    }
     ignore(self.hook_stack.pop())
   }
 }

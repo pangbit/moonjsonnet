@@ -26,6 +26,7 @@ test "syntax diagnostics recover token ranges without changing stored data" {
     message: "failed",
     location: loc,
     context: [loc],
+    trace: [],
   }
   assert_eq(diagnostic.format_syntax("42"), "entry:1:1 failed")
   let diagnostic = { ..diagnostic, kind: @moonjsonnet.Syntax, }
@@ -63,6 +64,7 @@ test "syntax diagnostic bytes preserve malformed UTF8 and semantic newlines" {
     message: "failed",
     location: loc,
     context: [],
+    trace: [],
   }
   assert_eq(d.format_syntax(""), "1:1 failed")
   assert_eq(d.format_syntax_bytes(""), b"1:1 failed")

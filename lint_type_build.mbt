@@ -85,7 +85,7 @@ fn LintGraph::build(
       }
       t.array = Some({ elements, further, })
     }
-    Obj(fs, bs, _) => {
+    Obj(fs, bs, _, _) => {
       let inner = scope.copy()
       inner["$"] = 9
       for { name: n, .. } in bs {
@@ -210,7 +210,7 @@ fn LintGraph::build(
         Expr::{ kind: Local(bs, body), loc: body.loc, end: None, }
       }
       let object : Expr = {
-        kind: Obj([{ key, value, visibility: 1, additive: false, }], [], []),
+        kind: Obj([{ key, value, visibility: 1, additive: false, }], [], [], []),
         loc: e.loc,
         end: e.end,
       }

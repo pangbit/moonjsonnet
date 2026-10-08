@@ -24,7 +24,13 @@ fn LintScan::tick(self : LintScan, e : Expr) -> Unit raise JsonnetError {
 
 ///|
 fn LintScan::report(self : LintScan, loc : Location, message : String) -> Unit {
-  self.diagnostics.push({ kind: Static, location: loc, message, context: [], })
+  self.diagnostics.push({
+    kind: Static,
+    location: loc,
+    message,
+    context: [],
+    trace: [],
+  })
 }
 
 ///|
@@ -99,7 +105,7 @@ fn LintScan::variables(
       }
       self.variables(body, inner)
     }
-    Obj(fs, bs, checks) => {
+    Obj(fs, bs, checks, _) => {
       let inner = self.locals(bs, scope)
       for (a, b) in checks {
         self.variables(a, inner)

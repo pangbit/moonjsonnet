@@ -188,6 +188,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
         message: "cannot read stdin within source byte limit",
         location: { file: "<stdin>", line: 1, column: 1, },
         context: [],
+        trace: [],
       })
     }
     let text = @utf8.decode(bytes) catch {
@@ -197,6 +198,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
           message: "stdin is not valid UTF-8",
           location: { file: "<stdin>", line: 1, column: 1, },
           context: [],
+          trace: [],
         })
     }
     { id: "<stdin>", text, }
@@ -247,6 +249,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
           message: "stream output byte limit exceeded",
           location: { file: source.id, line: 1, column: 1, },
           context: [],
+          trace: [],
         })
       }
       bytes += size

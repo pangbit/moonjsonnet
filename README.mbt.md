@@ -90,6 +90,29 @@ test "readme native callback and trace" {
 
 ## Evaluation inspection
 
+Diagnostics retain source ranges and named/synthetic trace frames. The configurable
+`DiagnosticFormatter` renders Go-style errors; the original `Diagnostic::format`
+remains available. Supply source text to render static error snippets and optional
+color. See [diagnostics](docs/API.md).
+
+```mbt check
+///|
+test "readme structured diagnostic trace" {
+  let formatter = @moonjsonnet.DiagnosticFormatter::new()
+  try @moonjsonnet.evaluate("error 'failed'", filename="entry") catch {
+    @moonjsonnet.Error(d) => {
+      assert_eq(d.trace.length(), 2)
+      assert_eq(
+        formatter.format(d),
+        "RUNTIME ERROR: failed\n\tentry:1:1-15\t$\n\tDuring evaluation\t\n",
+      )
+    }
+  } noraise {
+    _ => fail("runtime diagnostic expected")
+  }
+}
+```
+
 Evaluator hooks observe demanded expressions. Inspect values inside the callback;
 copy returned nodes, text or JSON to retain them. The synchronous debugger adds
 breakpoints, stepping, finish and termination. See [API](docs/API.md).

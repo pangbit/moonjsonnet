@@ -24,6 +24,7 @@ pub(all) struct Diagnostic {
   message : String
   location : Location
   context : Array[Location]
+  trace : Array[TraceFrame]
 } derive(Debug)
 
 ///|
@@ -49,6 +50,7 @@ pub impl Show for Diagnostic with fn output(self, logger) {
 ///     message: "failed",
 ///     location: loc,
 ///     context: [loc, loc, loc],
+///     trace: [],
 ///   }
 ///   assert_eq(
 ///     diagnostic.format(max_trace=1),
@@ -135,7 +137,7 @@ pub fn Limits::default() -> Limits {
 
 ///|
 fn problem(kind : ErrorKind, loc : Location, message : String) -> JsonnetError {
-  Error({ kind, message, location: loc, context: [], })
+  Error({ kind, message, location: loc, context: [], trace: [], })
 }
 
 ///|
@@ -196,7 +198,12 @@ priv enum ExprKind {
   Func(Array[ExprParameter], Expr)
   Call(Expr, Array[(String?, Expr)], Bool)
   Arr(Array[Expr])
-  Obj(Array[Field], Array[ExprBinding], Array[(Expr, Expr?)])
+  Obj(
+    Array[Field],
+    Array[ExprBinding],
+    Array[(Expr, Expr?)],
+    Array[SourceRange?]
+  )
   ArrayComp(Expr, Array[Clause])
   ObjectComp(Expr, Expr, Array[Clause], Array[ExprBinding])
   Index(Expr, Expr)

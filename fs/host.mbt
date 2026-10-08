@@ -20,6 +20,7 @@ fn diagnostic(
     message,
     location: { file, line: 1, column: 1, },
     context: [],
+    trace: [],
   })
 }
 

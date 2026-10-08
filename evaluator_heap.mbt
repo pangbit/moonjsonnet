@@ -92,7 +92,8 @@ fn Vm::retain_imports(self : Vm) -> Unit {
 // so later callers cannot append into the retained error or earlier results.
 fn copy_evaluation_error(error : Error) -> Error {
   match error {
-    Error(d) => Error({ ..d, context: d.context.copy(), })
+    Error(d) =>
+      Error({ ..d, context: d.context.copy(), trace: d.trace.copy(), })
     _ => error
   }
 }

@@ -22,7 +22,9 @@ fn Vm::object_value(self : Vm, layers : Array[Layer]) -> Value {
 ///|
 fn Vm::scope(self : Vm, id : Int, layer : Int, outer : Env) -> Env {
   let obj = self.objects[id]
-  let env = outer.child()
+  let env = outer
+    .child()
+    .trace_context("object <" + outer.diagnostic_context.1 + ">")
   env.names["self"] = self.store(Ready(ObjectValue(id, obj.layers.length())))
   env.names["super"] = self.store(Ready(ObjectValue(id, layer)))
   if env.lookup("$") is None {
@@ -60,10 +62,21 @@ fn Vm::check_assertions(self : Vm, id : Int, loc : Location) -> Unit raise {
   try {
     for i in 0..<obj.layers.length() {
       let env = self.layer_scope(id, i)
-      for (cond, msg) in obj.layers[i].assertions {
+      for index, (cond, msg) in obj.layers[i].assertions {
         self.push_frame(cond.loc, false)
-        defer ignore(self.frames.pop())
-        self.assertion(cond, msg, env)
+        defer self.pop_frame()
+        self.assertion(cond, msg, env, failure_frame={
+          location: Source(
+            obj.layers[i].assertion_sites
+            .get(index)
+            .bind(site => site)
+            .unwrap_or({
+              begin: cond.loc,
+              end: diagnostic_expr_end(msg.unwrap_or(cond)),
+            }),
+          ),
+          name: "",
+        })
       }
     }
   } catch {
@@ -149,8 +162,15 @@ fn Vm::field(
       let v = try {
         if f.field.additive {
           self.push_frame(loc, false)
+          self.current_trace = Some({
+            location: Source({
+              begin: f.field.value.loc,
+              end: diagnostic_expr_end(f.field.value),
+            }),
+            name: "+:",
+          })
         }
-        defer (if f.field.additive { ignore(self.frames.pop()) })
+        defer (if f.field.additive { self.pop_frame() })
         let rhs = match f.field.value.kind {
           StandardFunction(_) | StandardValue(_) =>
             self.eval(f.field.value, env)
@@ -181,12 +201,21 @@ fn Vm::field(
 }
 
 ///|
-fn Vm::assertion(self : Vm, cond : Expr, msg : Expr?, env : Env) -> Unit raise {
+fn Vm::assertion(
+  self : Vm,
+  cond : Expr,
+  msg : Expr?,
+  env : Env,
+  failure_frame? : TraceFrame,
+) -> Unit raise {
   if !boolean(self.eval(cond, env), cond.loc) {
     let message = match msg {
       Some(m) => text_value(self.eval(m, env), m.loc)
       None => "assertion failed"
     }
-    raise problem(Assertion, cond.loc, message)
+    if failure_frame is Some(frame) {
+      self.current_trace = Some(frame)
+    }
+    raise self.trace_problem(Assertion, cond.loc, message)
   }
 }

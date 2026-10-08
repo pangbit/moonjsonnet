@@ -17,6 +17,7 @@ priv struct Env {
   names : Map[String, Int]
   import_from : String
   debug_visible : ((() -> Unit raise) -> Array[String] raise)?
+  diagnostic_context : (String, String)
 }
 
 ///|
@@ -26,6 +27,7 @@ fn Env::child(self : Env) -> Env {
     names: Map([]),
     import_from: self.import_from,
     debug_visible: None,
+    diagnostic_context: self.diagnostic_context,
   }
 }
 
@@ -62,6 +64,7 @@ priv struct Layer {
   fields : Map[String, LayerField]
   locals : Array[ExprBinding]
   assertions : Array[(Expr, Expr?)]
+  assertion_sites : Array[SourceRange?]
   env : Env
 }
 
@@ -103,7 +106,8 @@ priv struct Vm {
   imports : Map[(String, Bool), Int]
   mut steps : Int
   mut depth : Int
-  frames : Array[Bool]
+  frames : Array[RuntimeFrame]
+  mut current_trace : TraceFrame?
   mut imported_bytes : Int
   mut output_bytes : Int
 }
@@ -111,7 +115,7 @@ priv struct Vm {
 ///|
 fn Vm::tick(self : Vm, loc : Location) -> Unit raise {
   if self.steps >= self.limits.steps {
-    raise problem(Limit, loc, "evaluation step limit exceeded")
+    raise self.trace_problem(Limit, loc, "evaluation step limit exceeded")
   }
   self.steps += 1
 }
@@ -209,6 +213,14 @@ fn Vm::bind(
     None => env
   }
   for { name, value: expr, .. } in bindings {
+    let captured = if debug_expression is Some(_) {
+      captured.trace_context(
+        "thunk <" + name + "> from <" + outer.diagnostic_context.0 + ">",
+        bound=name,
+      )
+    } else {
+      captured
+    }
     env.names[name] = self.store(Pending(expr, captured))
   }
   env
@@ -238,6 +250,7 @@ fn Vm::from_json(self : Vm, json : Json, loc : Location) -> Value raise {
         names: Map([]),
         import_from: "",
         debug_visible: None,
+        diagnostic_context: ("$", "anonymous"),
       }
       let fs : Map[String, LayerField] = Map([])
       for k, v in o {
@@ -251,7 +264,9 @@ fn Vm::from_json(self : Vm, json : Json, loc : Location) -> Value raise {
           env,
         }
       }
-      self.object_value([{ fields: fs, locals: [], assertions: [], env, }])
+      self.object_value([
+        { fields: fs, locals: [], assertions: [], assertion_sites: [], env, },
+      ])
     }
   }
 }

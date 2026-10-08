@@ -117,6 +117,15 @@ Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 tests/reference/debugger.go exercises the public reference API only during
 development; the hook, inspection and debugger runtime executes in MoonBit.
 
+diagnostic_trace.mbt, diagnostic_formatter.mbt and the execution trace paths
+adapt named contexts, clean-frame snapshots, synthetic manifestation locations,
+cropping and source/color rendering from interpreter.go, error_formatter.go,
+runtime_error.go, internal/parser/context.go, internal/program/desugarer.go and
+ast/location.go at that same pinned go-jsonnet revision.
+Copyright Google Inc.; Apache License 2.0 (see LICENSE).
+The development-only tests/reference/diagnostic.go adapter uses public VM and
+ErrorFormatter APIs; product execution and rendering remain entirely MoonBit.
+
 formatter*.mbt (except formatter_sort*.mbt) implement formatting rules from internal/formatter,
 internal/parser/lexer.go and internal/parser/string_util.go at the same pinned go-jsonnet revision.
 Copyright Google Inc.; Apache License 2.0 (see LICENSE). This partial native

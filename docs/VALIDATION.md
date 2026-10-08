@@ -479,6 +479,22 @@ Omitting the checkout runs local frozen verification and writes a separate
 `local-report.json`; isolated ASan runs this mode on its instrumented binary.
 No input is skipped or declared an accepted exception.
 
+Named/synthetic and static diagnostic sites have a separate full-byte corpus:
+
+```sh
+moon run tools/diagnostic-api.mbtx _build/native/release/build/examples/diagnostic-probe/diagnostic-probe.exe ${LOCAL_PATH_012}
+```
+
+The adapter observes public VM ErrorFormatter calls and static `Loc()` values.
+It compares complete bytes, ordered locations/names, color callbacks and error/
+output results in 273 frozen cases against fresh pinned Go. Seven trace-size
+settings include the default, negative/zero unlimited, odd/even cropping and the
+maximum Int. Cases cover local/function/object contexts, aliases, recursive and
+tailstrict calls, imports/ext/TLA code, manifestations, additive fields, assertions,
+UTF-8/CRLF, malformed Unicode and multiline static snippets. No diagnostic text
+normalization is used in comparisons. Omitting the checkout is explicitly local
+frozen verification, also used on the isolated ASan probe.
+
 The [overall parity plan](GO-PARITY.md) tracks capabilities outside the existing
 behavioral corpus. `tools/parity.mbtx` compares all 163 reflected Go standard-library
 members against a frozen reference snapshot and the local CLI, writing

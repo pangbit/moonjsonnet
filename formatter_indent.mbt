@@ -319,7 +319,7 @@ fn format_indent_plan(
           plan.line_up[layout.close[first]] = context.base
         }
       }
-      Obj(fields, bindings, assertions) => {
+      Obj(fields, bindings, assertions, _) => {
         let next = child_at(first + 1, context, false)
         for i in (first + 1)..<end {
           writer.tick()

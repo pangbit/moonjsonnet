@@ -140,8 +140,9 @@ Catch `JsonnetError::Error(diagnostic)`. The public `Diagnostic` contains:
 | --- | --- |
 | `kind` | `Syntax`, `Static`, `Type`, `Runtime`, `Assertion`, `Import`, `Limit`, `Unsupported` |
 | `message` | Human-readable explanation; not a stable machine protocol |
-| `location` | Source file, one-based line and Unicode code-point column |
+| `location` | Source file, one-based line and UTF-8 byte column |
 | `context` | Function-call and import locations from inner to outer |
+| `trace` | Independent source/synthetic frames, outermost first; a static error retains its source site |
 
 `Diagnostic::to_string()` renders a CLI-friendly diagnostic. Filesystem failures
 use the requested/canonical filename and position 1:1. Manifestation errors use
@@ -157,6 +158,34 @@ location in the header is always retained. Rendering never mutates the stored
 a default context limit of 20 and rejects negative option values. These are
 limits on this API's context list, not a claim that its locations equal Go's
 complete named/synthetic frame set. See [CLI](CLI.md).
+
+`TraceFrame { location: TraceLocation, name: String }` preserves named contexts:
+`$`, named local thunks, functions and objects, plus synthetic evaluation, top-level
+function-call, manifestation, array-element, field, object-assertion and additive
+field sites. `TraceLocation` is `Source(SourceRange)` or `Synthetic(String)`;
+`format()` renders that location. Frames are captured before unwinding and copied
+for retained errors and hook outcomes. The pre-1.0 Diagnostic record now requires
+`trace: []` for manually constructed errors; record updates preserve it.
+
+`DiagnosticFormatter::new()` supplies Go-style rendering with a default trace
+limit of 20. `set_max_trace(size)` keeps both ends of the reversed display order;
+zero/negative means unlimited. `format(d)` returns text and `format_bytes(d)`
+preserves malformed Unicode bytes that Go can truncate inside a character. Text
+rendering replaces invalid UTF-8. The stored message/trace are unchanged.
+`set_source(Source {id,text})` supplies code for static error snippets;
+`clear_sources()` removes code while retaining a saved diagnostic range.
+`set_color(color?)` transforms only the selected static source fragment, and
+omission disables it. Runtime traces do not invoke color, following fixed Go's
+default formatter. Snippet lookup is bounded to 1 MiB and invalid caller ranges
+omit code. Formatting is host-side presentation, separate from execution budgets.
+
+`Evaluator::set_diagnostic_formatter(formatter?)` configures explicit
+`format_error(d)` / `format_error_bytes(d)`, preserving caches and rejecting
+configuration reentry. Omission restores the default. Supply entry/import/parameter
+source identities to the formatter when code snippets are needed. The CLI and
+legacy `Diagnostic::format` retain their prior header/context format. These
+interfaces do not claim every runtime message or CLI diagnostic is byte-identical
+to Go outside the checked diagnostic corpus.
 
 ## Parsed programs
 
@@ -305,6 +334,15 @@ Parentheses are omitted from the inner node's range; calls exclude `tailstrict`.
 Implicit null, identifier/dot field keys, method wrappers and assertion wrappers
 have no range, matching Go's semantic AST. Coordinates do not retain source
 text, comments, or complete diagnostic end ranges.
+
+Object-assert declaration spans are retained privately without adding semantic
+nodes or changing AST depth. `Program::assertion_ranges()` returns an independent
+map keyed by the condition's source-range identity. Pass it as
+`Program::from_ast(tree, assertion_ranges=...)` to preserve those spans after
+edits that keep condition identities. Used ranges are validated like AST ranges;
+unused map entries are ignored. Without that map, a manually supplied object
+assertion uses its condition/message span for diagnostics. This does not change
+evaluation, scope validation or the public object-assert tuple representation.
 
 ## Parsed source for source tooling
 
@@ -539,8 +577,7 @@ Termination raises a runtime diagnostic; a later run starts normally. The
 previous evaluation hook is restored after success or failure. Stop contexts have
 the same lifetime and inspection rules as hooks. Exception views retain the
 deepest failed lexical environment while callbacks unwind; errors still propagate.
-Named/synthetic diagnostic frames and full diagnostic formatter parity remain
-under implementation.
+Failure outcomes include the independently captured named/synthetic trace above.
 
 The following queries share source/AST caches and never execute Jsonnet, apply
 parameters or invoke native/trace callbacks:

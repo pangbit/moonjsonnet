@@ -25,6 +25,7 @@ test "retained heap reaches steady size across repeated entries" {
   assert_eq(after.retries.length(), 0)
   assert_eq(after.ext.length(), 0)
   assert_eq(after.frames.length(), 0)
+  assert_true(after.current_trace is None)
   assert_eq(after.depth, 0)
   evaluator.ext_var("invalidate", 1)
   let cleared = evaluator.state.unwrap()

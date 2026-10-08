@@ -135,6 +135,7 @@ pub(all) struct Diagnostic {
   message : String
   location : Location
   context : Array[Location]
+  trace : Array[TraceFrame]
 } derive(@debug.Debug)
 pub fn Diagnostic::format(Self, max_trace? : Int) -> String
 pub fn Diagnostic::format_syntax(Self, String) -> String
@@ -143,6 +144,17 @@ pub fn Diagnostic::output(Self, &Logger) -> Unit
 pub fn Diagnostic::to_repr(Self) -> @debug.Repr
 pub fn Diagnostic::to_string(Self) -> String
 pub impl Show for Diagnostic
+
+pub struct DiagnosticFormatter {
+  // private fields
+}
+pub fn DiagnosticFormatter::clear_sources(Self) -> Unit
+pub fn DiagnosticFormatter::format(Self, Diagnostic) -> String
+pub fn DiagnosticFormatter::format_bytes(Self, Diagnostic) -> Bytes
+pub fn DiagnosticFormatter::new() -> Self
+pub fn DiagnosticFormatter::set_color(Self, color? : (String) -> String) -> Unit
+pub fn DiagnosticFormatter::set_max_trace(Self, Int) -> Unit
+pub fn DiagnosticFormatter::set_source(Self, Source) -> Unit
 
 pub(all) enum ErrorKind {
   Syntax
@@ -192,11 +204,14 @@ pub fn Evaluator::ext_program(Self, String, Program) -> Unit raise JsonnetError
 pub fn Evaluator::ext_reset(Self) -> Unit raise JsonnetError
 pub fn Evaluator::ext_var(Self, String, Json) -> Unit raise JsonnetError
 pub fn Evaluator::find_dependencies(Self, String, Array[String]) -> Array[String] raise JsonnetError
+pub fn Evaluator::format_error(Self, Diagnostic) -> String
+pub fn Evaluator::format_error_bytes(Self, Diagnostic) -> Bytes
 pub fn Evaluator::import_data(Self, String, String) -> BinarySource raise JsonnetError
 pub fn Evaluator::import_program(Self, String, String) -> (Program, String) raise JsonnetError
 pub fn Evaluator::native_function(Self, String, NativeFunction) -> Unit raise JsonnetError
 pub fn Evaluator::new() -> Self
 pub fn Evaluator::resolve_import(Self, String, String) -> String raise JsonnetError
+pub fn Evaluator::set_diagnostic_formatter(Self, formatter? : DiagnosticFormatter) -> Unit raise JsonnetError
 pub fn Evaluator::set_eval_hook(Self, hook? : EvalHook) -> Unit raise JsonnetError
 pub fn Evaluator::set_importer(Self, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise) -> Unit raise JsonnetError
 pub fn Evaluator::set_limits(Self, Limits) -> Unit raise JsonnetError
@@ -277,12 +292,13 @@ pub fn ParsedSource::text(Self) -> String
 pub struct Program {
   // private fields
 }
+pub fn Program::assertion_ranges(Self) -> Map[String, SourceRange]
 pub fn Program::ast(Self) -> Ast
 pub fn Program::evaluate(Self, ext_vars? : Map[String, Json], ext_code? : Map[String, String], ext_programs? : Map[String, Self], tla_vars? : Map[String, Json], tla_code? : Map[String, String], tla_programs? : Map[String, Self], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Json raise JsonnetError
 pub fn Program::evaluate_multi(Self, string_output? : Bool, ext_vars? : Map[String, Json], ext_code? : Map[String, String], ext_programs? : Map[String, Self], tla_vars? : Map[String, Json], tla_code? : Map[String, String], tla_programs? : Map[String, Self], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Map[String, String] raise JsonnetError
 pub fn Program::evaluate_stream(Self, ext_vars? : Map[String, Json], ext_code? : Map[String, String], ext_programs? : Map[String, Self], tla_vars? : Map[String, Json], tla_code? : Map[String, String], tla_programs? : Map[String, Self], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Array[String] raise JsonnetError
 pub fn Program::evaluate_text(Self, string_output? : Bool, ext_vars? : Map[String, Json], ext_code? : Map[String, String], ext_programs? : Map[String, Self], tla_vars? : Map[String, Json], tla_code? : Map[String, String], tla_programs? : Map[String, Self], native_functions? : Map[String, NativeFunction], trace? : (Location, String) -> Unit, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> String raise JsonnetError
-pub fn Program::from_ast(Ast, filename? : String, anonymous? : Bool, limits? : Limits) -> Self raise JsonnetError
+pub fn Program::from_ast(Ast, filename? : String, anonymous? : Bool, limits? : Limits, assertion_ranges? : Map[String, SourceRange]) -> Self raise JsonnetError
 pub fn Program::parse(String, filename? : String, anonymous? : Bool, limits? : Limits) -> Self raise JsonnetError
 
 pub(all) struct RawAst {
@@ -396,6 +412,23 @@ pub(all) struct SyntaxLimits {
 } derive(@debug.Debug)
 pub fn SyntaxLimits::default() -> Self
 pub fn SyntaxLimits::to_repr(Self) -> @debug.Repr
+
+pub(all) struct TraceFrame {
+  location : TraceLocation
+  name : String
+} derive(Eq, @debug.Debug)
+pub fn TraceFrame::equal(Self, Self) -> Bool
+pub fn TraceFrame::not_equal(Self, Self) -> Bool
+pub fn TraceFrame::to_repr(Self) -> @debug.Repr
+
+pub(all) enum TraceLocation {
+  Source(SourceRange)
+  Synthetic(String)
+} derive(Eq, @debug.Debug)
+pub fn TraceLocation::equal(Self, Self) -> Bool
+pub fn TraceLocation::format(Self) -> String
+pub fn TraceLocation::not_equal(Self, Self) -> Bool
+pub fn TraceLocation::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

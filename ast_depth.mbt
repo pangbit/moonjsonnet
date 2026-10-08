@@ -52,7 +52,7 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
         for x in a {
           push(x)
         }
-      Obj(fs, bs, assertions) => {
+      Obj(fs, bs, assertions, _) => {
         for f in fs {
           push(f.key)
           push(f.value)

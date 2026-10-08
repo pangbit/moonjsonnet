@@ -47,7 +47,7 @@ fn dependency_children(expr : Expr) -> Array[Expr] {
       }
     }
     Arr(items) => children.append(items)
-    Obj(fields, locals, _) => {
+    Obj(fields, locals, _, _) => {
       for field in fields {
         children.push(field.key)
       }

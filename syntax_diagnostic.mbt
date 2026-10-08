@@ -17,10 +17,30 @@ fn Diagnostic::render_syntax_site(
   let point = ({ begin: self.location, end: self.location, } : SourceRange).format()
   (match site {
     Some((_, range)) => range.format()
-    None => point
+    None =>
+      match self.trace.get(0) {
+        Some({ location: Source(range), .. }) if self.kind == Syntax ||
+          self.kind == Static => range.format()
+        _ => point
+      }
   }) +
   " " +
   self.message
+}
+
+///|
+fn Diagnostic::with_syntax_trace(
+  self : Diagnostic,
+  source : String,
+) -> Diagnostic {
+  if !self.trace.is_empty() || (self.kind != Syntax && self.kind != Static) {
+    return self
+  }
+  let range = self
+    .syntax_error_site(source)
+    .map(site => site.1)
+    .unwrap_or({ begin: self.location, end: self.location, })
+  { ..self, trace: [{ location: Source(range), name: "", }], }
 }
 
 ///|

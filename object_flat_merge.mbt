@@ -10,6 +10,7 @@ fn Vm::object_flat_merge(
     names: Map([]),
     import_from: "",
     debug_visible: None,
+    diagnostic_context: ("$", "anonymous"),
   }
   for t in items {
     self.tick(loc)
@@ -34,5 +35,7 @@ fn Vm::object_flat_merge(
       fields[name] = field
     }
   }
-  self.object_value([{ fields, locals: [], assertions: [], env, }])
+  self.object_value([
+    { fields, locals: [], assertions: [], assertion_sites: [], env, },
+  ])
 }

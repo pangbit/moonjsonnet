@@ -48,6 +48,7 @@ fn write_multi(
         message: "multi output filename list exceeds output limit",
         location: loc,
         context: [],
+        trace: [],
       })
     }
     bytes += size

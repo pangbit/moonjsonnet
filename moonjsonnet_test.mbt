@@ -175,6 +175,7 @@ test "import syntax and resolver failures retain calling context" {
       message: "missing",
       location: { file: "child", line: 1, column: 1, },
       context: [],
+      trace: [],
     })
   }
   for resolver in [syntax, missing] {

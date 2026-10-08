@@ -15,7 +15,7 @@ fn Vm::manifest(
 ) -> Json raise {
   self.tick(loc)
   self.push_frame(loc, false)
-  defer ignore(self.frames.pop())
+  defer self.pop_frame()
   if depth >= self.limits.depth {
     raise problem(
       Limit,
@@ -23,42 +23,59 @@ fn Vm::manifest(
       "manifest depth limit exceeded (possibly cyclic object)",
     )
   }
-  match value {
-    ArrayValue(a) => {
-      self.account_output(2 + Int::max(0, a.length() - 1), loc)
-      Json::array(a.map(t => self.manifest(self.force(t, loc), loc, depth + 1)))
-    }
-    ObjectValue(id, top) => {
-      self.check_assertions(id, loc)
-      let keys = self.keys(id, top, false)
-      self.account_output(2 + Int::max(0, keys.length() - 1), loc)
-      let fields : Map[String, Json] = Map([])
-      for k in keys {
-        self.account_output(
-          @utf8.encode(Json::string(k).stringify()).length() + 1,
-          loc,
-        )
-        fields[k] = self.manifest(self.field(id, top, k, loc), loc, depth + 1)
+  try {
+    match value {
+      ArrayValue(a) => {
+        self.account_output(2 + Int::max(0, a.length() - 1), loc)
+        let values : Array[Json] = []
+        for index, t in a {
+          values.push(
+            self.with_trace(Synthetic("Array element \{index}"), () => {
+              self.manifest(self.force(t, loc), loc, depth + 1)
+            }),
+          )
+        }
+        Json::array(values)
       }
-      Json::object(fields)
-    }
-    Closure(_, _, _) | Builtin(_) | Native(_) =>
-      raise problem(Type, loc, "cannot manifest a function or std")
-    _ => {
-      let j = match value {
-        Nil => Json::null()
-        Bool(b) => Json::boolean(b)
-        Num(n) =>
-          if n.is_inf() || n.is_nan() {
-            Json::number(n, repr=manifest_number(n))
-          } else {
-            Json::number(n)
-          }
-        Str(s) => Json::string(s)
-        _ => abort("unreachable non-scalar")
+      ObjectValue(id, top) => {
+        self.with_trace(Synthetic("Checking object assertions"), () => {
+          self.check_assertions(id, loc)
+        })
+        let keys = self.keys(id, top, false)
+        self.account_output(2 + Int::max(0, keys.length() - 1), loc)
+        let fields : Map[String, Json] = Map([])
+        for k in keys {
+          self.account_output(
+            @utf8.encode(Json::string(k).stringify()).length() + 1,
+            loc,
+          )
+          fields[k] = self.with_trace(Synthetic("Field " + lint_quote(k)), () => {
+            self.manifest(self.field(id, top, k, loc), loc, depth + 1)
+          })
+        }
+        Json::object(fields)
       }
-      self.account_output(@utf8.encode(j.stringify()).length(), loc)
-      j
+      Closure(_, _, _) | Builtin(_) | Native(_) =>
+        raise problem(Type, loc, "cannot manifest a function or std")
+      _ => {
+        let j = match value {
+          Nil => Json::null()
+          Bool(b) => Json::boolean(b)
+          Num(n) =>
+            if n.is_inf() || n.is_nan() {
+              Json::number(n, repr=manifest_number(n))
+            } else {
+              Json::number(n)
+            }
+          Str(s) => Json::string(s)
+          _ => abort("unreachable non-scalar")
+        }
+        self.account_output(@utf8.encode(j.stringify()).length(), loc)
+        j
+      }
     }
+  } catch {
+    Error(d) => raise Error(self.traced(d))
+    e => raise e
   }
 }

@@ -52,6 +52,19 @@ fn AstReader::read(
         }),
         bindings(bs),
         checks.map(c => (visit(c.0), optional(c.1))),
+        checks.map(check => {
+          let condition = check.0
+          let key = (
+            {
+              begin: condition.loc,
+              end: condition.end.unwrap_or(condition.loc),
+            } : SourceRange).format()
+          let range = self.assertion_ranges.get(key)
+          if range is Some(range) {
+            check_ast_range(range.begin, range.end)
+          }
+          range
+        }),
       )
     ArrayComp(b, cs) => ArrayComp(visit(b), clauses(cs))
     ObjectComp(k, b, cs, bs) =>
@@ -106,7 +119,7 @@ fn export_ast_node(e : Expr, children : Array[Ast]) -> Ast {
     Call(f, args, strict) =>
       Call(visit(f), args.map(a => (a.0, visit(a.1))), strict)
     Arr(xs) => Arr(xs.map(visit))
-    Obj(fs, bs, checks) =>
+    Obj(fs, bs, checks, _) =>
       Obj(
         fs.map(f => {
           key: visit(f.key),
@@ -175,7 +188,7 @@ fn ast_export_children(e : Expr) -> Array[Expr] {
       }
     }
     Arr(values) => children.append(values)
-    Obj(fields, values, assertions) => {
+    Obj(fields, values, assertions, _) => {
       for field in fields {
         children.append([field.key, field.value])
       }

@@ -85,7 +85,7 @@ fn validate(
       for x in xs {
         validate(x, names, in_object)
       }
-    Obj(fs, bs, assertions) => {
+    Obj(fs, bs, assertions, _) => {
       let outer = names.copy()
       outer.push("$")
       let scope = binding_scope(bs, outer, e.loc)

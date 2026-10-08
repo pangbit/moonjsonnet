@@ -158,7 +158,7 @@ async fn main {
     #|    @moonjsonnet.Error(d) => { assert_eq(d.kind, @moonjsonnet.Runtime); assert_true(!d.to_string().is_empty()) }
     #|  } noraise { _ => fail("expected diagnostic") }
     #|  let loc : @moonjsonnet.Location = {file:"consumer",line:1,column:1}
-    #|  let d : @moonjsonnet.Diagnostic = {kind:@moonjsonnet.Runtime,message:"failed",location:loc,context:[loc,loc,loc]}
+    #|  let d : @moonjsonnet.Diagnostic = {kind:@moonjsonnet.Runtime,message:"failed",location:loc,context:[loc,loc,loc],trace:[]}
     #|  assert_eq(d.format(max_trace=1),"consumer:1:1: Runtime: failed\n  ...\n  at consumer:1:1")
     #|  assert_eq(d.context.length(),3)
     #|  let syntax_error : @moonjsonnet.Diagnostic = {..d,kind:@moonjsonnet.Syntax,message:"Unexpected end of file",context:[]}
@@ -210,6 +210,32 @@ async fn main {
     #|  assert_eq(stops,1)
     #|  debugger.clear_breakpoints("consumer")
     #|  assert_eq(debugger.active_breakpoints(),[])
+    #|}
+    #|///|
+    #|test "independent diagnostic formatter consumer" {
+    #|  let formatter=@moonjsonnet.DiagnosticFormatter::new()
+    #|  let source="{assert false:'failed',a:42}"
+    #|  let program=@moonjsonnet.Program::parse(source,filename="consumer")
+    #|  let copied=@moonjsonnet.Program::from_ast(program.ast(),assertion_ranges=program.assertion_ranges())
+    #|  formatter.set_source({id:"consumer",text:source})
+    #|  formatter.set_color(color=text=>"<c>"+text+"</c>")
+    #|  formatter.set_color()
+    #|  formatter.clear_sources()
+    #|  let evaluator=@moonjsonnet.Evaluator::new()
+    #|  evaluator.set_diagnostic_formatter(formatter~)
+    #|  try evaluator.evaluate(copied) catch {@moonjsonnet.Error(d)=>{
+    #|    let frame : @moonjsonnet.TraceFrame=d.trace.last().unwrap()
+    #|    assert_eq(frame.location.format(),"consumer:1:2-23")
+    #|    assert_eq(frame.name,"")
+    #|    assert_eq(d.trace[0].location,@moonjsonnet.Synthetic("During manifestation"))
+    #|    let full=formatter.format(d)
+    #|    assert_eq(formatter.format_bytes(d),evaluator.format_error_bytes(d))
+    #|    assert_eq(full,evaluator.format_error(d))
+    #|    formatter.set_max_trace(1)
+    #|    assert_true(formatter.format(d).contains("\t...\n"))
+    #|    assert_eq(d.trace.length(),3)
+    #|  }} noraise {_=>fail("assertion diagnostic")}
+    #|  evaluator.set_diagnostic_formatter()
     #|}
   @fs.write_file(work + "/consumer/consumer_test.mbt", test_source)
   @fs.write_file(work + "/consumer/parameter.jsonnet", "std.extVar('x')")

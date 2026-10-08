@@ -140,6 +140,7 @@ fn[T] evaluate_with_output(
       steps: 0,
       depth: 0,
       frames: [],
+      current_trace: None,
       imported_bytes: 0,
       output_bytes: 0,
     }
@@ -152,10 +153,10 @@ fn[T] evaluate_with_output(
       vm.ext[name] = id
     }
     let expression = program.expression
-    let value = vm.eval_frame(
-      expression,
-      vm.base_env(file=if anonymous { "" } else { filename }),
-    )
+    let entry_env = vm.base_env(file=if anonymous { "" } else { filename })
+    let value = vm.with_trace(Synthetic("During evaluation"), () => {
+      vm.eval_frame(expression, entry_env)
+    })
     let value = match value {
       Closure(_, _, _) | Builtin(_) | Native(_) => {
         let tla = vm.prepare_parameters(
@@ -163,12 +164,16 @@ fn[T] evaluate_with_output(
         )
         let names = tla.keys().collect()
         names.sort()
-        vm.call(value, names.map(name => (Some(name), tla[name])), loc)
+        vm.with_trace(Synthetic("Top-level function call"), () => {
+          vm.call(value, names.map(name => (Some(name), tla[name])), loc)
+        })
       }
       _ => value
     }
     vm.output_bytes = 0
-    output(vm, value, loc)
+    vm.with_trace(Synthetic("During manifestation"), () => {
+      output(vm, value, loc)
+    })
   } catch {
     Error(d) => raise Error(d)
     e =>
@@ -177,6 +182,7 @@ fn[T] evaluate_with_output(
         message: e.to_string(),
         location: loc,
         context: [],
+        trace: [],
       })
   }
 }

@@ -216,6 +216,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
   let local_names : Map[String, Bool] = Map([])
   let field_names : Map[String, Bool] = Map([])
   let assertions = []
+  let assertion_sites = []
   let mut computed_field = false
   while !self.eat("}") {
     let member_begin = self.pos
@@ -226,6 +227,9 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
       let cond = self.expr(0)
       let message = if self.eat(":") { Some(self.expr(0)) } else { None }
       assertions.push((cond, message))
+      assertion_sites.push(
+        Some({ begin: self.tokens[member_begin].loc, end: self.last_end(), }),
+      )
       self.record_raw(ObjectAssert, member_begin)
     } else {
       let computed = self.eat("[")
@@ -327,7 +331,11 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
     }
   }
   self.record_raw(Object, raw_begin)
-  { kind: Obj(fields, locals, assertions), loc, end: Some(self.last_end()), }
+  {
+    kind: Obj(fields, locals, assertions, assertion_sites),
+    loc,
+    end: Some(self.last_end()),
+  }
 }
 
 ///|
@@ -604,9 +612,14 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
 
 ///|
 fn parse(source : String, file : String, max_depth : Int) -> Expr raise Error {
-  let e = parse_tokens(lex(source, file), max_depth)
-  validate(e, ["std"], false)
-  e
+  try {
+    let e = parse_tokens(lex(source, file), max_depth)
+    validate(e, ["std"], false)
+    e
+  } catch {
+    Error(d) => raise Error(d.with_syntax_trace(source))
+    e => raise e
+  }
 }
 
 ///|

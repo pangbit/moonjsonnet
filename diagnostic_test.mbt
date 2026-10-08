@@ -11,6 +11,7 @@ test "context cropping keeps both ends and leaves diagnostics intact" {
     message: "é😀\u0000\nfailed",
     location: { file: "origin", line: 1, column: 2, },
     context,
+    trace: [],
   }
   let header = "origin:1:2: Runtime: é😀\u0000\nfailed"
   let full = header +

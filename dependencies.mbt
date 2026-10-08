@@ -126,6 +126,7 @@ fn find_dependencies_with_cache(
         location: loc,
         message: e.to_string(),
         context: [],
+        trace: [],
       })
   }
 }

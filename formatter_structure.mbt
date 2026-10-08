@@ -16,13 +16,13 @@ fn format_plus_edits(
   let stack = [root]
   while stack.pop() is Some(e) {
     if e.kind is Binary("+", left, right) &&
-      (right.kind is Obj(_, _, _) || right.kind is ObjectComp(_, _, _, _)) &&
+      (right.kind is Obj(_, _, _, _) || right.kind is ObjectComp(_, _, _, _)) &&
       positions.get((right.loc.line, right.loc.column)) is Some(i) &&
       i > 0 &&
       tokens[i].text == "{" {
       if tokens[i - 1].text == "+" {
         if implicit &&
-          right.kind is Obj(_, _, _) &&
+          right.kind is Obj(_, _, _, _) &&
           (
             (left.kind is Var(name) && is_name(name)) ||
             left.kind is Index(_, _)
@@ -37,7 +37,7 @@ fn format_plus_edits(
     }
     stack.append(lint_children(e))
     // Lint traversal omits object assertions; formatting must retain them.
-    if e.kind is Obj(_, _, assertions) {
+    if e.kind is Obj(_, _, assertions, _) {
       for (condition, message) in assertions {
         stack.push(condition)
         if message is Some(message) {

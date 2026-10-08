@@ -334,7 +334,7 @@ fn Vm::builtin(
             fields[name] = field
           }
         }
-        layers.push({ ..layer, fields, assertions: [], })
+        layers.push({ ..layer, fields, assertions: [], assertion_sites: [], })
       }
       self.object_value(layers)
     }

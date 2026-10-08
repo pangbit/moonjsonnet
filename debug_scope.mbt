@@ -108,7 +108,7 @@ fn debug_visibility(
             }
           }
         }
-        Obj(fields, locals, assertions) => {
+        Obj(fields, locals, assertions, _) => {
           let bound = locals.map(b => b.name)
           if !in_object {
             bound.push("$")

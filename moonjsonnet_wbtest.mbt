@@ -28,6 +28,7 @@ test "thunk cache computes once and remembers failure" {
     steps: 0,
     depth: 0,
     frames: [],
+    current_trace: None,
     imported_bytes: 0,
     output_bytes: 0,
   }

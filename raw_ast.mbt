@@ -104,7 +104,7 @@ fn raw_primary_kind(expression : Expr, token : Token) -> RawNodeKind {
     If(_, _, _) => If
     Func(_, _) => Function
     Arr(_) => Array
-    Obj(_, _, _) => Object
+    Obj(_, _, _, _) => Object
     ArrayComp(_, _) => ArrayComp
     ObjectComp(_, _, _, _) => ObjectComp
     Unary(op, _) => Unary(op)
