@@ -95,6 +95,9 @@ resolving imports. Formatting support is partial; broader layout and comment
 placement remain under validation. See [parity status](docs/GO-PARITY.md).
 `format_syntax_source` and `SyntaxDocument` provide independent source-tooling
 budgets for deep trees; evaluator admission and existing `Limits` stay unchanged.
+`RawAst` exposes ordered tokens, trivia and child nodes for lossless edits.
+`format_node` formats the edited expression with separate EOF fodder; `clone`
+isolates mutable containers. See the [raw syntax contract](docs/API.md).
 
 ```mbt check
 ///|
@@ -103,6 +106,22 @@ test "readme source formatting" {
   let source = "0" + "+1".repeat(299)
   let syntax = @moonjsonnet.SyntaxDocument::parse(source)
   assert_eq(syntax.format(), "0" + " + 1".repeat(299) + "\n")
+}
+```
+
+```mbt check
+///|
+test "readme raw syntax editing" {
+  let raw = @moonjsonnet.RawAst::parse("/*head*/ 1 //tail\n")
+  let original = raw.clone()
+  for i, part in raw.root.parts {
+    if part is Text(text) && text.kind is TokenText {
+      raw.root.parts[i] = Text({ ..text, text: "42", })
+    }
+  }
+  assert_eq(original.text(), "/*head*/ 1 //tail\n")
+  assert_eq(raw.text(), "/*head*/ 42 //tail\n")
+  assert_eq(raw.format(), "/*head*/ 42  //tail\n")
 }
 ```
 

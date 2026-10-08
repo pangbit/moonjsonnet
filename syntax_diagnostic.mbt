@@ -44,6 +44,7 @@ fn Diagnostic::syntax_error_site(
             depth: 0,
             max_depth: limits.parser_depth,
             expression_end: token.loc,
+            raw_spans: None,
           }
           try {
             let operand = parser.expr(0)

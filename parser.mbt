@@ -6,6 +6,7 @@ priv struct Parser {
   max_depth : Int
   // End of the last parsed expression before semantic sugar is removed.
   mut expression_end : Location
+  raw_spans : Array[RawSpan]?
 }
 
 ///|
@@ -118,6 +119,7 @@ fn Parser::params(
   self.expect("(")
   let params : Array[ExprParameter] = []
   while !self.eat(")") {
+    let raw_begin = self.pos
     let token = self.peek()
     let n = self.name(parameter=true)
     let default = if self.eat("=") { Some(self.expr(0)) } else { None }
@@ -133,6 +135,7 @@ fn Parser::params(
         },
       }),
     })
+    self.record_raw(Parameter, raw_begin)
     if !self.eat(",") {
       self.end_list(
         ")",
@@ -159,6 +162,7 @@ fn Parser::binding(
   names : Map[String, Bool],
   in_object? : Bool = false,
 ) -> ExprBinding raise Error {
+  let raw_begin = self.pos
   let loc = self.peek().loc
   let name = self.name()
   if names.contains(name) {
@@ -168,6 +172,7 @@ fn Parser::binding(
   let params = if self.peek().text == "(" { Some(self.params()) } else { None }
   self.expect("=")
   let value = self.expr(0)
+  self.record_raw(Binding, raw_begin)
   {
     name,
     value: match params {
@@ -188,13 +193,16 @@ fn Parser::binding(
 fn Parser::clauses(self : Parser) -> Array[Clause] raise Error {
   let out : Array[Clause] = []
   while self.peek().text == "for" || self.peek().text == "if" {
+    let raw_begin = self.pos
     if self.eat("for") {
       let n = self.name()
       self.expect("in")
       out.push(For(n, self.expr(0)))
+      self.record_raw(ForClause, raw_begin)
     } else {
       self.expect("if")
       out.push(When(self.expr(0)))
+      self.record_raw(IfClause, raw_begin)
     }
   }
   out
@@ -202,6 +210,7 @@ fn Parser::clauses(self : Parser) -> Array[Clause] raise Error {
 
 ///|
 fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
+  let raw_begin = self.pos - 1
   let fields : Array[Field] = []
   let locals = []
   let local_names : Map[String, Bool] = Map([])
@@ -209,12 +218,15 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
   let assertions = []
   let mut computed_field = false
   while !self.eat("}") {
+    let member_begin = self.pos
     if self.eat("local") {
       locals.push(self.binding(local_names, in_object=true))
+      self.record_raw(ObjectLocal, member_begin)
     } else if self.eat("assert") {
       let cond = self.expr(0)
       let message = if self.eat(":") { Some(self.expr(0)) } else { None }
       assertions.push((cond, message))
+      self.record_raw(ObjectAssert, member_begin)
     } else {
       let computed = self.eat("[")
       computed_field = computed
@@ -285,6 +297,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
         None => body
       }
       fields.push({ key, value, visibility, additive, })
+      self.record_raw(Field, member_begin)
     }
     let comma = self.eat(",")
     if self.peek().text == "for" {
@@ -301,6 +314,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
       }
       let clauses = self.clauses()
       self.expect("}")
+      self.record_raw(ObjectComp, raw_begin)
       return {
         kind: ObjectComp(fields[0].key, fields[0].value, clauses, locals),
         loc,
@@ -312,11 +326,13 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
       break
     }
   }
+  self.record_raw(Object, raw_begin)
   { kind: Obj(fields, locals, assertions), loc, end: Some(self.last_end()), }
 }
 
 ///|
 fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
+  let raw_begin = self.pos
   self.depth += 1
   if self.depth > self.max_depth {
     raise problem(Limit, self.peek().loc, "parse depth limit exceeded")
@@ -469,6 +485,7 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
   if token.text != "(" && token.text != "assert" {
     left = { ..left, end: Some(span_end), }
   }
+  self.record_raw(raw_primary_kind(left, token), raw_begin)
   while true {
     let t = self.peek()
     let mut end = None
@@ -523,6 +540,7 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
       let args = []
       let mut named = false
       while !self.eat(")") {
+        let argument_begin = self.pos
         let arg_loc = self.peek().loc
         let name = if is_name(self.peek().text) &&
           self.tokens[self.pos + 1].text == "=" {
@@ -542,6 +560,7 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
           )
         }
         args.push((name, value))
+        self.record_raw(Argument, argument_begin)
         if !self.eat(",") {
           self.end_list(")", "function argument")
           break
@@ -567,6 +586,16 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
     }
     span_end = end.unwrap_or(self.last_end())
     left = { ..left, end: Some(span_end), }
+    self.record_raw(
+      match t.text {
+        "." => DotIndex
+        "(" => Call
+        "{" => ApplyBrace
+        "[" => if left.kind is Slice(_, _, _, _) { Slice } else { Index }
+        _ => Binary(t.text)
+      },
+      raw_begin,
+    )
   }
   self.expression_end = span_end
   self.depth -= 1
@@ -586,6 +615,7 @@ fn parse_tokens(
   max_depth : Int,
   tree_depth? : Int,
   node_limit? : Int,
+  raw_spans? : Array[RawSpan],
 ) -> Expr raise Error {
   let p : Parser = {
     tokens,
@@ -593,6 +623,7 @@ fn parse_tokens(
     depth: 0,
     max_depth,
     expression_end: tokens[0].loc,
+    raw_spans,
   }
   let e = p.expr(0)
   p.expect("<eof>")

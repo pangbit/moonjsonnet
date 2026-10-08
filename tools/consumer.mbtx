@@ -92,6 +92,18 @@ async fn main {
     #|  assert_eq(syntax.parts().map(p=>p.text).join(""),deep_source)
     #|  assert_eq(syntax.format(limits=syntax_limits),"0"+" + 1".repeat(299)+"\n")
     #|  assert_eq(@moonjsonnet.format_syntax_source("[1,2]",limits=syntax_limits),"[1, 2]\n")
+    #|  let raw : @moonjsonnet.RawAst = @moonjsonnet.RawAst::parse("/*head*/ 1 //tail\n",filename="consumer")
+    #|  let copy=raw.clone()
+    #|  assert_true(raw.root.kind is Number)
+    #|  for i,part in raw.root.parts {
+    #|    if part is Text(text) && text.kind is TokenText {raw.root.parts[i]=Text({..text,text:"42"})}
+    #|  }
+    #|  assert_eq(raw.text(),"/*head*/ 42 //tail\n")
+    #|  assert_eq(copy.text(),"/*head*/ 1 //tail\n")
+    #|  assert_eq(raw.root.clone().text(),"/*head*/ 42")
+    #|  assert_eq(@moonjsonnet.format_node(raw.root,final_fodder=raw.final_fodder),"/*head*/ 42  //tail\n")
+    #|  assert_eq(raw.format(),"/*head*/ 42  //tail\n")
+    #|  assert_eq(syntax.raw_ast(limits=syntax_limits).text(),deep_source)
     #|  assert_eq(@moonjsonnet.format_source("local z=import 'z';local a=import 'a';[z,a]"),"local a = import 'a';\nlocal z = import 'z';\n[z, a]\n")
     #|  assert_eq(ranged.source_range().unwrap().format(),"consumer:1:1-6")
     #|  let manual : @moonjsonnet.Ast = {kind:Literal(42),loc:ranged.loc,end:None}

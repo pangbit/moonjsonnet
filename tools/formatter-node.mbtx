@@ -1,0 +1,58 @@
+import {"moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell", "moonbitlang/core/env", "moonbitlang/core/json"}
+
+async fn command(program : String, args : Array[String]) -> String {
+  let result=@shell.Cmd(program,args).output();result.check();result.stdout().trim().to_owned()
+}
+
+async fn main {
+  let args=@env.args();guard args.length()==2 || args.length()==3 || (args.length()==4 && args[3]=="--update") else {fail("Usage: moon run tools/formatter-node.mbtx PROBE [GO_CHECKOUT [--update]]")}
+  let cli=@fs.realpath(args[1]);let work=@fs.tmpdir(prefix="moonjsonnet-format-node-")
+  let adapter=@fs.realpath("tests/reference/formatter-node.go");let reference=work+"/go-node"
+  let reference_build=if args.length()>=3 {
+    let checkout=@fs.realpath(args[2])
+    assert_eq(command("git",["-C",checkout,"rev-parse","HEAD"]),"67968688d9952f50662e979fab1bef889d0d3e57")
+    assert_eq(command("git",["-C",checkout,"status","--porcelain"]),"")
+    @shell.Cmd("go",["-C",checkout,"build","-o",reference,adapter],env=Map([("GOTOOLCHAIN","go1.24.0"),("GOWORK","off"),("GOPROXY","off")])).run()
+    let build=command("go",["version","-m",reference]);assert_true(build.contains("go1.24.0"));build
+  } else {"not run; local frozen-fixture check"}
+  let inputs : Array[Json] = []
+  for (name,source,mode) in [
+    ("number","/* head */1 // tail\n","number"),
+    ("array-number","/* head */[1 /* first */, 2]// tail\n","number"),
+    ("string","'abc'","string"),
+    ("append","[1 /* first */, 2] /* end */\n","append"),
+    ("remove","[/* first */ 1 /*comma*/, // second\n 2,3]","remove"),
+    ("rename","local z=import 'z';local a=import'a';[z,a]","rename"),
+    ("comments","/*head*/ [1,2] //tail\n","comments"),
+  ] {
+    for style in 0..<8 { inputs.push({"name":name+"-"+style.to_string(),"source":source,"mode":mode,"style":style}) }
+  }
+  let rows : Array[Json]=[];let fixtures : Array[Json]=[];let mut passed=0
+  let frozen=if args.length()==4 {[]} else {guard @json.parse(@fs.read_file("tests/go-formatter-node.json").text()) is Array(cases) else {fail("node fixtures")};assert_eq(cases.length(),inputs.length());cases}
+  for i,input in inputs {
+    let expected=if args.length()>=3 {
+      let a=@shell.Cmd(reference,[],stdin=@shell.Text(input.stringify())).output();a.check();assert_eq(a.stderr(),"")
+      @json.parse(a.stdout())
+    } else {guard frozen[i] is {"input":saved,"expected":expected,..} else {fail("node fixture")};assert_eq(saved,input);expected}
+    assert_true(expected is {"error":String(""),"valid":True,..})
+    fixtures.push({"input":input,"expected":expected})
+    if args.length()!=4 {assert_eq(frozen[i],fixtures[i])}
+    let b=@shell.Cmd(cli,[],stdin=@shell.Text(input.stringify())).output();let actual=try @json.parse(b.stdout()) catch {_=>Json::null()}
+    let ok=b.exit_code()==0 && b.stderr()=="" && actual==expected
+    if ok {passed+=1} else {println("FAIL node "+input.stringify()+" actual="+actual.stringify()+" expected="+expected.stringify()+" stderr="+b.stderr())}
+    rows.push({"input":input,"expected":expected,"actual":actual,"passed":ok,"exit":b.exit_code(),"stderr":b.stderr()})
+  }
+  if args.length()==4 {@fs.write_file("tests/go-formatter-node.json",Json::array(fixtures).stringify(indent=2)+"\n")}
+  @fs.mkdir("_build/formatter-node",recursive=true,allow_exist=true)
+  let commit=@shell.Cmd("git",["rev-parse","HEAD"]).output()
+  let dirty=@shell.Cmd("git",["status","--porcelain"]).output()
+  let report : Json={"source_commit":if commit.exit_code()==0 {Json::string(commit.stdout().trim().to_owned())} else {Json::null()},"source_dirty":if dirty.exit_code()==0 {Json::boolean(!dirty.stdout().is_empty())} else {Json::null()},
+    "reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57","reference_build":reference_build,"fresh_go_reference":args.length()>=3,
+    "reference_sha256":if args.length()>=3 {command("shasum",["-a","256",reference])} else {"not run"},"local_sha256":command("shasum",["-a","256",cli]),
+    "adapter_sha256":command("shasum",["-a","256",adapter]),"fixture_sha256":command("shasum",["-a","256","tests/go-formatter-node.json"]),
+    "total":inputs.length(),"passed":passed,"failed":inputs.length()-passed,"skipped":0,"unsupported":0,"declared_exceptions":0,"reference_errors":0,"cases":rows}
+  let report_path=if args.length()>=3 {"_build/formatter-node/report.json"} else {"_build/formatter-node/local-report.json"}
+  @fs.write_file(report_path,report.stringify(indent=2)+"\n")
+  println("Edited FormatNode: \{passed}/\{inputs.length()}; evidence: "+work)
+  if passed!=inputs.length() {fail("Edited node differences retained")}
+}

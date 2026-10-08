@@ -68,11 +68,15 @@ fn run(input : Json) -> Json {
         defaults.strip_all_but_comments,
       ),
     }
-    let result = @moonjsonnet.format_syntax_source(
-      source,
-      filename="entry",
+    let document = @moonjsonnet.SyntaxDocument::parse(source, filename="entry")
+    let raw = document.raw_ast()
+    assert_eq(raw.text(), source)
+    let result = @moonjsonnet.format_node(
+      raw.root,
+      final_fodder=raw.final_fodder,
       options~,
     )
+    assert_eq(result, document.format(options~))
     ignore(@moonjsonnet.SyntaxDocument::parse(result))
     valid = true
     idempotent = @moonjsonnet.format_syntax_source(

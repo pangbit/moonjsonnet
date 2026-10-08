@@ -1,0 +1,786 @@
+[
+  {
+    "input": {
+      "name": "number-0",
+      "source": "/* head */1 // tail\n",
+      "mode": "number",
+      "style": 0
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ 42  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "number-1",
+      "source": "/* head */1 // tail\n",
+      "mode": "number",
+      "style": 1
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ 42  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "number-2",
+      "source": "/* head */1 // tail\n",
+      "mode": "number",
+      "style": 2
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ 42  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "number-3",
+      "source": "/* head */1 // tail\n",
+      "mode": "number",
+      "style": 3
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ 42  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "number-4",
+      "source": "/* head */1 // tail\n",
+      "mode": "number",
+      "style": 4
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ 42  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "number-5",
+      "source": "/* head */1 // tail\n",
+      "mode": "number",
+      "style": 5
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "42\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "number-6",
+      "source": "/* head */1 // tail\n",
+      "mode": "number",
+      "style": 6
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "42\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "number-7",
+      "source": "/* head */1 // tail\n",
+      "mode": "number",
+      "style": 7
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ 42  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "array-number-0",
+      "source": "/* head */[1 /* first */, 2]// tail\n",
+      "mode": "number",
+      "style": 0
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ [42/* first */, 2]  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "array-number-1",
+      "source": "/* head */[1 /* first */, 2]// tail\n",
+      "mode": "number",
+      "style": 1
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ [42/* first */, 2]  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "array-number-2",
+      "source": "/* head */[1 /* first */, 2]// tail\n",
+      "mode": "number",
+      "style": 2
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ [42/* first */, 2]  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "array-number-3",
+      "source": "/* head */[1 /* first */, 2]// tail\n",
+      "mode": "number",
+      "style": 3
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ [42/* first */, 2]  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "array-number-4",
+      "source": "/* head */[1 /* first */, 2]// tail\n",
+      "mode": "number",
+      "style": 4
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ [ 42/* first */, 2 ]  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "array-number-5",
+      "source": "/* head */[1 /* first */, 2]// tail\n",
+      "mode": "number",
+      "style": 5
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[42, 2]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "array-number-6",
+      "source": "/* head */[1 /* first */, 2]// tail\n",
+      "mode": "number",
+      "style": 6
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[42, 2]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "array-number-7",
+      "source": "/* head */[1 /* first */, 2]// tail\n",
+      "mode": "number",
+      "style": 7
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/* head */ [42/* first */, 2]  // tail\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "string-0",
+      "source": "'abc'",
+      "mode": "string",
+      "style": 0
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "'中\\n'\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "string-1",
+      "source": "'abc'",
+      "mode": "string",
+      "style": 1
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "\"中\\n\"\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "string-2",
+      "source": "'abc'",
+      "mode": "string",
+      "style": 2
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "'中\\n'\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "string-3",
+      "source": "'abc'",
+      "mode": "string",
+      "style": 3
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "'中\\n'\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "string-4",
+      "source": "'abc'",
+      "mode": "string",
+      "style": 4
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "'中\\n'\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "string-5",
+      "source": "'abc'",
+      "mode": "string",
+      "style": 5
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "'中\\n'\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "string-6",
+      "source": "'abc'",
+      "mode": "string",
+      "style": 6
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "'中\\n'\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "string-7",
+      "source": "'abc'",
+      "mode": "string",
+      "style": 7
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "'中\\n'\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "append-0",
+      "source": "[1 /* first */, 2] /* end */\n",
+      "mode": "append",
+      "style": 0
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[1/* first */, 2, 3] /* end */\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "append-1",
+      "source": "[1 /* first */, 2] /* end */\n",
+      "mode": "append",
+      "style": 1
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[1/* first */, 2, 3] /* end */\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "append-2",
+      "source": "[1 /* first */, 2] /* end */\n",
+      "mode": "append",
+      "style": 2
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[1/* first */, 2, 3] /* end */\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "append-3",
+      "source": "[1 /* first */, 2] /* end */\n",
+      "mode": "append",
+      "style": 3
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[1/* first */, 2, 3] /* end */\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "append-4",
+      "source": "[1 /* first */, 2] /* end */\n",
+      "mode": "append",
+      "style": 4
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[ 1/* first */, 2, 3 ] /* end */\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "append-5",
+      "source": "[1 /* first */, 2] /* end */\n",
+      "mode": "append",
+      "style": 5
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[1, 2, 3]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "append-6",
+      "source": "[1 /* first */, 2] /* end */\n",
+      "mode": "append",
+      "style": 6
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[1, 2, 3]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "append-7",
+      "source": "[1 /* first */, 2] /* end */\n",
+      "mode": "append",
+      "style": 7
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[1/* first */, 2, 3] /* end */\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "remove-0",
+      "source": "[/* first */ 1 /*comma*/, // second\n 2,3]",
+      "mode": "remove",
+      "style": 0
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[  // second\n  2,\n  3,\n]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "remove-1",
+      "source": "[/* first */ 1 /*comma*/, // second\n 2,3]",
+      "mode": "remove",
+      "style": 1
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[  // second\n  2,\n  3,\n]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "remove-2",
+      "source": "[/* first */ 1 /*comma*/, // second\n 2,3]",
+      "mode": "remove",
+      "style": 2
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[  // second\n    2,\n    3,\n]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "remove-3",
+      "source": "[/* first */ 1 /*comma*/, // second\n 2,3]",
+      "mode": "remove",
+      "style": 3
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[  // second\n  2,\n  3,\n]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "remove-4",
+      "source": "[/* first */ 1 /*comma*/, // second\n 2,3]",
+      "mode": "remove",
+      "style": 4
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[  // second\n  2,\n  3,\n]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "remove-5",
+      "source": "[/* first */ 1 /*comma*/, // second\n 2,3]",
+      "mode": "remove",
+      "style": 5
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[\n  2,\n  3,\n]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "remove-6",
+      "source": "[/* first */ 1 /*comma*/, // second\n 2,3]",
+      "mode": "remove",
+      "style": 6
+    },
+    "expected": {
+      "error": "",
+      "idempotent": false,
+      "result": "[2, 3,]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "remove-7",
+      "source": "[/* first */ 1 /*comma*/, // second\n 2,3]",
+      "mode": "remove",
+      "style": 7
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[  // second\n  2,\n  3,\n]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "rename-0",
+      "source": "local z=import 'z';local a=import'a';[z,a]",
+      "mode": "rename",
+      "style": 0
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "local a = import 'a';\nlocal b = import 'z';\n[b, a]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "rename-1",
+      "source": "local z=import 'z';local a=import'a';[z,a]",
+      "mode": "rename",
+      "style": 1
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "local a = import \"a\";\nlocal b = import \"z\";\n[b, a]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "rename-2",
+      "source": "local z=import 'z';local a=import'a';[z,a]",
+      "mode": "rename",
+      "style": 2
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "local a = import 'a';\nlocal b = import 'z';\n[b, a]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "rename-3",
+      "source": "local z=import 'z';local a=import'a';[z,a]",
+      "mode": "rename",
+      "style": 3
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "local a = import 'a';\nlocal b = import 'z';\n[b, a]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "rename-4",
+      "source": "local z=import 'z';local a=import'a';[z,a]",
+      "mode": "rename",
+      "style": 4
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "local a = import 'a';\nlocal b = import 'z';\n[ b, a ]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "rename-5",
+      "source": "local z=import 'z';local a=import'a';[z,a]",
+      "mode": "rename",
+      "style": 5
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "local a = import 'a';\nlocal b = import 'z';\n[b, a]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "rename-6",
+      "source": "local z=import 'z';local a=import'a';[z,a]",
+      "mode": "rename",
+      "style": 6
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "local a = import 'a'; local b = import 'z'; [b, a]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "rename-7",
+      "source": "local z=import 'z';local a=import'a';[z,a]",
+      "mode": "rename",
+      "style": 7
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "local b = import 'z'; local a = import 'a'; [b, a]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "comments-0",
+      "source": "/*head*/ [1,2] //tail\n",
+      "mode": "comments",
+      "style": 0
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/*added*/ [1, 2]  //changed\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "comments-1",
+      "source": "/*head*/ [1,2] //tail\n",
+      "mode": "comments",
+      "style": 1
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/*added*/ [1, 2]  //changed\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "comments-2",
+      "source": "/*head*/ [1,2] //tail\n",
+      "mode": "comments",
+      "style": 2
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/*added*/ [1, 2]  //changed\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "comments-3",
+      "source": "/*head*/ [1,2] //tail\n",
+      "mode": "comments",
+      "style": 3
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/*added*/ [1, 2]  //changed\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "comments-4",
+      "source": "/*head*/ [1,2] //tail\n",
+      "mode": "comments",
+      "style": 4
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/*added*/ [ 1, 2 ]  //changed\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "comments-5",
+      "source": "/*head*/ [1,2] //tail\n",
+      "mode": "comments",
+      "style": 5
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[1, 2]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "comments-6",
+      "source": "/*head*/ [1,2] //tail\n",
+      "mode": "comments",
+      "style": 6
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "[1, 2]\n",
+      "valid": true
+    }
+  },
+  {
+    "input": {
+      "name": "comments-7",
+      "source": "/*head*/ [1,2] //tail\n",
+      "mode": "comments",
+      "style": 7
+    },
+    "expected": {
+      "error": "",
+      "idempotent": true,
+      "result": "/*added*/ [1, 2]  //changed\n",
+      "valid": true
+    }
+  }
+]

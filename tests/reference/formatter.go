@@ -23,7 +23,15 @@ func main() {
 			panic(err)
 		}
 	}
-	result, err := formatter.Format("entry", input.Source, options)
+	node, finalFodder, err := formatter.SnippetToRawAST("entry", input.Source)
+	result := ""
+	if err == nil {
+		result, err = formatter.FormatNode(node, finalFodder, options)
+		fromSource, sourceErr := formatter.Format("entry", input.Source, options)
+		if (err == nil) != (sourceErr == nil) || result != fromSource {
+			panic("FormatNode and Format differ")
+		}
+	}
 	message := ""
 	if err != nil {
 		message = err.Error()

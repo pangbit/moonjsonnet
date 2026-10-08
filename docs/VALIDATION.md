@@ -439,6 +439,27 @@ Native debug/release tests each pass **262/262**, archive consumer **24/24**,
 frozen/upstream formatting **736/736** and **178/178**; isolated ASan includes the
 new formatter host suite and passes. See the [jsonnetfmt report](../reports/GO-JSONNET-JSONNETFMT.md).
 
+The raw syntax batch exports independently editable `RawAst`/`RawNode` containers,
+retaining ordered token/trivia fragments and EOF fodder. `raw_ast_test.mbt` checks
+expression/declaration/field/argument/clause coverage, cloning and document isolation,
+cyclic edits, complete budgets and iterative processing of a depth-4000 binary tree.
+The formatter probe now also checks exact raw-tree reconstruction and compares
+`format_node` against `SyntaxDocument::format` for every frozen/upstream input;
+the Go adapter cross-checks `SnippetToRawAST`/`FormatNode` against `Format`.
+
+```sh
+moon run tools/formatter-node.mbtx _build/native/release/build/examples/formatter-node-probe/formatter-node-probe.exe ${LOCAL_PATH_012}
+```
+
+This separate corpus edits the actual Go raw AST and local concrete syntax tree:
+numbers, strings, array insertion/removal, local/use renaming and leading/final
+comments, under eight option sets. It compares complete outputs, reparse and
+idempotence flags in 56 cases against the frozen `tests/go-formatter-node.json`
+and fresh pinned Go runs. The report records source/build/adapter/fixture hashes
+and retains failures without skips. Local-only mode omits the checkout, writes
+`local-report.json`, and is also run on the isolated ASan binary. This is separate
+from Go comparison evidence. The archive consumer calls every new public method.
+
 The [overall parity plan](GO-PARITY.md) tracks capabilities outside the existing
 behavioral corpus. `tools/parity.mbtx` compares all 163 reflected Go standard-library
 members against a frozen reference snapshot and the local CLI, writing

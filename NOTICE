@@ -101,6 +101,12 @@ internal/program/desugarer.go at commit
 https://github.com/google/go-jsonnet/tree/v0.21.0
 Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 
+raw_ast.mbt and parser.mbt's raw-node instrumentation extend the MoonBit parser
+with an independently assembled lossless concrete syntax tree. The development-only
+tests/reference/formatter-node.go adapter compares edited nodes with the pinned
+Go FormatNode API; tests/go-formatter-node.json uses original project inputs.
+The raw-tree and formatting APIs execute entirely in MoonBit and do not link Go.
+
 Repeated parameter binding and default selection in eval.mbt follow go-jsonnet
 value.go checkArguments and thunks.go closure.evalCall at that same revision.
 

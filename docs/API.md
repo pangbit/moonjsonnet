@@ -287,9 +287,9 @@ have no source text and a saved source-byte count of zero; this does not exempt
 later imports, steps, stack, depth or output from execution limits. Filename
 defaults to the root location file, while explicit `filename`/`anonymous` control
 the entry/import identity. Individual diagnostic locations remain unchanged.
-Trees contain semantic syntax and numeric token spelling, not comments, whitespace,
-or Go's desugared/free-variable metadata. Source-preserving tooling
-and complete Go AST metadata compatibility remain pending.
+Trees contain semantic syntax and numeric token spelling. Use the separate
+`RawAst` API below for comments, whitespace and source-preserving edits. Go's
+desugared/free-variable metadata is not part of this semantic view.
 
 `Ast::source_range() -> SourceRange?` returns retained coordinates. `Location`
 lines and UTF-8 byte columns start at one; `SourceRange.end` is exclusive.
@@ -322,8 +322,8 @@ text and a one-based UTF-8 byte range. Quotes, verbatim doubling, escapes, text-
 indentation, numeric spelling, CRLF, shebangs and comments are retained.
 
 The `ast()` result is an independent semantic view. Editing that view or a returned
-parts array does not rewrite the retained document. This is source retention and
-raw parsing; it does not expose Go's Fodder normalization or editable raw AST.
+parts array does not rewrite the retained document. For an editable structural
+view, export `SyntaxDocument::raw_ast()` or use `RawAst::parse()` below.
 Ordinary Program parsing does not retain trivia.
 
 `format_source(source, filename?, options?, limits?)` and
@@ -348,6 +348,36 @@ or resolves imports. Exporting a semantic AST does not admit it for execution:
 `Program::from_ast` still applies evaluator scope and resource checks. Existing
 `Program`, `ParsedSource`, `format_source` and `Limits` retain their depth defaults
 and hard cap; use the explicit syntax entry point for deeper source tooling.
+
+`SyntaxDocument::raw_ast(limits?)` exports fresh, editable `RawNode` containers;
+`RawAst::parse(source, filename?, limits?)` provides the same view directly. Its
+root contains ordered `RawPart::Text(SourcePart)` and `Child(RawNode)` entries.
+Tokens own their leading trivia; EOF trivia is in `RawAst.final_fodder`. Every
+token, whitespace and comment fragment occurs exactly once, retaining original
+UTF-8 byte ranges and spelling. Parentheses, fields, bindings, parameters,
+arguments, object locals/assertions and comprehension clauses are structural
+nodes alongside the expression categories in `RawNodeKind`.
+
+The ordered parts are authoritative. `kind` and optional `range` describe the
+original parse; editing an array does not refresh either. Reparse `text()` to
+refresh metadata after edits. `RawAst::text` includes final fodder and
+`RawNode::text` serializes the selected node exactly, without grammar validation.
+`clone()` copies every child occurrence and mutable parts/final-fodder array,
+including repeated shared children, leaving the document and other exports
+independent. Build, serialization and cloning use iterative stacks, check the
+complete raw tree/node/work budgets, and bound cyclic edits. Structural wrapper
+nodes also count toward raw tree depth and node limits. Serialization checks
+`SyntaxLimits.source_bytes`; formatting additionally checks output bytes.
+
+`format_node(node, final_fodder?, options?, limits?)` formats edited expression
+syntax. `RawAst::format` supplies its root and EOF fodder. Both serialize the
+parts, reparse with independent `SyntaxLimits`, and apply the same passes as
+`format_syntax_source`. They preserve the caller's arrays, never evaluate or
+resolve imports, and reject malformed edited syntax. A binding/parameter fragment
+can be serialized separately but needs an enclosing expression to be formatted.
+Synthetic nodes may use `range: None`; their default filename is `<node>`.
+This functional API preserves raw source material rather than exposing Go's
+normalized Fodder types.
 
 `FormatOptions::default()` selects two-space indentation, at most two blank lines,
 single quotes, slash comments, pretty field names, unpadded arrays, padded objects

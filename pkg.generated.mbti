@@ -16,6 +16,8 @@ pub fn evaluate_text(String, string_output? : Bool, filename? : String, anonymou
 
 pub fn find_dependencies(String, Array[String], resolver~ : (String, String) -> BinarySource raise, limits? : Limits) -> Array[String] raise JsonnetError
 
+pub fn format_node(RawNode, final_fodder? : Array[SourcePart], options? : FormatOptions, limits? : SyntaxLimits) -> String raise JsonnetError
+
 pub fn format_source(String, filename? : String, options? : FormatOptions, limits? : Limits) -> String raise JsonnetError
 
 pub fn format_syntax_source(String, filename? : String, options? : FormatOptions, limits? : SyntaxLimits) -> String raise JsonnetError
@@ -221,6 +223,67 @@ pub fn Program::evaluate_text(Self, string_output? : Bool, ext_vars? : Map[Strin
 pub fn Program::from_ast(Ast, filename? : String, anonymous? : Bool, limits? : Limits) -> Self raise JsonnetError
 pub fn Program::parse(String, filename? : String, anonymous? : Bool, limits? : Limits) -> Self raise JsonnetError
 
+pub(all) struct RawAst {
+  root : RawNode
+  final_fodder : Array[SourcePart]
+}
+pub fn RawAst::clone(Self, limits? : SyntaxLimits) -> Self raise JsonnetError
+pub fn RawAst::format(Self, options? : FormatOptions, limits? : SyntaxLimits) -> String raise JsonnetError
+pub fn RawAst::parse(String, filename? : String, limits? : SyntaxLimits) -> Self raise JsonnetError
+pub fn RawAst::text(Self, limits? : SyntaxLimits) -> String raise JsonnetError
+
+pub(all) struct RawNode {
+  kind : RawNodeKind
+  range : SourceRange?
+  parts : Array[RawPart]
+}
+pub fn RawNode::clone(Self, limits? : SyntaxLimits) -> Self raise JsonnetError
+pub fn RawNode::text(Self, limits? : SyntaxLimits) -> String raise JsonnetError
+
+pub(all) enum RawNodeKind {
+  Literal
+  Number
+  StringLiteral
+  TextBlock
+  Variable
+  Parens
+  Local
+  Binding
+  Parameter
+  Argument
+  If
+  Function
+  Array
+  Object
+  Field
+  ObjectLocal
+  ObjectAssert
+  ArrayComp
+  ObjectComp
+  ForClause
+  IfClause
+  Call
+  ApplyBrace
+  Index
+  DotIndex
+  Slice
+  Unary(String)
+  Binary(String)
+  Assert
+  ErrorExpr
+  Import
+  ImportStr
+  ImportBin
+} derive(Eq, @debug.Debug)
+pub fn RawNodeKind::equal(Self, Self) -> Bool
+pub fn RawNodeKind::not_equal(Self, Self) -> Bool
+pub fn RawNodeKind::to_repr(Self) -> @debug.Repr
+
+pub(all) enum RawPart {
+  Text(SourcePart)
+  Child(RawNode)
+}
+
 pub(all) struct Source {
   id : String
   text : String
@@ -258,6 +321,7 @@ pub fn SyntaxDocument::ast(Self) -> Ast
 pub fn SyntaxDocument::format(Self, options? : FormatOptions, limits? : SyntaxLimits) -> String raise JsonnetError
 pub fn SyntaxDocument::parse(String, filename? : String, limits? : SyntaxLimits) -> Self raise JsonnetError
 pub fn SyntaxDocument::parts(Self) -> Array[SourcePart]
+pub fn SyntaxDocument::raw_ast(Self, limits? : SyntaxLimits) -> RawAst raise JsonnetError
 pub fn SyntaxDocument::text(Self) -> String
 
 pub(all) struct SyntaxLimits {
