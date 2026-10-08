@@ -565,4 +565,37 @@ members against a frozen reference snapshot and the local CLI, writing
 `_build/parity/report.json`. It records registration gaps, not behavioral passes;
 zero unsupported cases in the smaller differential corpus does not imply full parity.
 
+Character bounds/replacement, operating-system CLI I/O and the finite native-error
+inventory have separate complete-byte checks:
+
+```sh
+env RUST_LOG=error moon run tools/standard-character-diagnostics.mbtx _build/native/release/build/cmd/main/main.exe ${LOCAL_PATH_012}/jsonnet
+env RUST_LOG=error moon run tools/cli-io-diagnostics.mbtx _build/native/release/build/cmd/main/main.exe ${LOCAL_PATH_012}/jsonnet
+env RUST_LOG=error moon run tools/standard-native-diagnostics.mbtx _build/native/release/build/cmd/main/main.exe ${LOCAL_PATH_012}/jsonnet
+```
+
+These retain 72, 45 and 384 observations respectively, validate pinned Go identity
+and build metadata, and compare complete stdout/stderr, exit codes and relevant
+file effects without output normalization. The native inventory contains 69
+branch/boundary inputs and 59 original non-crash discrepancies, each executed in
+exec/stdin/absolute-file modes. Host and resource policies remain independently
+tested. ASan with a Go checkout includes all three runners.
+
+After the full differential runner has generated its report, audit the explicitly
+frozen 295 original standard-library error names:
+
+```sh
+env RUST_LOG=error moon run tools/standard-existing-errors.mbtx _build/native/release/build/cmd/main/main.exe ${LOCAL_PATH_012}/jsonnet
+```
+
+This reruns identical absolute input paths on both binaries rather than rewriting
+outputs. It requires every frozen name, preserves full output including reference
+crashes, and exits nonzero when differences remain. The current 290/295 result
+retains five original reference crashes, which are also retained within the
+overall 18+1+1 failures. The debugger corpus now retains its original 26 cases and
+adds 17 lowered-location and stop-sequence cases, for 43/43 actual Go comparisons.
+See the [continuation report](../reports/GO-JSONNET-DIAGNOSTIC-CONTINUATION.md) for
+implementation commits, clean report manifests, sanitizer evidence and the
+remaining user decisions; finite coverage does not assert arbitrary-input parity.
+
 > Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.

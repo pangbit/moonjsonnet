@@ -375,4 +375,14 @@ TTY 缺少静态片段颜色，真实终端对照 25/25，API 1323/1323、捕获
 六项原生分支定位到五项未修复差异，不能以旧语料全绿推断所有标准库异常对齐。
 见 [参数错误与剩余分支验收](../reports/GO-JSONNET-CLI-ARGUMENT-ERRORS.md)。
 
+随后 `6971bff`、`e95708f`、`25b3873` 分别修复字符、真实 OS I/O 和四类降级
+断点映射；`3d11b45` 完成现有标准库错误分支的有限审计与补修。干净实现的
+字符72/72、I/O45/45、原生诊断384/384、调试器43/43，native双模式各313/313。
+19份完整报告绑定该提交，API1323/1323、CLI字节4095/4095、格式化736/736及
+上游178/178全部复验；整体CLI/Evaluator/lint仍保留原18+1+1项差异。
+固定原295项标准库错误完整字节290/295，其5项参考崩溃没有删除或计通过。
+见 [本轮诊断验收](../reports/GO-JSONNET-DIAGNOSTIC-CONTINUATION.md)。当前有限
+修复范围已完成，原兼容例外确认与Linux隔离安装授权仍待用户决定；整体目标
+仍未标记完成，没有推送、部署或发布。
+
 > Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
