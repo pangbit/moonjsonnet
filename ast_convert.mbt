@@ -69,8 +69,13 @@ fn AstReader::read(
 }
 
 ///|
-fn export_ast(e : Expr) -> Ast {
-  let visit = fn(child : Expr) { export_ast(child) }
+fn export_ast_node(e : Expr, children : Array[Ast]) -> Ast {
+  let mut position = 0
+  let visit = fn(_ : Expr) {
+    let child = children[position]
+    position += 1
+    child
+  }
   let optional = fn(child : Expr?) { child.map(visit) }
   let bindings = fn(bs : Array[ExprBinding]) -> Array[AstBinding] {
     bs.map(b => { name: b.name, value: visit(b.value), range: b.range, })
@@ -127,4 +132,124 @@ fn export_ast(e : Expr) -> Ast {
       abort("runtime-only node in program AST")
   }
   { kind, loc: e.loc, end: e.end, }
+}
+
+///|
+// Keep the order identical to export_ast_node's constructor arguments. Lint
+// traversal uses different eager edges and omits object assertions.
+fn ast_export_children(e : Expr) -> Array[Expr] {
+  let children = []
+  let optional = fn(value : Expr?) {
+    if value is Some(value) {
+      children.push(value)
+    }
+  }
+  let bindings = fn(values : Array[ExprBinding]) {
+    for binding in values {
+      children.push(binding.value)
+    }
+  }
+  let clauses = fn(values : Array[Clause]) {
+    for clause in values {
+      match clause {
+        For(_, value) | When(value) => children.push(value)
+      }
+    }
+  }
+  match e.kind {
+    Local(values, body) => {
+      bindings(values)
+      children.push(body)
+    }
+    Func(parameters, body) => {
+      for parameter in parameters {
+        optional(parameter.default_value)
+      }
+      children.push(body)
+    }
+    If(condition, yes, no) => children.append([condition, yes, no])
+    Call(target, arguments, _) => {
+      children.push(target)
+      for (_, value) in arguments {
+        children.push(value)
+      }
+    }
+    Arr(values) => children.append(values)
+    Obj(fields, values, assertions) => {
+      for field in fields {
+        children.append([field.key, field.value])
+      }
+      bindings(values)
+      for (condition, message) in assertions {
+        children.push(condition)
+        optional(message)
+      }
+    }
+    ArrayComp(body, specs) => {
+      children.push(body)
+      clauses(specs)
+    }
+    ObjectComp(key, body, specs, values) => {
+      children.append([key, body])
+      clauses(specs)
+      bindings(values)
+    }
+    Index(left, right) | Binary(_, left, right) =>
+      children.append([left, right])
+    Slice(target, begin, end, step) => {
+      children.push(target)
+      optional(begin)
+      optional(end)
+      optional(step)
+    }
+    Unary(_, value) | Fail(value) => children.push(value)
+    Assert(condition, message, body) => {
+      children.push(condition)
+      optional(message)
+      children.push(body)
+    }
+    Literal(_)
+    | NumberLiteral(_)
+    | Var(_)
+    | ImportFile(_, _)
+    | ImportBinary(_)
+    | StandardFunction(_)
+    | StandardValue(_) => ()
+  }
+  children
+}
+
+///|
+priv enum AstExportFrame {
+  Enter(Expr)
+  Leave(Expr, Int)
+}
+
+///|
+// Programs and parsed documents have already checked their admission budgets.
+// Export every occurrence independently, without a native-stack recursion or
+// memoization that could make mutable AST containers alias one another.
+fn export_ast(root : Expr) -> Ast {
+  let stack : Array[AstExportFrame] = [Enter(root)]
+  let completed : Array[Ast] = []
+  while stack.pop() is Some(frame) {
+    match frame {
+      Enter(e) => {
+        let children = ast_export_children(e)
+        stack.push(Leave(e, children.length()))
+        for i = children.length() - 1; i >= 0; i = i - 1 {
+          stack.push(Enter(children[i]))
+        }
+      }
+      Leave(e, count) => {
+        let children = completed[completed.length() - count:].to_owned()
+        let node = export_ast_node(e, children)
+        for _ in 0..<count {
+          ignore(completed.pop())
+        }
+        completed.push(node)
+      }
+    }
+  }
+  completed[0]
 }
