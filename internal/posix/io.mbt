@@ -157,3 +157,9 @@ pub fn write(path : String, text : String) -> Bool {
 pub fn stderr(message : String) -> Unit {
   stderr_ffi(@utf8.encode(message))
 }
+
+///|
+// Write arbitrary diagnostic bytes followed by one LF.
+pub fn stderr_bytes(message : Bytes) -> Unit {
+  stderr_ffi(message)
+}

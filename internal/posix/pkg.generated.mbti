@@ -24,6 +24,8 @@ pub fn read_stdin(Int) -> (Int, Bytes)
 
 pub fn stderr(String) -> Unit
 
+pub fn stderr_bytes(Bytes) -> Unit
+
 pub fn stdout(String) -> Bool
 
 pub fn write(String, String) -> Bool

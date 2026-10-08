@@ -1,0 +1,129 @@
+import {"moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell", "moonbitlang/core/env", "moonbitlang/core/json", "moonbitlang/core/encoding/utf8"}
+
+async fn command(program : String, args : Array[String]) -> String {
+  let result = @shell.Cmd(program,args).output(); result.check()
+  result.stdout().trim().to_owned()
+}
+
+async fn main {
+  let arguments = @env.args()
+  guard arguments.length()==3 else { fail("Usage: moon run tools/formatter-cli.mbtx CLI GO_CHECKOUT") }
+  let cli = @fs.realpath(arguments[1])
+  let checkout = @fs.realpath(arguments[2])
+  assert_eq(command("git",["-C",checkout,"rev-parse","HEAD"]), "67968688d9952f50662e979fab1bef889d0d3e57")
+  assert_eq(command("git",["-C",checkout,"status","--porcelain"]), "")
+  let work = @fs.tmpdir(prefix="moonjsonnet-formatter-cli-")
+  let reference = work+"/go-jsonnetfmt"
+  @shell.Cmd("go",["-C",checkout,"build","-o",reference,"./cmd/jsonnetfmt"],env=Map([("GOTOOLCHAIN","go1.24.0"),("GOWORK","off"),("GOPROXY","off")])).run()
+  let cases : Array[(String,Array[String],String)] = [
+    ("file",["input"],""), ("exec",["-e","{a:[1,2]}"],""),
+    ("stdin",["-"],"{a:[1,2]}"), ("exec stdin spelling",["-e","--","-1"],"ignored"),
+    ("delimiter",["--","-dash"],""), ("short groups",["-en","4","{\na:[1,\n2]}"],""),
+    ("unknown names",["-e","[unknown,import 'missing',error 'not run']"],""),
+    ("deep tree",["deep"],""),
+    ("indent zero",["-n","0","input"],""), ("indent plus",["-n","+4","input"],""),
+    ("blank limit",["--max-blank-lines","1","input"],""),
+    ("blank preserve",["--max-blank-lines","0","input"],""),
+    ("strings double",["--string-style","d","input"],""),
+    ("strings single",["--string-style","s","input"],""),
+    ("strings leave",["--string-style","l","input"],""),
+    ("comments hash",["--comment-style","h","input"],""),
+    ("comments slash",["--comment-style","s","input"],""),
+    ("comments leave",["--comment-style","l","input"],""),
+    ("pretty off",["--no-pretty-field-names","input"],""),
+    ("pretty on",["--no-pretty-field-names","--pretty-field-names","input"],""),
+    ("arrays pad",["--pad-arrays","input"],""),
+    ("arrays unpad",["--pad-arrays","--no-pad-arrays","input"],""),
+    ("objects unpad",["--no-pad-objects","input"],""),
+    ("objects pad",["--no-pad-objects","--pad-objects","input"],""),
+    ("imports unsorted",["--no-sort-imports","imports"],""),
+    ("imports sorted",["--no-sort-imports","--sort-imports","imports"],""),
+    ("explicit plus",["--no-use-implicit-plus","plus"],""),
+    ("implicit plus",["--no-use-implicit-plus","--use-implicit-plus","plus"],""),
+    ("test changed",["--test","input"],""), ("test clean",["--test","clean"],""),
+    ("test stdin changed",["--test","-"],"42"), ("test stdin clean",["--test","-"],"42\n"),
+    ("test exec clean",["--test","-e","42\n"],""), ("test exec changed",["--test","-e","42"],""),
+    ("test multiple",["--test","clean","input","bad"],""),
+    ("test ignores output",["--test","-o","out","input"],""),
+    ("in place",["-i","input"],""), ("in place multiple",["-i","input","clean"],""),
+    ("in place test",["--test","-i","input"],""),
+    ("in place output ignored",["-i","-o","out","input"],""),
+    ("in place partial failure",["-i","input","bad","plus"],""),
+    ("in place stdin",["-i","-"],"42"), ("in place exec",["-i","-e","42"],""),
+    ("output",["-o","out","input"],""), ("output nested",["-o","new/a/out","input"],""),
+    ("output nested flag",["-c","-o","new/a/out","input"],""),
+    ("output same input",["-o","input","input"],""),
+    ("unknown flag",["--unknown","input"],""), ("no strip flag",["--strip-comments","input"],""),
+    ("missing indent",["-n"],""), ("negative indent",["-n","-1","input"],""),
+    ("invalid indent",["-n","1_0","input"],""), ("hex indent",["-n","0x10","input"],""),
+    ("empty indent",["-n","","input"],""), ("overflow indent",["-n","9223372036854775808","input"],""),
+    ("negative blanks",["--max-blank-lines","-2","input"],""),
+    ("invalid strings",["--string-style","x","input"],""), ("invalid comments",["--comment-style","x","input"],""),
+    ("missing output",["-o"],""), ("empty output",["-o","","input"],""),
+    ("multiple files",["input","clean"],""), ("multiple codes",["-e","42","43"],""),
+    ("parse eof",["bad"],""), ("parse unexpected token",["-e","[1 2]"],""),
+  ]
+  let rows : Array[Json]=[]
+  guard @json.parse(@fs.read_file("tests/go-formatter.json").text()) is Array(fixtures) else {fail("formatter fixtures")}
+  for fixture in fixtures {
+    if fixture is {"name":String(name),"source":String(source),"error_contains":Array(_),..} {
+      cases.push(("frozen-error "+name,["-"],source))
+    }
+  }
+  // Preserve the established diagnostic boundary cases and compare full ranges.
+  guard @json.parse(@fs.read_file("tests/go-lint.json").text()) is {"cases":Array(fixtures),..} else {fail("lint fixtures")}
+  for fixture in fixtures {
+    if fixture is {"name":String(name),"snippets":Array(snippets),..} &&
+      (name.has_prefix("parse-") || name.has_prefix("parser-") || name.has_prefix("lexer-") || name.has_prefix("string-decode-") || name.has_prefix("source-duplicate-")) &&
+      snippets is [{"text":String(source),..}] {
+      cases.push(("diagnostic "+name,["-"],source))
+    }
+  }
+  let mut passed=0
+  let mut go_errors=0;let mut local_errors=0
+  let mut go_changed=0;let mut local_changed=0
+  for index, (name,args,stdin) in cases {
+    let observations : Array[Json]=[]
+    for (label,binary) in [("moon",cli),("go",reference)] {
+      let cwd=work+"/"+index.to_string()+"/"+label
+      @fs.mkdir(cwd,recursive=true)
+      for (file,source) in [
+        ("input","# heading\n{\"a\": [1,\n\n\n2], x: 'abc'}"), ("clean","42\n"), ("-dash","42"),
+        ("imports","local z=import 'z';local a=import 'a';[z,a]"), ("plus","{} + {a:1}"),
+        ("deep","0"+"+1".repeat(399)), ("bad","[1,"),
+      ] { @fs.write_file(cwd+"/"+file,source) }
+      let result=@shell.Cmd(binary,args,cwd~,stdin=@shell.Text(stdin),stderr=@shell.ToFile(cwd+"/stderr-bytes")).output(timeout_ms=10000)
+      let stderr=@fs.read_file(cwd+"/stderr-bytes").binary()
+      if result.exit_code()==1 {if label=="go" {go_errors+=1} else {local_errors+=1}}
+      if result.exit_code()==2 {if label=="go" {go_changed+=1} else {local_changed+=1}}
+      let files : Map[String,Json]=Map([])
+      for file in ["input","clean","plus","out","new/a/out"] {
+        files[file]=if @fs.exists(cwd+"/"+file) {Json::string(@fs.read_file(cwd+"/"+file).text())} else {Json::null()}
+      }
+      observations.push({"exit":result.exit_code(),"stdout":result.stdout(),"stderr":@utf8.decode_lossy(stderr),"stderr_bytes":Json::array(stderr.to_array().map(b=>Json::number(b.to_int().to_double()))),"files":Json::object(files)})
+    }
+    let ok=observations[0]==observations[1]
+    if ok {passed+=1} else {println("FAIL fmt CLI "+name+" "+observations[0].stringify()+" / "+observations[1].stringify())}
+    rows.push({"name":name,"args":Json::array(args.map(Json::string)),"stdin":stdin,"passed":ok,"moon":observations[0],"go":observations[1]})
+  }
+  // Branding/help and host-policy checks are separate from exact Go parity.
+  for args in [["-h"],["-v"],[],["-e"]] {
+    let result=@shell.Cmd(cli,args).output()
+    assert_eq(result.exit_code(),if args.is_empty() || args==["-e"] {1} else {0})
+    assert_true((result.stdout()+result.stderr()).contains("subset"))
+  }
+  @fs.mkdir("_build/formatter-cli",recursive=true,allow_exist=true)
+  let report : Json={
+    "source_commit":command("git",["rev-parse","HEAD"]),"source_dirty":command("git",["status","--porcelain"])!="",
+    "reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57",
+    "reference_build":command("go",["version","-m",reference]),"reference_sha256":command("shasum",["-a","256",reference]),
+    "local_sha256":command("shasum",["-a","256",cli]),
+    "formatter_fixture_sha256":command("shasum",["-a","256","tests/go-formatter.json"]),
+    "lint_fixture_sha256":command("shasum",["-a","256","tests/go-lint.json"]),
+    "total":cases.length(),"passed":passed,"failed":cases.length()-passed,"skipped":0,"unsupported":0,"declared_reference_differences":0,
+    "go_errors":go_errors,"local_errors":local_errors,"go_changed":go_changed,"local_changed":local_changed,"cases":rows,
+  }
+  @fs.write_file("_build/formatter-cli/report.json",report.stringify(indent=2)+"\n")
+  println("Formatter CLI: \{passed}/\{cases.length()}; branding/help checks 4; evidence: \{work}")
+  if passed!=cases.length() {fail("Formatter CLI differences retained in _build/formatter-cli/report.json")}
+}

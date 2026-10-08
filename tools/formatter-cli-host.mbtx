@@ -1,0 +1,60 @@
+import {"moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell", "moonbitlang/core/env"}
+
+async fn stamp(path : String) -> String {
+  let uname=@shell.Cmd("uname",["-s"]).output();uname.check()
+  let result=@shell.Cmd("stat",if uname.stdout().trim()=="Darwin" {["-f","%m:%p",path]} else {["-c","%Y:%a",path]}).output();result.check()
+  result.stdout()
+}
+
+async fn main {
+  let args=@env.args();guard args.length()==2 else {fail("Usage: moon run tools/formatter-cli-host.mbtx CLI")}
+  let cli=@fs.realpath(args[1]);let work=@fs.tmpdir(prefix="moonjsonnet-fmt-host-")
+  @fs.mkdir(work+"/root");@fs.mkdir(work+"/other")
+  let root=work+"/root"
+  @fs.write_file(root+"/clean","42\n");@fs.write_file(root+"/dirty","[1,2]")
+  @fs.write_file(work+"/other/outside","42")
+  @fs.symlink(target=root+"/dirty",root+"/inside")
+  @fs.symlink(target=work+"/other/outside",root+"/escape")
+  @shell.Cmd("touch",["-t","200001010000",root+"/clean"]).run()
+  @shell.Cmd("chmod",["640",root+"/clean",root+"/dirty"]).run()
+  let unchanged=stamp(root+"/clean")
+  let result=@shell.Cmd(cli,["--root",root,"-i","clean"],cwd=work).output();result.check()
+  assert_eq(result.stdout(),"");assert_eq(result.stderr(),"")
+  assert_eq(stamp(root+"/clean"),unchanged)
+  let dirty_mode=stamp(root+"/dirty").trim().split(":").last().unwrap().to_owned()
+  let result=@shell.Cmd(cli,["--root",root,"-i","inside"],cwd=work).output();result.check()
+  assert_eq(@fs.read_file(root+"/dirty").text(),"[1, 2]\n")
+  assert_eq(stamp(root+"/dirty").trim().split(":").last().unwrap().to_owned(),dirty_mode)
+  let link=@shell.Cmd("readlink",[root+"/inside"]).output();link.check()
+  assert_eq(link.stdout().trim().to_owned(),root+"/dirty")
+  for path in ["escape","../other/outside","missing"] {
+    let result=@shell.Cmd(cli,["--root",root,"-i",path],cwd=work).output()
+    assert_eq(result.exit_code(),1);assert_eq(result.stdout(),"");assert_true(!result.stderr().is_empty())
+  }
+  assert_eq(@fs.read_file(work+"/other/outside").text(),"42")
+  for (label,source,fragment) in [
+    ("large", "0".repeat(1048577), "file byte limit exceeded"),
+    ("depth", "[".repeat(210)+"1"+"]".repeat(210), "depth limit exceeded"),
+    ("tree", "0"+"+1".repeat(4096), "syntax tree depth limit exceeded"),
+  ] {
+    @fs.write_file(root+"/"+label,source)
+    let result=@shell.Cmd(cli,["--root",root,"-i",label],cwd=work).output(timeout_ms=10000)
+    assert_eq(result.exit_code(),1);assert_eq(result.stdout(),"");assert_true(result.stderr().contains(fragment),msg=result.stderr())
+    assert_eq(@fs.read_file(root+"/"+label).text(),source)
+  }
+  for (label,stdin) in [("invalid",b"\xff"), ("large-stdin",Bytes::from_array(Array::make(1048577, b'0')))] {
+    let input=root+"/"+label
+    @fs.write_file(input,stdin)
+    let result=@shell.Cmd(cli,["-"],cwd=root,stdin=@shell.FromFile(input)).output(timeout_ms=10000)
+    assert_eq(result.exit_code(),1);assert_eq(result.stdout(),"");assert_true(!result.stderr().is_empty())
+  }
+  @fs.write_file(root+"/bad","[1,")
+  @fs.write_file(root+"/out","keep")
+  let result=@shell.Cmd(cli,["-o","out","bad"],cwd=root).output()
+  assert_eq(result.exit_code(),1);assert_eq(@fs.read_file(root+"/out").text(),"keep")
+  let result=@shell.Cmd(cli,["-o","new/a/out","bad"],cwd=root).output()
+  assert_eq(result.exit_code(),1);assert_false(@fs.exists(root+"/new"))
+  let result=@shell.Cmd(cli,["-e","error 'not evaluated'"],cwd=root).output();result.check()
+  assert_eq(result.stdout(),"error 'not evaluated'\n");assert_eq(result.stderr(),"")
+  println("Formatter host: root/escape, unchanged timestamps, mode/symlink, UTF8/source/tree/parser limits, no failed-write effects and no evaluation passed; evidence: "+work)
+}

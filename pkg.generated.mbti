@@ -96,6 +96,8 @@ pub(all) struct Diagnostic {
   context : Array[Location]
 } derive(@debug.Debug)
 pub fn Diagnostic::format(Self, max_trace? : Int) -> String
+pub fn Diagnostic::format_syntax(Self, String) -> String
+pub fn Diagnostic::format_syntax_bytes(Self, String) -> Bytes
 pub fn Diagnostic::output(Self, &Logger) -> Unit
 pub fn Diagnostic::to_repr(Self) -> @debug.Repr
 pub fn Diagnostic::to_string(Self) -> String

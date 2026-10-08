@@ -149,6 +149,9 @@ async fn main {
     #|  let d : @moonjsonnet.Diagnostic = {kind:@moonjsonnet.Runtime,message:"failed",location:loc,context:[loc,loc,loc]}
     #|  assert_eq(d.format(max_trace=1),"consumer:1:1: Runtime: failed\n  ...\n  at consumer:1:1")
     #|  assert_eq(d.context.length(),3)
+    #|  let syntax_error : @moonjsonnet.Diagnostic = {..d,kind:@moonjsonnet.Syntax,message:"Unexpected end of file",context:[]}
+    #|  assert_eq(syntax_error.format_syntax(""),"consumer:1:1 Unexpected end of file")
+    #|  assert_eq(syntax_error.format_syntax_bytes(""),b"consumer:1:1 Unexpected end of file")
     #|}
   @fs.write_file(work + "/consumer/consumer_test.mbt", test_source)
   @fs.write_file(work + "/consumer/parameter.jsonnet", "std.extVar('x')")

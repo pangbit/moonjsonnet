@@ -60,5 +60,8 @@ async fn main {
   @shell.Cmd("moon", ["run", "--build-only", "--target", "native", "cmd/lint"], cwd=checkout, env=environment).run()
   @shell.Cmd("moon", ["run", repo + "/tools/lint-cli.mbtx", checkout + "/_build/native/debug/build/cmd/lint/lint.exe"], cwd=checkout,
     env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", asan_options)])).run()
+  @shell.Cmd("moon", ["run", "--build-only", "--target", "native", "cmd/jsonnetfmt"], cwd=checkout, env=environment).run()
+  @shell.Cmd("moon", ["run", repo + "/tools/formatter-cli-host.mbtx", checkout + "/_build/native/debug/build/cmd/jsonnetfmt/jsonnetfmt.exe"], cwd=checkout,
+    env=Map([("MOON_HOME", home), ("ASAN_OPTIONS", asan_options)])).run()
   println("ASan tests and host integration passed with isolated toolchain: \{work}; leak detection disabled")
 }

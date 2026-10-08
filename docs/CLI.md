@@ -159,6 +159,44 @@ Evaluation failure does not open or truncate the output file. On successful
 evaluation `-o` overwrites its destination; output I/O is not transactional.
 The import root controls reads, not the explicitly selected output path.
 
+## Source formatter
+
+Build `cmd/jsonnetfmt`, then run
+`_build/native/release/build/cmd/jsonnetfmt/jsonnetfmt.exe OPTIONS INPUT`, or use
+`moon run cmd/jsonnetfmt -- OPTIONS INPUT`. Formatting uses independent
+`SyntaxLimits`; it does not evaluate expressions or resolve imports.
+
+Input can be a file, `-` for stdin, or `-e`/`--exec` code. The formatter accepts
+`-o`/`--output-file`, `-c`/`--create-output-dirs`, `-i`/`--in-place`, `--test`,
+`-n`/`--indent`, `--max-blank-lines`, `--string-style d|s|l`,
+`--comment-style h|s|l`, and both positive and `--no-` forms of
+`pretty-field-names`, `pad-arrays`, `pad-objects`, `sort-imports` and
+`use-implicit-plus`. Defaults match `FormatOptions::default()`. Strip options are
+API-only because fixed Go's CLI does not expose them. Short groups, option order,
+`--`, help/version and last-assignment precedence follow the other tools.
+
+Ordinary formatting requires one input and writes to stdout or `-o`. Fixed
+v0.21.0 always creates an output file's parent directories, even without `-c`;
+this CLI preserves that behavior. `--test` permits multiple inputs, emits no
+formatted output, and stops with exit 2 at the first changed input. All-clean
+inputs return 0; errors return 1. `-i` permits multiple files, writes only changed
+ones, preserves existing modes and follows an allowed symlink. Earlier writes
+remain when a later input fails. `-i` takes precedence over `--test`; these modes
+ignore `-o`. In-place stdin/exec are argument errors. Failed formatting preserves
+an existing output file and does not create its parents.
+
+`--root DIR` confines input reads, including symlink targets, and defaults to the
+current directory. File/stdin input requires valid UTF-8 and uses the independent
+1 MiB source budget; tree, parser, step and output budgets remain enforced.
+These host policies are explicit extensions to unrestricted Go reads. Explicit
+output paths follow the filesystem and do not expand input admission.
+
+Raw syntax diagnostics include token end ranges and preserve fixed Go's exact
+malformed-Unicode context bytes, even when its four-byte slice is invalid UTF-8.
+Help/version identify the local package and subset status. Full evaluator
+diagnostic frames/configuration and all I/O message variants remain under the
+overall parity plan; formatter CLI checks do not establish those capabilities.
+
 ## Static dependency tool
 
 Build `cmd/deps` with `moon build --target native --release cmd/deps`, then run

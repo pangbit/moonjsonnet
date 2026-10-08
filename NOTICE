@@ -25,6 +25,11 @@ Pinned commit: 67968688d9952f50662e979fab1bef889d0d3e57.
 The Go interpreter executable is used only for development-time behavioral
 comparisons; no Go interpreter or Go runtime is bundled or linked into this package.
 
+cmd/jsonnetfmt/args.mbt and its file-mode control flow adapt cmd/jsonnetfmt/cmd.go
+at the same pinned revision. syntax_diagnostic.mbt follows its raw-parser range
+rendering and internal/parser/string_util.go's exact malformed-Unicode byte context.
+Copyright Google Inc.; Apache License 2.0 (see LICENSE).
+
 tests/go-lint.json includes the pinned go-jsonnet linter/testdata/*.jsonnet inputs.
 Copyright Google Inc.; Apache License 2.0 (see LICENSE). These development-only
 fixtures are excluded from the published package. lint.mbt and lint_children.mbt

@@ -383,9 +383,19 @@ interstitial comments before removing text; distinct retained line endings can
 leave indented empty lines, just as in Go. Tabs count as eight spaces when
 retaining indentation for stripped comments.
 
+`Diagnostic::format_syntax(source)` renders raw-parser errors with token end
+ranges, or point locations for EOF/lexer failures, without a final LF. Source
+lookup is bounded to 1 MiB. `format_syntax_bytes(source)` additionally preserves
+fixed Go's raw four-byte malformed-Unicode context, which may split UTF-8;
+the String helper retains the normalized stored message. Neither method changes
+the stored diagnostic or provides evaluator stack frames.
+Computed-import ranges use a bounded operand reparse under default syntax budgets,
+falling back to the opening token if that lookup fails.
+
 **Incomplete:** complete comment placement and broader layout rules remain
-under differential validation. `FormatNode` and a
-jsonnetfmt CLI are not provided yet. See [the overall parity status](GO-PARITY.md);
+under differential validation. `FormatNode` and the full editable raw tree are
+still pending; `cmd/jsonnetfmt` now provides the source formatter CLI. See
+[the overall parity status](GO-PARITY.md);
 the available options do not imply complete formatter compatibility.
 
 ## Reusable evaluator
