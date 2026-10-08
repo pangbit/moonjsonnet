@@ -432,6 +432,12 @@ Old evaluator/ParsedSource/format_source admission remains unchanged. See the
 [independent syntax limits report](../reports/GO-JSONNET-SYNTAX-LIMITS.md).
 
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
+Clean implementation `63c6f00a6adfc6668827f37d2a5273ca4c2f6806` adds
+`cmd/jsonnetfmt`, passing **255/255** exact Go CLI comparisons, including raw
+stderr bytes and file effects, plus separate help/branding and host-policy checks.
+Native debug/release tests each pass **262/262**, archive consumer **24/24**,
+frozen/upstream formatting **736/736** and **178/178**; isolated ASan includes the
+new formatter host suite and passes. See the [jsonnetfmt report](../reports/GO-JSONNET-JSONNETFMT.md).
 
 The [overall parity plan](GO-PARITY.md) tracks capabilities outside the existing
 behavioral corpus. `tools/parity.mbtx` compares all 163 reflected Go standard-library

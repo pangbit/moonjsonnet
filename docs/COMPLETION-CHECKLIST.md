@@ -39,6 +39,10 @@ MoonBit 接口按功能等价，不要求复制 Go 类型。
 预算仍保留。native 双模式各 256/256、AST 173/173、消费者 24/24、隔离 ASan
 通过，全量 CLI 仍为 1132/1150。见 [独立语法契约验收](../reports/GO-JSONNET-SYNTAX-LIMITS.md)。
 起点表中的历史状态保留；整体目标仍未完成，不能用语料全绿代替其余能力验收。
+随后干净 `63c6f00` 加入 jsonnetfmt，严格 CLI 对照 255/255，native 双模式各
+262/262，包含新 CLI 的 ASan、消费者及原冻结/上游格式化均通过。见
+[jsonnetfmt 验收](../reports/GO-JSONNET-JSONNETFMT.md)。原始树/FormatNode、完整
+诊断与 hook/debugger、平台及其他整体条目继续推进。
 
 - GO-PARITY 完成标准第 5–7 项：18 项 Go CLI/标准库崩溃、失败解析后的 AST
   缓存差异、lint 入口/导入碰撞 panic 不复制崩溃，当前仍未被用户接受为例外。
