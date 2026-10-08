@@ -11,7 +11,12 @@ fn Vm::prepare_parameters(
   kind : String,
 ) -> Map[String, Int] {
   let result : Map[String, Int] = Map([])
-  let env : Env = { parent: None, names: Map([]), import_from: "", }
+  let env : Env = {
+    parent: None,
+    names: Map([]),
+    import_from: "",
+    debug_visible: None,
+  }
   for name, json in values {
     if !code.contains(name) && !programs.contains(name) {
       let loc : Location = { file: "<\{kind}:\{name}>", line: 1, column: 1, }

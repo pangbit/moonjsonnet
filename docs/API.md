@@ -455,7 +455,7 @@ after registration; use setters to notify the interpreter of changes.
 | Configuration change | Retained cache |
 | --- | --- |
 | ext setter/reset or native registration, even with the same value | Sources and parsed imports; evaluated imports and their reachable runtime values are cleared |
-| TLA setter/reset, trace sink, string-output mode or limits | Sources, ASTs and evaluated imports |
+| TLA setter/reset, trace sink, evaluation hook, string-output mode or limits | Sources, ASTs and evaluated imports |
 | `set_importer(resolver?, binary_resolver?)` | None; replaces callbacks and clears all import state |
 
 `set_trace` changes the sink used by subsequent trace calls, including previously
@@ -488,8 +488,59 @@ new import identities or newly demanded retained values. This is not an RSS or
 leak guarantee.
 
 Evaluation and configuration changes reject reentry on the same Evaluator from
-a callback. Separate instances can be used independently. An EvalHook/debugger
-API remains pending.
+a callback. Separate instances can be used independently.
+
+### Evaluation hooks and debugging
+
+`Evaluator::set_eval_hook(hook?)` installs `EvalHook { before, after }` for all
+four output methods; omit `hook` to disable it. Callbacks run around admitted
+semantic expressions, including lazy children when demanded. `after` receives
+`Success(DebugValue)` or an isolated `Failure(Diagnostic)`. Transparent local,
+conditional and assertion bodies still receive paired callbacks. Callback errors
+abort execution and leave the evaluator available for a later call. Replacing a
+hook preserves import caches, so previously cached computations need not emit
+new events.
+
+`EvalContext::location`, `source_range` and `evaluation_id` are immutable metadata.
+The ID is unique within one execution and pairs its before/after events.
+`node()` and `stack()` return independent semantic AST copies; stack order is
+outermost first and includes direct expressions. Copying consumes execution work.
+`variables()` lists sorted captured and active lexical bindings without forcing
+them. Shadowed names can occur more than once; the innermost binding is used by
+lookup. The internal `$std` alias can appear. `self`/`super` are omitted from the
+list but may be looked up in an object context. These views do not change actual
+interpreter lookup or parameter binding.
+
+`peek(name)` returns a handle only for an already cached value. `lookup(name)`
+explicitly forces the root thunk. `DebugValue::kind()` returns its category;
+`display()` previews cached content without forcing children or assertions,
+using `<unevaluated>`, `<evaluating>` and `<failed>` placeholders. Only cached
+visible object fields appear. `json()` explicitly manifests children and can
+invoke imports/assertions. Inspection suppresses recursive hook events and shares
+execution step, depth, stack and output limits. Live context/value operations
+expire when the callback returns; retain metadata, copied nodes or returned text/
+JSON instead. Preview text is a MoonBit API contract, not Go's internal value
+string representation.
+
+`Debugger::new(evaluator?)` uses a configured evaluator or a new instance.
+`breakpoint_locations(program)` returns semantic node ranges in traversal order;
+it omits synthetic nodes and erased parentheses, so it is not a list of every Go
+raw AST location. `set_breakpoint(program,line,column?)` chooses the first matching
+range and returns its identity. Omit the column or use a negative column to match
+the line. `active_breakpoints()` returns a fresh sorted array;
+`clear_breakpoints(filename)` removes that file's entries.
+
+`run(program,on_stop~,start_with_step?)` synchronously evaluates text and calls
+the host at `Step`, `Breakpoint` or `Exception` stops. Return `Continue`, `Step`,
+`Finish` or `Terminate`. A callback can wait for terminal/UI input. `Finish`
+continues until that expression returns, then steps at the next nonliteral node.
+Literals and internal standard-library nodes do not cause normal step stops.
+Termination raises a runtime diagnostic; a later run starts normally. The
+previous evaluation hook is restored after success or failure. Stop contexts have
+the same lifetime and inspection rules as hooks. Exception views retain the
+deepest failed lexical environment while callbacks unwind; errors still propagate.
+Named/synthetic diagnostic frames and full diagnostic formatter parity remain
+under implementation.
 
 The following queries share source/AST caches and never execute Jsonnet, apply
 parameters or invoke native/trace callbacks:

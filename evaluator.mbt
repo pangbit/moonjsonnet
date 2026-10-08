@@ -15,6 +15,7 @@ pub struct Evaluator {
   priv binary_sources : Map[(String, String), BinarySource]
   priv parsed_imports : Map[String, Expr]
   priv mut trace : (Location, String) -> Unit
+  priv mut eval_hook : EvalHook?
   priv mut resolver : ((String, String) -> Source raise)?
   priv mut binary_resolver : ((String, String) -> BinarySource raise)?
   priv mut limits : Limits
@@ -49,6 +50,7 @@ pub fn Evaluator::new() -> Evaluator {
     binary_sources: Map([]),
     parsed_imports: Map([]),
     trace: default_trace,
+    eval_hook: None,
     resolver: None,
     binary_resolver: None,
     limits: Limits::default(),

@@ -23,6 +23,29 @@ fn Vm::eval_inner(
   env : Env,
   tail~ : Bool,
 ) -> Value raise {
+  let events : Array[EvalHookFrame] = []
+  let result = self.eval_loop(expr, env, tail~, events~) catch {
+    Error(d) => {
+      self.hook_after(events, None, Some(Error(d)))
+      raise Error(d)
+    }
+    error => {
+      self.hook_after(events, None, Some(error))
+      raise error
+    }
+  }
+  self.hook_after(events, Some(result), None)
+  result
+}
+
+///|
+fn Vm::eval_loop(
+  self : Vm,
+  expr : Expr,
+  env : Env,
+  tail~ : Bool,
+  events~ : Array[EvalHookFrame],
+) -> Value raise {
   let mut expr = expr
   let mut env = env
   let mut tail = tail
@@ -33,6 +56,7 @@ fn Vm::eval_inner(
   })
   while true {
     self.tick(expr.loc)
+    self.hook_before(expr, env, events)
     let loc = expr.loc
     return match expr.kind {
       NumberLiteral(raw) => {
@@ -48,7 +72,7 @@ fn Vm::eval_inner(
           None => raise problem(Static, loc, "unknown variable '\{n}'")
         }
       Local(bs, body) => {
-        env = self.bind(bs, env)
+        env = self.bind(bs, env, debug_expression=expr)
         expr = body
         continue
       }
@@ -59,13 +83,15 @@ fn Vm::eval_inner(
       Func(ps, body) => Closure(ps, body, env)
       Call(f, args, strict) => {
         let function = self.eval(f, env)
-        let thunks = args.map(pair => (pair.0, self.store(Pending(pair.1, env))))
+        let thunks = args.map(pair => {
+          (pair.0, self.store(Pending(pair.1, env.debug_capture([pair.1]))))
+        })
         if tail && self.frames.last() == Some(true) {
           ignore(self.frames.pop())
         }
         if strict && function is Closure(params, body, outer) {
           let scope = try {
-            let scope = self.call_env(params, thunks, outer, loc)
+            let scope = self.call_env(params, thunks, outer, loc, body~)
             for { name: n, .. } in params {
               ignore(self.force(scope.names[n], loc))
             }
@@ -91,8 +117,12 @@ fn Vm::eval_inner(
           e => raise e
         }
       }
-      Arr(items) => ArrayValue(items.map(e => self.store(Pending(e, env))))
+      Arr(items) =>
+        ArrayValue(
+          items.map(e => self.store(Pending(e, env.debug_capture([e])))),
+        )
       Obj(fields, locals, assertions) => {
+        let captured = env.debug_capture([expr])
         let fs : Map[String, LayerField] = Map([])
         for f in fields {
           match self.eval(f.key, env) {
@@ -101,7 +131,7 @@ fn Vm::eval_inner(
               if fs.contains(k) {
                 raise problem(Runtime, f.key.loc, "duplicate field '\{k}'")
               }
-              fs[k] = { field: f, env, }
+              fs[k] = { field: f, env: captured, }
             }
             _ =>
               raise problem(
@@ -111,12 +141,12 @@ fn Vm::eval_inner(
               )
           }
         }
-        self.object_value([{ fields: fs, locals, assertions, env, }])
+        self.object_value([{ fields: fs, locals, assertions, env: captured, }])
       }
       ArrayComp(body, clauses) => {
         let out = []
         self.comprehend(clauses, 0, env, loc, scope => {
-          out.push(self.store(Pending(body, scope)))
+          out.push(self.store(Pending(body, scope.debug_capture([body]))))
         })
         ArrayValue(out)
       }
@@ -241,7 +271,7 @@ fn Vm::call(
     Native(f) => self.call_native(f, args, loc)
     Builtin(name) => self.builtin(name, args, loc)
     Closure(params, body, outer) => {
-      let env = self.call_env(params, args, outer, loc)
+      let env = self.call_env(params, args, outer, loc, body~)
       if strict {
         for { name: n, .. } in params {
           ignore(self.force(env.names[n], loc))
@@ -260,8 +290,13 @@ fn Vm::call_env(
   args : Array[(String?, Int)],
   outer : Env,
   loc : Location,
+  body? : Expr,
 ) -> Env raise {
-  let env = outer.child()
+  let roots = params.filter_map(p => p.default_value)
+  if body is Some(body) {
+    roots.push(body)
+  }
+  let env = outer.debug_capture(roots, bound=params.map(p => p.name)).child()
   let assigned : Map[String, Bool] = Map([])
   for i, (name, t) in args {
     let n = match name {

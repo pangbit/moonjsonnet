@@ -16,11 +16,17 @@ priv struct Env {
   parent : Env?
   names : Map[String, Int]
   import_from : String
+  debug_visible : ((() -> Unit raise) -> Array[String] raise)?
 }
 
 ///|
 fn Env::child(self : Env) -> Env {
-  { parent: Some(self), names: Map([]), import_from: self.import_from, }
+  {
+    parent: Some(self),
+    names: Map([]),
+    import_from: self.import_from,
+    debug_visible: None,
+  }
 }
 
 ///|
@@ -84,6 +90,11 @@ priv struct Vm {
   ext : Map[String, Int]
   native_functions : Map[String, NativeFunction]
   trace : (Location, String) -> Unit
+  eval_hook : EvalHook?
+  mut hooks_suppressed : Bool
+  hook_stack : Array[EvalHookFrame]
+  mut hook_serial : Int
+  mut hook_failure_environment : Env?
   resolver : ((String, String) -> Source raise)?
   binary_resolver : ((String, String) -> BinarySource raise)?
   binary_sources : Map[(String, String), BinarySource]
@@ -185,10 +196,20 @@ fn Vm::failure(self : Vm, id : Int, error : Error) -> Value raise {
 }
 
 ///|
-fn Vm::bind(self : Vm, bindings : Array[ExprBinding], outer : Env) -> Env {
+fn Vm::bind(
+  self : Vm,
+  bindings : Array[ExprBinding],
+  outer : Env,
+  debug_expression? : Expr,
+) -> Env {
   let env = outer.child()
+  let captured = match debug_expression {
+    Some(expression) =>
+      env.debug_capture([expression], extra=bindings.map(b => b.name))
+    None => env
+  }
   for { name, value: expr, .. } in bindings {
-    env.names[name] = self.store(Pending(expr, env))
+    env.names[name] = self.store(Pending(expr, captured))
   }
   env
 }
@@ -212,7 +233,12 @@ fn Vm::from_json(self : Vm, json : Json, loc : Location) -> Value raise {
     Array(a) =>
       ArrayValue(a.map(x => self.store(Ready(self.from_json(x, loc)))))
     Object(o) => {
-      let env : Env = { parent: None, names: Map([]), import_from: "", }
+      let env : Env = {
+        parent: None,
+        names: Map([]),
+        import_from: "",
+        debug_visible: None,
+      }
       let fs : Map[String, LayerField] = Map([])
       for k, v in o {
         fs[k] = {

@@ -1,0 +1,10 @@
+import {
+  "pangbit/moonjsonnet",
+  "pangbit/moonjsonnet/internal/posix",
+  "moonbitlang/core/json",
+  "moonbitlang/core/encoding/utf8",
+}
+
+pkgtype(kind: "executable")
+
+supported_targets = "native"

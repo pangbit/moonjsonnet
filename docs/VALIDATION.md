@@ -460,6 +460,25 @@ and retains failures without skips. Local-only mode omits the checkout, writes
 `local-report.json`, and is also run on the isolated ASan binary. This is separate
 from Go comparison evidence. The archive consumer calls every new public method.
 
+Evaluation observation and synchronous debugging use `eval_hook_test.mbt`,
+`debug_scope_wbtest.mbt` and `debugger_test.mbt` for ordering, laziness, leased
+contexts, captured/shadowed scopes, preview/forcing, complete inspection budgets,
+reentry, restoration, failure and recovery. Executable README examples and the
+independent archive consumer call the new public interfaces.
+
+```sh
+moon run tools/debugger-integration.mbtx _build/native/release/build/examples/debugger-probe/debugger-probe.exe ${LOCAL_PATH_012}
+```
+
+This adapter uses the pinned public Go debugger, checks its clean checkout and
+compares ordered stop reasons/ranges/variables/scalar lookups, output/error flags
+and breakpoint state against both frozen fixtures and a fresh Go run. Full
+diagnostic text is retained independently and is not claimed equal. Go raw AST
+breakpoint enumeration and synthetic desugaring are not covered by this corpus.
+Omitting the checkout runs local frozen verification and writes a separate
+`local-report.json`; isolated ASan runs this mode on its instrumented binary.
+No input is skipped or declared an accepted exception.
+
 The [overall parity plan](GO-PARITY.md) tracks capabilities outside the existing
 behavioral corpus. `tools/parity.mbtx` compares all 163 reflected Go standard-library
 members against a frozen reference snapshot and the local CLI, writing

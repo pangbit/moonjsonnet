@@ -5,7 +5,12 @@ fn Vm::object_flat_merge(
   loc : Location,
 ) -> Value raise {
   let fields : Map[String, LayerField] = Map([])
-  let env : Env = { parent: None, names: Map([]), import_from: "", }
+  let env : Env = {
+    parent: None,
+    names: Map([]),
+    import_from: "",
+    debug_visible: None,
+  }
   for t in items {
     self.tick(loc)
     guard self.force(t, loc) is ObjectValue(id, top) else {

@@ -88,6 +88,34 @@ test "readme native callback and trace" {
 }
 ```
 
+## Evaluation inspection
+
+Evaluator hooks observe demanded expressions. Inspect values inside the callback;
+copy returned nodes, text or JSON to retain them. The synchronous debugger adds
+breakpoints, stepping, finish and termination. See [API](docs/API.md).
+
+```mbt check
+///|
+test "readme evaluation hook" {
+  let evaluator = @moonjsonnet.Evaluator::new()
+  let values : Array[Json] = []
+  evaluator.set_eval_hook(hook={
+    before: ctx => {
+      if ctx.node().kind is Var("x") {
+        values.push(ctx.lookup("x").json())
+      }
+    },
+    after: (_, _) => (),
+  })
+  assert_eq(
+    evaluator.evaluate(@moonjsonnet.Program::parse("local x=21;x*2")),
+    42,
+  )
+  assert_eq(values, [21])
+  evaluator.set_eval_hook()
+}
+```
+
 ## Source formatting
 
 `format_source` and `ParsedSource::format` format source without evaluating it or

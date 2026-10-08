@@ -82,7 +82,12 @@ fn Vm::base_env(
   import_from? : String,
 ) -> Env raise {
   let import_from = import_from.unwrap_or(file)
-  let env : Env = { parent: None, names: Map([]), import_from, }
+  let env : Env = {
+    parent: None,
+    names: Map([]),
+    import_from,
+    debug_visible: None,
+  }
   let loc : Location = { file, line: 1, column: 1, }
   let fields : Map[String, LayerField] = Map([])
   for name in builtin_names() {
@@ -118,6 +123,7 @@ fn Vm::base_env(
     parent: None,
     names: Map([("std", self.store(Ready(value)))]),
     import_from,
+    debug_visible: Some(_tick => ["$std", "std"]),
   }
 }
 

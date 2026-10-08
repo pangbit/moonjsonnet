@@ -91,6 +91,45 @@ pub(all) struct BinarySource {
 } derive(@debug.Debug)
 pub fn BinarySource::to_repr(Self) -> @debug.Repr
 
+pub(all) enum DebugCommand {
+  Continue
+  Step
+  Finish
+  Terminate
+}
+
+pub(all) struct DebugStop {
+  reason : DebugStopReason
+  context : EvalContext
+  outcome : EvalOutcome?
+}
+
+pub(all) enum DebugStopReason {
+  Step
+  Breakpoint
+  Exception
+} derive(Eq, @debug.Debug)
+pub fn DebugStopReason::equal(Self, Self) -> Bool
+pub fn DebugStopReason::not_equal(Self, Self) -> Bool
+pub fn DebugStopReason::to_repr(Self) -> @debug.Repr
+
+pub struct DebugValue {
+  // private fields
+}
+pub fn DebugValue::display(Self) -> String raise JsonnetError
+pub fn DebugValue::json(Self) -> Json raise JsonnetError
+pub fn DebugValue::kind(Self) -> String raise JsonnetError
+
+pub struct Debugger {
+  // private fields
+}
+pub fn Debugger::active_breakpoints(Self) -> Array[String]
+pub fn Debugger::breakpoint_locations(Program) -> Array[SourceRange]
+pub fn Debugger::clear_breakpoints(Self, String) -> Unit
+pub fn Debugger::new(evaluator? : Evaluator) -> Self
+pub fn Debugger::run(Self, Program, on_stop~ : (DebugStop) -> DebugCommand raise, start_with_step? : Bool) -> String raise JsonnetError
+pub fn Debugger::set_breakpoint(Self, Program, Int, column? : Int) -> String raise JsonnetError
+
 pub(all) struct Diagnostic {
   kind : ErrorKind
   message : String
@@ -119,6 +158,28 @@ pub fn ErrorKind::equal(Self, Self) -> Bool
 pub fn ErrorKind::not_equal(Self, Self) -> Bool
 pub fn ErrorKind::to_repr(Self) -> @debug.Repr
 
+pub struct EvalContext {
+  // private fields
+}
+pub fn EvalContext::evaluation_id(Self) -> Int
+pub fn EvalContext::location(Self) -> Location
+pub fn EvalContext::lookup(Self, String) -> DebugValue raise JsonnetError
+pub fn EvalContext::node(Self) -> Ast raise JsonnetError
+pub fn EvalContext::peek(Self, String) -> DebugValue? raise JsonnetError
+pub fn EvalContext::source_range(Self) -> SourceRange?
+pub fn EvalContext::stack(Self) -> Array[Ast] raise JsonnetError
+pub fn EvalContext::variables(Self) -> Array[String] raise JsonnetError
+
+pub(all) struct EvalHook {
+  before : (EvalContext) -> Unit raise
+  after : (EvalContext, EvalOutcome) -> Unit raise
+}
+
+pub(all) enum EvalOutcome {
+  Success(DebugValue)
+  Failure(Diagnostic)
+}
+
 pub struct Evaluator {
   // private fields
 }
@@ -136,6 +197,7 @@ pub fn Evaluator::import_program(Self, String, String) -> (Program, String) rais
 pub fn Evaluator::native_function(Self, String, NativeFunction) -> Unit raise JsonnetError
 pub fn Evaluator::new() -> Self
 pub fn Evaluator::resolve_import(Self, String, String) -> String raise JsonnetError
+pub fn Evaluator::set_eval_hook(Self, hook? : EvalHook) -> Unit raise JsonnetError
 pub fn Evaluator::set_importer(Self, resolver? : (String, String) -> Source raise, binary_resolver? : (String, String) -> BinarySource raise) -> Unit raise JsonnetError
 pub fn Evaluator::set_limits(Self, Limits) -> Unit raise JsonnetError
 pub fn Evaluator::set_string_output(Self, Bool) -> Unit raise JsonnetError

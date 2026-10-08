@@ -1,0 +1,1860 @@
+[
+  {
+    "input": {
+      "name": "breakpoint-number",
+      "source": "local x=21;\nx*2",
+      "line": 2,
+      "lookups": [
+        "x"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              4
+            ],
+            "reason": "breakpoint",
+            "values": {
+              "x": 21
+            },
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "breakpoint-string",
+      "source": "local x='hello';\nx+'!'",
+      "line": 2,
+      "lookups": [
+        "x"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "\"hello!\"\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              6
+            ],
+            "reason": "breakpoint",
+            "values": {
+              "x": "hello"
+            },
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "breakpoint-boolean",
+      "source": "local x=true;\nif x then 42 else 0",
+      "line": 2,
+      "lookups": [
+        "x"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              20
+            ],
+            "reason": "breakpoint",
+            "values": {
+              "x": true
+            },
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "breakpoint-null",
+      "source": "local x=null;\nif x==null then 42 else 0",
+      "line": 2,
+      "lookups": [
+        "x"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              26
+            ],
+            "reason": "breakpoint",
+            "values": {
+              "x": null
+            },
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "breakpoint-invalid-name",
+      "source": "local x=21;\nx*2",
+      "line": 2,
+      "lookups": [
+        "missing"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              4
+            ],
+            "reason": "breakpoint",
+            "values": {
+              "missing": {
+                "error": true
+              }
+            },
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "breakpoint-unused",
+      "source": "local x=21,unused=error 'unused';\nx*2",
+      "line": 2,
+      "lookups": [
+        "x"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              2,
+              1,
+              2,
+              4
+            ],
+            "reason": "breakpoint",
+            "values": {
+              "x": 21
+            },
+            "variables": [
+              "$std",
+              "std",
+              "unused",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "step-conditional",
+      "source": "if true then 21*2 else error 'unused'",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              38
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              14,
+              1,
+              18
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "step-local",
+      "source": "local x=21;x*2",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              15
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              15
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              13
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "step-function",
+      "source": "local f(x)=x+1;f(41)",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              21
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              16,
+              1,
+              21
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              16,
+              1,
+              17
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              7,
+              1,
+              15
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              15
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              13
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "finish-function",
+      "source": "local f(x)=x+1;[f(20),f(41)]",
+      "commands": [
+        "step",
+        "step",
+        "finish",
+        "finish"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "[\n   21,\n   42\n]\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              29
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              16,
+              1,
+              29
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              17,
+              1,
+              22
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f"
+            ]
+          },
+          {
+            "range": [
+              1,
+              23,
+              1,
+              28
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "finish-root",
+      "source": "local x=21;x*2",
+      "commands": [
+        "finish"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              15
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "exception-root",
+      "source": "error 'failed'"
+    },
+    "expected": {
+      "diagnostics": [
+        "RUNTIME ERROR: failed\n\tentry:1:1-15\t$\n\tDuring evaluation\t\n",
+        "RUNTIME ERROR: failed\n\tentry:1:1-15\t$\n\tDuring evaluation\t\n"
+      ],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": true,
+        "output": "",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              15
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              1,
+              1,
+              15
+            ],
+            "reason": "exception",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "exception-function",
+      "source": "local f()=error 'failed';f()"
+    },
+    "expected": {
+      "diagnostics": [
+        "RUNTIME ERROR: failed\n\tentry:1:11-25\tfunction <f>\n\tentry:1:26-29\t$\n\tDuring evaluation\t\n",
+        "RUNTIME ERROR: failed\n\tentry:1:11-25\tfunction <f>\n\tentry:1:26-29\t$\n\tDuring evaluation\t\n",
+        "RUNTIME ERROR: failed\n\tentry:1:11-25\tfunction <f>\n\tentry:1:26-29\t$\n\tDuring evaluation\t\n",
+        "RUNTIME ERROR: failed\n\tentry:1:11-25\tfunction <f>\n\tentry:1:26-29\t$\n\tDuring evaluation\t\n"
+      ],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": true,
+        "output": "",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              29
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              11,
+              1,
+              25
+            ],
+            "reason": "exception",
+            "values": {},
+            "variables": []
+          },
+          {
+            "range": [
+              1,
+              26,
+              1,
+              29
+            ],
+            "reason": "exception",
+            "values": {},
+            "variables": []
+          },
+          {
+            "range": [
+              1,
+              1,
+              1,
+              29
+            ],
+            "reason": "exception",
+            "values": {},
+            "variables": []
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "exception-unused",
+      "source": "local unused=error 'unused';42"
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              31
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "terminated",
+      "source": "local x=42;x",
+      "commands": [
+        "terminate"
+      ]
+    },
+    "expected": {
+      "diagnostics": [
+        "terminated"
+      ],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": true,
+        "output": "",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              13
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "invalid-breakpoint",
+      "source": "21*2",
+      "line": 99
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 0,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": false,
+        "stops": []
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "capture-outer",
+      "source": "local y=21,f(x)=x+y;f(21)",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ],
+      "lookups": [
+        "y"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              26
+            ],
+            "reason": "breakpoint",
+            "values": {
+              "y": {
+                "error": true
+              }
+            },
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              21,
+              1,
+              26
+            ],
+            "reason": "step",
+            "values": {
+              "y": 21
+            },
+            "variables": [
+              "$std",
+              "f",
+              "std",
+              "y"
+            ]
+          },
+          {
+            "range": [
+              1,
+              21,
+              1,
+              22
+            ],
+            "reason": "step",
+            "values": {
+              "y": 21
+            },
+            "variables": [
+              "$std",
+              "f",
+              "std",
+              "y"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              20
+            ],
+            "reason": "step",
+            "values": {
+              "y": 21
+            },
+            "variables": [
+              "f",
+              "y"
+            ]
+          },
+          {
+            "range": [
+              1,
+              17,
+              1,
+              20
+            ],
+            "reason": "step",
+            "values": {
+              "y": 21
+            },
+            "variables": [
+              "x",
+              "y"
+            ]
+          },
+          {
+            "range": [
+              1,
+              17,
+              1,
+              18
+            ],
+            "reason": "step",
+            "values": {
+              "y": 21
+            },
+            "variables": [
+              "x",
+              "y"
+            ]
+          },
+          {
+            "range": [
+              1,
+              19,
+              1,
+              20
+            ],
+            "reason": "step",
+            "values": {
+              "y": 21
+            },
+            "variables": [
+              "x",
+              "y"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "capture-default",
+      "source": "local f(x=21)=x;f()",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ],
+      "lookups": [
+        "x"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "21\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              20
+            ],
+            "reason": "breakpoint",
+            "values": {
+              "x": {
+                "error": true
+              }
+            },
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              17,
+              1,
+              20
+            ],
+            "reason": "step",
+            "values": {
+              "x": {
+                "error": true
+              }
+            },
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              17,
+              1,
+              18
+            ],
+            "reason": "step",
+            "values": {
+              "x": {
+                "error": true
+              }
+            },
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              7,
+              1,
+              16
+            ],
+            "reason": "step",
+            "values": {
+              "x": {
+                "error": true
+              }
+            },
+            "variables": [
+              "f"
+            ]
+          },
+          {
+            "range": [
+              1,
+              15,
+              1,
+              16
+            ],
+            "reason": "step",
+            "values": {
+              "x": 21
+            },
+            "variables": [
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "shadow-local",
+      "source": "local x=1;local x=21;x*2",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              25
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              11,
+              1,
+              25
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              22,
+              1,
+              25
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              22,
+              1,
+              23
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "capture-array",
+      "source": "local x=21;[x*2]",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "[\n   42\n]\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              17
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              17
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              13,
+              1,
+              16
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              13,
+              1,
+              14
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "capture-named",
+      "source": "local f(x)=x;f(x=42)",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              21
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              14,
+              1,
+              21
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              14,
+              1,
+              15
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              7,
+              1,
+              13
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              13
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "capture-lazy",
+      "source": "local f(x)=42;f(error 'unused')",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              32
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              15,
+              1,
+              32
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              15,
+              1,
+              16
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              7,
+              1,
+              14
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "capture-recursion",
+      "source": "local f(x)=if x==0 then 42 else f(x-1);f(2)",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              44
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              40,
+              1,
+              44
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              40,
+              1,
+              41
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "f",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              7,
+              1,
+              39
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              39
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              15,
+              1,
+              19
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              15,
+              1,
+              16
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              33,
+              1,
+              39
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              33,
+              1,
+              34
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "f",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "capture-object",
+      "source": "local x=21,unused=0;{a:x*2}",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "{\n   \"a\": 42\n}\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              28
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              21,
+              1,
+              28
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "unused",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              24,
+              1,
+              27
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              24,
+              1,
+              25
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$",
+              "x"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "capture-object-local",
+      "source": "local x=21;{local y=x,a:y*2}",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "{\n   \"a\": 42\n}\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              29
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              29
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              25,
+              1,
+              28
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$",
+              "x",
+              "y"
+            ]
+          },
+          {
+            "range": [
+              1,
+              25,
+              1,
+              26
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$",
+              "x",
+              "y"
+            ]
+          },
+          {
+            "range": [
+              1,
+              21,
+              1,
+              22
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$",
+              "x",
+              "y"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "input": {
+      "name": "capture-object-function",
+      "source": "local x=21;{f(y):x+y}.f(21)",
+      "commands": [
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step",
+        "step"
+      ]
+    },
+    "expected": {
+      "diagnostics": [],
+      "result": {
+        "active": 1,
+        "cleared": 0,
+        "error": false,
+        "output": "42\n",
+        "set": true,
+        "stops": [
+          {
+            "range": [
+              1,
+              1,
+              1,
+              28
+            ],
+            "reason": "breakpoint",
+            "values": {},
+            "variables": [
+              "$std",
+              "std"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              28
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              24
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              12,
+              1,
+              22
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "$std",
+              "std",
+              "x"
+            ]
+          },
+          {
+            "range": [
+              1,
+              18,
+              1,
+              21
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x",
+              "y"
+            ]
+          },
+          {
+            "range": [
+              1,
+              18,
+              1,
+              19
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x",
+              "y"
+            ]
+          },
+          {
+            "range": [
+              1,
+              20,
+              1,
+              21
+            ],
+            "reason": "step",
+            "values": {},
+            "variables": [
+              "x",
+              "y"
+            ]
+          }
+        ]
+      }
+    }
+  }
+]
