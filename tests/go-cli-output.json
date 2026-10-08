@@ -58,7 +58,7 @@
     ],
     "expect": "error",
     "reference_error": "Object assertion failed",
-    "moonjsonnet_error": "Assertion"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: Object assertion failed."
   },
   {
     "name": "output-string",
@@ -232,7 +232,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "expected string result",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: expected string result, got: null"
   },
   {
     "name": "output-string-type-1",
@@ -244,7 +244,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "expected string result",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: expected string result, got: boolean"
   },
   {
     "name": "output-string-type-2",
@@ -256,7 +256,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "expected string result",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: expected string result, got: number"
   },
   {
     "name": "output-string-type-3",
@@ -268,7 +268,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "expected string result",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: expected string result, got: array"
   },
   {
     "name": "output-string-type-4",
@@ -280,7 +280,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "expected string result",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: expected string result, got: object"
   },
   {
     "name": "output-string-type-5",
@@ -292,7 +292,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "expected string result",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: expected string result, got: array"
   },
   {
     "name": "output-string-type-6",
@@ -304,7 +304,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "expected string result",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: expected string result, got: object"
   },
   {
     "name": "output-string-type-7",
@@ -316,7 +316,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "expected string result",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: expected string result, got: function"
   },
   {
     "name": "output-stream-empty",
@@ -453,7 +453,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "should be an array",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: stream mode: top-level object was a object, should be an array whose elements hold the JSON for each document in the stream."
   },
   {
     "name": "output-stream-wrong-type-eager",
@@ -465,7 +465,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "forced",
-    "moonjsonnet_error": "Runtime"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: forced"
   },
   {
     "name": "output-stream-assert",
@@ -477,7 +477,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "Object assertion failed",
-    "moonjsonnet_error": "Assertion"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: Object assertion failed."
   },
   {
     "name": "output-stream-late-error",
@@ -489,7 +489,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "late",
-    "moonjsonnet_error": "Runtime"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: late"
   },
   {
     "name": "output-stream-function",
@@ -501,7 +501,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "couldn't manifest function",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: couldn't manifest function as JSON"
   },
   {
     "name": "output-stream-top-function",

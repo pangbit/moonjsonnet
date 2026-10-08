@@ -197,6 +197,11 @@ their messages. Source definitions of `map`, `mapWithIndex`, `assertEqual`,
 object field/has helpers, `manifestJson` and `slice` preserve standard-library
 source frames and argument laziness. An explicit `error` in those definitions
 has kind `Runtime`; a native type guard has kind `Type`.
+Import compile failures retain their public `Syntax`/`Static` category, while
+Go-style rendering preserves the runtime import call frames and includes the
+original compile-error range in its message. Direct parsing still uses static
+source snippets. String/stream/multi output type errors include the rejected
+type; string mode continues to reject a container without forcing its contents.
 
 Malformed JSON diagnostics follow the pinned Go 1.24 scanner's first-error and
 EOF rules, including byte-to-character quoting. YAML diagnostics distinguish

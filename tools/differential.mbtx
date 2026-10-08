@@ -171,6 +171,7 @@ async fn main {
     }
     let expected_ok = match case {
       {"result": expected, ..} => a.exit_code()==0 && b.exit_code()==0 && @json.parse(a.stdout())==expected && @json.parse(b.stdout())==expected
+      {"reference_error": String(kind),"moonjsonnet_cli_error":String(actual), ..} => a.stderr().contains(kind) && b.stderr().contains(actual)
       {"reference_error": String(kind),"moonjsonnet_error":String(actual), ..} => a.stderr().contains(kind) && b.stderr().contains(": "+actual+":")
       _ => true
     }

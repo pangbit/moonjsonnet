@@ -1,52 +1,579 @@
 [
-  {"name":"parameters-ext-jsonnet","source":"std.extVar('x')","args":["--ext-code","x=local n=21; {answer:n*2}"],"expect":"success","result":{"answer":42}},
-  {"name":"parameters-ext-function","source":"std.extVar('f')(21)","args":["--ext-code","f=function(x) x*2"],"expect":"success","result":42},
-  {"name":"parameters-ext-dependency","source":"std.extVar('a')","args":["--ext-code","a=std.extVar('b')+1","--ext-code","b=41"],"expect":"success","result":42},
-  {"name":"parameters-ext-lazy-fields","source":"std.extVar('x').a","args":["--ext-code","x={a:42,b:error 'unused'}"],"expect":"success","result":42},
-  {"name":"parameters-ext-unused-invalid","source":"42","args":["--ext-code","x=invalid code !"],"expect":"success","result":42},
-  {"name":"parameters-ext-unused-error","source":"42","args":["--ext-code","x=error 'unused'"],"expect":"success","result":42},
-  {"name":"parameters-ext-clean-scope","source":"local x=42; std.extVar('a')","args":["--ext-code","a=x"],"expect":"error","reference_error":"Unknown variable: x","moonjsonnet_error":"Static"},
-  {"name":"parameters-ext-invalid","source":"std.extVar('x')","args":["--ext-code","x={"],"expect":"error","reference_error":"Unexpected: end of file","moonjsonnet_error":"Syntax"},
-  {"name":"parameters-ext-error-location","source":"std.extVar('x')","args":["--ext-code","x=\nerror 'bad'"],"expect":"error","reference_error":"<extvar:x>:2","moonjsonnet_error":"Runtime"},
-  {"name":"parameters-ext-cycle","source":"std.extVar('a')","args":["--ext-code","a=std.extVar('a')"],"expect":"error","reference_error":"RUNTIME ERROR","moonjsonnet_error":"Runtime"},
-  {"name":"parameters-ext-thisfile","source":"[std.extVar('a'),std.extVar('b')]","args":["--ext-code","a=std.thisFile","--ext-code","b=std.trace('code',42)"],"trace":"TRACE: <extvar:b>:1 code\n","expect":"success","result":["<extvar:a>",42]},
-  {"name":"parameters-ext-trace-cache","source":"[std.extVar('a'),std.extVar('a')]","args":["--ext-code","a=std.trace('once',42)"],"trace":"TRACE: <extvar:a>:1 once\n","expect":"success","result":[42,42]},
-  {"name":"parameters-ext-str-literal","source":"std.extVar('a')","args":["-V","a=local n=21; n*2"],"expect":"success","result":"local n=21; n*2"},
-  {"name":"parameters-ext-empty-name","source":"std.extVar('')","args":["--ext-code","=42"],"expect":"success","result":42},
-  {"name":"parameters-ext-duplicate-code-string","source":"std.extVar('a')","args":["--ext-code","a=error 'old'","--ext-str","a=new"],"expect":"success","result":"new"},
-  {"name":"parameters-ext-duplicate-string-code","source":"std.extVar('a')","args":["--ext-str","a=old","--ext-code","a=21*2"],"expect":"success","result":42},
-  {"name":"parameters-ext-env-string","source":"std.extVar('MOONJSONNET_PARAMETER_STR')","args":["--ext-str","MOONJSONNET_PARAMETER_STR"],"env":{"MOONJSONNET_PARAMETER_STR":"é😀=value"},"expect":"success","result":"é😀=value"},
-  {"name":"parameters-ext-env-code","source":"std.extVar('MOONJSONNET_PARAMETER_CODE')","args":["--ext-code","MOONJSONNET_PARAMETER_CODE"],"env":{"MOONJSONNET_PARAMETER_CODE":"21*2"},"expect":"success","result":42},
-  {"name":"parameters-tla-jsonnet","source":"function(x) x","args":["--tla-code","x=local n=21; {answer:n*2}"],"expect":"success","result":{"answer":42}},
-  {"name":"parameters-tla-string","source":"function(x) x","args":["-A","x=é😀=value"],"expect":"success","result":"é😀=value"},
-  {"name":"parameters-tla-default","source":"function(x=21) x*2","expect":"success","result":42},
-  {"name":"parameters-tla-dependent-default","source":"function(x,y=x+1,z=error 'unused') [x,y]","args":["--tla-code","x=41"],"expect":"success","result":[41,42]},
-  {"name":"parameters-tla-named-order","source":"function(a,b) [a,b]","args":["--tla-code","b=2","--tla-code","a=1"],"expect":"success","result":[1,2]},
-  {"name":"parameters-tla-function","source":"function(f) f(21)","args":["--tla-code","f=function(x) x*2"],"expect":"success","result":42},
-  {"name":"parameters-tla-ext-dependency","source":"function(a) a","args":["--tla-code","a=std.extVar('x')+1","--ext-code","x=41"],"expect":"success","result":42},
-  {"name":"parameters-tla-unused-error","source":"function(x) 42","args":["--tla-code","x=error 'unused'"],"expect":"success","result":42},
-  {"name":"parameters-tla-unused-invalid","source":"function(x) 42","args":["--tla-code","x=invalid code !"],"expect":"success","result":42},
-  {"name":"parameters-tla-lazy-fields","source":"function(x) x.a","args":["--tla-code","x={a:42,b:error 'unused'}"],"expect":"success","result":42},
-  {"name":"parameters-tla-ignore-nonfunction","source":"{answer:42}","args":["--tla-code","unknown=invalid code !"],"expect":"success","result":{"answer":42}},
-  {"name":"parameters-tla-missing","source":"function(a) a","expect":"error","reference_error":"RUNTIME ERROR","moonjsonnet_error":"Runtime"},
-  {"name":"parameters-tla-unknown","source":"function()42","args":["--tla-code","unknown=error 'unused'"],"expect":"error","reference_error":"RUNTIME ERROR","moonjsonnet_error":"Runtime"},
-  {"name":"parameters-tla-single-application","source":"function() function()42","expect":"error","reference_error":"RUNTIME ERROR","moonjsonnet_error":"Type"},
-  {"name":"parameters-tla-clean-scope","source":"function(a,b) b","args":["--tla-code","a=42","--tla-code","b=a"],"expect":"error","reference_error":"Unknown variable: a","moonjsonnet_error":"Static"},
-  {"name":"parameters-tla-thisfile","source":"function(x) x","args":["--tla-code","x=std.thisFile"],"expect":"success","result":"<top-level-arg:x>"},
-  {"name":"parameters-tla-trace-cache","source":"function(x) [x,x]","args":["--tla-code","x=std.trace('once',42)"],"trace":"TRACE: <top-level-arg:x>:1 once\n","expect":"success","result":[42,42]},
-  {"name":"parameters-tla-error-location","source":"function(x) x","args":["--tla-code","x=\nerror 'bad'"],"expect":"error","reference_error":"<top-level-arg:x>:2","moonjsonnet_error":"Runtime"},
-  {"name":"parameters-tla-duplicate-string-code","source":"function(x) x","args":["--tla-str","x=old","--tla-code","x=42"],"expect":"success","result":42},
-  {"name":"parameters-tla-duplicate-code-string","source":"function(x) x","args":["--tla-code","x=error 'old'","--tla-str","x=new"],"expect":"success","result":"new"},
-  {"name":"parameters-tla-env-string","source":"function(MOONJSONNET_PARAMETER_STR) MOONJSONNET_PARAMETER_STR","args":["--tla-str","MOONJSONNET_PARAMETER_STR"],"env":{"MOONJSONNET_PARAMETER_STR":""},"expect":"success","result":""},
-  {"name":"parameters-tla-env-code","source":"function(MOONJSONNET_PARAMETER_CODE) MOONJSONNET_PARAMETER_CODE","args":["--tla-code","MOONJSONNET_PARAMETER_CODE"],"env":{"MOONJSONNET_PARAMETER_CODE":"21*2"},"expect":"success","result":42},
-  {"name":"parameters-ext-code-file","source":"std.extVar('x')","args":["--ext-code-file","x=<work>/parameter-code.libsonnet"],"files":{"parameter-code.libsonnet":"local x=21; x*2"},"expect":"success","result":42},
-  {"name":"parameters-ext-str-file","source":"std.extVar('x')","args":["--ext-str-file","x=<work>/parameter-string.txt"],"files":{"parameter-string.txt":"é😀=literal\n"},"expect":"success","result":"é😀=literal\n"},
-  {"name":"parameters-tla-code-file","source":"function(x) x","args":["--tla-code-file","x=<work>/parameter-code.libsonnet"],"files":{"parameter-code.libsonnet":"local x=21; x*2"},"expect":"success","result":42},
-  {"name":"parameters-tla-str-file","source":"function(x) x","args":["--tla-str-file","x=<work>/parameter-string.txt"],"files":{"parameter-string.txt":"é😀=literal\n"},"expect":"success","result":"é😀=literal\n"},
-  {"name":"parameters-file-quote","source":"std.extVar('x')","args":["--ext-code-file","x=<work>/parameter'quote.libsonnet"],"files":{"parameter'quote.libsonnet":"42"},"expect":"success","result":42},
-  {"name":"parameters-file-missing-unused","source":"42","args":["--ext-code-file","x=<work>/does-not-exist"],"expect":"success","result":42},
-  {"name":"parameters-file-missing","source":"std.extVar('x')","args":["--ext-code-file","x=<work>/does-not-exist"],"expect":"error","reference_error":"RUNTIME ERROR","moonjsonnet_error":"Import"},
-  {"name":"parameters-file-relative-import","source":"function(x) x","args":["--tla-code-file","x=<work>/parameter-with-import.libsonnet"],"files":{"parameter-with-import.libsonnet":"(import 'parameter-nested.libsonnet')+1","parameter-nested.libsonnet":"41"},"expect":"success","result":42},
-  {"name":"parameters-ext-object-inheritance","source":"std.extVar('x')+{a:2}","args":["--ext-code","x={a:1,b:self.a}"],"expect":"success","result":{"a":2,"b":2}},
-  {"name":"parameters-tla-imported-function","source":"import 'parameter-top.libsonnet'","args":["--tla-code","x=21*2"],"files":{"parameter-top.libsonnet":"function(x) x"},"expect":"success","result":42}
+  {
+    "name": "parameters-ext-jsonnet",
+    "source": "std.extVar('x')",
+    "args": [
+      "--ext-code",
+      "x=local n=21; {answer:n*2}"
+    ],
+    "expect": "success",
+    "result": {
+      "answer": 42
+    }
+  },
+  {
+    "name": "parameters-ext-function",
+    "source": "std.extVar('f')(21)",
+    "args": [
+      "--ext-code",
+      "f=function(x) x*2"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-ext-dependency",
+    "source": "std.extVar('a')",
+    "args": [
+      "--ext-code",
+      "a=std.extVar('b')+1",
+      "--ext-code",
+      "b=41"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-ext-lazy-fields",
+    "source": "std.extVar('x').a",
+    "args": [
+      "--ext-code",
+      "x={a:42,b:error 'unused'}"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-ext-unused-invalid",
+    "source": "42",
+    "args": [
+      "--ext-code",
+      "x=invalid code !"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-ext-unused-error",
+    "source": "42",
+    "args": [
+      "--ext-code",
+      "x=error 'unused'"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-ext-clean-scope",
+    "source": "local x=42; std.extVar('a')",
+    "args": [
+      "--ext-code",
+      "a=x"
+    ],
+    "expect": "error",
+    "reference_error": "Unknown variable: x",
+    "moonjsonnet_cli_error": "Unknown variable: x"
+  },
+  {
+    "name": "parameters-ext-invalid",
+    "source": "std.extVar('x')",
+    "args": [
+      "--ext-code",
+      "x={"
+    ],
+    "expect": "error",
+    "reference_error": "Unexpected: end of file",
+    "moonjsonnet_cli_error": "Unexpected: end of file"
+  },
+  {
+    "name": "parameters-ext-error-location",
+    "source": "std.extVar('x')",
+    "args": [
+      "--ext-code",
+      "x=\nerror 'bad'"
+    ],
+    "expect": "error",
+    "reference_error": "<extvar:x>:2",
+    "moonjsonnet_cli_error": "RUNTIME ERROR: bad"
+  },
+  {
+    "name": "parameters-ext-cycle",
+    "source": "std.extVar('a')",
+    "args": [
+      "--ext-code",
+      "a=std.extVar('a')"
+    ],
+    "expect": "error",
+    "reference_error": "RUNTIME ERROR",
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
+  },
+  {
+    "name": "parameters-ext-thisfile",
+    "source": "[std.extVar('a'),std.extVar('b')]",
+    "args": [
+      "--ext-code",
+      "a=std.thisFile",
+      "--ext-code",
+      "b=std.trace('code',42)"
+    ],
+    "trace": "TRACE: <extvar:b>:1 code\n",
+    "expect": "success",
+    "result": [
+      "<extvar:a>",
+      42
+    ]
+  },
+  {
+    "name": "parameters-ext-trace-cache",
+    "source": "[std.extVar('a'),std.extVar('a')]",
+    "args": [
+      "--ext-code",
+      "a=std.trace('once',42)"
+    ],
+    "trace": "TRACE: <extvar:a>:1 once\n",
+    "expect": "success",
+    "result": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "parameters-ext-str-literal",
+    "source": "std.extVar('a')",
+    "args": [
+      "-V",
+      "a=local n=21; n*2"
+    ],
+    "expect": "success",
+    "result": "local n=21; n*2"
+  },
+  {
+    "name": "parameters-ext-empty-name",
+    "source": "std.extVar('')",
+    "args": [
+      "--ext-code",
+      "=42"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-ext-duplicate-code-string",
+    "source": "std.extVar('a')",
+    "args": [
+      "--ext-code",
+      "a=error 'old'",
+      "--ext-str",
+      "a=new"
+    ],
+    "expect": "success",
+    "result": "new"
+  },
+  {
+    "name": "parameters-ext-duplicate-string-code",
+    "source": "std.extVar('a')",
+    "args": [
+      "--ext-str",
+      "a=old",
+      "--ext-code",
+      "a=21*2"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-ext-env-string",
+    "source": "std.extVar('MOONJSONNET_PARAMETER_STR')",
+    "args": [
+      "--ext-str",
+      "MOONJSONNET_PARAMETER_STR"
+    ],
+    "env": {
+      "MOONJSONNET_PARAMETER_STR": "é😀=value"
+    },
+    "expect": "success",
+    "result": "é😀=value"
+  },
+  {
+    "name": "parameters-ext-env-code",
+    "source": "std.extVar('MOONJSONNET_PARAMETER_CODE')",
+    "args": [
+      "--ext-code",
+      "MOONJSONNET_PARAMETER_CODE"
+    ],
+    "env": {
+      "MOONJSONNET_PARAMETER_CODE": "21*2"
+    },
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-tla-jsonnet",
+    "source": "function(x) x",
+    "args": [
+      "--tla-code",
+      "x=local n=21; {answer:n*2}"
+    ],
+    "expect": "success",
+    "result": {
+      "answer": 42
+    }
+  },
+  {
+    "name": "parameters-tla-string",
+    "source": "function(x) x",
+    "args": [
+      "-A",
+      "x=é😀=value"
+    ],
+    "expect": "success",
+    "result": "é😀=value"
+  },
+  {
+    "name": "parameters-tla-default",
+    "source": "function(x=21) x*2",
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-tla-dependent-default",
+    "source": "function(x,y=x+1,z=error 'unused') [x,y]",
+    "args": [
+      "--tla-code",
+      "x=41"
+    ],
+    "expect": "success",
+    "result": [
+      41,
+      42
+    ]
+  },
+  {
+    "name": "parameters-tla-named-order",
+    "source": "function(a,b) [a,b]",
+    "args": [
+      "--tla-code",
+      "b=2",
+      "--tla-code",
+      "a=1"
+    ],
+    "expect": "success",
+    "result": [
+      1,
+      2
+    ]
+  },
+  {
+    "name": "parameters-tla-function",
+    "source": "function(f) f(21)",
+    "args": [
+      "--tla-code",
+      "f=function(x) x*2"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-tla-ext-dependency",
+    "source": "function(a) a",
+    "args": [
+      "--tla-code",
+      "a=std.extVar('x')+1",
+      "--ext-code",
+      "x=41"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-tla-unused-error",
+    "source": "function(x) 42",
+    "args": [
+      "--tla-code",
+      "x=error 'unused'"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-tla-unused-invalid",
+    "source": "function(x) 42",
+    "args": [
+      "--tla-code",
+      "x=invalid code !"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-tla-lazy-fields",
+    "source": "function(x) x.a",
+    "args": [
+      "--tla-code",
+      "x={a:42,b:error 'unused'}"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-tla-ignore-nonfunction",
+    "source": "{answer:42}",
+    "args": [
+      "--tla-code",
+      "unknown=invalid code !"
+    ],
+    "expect": "success",
+    "result": {
+      "answer": 42
+    }
+  },
+  {
+    "name": "parameters-tla-missing",
+    "source": "function(a) a",
+    "expect": "error",
+    "reference_error": "RUNTIME ERROR",
+    "moonjsonnet_cli_error": "RUNTIME ERROR: Missing argument: a"
+  },
+  {
+    "name": "parameters-tla-unknown",
+    "source": "function()42",
+    "args": [
+      "--tla-code",
+      "unknown=error 'unused'"
+    ],
+    "expect": "error",
+    "reference_error": "RUNTIME ERROR",
+    "moonjsonnet_cli_error": "RUNTIME ERROR: function has no parameter unknown"
+  },
+  {
+    "name": "parameters-tla-single-application",
+    "source": "function() function()42",
+    "expect": "error",
+    "reference_error": "RUNTIME ERROR",
+    "moonjsonnet_cli_error": "RUNTIME ERROR: couldn't manifest function as JSON"
+  },
+  {
+    "name": "parameters-tla-clean-scope",
+    "source": "function(a,b) b",
+    "args": [
+      "--tla-code",
+      "a=42",
+      "--tla-code",
+      "b=a"
+    ],
+    "expect": "error",
+    "reference_error": "Unknown variable: a",
+    "moonjsonnet_cli_error": "Unknown variable: a"
+  },
+  {
+    "name": "parameters-tla-thisfile",
+    "source": "function(x) x",
+    "args": [
+      "--tla-code",
+      "x=std.thisFile"
+    ],
+    "expect": "success",
+    "result": "<top-level-arg:x>"
+  },
+  {
+    "name": "parameters-tla-trace-cache",
+    "source": "function(x) [x,x]",
+    "args": [
+      "--tla-code",
+      "x=std.trace('once',42)"
+    ],
+    "trace": "TRACE: <top-level-arg:x>:1 once\n",
+    "expect": "success",
+    "result": [
+      42,
+      42
+    ]
+  },
+  {
+    "name": "parameters-tla-error-location",
+    "source": "function(x) x",
+    "args": [
+      "--tla-code",
+      "x=\nerror 'bad'"
+    ],
+    "expect": "error",
+    "reference_error": "<top-level-arg:x>:2",
+    "moonjsonnet_cli_error": "RUNTIME ERROR: bad"
+  },
+  {
+    "name": "parameters-tla-duplicate-string-code",
+    "source": "function(x) x",
+    "args": [
+      "--tla-str",
+      "x=old",
+      "--tla-code",
+      "x=42"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-tla-duplicate-code-string",
+    "source": "function(x) x",
+    "args": [
+      "--tla-code",
+      "x=error 'old'",
+      "--tla-str",
+      "x=new"
+    ],
+    "expect": "success",
+    "result": "new"
+  },
+  {
+    "name": "parameters-tla-env-string",
+    "source": "function(MOONJSONNET_PARAMETER_STR) MOONJSONNET_PARAMETER_STR",
+    "args": [
+      "--tla-str",
+      "MOONJSONNET_PARAMETER_STR"
+    ],
+    "env": {
+      "MOONJSONNET_PARAMETER_STR": ""
+    },
+    "expect": "success",
+    "result": ""
+  },
+  {
+    "name": "parameters-tla-env-code",
+    "source": "function(MOONJSONNET_PARAMETER_CODE) MOONJSONNET_PARAMETER_CODE",
+    "args": [
+      "--tla-code",
+      "MOONJSONNET_PARAMETER_CODE"
+    ],
+    "env": {
+      "MOONJSONNET_PARAMETER_CODE": "21*2"
+    },
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-ext-code-file",
+    "source": "std.extVar('x')",
+    "args": [
+      "--ext-code-file",
+      "x=<work>/parameter-code.libsonnet"
+    ],
+    "files": {
+      "parameter-code.libsonnet": "local x=21; x*2"
+    },
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-ext-str-file",
+    "source": "std.extVar('x')",
+    "args": [
+      "--ext-str-file",
+      "x=<work>/parameter-string.txt"
+    ],
+    "files": {
+      "parameter-string.txt": "é😀=literal\n"
+    },
+    "expect": "success",
+    "result": "é😀=literal\n"
+  },
+  {
+    "name": "parameters-tla-code-file",
+    "source": "function(x) x",
+    "args": [
+      "--tla-code-file",
+      "x=<work>/parameter-code.libsonnet"
+    ],
+    "files": {
+      "parameter-code.libsonnet": "local x=21; x*2"
+    },
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-tla-str-file",
+    "source": "function(x) x",
+    "args": [
+      "--tla-str-file",
+      "x=<work>/parameter-string.txt"
+    ],
+    "files": {
+      "parameter-string.txt": "é😀=literal\n"
+    },
+    "expect": "success",
+    "result": "é😀=literal\n"
+  },
+  {
+    "name": "parameters-file-quote",
+    "source": "std.extVar('x')",
+    "args": [
+      "--ext-code-file",
+      "x=<work>/parameter'quote.libsonnet"
+    ],
+    "files": {
+      "parameter'quote.libsonnet": "42"
+    },
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-file-missing-unused",
+    "source": "42",
+    "args": [
+      "--ext-code-file",
+      "x=<work>/does-not-exist"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-file-missing",
+    "source": "std.extVar('x')",
+    "args": [
+      "--ext-code-file",
+      "x=<work>/does-not-exist"
+    ],
+    "expect": "error",
+    "reference_error": "RUNTIME ERROR",
+    "moonjsonnet_error": "Import"
+  },
+  {
+    "name": "parameters-file-relative-import",
+    "source": "function(x) x",
+    "args": [
+      "--tla-code-file",
+      "x=<work>/parameter-with-import.libsonnet"
+    ],
+    "files": {
+      "parameter-with-import.libsonnet": "(import 'parameter-nested.libsonnet')+1",
+      "parameter-nested.libsonnet": "41"
+    },
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "parameters-ext-object-inheritance",
+    "source": "std.extVar('x')+{a:2}",
+    "args": [
+      "--ext-code",
+      "x={a:1,b:self.a}"
+    ],
+    "expect": "success",
+    "result": {
+      "a": 2,
+      "b": 2
+    }
+  },
+  {
+    "name": "parameters-tla-imported-function",
+    "source": "import 'parameter-top.libsonnet'",
+    "args": [
+      "--tla-code",
+      "x=21*2"
+    ],
+    "files": {
+      "parameter-top.libsonnet": "function(x) x"
+    },
+    "expect": "success",
+    "result": 42
+  }
 ]

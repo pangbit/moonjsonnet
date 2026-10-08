@@ -9,7 +9,7 @@
       "0"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -22,7 +22,7 @@
       "1"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  ...\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t...\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t...\n\tDuring evaluation\t\n\n"
   },
   {
@@ -35,7 +35,7 @@
       "2"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\tDuring evaluation\t\n\n"
   },
   {
@@ -48,7 +48,7 @@
       "3"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -61,7 +61,7 @@
       "4"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -74,7 +74,7 @@
       "5"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -87,7 +87,7 @@
       "20"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -100,7 +100,7 @@
       "26"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -113,7 +113,7 @@
       "27"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -126,7 +126,7 @@
       "2147483648"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -139,7 +139,7 @@
       "9223372036854775807"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -150,7 +150,7 @@
       "-e"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t...\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:52-58\tfunction <f>\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -163,7 +163,7 @@
       "3"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -178,7 +178,7 @@
       "3"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -190,7 +190,7 @@
       "3"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<cmdline>:1:25: Runtime: trace failure\n  at <cmdline>:1:52\n  ...\n  at <cmdline>:1:52\n  at <cmdline>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<cmdline>:1:25-46\tfunction <f>\n\t...\n\t<cmdline>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {
@@ -202,7 +202,7 @@
       "3"
     ],
     "expect": "error",
-    "moonjsonnet_stderr": "<stdin>:1:25: Runtime: trace failure\n  at <stdin>:1:52\n  ...\n  at <stdin>:1:52\n  at <stdin>:1:60\n",
+    "moonjsonnet_stderr": "RUNTIME ERROR: trace failure\n\t<stdin>:1:25-46\tfunction <f>\n\t...\n\t<stdin>:1:60-65\t$\n\tDuring evaluation\t\n\n",
     "reference_stderr": "RUNTIME ERROR: trace failure\n\t<stdin>:1:25-46\tfunction <f>\n\t...\n\t<stdin>:1:60-65\t$\n\tDuring evaluation\t\n\n"
   },
   {

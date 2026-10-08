@@ -41,6 +41,7 @@ async fn main {
           }
         }
         let options:Array[String]=match limit {None=>[];Some(limit)=>["-t",limit]}
+        if field(input,"string_output",false)==Json::boolean(true) {options.push("-S")}
         for (key,option) in [("ext_code","--ext-code"),("tla_code","--tla-code")] {
           if field(input,key,{}) is Object(values) {
             for parameter,value in values {

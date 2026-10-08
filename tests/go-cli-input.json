@@ -1,40 +1,403 @@
 [
-  {"name":"cli-exec-expression","source":"local n=21; {answer:n*2}","input":"exec","args":["-e"],"expect":"success","result":{"answer":42}},
-  {"name":"cli-exec-long-option","source":"[1,true,'é😀']","input":"exec","args":["--exec"],"expect":"success","result":[1,true,"é😀"]},
-  {"name":"cli-exec-thisfile","source":"std.thisFile","input":"exec","args":["-e"],"expect":"success","result":""},
-  {"name":"cli-exec-trace","source":"\nstd.trace('inline',42)","input":"exec","args":["-e"],"trace":"TRACE: <cmdline>:2 inline\n","expect":"success","result":42},
-  {"name":"cli-exec-parameters","source":"function(x) x+std.extVar('y')","input":"exec","args":["-e","--ext-code","y=21","--tla-code","x=21"],"expect":"success","result":42},
-  {"name":"cli-exec-short-combined","source":"std.extVar('x')","input":"exec","args":["-eV","x=value"],"expect":"success","result":"value"},
-  {"name":"cli-exec-short-combined-tla","source":"function(x) x","input":"exec","args":["-eA","x=value"],"expect":"success","result":"value"},
-  {"name":"cli-exec-short-reversed","source":"std.extVar('x')","input":"exec","args":["-Ve","x=value"],"expect":"error"},
-  {"name":"cli-exec-negative-delimiter","source":"-42","input":"exec","args":["-e","--"],"expect":"success","result":-42},
-  {"name":"cli-exec-negative-no-delimiter","source":"-42","input":"exec","args":["-e"],"expect":"error"},
-  {"name":"cli-exec-dash-is-code","source":"-","input":"exec","args":["-e"],"stdin":"42","expect":"error","reference_error":"<cmdline>:1:2 Unexpected end of file","moonjsonnet_error":"Syntax"},
-  {"name":"cli-exec-empty","source":"","input":"exec","args":["-e"],"expect":"error","reference_error":"<cmdline>:1:1 Unexpected end of file","moonjsonnet_error":"Syntax"},
-  {"name":"cli-exec-unknown-variable","source":"\nmissing","input":"exec","args":["-e"],"expect":"error","reference_error":"<cmdline>:2","moonjsonnet_error":"Static"},
-  {"name":"cli-exec-runtime-error","source":"\nerror 'bad'","input":"exec","args":["-e"],"expect":"error","reference_error":"<cmdline>:2","moonjsonnet_error":"Runtime"},
-  {"name":"cli-exec-import","source":"(import '_build/go-differential/input-library.libsonnet').x","input":"exec","args":["-e"],"files":{"input-library.libsonnet":"{x:42}"},"expect":"success","result":42},
-  {"name":"cli-exec-importstr","source":"importstr '_build/go-differential/input-string.txt'","input":"exec","args":["-e"],"files":{"input-string.txt":"é😀\n"},"expect":"success","result":"é😀\n"},
-  {"name":"cli-exec-importbin","source":"importbin '_build/go-differential/input-ascii.txt'","input":"exec","args":["-e"],"files":{"input-ascii.txt":"ab"},"expect":"success","result":[97,98]},
-  {"name":"cli-stdin-expression","source":"local n=21; {answer:n*2}","input":"stdin","expect":"success","result":{"answer":42}},
-  {"name":"cli-stdin-thisfile","source":"std.thisFile","input":"stdin","expect":"success","result":""},
-  {"name":"cli-stdin-trace","source":"\nstd.trace('stdin',42)","input":"stdin","trace":"TRACE: <stdin>:2 stdin\n","expect":"success","result":42},
-  {"name":"cli-stdin-parameters","source":"function(x) x+std.extVar('y')","input":"stdin","args":["--ext-code","y=21","--tla-code","x=21"],"expect":"success","result":42},
-  {"name":"cli-stdin-unicode","source":"['é😀','a\\u0000b']","input":"stdin","expect":"success","result":["é😀","a\u0000b"]},
-  {"name":"cli-stdin-empty","source":"","input":"stdin","expect":"error","reference_error":"<stdin>:1:1 Unexpected end of file","moonjsonnet_error":"Syntax"},
-  {"name":"cli-stdin-static-error","source":"\nmissing","input":"stdin","expect":"error","reference_error":"<stdin>:2","moonjsonnet_error":"Static"},
-  {"name":"cli-stdin-syntax-error","source":"\n{","input":"stdin","expect":"error","reference_error":"<stdin>:2","moonjsonnet_error":"Syntax"},
-  {"name":"cli-stdin-runtime-error","source":"\nerror 'bad'","input":"stdin","expect":"error","reference_error":"<stdin>:2","moonjsonnet_error":"Runtime"},
-  {"name":"cli-stdin-import","source":"(import '_build/go-differential/input-library.libsonnet').x","input":"stdin","files":{"input-library.libsonnet":"{x:42}"},"expect":"success","result":42},
-  {"name":"cli-stdin-delimiter","source":"42","input":"stdin","args":["--"],"expect":"success","result":42},
-  {"name":"cli-file-delimiter","source":"42","args":["--"],"expect":"success","result":42},
-  {"name":"cli-file-leading-dash","source":"42","cwd":"<work>","input_arg":"-input.jsonnet","args":["--"],"files":{"-input.jsonnet":"42"},"expect":"success","result":42},
-  {"name":"cli-file-option-filename","source":"42","cwd":"<work>","input_arg":"--help","args":["--"],"files":{"--help":"42"},"expect":"success","result":42},
-  {"name":"cli-file-leading-dash-no-delimiter","source":"42","cwd":"<work>","input_arg":"-input.jsonnet","files":{"-input.jsonnet":"42"},"expect":"error"},
-  {"name":"cli-file-unread-stdin","source":"42","stdin":"error 'ignored'","expect":"success","result":42},
-  {"name":"cli-exec-unread-stdin","source":"42","input":"exec","args":["--exec"],"stdin":"error 'ignored'","expect":"success","result":42},
-  {"name":"cli-unknown-option","source":"42","args":["--unknown","value"],"expect":"error"},
-  {"name":"cli-multiple-inputs","source":"42","input":"exec","args":["-e","21"],"expect":"error"},
-  {"name":"cli-missing-env","source":"42","args":["--ext-code","MOONJSONNET_CLI_MISSING"],"expect":"error"},
-  {"name":"cli-file-parameter-format","source":"42","args":["--tla-code-file","x"],"expect":"error"}
+  {
+    "name": "cli-exec-expression",
+    "source": "local n=21; {answer:n*2}",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "success",
+    "result": {
+      "answer": 42
+    }
+  },
+  {
+    "name": "cli-exec-long-option",
+    "source": "[1,true,'é😀']",
+    "input": "exec",
+    "args": [
+      "--exec"
+    ],
+    "expect": "success",
+    "result": [
+      1,
+      true,
+      "é😀"
+    ]
+  },
+  {
+    "name": "cli-exec-thisfile",
+    "source": "std.thisFile",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "success",
+    "result": ""
+  },
+  {
+    "name": "cli-exec-trace",
+    "source": "\nstd.trace('inline',42)",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "trace": "TRACE: <cmdline>:2 inline\n",
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-exec-parameters",
+    "source": "function(x) x+std.extVar('y')",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--ext-code",
+      "y=21",
+      "--tla-code",
+      "x=21"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-exec-short-combined",
+    "source": "std.extVar('x')",
+    "input": "exec",
+    "args": [
+      "-eV",
+      "x=value"
+    ],
+    "expect": "success",
+    "result": "value"
+  },
+  {
+    "name": "cli-exec-short-combined-tla",
+    "source": "function(x) x",
+    "input": "exec",
+    "args": [
+      "-eA",
+      "x=value"
+    ],
+    "expect": "success",
+    "result": "value"
+  },
+  {
+    "name": "cli-exec-short-reversed",
+    "source": "std.extVar('x')",
+    "input": "exec",
+    "args": [
+      "-Ve",
+      "x=value"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "cli-exec-negative-delimiter",
+    "source": "-42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "--"
+    ],
+    "expect": "success",
+    "result": -42
+  },
+  {
+    "name": "cli-exec-negative-no-delimiter",
+    "source": "-42",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "cli-exec-dash-is-code",
+    "source": "-",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "stdin": "42",
+    "expect": "error",
+    "reference_error": "<cmdline>:1:2 Unexpected end of file",
+    "moonjsonnet_cli_error": "<cmdline>:1:2 Unexpected end of file"
+  },
+  {
+    "name": "cli-exec-empty",
+    "source": "",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "error",
+    "reference_error": "<cmdline>:1:1 Unexpected end of file",
+    "moonjsonnet_cli_error": "<cmdline>:1:1 Unexpected end of file"
+  },
+  {
+    "name": "cli-exec-unknown-variable",
+    "source": "\nmissing",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "error",
+    "reference_error": "<cmdline>:2",
+    "moonjsonnet_cli_error": "<cmdline>:2"
+  },
+  {
+    "name": "cli-exec-runtime-error",
+    "source": "\nerror 'bad'",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "expect": "error",
+    "reference_error": "<cmdline>:2",
+    "moonjsonnet_cli_error": "RUNTIME ERROR: bad"
+  },
+  {
+    "name": "cli-exec-import",
+    "source": "(import '_build/go-differential/input-library.libsonnet').x",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "files": {
+      "input-library.libsonnet": "{x:42}"
+    },
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-exec-importstr",
+    "source": "importstr '_build/go-differential/input-string.txt'",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "files": {
+      "input-string.txt": "é😀\n"
+    },
+    "expect": "success",
+    "result": "é😀\n"
+  },
+  {
+    "name": "cli-exec-importbin",
+    "source": "importbin '_build/go-differential/input-ascii.txt'",
+    "input": "exec",
+    "args": [
+      "-e"
+    ],
+    "files": {
+      "input-ascii.txt": "ab"
+    },
+    "expect": "success",
+    "result": [
+      97,
+      98
+    ]
+  },
+  {
+    "name": "cli-stdin-expression",
+    "source": "local n=21; {answer:n*2}",
+    "input": "stdin",
+    "expect": "success",
+    "result": {
+      "answer": 42
+    }
+  },
+  {
+    "name": "cli-stdin-thisfile",
+    "source": "std.thisFile",
+    "input": "stdin",
+    "expect": "success",
+    "result": ""
+  },
+  {
+    "name": "cli-stdin-trace",
+    "source": "\nstd.trace('stdin',42)",
+    "input": "stdin",
+    "trace": "TRACE: <stdin>:2 stdin\n",
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-stdin-parameters",
+    "source": "function(x) x+std.extVar('y')",
+    "input": "stdin",
+    "args": [
+      "--ext-code",
+      "y=21",
+      "--tla-code",
+      "x=21"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-stdin-unicode",
+    "source": "['é😀','a\\u0000b']",
+    "input": "stdin",
+    "expect": "success",
+    "result": [
+      "é😀",
+      "a\u0000b"
+    ]
+  },
+  {
+    "name": "cli-stdin-empty",
+    "source": "",
+    "input": "stdin",
+    "expect": "error",
+    "reference_error": "<stdin>:1:1 Unexpected end of file",
+    "moonjsonnet_cli_error": "<stdin>:1:1 Unexpected end of file"
+  },
+  {
+    "name": "cli-stdin-static-error",
+    "source": "\nmissing",
+    "input": "stdin",
+    "expect": "error",
+    "reference_error": "<stdin>:2",
+    "moonjsonnet_cli_error": "<stdin>:2"
+  },
+  {
+    "name": "cli-stdin-syntax-error",
+    "source": "\n{",
+    "input": "stdin",
+    "expect": "error",
+    "reference_error": "<stdin>:2",
+    "moonjsonnet_cli_error": "<stdin>:2"
+  },
+  {
+    "name": "cli-stdin-runtime-error",
+    "source": "\nerror 'bad'",
+    "input": "stdin",
+    "expect": "error",
+    "reference_error": "<stdin>:2",
+    "moonjsonnet_cli_error": "RUNTIME ERROR: bad"
+  },
+  {
+    "name": "cli-stdin-import",
+    "source": "(import '_build/go-differential/input-library.libsonnet').x",
+    "input": "stdin",
+    "files": {
+      "input-library.libsonnet": "{x:42}"
+    },
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-stdin-delimiter",
+    "source": "42",
+    "input": "stdin",
+    "args": [
+      "--"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-file-delimiter",
+    "source": "42",
+    "args": [
+      "--"
+    ],
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-file-leading-dash",
+    "source": "42",
+    "cwd": "<work>",
+    "input_arg": "-input.jsonnet",
+    "args": [
+      "--"
+    ],
+    "files": {
+      "-input.jsonnet": "42"
+    },
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-file-option-filename",
+    "source": "42",
+    "cwd": "<work>",
+    "input_arg": "--help",
+    "args": [
+      "--"
+    ],
+    "files": {
+      "--help": "42"
+    },
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-file-leading-dash-no-delimiter",
+    "source": "42",
+    "cwd": "<work>",
+    "input_arg": "-input.jsonnet",
+    "files": {
+      "-input.jsonnet": "42"
+    },
+    "expect": "error"
+  },
+  {
+    "name": "cli-file-unread-stdin",
+    "source": "42",
+    "stdin": "error 'ignored'",
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-exec-unread-stdin",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "--exec"
+    ],
+    "stdin": "error 'ignored'",
+    "expect": "success",
+    "result": 42
+  },
+  {
+    "name": "cli-unknown-option",
+    "source": "42",
+    "args": [
+      "--unknown",
+      "value"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "cli-multiple-inputs",
+    "source": "42",
+    "input": "exec",
+    "args": [
+      "-e",
+      "21"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "cli-missing-env",
+    "source": "42",
+    "args": [
+      "--ext-code",
+      "MOONJSONNET_CLI_MISSING"
+    ],
+    "expect": "error"
+  },
+  {
+    "name": "cli-file-parameter-format",
+    "source": "42",
+    "args": [
+      "--tla-code-file",
+      "x"
+    ],
+    "expect": "error"
+  }
 ]

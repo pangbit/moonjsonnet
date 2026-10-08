@@ -462,7 +462,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "late",
-    "moonjsonnet_error": "Runtime"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: late"
   },
   {
     "name": "multi-assert",
@@ -476,7 +476,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "Object assertion failed",
-    "moonjsonnet_error": "Assertion"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: Object assertion failed."
   },
   {
     "name": "multi-type",
@@ -490,7 +490,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "should be an object",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: multi mode: top-level object was a array, should be an object whose keys are filenames and values hold the JSON for that file."
   },
   {
     "name": "multi-wrong-type-eager",
@@ -504,7 +504,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "forced",
-    "moonjsonnet_error": "Runtime"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: forced"
   },
   {
     "name": "multi-string-type",
@@ -520,7 +520,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "should be a string",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: multi mode: top-level object's key a has a value of type float64, should be a string"
   },
   {
     "name": "multi-string-eager",
@@ -536,7 +536,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "forced",
-    "moonjsonnet_error": "Runtime"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: forced"
   },
   {
     "name": "multi-function",
@@ -552,7 +552,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "couldn't manifest function",
-    "moonjsonnet_error": "Type"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: couldn't manifest function as JSON"
   },
   {
     "name": "multi-missing-directory",

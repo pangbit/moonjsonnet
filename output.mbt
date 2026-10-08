@@ -226,7 +226,11 @@ fn Vm::render_text(
 ) -> String raise {
   if string_output {
     guard value is Str(text) else {
-      raise problem(Type, loc, "expected string result")
+      raise problem(
+        Type,
+        loc,
+        "expected string result, got: " + value_type(value),
+      )
     }
     vm.account_output(@utf8.encode(text).length(), loc)
     text + "\n"
@@ -244,7 +248,13 @@ fn Vm::render_stream(
 ) -> Array[String] raise {
   let json = vm.manifest(value, loc, 0)
   guard json is Array(documents) else {
-    raise problem(Type, loc, "stream mode requires a top-level array")
+    raise problem(
+      Type,
+      loc,
+      "stream mode: top-level object was a " +
+      value_type(value) +
+      ", should be an array whose elements hold the JSON for each document in the stream.",
+    )
   }
   vm.output_bytes = 0
   documents.map(document => {

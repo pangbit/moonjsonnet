@@ -121,6 +121,18 @@ pub fn DiagnosticFormatter::format_bytes(
   self : DiagnosticFormatter,
   diagnostic : Diagnostic,
 ) -> Bytes {
+  if (diagnostic.kind == Syntax || diagnostic.kind == Static) &&
+    diagnostic.trace.any(frame => frame.location is Synthetic(_)) {
+    let source = self.sources.get(diagnostic.location.file).unwrap_or("")
+    let output = b"RUNTIME ERROR: ".to_array()
+    output.append(diagnostic.format_syntax_bytes(source).to_array())
+    output.append(b"\n".to_array())
+    let frames = @utf8.encode(
+      self.runtime_text({ ..diagnostic, kind: Runtime, message: "", }),
+    )
+    output.append(frames[b"RUNTIME ERROR: \n".length():].to_array())
+    return Bytes::from_array(output)
+  }
   if diagnostic.kind == Syntax || diagnostic.kind == Static {
     let source = self.sources.get(diagnostic.location.file)
     let header = diagnostic.format_syntax_bytes(source.unwrap_or(""))

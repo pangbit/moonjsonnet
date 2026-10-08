@@ -88,7 +88,13 @@ fn Vm::render_multi(
 ) -> Map[String, String] raise {
   let json = vm.manifest(value, loc, 0)
   guard json is Object(fields) else {
-    raise problem(Type, loc, "multi mode requires a top-level object")
+    raise problem(
+      Type,
+      loc,
+      "multi mode: top-level object was a " +
+      value_type(value) +
+      ", should be an object whose keys are filenames and values hold the JSON for that file.",
+    )
   }
   vm.output_bytes = 0
   let files : Map[String, String] = Map([])
@@ -97,7 +103,23 @@ fn Vm::render_multi(
   for key in keys {
     let text = if string_output {
       guard fields[key] is String(text) else {
-        raise problem(Type, loc, "multi mode requires string values")
+        let kind = match fields[key] {
+          Number(_, ..) => "float64"
+          True | False => "bool"
+          Null => "<nil>"
+          Array(_) => "[]interface {}"
+          Object(_) => "map[string]interface {}"
+          _ => abort("string excluded by guard")
+        }
+        raise problem(
+          Type,
+          loc,
+          "multi mode: top-level object's key " +
+          key +
+          " has a value of type " +
+          kind +
+          ", should be a string",
+        )
       }
       vm.account_output(@utf8.encode(text).length(), loc)
       text

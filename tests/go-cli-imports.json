@@ -4,9 +4,15 @@
     "source": "import 'value'",
     "input": "exec",
     "cwd": ".",
-    "args": ["-e"],
-    "env": {"JSONNET_PATH": "<work>/search-env-marker/lib"},
-    "files": {"search-env-marker/lib/value": "42"},
+    "args": [
+      "-e"
+    ],
+    "env": {
+      "JSONNET_PATH": "<work>/search-env-marker/lib"
+    },
+    "files": {
+      "search-env-marker/lib/value": "42"
+    },
     "expect": "success",
     "result": 42
   },
@@ -648,7 +654,7 @@
       "search-parse/high/value": "invalid !"
     },
     "reference_error": "RUNTIME ERROR",
-    "moonjsonnet_error": "Syntax"
+    "moonjsonnet_cli_error": "RUNTIME ERROR"
   },
   {
     "input": "exec",
@@ -671,7 +677,7 @@
       "search-runtime/high/value": "error 'high' "
     },
     "reference_error": "high",
-    "moonjsonnet_error": "Runtime"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: high"
   },
   {
     "input": "exec",

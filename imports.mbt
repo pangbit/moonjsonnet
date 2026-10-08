@@ -60,7 +60,10 @@ fn Vm::import_file(
   } catch {
     Error(d) => {
       d.context.push(loc)
-      raise Error(d)
+      // Go's importer reports compile failures as runtime errors at the import
+      // call. Preserve the public category while capturing that execution site.
+      let runtime = self.traced({ ..d, kind: Runtime, trace: [], })
+      raise Error({ ..runtime, kind: d.kind, })
     }
     e => raise e
   }

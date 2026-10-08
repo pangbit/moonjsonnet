@@ -487,14 +487,15 @@ moon run tools/diagnostic-api.mbtx _build/native/release/build/examples/diagnost
 
 The adapter observes public VM ErrorFormatter calls and static `Loc()` values.
 It compares complete bytes, ordered locations/names, color callbacks and error/
-output results in 1043 frozen cases against fresh pinned Go. Seven trace-size
+output results in 1141 frozen cases against fresh pinned Go. Seven trace-size
 settings include the default, negative/zero unlimited, odd/even cropping and the
 maximum Int. Cases cover local/function/object contexts, aliases, recursive and
 tailstrict calls, imports/ext/TLA code, manifestations, additive fields, assertions,
 UTF-8/CRLF, malformed Unicode and multiline static snippets. The expanded corpus
 also covers non-string
 error/assertion messages, selected standard-library wrappers, generated array
-calls, comprehension/slice lowering, type/call/index boundaries, 32 malformed
+calls, comprehension/slice lowering, type/call/index/output boundaries, import
+compile failures, 32 malformed
 JSON inputs and 20 YAML error/directive inputs. Go's `parseYaml` splitting can
 reject a legal unsplit directive document; those failures remain comparisons.
 No diagnostic text normalization is used in comparisons. Omitting the checkout is explicitly local
@@ -508,7 +509,7 @@ moon run tools/asan.mbtx ${LOCAL_PATH_012}
 ```
 
 Every distinct diagnostic API input, including color-call variants, runs as
-exec, stdin and a canonical absolute file under seven CLI trace settings: 3255
+exec, stdin and a canonical absolute file under seven CLI trace settings: 3549
 checks. Both CLIs receive identical source/options and absolute file/import
 identities. Complete stdout/stderr bytes and exit codes are compared without
 output normalization. Stderr is captured to files to preserve invalid UTF-8.

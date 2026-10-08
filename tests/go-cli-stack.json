@@ -34,7 +34,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-local-2",
@@ -59,7 +59,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-local-chain-3",
@@ -84,7 +84,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-local-cache-2",
@@ -109,7 +109,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-array-2",
@@ -136,7 +136,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-nested-array-3",
@@ -165,7 +165,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-object-2",
@@ -192,7 +192,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-object-local-3",
@@ -219,7 +219,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-field-chain-3",
@@ -244,7 +244,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-assertion-2",
@@ -271,7 +271,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-assertion-call-3",
@@ -298,7 +298,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-assert-tailstrict-3",
@@ -325,7 +325,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-additive-3",
@@ -350,7 +350,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-function-2",
@@ -375,7 +375,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-argument-3",
@@ -400,7 +400,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-default-3",
@@ -425,7 +425,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-tailstrict-2",
@@ -450,7 +450,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-tail-loop-2",
@@ -475,7 +475,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-tail-enter-3",
@@ -500,7 +500,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-strict-child-2",
@@ -525,7 +525,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-strict-normal-5",
@@ -550,7 +550,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-recursion-6",
@@ -575,7 +575,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-builtin-2",
@@ -614,7 +614,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-ext-str-2",
@@ -643,7 +643,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-ext-code-2",
@@ -686,7 +686,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-tla-code-2",
@@ -727,7 +727,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-stream-2",
@@ -753,7 +753,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-stdlib-6",
@@ -780,7 +780,7 @@
     "input": "exec",
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-comprehension-3",
@@ -1011,7 +1011,7 @@
     ],
     "expect": "error",
     "reference_error": "max stack frames exceeded.",
-    "moonjsonnet_error": "Limit"
+    "moonjsonnet_cli_error": "RUNTIME ERROR: max stack frames exceeded."
   },
   {
     "name": "stack-file",
