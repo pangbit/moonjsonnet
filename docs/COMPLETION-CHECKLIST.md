@@ -57,6 +57,13 @@ Evaluator 仍保留 18+1+1 项差异。见 [原始树验收](../reports/GO-JSONN
 18+1+1 项失败。见 [Hook/调试器验收](../reports/GO-JSONNET-DEBUGGER.md)。
 完整命名/合成诊断帧、配置与 Linux 平台仍待完成，整体目标没有标记完成。
 
+随后干净 `d4d4233` 加入独立命名/合成诊断帧、对象 assert 范围元数据、可配置
+DiagnosticFormatter/字节渲染与 Evaluator 配置。实际 Go 全字节诊断 273/273，
+native 双模式各 285/285、消费者 29/29；干净提交的调试器/AST/格式化和整体
+CLI/lint/Evaluator 复验没有新增差异。见 [诊断 API 验收](../reports/GO-JSONNET-DIAGNOSTIC-API.md)。
+标准库/更多降级语法路径和 CLI 完整诊断仍需扩大覆盖；Linux 与 18+1+1 项
+未接受差异仍保留，整体目标未标记完成。
+
 - GO-PARITY 完成标准第 5–7 项：18 项 Go CLI/标准库崩溃、失败解析后的 AST
   缓存差异、lint 入口/导入碰撞 panic 不复制崩溃，当前仍未被用户接受为例外。
   已向用户请求决定；答复前继续保留为失败，不阻塞其他功能实施。
