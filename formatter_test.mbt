@@ -108,3 +108,45 @@ test "formatter stripping distinguishes paragraph and interstitial line endings"
     "1 +\n2\n",
   )
 }
+
+///|
+test "formatter keeps multiline computed keys parseable and preserves values" {
+  let options = @moonjsonnet.FormatOptions::default()
+  let sources = [
+    "{[if true then\n 'key'\n]: 42}", "{[if false then\n 'key'\n]: 42}", "{[if true then\n 'key' else 'other'\n]:: 42}",
+    "{[('a' +\n 'b')\n]+: [1,2]}", "{[('a' +\n 'b')\n](x=1): x}.ab()", "{[['key'][0]\n]: [\n1,2\n]}",
+    "{local value=42, ['key' +\n 'name']: value}", "[0, [\n1,2\n]][[\n0,1\n][0]:]",
+  ]
+  for source in sources {
+    for
+      style in [
+        options,
+        { ..options, pretty_field_names: false, },
+        { ..options, strip_comments: true, },
+      ] {
+      let formatted = @moonjsonnet.format_source(source, options=style)
+      ignore(@moonjsonnet.ParsedSource::parse(formatted))
+      assert_eq(@moonjsonnet.evaluate(formatted), @moonjsonnet.evaluate(source))
+      assert_eq(@moonjsonnet.format_source(formatted, options=style), formatted)
+    }
+  }
+}
+
+///|
+test "formatter retains AST depth budgets for flat expression chains" {
+  let limits = @moonjsonnet.Limits::default()
+  let within = "0" + "+1".repeat(limits.depth - 1)
+  ignore(@moonjsonnet.ParsedSource::parse(@moonjsonnet.format_source(within)))
+  let beyond = within + "+1"
+  try @moonjsonnet.format_source(beyond) catch {
+    @moonjsonnet.Error(d) => {
+      assert_eq(d.kind, @moonjsonnet.Limit)
+      assert_eq(d.message, "syntax tree depth limit exceeded")
+    }
+  } noraise {
+    _ => fail("flat AST chains must retain the configured depth limit")
+  }
+  let expanded = { ..limits, depth: limits.depth + 1, }
+  let formatted = @moonjsonnet.format_source(beyond, limits=expanded)
+  ignore(@moonjsonnet.ParsedSource::parse(formatted, limits=expanded))
+}

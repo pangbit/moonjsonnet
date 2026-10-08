@@ -2,6 +2,7 @@
 priv struct FormatLayout {
   close : Array[Int]
   index : Array[Bool]
+  field_key : Array[Bool]
   parameter : Array[Bool]
   expanded : Array[Bool]
   newline : Array[Bool]
@@ -20,6 +21,7 @@ fn format_layout(tokens : Array[Token]) -> FormatLayout {
   let layout : FormatLayout = {
     close: Array::make(n, -1),
     index: Array::make(n, false),
+    field_key: Array::make(n, false),
     parameter: Array::make(n, false),
     expanded: Array::make(n, false),
     newline: Array::make(n, false),
@@ -35,6 +37,13 @@ fn format_layout(tokens : Array[Token]) -> FormatLayout {
       layout.parameter[i] = t == "(" &&
         i > 0 &&
         tokens[i - 1].text == "function"
+      // At an object member boundary, brackets enclose a computed key,
+      // not an array. A multiline key must never receive a trailing comma.
+      layout.field_key[i] = t == "[" &&
+        stack.last() is Some(parent) &&
+        tokens[parent].text == "{" &&
+        i > 0 &&
+        (tokens[i - 1].text == "{" || tokens[i - 1].text == ",")
       stack.push(i)
       ends_expr = false
     } else if t == ")" || t == "]" || t == "}" {
@@ -103,7 +112,7 @@ fn format_layout(tokens : Array[Token]) -> FormatLayout {
       tokens[end].has_newline()
     let inner_newline = boundaries.any(i => tokens[i].has_newline())
     let container = token.text == "{" ||
-      (token.text == "[" && !layout.index[start])
+      (token.text == "[" && !layout.index[start] && !layout.field_key[start])
     if container && (outer_newline || inner_newline) {
       layout.expanded[start] = true
       layout.newline[start + 1] = true

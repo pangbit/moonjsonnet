@@ -387,7 +387,7 @@ fn format_tokens(
       groups.push({
         open: t,
         parameter: layout.parameter[i],
-        index: layout.index[i],
+        index: layout.index[i] || layout.field_key[i],
         expanded: layout.expanded[i],
         align: writer.column,
       })
