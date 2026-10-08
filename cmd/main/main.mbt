@@ -42,16 +42,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       continue
     }
     if arg == "--help" || arg == "-h" {
-      println(
-        "Usage: moonjsonnet [-e/--exec] [-S/--string] [-y/--yaml-stream] [-m/--multi DIR] [-c/--create-output-dirs] [--root DIR] [-V/--ext-str NAME[=VALUE]] [--ext-code NAME[=CODE]] [-A/--tla-str NAME[=VALUE]] [--tla-code NAME[=CODE]] [--ext-str-file/--ext-code-file/--tla-str-file/--tla-code-file NAME=FILE] [-o/--output-file FILE] [--max-steps N] [--max-depth N] [--max-source-bytes N] [--max-import-bytes N] [--max-imports N] [--max-output-bytes N] [--] INPUT\nINPUT is a file, - for stdin, or code with -e. Combined short options expand before --.",
-      )
-      println(
-        "-J/--jpath DIR adds a library path (rightmost wins). JSONNET_PATH adds colon-separated paths (leftmost wins), below -J. All imports remain confined to --root.",
-      )
-      println(
-        "-t/--max-trace N crops error context (default 20; 0 is unlimited).",
-      )
-      println("-s/--max-stack N limits runtime frames (default 500; positive).")
+      ignore(@posix.stdout(cli_usage()))
       return
     }
     if arg == "--version" || arg == "-v" {
@@ -79,7 +70,40 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       continue
     }
     if arg.has_prefix("-") {
-      guard i + 1 < args.length() else { fail("missing value for \{arg}") }
+      match arg {
+        "--root"
+        | "-t"
+        | "--max-trace"
+        | "-s"
+        | "--max-stack"
+        | "-J"
+        | "--jpath"
+        | "-m"
+        | "--multi"
+        | "-o"
+        | "--output"
+        | "--output-file"
+        | "-V"
+        | "--ext-str"
+        | "--ext-code"
+        | "--ext-str-file"
+        | "--ext-code-file"
+        | "-A"
+        | "--tla-str"
+        | "--tla-code"
+        | "--tla-str-file"
+        | "--tla-code-file"
+        | "--max-steps"
+        | "--max-depth"
+        | "--max-source-bytes"
+        | "--max-import-bytes"
+        | "--max-imports"
+        | "--max-output-bytes" => ()
+        _ => raise Message("ERROR: unrecognized argument: " + arg + "\n")
+      }
+      guard i + 1 < args.length() else {
+        raise Message("Expected another commandline argument.\n")
+      }
       i += 1
       let value = args[i]
       match arg {
@@ -89,19 +113,19 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
           limits = { ..limits, stack: decimal_limit(value, "--max-stack", 1), }
         "-J" | "--jpath" => {
           if value.is_empty() {
-            fail("jpath must not be empty")
+            raise Message("ERROR: -J argument was empty string\n")
           }
           jpaths.push(value)
         }
         "-m" | "--multi" => {
           if value.is_empty() {
-            fail("multi directory must not be empty")
+            raise Message("ERROR: -m argument was empty string\n")
           }
           multi = Some(if value.has_suffix("/") { value } else { value + "/" })
         }
         "-o" | "--output" | "--output-file" => {
           if value.is_empty() {
-            fail("output filename must not be empty")
+            raise Message("ERROR: -o argument was empty string\n")
           }
           output = Some(value)
         }
@@ -120,10 +144,14 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
             Some(eq) => (value[:eq].to_owned(), value[eq + 1:].to_owned())
             None => {
               if is_file {
-                fail("expected NAME=FILE")
+                raise Message(
+                  "ERROR: argument not in form <var>=<file> \"" + value + "\"\n",
+                )
               }
               guard @env.get_env_var(value) is Some(v) else {
-                fail("environment variable \{value} was undefined")
+                raise Message(
+                  "ERROR: environment variable " + value + " was undefined\n",
+                )
               }
               (value, v)
             }
@@ -161,16 +189,17 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
           limits = { ..limits, imports: @string.parse_int(value), }
         "--max-output-bytes" =>
           limits = { ..limits, output_bytes: @string.parse_int(value), }
-        _ => fail("unknown option: \{arg}")
+        _ => raise Message("ERROR: unrecognized argument: " + arg + "\n")
       }
     }
     i += 1
   }
+  let want = if exec { "code" } else { "filename" }
   if inputs.is_empty() {
-    fail("missing input; use --help")
+    raise UsageFailure("must give " + want)
   }
   if inputs.length() != 1 {
-    fail("only one input is supported")
+    raise Message("ERROR: only one " + want + " is allowed\n")
   }
   let path = inputs[0]
   let host = @fs.FileHost::new(root, jpaths~, max_bytes=limits.source_bytes)
@@ -321,6 +350,14 @@ fn main {
     })
   }
   run(@env.args(), diagnostics) catch {
+    Message(message) => {
+      ignore(@posix.write_output(2, message))
+      @posix.exit(1)
+    }
+    UsageFailure(message) => {
+      ignore(@posix.write_output(2, "ERROR: " + message + "\n\n" + cli_usage()))
+      @posix.exit(1)
+    }
     @moonjsonnet.Error(d) => {
       if (d.kind == @moonjsonnet.Import || d.kind == @moonjsonnet.Limit) &&
         d.message != "max stack frames exceeded." {

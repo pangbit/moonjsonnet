@@ -1,25 +1,37 @@
 ///|
+suberror CliError {
+  Message(String)
+  UsageFailure(String)
+}
+
+///|
 // Go uses decimal Atoi, without underscores, spaces or radix prefixes.
-fn trace_limit(value : String) -> Int raise {
+fn trace_limit(value : String) -> Int raise CliError {
   decimal_limit(value, "--max-trace", 0)
 }
 
 ///|
-fn decimal_limit(value : String, option : String, minimum : Int) -> Int raise {
+fn decimal_limit(
+  value : String,
+  option : String,
+  minimum : Int,
+) -> Int raise CliError {
+  let invalid = "Invalid integer \"" + value + "\"\n"
   let digits = if value.has_prefix("+") || value.has_prefix("-") {
     value[1:]
   } else {
     value[:]
   }
   if digits.is_empty() || !digits.iter().all(c => c >= '0' && c <= '9') {
-    fail("invalid \{option} integer")
+    raise Message(invalid)
   }
-  let n = @string.parse_int64(value, base=10)
+  let n = @string.parse_int64(value, base=10) catch {
+    _ => raise Message(invalid)
+  }
   if n < minimum.to_int64() {
-    if minimum == 0 {
-      fail("\{option} must be nonnegative")
-    }
-    fail("\{option} must be positive")
+    raise Message(
+      "ERROR: invalid " + option + " value: " + n.to_string() + "\n",
+    )
   }
   // Frame/context arrays cannot have more than INT_MAX elements; preserve the
   // effect of Go's wider int range without narrowing an out-of-range value.

@@ -61,3 +61,23 @@ test "short option expansion preserves order and stops at delimiter" {
   )
   assert_eq(simplify_args(["cli", "-é"]), ["cli", "-Ã", "-©"])
 }
+
+///|
+test "CLI integer failures preserve raw versus option error rendering" {
+  for
+    (value, option, minimum, expected) in [
+      ("abc", "--max-stack", 1, "Invalid integer \"abc\"\n"),
+      (
+        "9223372036854775808", "--max-trace", 0, "Invalid integer \"9223372036854775808\"\n",
+      ),
+      ("-0", "--max-stack", 1, "ERROR: invalid --max-stack value: 0\n"),
+      ("-1", "--max-trace", 0, "ERROR: invalid --max-trace value: -1\n"),
+    ] {
+    try decimal_limit(value, option, minimum) catch {
+      Message(message) => assert_eq(message, expected)
+      _ => fail("unexpected CLI error type")
+    } noraise {
+      _ => fail("expected CLI integer error")
+    }
+  }
+}

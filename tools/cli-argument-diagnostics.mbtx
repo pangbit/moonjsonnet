@@ -1,0 +1,76 @@
+import { "moonbitlang/async", "moonbitlang/async/shell", "moonbitlang/async/fs", "moonbitlang/core/env" }
+
+async fn command(program:String,args:Array[String])->String {
+  let output=@shell.Cmd(program,args).output();output.check();output.stdout().trim().to_owned()
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==3 else {fail("Usage: moon run tools/cli-argument-diagnostics.mbtx CLI GO_REFERENCE")}
+  let candidate=@fs.realpath(args[1]);let reference=@fs.realpath(args[2])
+  let checkout=reference[:reference.rev_find("/").unwrap()].to_owned()
+  assert_eq(command("git",["-C",checkout,"rev-parse","HEAD"]),"67968688d9952f50662e979fab1bef889d0d3e57")
+  assert_eq(command("git",["-C",checkout,"status","--porcelain"]),"")
+  let build=command("go",["version","-m",reference]);assert_true(build.contains("go1.24.0"))
+  let absent="MOONJSONNET_CLI_ARGUMENT_ABSENT"
+  let inputs:Array[(String,Array[String])]=[
+    ("unknown-only",["--unknown"]),("unknown-input",["--unknown","missing.jsonnet"]),
+    ("unknown-short",["-Q"]),("multiple-file",["one","two"]),("multiple-code",["-e","1","2"]),
+  ]
+  for option in ["-o","--output-file","-s","--max-stack","-J","--jpath","-V","--ext-str","--ext-str-file","--ext-code","--ext-code-file","-A","--tla-str","--tla-str-file","--tla-code","--tla-code-file","-t","--max-trace","-m","--multi"] {
+    inputs.push(("missing-"+option,[option]))
+  }
+  for option in ["-o","--output-file","-J","--jpath","-m","--multi"] {
+    inputs.push(("empty-"+option,[option,"","-e","1"]))
+  }
+  for option in ["--ext-str-file","--ext-code-file","--tla-str-file","--tla-code-file"] {
+    inputs.push(("binding-"+option,[option,"X","-e","1"]))
+  }
+  for option in ["--ext-str","--ext-code","--tla-str","--tla-code"] {
+    inputs.push(("environment-"+option,[option,absent,"-e","1"]))
+  }
+  for option in ["-s","-t"] {
+    for value in ["","+","-","abc","1_0","0x10"," 1","1.5","1e2","１２","9223372036854775808"] {
+      inputs.push(("integer-"+option+"-"+value,[option,value,"-e","1"]))
+    }
+  }
+  for value in ["0","-0","-1"] { inputs.push(("stack-min-"+value,["-s",value,"-e","1"])) }
+  inputs.push(("trace-min",["-t","-1","-e","1"]))
+  let work=@fs.tmpdir(prefix="moonjsonnet-cli-argument-diagnostics-")
+  let rows:Array[Json]=[];let mut passed=0
+  for (name,input) in inputs {
+    let expected=@shell.Cmd("env",["-u",absent,reference,..input]).output(timeout_ms=10000)
+    let actual=@shell.Cmd("env",["-u",absent,candidate,..input]).output(timeout_ms=10000)
+    let ok=expected.exit_code()==1 && actual.exit_code()==1 && expected.stdout()==actual.stdout() && expected.stderr()==actual.stderr()
+    if ok {passed+=1} else {println("FAIL "+name)}
+    let row:Json={"name":name,"args":input,"passed":ok,"go_exit":expected.exit_code(),"local_exit":actual.exit_code(),"go_stdout":expected.stdout(),"local_stdout":actual.stdout(),"go_stderr":expected.stderr(),"local_stderr":actual.stderr()}
+    @fs.write_file(work+"/"+rows.length().to_string()+".json",row.stringify(indent=2)+"\n");rows.push(row)
+  }
+  // Help/version are branded. Preserve both full outputs, check exact error
+  // prefix and the candidate's existing help, and keep these separate from the
+  // full-byte compatible cases above.
+  let help=@shell.Cmd(candidate,["--help"]).output();help.check()
+  let branding:Array[Json]=[]
+  for (want,input) in [("filename",[]),("code",["-e"])] {
+    let expected=@shell.Cmd(reference,input).output()
+    let actual=@shell.Cmd(candidate,input).output()
+    let prefix="ERROR: must give "+want+"\n\n"
+    assert_eq(expected.exit_code(),1);assert_true(expected.stderr().has_prefix(prefix))
+    assert_eq(actual.exit_code(),1);assert_eq(actual.stdout(),"");assert_eq(actual.stderr(),prefix+help.stdout())
+    branding.push({"args":input,"comparison":"prefix and candidate's existing branded help; not full-byte parity","go_stderr":expected.stderr(),"local_stderr":actual.stderr()})
+  }
+  let commit=@shell.Cmd("git",["rev-parse","HEAD"]).output();let dirty=@shell.Cmd("git",["status","--porcelain"]).output()
+  let report:Json={
+    "source_commit":if commit.exit_code()==0 {Json::string(commit.stdout().trim().to_owned())} else {null},
+    "source_dirty":if dirty.exit_code()==0 {Json::boolean(!dirty.stdout().is_empty())} else {null},
+    "reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57","reference_build":build,
+    "reference_sha256":command("shasum",["-a","256",reference]),"local_sha256":command("shasum",["-a","256",candidate]),
+    "comparison":"complete stdout/stderr and exit; no normalization; branded help checked separately",
+    "evidence":work,"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"skipped":0,
+    "branding_checks":branding.length(),"branding":branding,"cases":rows,
+  }
+  @fs.mkdir("_build/cli-argument-diagnostics",recursive=true,allow_exist=true)
+  @fs.write_file("_build/cli-argument-diagnostics/report.json",report.stringify(indent=2)+"\n")
+  println("CLI argument diagnostics: "+passed.to_string()+"/"+rows.length().to_string()+"; branded help checks "+branding.length().to_string()+"; evidence: "+work)
+  if passed!=rows.length() {fail("CLI argument differences retained")}
+}
