@@ -182,8 +182,10 @@ omit code. Formatting is host-side presentation, separate from execution budgets
 `Evaluator::set_diagnostic_formatter(formatter?)` configures explicit
 `format_error(d)` / `format_error_bytes(d)`, preserving caches and rejecting
 configuration reentry. Omission restores the default. Supply entry/import/parameter
-source identities to the formatter when code snippets are needed. The CLI and
-legacy `Diagnostic::format` retain their prior header/context format. These
+source identities to the formatter when code snippets are needed. Legacy
+`Diagnostic::format` retains its prior header/context format. The CLI uses this
+Go-style renderer for language errors and frame exhaustion; other import/limit
+failures retain the explicit host-policy diagnostic format. These
 interfaces do not claim every runtime message or CLI diagnostic is byte-identical
 to Go outside the checked diagnostic corpus.
 

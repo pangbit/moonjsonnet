@@ -8,7 +8,7 @@ For development use `moon run cmd/main -- OPTIONS INPUT`.
 | --- | --- |
 | `--root DIR` | Allowed filesystem root, default current directory |
 | `-J DIR`, `--jpath DIR` | Add a library search directory; the rightmost path wins |
-| `-t N`, `--max-trace N` | Crop error context to N locations; default 20, zero is unlimited |
+| `-t N`, `--max-trace N` | Crop runtime traces to N frames; default 20, zero is unlimited |
 | `-s N`, `--max-stack N` | Runtime frame budget; default 500, strictly positive |
 | `-e`, `--exec` | Interpret the one input argument as Jsonnet source |
 | `-S`, `--string` | Require a string result and emit its contents followed by one newline |
@@ -83,14 +83,19 @@ across all standard-library implementations and diagnostics remain unproven.
 `-t` accepts a nonnegative decimal integer in the pinned 64-bit Go range. Signs
 and leading zeroes are accepted; radix prefixes, underscores, whitespace,
 non-ASCII digits and overflow are errors. Repeated values use the last assignment.
-A positive limit retains `floor(N/2)` inner context locations and the remaining
-outer locations, with one `...` line between them when cropping is needed.
+A positive limit retains `floor(N/2)` inner named/synthetic frames and the remaining
+outer frames, with one `...` line between them when cropping is needed.
 Zero disables cropping. Large values do not narrow or overflow the context count.
-The primary error header/location is always printed, and collected context is
-not discarded. This option controls error rendering; `std.trace` messages still
-use the configured trace sink. The project's context locations differ from Go's
-named/synthetic frames, so this does not establish stack-frame or diagnostic-text
-equivalence. Embedding callers can use `Diagnostic::format(max_trace?)`.
+The runtime error header is always printed, and captured frames remain unchanged.
+Static errors include their source range and snippet; entry, imported and ext/TLA
+code sources are registered for rendering. The byte path preserves malformed
+Unicode contexts, including invalid UTF-8, without text decoding. `std.trace`
+messages continue to use their trace sink. File identities remain canonical
+absolute host paths. Import policy and independent resource-budget errors retain
+the older category/context format; runtime frame exhaustion uses Go-style frames.
+Captured-output comparisons do not establish every standard-library, I/O or
+terminal-color error as equal to Go. Embedding callers keep the legacy
+`Diagnostic::format(max_trace?)` contract or configure `DiagnosticFormatter`.
 
 Imports first search beside the importing file (or root for anonymous inputs
 and code parameters), then `-J` directories from right to left, then the

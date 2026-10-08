@@ -25,7 +25,7 @@ async fn main {
       if limit==minimum {result.check()} else {
         assert_eq(result.exit_code(),1)
         assert_eq(result.stdout(),"")
-        assert_true(result.stderr().contains(": Limit: max stack frames exceeded."))
+        assert_true(result.stderr().contains("RUNTIME ERROR: max stack frames exceeded."))
       }
       passed+=1
     }
@@ -41,7 +41,7 @@ async fn main {
     let result=@shell.Cmd(cli,["--root",root,"--max-stack","1"]+options+["-e",source],env~).output()
     assert_eq(result.exit_code(),1)
     assert_eq(result.stdout(),"")
-    assert_true(result.stderr().contains(": Limit: max stack frames exceeded."))
+    assert_true(result.stderr().contains("RUNTIME ERROR: max stack frames exceeded."))
     assert_eq(@fs.read_file(output).text(),"preserve")
     assert_true(!@fs.exists(root+"/multi"))
     passed+=1
@@ -56,9 +56,9 @@ async fn main {
   let recursive="local f(n)=if n==0 then 42 else f(n-1); f(10)"
   let cropped=@shell.Cmd(cli,["--root",root,"-s","4","-t","1","-e",recursive],env~).output()
   assert_eq(cropped.exit_code(),1)
-  assert_true(cropped.stderr().contains(": Limit: max stack frames exceeded."))
-  assert_eq(cropped.stderr().split("\n").filter(s=>s.has_prefix("  at ")).count(),1)
-  assert_true(cropped.stderr().contains("  ..."))
+  assert_true(cropped.stderr().contains("RUNTIME ERROR: max stack frames exceeded."))
+  assert_eq(cropped.stderr().split("\n").filter(s=>s.has_prefix("\t") && s!="\t...").count(),1)
+  assert_true(cropped.stderr().contains("\t..."))
   passed+=1
   let help=@shell.Cmd(cli,["--help"],env~).output()
   help.check()

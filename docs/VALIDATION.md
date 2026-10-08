@@ -500,6 +500,24 @@ reject a legal unsplit directive document; those failures remain comparisons.
 No diagnostic text normalization is used in comparisons. Omitting the checkout is explicitly local
 frozen verification, also used on the isolated ASan probe.
 
+The CLI renderer has a separate fresh-Go byte comparison:
+
+```sh
+moon run tools/diagnostic-cli.mbtx _build/native/release/build/cmd/main/main.exe ${LOCAL_PATH_012}
+moon run tools/asan.mbtx ${LOCAL_PATH_012}
+```
+
+Every distinct diagnostic API input, including color-call variants, runs as
+exec, stdin and a canonical absolute file under seven CLI trace settings: 3255
+checks. Both CLIs receive identical source/options and absolute file/import
+identities. Complete stdout/stderr bytes and exit codes are compared without
+output normalization. Stderr is captured to files to preserve invalid UTF-8.
+Sources and outputs are saved in the temporary evidence directory, and all
+failures remain in `_build/diagnostic-cli/report.json`. Passing a Go checkout to
+ASan adds this actual-Go comparison on the instrumented CLI; omitting it retains
+the local host/frozen API checks. This is finite captured-output coverage, separate
+from canonical-root/UTF-8/resource policies, argument branding and terminal color.
+
 The [overall parity plan](GO-PARITY.md) tracks capabilities outside the existing
 behavioral corpus. `tools/parity.mbtx` compares all 163 reflected Go standard-library
 members against a frozen reference snapshot and the local CLI, writing

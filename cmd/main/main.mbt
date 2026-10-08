@@ -1,6 +1,7 @@
 ///|
 priv struct CliDiagnostics {
   mut max_trace : Int
+  formatter : @moonjsonnet.DiagnosticFormatter
 }
 
 ///|
@@ -205,6 +206,21 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
   } else {
     host.load(path)
   }
+  diagnostics.formatter.set_source(source)
+  for name, text in ext_code {
+    diagnostics.formatter.set_source({ id: "<extvar:" + name + ">", text, })
+  }
+  for name, text in tla_code {
+    diagnostics.formatter.set_source({
+      id: "<top-level-arg:" + name + ">",
+      text,
+    })
+  }
+  let resolver = fn(from : String, path : String) raise {
+    let source = host.resolve(from, path)
+    diagnostics.formatter.set_source(source)
+    source
+  }
   if multi is Some(directory) {
     let files = @moonjsonnet.evaluate_multi(
       source.text,
@@ -216,7 +232,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       tla_vars=tla,
       tla_code~,
       limits~,
-      resolver=(from, path) => host.resolve(from, path),
+      resolver~,
       binary_resolver=(from, path) => host.resolve_binary(from, path),
     )
     write_multi(files, directory, output, create_dirs, limits.output_bytes, {
@@ -236,7 +252,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       tla_vars=tla,
       tla_code~,
       limits~,
-      resolver=(from, path) => host.resolve(from, path),
+      resolver~,
       binary_resolver=(from, path) => host.resolve_binary(from, path),
     )
     let output = StringBuilder()
@@ -274,7 +290,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       tla_vars=tla,
       tla_code~,
       limits~,
-      resolver=(from, path) => host.resolve(from, path),
+      resolver~,
       binary_resolver=(from, path) => host.resolve_binary(from, path),
     )
   }
@@ -293,10 +309,19 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
 
 ///|
 fn main {
-  let diagnostics : CliDiagnostics = { max_trace: 20, }
+  let diagnostics : CliDiagnostics = {
+    max_trace: 20,
+    formatter: @moonjsonnet.DiagnosticFormatter::new(),
+  }
   run(@env.args(), diagnostics) catch {
     @moonjsonnet.Error(d) => {
-      @posix.stderr(d.format(max_trace=diagnostics.max_trace))
+      if (d.kind == @moonjsonnet.Import || d.kind == @moonjsonnet.Limit) &&
+        d.message != "max stack frames exceeded." {
+        @posix.stderr(d.format(max_trace=diagnostics.max_trace))
+      } else {
+        diagnostics.formatter.set_max_trace(diagnostics.max_trace)
+        @posix.stderr_bytes(diagnostics.formatter.format_bytes(d))
+      }
       @posix.exit(1)
     }
     e => {

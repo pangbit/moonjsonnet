@@ -7,9 +7,9 @@ import {
 
 fn check_context(stderr : String, frames : Int, cropped : Bool) -> Unit raise {
   let lines=stderr.split("\n").map(s=>s.to_owned()).collect()
-  assert_eq(lines.filter(s=>s.has_prefix("  at ")).length(),frames)
-  assert_eq(lines.contains("  ..."),cropped)
-  assert_true(stderr.contains(": Runtime: trace failure"))
+  assert_eq(lines.filter(s=>s.has_prefix("\t") && s!="\t...").length(),frames)
+  assert_eq(lines.contains("\t..."),cropped)
+  assert_true(stderr.contains("RUNTIME ERROR: trace failure"))
 }
 
 async fn main {
@@ -23,9 +23,9 @@ async fn main {
   @fs.write_file(root+"/nested.jsonnet","import 'entry.jsonnet'")
   let mut passed=0
   for (value,frames,cropped) in [
-    (None,20,true),(Some("0"),26,false),(Some("1"),1,true),(Some("2"),2,true),
+    (None,20,true),(Some("0"),28,false),(Some("1"),1,true),(Some("2"),2,true),
     (Some("3"),3,true),(Some("5"),5,true),(Some("20"),20,true),
-    (Some("26"),26,false),(Some("27"),26,false),(Some("9223372036854775807"),26,false),
+    (Some("26"),26,true),(Some("28"),28,false),(Some("9223372036854775807"),28,false),
   ] {
     let options=match value {Some(v)=>["--max-trace",v];None=>[]}
     let result=@shell.Cmd(cli,["--root",root]+options+["-e",source],env~).output()
@@ -58,12 +58,12 @@ async fn main {
   assert_eq(imported.exit_code(),1)
   check_context(imported.stderr(),3,true)
   assert_true(imported.stderr().contains(root+"/entry.jsonnet"))
-  assert_true(imported.stderr().contains("at <cmdline>"))
+  assert_true(imported.stderr().contains("\t<cmdline>"))
   passed+=1
   let syntax=@shell.Cmd(cli,["--root",root,"-t","1","-e","local"],env~).output()
   assert_eq(syntax.exit_code(),1)
-  assert_true(syntax.stderr().contains(": Syntax:"))
-  assert_true(!syntax.stderr().contains("  ..."))
+  assert_true(syntax.stderr().has_prefix("<cmdline>:1:6 Expected token IDENTIFIER but got end of file"))
+  assert_true(!syntax.stderr().contains("\t..."))
   passed+=1
   let traced=@shell.Cmd(cli,["--root",root,"-t","1","-e","local f(x)=if x==0 then error 'trace failure' else f(x-1); std.trace('message',0)+f(25)"],env~).output()
   assert_eq(traced.exit_code(),1)

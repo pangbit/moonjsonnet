@@ -53,15 +53,15 @@ async fn main {
     ("ext-string-file", "std.extVar('x')", ["--ext-str-file","x=parameter.txt"], None),
     ("ext-file-escape", "std.extVar('x')", ["--ext-code-file","x=../root-sibling/secret"], Some("Import")),
     ("ext-import-escape", "std.extVar('x')", ["--ext-code","x=import 'escape'"], Some("Import")),
-    ("ext-invalid", "std.extVar('x')", ["--ext-code","x={"], Some("Syntax")),
+    ("ext-invalid", "std.extVar('x')", ["--ext-code","x={"], Some("<extvar:x>:")),
     ("parameter-source-bytes", "std.extVar('x')", ["--ext-code","x='"+"x".repeat(100)+"'","--max-source-bytes","50"], Some("Limit")),
     ("tla-expression", "function(x) x", ["--tla-code","x=21*2"], None),
     ("tla-default", "function(x=42) x", [], None),
     ("tla-file", "import 'top.libsonnet'", ["--tla-code-file","x=parameter.libsonnet"], None),
     ("tla-string-file", "function(x) x", ["--tla-str-file","x=parameter.txt"], None),
     ("tla-file-escape", "function(x) x", ["--tla-code-file","x=escape"], Some("Import")),
-    ("tla-invalid", "function(x) x", ["--tla-code","x={"], Some("Syntax")),
-    ("assert", "assert false: 'invalid input'; 42", [], Some("Assertion")),
+    ("tla-invalid", "function(x) x", ["--tla-code","x={"], Some("<top-level-arg:x>:")),
+    ("assert", "assert false: 'invalid input'; 42", [], Some("RUNTIME ERROR: invalid input")),
   ]
   let mut passed = 0
   for (name, source, extra, error) in cases {
@@ -188,7 +188,7 @@ async fn main {
     ("plain-stdin",["-S","-"],"é😀\u0000\n\n",Some("'é😀\\u0000\\n'"),None),
     ("plain-exact",["-Se","'😀'","--max-output-bytes","4"],"😀\n",None,None),
     ("plain-over",["-Se","'😀'","--max-output-bytes","3"],"",None,Some("Limit")),
-    ("plain-type",["-Se","{x:error 'unforced'}"],"",None,Some("Type")),
+    ("plain-type",["-Se","{x:error 'unforced'}"],"",None,Some("RUNTIME ERROR:")),
     ("json-layout",["-e","{x:[]}"],"{\n   \"x\": [ ]\n}\n",None,None),
     ("json-exact",["-e","{x:1}","--max-output-bytes","13"],"{\n   \"x\": 1\n}\n",None,None),
     ("json-over",["-e","{x:1}","--max-output-bytes","12"],"",None,Some("Limit")),
@@ -196,8 +196,8 @@ async fn main {
     ("stream-ignores-string",["-ySe","['x']"],"---\n\"x\"\n...\n",None,None),
     ("stream-exact",["-ye","[1]","--max-output-bytes","10"],"---\n1\n...\n",None,None),
     ("stream-over",["-ye","[1]","--max-output-bytes","9"],"",None,Some("Limit")),
-    ("stream-type",["-ye","{x:1}"],"",None,Some("Type")),
-    ("stream-late-error",["-ye","[1,error 'late']"],"",None,Some("Runtime")),
+    ("stream-type",["-ye","{x:1}"],"",None,Some("RUNTIME ERROR:")),
+    ("stream-late-error",["-ye","[1,error 'late']"],"",None,Some("RUNTIME ERROR: late")),
   ]
   for (name,extra,expected,stdin,error) in outputs {
     let result=@shell.Cmd(cli,["--root",root]+extra,stdin=@shell.Text(stdin.unwrap_or(""))).output()

@@ -1,0 +1,84 @@
+import {"moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell", "moonbitlang/core/env", "moonbitlang/core/json", "moonbitlang/core/encoding/utf8"}
+
+fn field(value : Json,key : String,fallback : Json) -> Json {match value {Object(fields)=>fields.get(key).unwrap_or(fallback);_=>fallback}}
+async fn command(program : String,args : Array[String]) -> String {let result=@shell.Cmd(program,args).output();result.check();result.stdout().trim().to_owned()}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==3 else {fail("Usage: moon run tools/diagnostic-cli.mbtx CLI GO_CHECKOUT")}
+  let cli=@fs.realpath(args[1]);let checkout=@fs.realpath(args[2]);let work=@fs.realpath(@fs.tmpdir(prefix="moonjsonnet-diagnostic-cli-"))
+  assert_eq(command("git",["-C",checkout,"rev-parse","HEAD"]),"67968688d9952f50662e979fab1bef889d0d3e57")
+  assert_eq(command("git",["-C",checkout,"status","--porcelain"]),"")
+  let reference=work+"/go-jsonnet"
+  @shell.Cmd("go",["-C",checkout,"build","-o",reference,"./cmd/jsonnet"],env=Map([("GOTOOLCHAIN","go1.24.0"),("GOWORK","off"),("GOPROXY","off")])).run()
+  let build=command("go",["version","-m",reference]);assert_true(build.contains("go1.24.0"))
+  guard @json.parse(@fs.read_file("tests/go-diagnostic-api.json").text()) is Array(fixtures) else {fail("diagnostic fixtures")}
+  // Reuse every distinct API input, including its color-call variants, as CLI
+  // input. The CLI controls its filename and trace options independently.
+  let inputs:Array[Json]=[];let seen:Map[String,Bool]=Map([])
+  for fixture in fixtures {
+    guard fixture is {"input":input,..} else {fail("diagnostic fixture input")}
+    guard field(input,"name",null) is String(name) else {fail("diagnostic fixture name")}
+    if !seen.contains(name) {seen[name]=true;inputs.push(input)}
+  }
+  let rows:Array[Json]=[];let mut passed=0;let mut errors=0
+  let environment=Map([("JSONNET_PATH",""),("NO_COLOR","1")])
+  for input in inputs {
+    guard field(input,"name",null) is String(name) else {fail("name")}
+    guard field(input,"source",null) is String(original_source) else {fail("source")}
+    for mode in ["exec","stdin","file"] {
+      for limit in [None,Some("0"),Some("1"),Some("2"),Some("3"),Some("26"),Some("9223372036854775807")] {
+        let root=work+"/"+rows.length().to_string();@fs.mkdir(root)
+        let mut source=original_source
+        if field(input,"files",{}) is Object(files) {
+          for file,value in files {
+            guard value is String(text) else {fail("file")}
+            let path=root+"/"+file
+            @fs.write_file(path,text)
+            // Use the same absolute import spelling in both CLI inputs. This
+            // preserves canonical host identities without normalizing output.
+            source=source.replace_all(old="'"+file+"'",new=Json::string(path).stringify())
+          }
+        }
+        let options:Array[String]=match limit {None=>[];Some(limit)=>["-t",limit]}
+        for (key,option) in [("ext_code","--ext-code"),("tla_code","--tla-code")] {
+          if field(input,key,{}) is Object(values) {
+            for parameter,value in values {
+              guard value is String(code) else {fail("code parameter")}
+              options.push(option);options.push(parameter+"="+code)
+            }
+          }
+        }
+        match field(input,"mode",null) {
+          String("stream")=>options.push("-y")
+          String("multi")=>{options.push("-m");options.push(root+"/multi/")}
+          _=>()
+        }
+        let stdin=if mode=="stdin" {source} else {""}
+        match mode {
+          "exec"=>{options.push("-e");options.push(source)}
+          "stdin"=>options.push("-")
+          _=>{@fs.write_file(root+"/entry.jsonnet",source);options.push(root+"/entry.jsonnet")}
+        }
+        let observations:Array[Json]=[]
+        for (label,binary) in [("go",reference),("moon",cli)] {
+          let path=root+"/"+label+"-stderr"
+          let output=@shell.Cmd(binary,options,cwd=root,env=environment,stdin=@shell.Text(stdin),stderr=@shell.ToFile(path)).output(timeout_ms=10000)
+          let stderr=@fs.read_file(path).binary()
+          observations.push({"exit":output.exit_code(),"stdout_bytes":Json::array(output.stdout_bytes().to_array().map(b=>Json::number(b.to_int().to_double()))),"stderr_bytes":Json::array(stderr.to_array().map(b=>Json::number(b.to_int().to_double()))),"stderr":@utf8.decode_lossy(stderr,ignore_bom=false)})
+        }
+        if field(observations[0],"exit",null)==Json::number(1) {errors+=1}
+        let ok=observations[0]==observations[1]
+        if ok {passed+=1} else if rows.length()-passed<8 {println("FAIL diagnostic CLI "+name+" "+mode+" limit="+limit.unwrap_or("default")+"; all raw bytes retained")}
+        rows.push({"name":name,"mode":mode,"limit":match limit {None=>Json::null();Some(v)=>Json::string(v)},"args":Json::array(options.map(Json::string)),"stdin":stdin,"passed":ok,"go":observations[0],"moon":observations[1]})
+        if rows.length()%500==0 {println("Diagnostic CLI progress: \{passed}/\{rows.length()} compared")}
+      }
+    }
+  }
+  @fs.mkdir("_build/diagnostic-cli",recursive=true,allow_exist=true)
+  let commit=@shell.Cmd("git",["rev-parse","HEAD"]).output();let dirty=@shell.Cmd("git",["status","--porcelain"]).output()
+  let report:Json={"source_commit":if commit.exit_code()==0 {Json::string(commit.stdout().trim().to_owned())} else {Json::null()},"source_dirty":if dirty.exit_code()==0 {Json::boolean(!dirty.stdout().is_empty())} else {Json::null()},"reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57","reference_build":build,"reference_sha256":command("shasum",["-a","256",reference]),"local_sha256":command("shasum",["-a","256",cli]),"input_fixture_sha256":command("shasum",["-a","256","tests/go-diagnostic-api.json"]),"comparison":"complete stdout/stderr bytes and exit codes; identical inputs and absolute file identities; no output normalization","total":rows.length(),"passed":passed,"failed":rows.length()-passed,"go_errors":errors,"skipped":0,"unsupported":0,"declared_exceptions":0,"cases":rows}
+  @fs.write_file("_build/diagnostic-cli/report.json",report.stringify(indent=2)+"\n")
+  println("Diagnostic CLI: \{passed}/\{rows.length()}; Go errors=\{errors}; evidence: "+work)
+  if passed!=rows.length() {fail("CLI diagnostic differences retained")}
+}
