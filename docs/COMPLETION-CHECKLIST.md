@@ -44,10 +44,12 @@ MoonBit 接口按功能等价，不要求复制 Go 类型。
 [jsonnetfmt 验收](../reports/GO-JSONNET-JSONNETFMT.md)。原始树/FormatNode、完整
 诊断与 hook/debugger、平台及其他整体条目继续推进。
 随后加入可编辑 RawAst/RawNode、无损词法层次、迭代复制及 format_node。
-提交前节点实际编辑对照 56/56、冻结 736/736、上游 178/178、语义 AST
+干净实现 `aab2f4c` 节点实际编辑对照 56/56、冻结 736/736、上游 178/178、语义 AST
 173/173、jsonnetfmt 255/255、独立消费者 25/25。首尾注释独立保留，编辑不改
-缓存或其他导出，循环与完整树/节点/工作量预算继续检查。最终干净提交与
-ASan 证据将记录在独立阶段报告，不能据此标记整体目标完成。
+缓存或其他导出，循环与完整树/节点/工作量预算继续检查。native 双模式
+各 269/269、隔离 ASan 完整宿主/API 与节点编辑检查通过；整体 CLI/lint/
+Evaluator 仍保留 18+1+1 项差异。见 [原始树验收](../reports/GO-JSONNET-RAW-AST.md)，
+不能据此标记整体目标完成。
 
 - GO-PARITY 完成标准第 5–7 项：18 项 Go CLI/标准库崩溃、失败解析后的 AST
   缓存差异、lint 入口/导入碰撞 panic 不复制崩溃，当前仍未被用户接受为例外。
