@@ -61,15 +61,12 @@ priv struct FormatGroup {
   parameter : Bool
   index : Bool
   expanded : Bool
-  align : Int
 }
 
 ///|
 priv struct FormatLocal {
   depth : Int
-  column : Int
   in_object : Bool
-  mut binding : Bool
   mut equal_pending : Bool
 }
 
@@ -87,6 +84,7 @@ fn format_tokens(
   } else {
     tokens
   }
+  let tokens = format_trailing_fodder(tokens)
   let writer : FormatOutput = {
     out: StringBuilder(),
     limits,
@@ -103,7 +101,7 @@ fn format_tokens(
     Error(d) => raise Error(d)
     e => raise problem(Runtime, loc, e.to_string())
   }
-  let continuation = format_binary_continuations(tokens, expression)
+  let indent_plan = format_indent_plan(tokens, expression, layout, writer)
   let columns = Array::make(tokens.length(), 0)
   let mut previous = ""
   let mut ends_expr = false
@@ -119,47 +117,21 @@ fn format_tokens(
     writer.tick()
     let t = token.text
     let closing = t == ")" || t == "]" || t == "}"
-    let mut level = groups.filter(g => g.expanded).length()
-    if closing && groups.last() is Some({ expanded: true, .. }) {
-      level -= 1
-    }
-    if !closing &&
-      token.has_newline() &&
-      !layout.newline[i] &&
-      (
-        !groups.is_empty() ||
-        previous == "import" ||
-        previous == "importstr" ||
-        previous == "importbin"
-      ) {
-      level += 1
-    }
-    let mut spaces = if options.indent > 0 &&
-      level <= limits.output_bytes / options.indent {
-      level * options.indent
-    } else if options.indent > 0 {
-      limits.output_bytes
+    let mut spaces = if options.indent > 0 && !only_comments {
+      indent_plan.line_up[i].resolve(
+        columns,
+        options.indent,
+        limits.output_bytes,
+      )
+    } else if options.indent > 0 || (layout.newline[i] && !token.has_newline()) {
+      0
     } else {
       token.loc.column - 1
     }
-    if options.indent > 0 &&
-      !closing &&
-      layout.newline[i] &&
-      groups.last() is Some({ open: "(", expanded: false, align, .. }) {
-      spaces = align
-    }
-    if options.indent > 0 &&
-      locals.last() is Some(scope) &&
-      scope.binding &&
-      scope.depth == groups.length() {
-      spaces = scope.column
-    }
-    let mut block_base = spaces
-    if options.indent > 0 && continuation.align[i] >= 0 {
-      spaces = columns[continuation.align[i]]
-      if continuation.strong[i] {
-        block_base = spaces
-      }
+    let block_base = if options.indent > 0 && !only_comments {
+      indent_plan.base[i].resolve(columns, options.indent, limits.output_bytes)
+    } else {
+      spaces
     }
     if layout.trailing_comma[i] && !only_comments {
       writer.write(",")
@@ -237,6 +209,7 @@ fn format_tokens(
               t != "," &&
               t != "." &&
               t != ")" &&
+              !(t == "(" && ends_expr) &&
               !t.has_prefix(":") &&
               !t.has_prefix("+:") &&
               !(t == "]" && groups.last() is Some({ index: true, .. })) &&
@@ -287,7 +260,9 @@ fn format_tokens(
       }
     }
     if only_comments {
-      last_line = token.end.line
+      if !(t == "," && !token.has_newline() && token.loc.line > last_line) {
+        last_line = token.end.line
+      }
       continue
     }
     if options.strip_comments {
@@ -414,6 +389,7 @@ fn format_tokens(
       !t.has_prefix(":") &&
       !t.has_prefix("+:") &&
       t != "." &&
+      !(t == "(" && ends_expr) &&
       previous != "."
     writer.indent(spaces)
     if spaced || comment_space {
@@ -447,33 +423,20 @@ fn format_tokens(
       writer.write(raw)
     }
     if locals.last() is Some(scope) && scope.depth == groups.length() {
-      if scope.binding && is_name(t) {
-        scope.binding = false
-      }
       if local_equal {
         scope.equal_pending = false
       }
       if t == ";" || (t == "," && scope.in_object) {
         ignore(locals.pop())
       } else if t == "," {
-        scope.binding = true
         scope.equal_pending = true
       }
     }
     if t == "local" {
-      let separate_line = tokens.get(i + 1) is Some(next) && next.has_newline()
       locals.push({
         depth: groups.length(),
-        column: if separate_line &&
-          options.indent > 0 &&
-          spaces <= limits.output_bytes - options.indent {
-          spaces + options.indent
-        } else {
-          writer.column + 1
-        },
         in_object: inside is Some({ open: "{", .. }) &&
         (previous == "{" || previous == ","),
-        binding: true,
         equal_pending: true,
       })
     }
@@ -483,7 +446,6 @@ fn format_tokens(
         parameter: layout.parameter[i],
         index: layout.index[i] || layout.field_key[i],
         expanded: layout.expanded[i],
-        align: writer.column,
       })
       ends_expr = false
     } else if closing {
@@ -502,7 +464,9 @@ fn format_tokens(
     }
     tight_after = prefix || compact_equal || compact_colon
     previous = t
-    last_line = token.end.line
+    if !(t == "," && !token.has_newline() && token.loc.line > last_line) {
+      last_line = token.end.line
+    }
   }
   if only_comments {
     writer.write("null\n")

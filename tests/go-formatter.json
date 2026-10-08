@@ -5172,5 +5172,1269 @@
     "expected": "{ x: |||\n  first\n  second\n||| }\n",
     "idempotent": true,
     "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation4-local-conditional-0",
+    "source": "local f(x)=\nif x then\n1\nelse\n2;f(true)",
+    "options": {},
+    "expected": "local f(x) =\n  if x then\n    1\n  else\n    2; f(true)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-conditional-1",
+    "source": "local f(x)=\nif x then\n1\nelse\n2;f(true)",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "local f(x) =\n    if x then\n        1\n    else\n        2; f(true)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-conditional-2",
+    "source": "local f(x)=\nif x then\n1\nelse\n2;f(true)",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "local f(x) =\nif x then\n1\nelse\n2; f(true)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-conditional-3",
+    "source": "local f(x)=\nif x then\n1\nelse\n2;f(true)",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "local f(x) =\n  if x then\n    1\n  else\n    2; f(true)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-conditional-4",
+    "source": "local f(x)=\nif x then\n1\nelse\n2;f(true)",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "local f(x) =\n  if x then\n    1\n  else\n    2; f(true)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-conditional-5",
+    "source": "local f(x)=\nif x then\n1\nelse\n2;f(true)",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "local f(x) =\n  if x then\n    1\n  else\n    2; f(true)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-conditional-6",
+    "source": "local f(x)=\nif x then\n1\nelse\n2;f(true)",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-conditional-7",
+    "source": "local f(x)=\nif x then\n1\nelse\n2;f(true)",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "local f(x) =\n  if x then\n    1\n  else\n    2; f(true)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-function-local-0",
+    "source": "function(x)\nlocal y=x+1;\n[y,\ny+1]",
+    "options": {},
+    "expected": "function(x)\n  local y = x + 1;\n  [\n    y,\n    y + 1,\n  ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-function-local-1",
+    "source": "function(x)\nlocal y=x+1;\n[y,\ny+1]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "function(x)\n    local y = x + 1;\n    [\n        y,\n        y + 1,\n    ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-function-local-2",
+    "source": "function(x)\nlocal y=x+1;\n[y,\ny+1]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "function(x)\nlocal y = x + 1;\n[\ny,\ny + 1,\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-function-local-3",
+    "source": "function(x)\nlocal y=x+1;\n[y,\ny+1]",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "function(x)\n  local y = x + 1;\n  [\n    y,\n    y + 1,\n  ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-function-local-4",
+    "source": "function(x)\nlocal y=x+1;\n[y,\ny+1]",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "function(x)\n  local y = x + 1;\n  [\n    y,\n    y + 1,\n  ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-function-local-5",
+    "source": "function(x)\nlocal y=x+1;\n[y,\ny+1]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "function(x)\n  local y = x + 1;\n  [\n    y,\n    y + 1,\n  ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-function-local-6",
+    "source": "function(x)\nlocal y=x+1;\n[y,\ny+1]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-function-local-7",
+    "source": "function(x)\nlocal y=x+1;\n[y,\ny+1]",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "function(x)\n  local y = x + 1;\n  [\n    y,\n    y + 1,\n  ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-expand-0",
+    "source": "local y=1,z=2,\nx=3;[y,z,x]",
+    "options": {},
+    "expected": "local y = 1,\n      z = 2,\n      x = 3; [y, z, x]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-expand-1",
+    "source": "local y=1,z=2,\nx=3;[y,z,x]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "local y = 1,\n      z = 2,\n      x = 3; [y, z, x]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-expand-2",
+    "source": "local y=1,z=2,\nx=3;[y,z,x]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "local y = 1,\nz = 2,\nx = 3; [y, z, x]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-expand-3",
+    "source": "local y=1,z=2,\nx=3;[y,z,x]",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "local y = 1,\n      z = 2,\n      x = 3; [y, z, x]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-expand-4",
+    "source": "local y=1,z=2,\nx=3;[y,z,x]",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "local y = 1,\n      z = 2,\n      x = 3; [ y, z, x ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-expand-5",
+    "source": "local y=1,z=2,\nx=3;[y,z,x]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "local y = 1,\n      z = 2,\n      x = 3; [y, z, x]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-expand-6",
+    "source": "local y=1,z=2,\nx=3;[y,z,x]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-expand-7",
+    "source": "local y=1,z=2,\nx=3;[y,z,x]",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "local y = 1,\n      z = 2,\n      x = 3; [y, z, x]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-head-newline-0",
+    "source": "local\ny=1,z=2;[y,z]",
+    "options": {},
+    "expected": "local\n  y = 1,\n  z = 2; [y, z]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-head-newline-1",
+    "source": "local\ny=1,z=2;[y,z]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "local\n    y = 1,\n    z = 2; [y, z]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-head-newline-2",
+    "source": "local\ny=1,z=2;[y,z]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "local\ny = 1,\nz = 2; [y, z]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-head-newline-3",
+    "source": "local\ny=1,z=2;[y,z]",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "local\n  y = 1,\n  z = 2; [y, z]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-head-newline-4",
+    "source": "local\ny=1,z=2;[y,z]",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "local\n  y = 1,\n  z = 2; [ y, z ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-head-newline-5",
+    "source": "local\ny=1,z=2;[y,z]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "local\n  y = 1,\n  z = 2; [y, z]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-head-newline-6",
+    "source": "local\ny=1,z=2;[y,z]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-local-head-newline-7",
+    "source": "local\ny=1,z=2;[y,z]",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "local\n  y = 1,\n  z = 2; [y, z]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-nested-bindings-0",
+    "source": "local a=local b=1,\nc=2;b+c,\nd=3;a+d",
+    "options": {},
+    "expected": "local a = local b = 1,\n                c = 2; b + c,\n      d = 3; a + d\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-nested-bindings-1",
+    "source": "local a=local b=1,\nc=2;b+c,\nd=3;a+d",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "local a = local b = 1,\n                c = 2; b + c,\n      d = 3; a + d\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-nested-bindings-2",
+    "source": "local a=local b=1,\nc=2;b+c,\nd=3;a+d",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "local a = local b = 1,\nc = 2; b + c,\nd = 3; a + d\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-nested-bindings-3",
+    "source": "local a=local b=1,\nc=2;b+c,\nd=3;a+d",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "local a = local b = 1,\n                c = 2; b + c,\n      d = 3; a + d\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-nested-bindings-4",
+    "source": "local a=local b=1,\nc=2;b+c,\nd=3;a+d",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "local a = local b = 1,\n                c = 2; b + c,\n      d = 3; a + d\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-nested-bindings-5",
+    "source": "local a=local b=1,\nc=2;b+c,\nd=3;a+d",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "local a = local b = 1,\n                c = 2; b + c,\n      d = 3; a + d\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-nested-bindings-6",
+    "source": "local a=local b=1,\nc=2;b+c,\nd=3;a+d",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-nested-bindings-7",
+    "source": "local a=local b=1,\nc=2;b+c,\nd=3;a+d",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "local a = local b = 1,\n                c = 2; b + c,\n      d = 3; a + d\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-object-local-method-0",
+    "source": "{\nlocal f(\nx,y)= {\nx:x\n},v:f(1,2)\n}",
+    "options": {},
+    "expected": "{\n  local f(\n    x, y\n  ) = {\n    x: x,\n  },\n  v: f(1, 2),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-object-local-method-1",
+    "source": "{\nlocal f(\nx,y)= {\nx:x\n},v:f(1,2)\n}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{\n    local f(\n        x, y\n    ) = {\n        x: x,\n    },\n    v: f(1, 2),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-object-local-method-2",
+    "source": "{\nlocal f(\nx,y)= {\nx:x\n},v:f(1,2)\n}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{\nlocal f(\nx, y\n) = {\nx: x,\n},\nv: f(1, 2),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-object-local-method-3",
+    "source": "{\nlocal f(\nx,y)= {\nx:x\n},v:f(1,2)\n}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{\n  local f(\n    x, y\n  ) = {\n    x: x,\n  },\n  v: f(1, 2),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-object-local-method-4",
+    "source": "{\nlocal f(\nx,y)= {\nx:x\n},v:f(1,2)\n}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{\n  local f(\n    x, y\n  ) = {\n    x: x,\n  },\n  v: f(1, 2),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-object-local-method-5",
+    "source": "{\nlocal f(\nx,y)= {\nx:x\n},v:f(1,2)\n}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{\n  local f(\n    x, y\n  ) = {\n    x: x,\n  },\n  v: f(1, 2),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-object-local-method-6",
+    "source": "{\nlocal f(\nx,y)= {\nx:x\n},v:f(1,2)\n}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-object-local-method-7",
+    "source": "{\nlocal f(\nx,y)= {\nx:x\n},v:f(1,2)\n}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{\n  local f(\n    x, y\n  ) = {\n    x: x,\n  },\n  v: f(1, 2),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-conditional-parens-0",
+    "source": "{x:[\n1\n]+(\nif true then [] else [\n2\n]\n)+[\n3\n]}",
+    "options": {},
+    "expected": "{ x: [\n  1,\n] + (\n  if true then [] else [\n    2,\n  ]\n) + [\n  3,\n] }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-conditional-parens-1",
+    "source": "{x:[\n1\n]+(\nif true then [] else [\n2\n]\n)+[\n3\n]}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ x: [\n    1,\n] + (\n    if true then [] else [\n        2,\n    ]\n) + [\n    3,\n] }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-conditional-parens-2",
+    "source": "{x:[\n1\n]+(\nif true then [] else [\n2\n]\n)+[\n3\n]}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ x: [\n1,\n] + (\nif true then [] else [\n2,\n]\n) + [\n3,\n] }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-conditional-parens-3",
+    "source": "{x:[\n1\n]+(\nif true then [] else [\n2\n]\n)+[\n3\n]}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{ x: [\n  1,\n] + (\n  if true then [] else [\n    2,\n  ]\n) + [\n  3,\n] }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-conditional-parens-4",
+    "source": "{x:[\n1\n]+(\nif true then [] else [\n2\n]\n)+[\n3\n]}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{x: [\n  1,\n] + (\n  if true then [] else [\n    2,\n  ]\n) + [\n  3,\n]}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-conditional-parens-5",
+    "source": "{x:[\n1\n]+(\nif true then [] else [\n2\n]\n)+[\n3\n]}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ x: [\n  1,\n] + (\n  if true then [] else [\n    2,\n  ]\n) + [\n  3,\n] }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-conditional-parens-6",
+    "source": "{x:[\n1\n]+(\nif true then [] else [\n2\n]\n)+[\n3\n]}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-conditional-parens-7",
+    "source": "{x:[\n1\n]+(\nif true then [] else [\n2\n]\n)+[\n3\n]}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{ x: [\n  1,\n] + (\n  if true then [] else [\n    2,\n  ]\n) + [\n  3,\n] }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-field-paren-0",
+    "source": "{\nx:(\n'lol'\n),y:(1\n+2)+(\n3\n)\n}",
+    "options": {},
+    "expected": "{\n  x: (\n    'lol'\n  ),\n  y: (1\n      + 2) + (\n    3\n  ),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-field-paren-1",
+    "source": "{\nx:(\n'lol'\n),y:(1\n+2)+(\n3\n)\n}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{\n    x: (\n        'lol'\n    ),\n    y: (1\n        + 2) + (\n        3\n    ),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-field-paren-2",
+    "source": "{\nx:(\n'lol'\n),y:(1\n+2)+(\n3\n)\n}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{\nx: (\n'lol'\n),\ny: (1\n+ 2) + (\n3\n),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-field-paren-3",
+    "source": "{\nx:(\n'lol'\n),y:(1\n+2)+(\n3\n)\n}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{\n  x: (\n    'lol'\n  ),\n  y: (1\n      + 2) + (\n    3\n  ),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-field-paren-4",
+    "source": "{\nx:(\n'lol'\n),y:(1\n+2)+(\n3\n)\n}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{\n  x: (\n    'lol'\n  ),\n  y: (1\n      + 2) + (\n    3\n  ),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-field-paren-5",
+    "source": "{\nx:(\n'lol'\n),y:(1\n+2)+(\n3\n)\n}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{\n  x: (\n    'lol'\n  ),\n  y: (1\n      + 2) + (\n    3\n  ),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-field-paren-6",
+    "source": "{\nx:(\n'lol'\n),y:(1\n+2)+(\n3\n)\n}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-field-paren-7",
+    "source": "{\nx:(\n'lol'\n),y:(1\n+2)+(\n3\n)\n}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{\n  x: (\n    'lol'\n  ),\n  y: (1\n      + 2) + (\n    3\n  ),\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-call-align-0",
+    "source": "f(1,\n[\n2,3\n],\nx={\nv:4\n})",
+    "options": {},
+    "expected": "f(1,\n  [\n    2,\n    3,\n  ],\n  x={\n    v: 4,\n  })\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-call-align-1",
+    "source": "f(1,\n[\n2,3\n],\nx={\nv:4\n})",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "f(1,\n  [\n      2,\n      3,\n  ],\n  x={\n      v: 4,\n  })\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-call-align-2",
+    "source": "f(1,\n[\n2,3\n],\nx={\nv:4\n})",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "f(1,\n[\n2,\n3,\n],\nx={\nv: 4,\n})\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-call-align-3",
+    "source": "f(1,\n[\n2,3\n],\nx={\nv:4\n})",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "f(1,\n  [\n    2,\n    3,\n  ],\n  x={\n    v: 4,\n  })\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-call-align-4",
+    "source": "f(1,\n[\n2,3\n],\nx={\nv:4\n})",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "f(1,\n  [\n    2,\n    3,\n  ],\n  x={\n    v: 4,\n  })\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-call-align-5",
+    "source": "f(1,\n[\n2,3\n],\nx={\nv:4\n})",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "f(1,\n  [\n    2,\n    3,\n  ],\n  x={\n    v: 4,\n  })\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-call-align-6",
+    "source": "f(1,\n[\n2,3\n],\nx={\nv:4\n})",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-call-align-7",
+    "source": "f(1,\n[\n2,3\n],\nx={\nv:4\n})",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "f(1,\n  [\n    2,\n    3,\n  ],\n  x={\n    v: 4,\n  })\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-array-comma-line-0",
+    "source": "[\n[1,2 // before comma\n,3],(1+\n2),\n(\n3\n)\n]",
+    "options": {},
+    "expected": "[\n  [1, 2  // before comma\n   , 3],\n  (1 +\n   2),\n  (\n    3\n  ),\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-array-comma-line-1",
+    "source": "[\n[1,2 // before comma\n,3],(1+\n2),\n(\n3\n)\n]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "[\n    [1, 2  // before comma\n     , 3],\n    (1 +\n     2),\n    (\n        3\n    ),\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-array-comma-line-2",
+    "source": "[\n[1,2 // before comma\n,3],(1+\n2),\n(\n3\n)\n]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "[\n[1, 2  // before comma\n, 3],\n(1 +\n2),\n(\n3\n),\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-array-comma-line-3",
+    "source": "[\n[1,2 // before comma\n,3],(1+\n2),\n(\n3\n)\n]",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "[\n  [1, 2  // before comma\n   , 3],\n  (1 +\n   2),\n  (\n    3\n  ),\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-array-comma-line-4",
+    "source": "[\n[1,2 // before comma\n,3],(1+\n2),\n(\n3\n)\n]",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "[\n  [ 1, 2  // before comma\n    , 3 ],\n  (1 +\n   2),\n  (\n    3\n  ),\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-array-comma-line-5",
+    "source": "[\n[1,2 // before comma\n,3],(1+\n2),\n(\n3\n)\n]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[\n  [1, 2\n   , 3],\n  (1 +\n   2),\n  (\n    3\n  ),\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-array-comma-line-6",
+    "source": "[\n[1,2 // before comma\n,3],(1+\n2),\n(\n3\n)\n]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-array-comma-line-7",
+    "source": "[\n[1,2 // before comma\n,3],(1+\n2),\n(\n3\n)\n]",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "[\n  [1, 2  // before comma\n   , 3],\n  (1 +\n   2),\n  (\n    3\n  ),\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-0",
+    "source": "{\nx:if true then\n1\nelse\n2\n,\n}",
+    "options": {},
+    "expected": "{\n  x: if true then\n    1\n  else\n    2,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-1",
+    "source": "{\nx:if true then\n1\nelse\n2\n,\n}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{\n    x: if true then\n        1\n    else\n        2,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-2",
+    "source": "{\nx:if true then\n1\nelse\n2\n,\n}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{\nx: if true then\n1\nelse\n2,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-3",
+    "source": "{\nx:if true then\n1\nelse\n2\n,\n}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{\n  x: if true then\n    1\n  else\n    2,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-4",
+    "source": "{\nx:if true then\n1\nelse\n2\n,\n}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{\n  x: if true then\n    1\n  else\n    2,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-5",
+    "source": "{\nx:if true then\n1\nelse\n2\n,\n}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{\n  x: if true then\n    1\n  else\n    2,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-6",
+    "source": "{\nx:if true then\n1\nelse\n2\n,\n}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-7",
+    "source": "{\nx:if true then\n1\nelse\n2\n,\n}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{\n  x: if true then\n    1\n  else\n    2,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-comment-0",
+    "source": "[1 // before comma\n,\n// closing\n]",
+    "options": {},
+    "expected": "[\n  1,  // before comma\n  // closing\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-comment-1",
+    "source": "[1 // before comma\n,\n// closing\n]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "[\n    1,  // before comma\n    // closing\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-comment-2",
+    "source": "[1 // before comma\n,\n// closing\n]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "[\n1,  // before comma\n// closing\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-comment-3",
+    "source": "[1 // before comma\n,\n// closing\n]",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "[\n  1,  // before comma\n  // closing\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-comment-4",
+    "source": "[1 // before comma\n,\n// closing\n]",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "[\n  1,  // before comma\n  // closing\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-comment-5",
+    "source": "[1 // before comma\n,\n// closing\n]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[\n  1,\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-comment-6",
+    "source": "[1 // before comma\n,\n// closing\n]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "// closing\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-final-comma-comment-7",
+    "source": "[1 // before comma\n,\n// closing\n]",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "[\n  1,  // before comma\n  // closing\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-assert-message-0",
+    "source": "{\nassert true:\n'ok',x:1\n}",
+    "options": {},
+    "expected": "{\n  assert true :\n         'ok',\n  x: 1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-assert-message-1",
+    "source": "{\nassert true:\n'ok',x:1\n}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{\n    assert true :\n           'ok',\n    x: 1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-assert-message-2",
+    "source": "{\nassert true:\n'ok',x:1\n}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{\nassert true :\n'ok',\nx: 1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-assert-message-3",
+    "source": "{\nassert true:\n'ok',x:1\n}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{\n  assert true :\n         'ok',\n  x: 1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-assert-message-4",
+    "source": "{\nassert true:\n'ok',x:1\n}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{\n  assert true :\n         'ok',\n  x: 1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-assert-message-5",
+    "source": "{\nassert true:\n'ok',x:1\n}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{\n  assert true :\n         'ok',\n  x: 1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-assert-message-6",
+    "source": "{\nassert true:\n'ok',x:1\n}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-assert-message-7",
+    "source": "{\nassert true:\n'ok',x:1\n}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{\n  assert true :\n         'ok',\n  x: 1,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-unicode-call-0",
+    "source": "f('中',2+\n3)",
+    "options": {},
+    "expected": "f('中', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-unicode-call-1",
+    "source": "f('中',2+\n3)",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "f('中', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-unicode-call-2",
+    "source": "f('中',2+\n3)",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "f('中', 2 +\n3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-unicode-call-3",
+    "source": "f('中',2+\n3)",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "f('中', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-unicode-call-4",
+    "source": "f('中',2+\n3)",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "f('中', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-unicode-call-5",
+    "source": "f('中',2+\n3)",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "f('中', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-unicode-call-6",
+    "source": "f('中',2+\n3)",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-unicode-call-7",
+    "source": "f('中',2+\n3)",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "f('中', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-escape-call-0",
+    "source": "f('a\\t',2+\n3)",
+    "options": {},
+    "expected": "f('a\\t', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-escape-call-1",
+    "source": "f('a\\t',2+\n3)",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "f('a\\t', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-escape-call-2",
+    "source": "f('a\\t',2+\n3)",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "f('a\\t', 2 +\n3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-escape-call-3",
+    "source": "f('a\\t',2+\n3)",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "f('a\\t', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-escape-call-4",
+    "source": "f('a\\t',2+\n3)",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "f('a\\t', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-escape-call-5",
+    "source": "f('a\\t',2+\n3)",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "f('a\\t', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-escape-call-6",
+    "source": "f('a\\t',2+\n3)",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-escape-call-7",
+    "source": "f('a\\t',2+\n3)",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "f('a\\t', 2 +\n         3)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-opening-comment-call-0",
+    "source": "{x: /* opening */ f(\n1,2\n)}",
+    "options": {},
+    "expected": "{ x: /* opening */ f(\n  1, 2\n) }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-opening-comment-call-1",
+    "source": "{x: /* opening */ f(\n1,2\n)}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ x: /* opening */ f(\n    1, 2\n) }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-opening-comment-call-2",
+    "source": "{x: /* opening */ f(\n1,2\n)}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ x: /* opening */ f(\n1, 2\n) }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-opening-comment-call-3",
+    "source": "{x: /* opening */ f(\n1,2\n)}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{ x: /* opening */ f(\n  1, 2\n) }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-opening-comment-call-4",
+    "source": "{x: /* opening */ f(\n1,2\n)}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{x: /* opening */ f(\n  1, 2\n)}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-opening-comment-call-5",
+    "source": "{x: /* opening */ f(\n1,2\n)}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ x: f(\n  1, 2\n) }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-opening-comment-call-6",
+    "source": "{x: /* opening */ f(\n1,2\n)}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "/* opening */\nnull\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
+  },
+  {
+    "name": "continuation4-opening-comment-call-7",
+    "source": "{x: /* opening */ f(\n1,2\n)}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{ x: /* opening */ f(\n  1, 2\n) }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation4 expression base/line-up propagation and comma fodder."
   }
 ]

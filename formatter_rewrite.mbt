@@ -103,3 +103,34 @@ fn format_rewrite(
   }
   result
 }
+
+///|
+fn format_trailing_fodder(tokens : Array[Token]) -> Array[Token] {
+  let layout = format_layout(tokens)
+  let result = tokens.copy()
+  for open, token in tokens {
+    let close = layout.close[open]
+    if close <= open + 1 ||
+      !(token.text == "{" ||
+      (token.text == "[" && !layout.index[open] && !layout.field_key[open])) ||
+      tokens[close - 1].text != "," ||
+      !tokens[close - 1].has_newline() {
+      continue
+    }
+    let comma = result[close - 1]
+    let closing = result[close]
+    let after = closing.leading.copy()
+    if comma.leading.last() is Some({ kind: Whitespace, raw: left, .. }) &&
+      left.contains("\n") &&
+      after.get(0) is Some({ kind: Whitespace, raw: right, .. }) &&
+      right.find("\n") is Some(n) {
+      after[0] = {
+        ..after[0],
+        raw: right[:n].to_owned() + right[n + 1:].to_owned(),
+      }
+    }
+    result[close - 1] = { ..comma, leading: [], }
+    result[close] = { ..closing, leading: comma.leading + after, }
+  }
+  result
+}
