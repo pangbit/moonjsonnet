@@ -400,6 +400,13 @@ interface changes. The **27 retained failures** include the same two AST depth
 errors. CLI/API/lint, ASan, consumer and cross-platform acceptance were not rerun.
 See the [binary continuation and paragraph margin report](../reports/GO-JSONNET-FORMATTER-CONTINUATION2.md).
 
+Clean implementation `ec27c1c23cc2a8537b9ca4c335c914b5cf419cc2` now passes
+**608/608** frozen fixtures and **157/178** upstream inputs. Native debug/release
+tests each pass **246/246**, with no public interface changes. The **21 retained
+failures** include the same two AST depth errors. These reports bind the clean
+implementation, while unrelated CLI/API/lint, ASan, consumer and platform results
+retain their prior identities. See the [assertion and text-block report](../reports/GO-JSONNET-FORMATTER-CONTINUATION3.md).
+
 See the repository's `reports/` directory for commit-bound acceptance evidence.
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
 
