@@ -4145,5 +4145,1032 @@
     "expected": "/* same\n same */\n/* same\n   same */\nnull\n",
     "idempotent": true,
     "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation2 binary anchors and paragraph margins."
+  },
+  {
+    "name": "continuation3-assert-close-0",
+    "source": "[{assert true},{assert true, f:1},{f:2}]",
+    "options": {},
+    "expected": "[{ assert true }, { assert true, f: 1 }, { f: 2 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-close-1",
+    "source": "[{assert true},{assert true, f:1},{f:2}]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "[{ assert true }, { assert true, f: 1 }, { f: 2 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-close-2",
+    "source": "[{assert true},{assert true, f:1},{f:2}]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "[{ assert true }, { assert true, f: 1 }, { f: 2 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-close-3",
+    "source": "[{assert true},{assert true, f:1},{f:2}]",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "[{ assert true }, { assert true, f: 1 }, { f: 2 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-close-4",
+    "source": "[{assert true},{assert true, f:1},{f:2}]",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "[ {assert true}, {assert true, f: 1}, {f: 2} ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-close-5",
+    "source": "[{assert true},{assert true, f:1},{f:2}]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[{ assert true }, { assert true, f: 1 }, { f: 2 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-close-6",
+    "source": "[{assert true},{assert true, f:1},{f:2}]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-close-7",
+    "source": "[{assert true},{assert true, f:1},{f:2}]",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "[{ assert true }, { assert true, f: 1 }, { f: 2 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-nested-0",
+    "source": "{assert {assert true,x:1}.x==1, f:1, assert true:'ok', g:2}",
+    "options": {},
+    "expected": "{ assert { assert true, x: 1 }.x == 1, f: 1, assert true : 'ok', g: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-nested-1",
+    "source": "{assert {assert true,x:1}.x==1, f:1, assert true:'ok', g:2}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ assert { assert true, x: 1 }.x == 1, f: 1, assert true : 'ok', g: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-nested-2",
+    "source": "{assert {assert true,x:1}.x==1, f:1, assert true:'ok', g:2}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ assert { assert true, x: 1 }.x == 1, f: 1, assert true : 'ok', g: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-nested-3",
+    "source": "{assert {assert true,x:1}.x==1, f:1, assert true:'ok', g:2}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{ assert { assert true, x: 1 }.x == 1, f: 1, assert true : 'ok', g: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-nested-4",
+    "source": "{assert {assert true,x:1}.x==1, f:1, assert true:'ok', g:2}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{assert {assert true, x: 1}.x == 1, f: 1, assert true : 'ok', g: 2}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-nested-5",
+    "source": "{assert {assert true,x:1}.x==1, f:1, assert true:'ok', g:2}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ assert { assert true, x: 1 }.x == 1, f: 1, assert true : 'ok', g: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-nested-6",
+    "source": "{assert {assert true,x:1}.x==1, f:1, assert true:'ok', g:2}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-nested-7",
+    "source": "{assert {assert true,x:1}.x==1, f:1, assert true:'ok', g:2}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{ assert { assert true, x: 1 }.x == 1, f: 1, assert true : 'ok', g: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-paren-0",
+    "source": "[(assert true;true), {f:1}]",
+    "options": {},
+    "expected": "[(assert true; true), { f: 1 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-paren-1",
+    "source": "[(assert true;true), {f:1}]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "[(assert true; true), { f: 1 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-paren-2",
+    "source": "[(assert true;true), {f:1}]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "[(assert true; true), { f: 1 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-paren-3",
+    "source": "[(assert true;true), {f:1}]",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "[(assert true; true), { f: 1 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-paren-4",
+    "source": "[(assert true;true), {f:1}]",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "[ (assert true; true), {f: 1} ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-paren-5",
+    "source": "[(assert true;true), {f:1}]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[(assert true; true), { f: 1 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-paren-6",
+    "source": "[(assert true;true), {f:1}]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-assert-paren-7",
+    "source": "[(assert true;true), {f:1}]",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "[(assert true; true), { f: 1 }]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-method-key-0",
+    "source": "{'y'(x=1):x,'y-z'(x):x,'self'(x):x,'中'(x):x}",
+    "options": {},
+    "expected": "{ y(x=1): x, 'y-z'(x): x, 'self'(x): x, '中'(x): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-method-key-1",
+    "source": "{'y'(x=1):x,'y-z'(x):x,'self'(x):x,'中'(x):x}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ y(x=1): x, 'y-z'(x): x, 'self'(x): x, '中'(x): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-method-key-2",
+    "source": "{'y'(x=1):x,'y-z'(x):x,'self'(x):x,'中'(x):x}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ y(x=1): x, 'y-z'(x): x, 'self'(x): x, '中'(x): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-method-key-3",
+    "source": "{'y'(x=1):x,'y-z'(x):x,'self'(x):x,'中'(x):x}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{ 'y'(x=1): x, 'y-z'(x): x, 'self'(x): x, '中'(x): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-method-key-4",
+    "source": "{'y'(x=1):x,'y-z'(x):x,'self'(x):x,'中'(x):x}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{y(x=1): x, 'y-z'(x): x, 'self'(x): x, '中'(x): x}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-method-key-5",
+    "source": "{'y'(x=1):x,'y-z'(x):x,'self'(x):x,'中'(x):x}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ y(x=1): x, 'y-z'(x): x, 'self'(x): x, '中'(x): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-method-key-6",
+    "source": "{'y'(x=1):x,'y-z'(x):x,'self'(x):x,'中'(x):x}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-method-key-7",
+    "source": "{'y'(x=1):x,'y-z'(x):x,'self'(x):x,'中'(x):x}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{ y(x=1): x, 'y-z'(x): x, 'self'(x): x, '中'(x): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-additive-keys-0",
+    "source": "{'y'+::1,'y-z'+:::2}",
+    "options": {},
+    "expected": "{ y+:: 1, 'y-z'+::: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-additive-keys-1",
+    "source": "{'y'+::1,'y-z'+:::2}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ y+:: 1, 'y-z'+::: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-additive-keys-2",
+    "source": "{'y'+::1,'y-z'+:::2}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ y+:: 1, 'y-z'+::: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-additive-keys-3",
+    "source": "{'y'+::1,'y-z'+:::2}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{ 'y'+:: 1, 'y-z'+::: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-additive-keys-4",
+    "source": "{'y'+::1,'y-z'+:::2}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{y+:: 1, 'y-z'+::: 2}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-additive-keys-5",
+    "source": "{'y'+::1,'y-z'+:::2}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ y+:: 1, 'y-z'+::: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-additive-keys-6",
+    "source": "{'y'+::1,'y-z'+:::2}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-additive-keys-7",
+    "source": "{'y'+::1,'y-z'+:::2}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{ y+:: 1, 'y-z'+::: 2 }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-self-0",
+    "source": "{a:1,b:(self+{}).a,c:($+{}).a}",
+    "options": {},
+    "expected": "{ a: 1, b: (self + {}).a, c: ($ + {}).a }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-self-1",
+    "source": "{a:1,b:(self+{}).a,c:($+{}).a}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ a: 1, b: (self + {}).a, c: ($ + {}).a }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-self-2",
+    "source": "{a:1,b:(self+{}).a,c:($+{}).a}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ a: 1, b: (self + {}).a, c: ($ + {}).a }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-self-3",
+    "source": "{a:1,b:(self+{}).a,c:($+{}).a}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{ a: 1, b: (self + {}).a, c: ($ + {}).a }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-self-4",
+    "source": "{a:1,b:(self+{}).a,c:($+{}).a}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{a: 1, b: (self + {}).a, c: ($ + {}).a}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-self-5",
+    "source": "{a:1,b:(self+{}).a,c:($+{}).a}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ a: 1, b: (self + {}).a, c: ($ + {}).a }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-self-6",
+    "source": "{a:1,b:(self+{}).a,c:($+{}).a}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-self-7",
+    "source": "{a:1,b:(self+{}).a,c:($+{}).a}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{ a: 1, b: (self + {}).a, c: ($ + {}).a }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-index-0",
+    "source": "local o={a:1};[o+{},o.a+{},(o)+{},o[('a')]+{}]",
+    "options": {},
+    "expected": "local o = { a: 1 }; [o {}, o.a {}, (o) + {}, o[('a')] {}]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-index-1",
+    "source": "local o={a:1};[o+{},o.a+{},(o)+{},o[('a')]+{}]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "local o = { a: 1 }; [o {}, o.a {}, (o) + {}, o[('a')] {}]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-index-2",
+    "source": "local o={a:1};[o+{},o.a+{},(o)+{},o[('a')]+{}]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "local o = { a: 1 }; [o {}, o.a {}, (o) + {}, o[('a')] {}]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-index-3",
+    "source": "local o={a:1};[o+{},o.a+{},(o)+{},o[('a')]+{}]",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "local o = { a: 1 }; [o {}, o.a {}, (o) + {}, o[('a')] {}]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-index-4",
+    "source": "local o={a:1};[o+{},o.a+{},(o)+{},o[('a')]+{}]",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "local o = {a: 1}; [ o {}, o.a {}, (o) + {}, o[('a')] {} ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-index-5",
+    "source": "local o={a:1};[o+{},o.a+{},(o)+{},o[('a')]+{}]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "local o = { a: 1 }; [o {}, o.a {}, (o) + {}, o[('a')] {}]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-index-6",
+    "source": "local o={a:1};[o+{},o.a+{},(o)+{},o[('a')]+{}]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-implicit-index-7",
+    "source": "local o={a:1};[o+{},o.a+{},(o)+{},o[('a')]+{}]",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "local o = { a: 1 }; [o + {}, o.a + {}, (o) + {}, o[('a')] + {}]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-index-paren-0",
+    "source": "local arr=[1,2,3];[arr[(1):],arr[(1)],[(1),(2)]]",
+    "options": {},
+    "expected": "local arr = [1, 2, 3]; [arr[(1):], arr[(1)], [(1), (2)]]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-index-paren-1",
+    "source": "local arr=[1,2,3];[arr[(1):],arr[(1)],[(1),(2)]]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "local arr = [1, 2, 3]; [arr[(1):], arr[(1)], [(1), (2)]]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-index-paren-2",
+    "source": "local arr=[1,2,3];[arr[(1):],arr[(1)],[(1),(2)]]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "local arr = [1, 2, 3]; [arr[(1):], arr[(1)], [(1), (2)]]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-index-paren-3",
+    "source": "local arr=[1,2,3];[arr[(1):],arr[(1)],[(1),(2)]]",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "local arr = [1, 2, 3]; [arr[(1):], arr[(1)], [(1), (2)]]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-index-paren-4",
+    "source": "local arr=[1,2,3];[arr[(1):],arr[(1)],[(1),(2)]]",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "local arr = [ 1, 2, 3 ]; [ arr[(1):], arr[(1)], [ (1), (2) ] ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-index-paren-5",
+    "source": "local arr=[1,2,3];[arr[(1):],arr[(1)],[(1),(2)]]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "local arr = [1, 2, 3]; [arr[(1):], arr[(1)], [(1), (2)]]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-index-paren-6",
+    "source": "local arr=[1,2,3];[arr[(1):],arr[(1)],[(1),(2)]]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-index-paren-7",
+    "source": "local arr=[1,2,3];[arr[(1):],arr[(1)],[(1),(2)]]",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "local arr = [1, 2, 3]; [arr[(1):], arr[(1)], [(1), (2)]]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-computed-paren-0",
+    "source": "{[(('a'))]:1,[(('b'))](x=1):x}",
+    "options": {},
+    "expected": "{ [('a')]: 1, [('b')](x=1): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-computed-paren-1",
+    "source": "{[(('a'))]:1,[(('b'))](x=1):x}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ [('a')]: 1, [('b')](x=1): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-computed-paren-2",
+    "source": "{[(('a'))]:1,[(('b'))](x=1):x}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ [('a')]: 1, [('b')](x=1): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-computed-paren-3",
+    "source": "{[(('a'))]:1,[(('b'))](x=1):x}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{ [('a')]: 1, [('b')](x=1): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-computed-paren-4",
+    "source": "{[(('a'))]:1,[(('b'))](x=1):x}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{[('a')]: 1, [('b')](x=1): x}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-computed-paren-5",
+    "source": "{[(('a'))]:1,[(('b'))](x=1):x}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ [('a')]: 1, [('b')](x=1): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-computed-paren-6",
+    "source": "{[(('a'))]:1,[(('b'))](x=1):x}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-computed-paren-7",
+    "source": "{[(('a'))]:1,[(('b'))](x=1):x}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{ [('a')]: 1, [('b')](x=1): x }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-root-0",
+    "source": "|||\n    first\n    second\n|||",
+    "options": {},
+    "expected": "|||\n  first\n  second\n|||\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-root-1",
+    "source": "|||\n    first\n    second\n|||",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "|||\n    first\n    second\n|||\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-root-2",
+    "source": "|||\n    first\n    second\n|||",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "|||\n    first\n    second\n|||\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-root-3",
+    "source": "|||\n    first\n    second\n|||",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "|||\n  first\n  second\n|||\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-root-4",
+    "source": "|||\n    first\n    second\n|||",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "|||\n  first\n  second\n|||\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-root-5",
+    "source": "|||\n    first\n    second\n|||",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "|||\n  first\n  second\n|||\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-root-6",
+    "source": "|||\n    first\n    second\n|||",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-root-7",
+    "source": "|||\n    first\n    second\n|||",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "|||\n  first\n  second\n|||\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-field-0",
+    "source": "{\nx: |||\n      first\n      second\n    |||\n}",
+    "options": {},
+    "expected": "{\n  x: |||\n    first\n    second\n  |||,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-field-1",
+    "source": "{\nx: |||\n      first\n      second\n    |||\n}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{\n    x: |||\n        first\n        second\n    |||,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-field-2",
+    "source": "{\nx: |||\n      first\n      second\n    |||\n}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{\nx: |||\n      first\n      second\n    |||,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-field-3",
+    "source": "{\nx: |||\n      first\n      second\n    |||\n}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{\n  x: |||\n    first\n    second\n  |||,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-field-4",
+    "source": "{\nx: |||\n      first\n      second\n    |||\n}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{\n  x: |||\n    first\n    second\n  |||,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-field-5",
+    "source": "{\nx: |||\n      first\n      second\n    |||\n}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{\n  x: |||\n    first\n    second\n  |||,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-field-6",
+    "source": "{\nx: |||\n      first\n      second\n    |||\n}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-field-7",
+    "source": "{\nx: |||\n      first\n      second\n    |||\n}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{\n  x: |||\n    first\n    second\n  |||,\n}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-chomp-0",
+    "source": "[|||-\n    first\n    second\n  |||, |||\n\n  third\n\n|||]",
+    "options": {},
+    "expected": "[|||-\n  first\n  second\n|||, |||\n\n  third\n\n|||]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-chomp-1",
+    "source": "[|||-\n    first\n    second\n  |||, |||\n\n  third\n\n|||]",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "[|||-\n    first\n    second\n|||, |||\n\n    third\n\n|||]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-chomp-2",
+    "source": "[|||-\n    first\n    second\n  |||, |||\n\n  third\n\n|||]",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "[|||-\n    first\n    second\n  |||, |||\n\n  third\n\n|||]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-chomp-3",
+    "source": "[|||-\n    first\n    second\n  |||, |||\n\n  third\n\n|||]",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "[|||-\n  first\n  second\n|||, |||\n\n  third\n\n|||]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-chomp-4",
+    "source": "[|||-\n    first\n    second\n  |||, |||\n\n  third\n\n|||]",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "[ |||-\n  first\n  second\n|||, |||\n\n  third\n\n||| ]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-chomp-5",
+    "source": "[|||-\n    first\n    second\n  |||, |||\n\n  third\n\n|||]",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "[|||-\n  first\n  second\n|||, |||\n\n  third\n\n|||]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-chomp-6",
+    "source": "[|||-\n    first\n    second\n  |||, |||\n\n  third\n\n|||]",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-chomp-7",
+    "source": "[|||-\n    first\n    second\n  |||, |||\n\n  third\n\n|||]",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "[|||-\n  first\n  second\n|||, |||\n\n  third\n\n|||]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-crlf-0",
+    "source": "{x: |||\r\n    first\r\n    second\r\n  |||}",
+    "options": {},
+    "expected": "{ x: |||\n  first\n  second\n||| }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-crlf-1",
+    "source": "{x: |||\r\n    first\r\n    second\r\n  |||}",
+    "options": {
+      "Indent": 4
+    },
+    "expected": "{ x: |||\n    first\n    second\n||| }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-crlf-2",
+    "source": "{x: |||\r\n    first\r\n    second\r\n  |||}",
+    "options": {
+      "Indent": 0
+    },
+    "expected": "{ x: |||\n    first\n    second\n  ||| }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-crlf-3",
+    "source": "{x: |||\r\n    first\r\n    second\r\n  |||}",
+    "options": {
+      "PrettyFieldNames": false
+    },
+    "expected": "{ x: |||\n  first\n  second\n||| }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-crlf-4",
+    "source": "{x: |||\r\n    first\r\n    second\r\n  |||}",
+    "options": {
+      "PadArrays": true,
+      "PadObjects": false
+    },
+    "expected": "{x: |||\n  first\n  second\n|||}\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-crlf-5",
+    "source": "{x: |||\r\n    first\r\n    second\r\n  |||}",
+    "options": {
+      "StripComments": true
+    },
+    "expected": "{ x: |||\n  first\n  second\n||| }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-crlf-6",
+    "source": "{x: |||\r\n    first\r\n    second\r\n  |||}",
+    "options": {
+      "StripAllButComments": true
+    },
+    "expected": "null\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
+  },
+  {
+    "name": "continuation3-block-crlf-7",
+    "source": "{x: |||\r\n    first\r\n    second\r\n  |||}",
+    "options": {
+      "UseImplicitPlus": false
+    },
+    "expected": "{ x: |||\n  first\n  second\n||| }\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, continuation3 assertions, methods, implicit plus, brackets and text blocks."
   }
 ]

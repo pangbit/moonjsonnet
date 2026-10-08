@@ -154,8 +154,12 @@ fn format_tokens(
       scope.depth == groups.length() {
       spaces = scope.column
     }
-    if options.indent > 0 && continuation[i] >= 0 {
-      spaces = columns[continuation[i]]
+    let mut block_base = spaces
+    if options.indent > 0 && continuation.align[i] >= 0 {
+      spaces = columns[continuation.align[i]]
+      if continuation.strong[i] {
+        block_base = spaces
+      }
     }
     if layout.trailing_comma[i] && !only_comments {
       writer.write(",")
@@ -354,6 +358,11 @@ fn format_tokens(
     if t == "assert" {
       assertions.push(groups.length())
     }
+    if closing {
+      while assertions.last() == Some(groups.length()) {
+        ignore(assertions.pop())
+      }
+    }
     if (t == "," || t == ";") && assertions.last() == Some(groups.length()) {
       ignore(assertions.pop())
     }
@@ -381,7 +390,11 @@ fn format_tokens(
     } else if compact_equal {
       false
     } else if t == "(" {
-      !ends_expr && previous != "function" && previous != "(" && !tight_after
+      if previous == "[" {
+        inside is Some({ index: false, .. }) && options.pad_arrays
+      } else {
+        !ends_expr && previous != "function" && previous != "(" && !tight_after
+      }
     } else if t == "[" && ends_expr {
       false
     } else if tight_after || previous == "." || previous == "(" {
@@ -417,7 +430,10 @@ fn format_tokens(
         next.text == ":" ||
         next.text == "::" ||
         next.text == ":::" ||
-        next.text == "+:"
+        next.text == "+:" ||
+        next.text == "+::" ||
+        next.text == "+:::" ||
+        (next.text == "(" && layout.parameter[i + 1])
       ) {
       if token.value is Some(String(name)) &&
         is_name(name) &&
@@ -425,7 +441,11 @@ fn format_tokens(
         raw = name
       }
     }
-    writer.write(raw)
+    if t == "<block>" {
+      writer.write_block(token, options.indent, block_base)
+    } else {
+      writer.write(raw)
+    }
     if locals.last() is Some(scope) && scope.depth == groups.length() {
       if scope.binding && is_name(t) {
         scope.binding = false

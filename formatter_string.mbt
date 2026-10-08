@@ -2,6 +2,51 @@
 // Copyright Google Inc.; Apache-2.0; see NOTICE.
 
 ///|
+fn FormatOutput::write_block(
+  self : FormatOutput,
+  token : Token,
+  indent : Int,
+  base : Int,
+) -> Unit raise JsonnetError {
+  if indent <= 0 {
+    for c in token.raw.to_array() {
+      if c != '\r' {
+        self.write(c.to_string())
+      }
+    }
+    return
+  }
+  guard token.value is Some(String(value)) else {
+    self.write(token.raw)
+    return
+  }
+  if indent > self.limits.output_bytes ||
+    base > self.limits.output_bytes - indent {
+    raise problem(Limit, token.loc, "format output byte limit exceeded")
+  }
+  let characters = value.to_array()
+  let chomp = !value.has_suffix("\n")
+  self.write(if chomp { "|||-\n" } else { "|||\n" })
+  if characters.get(0) != Some('\n') {
+    self.indent(base + indent)
+  }
+  for i, c in characters {
+    if c == '\r' {
+      continue
+    }
+    self.write(c.to_string())
+    if c == '\n' && i + 1 < characters.length() && characters[i + 1] != '\n' {
+      self.indent(base + indent)
+    }
+  }
+  if chomp {
+    self.write("\n")
+  }
+  self.indent(base)
+  self.write("|||")
+}
+
+///|
 fn format_string(
   token : Token,
   style : FormatStringStyle,

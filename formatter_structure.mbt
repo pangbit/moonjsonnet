@@ -23,7 +23,10 @@ fn format_plus_edits(
       if tokens[i - 1].text == "+" {
         if implicit &&
           right.kind is Obj(_, _, _) &&
-          (left.kind is Var(_) || left.kind is Index(_, _)) &&
+          (
+            (left.kind is Var(name) && is_name(name)) ||
+            left.kind is Index(_, _)
+          ) &&
           i > 1 &&
           left.end == Some(tokens[i - 2].end) {
           skip[i - 1] = true

@@ -1,10 +1,16 @@
 ///|
+priv struct FormatContinuation {
+  align : Array[Int]
+  strong : Array[Bool]
+}
+
+///|
 // Binary continuations align with the whole left expression, rather than
 // adding one level for every physical newline inside a delimiter.
 fn format_binary_continuations(
   tokens : Array[Token],
   root : Expr,
-) -> Array[Int] {
+) -> FormatContinuation {
   let positions : Map[(Int, Int), Int] = Map([])
   let ends : Map[(Int, Int), Int] = Map([])
   for i, token in tokens {
@@ -12,6 +18,7 @@ fn format_binary_continuations(
     ends[(token.end.line, token.end.column)] = i + 1
   }
   let align = Array::make(tokens.length(), -1)
+  let strong = Array::make(tokens.length(), false)
   let stack = [root]
   while stack.pop() is Some(e) {
     if e.kind is Binary(op, left, right) &&
@@ -26,6 +33,9 @@ fn format_binary_continuations(
           // operand, but the first printed token still belongs to it.
           if i + 1 < tokens.length() {
             align[i + 1] = start
+            let reset = tokens[i].has_newline() || tokens[i + 1].has_newline()
+            strong[i] = reset
+            strong[i + 1] = reset
           }
           break
         }
@@ -41,5 +51,5 @@ fn format_binary_continuations(
       }
     }
   }
-  align
+  { align, strong, }
 }
