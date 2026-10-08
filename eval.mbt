@@ -405,39 +405,13 @@ fn Vm::call_env(
     .debug_capture(roots, bound=params.map(p => p.name))
     .child()
     .trace_context("function <" + outer.diagnostic_context.1 + ">")
-  let assigned : Map[String, Bool] = Map([])
-  for i, (name, t) in args {
-    let n = match name {
-      Some(n) => {
-        if !params.any(p => p.name == n) {
-          raise problem(Runtime, loc, "function has no parameter " + n)
-        }
-        n
-      }
-      None => {
-        if i >= params.length() {
-          let positional = args.iter().filter(pair => pair.0 is None).count()
-          raise problem(
-            Runtime,
-            loc,
-            "function expected \{params.length()} positional argument(s), but got \{positional}",
-          )
-        }
-        params[i].name
-      }
-    }
-    if name is Some(_) && assigned.contains(n) {
-      raise problem(Runtime, loc, "duplicate argument '\{n}'")
-    }
-    assigned[n] = true
-    env.names[n] = t
-  }
-  // Check every required parameter before inserting defaults. Repeated names
-  // share one slot: last positional argument, or first available default.
-  for p in params {
-    if p.default_value is None && !assigned.contains(p.name) {
-      raise problem(Runtime, loc, "Missing argument: " + p.name)
-    }
+  let assigned = bind_arguments(
+    params.map(p => (p.name, p.default_value is None)),
+    args,
+    loc,
+  )
+  for name, thunk in assigned {
+    env.names[name] = thunk
   }
   for { name: n, default_value: d, .. } in params {
     if !env.names.contains(n) && d is Some(e) {

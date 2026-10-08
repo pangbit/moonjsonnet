@@ -133,17 +133,11 @@ fn Vm::builtin(
   } else {
     params.length()
   }
-  if args.length() < required || args.length() > params.length() {
-    raise problem(Runtime, loc, "std.\{name}: wrong argument count")
-  }
-  let ids : Map[String, Int] = Map([])
-  for i, (n, t) in args {
-    let key = n.unwrap_or(params[i])
-    if !params.contains(key) || ids.contains(key) {
-      raise problem(Runtime, loc, "invalid or duplicate argument '\{key}'")
-    }
-    ids[key] = t
-  }
+  let ids = bind_arguments(
+    params.mapi((index, name) => (name, index < required)),
+    args,
+    loc,
+  )
   if name == "manifestJsonEx" {
     for key in ["value", "indent"] {
       if !ids.contains(key) {
