@@ -55,6 +55,7 @@ async fn main {
     rows.push({"path":path,"source":source,"passed":ok,"go_exit":a.exit_code(),"moon_exit":b.exit_code(),"go":expected,"moon":actual,"go_stderr":a.stderr(),"moon_stderr":b.stderr()})
   }
   let report : Json={
+    "local_entrypoint":"format_syntax_source; default SyntaxLimits",
     "source_commit":command("git",["rev-parse","HEAD"]),
     "source_dirty":command("git",["status","--porcelain"])!="",
     "input_commit":"bbb38f1020be1f5aed560928fb839b2c448cefb4",

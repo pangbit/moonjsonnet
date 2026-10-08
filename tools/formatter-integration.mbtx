@@ -55,6 +55,7 @@ async fn main {
   }
   @fs.mkdir("_build/formatter",recursive=true,allow_exist=true)
   let report : Json={
+    "local_entrypoint":"format_syntax_source; default SyntaxLimits",
     "source_commit":command("git",["rev-parse","HEAD"]),
     "source_dirty":command("git",["status","--porcelain"])!="",
     "reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57",

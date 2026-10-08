@@ -77,7 +77,15 @@ pub fn ParsedSource::format(
     Error(d) => raise Error(d)
     e => raise problem(Runtime, loc, e.to_string())
   }
-  format_tokens(self.tokens, self.expression, options, limits, loc)
+  format_tokens(
+    self.tokens,
+    self.expression,
+    options,
+    limits,
+    loc,
+    limits.depth,
+    None,
+  )
 }
 
 ///|

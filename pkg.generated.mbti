@@ -18,6 +18,8 @@ pub fn find_dependencies(String, Array[String], resolver~ : (String, String) -> 
 
 pub fn format_source(String, filename? : String, options? : FormatOptions, limits? : Limits) -> String raise JsonnetError
 
+pub fn format_syntax_source(String, filename? : String, options? : FormatOptions, limits? : SyntaxLimits) -> String raise JsonnetError
+
 pub fn lint(Array[Source], resolver? : (String, String) -> BinarySource raise, limits? : Limits) -> Array[Diagnostic] raise JsonnetError
 
 // Errors
@@ -246,6 +248,26 @@ pub fn SourceRange::equal(Self, Self) -> Bool
 pub fn SourceRange::format(Self) -> String
 pub fn SourceRange::not_equal(Self, Self) -> Bool
 pub fn SourceRange::to_repr(Self) -> @debug.Repr
+
+pub struct SyntaxDocument {
+  // private fields
+}
+pub fn SyntaxDocument::ast(Self) -> Ast
+pub fn SyntaxDocument::format(Self, options? : FormatOptions, limits? : SyntaxLimits) -> String raise JsonnetError
+pub fn SyntaxDocument::parse(String, filename? : String, limits? : SyntaxLimits) -> Self raise JsonnetError
+pub fn SyntaxDocument::parts(Self) -> Array[SourcePart]
+pub fn SyntaxDocument::text(Self) -> String
+
+pub(all) struct SyntaxLimits {
+  parser_depth : Int
+  tree_depth : Int
+  nodes : Int
+  steps : Int
+  source_bytes : Int
+  output_bytes : Int
+} derive(@debug.Debug)
+pub fn SyntaxLimits::default() -> Self
+pub fn SyntaxLimits::to_repr(Self) -> @debug.Repr
 
 // Type aliases
 

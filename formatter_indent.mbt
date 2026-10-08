@@ -5,13 +5,13 @@
 priv struct FormatIndentValue {
   anchor : Int
   levels : Int
-}
+} derive(Eq)
 
 ///|
 priv struct FormatIndentContext {
   base : FormatIndentValue
   line_up : FormatIndentValue
-}
+} derive(Eq)
 
 ///|
 priv struct FormatIndentPlan {
@@ -149,20 +149,31 @@ fn format_indent_plan(
       { base: if strong { line_up } else { old.base }, line_up, }
     }
   }
-  let stack : Array[(Expr, FormatIndentContext)] = [
-    (root, { base: zero, line_up: zero, }),
+  let stack : Array[(Expr, FormatIndentContext, Bool)] = [
+    (root, { base: zero, line_up: zero, }, true),
   ]
-  while stack.pop() is Some((e, context)) {
+  while stack.pop() is Some((e, context, replace)) {
     writer.tick()
     let first = positions.get((e.loc.line, e.loc.column)).unwrap_or(0)
     let end = finish(e)
-    for i in start(e)..<end {
-      writer.tick()
-      plan.base[i] = context.base
-      plan.line_up[i] = context.line_up
+    if replace {
+      for i in start(e)..<end {
+        writer.tick()
+        plan.base[i] = context.base
+        plan.line_up[i] = context.line_up
+      }
     }
     let push = fn(child : Expr, next : FormatIndentContext) {
-      stack.push((child, next))
+      stack.push((child, next, next != context))
+    }
+    // An already painted child interval needs no repeated assignment. This
+    // keeps flat binary chains linear while preserving each distinct base.
+    let push_within = fn(
+      child : Expr,
+      next : FormatIndentContext,
+      covered : FormatIndentContext,
+    ) {
+      stack.push((child, next, next != covered))
     }
     let visit = fn(child : Expr) { push(child, context) }
     let new_child = fn(child : Expr) { child_at(start(child), context, false) }
@@ -170,7 +181,7 @@ fn format_indent_plan(
       for clause in cs {
         match clause {
           For(_, value) | When(value) =>
-            push(value, child_at(start(value), next, false))
+            push_within(value, child_at(start(value), next, false), next)
         }
       }
     }
@@ -194,11 +205,13 @@ fn format_indent_plan(
         })
         if names.any(i => tokens[i].has_newline()) {
           for i in names[1:] {
+            writer.tick()
             layout.newline[i] = true
           }
         }
         let next = child_at(name, context, false)
         for i in name..<start(body) {
+          writer.tick()
           plan.base[i] = next.base
           plan.line_up[i] = next.line_up
         }
@@ -206,13 +219,14 @@ fn format_indent_plan(
           let value_start = start(binding.value)
           let lowered_function = binding.value.kind is Func(_, _) &&
             tokens[value_start].text != "function"
-          push(
+          push_within(
             binding.value,
             if lowered_function {
               next
             } else {
               child_at(value_start, next, false)
             },
+            next,
           )
         }
         visit(body)
@@ -220,10 +234,12 @@ fn format_indent_plan(
       Func(parameters, body) => {
         let mut parameter_context = context
         for open in first..<start(body) {
+          writer.tick()
           if layout.parameter[open] {
             let close = layout.close[open]
             parameter_context = child_at(open + 1, context, false)
             for i in (open + 1)..<close {
+              writer.tick()
               plan.base[i] = parameter_context.base
               plan.line_up[i] = parameter_context.line_up
             }
@@ -233,7 +249,7 @@ fn format_indent_plan(
         }
         for parameter in parameters {
           if parameter.default_value is Some(value) {
-            push(value, parameter_context)
+            push_within(value, parameter_context, parameter_context)
           }
         }
         push(body, new_child(body))
@@ -246,12 +262,14 @@ fn format_indent_plan(
         }
         // Branch markers reset to the parent base, including an inline else-if.
         for i in finish(condition)..<start(yes) {
+          writer.tick()
           if tokens[i].text == "then" {
             plan.line_up[i] = context.base
           }
         }
         if no.end is Some(_) {
           for i in finish(yes)..<start(no) {
+            writer.tick()
             if tokens[i].text == "else" {
               plan.line_up[i] = context.base
             }
@@ -261,6 +279,7 @@ fn format_indent_plan(
       Binary(op, left, right) => {
         let mut strong = false
         for i in finish(left)..<start(right) {
+          writer.tick()
           if tokens[i].text == op {
             strong = tokens[i].has_newline() || tokens[i + 1].has_newline()
             break
@@ -272,21 +291,29 @@ fn format_indent_plan(
           let line_up : FormatIndentValue = { anchor: first, levels: 0, }
           { base: if strong { line_up } else { context.base }, line_up, }
         }
-        for i in first..<end {
-          plan.base[i] = next.base
-          plan.line_up[i] = next.line_up
+        if next != context {
+          for i in first..<end {
+            writer.tick()
+            plan.base[i] = next.base
+            plan.line_up[i] = next.line_up
+          }
         }
-        push(left, next)
-        push(right, next)
+        if start(left) < first {
+          push(left, next)
+        } else {
+          push_within(left, next, next)
+        }
+        push_within(right, next, next)
       }
       Arr(items) => {
         let next = child_at(first + 1, context, false)
         for i in (first + 1)..<end {
+          writer.tick()
           plan.base[i] = next.base
           plan.line_up[i] = next.line_up
         }
         for value in items {
-          push(value, next)
+          push_within(value, next, next)
         }
         if layout.close[first] >= 0 {
           plan.line_up[layout.close[first]] = context.base
@@ -295,19 +322,24 @@ fn format_indent_plan(
       Obj(fields, bindings, assertions) => {
         let next = child_at(first + 1, context, false)
         for i in (first + 1)..<end {
+          writer.tick()
           plan.base[i] = next.base
           plan.line_up[i] = next.line_up
         }
         for field in fields {
-          push(field.key, next)
+          push_within(field.key, next, next)
           if field.value.kind is Func(_, _) && field.value.end is None {
-            push(field.value, next)
+            push_within(field.value, next, next)
           } else {
-            push(field.value, child_at(start(field.value), next, false))
+            push_within(
+              field.value,
+              child_at(start(field.value), next, false),
+              next,
+            )
           }
         }
         for binding in bindings {
-          push(
+          push_within(
             binding.value,
             if binding.value.kind is Func(_, _) &&
               tokens[start(binding.value)].text != "function" {
@@ -315,12 +347,13 @@ fn format_indent_plan(
             } else {
               child_at(start(binding.value), next, false)
             },
+            next,
           )
         }
         for (condition, message) in assertions {
-          push(condition, next)
+          push_within(condition, next, next)
           if message is Some(value) {
-            push(value, child_at(start(condition), next, false))
+            push_within(value, child_at(start(condition), next, false), next)
           }
         }
         if layout.close[first] >= 0 {
@@ -332,10 +365,11 @@ fn format_indent_plan(
       ArrayComp(body, cs) => {
         let next = child_at(first + 1, context, false)
         for i in (first + 1)..<end {
+          writer.tick()
           plan.base[i] = next.base
           plan.line_up[i] = next.line_up
         }
-        push(body, next)
+        push_within(body, next, next)
         clauses(cs, next)
         if layout.close[first] >= 0 {
           plan.line_up[layout.close[first]] = context.base
@@ -344,13 +378,18 @@ fn format_indent_plan(
       ObjectComp(key, body, cs, bindings) => {
         let next = child_at(first + 1, context, false)
         for i in (first + 1)..<end {
+          writer.tick()
           plan.base[i] = next.base
           plan.line_up[i] = next.line_up
         }
-        push(key, next)
-        push(body, child_at(start(body), next, false))
+        push_within(key, next, next)
+        push_within(body, child_at(start(body), next, false), next)
         for binding in bindings {
-          push(binding.value, child_at(start(binding.value), next, false))
+          push_within(
+            binding.value,
+            child_at(start(binding.value), next, false),
+            next,
+          )
         }
         clauses(cs, next)
         if layout.close[first] >= 0 {
@@ -366,11 +405,12 @@ fn format_indent_plan(
           let next = child_at(open + 1, context, strong)
           let close = layout.close[open]
           for i in (open + 1)..<close {
+            writer.tick()
             plan.base[i] = next.base
             plan.line_up[i] = next.line_up
           }
           for (_, value) in arguments {
-            push(value, next)
+            push_within(value, next, next)
           }
           if close >= 0 {
             plan.line_up[close] = context.base
@@ -390,15 +430,17 @@ fn format_indent_plan(
           plan.line_up[name] = next.line_up
         } else {
           for open in finish(target)..<start(index) {
+            writer.tick()
             if tokens[open].text == "[" {
               let close = layout.close[open]
               let next = child_at(open + 1, context, false)
               for i in (open + 1)..<close {
+                writer.tick()
                 plan.base[i] = next.base
                 plan.line_up[i] = next.line_up
               }
               plan.line_up[close] = context.base
-              push(index, next)
+              push_within(index, next, next)
               break
             }
           }
@@ -407,6 +449,7 @@ fn format_indent_plan(
       Slice(target, begin, stop, step) => {
         visit(target)
         for open in finish(target)..<end {
+          writer.tick()
           if tokens[open].text != "[" {
             continue
           }
@@ -416,9 +459,11 @@ fn format_indent_plan(
             push(value, next)
           }
           for i in (open + 1)..<close {
+            writer.tick()
             if tokens[i].text == ":" || tokens[i].text == "::" {
               next = child_at(i, context, false)
               for j in i..<close {
+                writer.tick()
                 plan.base[j] = next.base
                 plan.line_up[j] = next.line_up
               }
@@ -427,7 +472,7 @@ fn format_indent_plan(
           }
           for value in [stop, step] {
             if value is Some(value) {
-              push(value, next)
+              push_within(value, next, next)
             }
           }
           plan.line_up[close] = {

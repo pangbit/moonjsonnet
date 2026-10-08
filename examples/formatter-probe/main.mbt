@@ -68,10 +68,18 @@ fn run(input : Json) -> Json {
         defaults.strip_all_but_comments,
       ),
     }
-    let result = @moonjsonnet.format_source(source, filename="entry", options~)
-    ignore(@moonjsonnet.ParsedSource::parse(result))
+    let result = @moonjsonnet.format_syntax_source(
+      source,
+      filename="entry",
+      options~,
+    )
+    ignore(@moonjsonnet.SyntaxDocument::parse(result))
     valid = true
-    idempotent = @moonjsonnet.format_source(result, filename="entry", options~) ==
+    idempotent = @moonjsonnet.format_syntax_source(
+        result,
+        filename="entry",
+        options~,
+      ) ==
       result
     result
   } catch {

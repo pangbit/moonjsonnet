@@ -581,7 +581,12 @@ fn parse(source : String, file : String, max_depth : Int) -> Expr raise Error {
 }
 
 ///|
-fn parse_tokens(tokens : Array[Token], max_depth : Int) -> Expr raise Error {
+fn parse_tokens(
+  tokens : Array[Token],
+  max_depth : Int,
+  tree_depth? : Int,
+  node_limit? : Int,
+) -> Expr raise Error {
   let p : Parser = {
     tokens,
     pos: 0,
@@ -591,6 +596,9 @@ fn parse_tokens(tokens : Array[Token], max_depth : Int) -> Expr raise Error {
   }
   let e = p.expr(0)
   p.expect("<eof>")
-  check_ast_depth(e, max_depth)
+  check_ast_depth(e, tree_depth.unwrap_or(max_depth))
+  if node_limit is Some(limit) {
+    check_ast_nodes(e, limit)
+  }
   e
 }

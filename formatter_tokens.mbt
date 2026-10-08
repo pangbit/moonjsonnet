@@ -77,6 +77,8 @@ fn format_tokens(
   options : FormatOptions,
   limits : Limits,
   loc : Location,
+  tree_depth : Int,
+  node_limit : Int?,
 ) -> String raise JsonnetError {
   let tokens = format_rewrite(tokens, root, options)
   let tokens = if options.sort_imports {
@@ -97,7 +99,7 @@ fn format_tokens(
   let groups : Array[FormatGroup] = []
   let locals : Array[FormatLocal] = []
   let layout = format_layout(tokens)
-  let expression = parse_tokens(tokens, limits.depth) catch {
+  let expression = parse_tokens(tokens, limits.depth, tree_depth~, node_limit?) catch {
     Error(d) => raise Error(d)
     e => raise problem(Runtime, loc, e.to_string())
   }

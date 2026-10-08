@@ -102,3 +102,16 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
     }
   }
 }
+
+///|
+fn check_ast_nodes(root : Expr, limit : Int) -> Unit raise {
+  let stack = [root]
+  let mut nodes = 0
+  while stack.pop() is Some(e) {
+    if nodes >= limit {
+      raise problem(Limit, e.loc, "syntax tree node limit exceeded")
+    }
+    nodes += 1
+    stack.append(ast_export_children(e))
+  }
+}

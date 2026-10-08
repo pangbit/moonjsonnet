@@ -93,11 +93,16 @@ test "readme native callback and trace" {
 `format_source` and `ParsedSource::format` format source without evaluating it or
 resolving imports. Formatting support is partial; broader layout and comment
 placement remain under validation. See [parity status](docs/GO-PARITY.md).
+`format_syntax_source` and `SyntaxDocument` provide independent source-tooling
+budgets for deep trees; evaluator admission and existing `Limits` stay unchanged.
 
 ```mbt check
 ///|
 test "readme source formatting" {
   assert_eq(@moonjsonnet.format_source("{\"a\":[1,2]}"), "{ a: [1, 2] }\n")
+  let source = "0" + "+1".repeat(299)
+  let syntax = @moonjsonnet.SyntaxDocument::parse(source)
+  assert_eq(syntax.format(), "0" + " + 1".repeat(299) + "\n")
 }
 ```
 

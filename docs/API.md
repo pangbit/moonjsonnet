@@ -327,18 +327,37 @@ raw parsing; it does not expose Go's Fodder normalization or editable raw AST.
 Ordinary Program parsing does not retain trivia.
 
 `format_source(source, filename?, options?, limits?)` and
-`ParsedSource::format(options?, limits?)` provide partial native source formatting.
+`ParsedSource::format(options?, limits?)` provide native source formatting.
 They never evaluate expressions, resolve imports or mutate the retained document.
 The result ends with LF. Source/depth limits apply before formatting; emission
 also enforces UTF-8 output-byte and token/trivia step limits.
+
+For tooling on deeper trees, `SyntaxDocument::parse(source, filename?, limits?)`
+and `format_syntax_source(source, filename?, options?, limits?)` use independent
+`SyntaxLimits`. Defaults are recursive parser depth 200, complete tree depth
+4096, 1,000,000 nodes and formatting steps, 1 MiB source and 4 MiB output.
+All limits must be positive; parser depth is capped at 512 and tree depth at
+16384. A flat binary chain can therefore exceed evaluator tree depth without
+expanding recursive parser admission. Every tree child counts, including defaults,
+object assertions and comprehension clauses. `format` rechecks source, tree and
+node admission, even when a previously parsed document is given narrower limits.
+
+`SyntaxDocument::text`, `parts` and iterative `ast` have the same retention and
+independent-copy behavior as `ParsedSource`. Parsing/formatting never evaluates
+or resolves imports. Exporting a semantic AST does not admit it for execution:
+`Program::from_ast` still applies evaluator scope and resource checks. Existing
+`Program`, `ParsedSource`, `format_source` and `Limits` retain their depth defaults
+and hard cap; use the explicit syntax entry point for deeper source tooling.
 
 `FormatOptions::default()` selects two-space indentation, at most two blank lines,
 single quotes, slash comments, pretty field names, unpadded arrays, padded objects
 and implicit object addition. String styles are `DoubleQuotes`, `SingleQuotes`
 and `PreserveQuotes`; comments use `HashComments`, `SlashComments` and
 `PreserveComments`. Strings containing one quote kind use the other to avoid
-escaping; strings containing both kinds, verbatim strings and text blocks retain
-their spelling. Nonpositive indentation/blank-line options preserve the original
+escaping; strings containing both kinds and verbatim strings retain their spelling.
+Text blocks use the formatter's current indentation and preserve the decoded
+content, subject to fixed Go's removal of carriage returns. Nonpositive
+indentation/blank-line options preserve the original
 indentation or disable blank-line limiting, following Go.
 
 The strip flags follow Go precedence: `strip_comments`, then
