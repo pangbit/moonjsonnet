@@ -416,6 +416,11 @@ ASan test/host integration suite passes. No public interfaces changed; full pari
 and cross-platform acceptance remain incomplete. See the [expression indentation
 and whole-suite report](../reports/GO-JSONNET-FORMATTER-CONTINUATION4.md).
 
+Clean implementation `1681c77da4e95102ccfe9c77f1d2d844c91a59e2` exports ASTs
+iteratively, passing native debug/release **251/251**, pinned Go AST **173/173**
+and the isolated ASan test/host integration suite. Public admission budgets and
+interfaces remain unchanged. See the [iterative export report](../reports/GO-JSONNET-AST-ITERATIVE-EXPORT.md).
+
 See the repository's `reports/` directory for commit-bound acceptance evidence.
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
 
