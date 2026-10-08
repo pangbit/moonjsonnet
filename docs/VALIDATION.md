@@ -487,7 +487,7 @@ moon run tools/diagnostic-api.mbtx _build/native/release/build/examples/diagnost
 
 The adapter observes public VM ErrorFormatter calls and static `Loc()` values.
 It compares complete bytes, ordered locations/names, color callbacks and error/
-output results in 1260 frozen cases against fresh pinned Go. Seven trace-size
+output results in 1323 frozen cases against fresh pinned Go. Seven trace-size
 settings include the default, negative/zero unlimited, odd/even cropping and the
 maximum Int. Cases cover local/function/object contexts, aliases, recursive and
 tailstrict calls, imports/ext/TLA code, manifestations, additive fields, assertions,
@@ -503,8 +503,13 @@ Optional `stack_size` gives both interpreters identical explicit frame budgets;
 returned external-code cycles include self/mutual references, local/if paths,
 the default 500 frames and caps 1/2/3/8. Native tests separately verify finite
 forwarding executes callbacks and caches results, independent step/depth limits,
-hook cleanup and reusable-evaluator recovery. Earlier 1211 cases and complete
-expectations remain unchanged. See the [cycle acceptance report](../reports/GO-JSONNET-PARAMETER-CYCLES.md).
+hook cleanup and reusable-evaluator recovery. Nine finite non-tail local, array,
+field, generated-call and external-parameter inputs use eight actual frames;
+native callbacks establish finite recursion, memoization and outer-error recovery.
+Earlier 1260 cases and complete expectations remain unchanged. Default non-tail
+evaluation keeps the independent expression-depth limit. See the
+[cycle report](../reports/GO-JSONNET-PARAMETER-CYCLES.md) and
+[lazy reentry acceptance](../reports/GO-JSONNET-LAZY-REENTRY.md).
 No diagnostic text normalization is used in comparisons. Omitting the checkout is explicitly local
 frozen verification, also used on the isolated ASan probe.
 
@@ -516,7 +521,7 @@ moon run tools/asan.mbtx ${LOCAL_PATH_012}
 ```
 
 Every distinct diagnostic API input, including color-call variants, runs as
-exec, stdin and a canonical absolute file under seven CLI trace settings: 3906
+exec, stdin and a canonical absolute file under seven CLI trace settings: 4095
 checks. Both CLIs receive identical source/options and absolute file/import
 identities. Complete stdout/stderr bytes and exit codes are compared without
 output normalization. Stderr is captured to files to preserve invalid UTF-8.
@@ -524,7 +529,20 @@ Sources and outputs are saved in the temporary evidence directory, and all
 failures remain in `_build/diagnostic-cli/report.json`. Passing a Go checkout to
 ASan adds this actual-Go comparison on the instrumented CLI; omitting it retains
 the local host/frozen API checks. This is finite captured-output coverage, separate
-from canonical-root/UTF-8/resource policies, argument branding and terminal color.
+from canonical-root/UTF-8/resource policies and CLI argument/I/O diagnostics.
+
+Actual terminal color has a separate 25-case comparison:
+
+```sh
+moon run tools/diagnostic-terminal.mbtx _build/native/release/build/cmd/main/main.exe ${LOCAL_PATH_012}/jsonnet
+```
+
+It verifies pinned reference identity/build metadata and uses the existing BSD
+`script` on macOS to compare complete PTY transcripts, captured outputs, exit codes
+and actual ANSI color across TERM/NO_COLOR modes. No bytes are normalized. Linux's
+util-linux branch is written but has not been executed. Passing the Go checkout to
+ASan now includes this comparison on the instrumented CLI. See the
+[terminal diagnostic report](../reports/GO-JSONNET-TERMINAL-DIAGNOSTICS.md).
 
 The [overall parity plan](GO-PARITY.md) tracks capabilities outside the existing
 behavioral corpus. `tools/parity.mbtx` compares all 163 reflected Go standard-library

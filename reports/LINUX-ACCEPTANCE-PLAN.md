@@ -49,8 +49,10 @@ permission denied while trying to connect to the docker API at unix://${LOCAL_HO
 | unzip | 独立 archive 消费者展开；[Debian unzip](https://packages.debian.org/trixie/unzip) |
 | perl | 现有验收脚本的 `shasum`；[官方 arm64 文件清单](https://packages.debian.org/trixie/arm64/perl/filelist)含 `/usr/bin/shasum` |
 
-C++ 仓库仅作现有格式化输入，不构建 C++ 解释器，因此此阶段不需要 g++、make
-或整套 build-essential。具体包版本在容器验收报告中记录，不把网页版本当作
+C++ 仓库在拟定 Linux Go 验收中只作格式化输入，不构建 C++ 解释器，因此此
+方案不含 g++、make 或整套 build-essential。宿主另用已有 clang++/make 实际
+通过 C++ 上游语言303/303，不算 Linux 证据；若需同一个旧上游语言 runner，
+它要求 Linux C++ 二进制，应单列所需工具与授权。具体包版本在容器验收报告中记录，不把网页版本当作
 已安装版本。
 
 MoonBit 使用[官方下载页](https://www.moonbitlang.com/download)的
@@ -101,9 +103,14 @@ test、release build、info/fmt、三个原有示例、独立 archive 消费者�
 CLI/Evaluator/lint/诊断/AST/调试/格式化对照。完整报告与日志写宿主证据目录。
 仅实际执行并通过的检查计通过；所有旧失败和新增失败保留，不以宿主结果代替。
 
-当前宿主干净实现 `d7888ff` 的 API 1260/1260、CLI 字节 3906/3906，整体 CLI
+当前宿主干净实现 `679604a` 的 API 1323/1323、CLI 字节 4095/4095、真实终端
+25/25，整体 CLI
 1132/1150、Evaluator 20/21、lint 409/410。Linux 应按相同输入保留原 18+1+1
 项未接受差异，并独立报告平台产生的差异。完成并保存证据后清理本次容器。
 当前剩余环境阻碍是安装/创建隔离容器尚无授权；只读元数据已核实。
+
+新增 TTY runner 在 Linux 使用 util-linux `script`，先检查镜像中的已有命令。
+该分支目前未执行；缺少时报告所需授权，不安装。父会话初次安装请求未包含
+unzip/perl，两者仍未获授权，也不得自行安装。
 
 > Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
