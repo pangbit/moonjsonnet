@@ -360,12 +360,12 @@ moon run tools/formatter-integration.mbtx _build/native/release/build/examples/f
 The runner validates exact frozen output, parse-error fragments, reparse success
 and Go's idempotence behavior. It records both outputs and all failures in
 `_build/formatter/report.json`; a nonzero exit is expected while differences remain.
-Implementation `3cfaa54` passes 359/359 fixtures, including the six previously
-retained differences. Native debug/release tests pass 235/235, and the
-archive consumer passes 23/23.
-The ASan run includes the new formatter black-box tests, not the complete Go
-formatter differential corpus. The broader upstream input survey passes 126/178,
-with 52 retained failures (zero Go errors and three local probe errors):
+The 2026-10-05 implementation `3cfaa54` passed 359/359 fixtures, including the six
+previously retained differences. That historical native debug/release validation
+passed 235/235, and the archive consumer passed 23/23. Its ASan run included the
+formatter black-box tests, not the complete Go formatter differential corpus.
+The historical upstream input survey passed 126/178, with 52 retained failures
+(zero Go errors and three local probe errors):
 
 ```sh
 moon run tools/upstream-formatter.mbtx _build/native/release/build/examples/formatter-probe/formatter-probe.exe ${LOCAL_PATH_012} ${LOCAL_PATH_006}
@@ -376,6 +376,18 @@ exact output and idempotence against Go. It retains every input and both outcome
 in `_build/upstream-formatter/report.json`, returning nonzero on differences.
 See the [sort/strip report](../reports/GO-JSONNET-FORMATTER-SORT-STRIP.md)
 for exact hashes, accepted checks and remaining work.
+
+On 2026-10-08, clean implementation `30548ae8953ed85ef027d3bd1dfd23eaca67a6c0`
+passes **402/402** frozen fixtures and **148/178** upstream inputs. Both tools
+rebuilt and reran the pinned Go reference; their final reports record
+`source_dirty=false`. Native debug/release tests each pass **240/240**. Checks,
+release build, interface generation, formatting and documentation generation pass,
+with no public interface changes. Every previously passing upstream input remains
+passing across the four stages. The upstream runner still returns nonzero for
+the **30 retained failures**, including two unchanged AST depth-limit errors.
+The prior ASan, consumer and unrelated CLI/API/lint results were not rerun in
+this batch. See the [continuation report](../reports/GO-JSONNET-FORMATTER-CONTINUATION.md)
+for commits, hashes, the full failure list and depth analysis.
 
 See the repository's `reports/` directory for commit-bound acceptance evidence.
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
