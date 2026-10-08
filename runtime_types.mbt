@@ -47,9 +47,11 @@ fn Env::lookup(self : Env, name : String) -> Int? {
 priv enum Thunk {
   Pending(Expr, Env)
   GeneratedCall(Value, Array[Int], Location)
+  FieldCall(Int, Int, String, LayerField, Env, Location)
   Code(String, Location)
   ParsedParameter(Program, Location)
   RunningParameter(Expr, Env)
+  Running(Thunk)
   Ready(Value)
   Busy
   Failed(Error)
@@ -136,26 +138,55 @@ fn Vm::store(self : Vm, t : Thunk) -> Int {
 ///|
 fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
   self.tick(loc)
-  match self.thunks[id] {
+  let thunk = self.thunks[id]
+  self.force_thunk(
+    id,
+    thunk,
+    loc,
+    owner=!(thunk is Running(_) || thunk is RunningParameter(_, _)),
+  )
+}
+
+///|
+// Re-enter the original computation, retaining its real frame and ordinary
+// depth/step budgets. A running marker is never substituted with a fake limit.
+fn Vm::force_thunk(
+  self : Vm,
+  id : Int,
+  thunk : Thunk,
+  loc : Location,
+  owner~ : Bool,
+) -> Value raise {
+  match thunk {
     Ready(v) => v
-    Busy | RunningParameter(_, _) =>
-      raise problem(Runtime, loc, "cyclic evaluation of a lazy value")
+    Busy => raise problem(Runtime, loc, "cyclic evaluation of a lazy value")
+    Running(original) => self.force_thunk(id, original, loc, owner=false)
+    RunningParameter(expr, env) => {
+      let value = self.eval_frame(expr, env) catch { e => self.failure(id, e) }
+      self.thunks[id] = Ready(value)
+      if owner {
+        ignore(self.retries.remove(id))
+      }
+      value
+    }
     Failed(e) => raise e
     Pending(expr, env) => {
-      if self.persistent {
-        self.retries[id] = self.thunks[id]
+      if self.persistent && !self.retries.contains(id) {
+        self.retries[id] = thunk
       }
-      self.thunks[id] = Busy
+      self.thunks[id] = Running(thunk)
       let v = self.eval_frame(expr, env) catch { e => self.failure(id, e) }
       self.thunks[id] = Ready(v)
-      ignore(self.retries.remove(id))
+      if owner {
+        ignore(self.retries.remove(id))
+      }
       v
     }
     GeneratedCall(function, args, origin) => {
-      if self.persistent {
-        self.retries[id] = self.thunks[id]
+      if self.persistent && !self.retries.contains(id) {
+        self.retries[id] = thunk
       }
-      self.thunks[id] = Busy
+      self.thunks[id] = Running(thunk)
       let v = try {
         self.push_frame(origin, false)
         defer self.pop_frame()
@@ -180,8 +211,17 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
         e => self.failure(id, e)
       }
       self.thunks[id] = Ready(v)
-      ignore(self.retries.remove(id))
+      if owner {
+        ignore(self.retries.remove(id))
+      }
       v
+    }
+    FieldCall(object, layer, name, field, env, origin) => {
+      let value = self.field_value(object, layer, name, field, env, origin) catch {
+        e => self.failure(id, e)
+      }
+      self.thunks[id] = Ready(value)
+      value
     }
     Code(source, origin) => {
       if self.persistent {
@@ -200,7 +240,9 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
         e => self.failure(id, e)
       }
       self.thunks[id] = Ready(v)
-      ignore(self.retries.remove(id))
+      if owner {
+        ignore(self.retries.remove(id))
+      }
       v
     }
     ParsedParameter(program, origin) => {
@@ -223,7 +265,9 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
         e => self.failure(id, e)
       }
       self.thunks[id] = Ready(v)
-      ignore(self.retries.remove(id))
+      if owner {
+        ignore(self.retries.remove(id))
+      }
       v
     }
   }

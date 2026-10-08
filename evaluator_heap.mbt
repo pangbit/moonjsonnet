@@ -14,6 +14,7 @@ fn Vm::retain_imports(self : Vm) -> Unit {
       .filter(key => {
         self.thunks[obj.cache[key]] is Failed(_) ||
         self.thunks[obj.cache[key]] is Busy ||
+        self.thunks[obj.cache[key]] is Running(_) ||
         self.thunks[obj.cache[key]] is RunningParameter(_, _)
       })
       .collect()

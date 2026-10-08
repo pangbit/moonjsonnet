@@ -38,7 +38,7 @@ fn Vm::import_file(
   }
   let key = (source.id, raw)
   if self.imports.get(key) is Some(t) {
-    if self.thunks[t] is Busy {
+    if self.thunks[t] is Busy || self.thunks[t] is Running(_) {
       raise problem(Import, loc, "cyclic import '\{source.id}'")
     }
     return self.force(t, loc)

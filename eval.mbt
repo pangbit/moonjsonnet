@@ -37,7 +37,7 @@ fn Vm::eval_inner(
     self.current_trace = previous_trace
   }
   let events : Array[EvalHookFrame] = []
-  let forwarded : Array[(Int, Location)] = []
+  let forwarded : Array[(Int, Location, Bool)] = []
   let result = self.eval_loop(expr, env, tail~, events~, forwarded~) catch {
     Error(d) => {
       for i = forwarded.length() - 1; i >= 0; i = i - 1 {
@@ -45,7 +45,7 @@ fn Vm::eval_inner(
       }
       let d = self.traced(d)
       self.hook_after(events, None, Some(Error(d)))
-      for (id, _) in forwarded {
+      for (id, _, _) in forwarded {
         self.thunks[id] = Failed(Error(d))
       }
       raise Error(d)
@@ -56,9 +56,11 @@ fn Vm::eval_inner(
     }
   }
   self.hook_after(events, Some(result), None)
-  for (id, _) in forwarded {
+  for (id, _, owner) in forwarded {
     self.thunks[id] = Ready(result)
-    ignore(self.retries.remove(id))
+    if owner {
+      ignore(self.retries.remove(id))
+    }
   }
   result
 }
@@ -70,7 +72,7 @@ fn Vm::eval_loop(
   env : Env,
   tail~ : Bool,
   events~ : Array[EvalHookFrame],
-  forwarded~ : Array[(Int, Location)],
+  forwarded~ : Array[(Int, Location, Bool)],
 ) -> Value raise {
   let mut expr = expr
   let mut env = env
@@ -139,8 +141,10 @@ fn Vm::eval_loop(
               }
               error => raise error
             }
+            let owner = self.thunks[id] is Code(_, _) ||
+              self.thunks[id] is ParsedParameter(_, _)
             if self.forward_parameter(id) is Some((next, scope)) {
-              forwarded.push((id, loc))
+              forwarded.push((id, loc, owner))
               self.push_frame(next.loc, false)
               if self.depth >= self.limits.depth {
                 raise self.trace_problem(

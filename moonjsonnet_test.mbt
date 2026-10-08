@@ -40,7 +40,7 @@ test "structured errors preserve category and source" {
     ("1e308 * 10", @moonjsonnet.Runtime),
     ("import 'no.libsonnet'", @moonjsonnet.Import),
     ("std.__missingForDiagnosticTest()", @moonjsonnet.Unsupported),
-    ("local x=x; x", @moonjsonnet.Runtime),
+    ("local x=x; x", @moonjsonnet.Limit),
   ]
   for (input, kind) in cases {
     try @moonjsonnet.evaluate(input, filename="case.jsonnet") catch {

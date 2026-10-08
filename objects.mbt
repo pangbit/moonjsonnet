@@ -160,7 +160,8 @@ fn Vm::field(
       if obj.cache.get(cache_key) is Some(t) {
         return self.force(t, loc)
       }
-      // Install a busy thunk before evaluating additive fields as well.
+      // Publish the cache slot before building its scope, then retain the whole
+      // field computation so recursive demands execute its actual body.
       let t = self.store(Busy)
       obj.cache[cache_key] = t
       let env = if obj.layers[layer].locals.is_empty() {
@@ -168,29 +169,8 @@ fn Vm::field(
       } else {
         self.layer_scope(id, layer)
       }
-      let v = try {
-        if f.field.additive {
-          self.push_frame(loc, false)
-          self.current_trace = Some({
-            location: Source({
-              begin: f.field.value.loc,
-              end: diagnostic_expr_end(f.field.value),
-            }),
-            name: "+:",
-          })
-        }
-        defer (if f.field.additive { self.pop_frame() })
-        let rhs = match f.field.value.kind {
-          StandardFunction(_) | StandardValue(_) =>
-            self.eval(f.field.value, env)
-          _ => self.eval_frame(f.field.value, env)
-        }
-        if f.field.additive && self.has_field(id, layer, name) {
-          self.binary("+", self.field(id, layer, name, loc), rhs, loc)
-        } else {
-          rhs
-        }
-      } catch {
+      self.thunks[t] = Running(FieldCall(id, layer, name, f, env, loc))
+      let v = self.field_value(id, layer, name, f, env, loc) catch {
         e => self.failure(t, e)
       }
       self.thunks[t] = Ready(v)
@@ -207,6 +187,38 @@ fn Vm::field(
     loc,
     "Field does not exist: " + name,
   )
+}
+
+///|
+fn Vm::field_value(
+  self : Vm,
+  id : Int,
+  layer : Int,
+  name : String,
+  field : LayerField,
+  env : Env,
+  loc : Location,
+) -> Value raise {
+  if field.field.additive {
+    self.push_frame(loc, false)
+    self.current_trace = Some({
+      location: Source({
+        begin: field.field.value.loc,
+        end: diagnostic_expr_end(field.field.value),
+      }),
+      name: "+:",
+    })
+  }
+  defer (if field.field.additive { self.pop_frame() })
+  let rhs = match field.field.value.kind {
+    StandardFunction(_) | StandardValue(_) => self.eval(field.field.value, env)
+    _ => self.eval_frame(field.field.value, env)
+  }
+  if field.field.additive && self.has_field(id, layer, name) {
+    self.binary("+", self.field(id, layer, name, loc), rhs, loc)
+  } else {
+    rhs
+  }
 }
 
 ///|
