@@ -163,6 +163,12 @@ fn format_sort_imports(
         out.write_string(entry.after)
       }
       out.write_string(next_group)
+      // Go ensures a clean line ending after the final interstitial in the
+      // next group's opening fodder, even when it originally preceded local.
+      let last_line = next_group.split("\n").collect().last().unwrap_or("")
+      if last_line.trim().has_suffix("*/") {
+        out.write_string("\n")
+      }
       entries.clear()
     }
   }

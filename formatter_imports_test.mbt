@@ -26,6 +26,23 @@ test "formatter import sorting uses raw UTF-8 lexical keys and preserves groups"
 }
 
 ///|
+test "formatter separates interstitial import group comments and keeps requests" {
+  let source = "local z=import 'z';\n/* one */ /* two */ local b=import 'b';local a=import 'a';[z,b,a]"
+  let formatted = @moonjsonnet.format_source(source)
+  assert_eq(
+    formatted, "local z = import 'z';\n/* one */ /* two */\nlocal a = import 'a';\nlocal b = import 'b';\n[z, b, a]\n",
+  )
+  let requests : Array[String] = []
+  let actual = @moonjsonnet.evaluate(formatted, resolver=fn(_, path) {
+    requests.push(path)
+    { id: path, text: Json::string(path).stringify(), }
+  })
+  assert_eq(actual.stringify(), "[\"z\",\"b\",\"a\"]")
+  assert_eq(requests, ["z", "b", "a"])
+  assert_eq(@moonjsonnet.format_source(formatted), formatted)
+}
+
+///|
 test "formatter sorted imports retain values and lazy import request order" {
   for
     source in [

@@ -184,14 +184,16 @@ fn format_tokens(
           } else if only_comments && !writer.line_start {
             writer.write("\n")
           }
-          writer.indent(
-            if options.indent > 0 {
-              spaces
-            } else {
-              trivia.range.begin.column - 1
-            },
-          )
-          if !writer.line_start && !previous.is_empty() && inline {
+          let comment_indent = if options.indent > 0 {
+            spaces
+          } else {
+            trivia.range.begin.column - 1
+          }
+          let follows_comment = interstitial && !writer.line_start
+          writer.indent(comment_indent)
+          if follows_comment {
+            writer.write(" ")
+          } else if !writer.line_start && !previous.is_empty() && inline {
             let crowded = t != ";" &&
               t != "," &&
               t != "." &&
@@ -338,19 +340,17 @@ fn format_tokens(
     } else {
       true
     }
+    let comment_space = interstitial &&
+      !writer.line_start &&
+      !closing &&
+      t != "," &&
+      t != ";" &&
+      !t.has_prefix(":") &&
+      !t.has_prefix("+:") &&
+      t != "." &&
+      previous != "."
     writer.indent(spaces)
-    if spaced ||
-      (
-        interstitial &&
-        !writer.line_start &&
-        !closing &&
-        t != "," &&
-        t != ";" &&
-        !t.has_prefix(":") &&
-        !t.has_prefix("+:") &&
-        t != "." &&
-        previous != "."
-      ) {
+    if spaced || comment_space {
       writer.write(" ")
     }
     let mut raw = format_string(token, options.string_style)

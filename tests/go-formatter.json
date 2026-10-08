@@ -3019,5 +3019,63 @@
     "expected": "[\n  1,\n\n  // second\n  2,\n]\n",
     "idempotent": true,
     "provenance": "Fresh pinned Go v0.21.0 formatter output, stage2 comment blank-line regression."
+  },
+  {
+    "name": "upstream-interstitial-groups-test_suite/import_sorting_crazy.jsonnet",
+    "source": "local z = import 'zzzz.jsonnet'; /* zzz\nzzz */ local y = import 'y.libsonnet'; /* aaaaa */ local x = import 'x.libsonnet';\n/* w1 */ /* w2 */ local w = import 'w.jsonnet'; /* w3 */ /* w4 */\nlocal u = import 'u.jsonnet';               local v = import 'v.jsonnet';\nlocal t = import 't.jsonnet';local s=import 's.jsonnet';local r=import 'r.jsonnet';\n\nlocal b = import 'b.jsonnet';\n/* foo */\n\n/* bar */\nlocal a = import 'a.jsonnet';\n\ntrue\n",
+    "options": {},
+    "expected": "local z = import 'zzzz.jsonnet';\n/* zzz\nzzz */\nlocal x = import 'x.libsonnet';\nlocal y = import 'y.libsonnet'; /* aaaaa */\n/* w1 */ /* w2 */\nlocal r = import 'r.jsonnet';\nlocal s = import 's.jsonnet';\nlocal t = import 't.jsonnet';\nlocal u = import 'u.jsonnet';\nlocal v = import 'v.jsonnet';\nlocal w = import 'w.jsonnet'; /* w3 */ /* w4 */\n\nlocal b = import 'b.jsonnet';\n/* foo */\n\n/* bar */\nlocal a = import 'a.jsonnet';\n\ntrue\n",
+    "idempotent": true,
+    "provenance": "Go v0.21.0 commit 67968688d9952f50662e979fab1bef889d0d3e57, fresh stage3 upstream run; original copyright retained."
+  },
+  {
+    "name": "interstitial-group-prefix",
+    "source": "local z=import 'z';\n/* one */ /* two */ local b=import 'b';local a=import 'a';[z,b,a]",
+    "options": {},
+    "expected": "local z = import 'z';\n/* one */ /* two */\nlocal a = import 'a';\nlocal b = import 'b';\n[z, b, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage3 interstitial comments and import groups."
+  },
+  {
+    "name": "interstitial-adjacent-leading",
+    "source": "/* first *//* second */42",
+    "options": {},
+    "expected": "/* first */ /* second */ 42\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage3 interstitial comments and import groups."
+  },
+  {
+    "name": "interstitial-adjacent-array",
+    "source": "[/* first *//* second */1]",
+    "options": {},
+    "expected": "[/* first */ /* second */ 1]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage3 interstitial comments and import groups."
+  },
+  {
+    "name": "interstitial-group-no-sort",
+    "source": "local z=import 'z';\n/* one */ /* two */ local b=import 'b';local a=import 'a';[z,b,a]",
+    "options": {
+      "SortImports": false
+    },
+    "expected": "local z = import 'z';\n/* one */ /* two */ local b = import 'b'; local a = import 'a'; [z, b, a]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage3 interstitial comments and import groups."
+  },
+  {
+    "name": "interstitial-before-close",
+    "source": "(1/* first *//* second */)",
+    "options": {},
+    "expected": "(1/* first */ /* second */)\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage3 interstitial comments and import groups."
+  },
+  {
+    "name": "interstitial-before-line-break",
+    "source": "[1, /* first *//* second */\n 2]",
+    "options": {},
+    "expected": "[\n  1, /* first */ /* second */\n  2,\n]\n",
+    "idempotent": true,
+    "provenance": "Fresh pinned Go v0.21.0 formatter output, stage3 interstitial comments and import groups."
   }
 ]
