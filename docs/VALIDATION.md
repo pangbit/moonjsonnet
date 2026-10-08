@@ -407,6 +407,15 @@ failures** include the same two AST depth errors. These reports bind the clean
 implementation, while unrelated CLI/API/lint, ASan, consumer and platform results
 retain their prior identities. See the [assertion and text-block report](../reports/GO-JSONNET-FORMATTER-CONTINUATION3.md).
 
+Clean implementation `6f63a09692c4724dea86cac68f69930cf06d8779` passes
+**736/736** frozen formatter fixtures and **176/178** upstream inputs, retaining
+only two AST depth refusals. Native debug/release tests each pass **249/249**.
+The full Go CLI differential remains **1132/1150**, retaining all 18 known
+reference-crash differences. The archive consumer passes **23/23** and the isolated
+ASan test/host integration suite passes. No public interfaces changed; full parity
+and cross-platform acceptance remain incomplete. See the [expression indentation
+and whole-suite report](../reports/GO-JSONNET-FORMATTER-CONTINUATION4.md).
+
 See the repository's `reports/` directory for commit-bound acceptance evidence.
 Generated raw artifacts remain in `_build` and are not published to Mooncakes.
 
