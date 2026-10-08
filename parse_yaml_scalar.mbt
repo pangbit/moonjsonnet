@@ -24,7 +24,18 @@ fn Vm::yaml_scalar(
   let tag = yaml_tag(tag)
   if tag == "binary" {
     let cleaned = s.replace_all(old="\n", new="").replace_all(old="\r", new="")
-    let value = decode_go_utf8(self.decode_base64(cleaned, loc))
+    let bytes = self.decode_base64(cleaned, loc) catch {
+      Error({ kind: Limit, .. }) as error => raise error
+      _ =>
+        raise problem(
+          Runtime,
+          loc,
+          yaml_conversion_error(
+            "yaml: !!binary value contains invalid base64 data",
+          ),
+        )
+    }
+    let value = decode_go_utf8(bytes)
     return (Json::string(value), "str", value)
   }
   if tag == "str" ||
@@ -35,7 +46,13 @@ fn Vm::yaml_scalar(
   let (value, kind, key) = yaml_resolve(s)
   if tag == "timestamp" {
     if !yaml_timestamp(s) {
-      raise problem(Runtime, loc, "invalid YAML timestamp")
+      raise problem(
+        Runtime,
+        loc,
+        yaml_conversion_error(
+          "yaml: cannot decode !!str `" + s + "` as a !!timestamp",
+        ),
+      )
     }
     return (Json::string(s), "str", s)
   }
@@ -43,7 +60,18 @@ fn Vm::yaml_scalar(
     tag != kind &&
     !(tag == "int" && kind == "uint") &&
     !(tag == "float" && kind == "int") {
-    raise problem(Runtime, loc, "YAML scalar cannot be decoded as " + tag)
+    raise problem(
+      Runtime,
+      loc,
+      yaml_conversion_error(
+        "yaml: cannot decode !!" +
+        (if kind == "uint" { "int" } else { kind }) +
+        " `" +
+        s +
+        "` as a !!" +
+        tag,
+      ),
+    )
   }
   if tag == "float" && kind == "int" && value is Number(n, ..) {
     return (value, "float", yaml_float_key(n))

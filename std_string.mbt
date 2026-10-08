@@ -6,7 +6,7 @@ fn parse_decimal(s : String, loc : Location) -> Value raise {
   let signed = !chars.is_empty() && (chars[0] == '-' || chars[0] == '+')
   let start = if signed { 1 } else { 0 }
   if chars.length() == start {
-    raise problem(Runtime, loc, "not a base 10 integer")
+    raise problem(Runtime, loc, s + " is not a base 10 integer")
   }
   let negative = signed && chars[0] == '-'
   let bound = if negative {
@@ -18,11 +18,11 @@ fn parse_decimal(s : String, loc : Location) -> Value raise {
   for i in start..<chars.length() {
     let digit = chars[i].to_int() - 48
     if digit < 0 || digit > 9 || value < bound / 10L {
-      raise problem(Runtime, loc, "not a base 10 integer")
+      raise problem(Runtime, loc, s + " is not a base 10 integer")
     }
     value *= 10L
     if value < bound + digit.to_int64() {
-      raise problem(Runtime, loc, "base 10 integer out of range")
+      raise problem(Runtime, loc, s + " is not a base 10 integer")
     }
     value -= digit.to_int64()
   }
@@ -62,7 +62,13 @@ fn Vm::strip_characters(
   name : String,
   loc : Location,
 ) -> Value raise {
-  guard value is Str(s) else { raise problem(Runtime, loc, "expected string") }
+  guard value is Str(s) else {
+    raise problem(
+      Runtime,
+      loc,
+      "Unexpected type " + value_type(value) + ", expected string",
+    )
+  }
   let points = s.to_array()
   let includes = fn(c : Char) raise {
     self.tick(loc)
@@ -80,7 +86,7 @@ fn Vm::strip_characters(
         raise problem(
           Runtime,
           loc,
-          "strip characters must be a string or array",
+          "std.member first argument must be an array or a string",
         )
     }
   }
@@ -109,10 +115,23 @@ fn Vm::split_limit(
   loc : Location,
 ) -> Value raise {
   if maximum < -1 {
-    raise problem(Runtime, loc, "split limit must be -1 or nonnegative")
+    raise problem(
+      Runtime,
+      loc,
+      "std." +
+      (if reverse { "splitLimitR" } else { "splitLimit" }) +
+      " third parameter should be -1 or non-negative, got " +
+      maximum.to_string(),
+    )
   }
   if separator.is_empty() {
-    raise problem(Runtime, loc, "split separator must be nonempty")
+    raise problem(
+      Runtime,
+      loc,
+      "std." +
+      (if reverse { "splitLimitR" } else { "splitLimit" }) +
+      " second parameter should have length 1 or greater, got 0",
+    )
   }
   let parts : Array[Int] = []
   let mut rest = s[:]

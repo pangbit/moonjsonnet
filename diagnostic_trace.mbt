@@ -51,7 +51,14 @@ fn Env::trace_context(
   name : String,
   bound? : String = "anonymous",
 ) -> Env {
-  { ..self, diagnostic_context: (name, bound), }
+  {
+    ..self,
+    diagnostic_context: if self.diagnostic_suppressed {
+      ("", "anonymous")
+    } else {
+      (name, bound)
+    },
+  }
 }
 
 ///|

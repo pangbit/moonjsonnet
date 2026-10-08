@@ -13,6 +13,7 @@ fn Vm::defer_index(
     import_from: "",
     debug_visible: None,
     diagnostic_context: ("$", "anonymous"),
+    diagnostic_suppressed: false,
   }
   self.store(
     Pending(
@@ -53,7 +54,11 @@ fn Vm::flat_map(
   loc : Location,
 ) -> Value raise {
   if value_type(func) != "function" {
-    raise problem(Type, loc, "expected function")
+    raise problem(
+      Type,
+      loc,
+      "Unexpected type " + value_type(func) + ", expected function",
+    )
   }
   match input {
     ArrayValue(items) => {
@@ -84,7 +89,13 @@ fn Vm::flat_map(
       }
       Str(out.to_string())
     }
-    _ => raise problem(Type, loc, "expected array or string")
+    _ =>
+      raise problem(
+        Type,
+        loc,
+        "std.flatMap second param must be array / string, got " +
+        value_type(input),
+      )
   }
 }
 

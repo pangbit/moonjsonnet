@@ -28,6 +28,7 @@ fn Vm::call_native(
       import_from: "",
       debug_visible: None,
       diagnostic_context: ("$", "anonymous"),
+      diagnostic_suppressed: false,
     },
     loc,
   )
@@ -76,6 +77,7 @@ fn Vm::native_result(
         import_from: "",
         debug_visible: None,
         diagnostic_context: ("$", "anonymous"),
+        diagnostic_suppressed: false,
       }
       let result : Map[String, LayerField] = Map([])
       for name, item in fields {

@@ -1,0 +1,300 @@
+[
+  {
+    "name": "parse-yaml-alias-sequence-merge",
+    "source": "std.parseYaml(str=\"{a: &a [{x: 1}],b: {<<: *a}}\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-timestamp-space-zone",
+    "source": "std.parseYaml(str=\"!!timestamp 2001-1-2 23:59:59Z\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-timestamp-no-zone",
+    "source": "std.parseYaml(str=\"!!timestamp 2001-1-2T23:59:59\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-empty-key",
+    "source": "std.parseYaml(str=\": value\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-binary-whitespace",
+    "source": "std.parseYaml(str=\"!!binary 'SGVs\\nbG8='\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-bad-integer-tag",
+    "source": "std.parseYaml(str=\"!!int '1.0'\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-bad-bool-tag",
+    "source": "std.parseYaml(str=\"!!bool maybe\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-bad-date-tag",
+    "source": "std.parseYaml(str=\"!!timestamp 2023-02-29\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-bad-time-tag",
+    "source": "std.parseYaml(str=\"!!timestamp 2024-01-01T99:00:00Z\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-bad-date-suffix",
+    "source": "std.parseYaml(str=\"!!timestamp 2024-01-01garbage\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-bad-binary",
+    "source": "std.parseYaml(str=\"!!binary SGVs bG8=\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-nan-value",
+    "source": "std.parseYaml(str=\"[.nan,.inf]\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-null-key",
+    "source": "std.parseYaml(str=\"{null: x}\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-uint-key",
+    "source": "std.parseYaml(str=\"{18446744073709551615: x}\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-complex-key",
+    "source": "std.parseYaml(str=\"? [a,b]\\n: c\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-self-alias",
+    "source": "std.parseYaml(str=\"{a: &a [*a]}\")",
+    "args": []
+  },
+  {
+    "name": "parse-yaml-bad-merge",
+    "source": "std.parseYaml(str=\"{<<: [1,2]}\")",
+    "args": []
+  },
+  {
+    "name": "toml-root-type",
+    "source": "std.manifestToml([])",
+    "args": []
+  },
+  {
+    "name": "toml-null",
+    "source": "std.manifestToml({a:null})",
+    "args": []
+  },
+  {
+    "name": "toml-function",
+    "source": "std.manifestToml({a:function()0})",
+    "args": []
+  },
+  {
+    "name": "toml-nested-null",
+    "source": "std.manifestToml({a:[1,{b:null}]})",
+    "args": []
+  },
+  {
+    "name": "remove-function-equality",
+    "source": "std.remove([function()0],function()0)",
+    "args": []
+  },
+  {
+    "name": "output-json-function",
+    "source": "std.manifestJsonEx({a:[function(x)x]},'')",
+    "args": []
+  },
+  {
+    "name": "output-python-function",
+    "source": "std.manifestPython([function(x)x])",
+    "args": []
+  },
+  {
+    "name": "output-python-visible-assertion",
+    "source": "std.manifestPython({assert false,x:1})",
+    "args": []
+  },
+  {
+    "name": "output-xml-empty-array",
+    "source": "std.manifestXmlJsonml([])",
+    "args": []
+  },
+  {
+    "name": "output-xml-number-child",
+    "source": "std.manifestXmlJsonml(['p',1])",
+    "args": []
+  },
+  {
+    "name": "string-strip-wrong-value-error",
+    "source": "std.stripChars([], 'a')",
+    "args": []
+  },
+  {
+    "name": "string-strip-wrong-characters-error",
+    "source": "std.stripChars('a', null)",
+    "args": []
+  },
+  {
+    "name": "nonfinite-bitwise-error",
+    "source": "std.sum([1e308,1e308])&1",
+    "args": []
+  },
+  {
+    "name": "nonfinite-format-integer-error",
+    "source": "'%d'%std.sum([1e308,1e308])",
+    "args": []
+  },
+  {
+    "name": "nonfinite-format-decimal-error",
+    "source": "'%f'%std.sum([1e308,1e308])",
+    "args": []
+  },
+  {
+    "name": "nonfinite-format-general-error",
+    "source": "'%g'%std.sum([1e308,1e308])",
+    "args": []
+  },
+  {
+    "name": "nonfinite-format-nan-integer-error",
+    "source": "local inf=std.sum([1e308,1e308]); '%d'%std.sum([inf,-inf])",
+    "args": []
+  },
+  {
+    "name": "nonfinite-format-nan-decimal-error",
+    "source": "local inf=std.sum([1e308,1e308]); '%f'%std.sum([inf,-inf])",
+    "args": []
+  },
+  {
+    "name": "nonfinite-format-width-error",
+    "source": "local inf=std.sum([1e308,1e308]); '%*s'%[std.sum([inf,-inf]),'x']",
+    "args": []
+  },
+  {
+    "name": "nonfinite-format-precision-error",
+    "source": "local inf=std.sum([1e308,1e308]); '%.*f'%[std.sum([inf,-inf]),1]",
+    "args": []
+  },
+  {
+    "name": "nonfinite-slice-negative-inf-start-error",
+    "source": "std.slice([1,2],-std.sum([1e308,1e308]),null,null)",
+    "args": []
+  },
+  {
+    "name": "extrema-min-empty-error",
+    "source": "std.minArray([])",
+    "args": []
+  },
+  {
+    "name": "extrema-max-empty-error",
+    "source": "std.maxArray([])",
+    "args": []
+  },
+  {
+    "name": "extrema-empty-key-type-error",
+    "source": "std.minArray([],keyF=1,onEmpty=2)",
+    "args": []
+  },
+  {
+    "name": "extrema-incomparable-error",
+    "source": "std.maxArray([{},{}])",
+    "args": []
+  },
+  {
+    "name": "member-function-equality",
+    "source": "std.member([function()1],function()1)",
+    "args": []
+  },
+  {
+    "name": "object-remove-self-missing",
+    "source": "std.objectRemoveKey({a:1,b:self.a},'a').b",
+    "args": []
+  },
+  {
+    "name": "equals-function-error",
+    "source": "std.equals(function()1,function()1)",
+    "args": []
+  },
+  {
+    "name": "uniq-invalid-key",
+    "source": "std.uniq([1,2],keyF=null)",
+    "args": []
+  },
+  {
+    "name": "sort-key-function-error",
+    "source": "std.sort([],null)",
+    "args": []
+  },
+  {
+    "name": "sort-boolean-error",
+    "source": "std.sort([true,false])",
+    "args": []
+  },
+  {
+    "name": "sort-mixed-error",
+    "source": "std.sort([1,'a'])",
+    "args": []
+  },
+  {
+    "name": "sort-object-error",
+    "source": "std.sort([{},{}])",
+    "args": []
+  },
+  {
+    "name": "sort-null-key-error",
+    "source": "std.sort([1,2],function(x)null)",
+    "args": []
+  },
+  {
+    "name": "flat-map-function-type",
+    "source": "std.flatMap(1,[])",
+    "args": []
+  },
+  {
+    "name": "flat-map-input-type",
+    "source": "std.flatMap(function(x)x,{})",
+    "args": []
+  },
+  {
+    "name": "fold-right-function-type",
+    "source": "std.foldr(1,[],0)",
+    "args": []
+  },
+  {
+    "name": "fold-right-input-type",
+    "source": "std.foldr(function(x,a)a,{},0)",
+    "args": []
+  },
+  {
+    "name": "fold-function-type",
+    "source": "std.foldl(1,[],0)",
+    "args": []
+  },
+  {
+    "name": "fold-sequence-type",
+    "source": "std.foldl(function(a,b)b,{},0)",
+    "args": []
+  },
+  {
+    "name": "make-array-function-type",
+    "source": "std.makeArray(0,1)",
+    "args": []
+  },
+  {
+    "name": "stack-stdlib-5",
+    "source": "std.map(function(x) x+1,[1])",
+    "args": [
+      "-s",
+      "5"
+    ]
+  }
+]

@@ -11,6 +11,14 @@ fn source_standard_function(name : String) -> Bool {
     | "objectHas"
     | "objectHasAll"
     | "manifestJson"
+    | "split"
+    | "format"
+    | "isString"
+    | "isNumber"
+    | "isBoolean"
+    | "isObject"
+    | "isArray"
+    | "isFunction"
     | "slice" => true
     _ => false
   }

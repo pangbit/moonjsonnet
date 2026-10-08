@@ -286,7 +286,21 @@ fn Vm::eval_loop(
             },
           ])
         }
-        Index(a, b) => self.index(self.eval(a, env), self.eval(b, env), loc)
+        Index(a, b) => {
+          // The reference annotates lexical contexts before desugaring dot
+          // access. Its original dot node has no direct children, leaving the
+          // target subtree unannotated. Computed indexes retain their context.
+          let scope = if b.end is None && b.kind is Literal(String(_)) {
+            {
+              ..env,
+              diagnostic_context: ("", "anonymous"),
+              diagnostic_suppressed: true,
+            }
+          } else {
+            env
+          }
+          self.index(self.eval(a, scope), self.eval(b, scope), loc)
+        }
         Slice(a, start, end, step) => {
           self.current_trace = Some({
             location: Source({
@@ -320,6 +334,27 @@ fn Vm::eval_loop(
           }
         }
         Binary(op, a, b) => {
+          if op == "%" {
+            let library = self.force(env.lookup("$std").unwrap(), loc)
+            let function = self.index(library, Str("mod"), loc)
+            // Go assigns lexical contexts before lowering %. The new call has
+            // no context; its original operands retain theirs without adding
+            // the thunk context of an explicit source call.
+            self.current_trace = Some({
+              location: Source({
+                begin: expr.loc,
+                end: diagnostic_expr_end(expr),
+              }),
+              name: "",
+            })
+            return self.call(
+              function,
+              [a, b].map(arg => {
+                (None, self.store(Pending(arg, env.debug_capture([expr]))))
+              }),
+              loc,
+            )
+          }
           let left = self.eval(a, env)
           if op == "&&" {
             Bool(boolean(left, loc) && boolean(self.eval(b, env), loc))
@@ -445,7 +480,12 @@ fn Vm::call(
       }
       self.eval_frame(body, env, trimmable=strict)
     }
-    _ => raise problem(Type, loc, "expected function")
+    _ =>
+      raise problem(
+        Type,
+        loc,
+        "Unexpected type " + value_type(function) + ", expected function",
+      )
   }
 }
 
@@ -500,7 +540,19 @@ fn Vm::index(
       let i = array_index(key, chars.length(), loc)
       Str(chars[i].to_string())
     }
-    _ => raise problem(Type, loc, "expected object, array or string")
+    _ =>
+      raise problem(
+        Type,
+        loc,
+        "Value non indexable: *jsonnet.value" +
+        (match target {
+          Nil => "Null"
+          Bool(_) => "Boolean"
+          Num(_) => "Number"
+          Closure(_, _, _) | Builtin(_) | Native(_) => "Function"
+          _ => abort("indexable value handled above")
+        }),
+      )
   }
 }
 

@@ -1,0 +1,44 @@
+import {"moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell", "moonbitlang/core/json", "moonbitlang/core/env"}
+async fn main {
+  let args=@env.args();guard args.length()==3 else {fail("CLI GO_REFERENCE; run differential.mbtx first")}
+  let cli=@fs.realpath(args[1]);let reference=@fs.realpath(args[2])
+  let checkout=reference[:reference.rev_find("/").unwrap()].to_owned()
+  let head=@shell.Cmd("git",["-C",checkout,"rev-parse","HEAD"]).output();head.check()
+  assert_eq(head.stdout().trim().to_owned(),"67968688d9952f50662e979fab1bef889d0d3e57")
+  let status=@shell.Cmd("git",["-C",checkout,"status","--porcelain"]).output();status.check();assert_eq(status.stdout(),"")
+  guard @json.parse(@fs.read_file("tests/go-standard-existing-errors.json").text()) is Array(names) else {fail("frozen names")}
+  assert_eq(names.length(),295)
+  let wanted:Map[String,Bool]=Map([])
+  for value in names {guard value is String(name) else {fail("name")};assert_false(wanted.contains(name));wanted[name]=true}
+  guard @json.parse(@fs.read_file("_build/go-differential/report.json").text()) is {"cases":Array(cases),..} else {fail("report cases")}
+  let rows:Array[Json]=[];let mut passed=0
+  for row in cases {
+    if row is {"source":String(source),"name":String(name),"reference_args":Array(a),"moonjsonnet_args":b,"input":String(mode),"cwd":cwd,"env":Object(env),"stdin":String(stdin),..} && wanted.get(name)==Some(true) {
+      assert_eq(Json::array(a),b)
+      wanted[name]=false
+      let input=a.map(value=>match value {String(s)=>s;_=>abort("arg")})
+      let cwd_option=match cwd {String(s)=>Some(s);_=>None}
+      let vars:Map[String,String]=Map([]);for key,value in env {guard value is String(value) else {fail("env")};vars[key]=value}
+      if mode=="file" && @fs.exists(input.last().unwrap()) {input[input.length()-1]=@fs.realpath(input.last().unwrap())}
+      let go=@shell.Cmd(reference,input,cwd?=cwd_option,env=vars,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+      let moon=@shell.Cmd(cli,input,cwd?=cwd_option,env=vars,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+      let ok=go.exit_code()==moon.exit_code() && go.stdout()==moon.stdout() && go.stderr()==moon.stderr()
+      if ok {passed+=1}
+      rows.push({"name":name,"source":source,"args":input,"cwd":cwd,"env":Json::object(env),"stdin":stdin,"passed":ok,"go_exit":go.exit_code(),"local_exit":moon.exit_code(),"go_stdout":go.stdout(),"local_stdout":moon.stdout(),"go_stderr":go.stderr(),"local_stderr":moon.stderr()})
+      if !ok {println(name)}
+    }
+  }
+  assert_eq(rows.length(),295)
+  assert_true(wanted.values().all(value=>!value))
+  let work=@fs.realpath(@fs.tmpdir(prefix="moonjsonnet-existing-native-errors-"))
+  let commit=@shell.Cmd("git",["rev-parse","HEAD"]).output();commit.check()
+  let dirty=@shell.Cmd("git",["status","--porcelain"]).output();dirty.check()
+  let build=@shell.Cmd("go",["version","-m",reference]).output();build.check();assert_true(build.stdout().contains("go1.24.0"))
+  let hashes=@shell.Cmd("shasum",["-a","256",reference,cli]).output();hashes.check()
+  let report:Json={"source_commit":commit.stdout().trim().to_owned(),"source_dirty":!dirty.stdout().is_empty(),"reference_commit":head.stdout().trim().to_owned(),"reference_build":build.stdout(),"binary_sha256":hashes.stdout(),"evidence":work,"comparison":"frozen original 295 names, identical absolute input paths and complete stdout/stderr/exit; no normalization or omission of reference crashes","total":rows.length(),"passed":passed,"failed":rows.length()-passed,"skipped":0,"cases":rows}
+  @fs.write_file(work+"/report.json",report.stringify(indent=2)+"\n")
+  @fs.mkdir("_build/standard-existing",recursive=true,allow_exist=true)
+  @fs.write_file("_build/standard-existing/report.json",report.stringify(indent=2)+"\n")
+  println("Existing comparable native errors: \{passed}/\{rows.length()}; same absolute input paths, full bytes without normalization; "+work)
+  if passed!=rows.length() {fail("original native error differences retained")}
+}

@@ -11,6 +11,7 @@ fn Vm::object_flat_merge(
     import_from: "",
     debug_visible: None,
     diagnostic_context: ("$", "anonymous"),
+    diagnostic_suppressed: false,
   }
   for t in items {
     self.tick(loc)

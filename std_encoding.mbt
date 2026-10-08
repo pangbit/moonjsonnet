@@ -15,7 +15,8 @@ fn Vm::encoding_builtin(
               raise problem(
                 Runtime,
                 loc,
-                "base64 string code point exceeds 255",
+                "base64 encountered invalid codepoint value in the array (must be 0 <= X <= 255), got " +
+                c.to_int().to_string(),
               )
             }
           }
@@ -24,7 +25,12 @@ fn Vm::encoding_builtin(
         }
         ArrayValue(_) => self.byte_array(value, true, loc)
         _ =>
-          raise problem(Runtime, loc, "base64 expects a string or byte array")
+          raise problem(
+            Runtime,
+            loc,
+            "base64 can only base64 encode strings / arrays of single bytes, got " +
+            value_type(value),
+          )
       }
       Str(@base64.encode(bytes))
     }
@@ -32,7 +38,11 @@ fn Vm::encoding_builtin(
     "decodeUTF8" => Str(decode_go_utf8(self.byte_array(value, false, loc)))
     _ => {
       guard value is Str(s) else {
-        raise problem(Runtime, loc, "base64 decoder expects a string")
+        raise problem(
+          Runtime,
+          loc,
+          "base64DecodeBytes requires a string, got " + value_type(value),
+        )
       }
       let bytes = self.decode_base64(s, loc)
       if name == "base64DecodeBytes" {
@@ -54,12 +64,30 @@ fn Vm::byte_array(
   let items = array_value(value, loc)
   Bytes::makei(items.length(), fn(i) raise {
     let value = self.force(items[i], loc)
-    if base64 && !(value is Num(_)) {
-      raise problem(Runtime, loc, "base64 expects numeric bytes")
+    let n = integer(value, loc) catch {
+      e =>
+        if base64 {
+          raise problem(
+            Runtime,
+            loc,
+            "base64 encountered a non-integer value in the array, got " +
+            value_type(value),
+          )
+        } else {
+          raise e
+        }
     }
-    let n = integer(value, loc)
     if n < 0 || n > 255 {
-      raise problem(Runtime, loc, "byte must be in range 0..255")
+      raise problem(
+        Runtime,
+        loc,
+        (if base64 {
+          "base64 encountered invalid codepoint value in the array (must be 0 <= X <= 255), got "
+        } else {
+          "Bytes must be integers in range [0, 255], got "
+        }) +
+        n.to_string(),
+      )
     }
     n.to_byte()
   })
@@ -97,46 +125,85 @@ fn base64_digit(c : Byte) -> Int {
 fn Vm::decode_base64(self : Vm, s : String, loc : Location) -> Bytes raise {
   let raw = @utf8.encode(s)
   if raw.length() % 4 != 0 {
-    raise problem(Runtime, loc, "base64 input length must be divisible by four")
+    raise problem(
+      Runtime,
+      loc,
+      "input string appears not to be a base64 encoded string. Wrong length found (" +
+      raw.length().to_string() +
+      ")",
+    )
   }
-  // Go ignores only CR and LF, after checking the original UTF-8 byte length.
-  let clean = raw.iter().filter(b => b != 13 && b != 10).collect()
-  if clean.length() % 4 != 0 {
-    raise problem(Runtime, loc, "incomplete base64 quartet")
-  }
+  // Keep the original UTF-8 offsets while skipping CR/LF. Go's decoder reports
+  // consumed byte positions, including skipped newlines and incomplete padding.
   let bytes : Array[Byte] = []
-  for i = 0; i < clean.length(); i = i + 4 {
+  let mut position = 0
+  while position < raw.length() {
     self.tick(loc)
-    let a = base64_digit(clean[i])
-    let b = base64_digit(clean[i + 1])
-    let c = base64_digit(clean[i + 2])
-    let d = base64_digit(clean[i + 3])
-    if a < 0 || b < 0 {
-      raise problem(Runtime, loc, "invalid base64 character")
+    let digits = FixedArray::make(4, 0)
+    let mut count = 0
+    while count < 4 {
+      if position == raw.length() {
+        if count != 0 {
+          raise base64_corrupt(loc, position - count)
+        }
+        break
+      }
+      let byte = raw[position]
+      position += 1
+      let digit = base64_digit(byte)
+      if digit >= 0 {
+        digits[count] = digit
+        count += 1
+        continue
+      }
+      if byte == 13 || byte == 10 {
+        continue
+      }
+      if byte != 61 || count < 2 {
+        raise base64_corrupt(loc, position - 1)
+      }
+      if count == 2 {
+        while position < raw.length() &&
+              (raw[position] == 13 || raw[position] == 10) {
+          position += 1
+        }
+        if position == raw.length() {
+          raise base64_corrupt(loc, position)
+        }
+        if raw[position] != 61 {
+          raise base64_corrupt(loc, position - 1)
+        }
+        position += 1
+      }
+      while position < raw.length() &&
+            (raw[position] == 13 || raw[position] == 10) {
+        position += 1
+      }
+      if position < raw.length() {
+        raise base64_corrupt(loc, position)
+      }
+      break
     }
-    bytes.push(((a << 2) | (b >> 4)).to_byte())
-    if clean[i + 2] == 61 {
-      if clean[i + 3] != 61 || i + 4 != clean.length() {
-        raise problem(Runtime, loc, "invalid base64 padding")
-      }
-    } else {
-      if c < 0 {
-        raise problem(Runtime, loc, "invalid base64 character")
-      }
-      bytes.push((((b & 15) << 4) | (c >> 2)).to_byte())
-      if clean[i + 3] == 61 {
-        if i + 4 != clean.length() {
-          raise problem(Runtime, loc, "base64 data follows padding")
-        }
-      } else {
-        if d < 0 {
-          raise problem(Runtime, loc, "invalid base64 character")
-        }
-        bytes.push((((c & 3) << 6) | d).to_byte())
-      }
+    if count >= 2 {
+      bytes.push(((digits[0] << 2) | (digits[1] >> 4)).to_byte())
+    }
+    if count >= 3 {
+      bytes.push((((digits[1] & 15) << 4) | (digits[2] >> 2)).to_byte())
+    }
+    if count == 4 {
+      bytes.push((((digits[2] & 3) << 6) | digits[3]).to_byte())
     }
   }
   Bytes::from_array(bytes)
+}
+
+///|
+fn base64_corrupt(loc : Location, offset : Int) -> JsonnetError {
+  problem(
+    Runtime,
+    loc,
+    "failed to decode: illegal base64 data at input byte " + offset.to_string(),
+  )
 }
 
 ///|

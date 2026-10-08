@@ -9,12 +9,21 @@ fn Vm::extreme_value(
 ) -> Value raise {
   let items = array_value(input, loc)
   if key is Some(f) && value_type(f) != "function" {
-    raise problem(Type, loc, "keyF must be a function")
+    raise problem(
+      Type,
+      loc,
+      "Unexpected type " + value_type(f) + ", expected function",
+    )
   }
   if items.is_empty() {
     return match on_empty {
       Some(v) => v
-      None => raise problem(Runtime, loc, "expected at least one array element")
+      None =>
+        raise problem(
+          Runtime,
+          loc,
+          "Expected at least one element in array. Got none",
+        )
     }
   }
   // Go forces each element and computes its key once, even when keyF ignores it.

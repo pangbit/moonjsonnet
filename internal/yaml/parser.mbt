@@ -35,6 +35,7 @@ struct Parser {
   mut token : Token?
   mut current : (Event, Marker)?
   anchors : @hashmap.HashMap[String, Int]
+  anchor_names : Map[Int, String]
   mut anchor_id : Int
   /// The tag directives (`%TAG`) the parser has encountered.
   ///
@@ -53,6 +54,7 @@ pub fn Parser::new(str : StringView, max_depth? : Int = 255) -> Parser {
     token: None,
     current: None,
     anchors: @hashmap.HashMap([]),
+    anchor_names: Map([]),
     // valid anchor_id starts from 1
     anchor_id: 1,
     tags: @hashmap.HashMap([]),
@@ -219,6 +221,7 @@ pub fn[R : MarkedEventReceiver] Parser::load(
 
     // clear anchors before a new document
     self.anchors.clear()
+    self.anchor_names.clear()
     self.load_document(ev, mark, recv)
     if !multi {
       break
@@ -464,10 +467,11 @@ fn Parser::block_mapping_key(
       }
     }
     // libyaml failed to parse spec 1.2, ex8.18
-    { marker, token_type: TokenType::Value, } => {
-      self.state = State::BlockMappingValue
-      (Event::empty_scalar(), marker)
-    }
+    { marker, token_type: TokenType::Value, } =>
+      raise YamlError::ParserError(
+        mark=marker,
+        info="while parsing a block mapping, did not find expected key",
+      )
     { marker, token_type: TokenType::BlockEnd, } => {
       self.pop_state()
       self.skip()
@@ -861,7 +865,13 @@ fn Parser::register_anchor(self : Parser, name : String, _ : Marker) -> Int {
   let new_id = self.anchor_id
   self.anchor_id += 1
   self.anchors[name] = new_id
+  self.anchor_names[new_id] = name
   new_id
+}
+
+///|
+pub fn Parser::anchor_name(self : Parser, id : Int) -> String {
+  self.anchor_names.get(id).unwrap_or("")
 }
 
 ///|

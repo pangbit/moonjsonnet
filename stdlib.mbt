@@ -285,7 +285,11 @@ fn Vm::builtin(
     "sum" | "avg" => {
       let items = array_value(x, loc)
       if name == "avg" && items.is_empty() {
-        raise problem(Runtime, loc, "cannot average an empty array")
+        raise problem(
+          Runtime,
+          loc,
+          "Cannot calculate average of an empty array.",
+        )
       }
       let mut sum = 0.0
       for t in items {
@@ -346,7 +350,8 @@ fn Vm::builtin(
             raise problem(
               Type,
               loc,
-              "primitiveEquals requires primitive values",
+              "primitiveEquals operates on primitive types, got " +
+              value_type(x),
             )
           _ => Bool(self.equal(x, y, loc))
         }
@@ -364,7 +369,20 @@ fn Vm::builtin(
     "flatMap" => self.flat_map(x, values[1], loc)
     "foldl" | "foldr" => {
       if value_type(x) != "function" {
-        raise problem(Type, loc, "expected function")
+        raise problem(
+          Type,
+          loc,
+          "Unexpected type " + value_type(x) + ", expected function",
+        )
+      }
+      if !(values[1] is ArrayValue(_)) && !(values[1] is Str(_)) {
+        raise problem(
+          Type,
+          loc,
+          name +
+          " second parameter should be string or array, got " +
+          value_type(values[1]),
+        )
       }
       let a = self.sequence(values[1], loc)
       let mut acc = values[2]
@@ -499,7 +517,11 @@ fn Vm::builtin(
       let size = integer(x, loc)
       let func = values[1]
       if value_type(func) != "function" {
-        raise problem(Type, loc, "expected function")
+        raise problem(
+          Type,
+          loc,
+          "Unexpected type " + value_type(values[1]) + ", expected function",
+        )
       }
       let out = []
       for i in 0..<size {
@@ -526,7 +548,11 @@ fn Vm::builtin(
       }
       let out = []
       if value_type(x) != "function" {
-        raise problem(Type, loc, "expected function")
+        raise problem(
+          Type,
+          loc,
+          "Unexpected type " + value_type(values[0]) + ", expected function",
+        )
       }
       for i, t in a {
         self.tick(loc)
@@ -570,7 +596,13 @@ fn Vm::builtin(
       let mut result = match x {
         Str(_) => Str("")
         ArrayValue(_) => ArrayValue([])
-        _ => raise problem(Type, loc, "join separator must be string or array")
+        _ =>
+          raise problem(
+            Type,
+            loc,
+            "join first parameter should be string or array, got " +
+            value_type(x),
+          )
       }
       let mut first = true
       for t in a {
@@ -579,7 +611,11 @@ fn Vm::builtin(
           continue
         }
         if value_type(v) != value_type(x) {
-          raise problem(Type, loc, "join element and separator types differ")
+          raise problem(
+            Type,
+            loc,
+            "Unexpected type " + value_type(v) + ", expected " + value_type(x),
+          )
         }
         if !first {
           result = self.binary("+", result, x, loc)
@@ -600,11 +636,69 @@ fn Vm::builtin(
       )
     }
     "substr" => {
-      let s = text_value(x, loc).to_array()
-      let start = integer(values[1], loc)
-      let len = integer(values[2], loc)
-      if start < 0 || len < 0 {
-        raise problem(Runtime, loc, "substr indices must be nonnegative")
+      guard x is Str(s) else {
+        raise problem(
+          Runtime,
+          loc,
+          "substr first parameter should be a string, got " + value_type(x),
+        )
+      }
+      guard values[1] is Num(from) else {
+        raise problem(
+          Runtime,
+          loc,
+          "substr second parameter should be a number, got " +
+          value_type(values[1]),
+        )
+      }
+      if from != from.trunc() {
+        raise problem(
+          Runtime,
+          loc,
+          "substr second parameter should be an integer, got " +
+          @number.diagnostic_fixed(from),
+        )
+      }
+      if from < 0 {
+        raise problem(
+          Runtime,
+          loc,
+          "substr second parameter should be greater than zero, got " +
+          @number.diagnostic_fixed(from),
+        )
+      }
+      guard values[2] is Num(length) else {
+        raise problem(
+          Runtime,
+          loc,
+          "substr third parameter should be a number, got " +
+          value_type(values[2]),
+        )
+      }
+      if length != length.trunc() ||
+        length < -2147483648.0 ||
+        length > 2147483647.0 {
+        raise problem(
+          Runtime,
+          loc,
+          "substr third parameter should be an integer, got " +
+          @number.diagnostic_fixed(length),
+        )
+      }
+      let len = length.to_int()
+      if len < 0 {
+        raise problem(
+          Runtime,
+          loc,
+          "substr third parameter should be greater than zero, got " +
+          len.to_string(),
+        )
+      }
+      let s = s.to_array()
+      let start = if from > s.length().to_double() {
+        s.length()
+      } else {
+        from.to_int()
       }
       let b = StringBuilder()
       let stop = Int::min(
@@ -625,7 +719,7 @@ fn Vm::builtin(
       let from = text_value(values[1], loc)
       let to = text_value(values[2], loc)
       if from.is_empty() {
-        raise problem(Assertion, loc, "strReplace pattern must be nonempty")
+        raise problem(Assertion, loc, "'from' string must not be zero length.")
       }
       let mut out = ""
       let mut first = true
@@ -711,7 +805,11 @@ fn check_json_depth(s : String, limit : Int, loc : Location) -> Unit raise {
 fn integer(v : Value, loc : Location) -> Int raise {
   let n = number_value(v, loc)
   if n != n.floor() || n < -2147483648.0 || n > 2147483647.0 {
-    raise problem(Runtime, loc, "expected 32-bit integer")
+    raise problem(
+      Runtime,
+      loc,
+      "Expected an integer, but got " + diagnostic_number(n),
+    )
   }
   n.to_int()
 }

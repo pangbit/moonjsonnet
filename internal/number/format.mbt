@@ -7,6 +7,20 @@ pub fn format(value : Double) -> String {
 }
 
 ///|
+extern "c" fn diagnostic_fixed_ffi(value : Double) -> Bytes = "mj_diagnostic_fixed"
+
+///|
+pub fn diagnostic_fixed(value : Double) -> String {
+  if value.is_nan() {
+    return "NaN"
+  }
+  if value.is_inf() {
+    return if value < 0 { "-Inf" } else { "+Inf" }
+  }
+  @utf8.decode_lossy(diagnostic_fixed_ffi(value))
+}
+
+///|
 extern "c" fn float32_shortest_ffi(value : Double) -> Bytes = "mj_float32_shortest"
 
 ///|

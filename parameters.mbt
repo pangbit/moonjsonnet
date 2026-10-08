@@ -17,6 +17,7 @@ fn Vm::prepare_parameters(
     import_from: "",
     debug_visible: None,
     diagnostic_context: ("$", "anonymous"),
+    diagnostic_suppressed: false,
   }
   for name, json in values {
     if !code.contains(name) && !programs.contains(name) {

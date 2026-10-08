@@ -91,6 +91,7 @@ fn Vm::base_env(
     import_from,
     debug_visible: None,
     diagnostic_context: ("$", "anonymous"),
+    diagnostic_suppressed: false,
   }
   let loc : Location = { file, line: 1, column: 1, }
   let fields : Map[String, LayerField] = Map([])
@@ -133,6 +134,7 @@ fn Vm::base_env(
     import_from,
     debug_visible: Some(_tick => ["$std", "std"]),
     diagnostic_context: ("$", "anonymous"),
+    diagnostic_suppressed: false,
   }
 }
 

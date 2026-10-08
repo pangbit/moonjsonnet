@@ -56,17 +56,7 @@ fn Vm::binary(
     "==" => Bool(self.equal(a, b, loc))
     "!=" => Bool(!self.equal(a, b, loc))
     "<" | "<=" | ">" | ">=" => {
-      let c = match (a, b) {
-        (Num(x), Num(y)) => compare_numbers(x, y)
-        (Str(x), Str(y)) => compare_unicode(x, y)
-        (ArrayValue(x), ArrayValue(y)) => self.compare_arrays(x, y, loc)
-        _ =>
-          raise problem(
-            Type,
-            loc,
-            "ordering operands must have compatible types",
-          )
-      }
+      let c = self.compare_values(a, b, loc)
       Bool(
         match op {
           "<" => c < 0
@@ -114,7 +104,13 @@ fn bitwise_integer(v : Value, loc : Location) -> Int64 raise {
   // Go's floating-point MaxInt64 bound rounds to 2^63. Reproduce the
   // pinned arm64 result explicitly instead of casting that unrepresentable value.
   if n < -9223372036854775808.0 || n > 9223372036854775808.0 {
-    raise problem(Runtime, loc, "bitwise operand outside signed 64-bit range")
+    raise problem(
+      Runtime,
+      loc,
+      "Bitwise operator argument " +
+      diagnostic_number(n) +
+      " outside of range [-9223372036854775808, 9223372036854775807]",
+    )
   }
   reference_int64(n)
 }
@@ -152,18 +148,27 @@ fn Vm::compare_arrays(
     self.tick(loc)
     let x = self.force(a[i], loc)
     let y = self.force(b[i], loc)
-    let c = match (x, y) {
-      (Num(x), Num(y)) => compare_numbers(x, y)
-      (Str(x), Str(y)) => compare_unicode(x, y)
-      (ArrayValue(x), ArrayValue(y)) => self.compare_arrays(x, y, loc)
-      _ =>
-        raise problem(Type, loc, "array ordering requires comparable elements")
-    }
+    let c = self.compare_values(x, y, loc)
     if c != 0 {
       return c
     }
   }
   a.length().compare(b.length())
+}
+
+///|
+fn Vm::compare_values(
+  self : Vm,
+  a : Value,
+  b : Value,
+  loc : Location,
+) -> Int raise {
+  match a {
+    Num(x) => compare_numbers(x, number_value(b, loc))
+    Str(x) => compare_unicode(x, text_value(b, loc))
+    ArrayValue(x) => self.compare_arrays(x, array_value(b, loc), loc)
+    _ => raise problem(Type, loc, "Unexpected type " + value_type(a))
+  }
 }
 
 ///|
@@ -247,7 +252,8 @@ fn Vm::equal_inner(
     | (Builtin(_), _)
     | (_, Builtin(_))
     | (Native(_), _)
-    | (_, Native(_)) => raise problem(Type, loc, "functions cannot be compared")
+    | (_, Native(_)) =>
+      raise problem(Type, loc, "Cannot test equality of functions")
     (Nil, Nil) => true
     (Bool(x), Bool(y)) => x == y
     (Num(x), Num(y)) => x == y

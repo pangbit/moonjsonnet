@@ -33,7 +33,7 @@ fn math_builtin(
     "modulo" => {
       let y = number_value(values[1], loc)
       if y == 0 {
-        raise problem(Runtime, loc, "division by zero")
+        raise problem(Runtime, loc, "Division by zero.")
       }
       finite(x % y, loc)
     }

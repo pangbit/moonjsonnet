@@ -9,6 +9,7 @@ fn Vm::manifest_json_ex(
   depth : Int,
   limit : Int,
   loc : Location,
+  path? : Array[String] = [],
 ) -> String raise {
   self.tick(loc)
   if depth >= self.limits.depth {
@@ -31,7 +32,11 @@ fn Vm::manifest_json_ex(
     Num(n) => write(manifest_number(n))
     Str(s) => write(manifest_json_quote(s))
     Closure(_, _, _) | Builtin(_) | Native(_) =>
-      raise problem(Runtime, loc, "cannot manifest a function")
+      raise problem(
+        Runtime,
+        loc,
+        "tried to manifest function at [" + path.join(" ") + "]",
+      )
     ArrayValue(items) => {
       write("[")
       write(newline)
@@ -50,6 +55,7 @@ fn Vm::manifest_json_ex(
             depth + 1,
             limit - size,
             loc,
+            path=path + [i.to_string()],
           ),
         )
       }
@@ -77,6 +83,7 @@ fn Vm::manifest_json_ex(
             depth + 1,
             limit - size,
             loc,
+            path=path + [key],
           ),
         )
       }

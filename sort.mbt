@@ -7,7 +7,11 @@ fn Vm::sort_values(
 ) -> Value raise {
   let items = array_value(input, loc)
   if key is Some(f) && value_type(f) != "function" {
-    raise problem(Type, loc, "sort keyF must be a function")
+    raise problem(
+      Type,
+      loc,
+      "Unexpected type " + value_type(f) + ", expected function",
+    )
   }
   // Cache keys once; retain original thunks so unused payloads remain lazy.
   let mut source = items.map(t => {

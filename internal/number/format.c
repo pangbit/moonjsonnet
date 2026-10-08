@@ -29,6 +29,23 @@ MOONBIT_FFI_EXPORT moonbit_bytes_t mj_number(double value) {
   return result;
 }
 
+/* The substr runtime diagnostics use fmt's fixed six fractional digits.
+ * A 400-byte buffer covers every finite binary64 value in this notation. */
+MOONBIT_FFI_EXPORT moonbit_bytes_t mj_diagnostic_fixed(double value) {
+  locale_t locale = newlocale(LC_NUMERIC_MASK, "C", (locale_t)0);
+  if (!locale) return moonbit_make_bytes(0, 0);
+  locale_t previous = uselocale(locale);
+  if (!previous) { freelocale(locale); return moonbit_make_bytes(0, 0); }
+  char buffer[400];
+  int n = snprintf(buffer, sizeof(buffer), "%.6f", value);
+  uselocale(previous);
+  freelocale(locale);
+  if (n <= 0 || n >= (int)sizeof(buffer)) return moonbit_make_bytes(0, 0);
+  moonbit_bytes_t result = moonbit_make_bytes(n, 0);
+  memcpy(result, buffer, (size_t)n);
+  return result;
+}
+
 /* Shortest round-trip decimal for binary32. Go's YAML key conversion uses
  * FormatFloat with bitSize 32. At most nine significant digits are needed. */
 MOONBIT_FFI_EXPORT moonbit_bytes_t mj_float32_shortest(double value) {

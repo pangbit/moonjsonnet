@@ -41,6 +41,7 @@ pub fn Marker::not_equal(Self, Self) -> Bool
 pub fn Marker::to_repr(Self) -> @debug.Repr
 
 type Parser
+pub fn Parser::anchor_name(Self, Int) -> String
 pub fn Parser::keep_tags(Self, Bool) -> Unit
 pub fn[R : MarkedEventReceiver] Parser::load(Self, R, Bool) -> Unit raise YamlError
 pub fn Parser::new(StringView, max_depth? : Int) -> Self

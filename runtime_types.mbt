@@ -18,6 +18,7 @@ priv struct Env {
   import_from : String
   debug_visible : ((() -> Unit raise) -> Array[String] raise)?
   diagnostic_context : (String, String)
+  diagnostic_suppressed : Bool
 }
 
 ///|
@@ -28,6 +29,7 @@ fn Env::child(self : Env) -> Env {
     import_from: self.import_from,
     debug_visible: None,
     diagnostic_context: self.diagnostic_context,
+    diagnostic_suppressed: self.diagnostic_suppressed,
   }
 }
 
@@ -331,6 +333,7 @@ fn Vm::from_json(self : Vm, json : Json, loc : Location) -> Value raise {
         import_from: "",
         debug_visible: None,
         diagnostic_context: ("$", "anonymous"),
+        diagnostic_suppressed: false,
       }
       let fs : Map[String, LayerField] = Map([])
       for k, v in o {
@@ -353,8 +356,11 @@ fn Vm::from_json(self : Vm, json : Json, loc : Location) -> Value raise {
 
 ///|
 fn finite(n : Double, loc : Location) -> Value raise {
-  if n.is_inf() || n.is_nan() {
-    raise problem(Runtime, loc, "non-finite numeric result")
+  if n.is_nan() {
+    raise problem(Runtime, loc, "Not a number")
+  }
+  if n.is_inf() {
+    raise problem(Runtime, loc, "Overflow")
   }
   Num(n)
 }

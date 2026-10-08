@@ -1,0 +1,66 @@
+import { "moonbitlang/async", "moonbitlang/async/shell", "moonbitlang/async/fs", "moonbitlang/core/env", "moonbitlang/core/json" }
+
+async fn command(program:String,args:Array[String])->String {
+  let output=@shell.Cmd(program,args).output();output.check();output.stdout().trim().to_owned()
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==3 else {fail("Usage: moon run tools/standard-native-diagnostics.mbtx CLI GO_REFERENCE")}
+  let candidate=@fs.realpath(args[1]);let reference=@fs.realpath(args[2])
+  let checkout=reference[:reference.rev_find("/").unwrap()].to_owned()
+  assert_eq(command("git",["-C",checkout,"rev-parse","HEAD"]),"67968688d9952f50662e979fab1bef889d0d3e57")
+  assert_eq(command("git",["-C",checkout,"status","--porcelain"]),"")
+  let build=command("go",["version","-m",reference]);assert_true(build.contains("go1.24.0"))
+  let sources=[
+    "std.avg([])","std.primitiveEquals([],[])","std.join(1,[])","std.join('',[1])",
+    "std.split('x','')","std.splitLimit('x','',1)","std.splitLimit('x','x',-2)","std.substr('x',-1,1)","std.substr('x',0,-1)","std.strReplace('x','','y')",
+    "std.parseInt('x')","std.parseInt('')","std.parseInt('1.2')","std.parseInt('9223372036854775808')",
+    "std.base64([256])","std.base64([-1])","std.base64(['x'])","std.base64(1)",
+    "std.base64Decode('a')","std.base64Decode('====')","std.base64Decode('A===')","std.base64Decode('AA=A')","std.base64Decode('AA==x')","std.base64Decode('****')",
+    "std.decodeUTF8([256])","std.decodeUTF8([-1])","std.decodeUTF8(['x'])","std.decodeUTF8([255])",
+    "std.parseOctal('8')","std.parseHex('z')","std.makeArray(-1,function(x) x)","std.range(1.1,2)","std.sqrt(-1)","std.mod(1,0)",
+    "std.split(1,'x')","std.split('x',1)","std.splitLimitR('x','',1)","std.splitLimitR('x','x',-2)",
+    "std.splitLimit('x','x',1.1)","std.splitLimit('x','x',1e20)",
+    "std.substr(1,0,1)","std.substr('x','x',1)","std.substr('x',0,'x')","std.substr('x',0.5,1)","std.substr('x',-0.5,1)",
+    "std.substr('x',0,0.5)","std.substr('x',0,1e20)","std.substr('x',-1e20,1)","std.substr('x',-1.0000005,1)",
+    "std.base64('中')","std.base64([1.5])","std.base64([1e20])","std.base64([null])",
+    "std.base64Decode(1)","std.base64DecodeBytes([])","std.base64DecodeBytes('Zg==AAAA')",
+    "std.base64DecodeBytes('Zg=A')","std.base64DecodeBytes('A\\r\\n\\n')","std.base64DecodeBytes('AA=\\n')",
+    "std.base64DecodeBytes('AAAAéxx')","std.base64DecodeBytes('Zg==\\r\\n\\r\\n')",
+    "std.decodeUTF8([1.5])","std.decodeUTF8([1e20])","std.log(0)","std.log(-1)","std.exp(1000)","std.asin(2)","std.acos(2)","std.pow(-1,0.5)",
+  ].map(source => (source, ([] : Array[String])))
+  guard @json.parse(@fs.read_file("tests/go-native-error-branches.json").text()) is Array(branches) else {fail("native branch fixtures")}
+  assert_eq(branches.length(),59)
+  for branch in branches {
+    guard branch is {"source":String(source),"args":Array(args),..} else {fail("native branch")}
+    sources.push((source,args.map(arg=>match arg {String(s)=>s;_=>abort("argument")})))
+  }
+  let work=@fs.realpath(@fs.tmpdir(prefix="moonjsonnet-standard-native-"))
+  let rows:Array[Json]=[];let mut passed=0
+  for index,(source,extra) in sources {
+    let file=work+"/"+index.to_string()+".jsonnet";@fs.write_file(file,source)
+    for mode in ["exec","stdin","file"] {
+      let input=extra + (if mode=="exec" {["-e",source]} else if mode=="stdin" {["-"]} else {[file]})
+      let stdin=if mode=="stdin" {source} else {""}
+      let expected=@shell.Cmd(reference,input,cwd=work,stdin=@shell.Text(stdin)).output()
+      let actual=@shell.Cmd(candidate,input,cwd=work,stdin=@shell.Text(stdin)).output()
+      let ok=expected.exit_code()==actual.exit_code() && expected.stdout()==actual.stdout() && expected.stderr()==actual.stderr()
+      if ok {passed+=1} else {println("FAIL "+mode+" "+source)}
+      rows.push({"source":source,"mode":mode,"args":input,"passed":ok,"go_exit":expected.exit_code(),"local_exit":actual.exit_code(),"go_stdout":expected.stdout(),"local_stdout":actual.stdout(),"go_stderr":expected.stderr(),"local_stderr":actual.stderr()})
+    }
+  }
+  let commit=@shell.Cmd("git",["rev-parse","HEAD"]).output();let dirty=@shell.Cmd("git",["status","--porcelain"]).output()
+  let report:Json={
+    "source_commit":if commit.exit_code()==0 {Json::string(commit.stdout().trim().to_owned())} else {null},
+    "source_dirty":if dirty.exit_code()==0 {Json::boolean(!dirty.stdout().is_empty())} else {null},
+    "reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57","reference_build":build,
+    "reference_sha256":command("shasum",["-a","256",reference]),"local_sha256":command("shasum",["-a","256",candidate]),
+    "comparison":"fixed existing native error branches in exec/stdin/absolute file; complete stdout/stderr and exit; no normalization",
+    "evidence":work,"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"skipped":0,"cases":rows,
+  }
+  @fs.mkdir("_build/standard-native",recursive=true,allow_exist=true)
+  @fs.write_file("_build/standard-native/report.json",report.stringify(indent=2)+"\n")
+  println("Standard native branches: "+passed.to_string()+"/"+rows.length().to_string()+"; evidence: "+work)
+  if passed!=rows.length() {fail("standard native differences retained")}
+}

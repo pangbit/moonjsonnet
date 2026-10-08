@@ -46,6 +46,7 @@ fn Vm::toml_value(
   inline : Bool,
   depth : Int,
   loc : Location,
+  indexed_path? : Array[String] = [],
 ) -> String raise {
   self.tick(loc)
   if depth >= self.limits.depth {
@@ -53,9 +54,18 @@ fn Vm::toml_value(
   }
   let out = ManifestText::new(self.limits.output_bytes, loc)
   match value {
-    Nil => raise problem(Runtime, loc, "cannot manifest null as TOML")
+    Nil =>
+      raise problem(
+        Runtime,
+        loc,
+        "Tried to manifest \"null\" at [" + indexed_path.join(" ") + "]",
+      )
     Closure(_, _, _) | Builtin(_) | Native(_) =>
-      raise problem(Runtime, loc, "cannot manifest function as TOML")
+      raise problem(
+        Runtime,
+        loc,
+        "Tried to manifest function at [" + indexed_path.join(" ") + "]",
+      )
     Bool(v) => out.write(if v { "true" } else { "false" })
     Num(v) =>
       out.write(
@@ -82,7 +92,14 @@ fn Vm::toml_value(
           out.write(indent)
         }
         out.write(
-          self.toml_value(self.force(t, loc), indent, true, depth + 1, loc),
+          self.toml_value(
+            self.force(t, loc),
+            indent,
+            true,
+            depth + 1,
+            loc,
+            indexed_path=indexed_path + [i.to_string()],
+          ),
         )
       }
       out.write(separator)
@@ -97,7 +114,16 @@ fn Vm::toml_value(
         let value = self.field(id, top, key, loc)
         out.write(toml_key(key))
         out.write(" = ")
-        out.write(self.toml_value(value, indent, true, depth + 1, loc))
+        out.write(
+          self.toml_value(
+            value,
+            indent,
+            true,
+            depth + 1,
+            loc,
+            indexed_path=indexed_path + [key],
+          ),
+        )
       }
       out.write(" }")
     }
@@ -114,13 +140,18 @@ fn Vm::toml_table(
   current_indent : String,
   depth : Int,
   loc : Location,
+  indexed_path? : Array[String] = [],
 ) -> String raise {
   self.tick(loc)
   if depth >= self.limits.depth {
     raise problem(Limit, loc, "TOML depth limit exceeded")
   }
   guard value is ObjectValue(id, top) else {
-    raise problem(Type, loc, "TOML body must be an object")
+    raise problem(
+      Type,
+      loc,
+      "TOML body must be an object. Got " + value_type(value),
+    )
   }
   let fields = ManifestText::new(self.limits.output_bytes, loc)
   let sections = ManifestText::new(self.limits.output_bytes, loc)
@@ -137,7 +168,7 @@ fn Vm::toml_table(
         _ => [self.store(Ready(child))]
       }
       let array_table = child is ArrayValue(_)
-      for t in tables {
+      for index, t in tables {
         let obj = self.force(t, loc)
         guard obj is ObjectValue(oid, otop) else {
           raise problem(Type, loc, "expected TOML table")
@@ -158,11 +189,21 @@ fn Vm::toml_table(
             current_indent + indent,
             depth + 1,
             loc,
+            indexed_path=indexed_path +
+              [key] +
+              (if array_table { [index.to_string()] } else { [] }),
           ),
         )
       }
     } else {
-      let rendered = self.toml_value(child, indent, false, depth + 1, loc)
+      let rendered = self.toml_value(
+        child,
+        indent,
+        false,
+        depth + 1,
+        loc,
+        indexed_path=indexed_path + [key],
+      )
       let line = toml_key(key) + " = " + rendered
       for part in line.split("\n") {
         if !first {

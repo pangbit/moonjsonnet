@@ -3,7 +3,7 @@ priv enum ParsedYamlNode {
   Scalar(String, @yaml.TScalarStyle, @yaml.Tag?)
   Sequence(Array[Int])
   Mapping(Array[Int])
-  Alias(Int)
+  Alias(Int, String)
 }
 
 ///|
@@ -117,7 +117,7 @@ fn Vm::yaml_document(self : Vm, source : String, loc : Location) -> Json raise {
         guard anchors.get(id) is Some(target) else {
           raise problem(Runtime, loc, "unknown YAML alias")
         }
-        (ParsedYamlNode::Alias(target), 0)
+        (ParsedYamlNode::Alias(target, parser.anchor_name(id)), 0)
       }
     }
     if parents.length() >= self.limits.depth {
@@ -211,14 +211,27 @@ fn Vm::yaml_to_json(
     active[index] = false
   }
   match nodes[index] {
-    Alias(target) => self.yaml_to_json(nodes, target, active, depth + 1, loc)
+    Alias(target, name) => {
+      if active.get(target).unwrap_or(false) {
+        raise problem(
+          Runtime,
+          loc,
+          yaml_conversion_error(
+            "yaml: anchor '" + name + "' value contains itself",
+          ),
+        )
+      }
+      self.yaml_to_json(nodes, target, active, depth + 1, loc)
+    }
     Scalar(s, style, tag) => {
       let (value, _, _) = self.yaml_scalar(s, style, tag, loc)
       if value is Number(n, ..) && (n.is_inf() || n.is_nan()) {
         raise problem(
           Runtime,
           loc,
-          "YAML non-finite value cannot be converted to JSON",
+          yaml_conversion_error(
+            "json: unsupported value: " + diagnostic_number(n),
+          ),
         )
       }
       self.account_output(@utf8.encode(value.stringify()).length(), loc)
@@ -239,11 +252,13 @@ fn Vm::yaml_to_json(
         if nodes[key] is Scalar("<<", style, tag) &&
           ((style is @yaml.Plain && tag is None) || yaml_tag(tag) == "merge") {
           let merged = self.yaml_to_json(nodes, value, active, depth + 1, loc)
-          if nodes[value] is Alias(_) && !(merged is Object(_)) {
+          if nodes[value] is Alias(_, _) && !(merged is Object(_)) {
             raise problem(
               Runtime,
               loc,
-              "YAML merge alias must reference a mapping",
+              yaml_conversion_error(
+                "yaml: map merge requires map or sequence of maps as the value",
+              ),
             )
           }
           match merged {
@@ -254,16 +269,29 @@ fn Vm::yaml_to_json(
             Array(a) =>
               for j = a.length() - 1; j >= 0; j = j - 1 {
                 guard a[j] is Object(o) else {
-                  raise problem(Runtime, loc, "YAML merge requires mappings")
+                  raise problem(
+                    Runtime,
+                    loc,
+                    yaml_conversion_error(
+                      "yaml: map merge requires map or sequence of maps as the value",
+                    ),
+                  )
                 }
                 for k, v in o {
                   fields[k] = v
                 }
               }
-            _ => raise problem(Runtime, loc, "YAML merge requires mappings")
+            _ =>
+              raise problem(
+                Runtime,
+                loc,
+                yaml_conversion_error(
+                  "yaml: map merge requires map or sequence of maps as the value",
+                ),
+              )
           }
         } else {
-          let name = self.yaml_key(nodes, key, 0, loc)
+          let name = self.yaml_key(nodes, key, value, 0, loc)
           self.account_output(
             @utf8.encode(Json::string(name).stringify()).length() + 2,
             loc,
@@ -281,6 +309,7 @@ fn Vm::yaml_key(
   self : Vm,
   nodes : Array[ParsedYamlNode],
   index : Int,
+  value_index : Int,
   depth : Int,
   loc : Location,
 ) -> String raise {
@@ -289,14 +318,107 @@ fn Vm::yaml_key(
     raise problem(Limit, loc, "YAML key depth limit exceeded")
   }
   match nodes[index] {
-    Alias(target) => self.yaml_key(nodes, target, depth + 1, loc)
+    Alias(target, _) =>
+      self.yaml_key(nodes, target, value_index, depth + 1, loc)
     Scalar(s, style, tag) => {
       let (v, kind, key) = self.yaml_scalar(s, style, tag, loc)
       if kind == "uint" || v is Null {
-        raise problem(Runtime, loc, "unsupported YAML map key")
+        raise problem(
+          Runtime,
+          loc,
+          yaml_conversion_error(
+            "unsupported map key of type: " +
+            (if kind == "uint" { "uint64" } else { "%!s(<nil>)" }) +
+            ", key: " +
+            self.yaml_go_value(nodes, index, 0, loc) +
+            ", value: " +
+            self.yaml_go_value(nodes, value_index, 0, loc),
+          ),
+        )
       }
       key
     }
-    _ => raise problem(Runtime, loc, "YAML map keys must be scalars")
+    _ =>
+      raise problem(
+        Runtime,
+        loc,
+        yaml_conversion_error(
+          "yaml: invalid map key: " + self.yaml_go_value(nodes, index, 0, loc),
+        ),
+      )
+  }
+}
+
+///|
+fn yaml_conversion_error(message : String) -> String {
+  "failed to parse YAML: error converting YAML to JSON: " + message
+}
+
+///|
+// goyaml's decode errors print Go's %#v representation before JSON conversion.
+// Retain integer text so a uint64 map key never passes through binary64.
+fn Vm::yaml_go_value(
+  self : Vm,
+  nodes : Array[ParsedYamlNode],
+  index : Int,
+  depth : Int,
+  loc : Location,
+) -> String raise {
+  self.tick(loc)
+  if depth >= self.limits.depth {
+    raise problem(Limit, loc, "YAML key depth limit exceeded")
+  }
+  match nodes[index] {
+    Alias(target, _) => self.yaml_go_value(nodes, target, depth + 1, loc)
+    Scalar(s, style, tag) => {
+      let (value, kind, key) = self.yaml_scalar(s, style, tag, loc)
+      if kind == "uint" {
+        let mut n = @string.parse_uint64(key[:])
+        let digits = "0123456789abcdef".to_array()
+        let out = []
+        while n != 0UL {
+          out.push(digits[(n % 16UL).to_int()])
+          n = n / 16UL
+        }
+        let hex = StringBuilder()
+        hex.write_string("0x")
+        for i = out.length() - 1; i >= 0; i = i - 1 {
+          hex.write_char(out[i])
+        }
+        hex.to_string()
+      } else {
+        match value {
+          Null => "<nil>"
+          String(s) => @quote.quote(s)
+          Number(n, ..) =>
+            if kind == "int" {
+              key
+            } else {
+              diagnostic_number(n)
+            }
+          True => "true"
+          False => "false"
+          _ => abort("YAML scalar")
+        }
+      }
+    }
+    Sequence(items) =>
+      "[]interface {}{" +
+      items.map(i => self.yaml_go_value(nodes, i, depth + 1, loc)).join(", ") +
+      "}"
+    Mapping(items) => {
+      let fields = []
+      for i = 0; i < items.length(); i = i + 2 {
+        let key = self.yaml_go_value(nodes, items[i], depth + 1, loc)
+        let value = self.yaml_go_value(nodes, items[i + 1], depth + 1, loc)
+        fields.push(
+          key +
+          ":" +
+          (if value == "<nil>" { "interface {}(nil)" } else { value }),
+        )
+      }
+      fields.sort()
+      "map[interface {}]interface {}{" + fields.join(", ") + "}"
+    }
   }
 }
