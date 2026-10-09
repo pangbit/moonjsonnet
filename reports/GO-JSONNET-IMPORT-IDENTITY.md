@@ -39,4 +39,30 @@ go-jsonnet `67968688d9952f50662e979fab1bef889d0d3e57`，Linux AMD64。
 此处仅记录定向通过；最终全量、包消费者及相关 ASan 另行验收，不转移旧提交
 的全量数字。冻结 tests/ 输入与预期未改。
 
+## 最终验收启动与共享主机让出点
+
+`8e233067f7fb848bb834a0b4ce32ca560e99270c` 已提交上述修复；远端通过 Git
+增量恢复相同干净提交，冻结 tests/ 全部与 daece32 哈希一致。UTC08:55 开始
+最终验收，普通/release check、各330/330原生测试、完整release构建和嵌入
+示例均通过。宿主主集随后被两条旧本地路径断言先后阻止：
+
+1. integration.mbtx 要求 canonical traced.libsonnet；原输入固定 Go、默认根
+   CLI 和显式根 CLI 均输出 `TRACE: traced.libsonnet:2 import trace`。
+   `ef93b548edde1de9114b0aea310edc55067db4ab` 仅修正该断言。
+2. diagnostic-integration.mbtx 要求 canonical entry.jsonnet；原 `-t 3 -e
+   "import 'nested.jsonnet'"` 在同 cwd/source/argv 下 Go 与 CLI 都退出1，完整
+   stdout/stderr 一致，首帧为 `entry.jsonnet:1:25-46`。仅修正该路径断言，
+   保留输入、帧数/裁剪等其他检查。
+
+两次失败、三方对照和固定 Go 原始输出在远端
+`${LOCAL_PATH_021}/acceptance-8e23306` 中保留，分别为
+`first-attempt/host.*`、`host.*`、`host-trace-proof.json` 和
+`host-diagnostic-proof.json`。第二次宿主执行已通过 multi26/import20，仍未
+完成整组。两个断言修正没有改动产品、原生测试或构建输入，因此无需重复
+已通过的330/330双模式编译测试；后续须核验两份工具差异后继续宿主阶段。
+
+为协调 moonpulsar Linux L0，UTC09:10:40 确认 UID65534 无残留进程并让出
+远端。完整Go1150/API/格式化/包消费者及最终ASan尚未运行，不能预填通过数。
+最终恢复驱动已准备，须续接当前提交后运行；Mac 没有编译、测试或归档。
+
 > Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.

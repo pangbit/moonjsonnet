@@ -57,7 +57,7 @@ async fn main {
   let imported=@shell.Cmd(cli,["--root",root,"-t","3","-e","import 'nested.jsonnet'"],env~).output()
   assert_eq(imported.exit_code(),1)
   check_context(imported.stderr(),3,true)
-  assert_true(imported.stderr().contains(root+"/entry.jsonnet"))
+  assert_true(imported.stderr().contains("\tentry.jsonnet:"))
   assert_true(imported.stderr().contains("\t<cmdline>"))
   passed+=1
   let syntax=@shell.Cmd(cli,["--root",root,"-t","1","-e","local"],env~).output()
