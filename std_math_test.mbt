@@ -63,17 +63,32 @@ test "math argument and domain errors remain explicit" {
 }
 
 ///|
-test "math preserves fixed Go ARM64 rounding and underflow" {
+test "math preserves fixed Go native rounding and underflow" {
   for
     (source, expected) in [
       (
-        "[std.sin(7),std.tan(std.pi/4),std.asin(100/101)]", "[0.6569865987187892,0.9999999999999998,1.4299604532284793]",
+        "[std.sin(7),std.tan(std.pi/4),std.asin(100/101)]",
+        if @number.reference_amd64() {
+          "[0.65698659871878906,1,1.4299604532284791]"
+        } else {
+          "[0.6569865987187892,0.9999999999999998,1.4299604532284793]"
+        },
       ),
       (
-        "[std.sin(536870913),std.sin(1e200),std.tan(1e20)]", "[-0.6188910888792108,-0.6439687185395057,-0.8446024630198842]",
+        "[std.sin(536870913),std.sin(1e200),std.tan(1e20)]",
+        if @number.reference_amd64() {
+          "[-0.61889108887921074,-0.64396871853950577,-0.84460246301988406]"
+        } else {
+          "[-0.6188910888792108,-0.6439687185395057,-0.8446024630198842]"
+        },
       ),
       (
-        "[std.exp(-745),std.pow(19/7,-5/13),std.pow(19/7,5/13)]", "[0,0.6810976779243634,1.4682181901537052]",
+        "[std.exp(-745),std.pow(19/7,-5/13),std.pow(19/7,5/13)]",
+        if @number.reference_amd64() {
+          "[4.9406564584124654e-324,0.68109767792436338,1.4682181901537052]"
+        } else {
+          "[0,0.6810976779243634,1.4682181901537052]"
+        },
       ),
       (
         "[std.toString(std.pow(-0,3)),std.toString(std.pow(-2,-1075)),std.toString(std.atan2(-0,-0))]",

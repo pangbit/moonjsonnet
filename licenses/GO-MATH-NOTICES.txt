@@ -1,5 +1,6 @@
 Notices inherited by the Go 1.24.0 math algorithms adapted in reference_math.mbt
-and reference_trig.mbt. The Go Authors' BSD 3-Clause license is in
+and reference_trig.mbt, reference_log.mbt and internal/number/math.c.
+The Go Authors' BSD 3-Clause license is in
 GO-BSD-3-Clause.txt.
 
 atan.go, sin.go, tan.go:
@@ -26,3 +27,8 @@ Copyright (C) 2004 by Sun Microsystems, Inc. All rights reserved.
 Permission to use, copy, modify, and distribute this
 software is freely granted, provided that this notice
 is preserved.
+
+exp_amd64.s:
+The original code and constants are from Naoki Shibata's SLEEF implementation.
+Its README states: "The software is in public domain. You can use the software
+without any obligation." Go's assembly is a simplified version of that code.

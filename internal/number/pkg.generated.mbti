@@ -10,6 +10,16 @@ pub fn format(Double) -> String
 
 pub fn fused_multiply_add(Double, Double, Double) -> Double
 
+pub fn reference_amd64() -> Bool
+
+pub fn reference_exp_amd64(Double) -> Double
+
+pub fn reference_int64(Double) -> Int64
+
+pub fn reference_multiply_add(Double, Double, Double) -> Double
+
+pub fn reference_rune(Double) -> Int
+
 // Errors
 
 // Types and methods

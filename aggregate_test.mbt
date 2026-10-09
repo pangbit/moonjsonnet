@@ -64,9 +64,6 @@ test "aggregate nonfinite results propagate and retain Go scalar spellings" {
         "[std.toString(+inf),std.toString(-nan),std.toString(std.abs(-0)),std.toString(std.abs(inf)),std.toString(std.abs(nan))]",
         "[\"+Inf\",\"NaN\",\"0\",\"+Inf\",\"NaN\"]",
       ),
-      (
-        "[[1][nan],nan&1,~nan,std.char(nan),'%c'%nan]", "[1,0,-1,\"\\u0000\",\"\\u0000\"]",
-      ),
       ("'%s' % inf", "\"+Inf\""),
       ("std.slice([1,2],nan,null,null)", "[]"),
       ("std.slice([],null,null,nan)", "[]"),
@@ -75,6 +72,47 @@ test "aggregate nonfinite results propagate and retain Go scalar spellings" {
   }
   for (expr, expected) in [("inf", "+Inf"), ("-inf", "-Inf"), ("nan", "NaN")] {
     assert_eq(@moonjsonnet.evaluate(prefix + expr).stringify(), expected)
+  }
+  let (source, expected) = if @number.reference_amd64() {
+    (
+      "[nan&1,~nan,std.char(nan),'%c'%nan]", "[0,9223372036854775808,\"�\",\"\\u0000\"]",
+    )
+  } else {
+    (
+      "[[1][nan],nan&1,~nan,std.char(nan),'%c'%nan]", "[1,0,-1,\"\\u0000\",\"\\u0000\"]",
+    )
+  }
+  assert_eq(@moonjsonnet.evaluate(prefix + source), @json.parse(expected))
+}
+
+///|
+test "NaN index diagnostics retain the native Go integer conversion" {
+  let prefix = "local inf=std.sum([1e308,1e308]); local nan=std.sum([inf,-inf]); "
+  if @number.reference_amd64() {
+    try @moonjsonnet.evaluate(prefix + "[1][nan]") catch {
+      @moonjsonnet.Error(d) =>
+        assert_eq(
+          d.message,
+          "Index -9223372036854775808 out of bounds, not within [0, 1)",
+        )
+    } noraise {
+      _ => fail("expected amd64 NaN index error")
+    }
+  } else {
+    assert_eq(@moonjsonnet.evaluate(prefix + "[1][nan]"), @json.parse("1"))
+  }
+  try @moonjsonnet.evaluate(prefix + "[][nan]") catch {
+    @moonjsonnet.Error(d) =>
+      assert_eq(
+        d.message,
+        if @number.reference_amd64() {
+          "Index -9223372036854775808 out of bounds, not within [0, 0)"
+        } else {
+          "Index 0 out of bounds, not within [0, 0)"
+        },
+      )
+  } noraise {
+    _ => fail("expected empty NaN index error")
   }
 }
 

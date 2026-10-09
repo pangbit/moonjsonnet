@@ -7,11 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Preserve one rounding step at the FMA sites in the pinned Go arm64 math. */
-MOONBIT_FFI_EXPORT double mj_fma(double x, double y, double z) {
-  return fma(x, y, z);
-}
-
 /* Match the pinned reference's numeric text contract without changing the
  * process locale: fixed integers, otherwise 17 significant decimal digits. */
 MOONBIT_FFI_EXPORT moonbit_bytes_t mj_number(double value) {

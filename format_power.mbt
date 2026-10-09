@@ -21,7 +21,11 @@ fn format_power(precision : Double) -> Double {
     fraction -= 1
     integral += 1
   }
-  let mut result = @math.exp(fraction * @math.ln(10))
+  let mut result = if @number.reference_amd64() {
+    reference_exp(fraction * reference_log(10))
+  } else {
+    @math.exp(fraction * @math.ln(10))
+  }
   let mut exponent = 0
   let mut factor = 0.625
   let mut factor_exponent = 4

@@ -417,8 +417,7 @@ fn Vm::builtin(
     "format" => Str(self.format_string(text_value(x, loc), values[1], loc))
     "slice" => self.slice(x, values[1], values[2], values[3], loc)
     "char" => {
-      let number = number_value(x, loc)
-      let n = if number.is_nan() { 0.0 } else { number }
+      let n = number_value(x, loc)
       if n > 1114111 {
         raise problem(
           Runtime,
@@ -434,7 +433,7 @@ fn Vm::builtin(
         )
       }
       // Go's rune-to-string conversion replaces surrogate code points.
-      let c = n.to_int().to_char().unwrap_or('�')
+      let c = @number.reference_rune(n).to_char().unwrap_or('�')
       Str(c.to_string())
     }
     "codepoint" => {

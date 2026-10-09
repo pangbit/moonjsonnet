@@ -10,24 +10,23 @@ fn reference_atan_series(x : Double) -> Double {
     -8.750608600031904122785e-01, -1.615753718733365076637e+01, -7.500855792314704667340e+01,
     -1.228866684490136173410e+02, -6.485021904942025371773e+01,
   ])
-  let first = @number.fused_multiply_add(x, x, 2.485846490142306297962e+01)
+  let first = @number.reference_multiply_add(x, x, 2.485846490142306297962e+01)
   let q = reference_polynomial(z, [
     first, 1.650270098316988542046e+02, 4.328810604912902668951e+02, 4.853903996359136964868e+02,
     1.945506571482613964425e+02,
   ])
-  @number.fused_multiply_add(x, z * p / q, x)
+  @number.reference_multiply_add(x, z * p / q, x)
 }
 
 ///|
-// Horner evaluation with the explicit FMA sites used by the pinned ARM64 Go
-// binary. Do not replace this with multiply/add or change its evaluation order.
+// Preserve Go's architecture-specific rounding at each Horner step.
 fn reference_polynomial(
   x : Double,
   coefficients : FixedArray[Double],
 ) -> Double {
   let mut result = coefficients[0]
   for i in 1..<coefficients.length() {
-    result = @number.fused_multiply_add(result, x, coefficients[i])
+    result = @number.reference_multiply_add(result, x, coefficients[i])
   }
   result
 }
@@ -123,7 +122,7 @@ fn reference_asin(x : Double) -> Double {
   if magnitude > 1 {
     return 0.0 / 0.0
   }
-  let root = @number.fused_multiply_add(-magnitude, magnitude, 1).sqrt()
+  let root = @number.reference_multiply_add(-magnitude, magnitude, 1).sqrt()
   let angle = if magnitude > 0.7 {
     1.5707963267948966 - reference_atan_positive(root / magnitude)
   } else {
@@ -138,6 +137,9 @@ fn reference_asin(x : Double) -> Double {
 
 ///|
 fn reference_exp(x : Double) -> Double {
+  if @number.reference_amd64() {
+    return @number.reference_exp_amd64(x)
+  }
   if x.is_nan() {
     return x
   }
@@ -150,7 +152,7 @@ fn reference_exp(x : Double) -> Double {
   if x.abs() < 3.725290298461914e-9 {
     return 1 + x
   }
-  let k = @number.fused_multiply_add(
+  let k = @number.reference_multiply_add(
     1.44269504088896338700e+00,
     x,
     if x < 0 {
@@ -159,7 +161,7 @@ fn reference_exp(x : Double) -> Double {
       0.5
     },
   ).to_int()
-  let hi = @number.fused_multiply_add(
+  let hi = @number.reference_multiply_add(
     -k.to_double(),
     6.93147180369123816490e-01,
     x,
@@ -171,7 +173,7 @@ fn reference_exp(x : Double) -> Double {
     4.13813679705723846039e-08, -1.65339022054652515390e-06, 6.61375632143793436117e-05,
     -2.77777777770155933842e-03, 1.66666666666666657415e-01,
   ])
-  let c = @number.fused_multiply_add(-t, p, r)
+  let c = @number.reference_multiply_add(-t, p, r)
   let y = 1.0 - (lo - r * c / (2 - c) - hi)
   // Match exp_arm64.s's inline exponent adjustment, including its lowest
   // subnormal boundary; the generic Go Ldexp path rounds differently there.
@@ -244,7 +246,7 @@ fn reference_pow(x : Double, y : Double) -> Double {
       yf -= 1
       yi += 1
     }
-    a = reference_exp(yf * @math.ln(x))
+    a = reference_exp(yf * reference_log(x))
   }
   let (fraction, e) = binary_fraction(x)
   let mut factor = fraction

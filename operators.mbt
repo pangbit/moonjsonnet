@@ -101,8 +101,8 @@ fn Vm::binary(
 ///|
 fn bitwise_integer(v : Value, loc : Location) -> Int64 raise {
   let n = number_value(v, loc)
-  // Go's floating-point MaxInt64 bound rounds to 2^63. Reproduce the
-  // pinned arm64 result explicitly instead of casting that unrepresentable value.
+  // Go's floating-point MaxInt64 bound rounds to 2^63. Its conversion at that
+  // bound depends on the native architecture and is defined by the FFI helper.
   if n < -9223372036854775808.0 || n > 9223372036854775808.0 {
     raise problem(
       Runtime,
@@ -116,18 +116,8 @@ fn bitwise_integer(v : Value, loc : Location) -> Int64 raise {
 }
 
 ///|
-// Defined conversion matching the pinned Go arm64 binary: NaN becomes zero,
-// out-of-range values saturate. The actual MoonBit cast only sees safe values.
 fn reference_int64(n : Double) -> Int64 {
-  if n.is_nan() {
-    0L
-  } else if n >= 9223372036854775808.0 {
-    9223372036854775807L
-  } else if n <= -9223372036854775808.0 {
-    -9223372036854775808L
-  } else {
-    n.to_int64()
-  }
+  @number.reference_int64(n)
 }
 
 ///|

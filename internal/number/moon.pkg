@@ -5,5 +5,5 @@ import {
 supported_targets = "native"
 
 options(
-  "native-stub": [ "format.c" ],
+  "native-stub": [ "format.c", "math.c" ],
 )

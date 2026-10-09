@@ -10,7 +10,11 @@ test "character conversion retains truncation and replaces surrogates" {
     @moonjsonnet.evaluate(
       "local inf=std.sum([1e308,1e308]); local nan=std.sum([inf,-inf]); std.codepoint(std.char(nan))",
     ).stringify(),
-    "0",
+    if @number.reference_amd64() {
+      "65533"
+    } else {
+      "0"
+    },
   )
 }
 

@@ -32,9 +32,9 @@ fn reference_trig_reduce(x : Double) -> (Int, Double) {
       j += 1
     }
     let y = j.to_double()
-    let z = @number.fused_multiply_add(-y, 7.85398125648498535156e-1, x)
-    let z = @number.fused_multiply_add(-y, 3.77489470793079817668e-8, z)
-    let z = @number.fused_multiply_add(-y, 2.69515142907905952645e-15, z)
+    let z = @number.reference_multiply_add(-y, 7.85398125648498535156e-1, x)
+    let z = @number.reference_multiply_add(-y, 3.77489470793079817668e-8, z)
+    let z = @number.reference_multiply_add(-y, 2.69515142907905952645e-15, z)
     return (j & 7, z)
   }
   let bits = x.reinterpret_as_uint64()
@@ -80,7 +80,7 @@ fn reference_sin_polynomial(z : Double) -> Double {
     1.58962301576546568060e-10, -2.50507477628578072866e-8, 2.75573136213857245213e-6,
     -1.98412698295895385996e-4, 8.33333333332211858878e-3, -1.66666666666666307295e-1,
   ])
-  @number.fused_multiply_add(z * zz, p, z)
+  @number.reference_multiply_add(z * zz, p, z)
 }
 
 ///|
@@ -90,10 +90,10 @@ fn reference_cos_polynomial(z : Double) -> Double {
     -1.13585365213876817300e-11, 2.08757008419747316778e-9, -2.75573141792967388112e-7,
     2.48015872888517045348e-5, -1.38888888888730564116e-3, 4.16666666666665929218e-2,
   ])
-  @number.fused_multiply_add(
+  @number.reference_multiply_add(
     zz * zz,
     p,
-    @number.fused_multiply_add(-0.5, zz, 1),
+    @number.reference_multiply_add(-0.5, zz, 1),
   )
 }
 
@@ -112,11 +112,11 @@ fn reference_trig(name : String, x : Double) -> Double {
       let p = reference_polynomial(zz, [
         -1.30936939181383777646e4, 1.15351664838587416140e6, -1.79565251976484877988e7,
       ])
-      let first = @number.fused_multiply_add(z, z, 1.36812963470692954678e4)
+      let first = @number.reference_multiply_add(z, z, 1.36812963470692954678e4)
       let q = reference_polynomial(zz, [
         first, -1.32089234440210967447e6, 2.50083801823357915839e7, -5.38695755929454629881e7,
       ])
-      @number.fused_multiply_add(z, zz * p / q, z)
+      @number.reference_multiply_add(z, zz * p / q, z)
     } else {
       z
     }

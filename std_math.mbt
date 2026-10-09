@@ -44,7 +44,7 @@ fn math_builtin(
         "asin" => reference_asin(x)
         "acos" => 1.5707963267948966 - reference_asin(x)
         "atan" => reference_atan(x)
-        "log" => @math.ln(x)
+        "log" => reference_log(x)
         "exp" => reference_exp(x)
         "hypot" => @math.hypot(x, number_value(values[1], loc))
         "atan2" => reference_atan2(x, number_value(values[1], loc))
