@@ -2,8 +2,12 @@
 
 Use the toolchain in [VERSIONS](VERSIONS.md). Run from the repository root:
 
-Linux evidence, the isolated snapshot runner, and checks still awaiting the fixed
-Go toolchain are recorded in the [SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
+The [final Linux acceptance report](../reports/GO-JSONNET-FINAL-ACCEPTANCE.md) records
+the completed fixed-Go comparisons, package consumer and ASan checks. Acceptance
+passed under the user's precise compatibility policy; raw strict failures remain
+recorded separately. Final macOS validation is pending at the user's request.
+Environment setup and earlier stages remain in the
+[SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
 
 ```sh
 moon check --target native --deny-warn
