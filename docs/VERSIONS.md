@@ -24,10 +24,18 @@ Apache-2.0 upstream test fixtures from the external reference checkout.
 CI pins the installer argument and reference commit. Toolchain download archives
 have an upstream retention policy; if the pinned build becomes unavailable,
 refresh the toolchain baseline and rerun acceptance instead of silently falling
-back to a newer compiler. Complete macOS acceptance and partial Linux x86_64
-native acceptance and the first fresh Go 1.24.0 Linux comparison have been executed.
-That comparison exposed architecture-specific numeric differences; the repair's
-final Linux acceptance remains pending. See the [SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
+back to a newer compiler. macOS arm64 and Linux x86_64 native debug/release
+tests pass 315/315. Fresh pinned Go 1.24.0 Linux comparisons have been executed
+before and after the architecture-specific numeric repair. The unchanged whole
+CLI corpus still reports 1131/1150: the original 18 failures and one NaN index
+fixture with an ARM64 success expectation and AMD64 error/path differences.
+Targeted absolute-path comparisons do not replace that failure. See the
+[SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
+Related ASan acceptance at clean `daece32` also passed 315 native tests, host 97,
+character 72, native errors 384, CLI 4095, API 1323 and 20 numeric inputs, with 417
+copied source files verified. Leak detection remains disabled per the original
+runner; the installed runtime hash is unchanged. The original 18+1+1 differences
+and the additional frozen NaN fixture remain unaccepted.
 
 Design: parse into located expressions; resolve names statically; evaluate
 lexical closures with memoized thunks; represent objects as ordered layers whose
