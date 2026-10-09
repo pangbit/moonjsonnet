@@ -239,7 +239,8 @@ async fn main {
     #|}
     #|///|
     #|test "independent nullable import AST consumer" {
-    #|  let evaluator=@moonjsonnet.Evaluator::new(resolver=fn(_,path) {{id:path,text:if path=="bad" {"missing"} else {"42"}}})
+    #|  let evaluator=@moonjsonnet.Evaluator::new()
+    #|  evaluator.set_importer(resolver=fn(_,path) {{id:path,text:if path=="bad" {"missing"} else {"42"}}})
     #|  let (program,identity)=evaluator.import_ast("","answer")
     #|  assert_eq(identity,"answer")
     #|  assert_eq(evaluator.evaluate(program.unwrap()),42)
