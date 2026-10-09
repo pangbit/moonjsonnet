@@ -1,0 +1,94 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+///|
+async fn checked_text(program : String, args : Array[String]) -> String {
+  let result = @shell.Cmd(program, args).output()
+  result.check()
+  result.stdout().trim().to_owned()
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 2 else {
+    fail("Usage: moon run --frozen tools/linux-native-acceptance.mbtx TEMP_WORKSPACE")
+  }
+  let work = @fs.realpath(args[1])
+  assert_true(work.has_prefix("/tmp/moonjsonnet-ssh-acceptance-"))
+  assert_eq(@fs.realpath("."), work + "/source")
+  assert_eq(checked_text("uname", ["-s"]), "Linux")
+  assert_eq(checked_text("id", ["-u"]), "65534")
+  let version = checked_text("moon", ["version", "--all"])
+  assert_true(version.contains("moonc v0.10.14+7d59c7ec9"))
+  assert_eq(checked_text("git", ["status", "--porcelain"]), "")
+  let evidence = work + "/evidence"
+  @fs.mkdir(evidence, recursive=true, allow_exist=true)
+  let binary = work + "/source/_build/native/release/build/"
+  let checks : Array[(String, Array[String])] = [
+    ("check-debug", ["check", "--target", "native", "--deny-warn"]),
+    ("check-release", ["check", "--target", "native", "--release", "--deny-warn"]),
+    ("test-debug", ["test", "--target", "native", "--deny-warn"]),
+    ("test-release", ["test", "--target", "native", "--release", "--deny-warn"]),
+    ("build-release", ["build", "--target", "native", "--release", "--deny-warn"]),
+    ("info", ["info", "--target", "native"]),
+    ("fmt", ["fmt"]),
+    ("fmt-check", ["fmt", "--check"]),
+    ("doc", ["doc"]),
+    ("embedded", ["run", "--target", "native", "--release", "--frozen", "examples/embedded"]),
+    ("host", ["run", "--frozen", "tools/integration.mbtx", binary + "cmd/main/main.exe"]),
+    ("dependencies", ["run", "--frozen", "tools/dependency-integration.mbtx", binary + "cmd/deps/deps.exe"]),
+    ("parameters", ["run", "--frozen", "tools/parameter-integration.mbtx", binary + "examples/parameter-probe/parameter-probe.exe"]),
+    ("frozen-evaluator", ["run", "--frozen", "tools/evaluator-integration.mbtx", binary + "examples/evaluator-probe/evaluator-probe.exe"]),
+    ("frozen-ast", ["run", "--frozen", "tools/ast-integration.mbtx", binary + "examples/ast-probe/ast-probe.exe"]),
+    ("lint-cli", ["run", "--frozen", "tools/lint-cli.mbtx", binary + "cmd/lint/lint.exe"]),
+    ("formatter-host", ["run", "--frozen", "tools/formatter-cli-host.mbtx", binary + "cmd/jsonnetfmt/jsonnetfmt.exe"]),
+    ("frozen-formatter-node", ["run", "--frozen", "tools/formatter-node.mbtx", binary + "examples/formatter-node-probe/formatter-node-probe.exe"]),
+    ("frozen-debugger", ["run", "--frozen", "tools/debugger-integration.mbtx", binary + "examples/debugger-probe/debugger-probe.exe"]),
+    ("frozen-diagnostic-api", ["run", "--frozen", "tools/diagnostic-api.mbtx", binary + "examples/diagnostic-probe/diagnostic-probe.exe"]),
+    ("archive-consumer", ["run", "--frozen", "tools/consumer.mbtx"]),
+  ]
+  let rows : Array[Json] = []
+  let mut passed = 0
+  for (name, command) in checks {
+    println("START " + name)
+    let start = checked_text("date", ["-u", "+%Y-%m-%dT%H:%M:%SZ"])
+    let result = @shell.Cmd("moon", command).output(timeout_ms=900000)
+    @fs.write_file(evidence + "/" + name + ".stdout", result.stdout())
+    @fs.write_file(evidence + "/" + name + ".stderr", result.stderr())
+    let finish = checked_text("date", ["-u", "+%Y-%m-%dT%H:%M:%SZ"])
+    let ok = result.exit_code() == 0
+    if ok { passed += 1 }
+    rows.push({ "name": name, "program": "moon", "args": command,
+      "started_utc": start, "finished_utc": finish,
+      "exit": result.exit_code(), "passed": ok })
+    @fs.write_file(evidence + "/checks.json", Json::array(rows).stringify(indent=2) + "\n")
+    println("DONE \{name} exit=\{result.exit_code()}")
+  }
+  let dirty = checked_text("git", ["status", "--porcelain"])
+  @fs.write_file(evidence + "/source-status.txt", dirty + "\n")
+  let diff = @shell.Cmd("git", ["diff", "--check"]).output()
+  @fs.write_file(evidence + "/diff-check.stdout", diff.stdout())
+  @fs.write_file(evidence + "/diff-check.stderr", diff.stderr())
+  let report : Json = {
+    "source_commit": checked_text("git", ["rev-parse", "HEAD"]),
+    "source_dirty_after_checks": !dirty.is_empty(),
+    "platform": checked_text("uname", ["-srm"]),
+    "uid": checked_text("id", ["-u"]), "moon_version": version,
+    "scope": "Linux native and frozen fixtures; no fresh Go reference built",
+    "passed": passed, "total": checks.length(), "checks": rows,
+    "diff_check_exit": diff.exit_code(),
+    "not_run": ["fresh Go 1.24.0 comparisons", "Go-dependent ASan comparisons"],
+    "unapproved_existing_differences": "18 CLI + 1 Evaluator + 1 lint",
+  }
+  @fs.write_file(evidence + "/report.json", report.stringify(indent=2) + "\n")
+  println("Linux native checks: \{passed}/\{checks.length()}; evidence: \{evidence}")
+  if passed != checks.length() || !dirty.is_empty() || diff.exit_code() != 0 {
+    fail("Linux native failures or source changes retained in " + evidence)
+  }
+}
