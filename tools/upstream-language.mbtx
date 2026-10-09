@@ -32,10 +32,18 @@ async fn main {
       cases.push(("format:\{i + 1}", path))
     }
   }
-  let listed = @shell.Cmd("rg", ["--files", root, "-g", "error.parse.*.jsonnet", "-g", "error.static*.jsonnet", "-g", "error.function*.jsonnet"]).output()
+  // The pinned clean fixture set is tracked in Git. Enumerate it without an
+  // additional rg installation; the three selections retain the same 30 files.
+  let listed = @shell.Cmd("git", ["-C", reference, "ls-files", "--", "test_suite"]).output()
   listed.check()
   for path in listed.stdout().split("\n") {
-    if !path.is_empty() { cases.push((path.to_owned(), path.to_owned())) }
+    if path.has_suffix(".jsonnet") &&
+      (path.has_prefix("test_suite/error.parse.") ||
+        path.has_prefix("test_suite/error.static") ||
+        path.has_prefix("test_suite/error.function")) {
+      let path = reference + "/" + path.to_owned()
+      cases.push((path, path))
+    }
   }
   let mut failed = 0
   let mut unsupported = 0
