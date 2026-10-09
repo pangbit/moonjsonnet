@@ -206,6 +206,7 @@ pub fn Evaluator::ext_var(Self, String, Json) -> Unit raise JsonnetError
 pub fn Evaluator::find_dependencies(Self, String, Array[String]) -> Array[String] raise JsonnetError
 pub fn Evaluator::format_error(Self, Diagnostic) -> String
 pub fn Evaluator::format_error_bytes(Self, Diagnostic) -> Bytes
+pub fn Evaluator::import_ast(Self, String, String) -> (Program?, String) raise JsonnetError
 pub fn Evaluator::import_data(Self, String, String) -> BinarySource raise JsonnetError
 pub fn Evaluator::import_program(Self, String, String) -> (Program, String) raise JsonnetError
 pub fn Evaluator::native_function(Self, String, NativeFunction) -> Unit raise JsonnetError

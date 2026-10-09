@@ -1,0 +1,90 @@
+import { "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell", "moonbitlang/core/env", "moonbitlang/core/json" }
+
+fn field(value : Json, key : String, fallback : Json) -> Json {
+  match value { Object(fields)=>fields.get(key).unwrap_or(fallback); _=>fallback }
+}
+
+fn optional_input(input : Json) -> Json raise {
+  guard input is Object(fields) else { fail("fixture object") }
+  let fields=fields.copy()
+  guard field(input,"steps",Json::null()) is Array(steps) else { fail("steps") }
+  fields["steps"]=Json::array(steps.map(step=>{
+    guard step is Object(parts) else { fail("step object") }
+    let parts=parts.copy()
+    if parts.get("op") is Some(String("program")) { parts["op"]=Json::string("ast") }
+    Json::object(parts)
+  }))
+  Json::object(fields)
+}
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==4 else { fail("Usage: moon run tools/evaluator-import-ast.mbtx MOON_PROBE GO_PROBE GO_CHECKOUT") }
+  let cli=@fs.realpath(args[1])
+  let reference=@fs.realpath(args[2])
+  let checkout=@fs.realpath(args[3])
+  let head=@shell.Cmd("git",["rev-parse","HEAD"],cwd=checkout).output()
+  head.check(); assert_eq(head.stdout().trim().to_owned(),"67968688d9952f50662e979fab1bef889d0d3e57")
+  let status=@shell.Cmd("git",["status","--porcelain"],cwd=checkout).output()
+  status.check(); assert_eq(status.stdout(),"")
+  let metadata=@shell.Cmd("go",["version","-m",reference]).output()
+  metadata.check(); assert_true(metadata.stdout().contains("go1.24.0"))
+  let started=@shell.Cmd("date",["-u","+%Y-%m-%dT%H:%M:%SZ"]).output()
+  started.check()
+  let frozen_text=@fs.read_file("tests/go-evaluator.json").text()
+  guard @json.parse(frozen_text) is Array(frozen) else { fail("frozen cases") }
+  let original=frozen.filter(row=>row is {"name":"import-program-failed-parse-retry",..})
+  assert_eq(original.length(),1)
+  let cases : Array[Json]=[
+    original[0],
+    {"name":"syntax-retry","files":{"main":"["},"steps":[{"op":"program"},{"op":"program"}]},
+    {"name":"static-third-query","files":{"main":"missing"},"steps":[{"op":"program"},{"op":"program"},{"op":"program"}]},
+    {"name":"raw-data-before-static-query","files":{"main":"missing"},"steps":[{"op":"data"},{"op":"program"},{"op":"program"}]},
+    {"name":"resolve-before-static-query","files":{"main":"missing"},"steps":[{"op":"resolve"},{"op":"program"},{"op":"program"}]},
+    {"name":"valid-query-and-execution","files":{"main":"42"},"steps":[{"op":"program"},{"op":"program"},{"op":"evaluate_imported"}]},
+    {"name":"null-expression-is-valid-ast","files":{"main":"null"},"steps":[{"op":"program"},{"op":"program"},{"op":"evaluate_imported"}]},
+    {"name":"queries-do-not-execute-native-or-trace","files":{"main":"std.trace('run',std.native('tick')())"},"steps":[{"op":"native"},{"op":"program"},{"op":"program"},{"op":"evaluate_imported"}]},
+    {"name":"ext-reset-retains-nil-query-history","files":{"main":"missing"},"steps":[{"op":"program"},{"op":"ext_var","name":"x","value":1},{"op":"ext_reset"},{"op":"program"}]},
+    {"name":"importer-reset-recovers-valid-source","files":{"main":"missing"},"steps":[{"op":"program"},{"op":"program"},{"op":"files","value":{"main":"42"}},{"op":"importer"},{"op":"program"},{"op":"evaluate_imported"}]},
+    {"name":"changed-source-without-importer-reset","files":{"main":"missing"},"steps":[{"op":"program"},{"op":"files","value":{"main":"42"}},{"op":"program"}]},
+    {"name":"missing-import-retries-and-recovers","files":{},"steps":[{"op":"program"},{"op":"program"},{"op":"files","value":{"main":"42"}},{"op":"program"}]},
+    {"name":"different-identities-keep-independent-history","files":{"main":"missing","valid":"42"},"steps":[{"op":"program","name":"bad"},{"op":"program","path":"valid"},{"op":"program","name":"bad"},{"op":"evaluate_imported"}]},
+  ]
+  let rows : Array[Json]=[]
+  let mut observations=0
+  for input in cases {
+    let mapped=optional_input(input)
+    let go=@shell.Cmd(reference,[],stdin=@shell.Text(input.stringify())).output(timeout_ms=10000)
+    let moon_output=@shell.Cmd(cli,[],stdin=@shell.Text(mapped.stringify())).output(timeout_ms=10000)
+    let a=@json.parse(go.stdout())
+    let b=@json.parse(moon_output.stdout())
+    guard field(a,"result",Json::null()) is Array(results) else { fail("reference observations") }
+    observations+=results.length()
+    guard field(a,"diagnostics",Json::null()) is Array(ad) && field(b,"diagnostics",Json::null()) is Array(bd) else { fail("diagnostics") }
+    let diagnostics_equal=ad.length()==bd.length() && ad.iter().zip(bd.iter()).all(pair=>match pair {
+      (String(a),String(b))=>a.is_empty()==b.is_empty() && !a.contains("(CRASH)") && !a.contains("INTERNAL ERROR") && !b.contains("(CRASH)") && !b.contains("INTERNAL ERROR")
+      _=>false
+    })
+    let passed=go.exit_code()==0 && moon_output.exit_code()==0 && go.stderr()=="" && moon_output.stderr()=="" && field(a,"result",Json::null())==field(b,"result",Json::null()) && field(a,"error",Json::null())==Json::string("") && field(b,"error",Json::null())==Json::string("") && diagnostics_equal
+    rows.push({"reference_input":input,"local_input":mapped,"reference_exit":go.exit_code(),"local_exit":moon_output.exit_code(),"reference_stdout":go.stdout(),"local_stdout":moon_output.stdout(),"reference_stderr":go.stderr(),"local_stderr":moon_output.stderr(),"passed":passed})
+  }
+  // Replay the original strict operation unchanged; it must retain the known gap.
+  let go=@shell.Cmd(reference,[],stdin=@shell.Text(original[0].stringify())).output()
+  let strict=@shell.Cmd(cli,[],stdin=@shell.Text(original[0].stringify())).output()
+  let go_result=@json.parse(go.stdout())
+  let strict_result=@json.parse(strict.stdout())
+  let original_passed=field(go_result,"result",Json::null())==field(strict_result,"result",Json::null())
+  assert_false(original_passed)
+  assert_eq(field(strict_result,"result",Json::null()),field(original[0],"expected",Json::null()))
+  assert_true(field(go_result,"result",Json::null()) is Array([{"error":True,"reads":1,"calls":0,"trace":Array([]),..},{"error":False,"value":{"id":"main","nil":True,..},"reads":1,"calls":0,"trace":Array([]),..}]))
+  let hashes=@shell.Cmd("shasum",["-a","256",reference,cli,"tests/reference/evaluator.go","tests/go-evaluator.json","tests/go-differential.json","tests/go-lint.json"]).output()
+  hashes.check()
+  let finished=@shell.Cmd("date",["-u","+%Y-%m-%dT%H:%M:%SZ"]).output()
+  finished.check()
+  let passed=rows.filter(row=>row is {"passed":True,..}).length()
+  @fs.mkdir("_build/import-ast",recursive=true,allow_exist=true)
+  @fs.write_file("_build/import-ast/report.json",({"reference_commit":head.stdout().trim().to_owned(),"reference_build":metadata.stdout(),"started_utc":started.stdout().trim().to_owned(),"finished_utc":finished.stdout().trim().to_owned(),"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"observations":observations,"cases":rows,"hashes":hashes.stdout(),"mapping":"Go program operation calls VM.ImportAST; Moon nullable derived input maps only program to ast, retaining all original file contents, paths and other steps. Frozen fixtures and strict program operation are unchanged.","comparison":"Structured values including id/nil, error status, source reads, native calls and traces; diagnostic error presence compared, full text retained but not claimed byte-equal; raw importer invocation count is not measured.","original_strict_fixture":{"input":original[0],"passed":original_passed,"reference_stdout":go.stdout(),"local_stdout":strict.stdout(),"reference_exit":go.exit_code(),"local_exit":strict.exit_code(),"reference_stderr":go.stderr(),"local_stderr":strict.stderr()},"overall_original_evaluator_gap_closed":false,"exceptions_accepted":false}:Json).stringify(indent=2)+"\n")
+  assert_eq(@fs.read_file("tests/go-evaluator.json").text(),frozen_text)
+  println("Optional import AST: \{passed}/\{rows.length()}, \{observations} observations; original strict fixture remains failed.")
+  assert_eq(passed,rows.length())
+}

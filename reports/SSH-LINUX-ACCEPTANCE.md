@@ -274,6 +274,23 @@ deny-warn编译错误及v2留存。本轮没有权限拒绝。详见
 归档SHA：`168c0ad85e2edfee29f802d4f8b864a59c7c2509cfc099ba691ee0d653b791bd`。
 本地目录`${LOCAL_PATH_014}`，提交由侧车另行绑定。
 
+## 可选导入AST查询续批
+
+产品起点eb57730，新增Evaluator.import_ast可选返回及独立nil历史，原
+import_program保持严格语义。UTC07:13:01–07:13:56普通检查、26/26定向测试
+及release探针构建通过；UTC07:24:07–07:24:09固定Go13/13序列37观测、
+info/fmt通过，接口仅新增1行。UTC07:25:02–07:26:00同源ASan26/26、13/13、
+37观测通过，427份副本SHA相同。原冻结严格调用在普通/ASan均仍false。
+原18+1+1及NaN失败不接受例外；未重跑全量、安装或执行Mac重任务。
+首次Moon默认脚本target因root上传目录拒绝UID65534，改用授权任务临时输出
+而保留原权限；Go默认/root/.cache/go-build拒绝后复用经原报告和哈希绑定的
+既有适配器，不改/root权限或提升测试身份。编译失败及临时transport断开
+后的状态核实均留存。UTC07:27:45无验证/整理进程。详见
+[可选AST报告及11类行为对照](GO-JSONNET-IMPORT-AST-OPTIONAL.md)。
+归档102文件及manifest，远端解包核验和本地SHA复核；SHA：
+`53515ecbbe001644239d2b8d1a2f2f51027dab610d9a68014d1947a2530a53bb`。
+本地目录`${LOCAL_PATH_019}`，实际提交由侧车绑定。
+
 ## 共享主机只读快照
 
 UTC02:54:00：24逻辑CPU；内存15GiB、可用12GiB；磁盘剩余61GiB；负载

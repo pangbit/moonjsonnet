@@ -147,4 +147,12 @@ Evaluator、lint身份策略和前8类参考崩溃，不以路径修复替代剩
 Evaluator可新增可选结果查询或生命周期明确的适配器以保留现有API；此前
 必须先改变原返回契约的判断过窄。本轮仅分析、未改接口或原失败。
 
+## 可选AST入口续批
+
+[可选导入AST报告](GO-JSONNET-IMPORT-AST-OPTIONAL.md)实现新增可选Program查询，
+普通/ASan各26测试、13序列37观测通过；原严格program调用的失败直接复核
+仍保留，不能改记原21项通过。该报告直接列出11类影响输入和双方行为，并
+依据18项原stderr确认前8类全部含堆栈、地址参数及机器绝对源码路径。
+这些可能变化的字节不授予行为例外；未为复制崩溃改坏正常结果。
+
 > Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.

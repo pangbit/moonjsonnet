@@ -137,31 +137,82 @@ pub fn Evaluator::import_program(
 ) -> (Program, String) raise JsonnetError {
   self.query(imported_from, () => {
     let source = self.reader().load_data(imported_from, imported_path)
-    let expression = if self.parsed_imports.get(source.id) is Some(expression) {
-      check_ast_depth(expression, self.limits.depth)
-      expression
-    } else {
-      let text = @utf8.decode(source.bytes) catch {
-        _ =>
-          raise problem(
-            Import,
-            { file: source.id, line: 1, column: 1, },
-            "invalid UTF-8",
-          )
-      }
-      let expression = parse(text, source.id, self.limits.depth)
-      self.parsed_imports[source.id] = expression
-      expression
+    (self.imported_program(source), source.id)
+  })
+}
+
+///|
+fn Evaluator::imported_program(
+  self : Evaluator,
+  source : BinarySource,
+) -> Program raise {
+  let expression = if self.parsed_imports.get(source.id) is Some(expression) {
+    check_ast_depth(expression, self.limits.depth)
+    expression
+  } else {
+    let text = @utf8.decode(source.bytes) catch {
+      _ =>
+        raise problem(
+          Import,
+          { file: source.id, line: 1, column: 1, },
+          "invalid UTF-8",
+        )
     }
-    (
-      {
-        expression,
-        filename: source.id,
-        anonymous: false,
-        source_bytes: source.bytes.length(),
-      },
-      source.id,
-    )
+    let expression = parse(text, source.id, self.limits.depth)
+    self.parsed_imports[source.id] = expression
+    expression
+  }
+  {
+    expression,
+    filename: source.id,
+    anonymous: false,
+    source_bytes: source.bytes.length(),
+  }
+}
+
+///|
+/// Query an imported AST using Go ImportAST's nullable failure-cache behavior.
+/// The first Syntax/Static failure raises and records a nil AST; later calls to
+/// this method return None and the same identity. Importer replacement clears
+/// that history. Valid ASTs and source bytes share the ordinary import caches.
+/// Import/UTF-8/resource errors are never cached as successful nil results.
+/// This does not execute code. import_program remains strict, including retries,
+/// and its failures do not seed this method's optional failure history.
+///
+/// ```mbt check
+/// test {
+///   let evaluator = @moonjsonnet.Evaluator::new()
+///   evaluator.set_importer(resolver=fn(_, path) { { id: path, text: "missing", } })
+///   try evaluator.import_ast("", "main") catch {
+///     @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Static)
+///   } noraise {
+///     _ => fail("expected first parse error")
+///   }
+///   let (program, id) = evaluator.import_ast("", "main")
+///   assert_true(program is None)
+///   assert_eq(id, "main")
+/// }
+/// ```
+pub fn Evaluator::import_ast(
+  self : Evaluator,
+  imported_from : String,
+  imported_path : String,
+) -> (Program?, String) raise JsonnetError {
+  self.query(imported_from, () => {
+    let source = self.reader().load_data(imported_from, imported_path)
+    if self.failed_import_asts.contains(source.id) {
+      return (None, source.id)
+    }
+    let program = self.imported_program(source) catch {
+      Error(d) => {
+        if d.kind == Syntax || d.kind == Static {
+          self.failed_import_asts[source.id] = ()
+        }
+        raise Error(d)
+      }
+      e => raise e
+    }
+    (Some(program), source.id)
   })
 }
 

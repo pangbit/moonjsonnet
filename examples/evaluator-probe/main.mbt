@@ -99,7 +99,7 @@ fn run(input : Json) -> Json raise {
         evaluator.set_string_output(
           field(step, "value", Json::boolean(false)) == Json::boolean(true),
         )
-      "resolve" | "data" | "program" | "dependencies" => {
+      "resolve" | "data" | "program" | "ast" | "dependencies" => {
         let mut error = ""
         let value = try {
           let from = text(step, "from", "entry")
@@ -122,6 +122,15 @@ fn run(input : Json) -> Json raise {
               let (program, id) = evaluator.import_program(from, path)
               imported[name] = program
               { "id": id, "nil": false }
+            }
+            "ast" => {
+              let (program, id) = evaluator.import_ast(from, path)
+              if program is Some(program) {
+                imported[name] = program
+              } else {
+                ignore(imported.remove(name))
+              }
+              { "id": id, "nil": program is None }
             }
             _ => {
               let paths = match field(step, "paths", Json::null()) {

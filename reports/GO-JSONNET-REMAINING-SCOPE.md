@@ -45,5 +45,8 @@ API1323及20架构输入通过，417副本文件SHA相同。整体仍为1131/115
 导入宿主20/20，原探针9/9；2个canonical别名/AST来源探针保留失败。
 Evaluator新增可选查询或适配器可保留现有API，并非必须先破坏非空返回契约；
 本轮只分析未实现。原11类根因与优先顺序详见该报告，整体仍未通过。
+随后[可选AST查询](GO-JSONNET-IMPORT-AST-OPTIONAL.md)已实现，普通及ASan各
+26测试、13序列37观测通过。原import_program严格调用与冻结runner保持原样，
+同输入直接复核仍失败；新增入口不自动关闭原差异，整体20/21数字未更新。
 Linux方案见 [隔离验收方案](LINUX-ACCEPTANCE-PLAN.md)。2026-10-09 已转用用户
 授权的SSH路线，阶段结果和精确工具缺口见 [SSH验收](SSH-LINUX-ACCEPTANCE.md)。

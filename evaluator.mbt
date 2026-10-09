@@ -14,6 +14,7 @@ pub struct Evaluator {
   priv sources : Map[(String, String), Source]
   priv binary_sources : Map[(String, String), BinarySource]
   priv parsed_imports : Map[String, Expr]
+  priv failed_import_asts : Map[String, Unit]
   priv mut trace : (Location, String) -> Unit
   priv mut eval_hook : EvalHook?
   priv mut diagnostic_formatter : DiagnosticFormatter?
@@ -50,6 +51,7 @@ pub fn Evaluator::new() -> Evaluator {
     sources: Map([]),
     binary_sources: Map([]),
     parsed_imports: Map([]),
+    failed_import_asts: Map([]),
     trace: default_trace,
     eval_hook: None,
     diagnostic_formatter: None,
@@ -101,6 +103,7 @@ pub fn Evaluator::set_importer(
   self.sources.clear()
   self.binary_sources.clear()
   self.parsed_imports.clear()
+  self.failed_import_asts.clear()
 }
 
 ///|

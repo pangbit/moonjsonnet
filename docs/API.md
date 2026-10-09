@@ -615,6 +615,11 @@ parameters or invoke native/trace callbacks:
   validates source, returning the program and resolved identity. Evaluation of
   the returned Program is a separate operation, so it executes its entry anew;
   importing that identity within an expression still uses the import value cache.
+- `import_ast(imported_from, imported_path) -> (Program?, String)` is an opt-in
+  nullable query corresponding to Go ImportAST. A valid parse returns Some(program).
+  Its first Syntax/Static failure raises and records nil under the resolved identity;
+  later calls to this method return None and that identity. None is not a parsed
+  Jsonnet `null` expression. Valid ASTs and bytes share the ordinary caches.
 - `find_dependencies(imported_from, imported_paths) -> Array[String]` uses the
   static scanner below with the Evaluator's shared source/AST cache. Traversal
   state and scan budgets are fresh each time, and cached runtime values are not
@@ -623,11 +628,16 @@ parameters or invoke native/trace callbacks:
 Queries apply current source/import-byte limits; parsed programs and scans also
 recheck cached AST depth. Scans account cumulative bytes and request counts as
 usual. Querying does not initialize the runtime or consume evaluation steps.
-All four methods raise `JsonnetError` and use the same non-reentry guard as
-execution. Failed parses retain source bytes but do not install an invalid AST;
-repeated requests continue to report the parse/static error. Go v0.21.0 can
-instead return a successful nil AST on a repeated ImportAST after such a failure;
-the differential input remains a failure, not an accepted parity exception.
+All queries raise `JsonnetError` and use the same non-reentry guard as execution.
+`import_program`, ordinary evaluation and dependency scans remain strict: failed
+parses retain bytes but do not install an invalid AST, and retries still fail.
+Their failures do not seed the opt-in `import_ast` nil history. That history survives
+ext/native/TLA/trace setters and resets, and `set_importer` clears it together with
+all import caches. Importer/UTF-8 and resource errors never become successful nil;
+cached nil results still obey current byte limits. A cached valid AST rechecks depth.
+The original differential fixture calls the strict `import_program` operation;
+that unchanged call still differs from Go's retry. Adding the nullable entry alone
+does not close that fixture or grant a compatibility exception.
 
 ## Lint analysis (partial)
 
