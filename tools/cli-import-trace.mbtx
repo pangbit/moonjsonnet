@@ -95,4 +95,5 @@ async fn main {
   @fs.write_file(work+"/report.json",({"cwd":cwd,"reference_build":metadata.stdout(),"started_utc":started.stdout().trim().to_owned(),"finished_utc":finished.stdout().trim().to_owned(),"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"cases":rows,"sources":source_rows,"libraries":files.map(pair=>{"path":work+"/"+pair.0,"source":pair.1}),"hashes":hashes.stdout(),"comparison":"same source and arguments; exact stdout/stderr/exit without normalization; canonical-cache collision probes retained separately as unresolved","remaining_probes":remaining,"exceptions_accepted":false,"overall_compatibility_passed":false}:Json).stringify(indent=2)+"\n")
   println("Import trace: \{passed}/\{rows.length()} at "+started.stdout().trim().to_owned()+" to "+finished.stdout().trim().to_owned())
   assert_eq(passed,rows.length())
+  assert_true(remaining.all(row=>row is {"passed":True,..}),msg="original alias and AST-origin probes must also pass")
 }

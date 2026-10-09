@@ -242,8 +242,8 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
   }
   diagnostics.formatter.set_source(source)
   if !anonymous {
-    // Keep the canonical identity for execution/imports. Pinned Go retains
-    // absolute input spellings and lexically cleans relative entry paths.
+    // Keep the entry's existing identity and record its invocation path for
+    // diagnostics and import lookup. Pinned Go cleans only relative spellings.
     let display = if path.has_prefix("/") {
       path
     } else {
@@ -264,38 +264,41 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
   }
   let resolver = fn(from : String, path : String) raise {
     @posix.clear_io_error()
-    let source = host.resolve(from, path) catch {
+    let source = host.resolve(
+      import_origin(host, from, diagnostics.trace_names),
+      path,
+    ) catch {
       @moonjsonnet.Error(d) => raise import_failure(d, from, path, jpaths)
     }
-    if !diagnostics.trace_names.contains(source.id) {
-      diagnostics.trace_names[source.id] = import_trace_name(
-        host,
-        from,
-        path,
-        source.id,
-        diagnostics.trace_names,
-        jpaths,
-      )
-    }
+    let id = import_trace_name(
+      host,
+      from,
+      path,
+      source.id,
+      diagnostics.trace_names,
+      jpaths,
+    )
+    let source = { ..source, id, }
     diagnostics.formatter.set_source(source)
     source
   }
   let binary_resolver = fn(from : String, path : String) raise {
     @posix.clear_io_error()
-    let source = host.resolve_binary(from, path) catch {
+    let source = host.resolve_binary(
+      import_origin(host, from, diagnostics.trace_names),
+      path,
+    ) catch {
       @moonjsonnet.Error(d) => raise import_failure(d, from, path, jpaths)
     }
-    if !diagnostics.trace_names.contains(source.id) {
-      diagnostics.trace_names[source.id] = import_trace_name(
-        host,
-        from,
-        path,
-        source.id,
-        diagnostics.trace_names,
-        jpaths,
-      )
-    }
-    source
+    let id = import_trace_name(
+      host,
+      from,
+      path,
+      source.id,
+      diagnostics.trace_names,
+      jpaths,
+    )
+    { ..source, id, }
   }
   let trace = fn(location, message) {
     @posix.stderr(source_trace(location, message, diagnostics.trace_names))

@@ -237,6 +237,18 @@ async fn main {
     #|  }} noraise {_=>fail("assertion diagnostic")}
     #|  evaluator.set_diagnostic_formatter()
     #|}
+    #|///|
+    #|test "independent nullable import AST consumer" {
+    #|  let evaluator=@moonjsonnet.Evaluator::new(resolver=fn(_,path) {{id:path,text:if path=="bad" {"missing"} else {"42"}}})
+    #|  let (program,identity)=evaluator.import_ast("","answer")
+    #|  assert_eq(identity,"answer")
+    #|  assert_eq(evaluator.evaluate(program.unwrap()),42)
+    #|  try evaluator.import_ast("","bad") catch {@moonjsonnet.Error(d)=>assert_eq(d.kind,@moonjsonnet.Static)} noraise {_=>fail("first parse must fail")}
+    #|  let (cached,failed_identity)=evaluator.import_ast("","bad")
+    #|  assert_true(cached is None)
+    #|  assert_eq(failed_identity,"bad")
+    #|  try evaluator.import_program("","bad") catch {@moonjsonnet.Error(d)=>assert_eq(d.kind,@moonjsonnet.Static)} noraise {_=>fail("strict API must still fail")}
+    #|}
   @fs.write_file(work + "/consumer/consumer_test.mbt", test_source)
   @fs.write_file(work + "/consumer/parameter.jsonnet", "std.extVar('x')")
   @fs.mkdir(work+"/consumer/library")

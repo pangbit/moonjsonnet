@@ -8,8 +8,25 @@ fn trace_path(base : String, path : String) -> String {
 }
 
 ///|
+// The CLI keeps the importer's lexical found-at identity. FileHost still uses
+// canonical paths for confinement and byte caching, but those paths must not
+// merge two code imports or choose their AST source names.
+fn import_origin(
+  host : @fs.FileHost,
+  from : String,
+  names : Map[String, String],
+) -> String {
+  let shown = names.get(from).unwrap_or(from)
+  if shown.is_empty() || shown.has_prefix("/") {
+    shown
+  } else {
+    host.root + "/" + shown
+  }
+}
+
+///|
 // Read the host's successful attempt, without probing or reopening the file.
-// Source.id and the host's canonical caches remain untouched.
+// The returned name is the CLI source identity; host caches remain untouched.
 fn import_trace_name(
   host : @fs.FileHost,
   from : String,
@@ -18,9 +35,10 @@ fn import_trace_name(
   names : Map[String, String],
   jpaths : Array[String],
 ) -> String {
-  let base = match from.rev_find("/") {
+  let origin = import_origin(host, from, names)
+  let base = match origin.rev_find("/") {
     Some(0) => "/"
-    Some(i) => from[:i].to_owned()
+    Some(i) => origin[:i].to_owned()
     None => host.root
   }
   let shown = names.get(from).unwrap_or(from)

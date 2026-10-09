@@ -1,0 +1,83 @@
+import { "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell", "moonbitlang/core/env", "moonbitlang/core/json" }
+
+async fn main {
+  let args=@env.args()
+  guard args.length()==3 else { fail("Usage: moon run tools/cli-import-identity.mbtx FIXED_GO CLI") }
+  let reference=@fs.realpath(args[1])
+  let cli=@fs.realpath(args[2])
+  let metadata=@shell.Cmd("go",["version","-m",reference]).output()
+  metadata.check()
+  assert_true(metadata.stdout().contains("go1.24.0"))
+  assert_true(metadata.stdout().contains("vcs.revision=67968688d9952f50662e979fab1bef889d0d3e57"))
+  assert_true(metadata.stdout().contains("vcs.modified=false"))
+  let started=@shell.Cmd("date",["-u","+%Y-%m-%dT%H:%M:%SZ"]).output()
+  started.check()
+  let cwd=@fs.realpath(".")
+  let work="_build/import-identity"
+  for path in ["lib","physical","logical","high","low","multi"] { @fs.mkdir(work+"/"+path,recursive=true,allow_exist=true) }
+  let files : Array[(String,String)]=[
+    ("lib/normal.libsonnet","std.trace('relative imported',42)"),
+    ("lib/lazy.libsonnet","{v:std.trace('lazy',42),file:std.thisFile}"),
+    ("lib/filename.libsonnet","std.trace(std.thisFile,std.thisFile)"),
+    ("lib/error.libsonnet","std.trace('before error',error 'deliberate')"),
+    ("lib/syntax.libsonnet","local x = ; x"),
+    ("physical/parent.libsonnet","std.trace('parent',import './sibling.libsonnet')"),
+    ("physical/sibling.libsonnet","std.trace('physical sibling',1)"),
+    ("logical/sibling.libsonnet","std.trace('logical sibling',2)"),
+    ("high/choice.libsonnet","std.trace('high',3)"),
+    ("low/choice.libsonnet","std.trace('low',4)"),
+  ]
+  for (path,source) in files { @fs.write_file(work+"/"+path,source) }
+  for (link_name,target) in [("lib/alias.libsonnet","lib/normal.libsonnet"),("lib/lazy-alias.libsonnet","lib/lazy.libsonnet"),("lib/filename-alias.libsonnet","lib/filename.libsonnet"),("lib/error-alias.libsonnet","lib/error.libsonnet"),("lib/syntax-alias.libsonnet","lib/syntax.libsonnet"),("logical/parent.libsonnet","physical/parent.libsonnet"),("high/alias.libsonnet","lib/normal.libsonnet")] {
+    let link=work+"/"+link_name
+    if @fs.exists(link) { @fs.remove(link) }
+    @fs.symlink(target=cwd+"/"+work+"/"+target,link)
+  }
+  let absolute=Json::string(cwd+"/"+work+"/lib/normal.libsonnet").stringify()
+  let cases : Array[(String,String,Array[String])]=[
+    ("distinct-canonical-aliases","[import './lib/alias.libsonnet',import './lib/normal.libsonnet']",[]),
+    ("raw-alias-first","local raw=importstr './lib/alias.libsonnet'; [std.length(raw),import './lib/normal.libsonnet']",[]),
+    ("binary-alias-first","[std.length(importbin './lib/alias.libsonnet'),import './lib/normal.libsonnet']",[]),
+    ("raw-same-first","[std.length(importstr './lib/normal.libsonnet'),import './lib/normal.libsonnet']",[]),
+    ("binary-same-first","[std.length(importbin './lib/normal.libsonnet'),import './lib/normal.libsonnet']",[]),
+    ("reverse-aliases","[import './lib/normal.libsonnet',import './lib/alias.libsonnet']",[]),
+    ("repeat-alias","[import './lib/alias.libsonnet',import './lib/./alias.libsonnet']",[]),
+    ("all-raw-first","[std.length(importstr './lib/normal.libsonnet'),std.length(importbin './lib/alias.libsonnet'),import './lib/alias.libsonnet',import './lib/normal.libsonnet']",[]),
+    ("absolute-after-relative","[import './lib/normal.libsonnet',import "+absolute+"]",[]),
+    ("absolute-before-relative","[import "+absolute+",import './lib/normal.libsonnet']",[]),
+    ("lazy-code-before-raw","local x=import './lib/lazy.libsonnet'; [std.objectFields(x),std.length(importstr './lib/lazy-alias.libsonnet'),x.v]",[]),
+    ("lazy-alias-before-normal","local x=import './lib/lazy-alias.libsonnet'; [std.objectFields(x),(import './lib/lazy.libsonnet').v,x.v]",[]),
+    ("lazy-normal-before-alias","local x=import './lib/lazy.libsonnet'; [std.objectFields(x),(import './lib/lazy-alias.libsonnet').v,x.v]",[]),
+    ("imported-this-file","[import './lib/filename-alias.libsonnet',import './lib/filename.libsonnet']",[]),
+    ("symlink-parent","import './logical/parent.libsonnet'",[]),
+    ("physical-and-symlink-parent","[import './physical/parent.libsonnet',import './logical/parent.libsonnet']",[]),
+    ("library-alias","[import 'alias.libsonnet',import './lib/normal.libsonnet']",["-J",work+"/high"]),
+    ("library-priority","import 'choice.libsonnet'",["-J",work+"/low","-J",work+"/high"]),
+    ("runtime-alias-after-raw","[std.length(importstr './lib/error.libsonnet'),import './lib/error-alias.libsonnet']",[]),
+    ("static-alias-after-raw","[std.length(importstr './lib/syntax.libsonnet'),import './lib/syntax-alias.libsonnet']",[]),
+    ("stream-aliases","[import './lib/alias.libsonnet',import './lib/normal.libsonnet']",["-y"]),
+    ("multi-aliases","{a:import './lib/alias.libsonnet',b:import './lib/normal.libsonnet'}",["-m",work+"/multi"]),
+  ]
+  let rows : Array[Json]=[]
+  for (name,source,options) in cases {
+    let path=work+"/"+name+".jsonnet"
+    @fs.write_file(path,source)
+    for (spelling,input) in [("relative",path),("absolute",cwd+"/"+path)] {
+      let argv=options+[input]
+      let environment=Map([("JSONNET_PATH",""),("NO_COLOR","1"),("TERM","dumb"),("ASAN_OPTIONS","detect_leaks=0:fast_unwind_on_malloc=0:exitcode=99")])
+      let go=@shell.Cmd(reference,argv,env=environment).output(timeout_ms=10000)
+      let actual=@shell.Cmd(cli,argv,env=environment).output(timeout_ms=10000)
+      let passed=go.exit_code()==actual.exit_code() && go.stdout()==actual.stdout() && go.stderr()==actual.stderr()
+      rows.push({"name":name+"/"+spelling,"source":source,"args":argv,"passed":passed,"reference_exit":go.exit_code(),"local_exit":actual.exit_code(),"reference_stdout":go.stdout(),"local_stdout":actual.stdout(),"reference_stderr":go.stderr(),"local_stderr":actual.stderr()})
+      if !passed { println("FAIL identity "+name+"/"+spelling) }
+    }
+  }
+  let passed=rows.filter(row=>row is {"passed":True,..}).length()
+  let finished=@shell.Cmd("date",["-u","+%Y-%m-%dT%H:%M:%SZ"]).output()
+  finished.check()
+  let hashes=@shell.Cmd("sha256sum",[reference,cli,"tests/go-differential.json","tests/go-evaluator.json","tests/go-lint.json"]).output()
+  hashes.check()
+  @fs.write_file(work+"/report.json",({"cwd":cwd,"reference_build":metadata.stdout(),"started_utc":started.stdout().trim().to_owned(),"finished_utc":finished.stdout().trim().to_owned(),"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"cases":rows,"libraries":files.map(pair=>{"path":work+"/"+pair.0,"source":pair.1}),"hashes":hashes.stdout(),"comparison":"same source, cwd and arguments; exact stdout/stderr/exit, no normalization or exception"}:Json).stringify(indent=2)+"\n")
+  println("Import identity: \{passed}/\{rows.length()}")
+  assert_eq(passed,rows.length())
+}

@@ -2,7 +2,7 @@
 test "import trace names use cached local requests and nested display parents" {
   let host = @fs.FileHost::new("/")
   let id = "/real/library.libsonnet"
-  host.attempts[id] = Some({ id, bytes: b"", })
+  host.attempts["/project/library.libsonnet"] = Some({ id, bytes: b"", })
   let names = Map([("/real/main.jsonnet", "project/main.jsonnet")])
   assert_eq(
     import_trace_name(
@@ -17,7 +17,7 @@ test "import trace names use cached local requests and nested display parents" {
   )
   names[id] = "project/alias.libsonnet"
   let nested = "/real/nested.libsonnet"
-  host.attempts[nested] = Some({ id: nested, bytes: b"", })
+  host.attempts["/project/nested.libsonnet"] = Some({ id: nested, bytes: b"", })
   assert_eq(
     import_trace_name(host, id, "./nested.libsonnet", nested, names, []),
     "project/nested.libsonnet",
@@ -35,7 +35,7 @@ test "import trace names use cached local requests and nested display parents" {
 test "import trace names follow cached library priority and raw absolute spelling" {
   let host = @fs.FileHost::new("/")
   let id = "/real/library.libsonnet"
-  host.attempts["/app/library.libsonnet"] = None
+  host.attempts["/library.libsonnet"] = None
   host.attempts["/high/library.libsonnet"] = Some({ id, bytes: b"", })
   host.attempts["/low/library.libsonnet"] = Some({ id, bytes: b"", })
   let names = Map([("/app/main.jsonnet", "main.jsonnet")])
