@@ -1,0 +1,134 @@
+# 最终跨平台验收与批准的兼容标准
+
+2026-10-09。**macOS ARM64与Linux AMD64均按用户批准的兼容标准完成验收**。
+原始严格比较仍为失败，19项精确参考崩溃例外没有扩大。最终源码的macOS窗口
+现已补齐；相关ASan、独立包消费者、分类、证据归档和解包复验均完成。
+
+## 源码、平台与执行边界
+
+本次macOS所有产品检查绑定干净 `a021c19059f8d5120a7a58343e5bedfe34d8c087`。
+产品实现与Linux最终验收的8e23306/bc1d3c3/bf447a9逐文件相同；后来仅修改
+宿主路径断言、消费者测试调用和文档。本次旧macOS报告绑定3d11b45，已单独
+保留，未用来替代最终源码的实际执行。冻结tests/与daece32一致。
+
+| 环境 | 本次实际值 |
+| --- | --- |
+| macOS | Darwin27.0.0，原生ARM64 |
+| Moon / moonc | 0.1.20260920 / v0.10.14+7d59c7ec9 |
+| C编译器 | Apple clang21.0.0，arm64-apple-darwin27.0.0 |
+| Go | 1.24.0，darwin/arm64 |
+| 固定Go参考 | go-jsonnet v0.21.0，67968688d9952f50662e979fab1bef889d0d3e57，干净 |
+| C++参考 | bbb38f1020be1f5aed560928fb839b2c448cefb4，干净 |
+
+全部阶段顺序执行，nice10，Go/GOMAXPROCS均限制为1。debug原生测试和ASan
+使用-j1；普通release测试及构建实际使用-j2，参数原样保存在checks.json。
+消费者临时脚本与仓库脚本只差显式-j1，不改产品或测试逻辑。只使用现有本机
+工具链及缓存，GOPROXY/GOSUMDB关闭，没有下载、安装、远端任务、推送或发布。
+
+## macOS普通验收
+
+实际10:59:46–11:04:08 UTC，共40阶段，36阶段退出0。whole-cli、existing-errors、
+evaluator、lint保留原严格差异，分别退出1。全部455份跟踪文件检查前后哈希一致。
+
+| 最终清单能力 | 实际证据 |
+| --- | --- |
+| 语言与惰性运行时 | native debug/release各330/330，check/build零警告；上游语言303/303 |
+| 标准库与边界 | 163成员无缺失/签名差异；字符72/72、原生错误384/384；反射不等于任意输入行为证明 |
+| 参数、导入与缓存 | 参数30/30、可选AST13/13及37次观测、别名44/44、导入trace116/116及原探针2/2 |
+| CLI输入/输出与宿主 | 整体1132/1150；宿主97，multi26/import20/诊断20/stack20，均通过 |
+| AST与原始语法树 | AST173/173，实际节点编辑与格式化56/56，复制/缓存隔离由330原生测试覆盖 |
+| 格式化与jsonnetfmt | 736/736、上游178/178、CLI255/255及4项品牌/帮助，格式化文件宿主检查通过 |
+| 深树生命周期 | 原上游深度244/300输入随178/178通过；独立格式化准入及旧求值预算测试保留 |
+| lint与依赖工具 | lint409/410，原唯一参考panic保留；lint CLI双方各23项、依赖33/33及13项本地检查通过 |
+| 诊断、trace与调试 | API1323/1323，CLI完整字节4095/4095，调试器43/43；入口诊断62/62、trace68/68 |
+| 真实OS及参数诊断 | PTY25/25、参数65/65及2项品牌/帮助、I/O45/45 |
+| 三个原有示例 | environments、dashboards、embedded配置经本次330测试比较固定JSON；embedded应用另行实际运行成功 |
+| 本地交付与公开接口 | 实际archive独立消费者31/31；NOTICE/许可证纳入检查；doc/info/fmt/fmt-check全部退出0 |
+
+## 原始结果与明确批准的分类
+
+用户于2026-10-09 07:36:48 UTC答复“同意”，批准范围仍严格限定为18项CLI和
+1项lint参考内部崩溃、新可选import_ast与旧严格import_program分离、NaN按
+相同CPU架构固定Go实际行为验收。没有增加例外或更改冻结输入/预期。
+
+| 原始严格对照 | macOS ARM64 | Linux AMD64 |
+| --- | --- | --- |
+| 整体CLI | 1132/1150，18失败 | 1131/1150，19失败 |
+| 原Evaluator | 20/21，1失败 | 20/21，1失败 |
+| lint | 409/410，1失败 | 409/410，1失败 |
+| 原错误审计 | 290/295，5失败，均与18项CLI重叠 | 同左 |
+| 可选import_ast | 13/13，37次观测 | 同左 |
+| 原NaN输入 | 固定Go与本地都成功；完整stdout/stderr/exit及argv一致 | 双方都退出1且完整字节一致；ARM64冻结成功预期仍原样计失败 |
+
+原严格import_program的失败解析重试差异没有删除或改成通过；新import_ast
+提供可选Program，包消费者确认缓存空值和严格接口继续报错。19项参考崩溃
+按精确名称检查；原错误审计的5项不重复增加例外。Linux原始21项与Mac原始20项
+失败分别保留，不合并计数或改写原报告。
+
+## 相关ASan
+
+实际执行11:05:08–11:17:51 UTC，13个阶段最终全部退出0；首次格式化报告
+元数据失败另行保留，不改写为成功。原生330/330、宿主97及26/20/20/20子集、
+别名44/44、导入trace116/116及原探针2/2、入口诊断62/62、可选AST13/13及
+37次观测、API1323/1323、CLI4095/4095、格式化736/736、字符72/72、原生错误
+384/384、入口trace68/68均通过。
+
+434份插桩副本文件与干净a021c19哈希相同；只排除README软链接及有意插桩的
+moon.pkg。临时工具链关闭mimalloc以便ASan观察系统分配；安装运行时和临时
+运行时前后哈希均未变，没有AddressSanitizer错误或DEADLYSIGNAL。相关格式化
+重试前后二进制哈希相同；没有重编译或重跑此前通过的9阶段。
+
+## 证据与最终状态
+
+精确分类于11:18:14 UTC退出0，跨平台汇总生成于11:18:30。普通summary.json
+保留阶段快照中的classification_pending=true，最终结论以
+approved-classification.json及cross-platform-summary.json为准：
+
+```text
+macos_arm64_passed_under_approved_policy=true
+linux_amd64_passed_under_approved_policy=true
+raw_strict_comparison_passed=false
+approved_reference_crash_count=19
+new_unapproved_differences=[]
+```
+
+所有release二进制经file检查均为Mach-O ARM64。455份普通源码在全部检查后
+再次核验，生成接口和格式化没有改动。收尾提交仅修改文档，不改产品、测试、
+语料或构建输入，不为文档提交重复重型验收。
+
+证据目录：`${LOCAL_PATH_017}/evidence`。包含阶段日志、
+原始失败、精确分类、ASan恢复、源码/接口合同、工具与二进制哈希及消费者包。
+all-reports中保留的旧local-only报告带原始源码元数据；只有本次checks、summary
+与分类绑定的报告计入最终验收。旧macOS报告另存previous-reports，不作为复用结果。
+
+归档：`${LOCAL_PATH_017}/macos-a021c19-evidence.tar.gz`，
+3,070,482字节，281份文件加SHA-256清单；归档程序退出0，独立解包并逐项校验通过。
+
+```text
+26c8f2e4361763555e94a13ed6e8aaffc19ce7e544b6fbba7e989f65eeeef775
+```
+
+Linux归档仍为`${LOCAL_PATH_010}/acceptance-8e23306.tar.gz`，
+本轮重新核实SHA-256为
+`b9a4316be9365219adc51712a077e6e2eaabeda67fe174a4104179c8acabe0ce`，没有重跑远端任务。
+11:19:03 UTC进程检查确认无遗留编译或ASan进程，本机重型窗口已释放；pgrep无
+匹配返回1属于正常空结果。
+
+## 已处理的驱动问题与剩余边界
+
+两个临时准备脚本曾分别遇到StringView转换、局部方法与内置方法同名的编译
+错误；均在运行产品测试前失败，仅修正脚本，原错误信息保留。MoonBit replace
+只替换首处，普通release因此沿用-j2；记录实际参数，没有为换记账口径重复
+编译。上游语言驱动通过任务内symlink指向已核实C++参考；ASan明确全部替换为-j1。
+
+默认沙箱拒绝ps，只读扩大权限检查获准，未终止任何进程或修改安全配置。
+ASan格式化第一次在报告元数据阶段退出1：runner强制git rev-parse，但隔离
+副本没有.git，直接复核退出128并保留原stderr。使用哈希未变的同一插桩二进制、
+相同语料及未修改的runner，从干净仓库目录重跑；只调整报告元数据读取环境。
+此前9个通过的ASan阶段复用，首次失败单独保留，普通格式化报告保存后还原。
+运行过程中无产品失败需要修复；产品、冻结语料和公开接口未改动。
+ASan关闭leak detection，不声明泄漏检查完成。所有结论限于列明输入及既有
+宿主/资源合同，不声明任意Jsonnet输入无条件等价。远端CI、推送、registry
+发布及部署不在本次授权范围。列明范围内已无开发验收阻塞或未解决的权限问题。
+
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.

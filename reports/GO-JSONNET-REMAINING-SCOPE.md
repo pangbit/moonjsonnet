@@ -5,8 +5,10 @@
 AST 来源正常行为差异均已在 `8e23306` 修复，44/44 定向通过，不作为例外。
 最终全量/API/包/ASan已完成，Linux按批准标准通过，无新增未批准差异；原始
 CLI1131/1150、Evaluator20/21、lint409/410仍保留。证据与源码绑定见
-[最终验收](GO-JSONNET-FINAL-ACCEPTANCE.md)。Mac最终源按用户要求暂不重测，
-是跨平台验收剩余项。以下表格和叙述保留此前阶段，不覆盖上述最新终态。
+[Linux最终验收](GO-JSONNET-FINAL-ACCEPTANCE.md)。Mac最终窗口现已补齐，双模式
+330/330、完整Go/消费者门禁、相关ASan均通过；Mac原始CLI1132/1150，NaN成功且
+同架构完整输出一致。见[跨平台最终报告](GO-JSONNET-CROSS-PLATFORM-ACCEPTANCE.md)。
+列明范围内已无开发验收阻塞。以下表格和叙述保留此前阶段，不覆盖最新终态。
 
 日期：2026-10-09；核查起点为干净 `3da68d0`，历史阶段绑定 `3d11b45`，
 最新Linux完整Go重验及相关ASan绑定干净`daece32`。

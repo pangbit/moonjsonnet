@@ -2,10 +2,11 @@
 
 Use the toolchain in [VERSIONS](VERSIONS.md). Run from the repository root:
 
-The [final Linux acceptance report](../reports/GO-JSONNET-FINAL-ACCEPTANCE.md) records
-the completed fixed-Go comparisons, package consumer and ASan checks. Acceptance
-passed under the user's precise compatibility policy; raw strict failures remain
-recorded separately. Final macOS validation is pending at the user's request.
+The [final cross-platform report](../reports/GO-JSONNET-CROSS-PLATFORM-ACCEPTANCE.md)
+records completed macOS ARM64 and Linux AMD64 fixed-Go comparisons, package consumer
+and related ASan checks. Acceptance passed under the user's precise compatibility
+policy; raw strict failures remain recorded separately. The final macOS run binds
+clean a021c19, whose product inputs are identical to the accepted Linux implementation.
 Environment setup and earlier stages remain in the
 [SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
 

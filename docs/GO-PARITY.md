@@ -7,13 +7,14 @@
 别名/AST 来源的额外正常行为差异已由 `8e23306` 修复，定向44/44。Linux完整
 验收、相关ASan和精确分类已通过用户批准标准，原严格CLI1131/1150、Evaluator
 20/21、lint409/410仍保留。见[最终验收](../reports/GO-JSONNET-FINAL-ACCEPTANCE.md)。
-macOS最终提交暂未重测，跨平台最终验收尚未闭项。
+macOS最终窗口已补齐，原生双模式各330/330、完整门禁和相关ASan通过；Mac原始
+CLI1132/1150，NaN同架构完整输出一致。见[最终跨平台验收](../reports/GO-JSONNET-CROSS-PLATFORM-ACCEPTANCE.md)。
 
 目标参考：google/go-jsonnet v0.21.0，提交
 `67968688d9952f50662e979fab1bef889d0d3e57`。2026-10-02 用户将目标由首期子集
 扩展为功能对齐；[首期需求](../MoonJsonnet_REQUIREMENTS.md) 中的子集限制是历史范围，
-不能作为当前整体目标已经完成的依据。当前状态：**Linux按批准标准通过，
-最终macOS验证待执行**；这不声明任意输入无条件等价。
+不能作为当前整体目标已经完成的依据。当前状态：**列明范围的macOS/Linux
+开发验收已按批准标准完成**；这不声明任意输入无条件等价。
 2026-10-03 完成 YAML 批次提交与验收后暂停；2026-10-04 用户要求继续，恢复推进。
 
 持续推进时按 [整体完成清单](COMPLETION-CHECKLIST.md) 核验必需能力、当前证据、

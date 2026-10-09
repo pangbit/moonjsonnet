@@ -24,25 +24,23 @@ Apache-2.0 upstream test fixtures from the external reference checkout.
 CI pins the installer argument and reference commit. Toolchain download archives
 have an upstream retention policy; if the pinned build becomes unavailable,
 refresh the toolchain baseline and rerun acceptance instead of silently falling
-back to a newer compiler. macOS arm64 and Linux x86_64 native debug/release
-tests pass 315/315. Fresh pinned Go 1.24.0 Linux comparisons have been executed
-before and after the architecture-specific numeric repair. The unchanged whole
-CLI corpus still reports 1131/1150: the original 18 failures and one NaN index
-fixture with an ARM64 success expectation and AMD64 error/path differences.
-Targeted absolute-path comparisons do not replace that failure. See the
-[SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
-Related ASan acceptance at clean `daece32` also passed 315 native tests, host 97,
-character 72, native errors 384, CLI 4095, API 1323 and 20 numeric inputs, with 417
-copied source files verified. Leak detection remains disabled per the original
-runner; the installed runtime hash is unchanged. The original 18+1+1 differences
-and the additional frozen NaN fixture remain unaccepted.
+back to a newer compiler. Final macOS ARM64 and Linux AMD64 native debug/release
+tests pass 330/330 on the same product implementation. The macOS run binds clean
+`a021c19`; product inputs are byte-identical to the accepted Linux 8e23306/bc1d3c3/
+bf447a9 snapshots. Both platforms completed pinned Go 1.24.0 comparisons, related
+ASan checks and an independent archive consumer (31/31). See the
+[final cross-platform report](../reports/GO-JSONNET-CROSS-PLATFORM-ACCEPTANCE.md)
+for exact source, binary and fixture hashes, attempt logs and timing.
 
-The subsequent entry diagnostic fix passed focused Linux CLI tests (7), exact
-entry output comparisons (62), host integration and related ASan (7 and 62).
-The original relative NaN diagnostic now matches pinned Go, while its frozen
-success expectation remains unmet. The whole corpus was not rerun for this
-candidate; see the [failure-root report](../reports/GO-JSONNET-FAILURE-ROOTS.md)
-for the baseline-plus-overlay source binding and raw evidence.
+Raw whole-CLI results remain 1132/1150 on ARM64 and 1131/1150 on AMD64; raw
+Evaluator and lint results remain 20/21 and 409/410. Acceptance uses the user's
+explicitly approved 18 CLI plus 1 lint reference-crash exceptions, the new optional
+import_ast API while import_program remains strict, and same-architecture NaN
+behavior. NaN succeeds on ARM64 and returns the same complete error output as Go
+on AMD64; its frozen ARM64 success expectation is unchanged. No additional
+exceptions were introduced. ASan leak detection remains disabled, and installed
+runtime hashes are unchanged. Earlier platform stages remain in the
+[SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
 
 Design: parse into located expressions; resolve names statically; evaluate
 lexical closures with memoized thunks; represent objects as ordered layers whose
