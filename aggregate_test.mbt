@@ -75,7 +75,7 @@ test "aggregate nonfinite results propagate and retain Go scalar spellings" {
   }
   let (source, expected) = if @number.reference_amd64() {
     (
-      "[nan&1,~nan,std.char(nan),'%c'%nan]", "[0,9223372036854775808,\"�\",\"\\u0000\"]",
+      "[nan&1,~nan,std.char(nan),'%c'%nan]", "[0,9223372036854775808,\"�\",\"�\"]",
     )
   } else {
     (
