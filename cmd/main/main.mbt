@@ -3,6 +3,7 @@ priv struct CliDiagnostics {
   mut max_trace : Int
   formatter : @moonjsonnet.DiagnosticFormatter
   mut entry_name : (String, String)?
+  trace_names : Map[String, String]
 }
 
 ///|
@@ -249,6 +250,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       output_parent(path + "/x")
     }
     diagnostics.entry_name = Some((source.id, display))
+    diagnostics.trace_names[source.id] = display
     diagnostics.formatter.set_source({ id: display, text: source.text, })
   }
   for name, text in ext_code {
@@ -265,17 +267,38 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
     let source = host.resolve(from, path) catch {
       @moonjsonnet.Error(d) => raise import_failure(d, from, path, jpaths)
     }
+    if !diagnostics.trace_names.contains(source.id) {
+      diagnostics.trace_names[source.id] = import_trace_name(
+        host,
+        from,
+        path,
+        source.id,
+        diagnostics.trace_names,
+        jpaths,
+      )
+    }
     diagnostics.formatter.set_source(source)
     source
   }
   let binary_resolver = fn(from : String, path : String) raise {
     @posix.clear_io_error()
-    host.resolve_binary(from, path) catch {
+    let source = host.resolve_binary(from, path) catch {
       @moonjsonnet.Error(d) => raise import_failure(d, from, path, jpaths)
     }
+    if !diagnostics.trace_names.contains(source.id) {
+      diagnostics.trace_names[source.id] = import_trace_name(
+        host,
+        from,
+        path,
+        source.id,
+        diagnostics.trace_names,
+        jpaths,
+      )
+    }
+    source
   }
   let trace = fn(location, message) {
-    @posix.stderr(entry_trace(location, message, diagnostics.entry_name))
+    @posix.stderr(source_trace(location, message, diagnostics.trace_names))
   }
   if multi is Some(directory) {
     let files = @moonjsonnet.evaluate_multi(
@@ -378,6 +401,7 @@ fn main {
     max_trace: 20,
     formatter: @moonjsonnet.DiagnosticFormatter::new(),
     entry_name: None,
+    trace_names: Map([]),
   }
   if @posix.stdout_is_terminal() &&
     @env.get_env_var("TERM").unwrap_or("") != "dumb" &&

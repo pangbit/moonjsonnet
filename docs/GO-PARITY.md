@@ -81,8 +81,15 @@ ARM64/amd64行为分别定义，转换前拦截越界值，避免C未定义行�
 [入口trace续批](../reports/GO-JSONNET-TRACE-ENTRY.md)只增加CLI显示sink，
 普通/ASan各CLI9/9、完整字节68/68；原9项探针4/9改善到8/9，仍保留相对
 导入trace失败。NaN冻结成功条件单列为固定AMD64基准不适用，保留原失败；
-Evaluator成功nil需非空Program返回契约取舍，暂不改。接口/冻结语料不变，
+当时Evaluator成功nil分析仅考虑现有非空Program方法，暂不改。接口/冻结语料不变，
 没有重复全量，也未接受原18+1+1例外。
+
+[相对导入trace续批](../reports/GO-JSONNET-TRACE-IMPORTS.md)保留canonical身份，
+从宿主已有命中记录计算CLI显示名。普通/ASan各CLI11/11、完整字节116/116、
+导入宿主20/20；原探针现9/9，另外两个canonical别名/AST来源探针仍失败。
+Evaluator可新增可选结果查询或适配器而不破坏import_program，本轮仅分析；
+纠正此前必须先变更原返回契约的判断。公开接口、冻结语料及原失败不变，
+旧整体数字不转移，没有新增安装、Mac重任务或全量复跑。
 
 数学新增 29 个成员，覆盖负数舍入、次正规数分解、巨大角度、数值域错误、
 命名参数及非有限输入。三角函数、指数与幂按固定Go1.24.0的native架构运算

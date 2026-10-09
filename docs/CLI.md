@@ -93,8 +93,11 @@ Unicode contexts, including invalid UTF-8, without text decoding. `std.trace`
 messages continue to use their trace sink. Entry errors and CLI entry traces
 display the invocation filename: relative paths are lexically cleaned, while absolute paths
 retain their spelling. Execution and import/cache identities remain canonical
-absolute host paths. Imported locations and imported traces retain their existing
-canonical presentation; embedding trace callbacks keep their original locations.
+absolute host paths. CLI imported traces display the successful import request's
+path, including its selected library directory. Imported error locations retain
+their canonical presentation; embedding trace callbacks keep their original locations.
+Distinct aliases sharing one canonical identity can still differ in trace count or
+source spelling; see the [limited import trace verification](../reports/GO-JSONNET-TRACE-IMPORTS.md).
 Import policy and independent resource-budget errors retain
 the older category/context format; runtime frame exhaustion uses Go-style frames.
 Captured-output comparisons do not establish every standard-library, I/O or

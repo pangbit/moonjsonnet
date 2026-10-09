@@ -134,7 +134,17 @@ trace仍明确失败。CLI给3种求值输出入口传入仅用于显示的trace
 canonical执行身份不变。LinuxCLI9/9、完整字节68/68及相关ASan9/9、68/68
 通过，公开接口及冻结语料不变，没有重复全量或接受原18+1+1例外。
 NaN的ARM64冻结成功条件单列为固定AMD64测试基准不适用，原失败仍保留。
-Evaluator的成功nil AST需要决定如何扩展当前非空Program返回契约，暂停该项；
+当时Evaluator成功nil AST只考虑扩展当前非空Program返回契约，暂停该项；
 不以Null表达式冒充nil。相对导入trace为下一明确的产品输出修复目标。
+
+## 相对导入trace及契约分析续批
+
+[续批报告](GO-JSONNET-TRACE-IMPORTS.md)修复普通相对/嵌套/搜索路径导入trace，
+普通及ASan各CLI11/11、完整字节116/116、导入宿主20/20，原探针8/9变为9/9。
+canonical别名求值次数与原始字节/代码AST来源的两个独立探针仍false，并有旧
+e7c973e及候选同输入证据；不接受例外。11类优先顺序同时覆盖正常输出、
+Evaluator、lint身份策略和前8类参考崩溃，不以路径修复替代剩余目标。
+Evaluator可新增可选结果查询或生命周期明确的适配器以保留现有API；此前
+必须先改变原返回契约的判断过窄。本轮仅分析、未改接口或原失败。
 
 > Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.

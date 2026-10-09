@@ -22,9 +22,10 @@
 | 架构冻结预期及路径显示 | nonfinite-nan-conversions，1 | NaN冻结成功条件单列为AMD64基准不适用并保留失败；路径家族的正常Go结果可直接验证，入口trace先修，相对导入trace为下一明确目标 |
 
 具体原用例名、数量和原始失败行仍以根因报告及其归档为准。此排序不授予例外。
-Evaluator需要回答的具体问题是：是否要求匹配Go第二次成功返回nil AST，并允许
-扩展当前`import_program -> (Program, String)`的非空返回契约；现有API不能用
-有效的Null表达式冒充nil AST。未作决定前仍重复报告静态错误，差异继续保留。
+本批当时仅考虑扩展当前`import_program -> (Program, String)`的非空返回契约。
+后续[契约分析](GO-JSONNET-TRACE-IMPORTS.md)纠正了此判断：可以新增可选结果
+查询或适配器，保留现有API。只有原方法本身必须返回nil才涉及原契约改变。
+有效Null表达式不能冒充nil AST；当前实现仍重复静态错误，原差异保留。
 
 ## 编辑前的固定Go原始证据
 

@@ -39,7 +39,11 @@ API1323及20架构输入通过，417副本文件SHA相同。整体仍为1131/115
 [根因报告](GO-JSONNET-FAILURE-ROOTS.md)。未重跑全量，旧整体数字不转移。
 后续[入口trace有限修复](GO-JSONNET-TRACE-ENTRY.md)：普通/ASan各CLI9/9、
 完整字节68/68；原9项探针4/9改善到8/9，相对导入trace为下一明确修复目标。
-Evaluator成功nil需要非空Program返回契约决定，暂停该项；NaN冻结成功条件
+当时Evaluator成功nil仅分析现有非空Program返回契约，暂停该项；NaN冻结成功条件
 单列为AMD64基准不适用并保留失败，原18+1+1例外仍未接受。
+本轮[相对导入trace](GO-JSONNET-TRACE-IMPORTS.md)普通/ASan各11/11、116/116、
+导入宿主20/20，原探针9/9；2个canonical别名/AST来源探针保留失败。
+Evaluator新增可选查询或适配器可保留现有API，并非必须先破坏非空返回契约；
+本轮只分析未实现。原11类根因与优先顺序详见该报告，整体仍未通过。
 Linux方案见 [隔离验收方案](LINUX-ACCEPTANCE-PLAN.md)。2026-10-09 已转用用户
 授权的SSH路线，阶段结果和精确工具缺口见 [SSH验收](SSH-LINUX-ACCEPTANCE.md)。

@@ -1,0 +1,98 @@
+import { "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell", "moonbitlang/core/env", "moonbitlang/core/json" }
+
+async fn compare(name : String, reference : String, cli : String, args : Array[String], stdin : String, library_path : String, rows : Array[Json]) -> Unit {
+  let environment=Map([("JSONNET_PATH",library_path),("NO_COLOR","1"),("TERM","dumb"),("ASAN_OPTIONS","detect_leaks=0:fast_unwind_on_malloc=0:exitcode=99")])
+  let a=@shell.Cmd(reference,args,env=environment,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+  let b=@shell.Cmd(cli,args,env=environment,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+  let passed=a.exit_code()==b.exit_code() && a.stdout()==b.stdout() && a.stderr()==b.stderr()
+  rows.push({"name":name,"args":args,"stdin":stdin,"JSONNET_PATH":library_path,"passed":passed,"reference_exit":a.exit_code(),"local_exit":b.exit_code(),"reference_stdout":a.stdout(),"local_stdout":b.stdout(),"reference_stderr":a.stderr(),"local_stderr":b.stderr()})
+  if !passed { println("FAIL import trace "+name) }
+}
+
+async fn main {
+  let arguments=@env.args()
+  guard arguments.length()==3 else { fail("Usage: moon run tools/cli-import-trace.mbtx REFERENCE CLI") }
+  let reference=@fs.realpath(arguments[1])
+  let cli=@fs.realpath(arguments[2])
+  let metadata=@shell.Cmd("go",["version","-m",reference]).output()
+  metadata.check()
+  assert_true(metadata.stdout().contains("go1.24.0"))
+  assert_true(metadata.stdout().contains("vcs.revision=67968688d9952f50662e979fab1bef889d0d3e57"))
+  assert_true(metadata.stdout().contains("vcs.modified=false"))
+  let started=@shell.Cmd("date",["-u","+%Y-%m-%dT%H:%M:%SZ"]).output()
+  started.check()
+  let cwd=@fs.realpath(".")
+  let work="_build/import-trace"
+  for dir in ["lib/nested","low","high","multi-output"] { @fs.mkdir(work+"/"+dir,recursive=true,allow_exist=true) }
+  let files : Array[(String,String)]=[
+    ("lib/normal.libsonnet","std.trace('relative imported',42)"),
+    ("lib/nested/parent.libsonnet","std.trace('parent',import '../normal.libsonnet')"),
+    ("lib/string.libsonnet","std.trace('imported string','value')"),
+    ("lib/stream.libsonnet","std.trace('imported stream',[42])"),
+    ("lib/multi.libsonnet","std.trace('imported multi',{a:42})"),
+    ("lib/message.libsonnet","std.trace("+Json::string(cwd+"/"+work+"/lib/message.libsonnet").stringify()+",42)"),
+    ("lib/unicode.libsonnet","local x=42;\nstd.trace('中\\nsecond',x)"),
+    ("choice.libsonnet","std.trace('local choice',1)"),
+    ("low/choice.libsonnet","std.trace('low choice',2)"),
+    ("high/choice.libsonnet","std.trace('high choice',3)"),
+    ("low/search.libsonnet","std.trace('low search',2)"),
+    ("high/search.libsonnet","std.trace('high search',3)"),
+  ]
+  for (path,text) in files { @fs.write_file(work+"/"+path,text) }
+  let link_path=work+"/lib/alias.libsonnet"
+  if @fs.exists(link_path) { @fs.remove(link_path) }
+  @fs.symlink(target=cwd+"/"+work+"/lib/normal.libsonnet",link_path)
+  let cases : Array[(String,String,Array[String],String)]=[
+    ("relative","import './lib/normal.libsonnet'",[],""),
+    ("nested","import './lib/nested/parent.libsonnet'",[],""),
+    ("repeat-clean-alias","[import './lib/normal.libsonnet',import './lib/./normal.libsonnet']",[],""),
+    ("symlink-library","import './lib/alias.libsonnet'",[],""),
+    ("dot-import","import './lib/nested/../normal.libsonnet'",[],""),
+    ("absolute","import "+Json::string(cwd+"/"+work+"/lib/normal.libsonnet").stringify(),[],""),
+    ("absolute-dots","import "+Json::string(cwd+"/"+work+"/lib/nested/../normal.libsonnet").stringify(),[],""),
+    ("message","import './lib/message.libsonnet'",[],""),
+    ("unicode","import './lib/unicode.libsonnet'",[],""),
+    ("local-priority","import 'choice.libsonnet'",["-J",work+"/high"],""),
+    ("library-priority","import 'search.libsonnet'",["-J",work+"/low","-J",work+"/high"],""),
+    ("absolute-library","import 'search.libsonnet'",["-J",cwd+"/"+work+"/high"],""),
+    ("dotted-library","import 'search.libsonnet'",["-J",work+"/high/../high"],""),
+    ("environment","import 'search.libsonnet'",[],work+"/high:"+work+"/low"),
+    ("flag-over-environment","import 'search.libsonnet'",["-J",work+"/high"],work+"/low"),
+    ("string","import './lib/string.libsonnet'",["-S"],""),
+    ("stream","import './lib/stream.libsonnet'",["-y"],""),
+    ("multi","import './lib/multi.libsonnet'",["-m",work+"/multi-output"],""),
+  ]
+  let rows : Array[Json]=[]
+  let source_rows : Array[Json]=[]
+  for (name,source,options,library_path) in cases {
+    let path=work+"/"+name+".jsonnet"
+    @fs.write_file(path,source)
+    source_rows.push({"name":name,"path":path,"source":source,"options":options,"JSONNET_PATH":library_path})
+    let entry_link=work+"/alias-"+name+".jsonnet"
+    if @fs.exists(entry_link) { @fs.remove(entry_link) }
+    @fs.symlink(target=cwd+"/"+path,entry_link)
+    for (spelling,input) in [("relative",path),("dot-relative","./"+path),("clean-relative",work+"/../import-trace/"+name+".jsonnet"),("absolute",cwd+"/"+path),("absolute-dots",cwd+"/"+work+"/../import-trace/"+name+".jsonnet"),("symlink-entry",entry_link)] {
+      compare(name+"/"+spelling,reference,cli,options+[input],"",library_path,rows)
+    }
+  }
+  for (mode,path,options) in [("json","normal",[]),("string","string",["-S"]),("stream","stream",["-y"]),("multi","multi",["-m",work+"/multi-output"])] {
+    let source="import '"+work+"/lib/"+path+".libsonnet'"
+    compare("exec/"+mode,reference,cli,options+["-e",source],"","",rows)
+    compare("stdin/"+mode,reference,cli,options+["-"],source,"",rows)
+  }
+  let remaining : Array[Json]=[]
+  let alias_probe=work+"/distinct-canonical-aliases.jsonnet"
+  @fs.write_file(alias_probe,"[import './lib/alias.libsonnet',import './lib/normal.libsonnet']")
+  compare("distinct-canonical-aliases",reference,cli,[alias_probe],"","",remaining)
+  let raw_probe=work+"/raw-alias-first.jsonnet"
+  @fs.write_file(raw_probe,"local raw=importstr './lib/alias.libsonnet'; [std.length(raw),import './lib/normal.libsonnet']")
+  compare("raw-alias-first",reference,cli,[raw_probe],"","",remaining)
+  let finished=@shell.Cmd("date",["-u","+%Y-%m-%dT%H:%M:%SZ"]).output()
+  finished.check()
+  let passed=rows.filter(row=>row is {"passed":True,..}).length()
+  let hashes=@shell.Cmd("shasum",["-a","256",reference,cli,"tests/go-differential.json","tests/go-evaluator.json","tests/go-lint.json"]).output()
+  hashes.check()
+  @fs.write_file(work+"/report.json",({"cwd":cwd,"reference_build":metadata.stdout(),"started_utc":started.stdout().trim().to_owned(),"finished_utc":finished.stdout().trim().to_owned(),"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"cases":rows,"sources":source_rows,"libraries":files.map(pair=>{"path":work+"/"+pair.0,"source":pair.1}),"hashes":hashes.stdout(),"comparison":"same source and arguments; exact stdout/stderr/exit without normalization; canonical-cache collision probes retained separately as unresolved","remaining_probes":remaining,"exceptions_accepted":false,"overall_compatibility_passed":false}:Json).stringify(indent=2)+"\n")
+  println("Import trace: \{passed}/\{rows.length()} at "+started.stdout().trim().to_owned()+" to "+finished.stdout().trim().to_owned())
+  assert_eq(passed,rows.length())
+}
