@@ -2,6 +2,7 @@
 priv struct CliDiagnostics {
   mut max_trace : Int
   formatter : @moonjsonnet.DiagnosticFormatter
+  mut entry_name : (String, String)?
 }
 
 ///|
@@ -239,6 +240,17 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
     load_input(host, path)
   }
   diagnostics.formatter.set_source(source)
+  if !anonymous {
+    // Keep the canonical identity for execution/imports. Pinned Go retains
+    // absolute input spellings and lexically cleans relative entry paths.
+    let display = if path.has_prefix("/") {
+      path
+    } else {
+      output_parent(path + "/x")
+    }
+    diagnostics.entry_name = Some((source.id, display))
+    diagnostics.formatter.set_source({ id: display, text: source.text, })
+  }
   for name, text in ext_code {
     diagnostics.formatter.set_source({ id: "<extvar:" + name + ">", text, })
   }
@@ -359,6 +371,7 @@ fn main {
   let diagnostics : CliDiagnostics = {
     max_trace: 20,
     formatter: @moonjsonnet.DiagnosticFormatter::new(),
+    entry_name: None,
   }
   if @posix.stdout_is_terminal() &&
     @env.get_env_var("TERM").unwrap_or("") != "dumb" &&
@@ -377,6 +390,7 @@ fn main {
       @posix.exit(1)
     }
     @moonjsonnet.Error(d) => {
+      let d = entry_diagnostic(d, diagnostics.entry_name)
       if (d.kind == @moonjsonnet.Import || d.kind == @moonjsonnet.Limit) &&
         d.message != "max stack frames exceeded." {
         @posix.stderr(d.format(max_trace=diagnostics.max_trace))

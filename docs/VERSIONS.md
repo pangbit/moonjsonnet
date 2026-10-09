@@ -37,6 +37,13 @@ copied source files verified. Leak detection remains disabled per the original
 runner; the installed runtime hash is unchanged. The original 18+1+1 differences
 and the additional frozen NaN fixture remain unaccepted.
 
+The subsequent entry diagnostic fix passed focused Linux CLI tests (7), exact
+entry output comparisons (62), host integration and related ASan (7 and 62).
+The original relative NaN diagnostic now matches pinned Go, while its frozen
+success expectation remains unmet. The whole corpus was not rerun for this
+candidate; see the [failure-root report](../reports/GO-JSONNET-FAILURE-ROOTS.md)
+for the baseline-plus-overlay source binding and raw evidence.
+
 Design: parse into located expressions; resolve names statically; evaluate
 lexical closures with memoized thunks; represent objects as ordered layers whose
 fields are rebound to the final self. Manifest only visible fields into JSON.

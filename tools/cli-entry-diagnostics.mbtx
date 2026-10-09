@@ -1,0 +1,88 @@
+import {
+  "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell",
+  "moonbitlang/core/env", "moonbitlang/core/json",
+}
+
+async fn compare(
+  name : String,
+  reference : String,
+  cli : String,
+  args : Array[String],
+  stdin : String,
+  rows : Array[Json],
+) -> Unit {
+  let environment=Map([("JSONNET_PATH",""),("NO_COLOR","1"),("TERM","dumb"),("ASAN_OPTIONS","detect_leaks=0:fast_unwind_on_malloc=0:exitcode=99")])
+  let a=@shell.Cmd(reference,args,env=environment,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+  let b=@shell.Cmd(cli,args,env=environment,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+  let passed=a.exit_code()==b.exit_code() && a.stdout()==b.stdout() && a.stderr()==b.stderr()
+  rows.push({"name":name,"args":args,"stdin":stdin,"passed":passed,"reference_exit":a.exit_code(),"local_exit":b.exit_code(),"reference_stdout":a.stdout(),"local_stdout":b.stdout(),"reference_stderr":a.stderr(),"local_stderr":b.stderr()})
+  if !passed { println("FAIL entry diagnostic "+name) }
+}
+
+async fn main {
+  let arguments=@env.args()
+  guard arguments.length()==3 else { fail("Usage: moon run tools/cli-entry-diagnostics.mbtx REFERENCE CLI") }
+  let reference=@fs.realpath(arguments[1])
+  let cli=@fs.realpath(arguments[2])
+  let metadata=@shell.Cmd("go",["version","-m",reference]).output()
+  metadata.check()
+  assert_true(metadata.stdout().contains("go1.24.0"))
+  assert_true(metadata.stdout().contains("vcs.revision=67968688d9952f50662e979fab1bef889d0d3e57"))
+  assert_true(metadata.stdout().contains("vcs.modified=false"))
+  let started=@shell.Cmd("date",["-u","+%Y-%m-%dT%H:%M:%SZ"]).output()
+  started.check()
+  let cwd=@fs.realpath(".")
+  let work="_build/entry-diagnostics"
+  @fs.mkdir(work,recursive=true,allow_exist=true)
+  @fs.mkdir("_build/go-differential",recursive=true,allow_exist=true)
+  @fs.write_file(work+"/library-error.libsonnet","error 'imported error'")
+  @fs.write_file(work+"/library-value.libsonnet","42")
+  guard @json.parse(@fs.read_file("tests/go-differential.json").text()) is Array(fixtures) else { fail("Go fixtures") }
+  let nan=fixtures.filter(row=>row is {"name":"nonfinite-nan-conversions",..})
+  assert_eq(nan.length(),1)
+  guard nan[0] is {"source":String(nan_source),"expect":"success",..} else { fail("unchanged NaN fixture") }
+  let cases : Array[(String,String,String,Array[String])]=[
+    ("nan",nan_source,"_build/go-differential/nonfinite-nan-conversions.jsonnet",[]),
+    ("runtime","error 'entry error'",work+"/runtime.jsonnet",[]),
+    ("static","missing",work+"/static.jsonnet",[]),
+    ("syntax","local",work+"/syntax.jsonnet",[]),
+    ("unicode-syntax","local x='中'; )",work+"/unicode-syntax.jsonnet",[]),
+    ("message-path","error "+Json::string(cwd+"/"+work+"/message-path.jsonnet").stringify(),work+"/message-path.jsonnet",[]),
+    ("absolute-import","import "+Json::string(cwd+"/"+work+"/library-error.libsonnet").stringify(),work+"/absolute-import.jsonnet",[]),
+    ("relative-import-value","import './library-value.libsonnet'",work+"/relative-import-value.jsonnet",[]),
+    ("stream","[error 'stream error']",work+"/stream.jsonnet",["-y"]),
+    ("multi","{a:error 'multi error'}",work+"/multi.jsonnet",["-m",work+"/multi-output/"]),
+  ]
+  let rows : Array[Json]=[]
+  let source_rows : Array[Json]=[]
+  for (name,source,path,options) in cases {
+    source_rows.push({"name":name,"source":source,"path":path,"options":options})
+    @fs.write_file(path,source)
+    let link_path=work+"/alias-"+name+".jsonnet"
+    if @fs.exists(link_path) { @fs.remove(link_path) }
+    @fs.symlink(target=cwd+"/"+path,link_path)
+    let parent=path[:path.rev_find("/").unwrap()].to_owned()
+    let basename=path[path.rev_find("/").unwrap()+1:].to_owned()
+    let directory=parent[parent.rev_find("/").unwrap()+1:].to_owned()
+    let spellings=[
+      ("relative",path),
+      ("dot-relative","./"+path),
+      ("clean-relative",parent+"/../"+directory+"/"+basename),
+      ("absolute",cwd+"/"+path),
+      ("dot-absolute",cwd+"/"+parent+"/../"+directory+"/"+basename),
+      ("symlink",link_path),
+    ]
+    for (spelling,input) in spellings { compare(name+"/"+spelling,reference,cli,options+[input],"",rows) }
+  }
+  compare("exec",reference,cli,["-e","error 'anonymous error'"],"",rows)
+  compare("stdin",reference,cli,["-"],"error 'anonymous error'",rows)
+  let finished=@shell.Cmd("date",["-u","+%Y-%m-%dT%H:%M:%SZ"]).output()
+  finished.check()
+  let passed=rows.filter(row=>row is {"passed":True,..}).length()
+  let hash=@shell.Cmd("shasum",["-a","256",reference,cli,"tests/go-differential.json"]).output()
+  hash.check()
+  let frozen_nan_success=rows.any(row=>row is {"name":"nan/relative","reference_exit":Number(a,..),"local_exit":Number(b,..),"passed":True,..} && a==0.0 && b==0.0)
+  @fs.write_file(work+"/report.json",({"cwd":cwd,"reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57","reference_build":metadata.stdout(),"comparison":"identical arguments and source; exact stdout/stderr/exit; no normalization; original frozen success expectation retained independently","started_utc":started.stdout().trim().to_owned(),"finished_utc":finished.stdout().trim().to_owned(),"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"hashes":hash.stdout(),"cases":rows,"sources":source_rows,"original_frozen_nan_expect":"success","original_frozen_nan_success_condition_passed":frozen_nan_success,"exceptions_accepted":false}:Json).stringify(indent=2)+"\n")
+  println("Entry diagnostics: \{passed}/\{rows.length()} at "+started.stdout().trim().to_owned()+" to "+finished.stdout().trim().to_owned())
+  assert_eq(passed,rows.length())
+}
