@@ -101,7 +101,7 @@ async fn main {
   let traced = @shell.Cmd(cli, ["--root",root,"main.jsonnet"]).output()
   traced.check()
   assert_eq(traced.stdout(), "42\n")
-  assert_eq(traced.stderr(), "TRACE: " + @fs.realpath(root + "/traced.libsonnet") + ":2 import trace\n")
+  assert_eq(traced.stderr(), "TRACE: traced.libsonnet:2 import trace\n")
   @fs.write_file(root + "/main.jsonnet", "function(MOONJSONNET_INTEGRATION_PARAMETER) MOONJSONNET_INTEGRATION_PARAMETER")
   let environment = Map([("MOONJSONNET_INTEGRATION_PARAMETER","21*2")])
   let parameter_env = @shell.Cmd(cli,["--root",root,"--tla-code","MOONJSONNET_INTEGRATION_PARAMETER","main.jsonnet"],env=environment).output()
