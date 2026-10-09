@@ -2,6 +2,9 @@
 
 Use the toolchain in [VERSIONS](VERSIONS.md). Run from the repository root:
 
+Linux evidence, the isolated snapshot runner, and checks still awaiting the fixed
+Go toolchain are recorded in the [SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
+
 ```sh
 moon check --target native --deny-warn
 moon test --target native --deny-warn
