@@ -25,8 +25,9 @@ CI pins the installer argument and reference commit. Toolchain download archives
 have an upstream retention policy; if the pinned build becomes unavailable,
 refresh the toolchain baseline and rerun acceptance instead of silently falling
 back to a newer compiler. Complete macOS acceptance and partial Linux x86_64
-native acceptance have been executed. Linux frozen-fixture passes do not replace
-fresh Go 1.24.0 comparisons; see the [SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
+native acceptance and the first fresh Go 1.24.0 Linux comparison have been executed.
+That comparison exposed architecture-specific numeric differences; the repair's
+final Linux acceptance remains pending. See the [SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
 
 Design: parse into located expressions; resolve names statically; evaluate
 lexical closures with memoized thunks; represent objects as ordered layers whose

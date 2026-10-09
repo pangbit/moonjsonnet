@@ -1,7 +1,8 @@
 # SSH Linux 分阶段验收
 
 日期：2026-10-09。用户授权使用现有 SSH 认证登录 `root@<ENVIRONMENT_SERVER_01>`，
-在独立临时目录验收并保留本地提交；没有推送、部署、发布或新安装。
+在独立临时目录验收并保留本地提交；没有推送、部署或发布。
+后续用户明确批准临时安装官方 Go 1.24.0；没有覆盖系统安装。
 SSH 保持 `BatchMode=yes`、严格主机校验、10 秒连接超时与有界存活检测。
 
 ## 实际环境与快照
@@ -78,28 +79,84 @@ Git 归属仅在新临时目录修正，没有添加全局 safe.directory。
 首次 Go 缓存源目录解包因只读目录权限失败；改为仅复制七个已缓存的模块归档
 与校验元数据，在新目录以同一低权限身份成功展开，没有修改系统权限。
 
-## 未运行与待批准项
+## 实际固定 Go 首轮对照
 
-固定 Go 1.24.0 在已检查的安装前缀和 toolchain 缓存中缺失。因此 Linux 的
-整体 CLI/Evaluator/lint、实际 Go 诊断/TTY/参数错误/字符/I/O/标准库分支、
-格式化和 Go 相关 ASan 对照均未运行，不计通过。
-原 macOS 18 CLI + 1 Evaluator + 1 lint 失败仍未获例外批准；没有删输入或接受差异。
-
-固定参考的七个模块已从 Mac 缓存复制，ziphash 对照原 go.sum。
-Mac 使用已有 Go 1.24.0、GOWORK=off、GOPROXY=off 实际离线构建 CLI 退出 0。
-Linux 待批准的最小工具安装为
-[官方 Go 1.24.0 linux/amd64](https://go.dev/dl/#go1.24.0)，归档
-`https://go.dev/dl/go1.24.0.linux-amd64.tar.gz`，官方 SHA-256：
+用户已明确批准临时安装
+[官方 Go 1.24.0 linux/amd64](https://go.dev/dl/#go1.24.0)。官方归档 SHA-256：
 `dea9ca38a0b852a74e81c26134671af7c0fbe65d81b0dc1c5bfe22cf7d4c8858`。
+远端 curl 首次因 TLS 连接超时退出28，原日志保留；随后 Mac 通过验证 HTTPS
+下载相同官方归档，传输后再次核对哈希，在本次目录 `go-1.24.0` 展开。
+实际版本为 `go version go1.24.0 linux/amd64`。固定参考的七个缓存模块与原
+go.sum 校验相同，CLI/jsonnetfmt/jsonnet-deps 均离线构建成功。
+所有适配器的构建元数据确认固定提交、Go1.24.0、linux/amd64 和干净参考。
+仅本次进程使用 PATH/GOCACHE/GOMODCACHE；模块代理和自动工具链下载关闭。
+没有修改系统 Go、profile、安全设置或持久凭据。
 
-获批后拟在本次目录的 `go-1.24.0` 展开，先校验归档和实际版本；只为本次进程
-设置 PATH/GOCACHE/GOMODCACHE，继续禁止模块代理与自动工具链下载。不覆盖
-系统 Go、修改 profile 或持久凭据。当前没有下载或安装该归档。
-可用模块缓存位置为 `gomodcache-download`，首次失败副本另保留于 `gomodcache`。
+全部21个实际Go runner已执行并结束，绑定干净源码 `ff1a11c`：
 
-原 C++ 上游语言 runner 另需要 rg；远端 `which rg` 退出 1，C++ Linux 二进制
-未构建，因此 303 项 Linux C++ 对照也未运行。g++/make 已有；该工具缺口不
-影响上述 21 项或固定 Go runner，不自行安装 rg。
-远端 CI 与发布继续不在本次授权范围，整体目标未标记完成。
+| 实际 Linux Go 检查 | 首轮结果 |
+| --- | --- |
+| API完整诊断 / CLI完整字节 | 1323/1323、4095/4095 |
+| 标准库当前原生错误 / OS I/O / TTY / 参数错误 | 384/384、45/45、25/25、65/65，另品牌帮助2项 |
+| 字符三入口 | 69/72；三个NaN字符转换平台差异 |
+| 整体CLI / 冻结原错误295项 | 1114/1150、288/295 |
+| Evaluator / lint | 20/21、409/410；原各一项失败保留 |
+| 调试器 / AST / 参数 | 43/43、173/173、30/30 |
+| 格式化 / 上游格式化 / 节点 / jsonnetfmt | 736/736、178/178、56/56、255/255，另品牌4项 |
+| lint CLI / 依赖 / 成员注册 | 两二进制各23项、33+13、163注册；注册不表示行为通过 |
+
+整体CLI保留原18项失败，另发现18项架构差异，涉及融合舍入、amd64 exp/log、
+分数精度格式化及非有限/边界整数转换。295原错误中保留原5项失败，另发现两个
+索引转换诊断差异。字符NaN在Go amd64转换为非法rune并输出替换字符；旧实现
+固定采用ARM64的零结果。未删除输入、放宽精度或接受参考崩溃。
+
+完整首轮日志和报告位于 `go-evidence`；取回Mac的 `go-initial-evidence.tar.gz`
+SHA-256为 `0085c7d791194ed287e89f052d8643740558fe89d8036304a4f66234d814ef07`。
+归档及其中21份完整报告的逐文件校验已通过，另外保存lint CLI原始results.json。
+
+C++参考已用现有g++/make在Linux构建；原32语言输入、241格式化断言和30错误
+输入仍为303/303。临时Git枚举与原rg选择在Mac/Linux均为相同30文件、相同SHA；
+本地提交 `9d061cf` 移除runner对rg的额外依赖，没有安装rg。日志、二进制和runner
+哈希另保存在 `go-evidence/cpp`，旧源码快照保持干净。
+
+## 数值修复与下一检查点
+
+本地提交 `62b06da` 按架构定义NaN、无穷及2^63转换，避免C未定义转换；字符
+范围检查仍先于截断，代理项仍替换。泛型数学在ARM64保留融合舍入，在amd64
+保留分步舍入；amd64指数按Go专用算法和CPU的AVX/FMA能力选择实现，log保留
+参考汇编的运算顺序及次正规数路径。格式化分数精度调用对应的amd64算法。
+新增精确架构断言，不使用容差，原冻结 `tests/` 文件未改。
+
+Mac ARM64普通/release各315/315；零警告check、release build、info、fmt及
+diff --check通过。只有内部number包接口新增，根公开接口未变化。
+新Linux快照为 `source-numeric-62b06da`，归档SHA-256：
+`3cb07b72e0bfbefb20167cf98a4e094c09f92584d9f7463574b22584f8140cb7`。
+旧快照和首轮报告保留；定向数值检查20/20，与固定Go完整stdout/stderr/退出码
+相同，包含18个新增整体数值失败及两个原错误审计差异。只用原输入，不加容差。
+首个临时runner误构建全模块，180秒超时，未进入比较；确认UID65534无残留
+进程后改为仅cmd/main。第二次输入置于CLI允许根外，0/20均为宿主Import错误；
+该失败报告另存，输入移到源码_build内后20/20通过，没有修改宿主根政策。
+生产零警告检查通过；最初临时runner的reserved_keyword警告亦保留。
+该定向检查不代替新实现的Linux全量、完整Go诊断或Go相关ASan。
+字符三入口随后72/72，绑定同一干净62b06da，新增NaN字符差异消除。
+阶段完整归档 `go-checkpoint-evidence.tar.gz` SHA-256为
+`e81a69a5af0b125f636a711819a9b9ed39953f1509bd253f2d62f9f0fdb39443`。
+Mac已取回并校验归档SHA256，解包后确认两个报告均绑定干净62b06da及20/20、72/72。
+归档包含旧首轮21报告/日志、C++证据、定向超时/宿主失败/20项通过报告、
+72字符报告、实际脚本及新源码/二进制哈希；Mac副本保存于
+`/var/folders/w_/yh63r6057x3c43hj3bjr24tw0000gn/T/moonjsonnet-numeric-transfer-.24518.89b63afe`。
+
+用户后续指定六项目优先级并要求共享主机先协调新增重型轮次；全量重验和
+Go相关ASan待可用时段。原18 CLI + 1 Evaluator + 1 lint仍未获例外批准。
+远端CI与发布继续不在本次授权范围，整体目标未标记完成。
+
+## 共享主机只读快照
+
+UTC02:54:00：24逻辑CPU；内存15GiB、可用12GiB；磁盘剩余61GiB；负载
+0.02/0.32/0.46。Docker已安装且active。UTC02:56:30的Docker查询确认
+`moonpulsar-test`（apachepulsar/pulsar:latest）及`flowlens-pulsar`（4.0.11）
+均停止；Safeline现有容器运行中。没有启动/修改服务或容器、安装其他软件或压测。
+UTC03:24:52再次查询验收UID65534，无残留测试/构建进程；最后字符日志mtime为
+UTC03:20:50.150802147，已释放本任务的远端重型时段。
 
 > Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
