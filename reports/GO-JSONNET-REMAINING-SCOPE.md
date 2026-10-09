@@ -37,5 +37,9 @@ API1323及20架构输入通过，417副本文件SHA相同。整体仍为1131/115
 相关ASan7/7及62/62通过；原NaN输出已一致，冻结success条件仍失败。21项
 合并后的11组根因、原始同输入/同路径证据及有限源码绑定见
 [根因报告](GO-JSONNET-FAILURE-ROOTS.md)。未重跑全量，旧整体数字不转移。
+后续[入口trace有限修复](GO-JSONNET-TRACE-ENTRY.md)：普通/ASan各CLI9/9、
+完整字节68/68；原9项探针4/9改善到8/9，相对导入trace为下一明确修复目标。
+Evaluator成功nil需要非空Program返回契约决定，暂停该项；NaN冻结成功条件
+单列为AMD64基准不适用并保留失败，原18+1+1例外仍未接受。
 Linux方案见 [隔离验收方案](LINUX-ACCEPTANCE-PLAN.md)。2026-10-09 已转用用户
 授权的SSH路线，阶段结果和精确工具缺口见 [SSH验收](SSH-LINUX-ACCEPTANCE.md)。

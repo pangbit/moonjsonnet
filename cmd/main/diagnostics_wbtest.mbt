@@ -53,6 +53,51 @@ test "entry diagnostic paths preserve canonical identities and message data" {
 }
 
 ///|
+test "entry trace display preserves message bytes and imported filenames" {
+  let canonical = "/root/entry.jsonnet"
+  let location : @moonjsonnet.Location = {
+    file: canonical,
+    line: 4,
+    column: 9,
+  }
+  let names = Some((canonical, "entry.jsonnet"))
+  assert_eq(
+    entry_trace(location, "literal " + canonical + "\n中", names),
+    "TRACE: entry.jsonnet:4 literal /root/entry.jsonnet\n中",
+  )
+  assert_eq(location.file, canonical)
+  assert_eq(
+    entry_trace(
+      { ..location, file: "/root/imported.libsonnet", },
+      "import",
+      names,
+    ),
+    "TRACE: /root/imported.libsonnet:4 import",
+  )
+  assert_eq(
+    entry_trace(location, "original", None),
+    "TRACE: /root/entry.jsonnet:4 original",
+  )
+}
+
+///|
+test "entry trace presentation retains canonical std.thisFile value" {
+  let canonical = "/root/entry.jsonnet"
+  let lines = []
+  let value = @moonjsonnet.evaluate(
+    "std.trace('entry', std.thisFile)",
+    filename=canonical,
+    trace=(location, message) => {
+      lines.push(
+        entry_trace(location, message, Some((canonical, "entry.jsonnet"))),
+      )
+    },
+  )
+  assert_eq(value, Json::string(canonical))
+  assert_eq(lines, ["TRACE: entry.jsonnet:1 entry"])
+}
+
+///|
 test "entry syntax diagnostics retain source snippets under display names" {
   let canonical = "/root/entry.jsonnet"
   let source = "local"

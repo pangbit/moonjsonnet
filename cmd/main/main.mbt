@@ -274,6 +274,9 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       @moonjsonnet.Error(d) => raise import_failure(d, from, path, jpaths)
     }
   }
+  let trace = fn(location, message) {
+    @posix.stderr(entry_trace(location, message, diagnostics.entry_name))
+  }
   if multi is Some(directory) {
     let files = @moonjsonnet.evaluate_multi(
       source.text,
@@ -284,6 +287,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       ext_code~,
       tla_vars=tla,
       tla_code~,
+      trace~,
       limits~,
       resolver~,
       binary_resolver~,
@@ -304,6 +308,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       ext_code~,
       tla_vars=tla,
       tla_code~,
+      trace~,
       limits~,
       resolver~,
       binary_resolver~,
@@ -342,6 +347,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       ext_code~,
       tla_vars=tla,
       tla_code~,
+      trace~,
       limits~,
       resolver~,
       binary_resolver~,

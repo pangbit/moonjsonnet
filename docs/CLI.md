@@ -90,11 +90,12 @@ The runtime error header is always printed, and captured frames remain unchanged
 Static errors include their source range and snippet; entry, imported and ext/TLA
 code sources are registered for rendering. The byte path preserves malformed
 Unicode contexts, including invalid UTF-8, without text decoding. `std.trace`
-messages continue to use their trace sink. Entry error locations display the
-invocation filename: relative paths are lexically cleaned, while absolute paths
+messages continue to use their trace sink. Entry errors and CLI entry traces
+display the invocation filename: relative paths are lexically cleaned, while absolute paths
 retain their spelling. Execution and import/cache identities remain canonical
-absolute host paths. Imported locations and `std.trace` retain their existing
-canonical presentation. Import policy and independent resource-budget errors retain
+absolute host paths. Imported locations and imported traces retain their existing
+canonical presentation; embedding trace callbacks keep their original locations.
+Import policy and independent resource-budget errors retain
 the older category/context format; runtime frame exhaustion uses Go-style frames.
 Captured-output comparisons do not establish every standard-library, I/O or
 terminal-color error as equal to Go. Embedding callers keep the legacy

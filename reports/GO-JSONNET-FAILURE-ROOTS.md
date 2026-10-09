@@ -126,4 +126,15 @@ Mac目录`${LOCAL_PATH_009}`，包含：
 - [源码覆盖哈希](${LOCAL_PATH_009}/path-display-evidence/final-overlay.sha256)
 - [完整证据归档](${LOCAL_PATH_009}/entry-diagnostics-evidence.tar.gz)
 
+## 下一批：入口std.trace
+
+[入口trace有限修复](GO-JSONNET-TRACE-ENTRY.md)按上述11组回传优先顺序后，
+选择同类路径显示的正常Go结果：编辑前9项探针4/9，修复后8/9，相对导入
+trace仍明确失败。CLI给3种求值输出入口传入仅用于显示的trace sink，原
+canonical执行身份不变。LinuxCLI9/9、完整字节68/68及相关ASan9/9、68/68
+通过，公开接口及冻结语料不变，没有重复全量或接受原18+1+1例外。
+NaN的ARM64冻结成功条件单列为固定AMD64测试基准不适用，原失败仍保留。
+Evaluator的成功nil AST需要决定如何扩展当前非空Program返回契约，暂停该项；
+不以Null表达式冒充nil。相对导入trace为下一明确的产品输出修复目标。
+
 > Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.

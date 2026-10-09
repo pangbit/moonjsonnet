@@ -1,0 +1,90 @@
+import {
+  "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell",
+  "moonbitlang/core/env", "moonbitlang/core/json",
+}
+
+async fn compare(
+  name : String,
+  reference : String,
+  cli : String,
+  args : Array[String],
+  stdin : String,
+  rows : Array[Json],
+) -> Unit {
+  let environment=Map([("JSONNET_PATH",""),("NO_COLOR","1"),("TERM","dumb"),("ASAN_OPTIONS","detect_leaks=0:fast_unwind_on_malloc=0:exitcode=99")])
+  let a=@shell.Cmd(reference,args,env=environment,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+  let b=@shell.Cmd(cli,args,env=environment,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
+  let passed=a.exit_code()==b.exit_code() && a.stdout()==b.stdout() && a.stderr()==b.stderr()
+  rows.push({"name":name,"args":args,"stdin":stdin,"passed":passed,"reference_exit":a.exit_code(),"local_exit":b.exit_code(),"reference_stdout":a.stdout(),"local_stdout":b.stdout(),"reference_stderr":a.stderr(),"local_stderr":b.stderr()})
+  if !passed { println("FAIL entry trace "+name) }
+}
+
+async fn main {
+  let arguments=@env.args()
+  guard arguments.length()==3 else { fail("Usage: moon run tools/cli-entry-trace.mbtx REFERENCE CLI") }
+  let reference=@fs.realpath(arguments[1])
+  let cli=@fs.realpath(arguments[2])
+  let metadata=@shell.Cmd("go",["version","-m",reference]).output()
+  metadata.check()
+  assert_true(metadata.stdout().contains("go1.24.0"))
+  assert_true(metadata.stdout().contains("vcs.revision=67968688d9952f50662e979fab1bef889d0d3e57"))
+  assert_true(metadata.stdout().contains("vcs.modified=false"))
+  let started=@shell.Cmd("date",["-u","+%Y-%m-%dT%H:%M:%SZ"]).output()
+  started.check()
+  let cwd=@fs.realpath(".")
+  let work="_build/entry-trace"
+  @fs.mkdir(work,recursive=true,allow_exist=true)
+  @fs.mkdir(work+"/multi-output",allow_exist=true)
+  @fs.write_file(work+"/library.libsonnet","std.trace('imported trace',42)")
+  let sources : Array[(String,String,Array[String])]=[
+    ("json","std.trace('entry trace',42)",[]),
+    ("unicode-multiline","local x=1;\nstd.trace('中\\nsecond',x)",[]),
+    ("message-path","std.trace("+Json::string(cwd+"/"+work+"/message-path.jsonnet").stringify()+",42)",[]),
+    ("order","[std.trace('first',1),std.trace('second',2)]",[]),
+    ("lazy","local unused=std.trace('unused',1);42",[]),
+    ("string","std.trace('string trace','value')",["-S"]),
+    ("stream","std.trace('stream trace',[42])",["-y"]),
+    ("multi","std.trace('multi trace',{a:42})",["-m",work+"/multi-output"]),
+    ("error","std.trace('trace before error',[error 'after'])",[]),
+    ("absolute-import","import "+Json::string(cwd+"/"+work+"/library.libsonnet").stringify(),[]),
+  ]
+  let rows : Array[Json]=[]
+  let source_rows : Array[Json]=[]
+  for (name,source,options) in sources {
+    let path=work+"/"+name+".jsonnet"
+    source_rows.push({"name":name,"source":source,"path":path,"options":options})
+    @fs.write_file(path,source)
+    let link_path=work+"/alias-"+name+".jsonnet"
+    if @fs.exists(link_path) { @fs.remove(link_path) }
+    @fs.symlink(target=cwd+"/"+path,link_path)
+    for (spelling,input) in [
+      ("relative",path),
+      ("dot-relative","./"+path),
+      ("clean-relative",work+"/../entry-trace/"+name+".jsonnet"),
+      ("absolute",cwd+"/"+path),
+      ("dot-absolute",cwd+"/"+work+"/../entry-trace/"+name+".jsonnet"),
+      ("symlink",link_path),
+    ] { compare(name+"/"+spelling,reference,cli,options+[input],"",rows) }
+  }
+  for (mode,source,options) in [
+    ("json","std.trace('anonymous',42)",[]),
+    ("string","std.trace('anonymous','value')",["-S"]),
+    ("stream","std.trace('anonymous',[42])",["-y"]),
+    ("multi","std.trace('anonymous',{a:42})",["-m",work+"/multi-output"]),
+  ] {
+    compare("exec/"+mode,reference,cli,options+["-e",source],"",rows)
+    compare("stdin/"+mode,reference,cli,options+["-"],source,rows)
+  }
+  let remaining : Array[Json]=[]
+  let imported=work+"/relative-import.jsonnet"
+  @fs.write_file(imported,"import './library.libsonnet'")
+  compare("remaining-relative-import-trace",reference,cli,[imported],"",remaining)
+  let finished=@shell.Cmd("date",["-u","+%Y-%m-%dT%H:%M:%SZ"]).output()
+  finished.check()
+  let passed=rows.filter(row=>row is {"passed":True,..}).length()
+  let hashes=@shell.Cmd("shasum",["-a","256",reference,cli,"tests/go-differential.json","tests/go-evaluator.json","tests/go-lint.json"]).output()
+  hashes.check()
+  @fs.write_file(work+"/report.json",({"cwd":cwd,"reference_commit":"67968688d9952f50662e979fab1bef889d0d3e57","reference_build":metadata.stdout(),"comparison":"same source and arguments; exact stdout/stderr/exit without normalization; entry trace scope only","started_utc":started.stdout().trim().to_owned(),"finished_utc":finished.stdout().trim().to_owned(),"total":rows.length(),"passed":passed,"failed":rows.length()-passed,"cases":rows,"sources":source_rows,"hashes":hashes.stdout(),"remaining_probes":remaining,"remaining_probes_are_acceptance_passes":false,"exceptions_accepted":false,"overall_compatibility_passed":false}:Json).stringify(indent=2)+"\n")
+  println("Entry trace: \{passed}/\{rows.length()} at "+started.stdout().trim().to_owned()+" to "+finished.stdout().trim().to_owned())
+  assert_eq(passed,rows.length())
+}

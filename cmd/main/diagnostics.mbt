@@ -32,3 +32,16 @@ fn entry_diagnostic(
     }),
   }
 }
+
+///|
+fn entry_trace(
+  location : @moonjsonnet.Location,
+  message : String,
+  entry_name : (String, String)?,
+) -> String {
+  let file = match entry_name {
+    Some((canonical, display)) if location.file == canonical => display
+    _ => location.file
+  }
+  "TRACE: \{file}:\{location.line} \{message}"
+}
