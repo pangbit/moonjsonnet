@@ -14,6 +14,8 @@ jobs:
         run: curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- '0.10.14+7d59c7ec9'
       - name: Add toolchain path
         run: echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - name: Initialize package index for standalone tools
+        run: moon update
       - run: moon version --all
       - run: moon check --target native --deny-warn
       - run: moon test --target native --deny-warn
