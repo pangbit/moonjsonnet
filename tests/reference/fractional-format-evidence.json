@@ -1,0 +1,31 @@
+{
+  "case": "format-dynamic-fractional",
+  "source": "['%*s' % [1.5,'x'], '%.*f' % [-1,123.45], '%.*d' % [1.5,1], '%.*f' % [1.5,1.25]]",
+  "cpp_reference_version": "Jsonnet commandline interpreter v0.21.0",
+  "cpp_reference_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+  "records": [
+    {
+      "system": "Linux",
+      "machine": "x86_64",
+      "source_commit": "bc1d3c3db355b1ce22a95b424e1a0f2e73f2b849",
+      "archive_sha256": "b9a4316be9365219adc51712a077e6e2eaabeda67fe174a4104179c8acabe0ce",
+      "reference_version": "Jsonnet commandline interpreter (Go implementation) v0.21.0",
+      "reference_commit": "67968688d9952f50662e979fab1bef889d0d3e57",
+      "go_toolchain": "go1.24.0",
+      "status": "passed",
+      "stdout": "[\n   \" x\",\n   \"128.0.099999999999999339\",\n   \"01\",\n   \"1.8.3772233983162039\"\n]\n"
+    },
+    {
+      "system": "Darwin",
+      "machine": "arm64",
+      "source_commit": "a021c19059f8d5120a7a58343e5bedfe34d8c087",
+      "archive_sha256": "26c8f2e4361763555e94a13ed6e8aaffc19ce7e544b6fbba7e989f65eeeef775",
+      "reference_version": "Jsonnet commandline interpreter (Go implementation) v0.21.0",
+      "reference_commit": "67968688d9952f50662e979fab1bef889d0d3e57",
+      "go_toolchain": "go1.24.0",
+      "status": "passed",
+      "stdout": "[\n   \" x\",\n   \"128.0.099999999999999339\",\n   \"01\",\n   \"1.8.3772233983162003\"\n]\n"
+    }
+  ],
+  "provenance": "Exact complete outputs from the two original 2026-10-09 same-architecture Go v0.21.0 / Go1.24.0 acceptance archives; unredacted evidence remains local. No current CI output was used as a golden."
+}

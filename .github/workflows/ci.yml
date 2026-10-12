@@ -17,6 +17,8 @@ jobs:
         run: echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
       - name: Initialize package index for standalone tools
         run: moon update
+      - name: Test differential validator regressions
+        run: moon test tools/differential.mbtx --deny-warn
       - run: moon version --all
       - run: moon check --target native --deny-warn
       - run: moon test --target native --deny-warn

@@ -1,3 +1,4 @@
+///|
 import {
   "moonbitlang/async",
   "moonbitlang/async/shell",
@@ -6,53 +7,149 @@ import {
   "moonbitlang/core/env",
 }
 
+///|
 async fn main {
   let args = @env.args()
-  guard args.length() == 3 else { fail("Usage: moon run tools/differential.mbtx REFERENCE CLI") }
+  guard args.length() == 3 else {
+    fail("Usage: moon run tools/differential.mbtx REFERENCE CLI")
+  }
   let reference = args[1]
   let cli = args[2]
   let version = @shell.Cmd(reference, ["--version"]).output()
   version.check()
   let reference_version = version.stdout().trim().to_owned()
-  let is_go = reference_version == "Jsonnet commandline interpreter (Go implementation) v0.21.0"
-  assert_true(is_go || reference_version == "Jsonnet commandline interpreter v0.21.0")
+  let is_go = reference_version ==
+    "Jsonnet commandline interpreter (Go implementation) v0.21.0"
+  assert_true(
+    is_go || reference_version == "Jsonnet commandline interpreter v0.21.0",
+  )
   let reference_commit : Json = if is_go {
     let build = @shell.Cmd("go", ["version", "-m", reference]).output()
     build.check()
-    let lines = build.stdout().split("\n").map(s => s.trim().to_owned()).collect()
-    assert_true(lines.contains("build\tvcs.revision=67968688d9952f50662e979fab1bef889d0d3e57"))
+    let lines = build
+      .stdout()
+      .split("\n")
+      .map(s => s.trim().to_owned())
+      .collect()
+    assert_true(
+      lines.contains(
+        "build\tvcs.revision=67968688d9952f50662e979fab1bef889d0d3e57",
+      ),
+    )
     assert_true(lines.contains("build\tvcs.modified=false"))
     Json::string("67968688d9952f50662e979fab1bef889d0d3e57")
-  } else { null }
+  } else {
+    let absolute = @fs.realpath(reference)
+    guard absolute.rev_find("/") is Some(i) else {
+      fail("reference executable needs a parent repository")
+    }
+    let parent = absolute[:i].to_owned()
+    let commit = @shell.Cmd("git", ["-C", parent, "rev-parse", "HEAD"]).output()
+    commit.check()
+    assert_eq(
+      commit.stdout().trim().to_owned(),
+      "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+    )
+    let dirty = @shell.Cmd("git", [
+      "-C", parent, "status", "--porcelain", "--untracked-files=no",
+    ]).output()
+    dirty.check()
+    assert_eq(dirty.stdout(), "")
+    Json::string(commit.stdout().trim().to_owned())
+  }
+  let system = @shell.Cmd("uname", ["-s"]).output()
+  system.check()
+  let machine = @shell.Cmd("uname", ["-m"]).output()
+  machine.check()
+  let system = system.stdout().trim().to_owned()
+  let machine = machine.stdout().trim().to_owned()
+  let evidence_path = "tests/reference/fractional-format-evidence.json"
+  let fractional_evidence = @json.parse(@fs.read_file(evidence_path).text())
+  if !is_go {
+    for executable in [reference, cli] {
+      let identity = @shell.Cmd("file", ["-b", @fs.realpath(executable)]).output()
+      identity.check()
+      assert_true(native_binary_platform(system, machine, identity.stdout()))
+    }
+    assert_true(
+      fractional_stdout(
+        fractional_evidence,
+        system,
+        machine,
+        reference_version,
+        match reference_commit {
+          String(s) => s
+          _ => ""
+        },
+      )
+      is Some(_),
+    )
+  }
   let cases = @json.parse(@fs.read_file("tests/differential.json").text())
   guard cases is Array(cases) else { fail("expected case array") }
   if is_go {
     let extra = @json.parse(@fs.read_file("tests/go-differential.json").text())
     guard extra is Array(extra) else { fail("expected Go case array") }
-    for case in extra { cases.push(case) }
-    let parameters = @json.parse(@fs.read_file("tests/go-parameters.json").text())
-    guard parameters is Array(parameters) else { fail("expected Go parameter case array") }
-    for case in parameters { cases.push(case) }
+    for case in extra {
+      cases.push(case)
+    }
+    let parameters = @json.parse(
+      @fs.read_file("tests/go-parameters.json").text(),
+    )
+    guard parameters is Array(parameters) else {
+      fail("expected Go parameter case array")
+    }
+    for case in parameters {
+      cases.push(case)
+    }
     let inputs = @json.parse(@fs.read_file("tests/go-cli-input.json").text())
-    guard inputs is Array(inputs) else { fail("expected Go CLI input case array") }
-    for case in inputs { cases.push(case) }
+    guard inputs is Array(inputs) else {
+      fail("expected Go CLI input case array")
+    }
+    for case in inputs {
+      cases.push(case)
+    }
     let outputs = @json.parse(@fs.read_file("tests/go-cli-output.json").text())
-    guard outputs is Array(outputs) else { fail("expected Go CLI output case array") }
-    for case in outputs { cases.push(case) }
+    guard outputs is Array(outputs) else {
+      fail("expected Go CLI output case array")
+    }
+    for case in outputs {
+      cases.push(case)
+    }
     let multi = @json.parse(@fs.read_file("tests/go-cli-multi.json").text())
-    guard multi is Array(multi) else { fail("expected Go multi-output case array") }
-    for case in multi { cases.push(case) }
+    guard multi is Array(multi) else {
+      fail("expected Go multi-output case array")
+    }
+    for case in multi {
+      cases.push(case)
+    }
     let imports = @json.parse(@fs.read_file("tests/go-cli-imports.json").text())
-    guard imports is Array(imports) else { fail("expected Go import-search case array") }
-    for case in imports { cases.push(case) }
-    let diagnostics = @json.parse(@fs.read_file("tests/go-cli-diagnostics.json").text())
-    guard diagnostics is Array(diagnostics) else { fail("expected Go diagnostic case array") }
-    for case in diagnostics { cases.push(case) }
+    guard imports is Array(imports) else {
+      fail("expected Go import-search case array")
+    }
+    for case in imports {
+      cases.push(case)
+    }
+    let diagnostics = @json.parse(
+      @fs.read_file("tests/go-cli-diagnostics.json").text(),
+    )
+    guard diagnostics is Array(diagnostics) else {
+      fail("expected Go diagnostic case array")
+    }
+    for case in diagnostics {
+      cases.push(case)
+    }
     let stack = @json.parse(@fs.read_file("tests/go-cli-stack.json").text())
     guard stack is Array(stack) else { fail("expected Go stack case array") }
-    for case in stack { cases.push(case) }
+    for case in stack {
+      cases.push(case)
+    }
   }
-  let work = if is_go { "_build/go-differential" } else { "_build/differential" }
+  let work = if is_go {
+    "_build/go-differential"
+  } else {
+    "_build/differential"
+  }
   @fs.mkdir(work, recursive=true, allow_exist=true)
   let mut passed = 0
   let mut failed = 0
@@ -65,69 +162,177 @@ async fn main {
   let mut reference_differences = 0
   let rows : Array[Json] = []
   for case in cases {
-    guard case is { "name": String(name), "source": String(source), "expect": String(expect), .. } else { fail("invalid case") }
-    let expect = if is_go && case is { "go_expect": String(go_expect), .. } { go_expect } else { expect }
-    assert_true(["success", "raw-output", "text-output", "file-output", "error", "io-error", "unsupported", "unsupported-reference-error"].contains(expect))
+    guard case
+      is {
+        "name": String(name),
+        "source": String(source),
+        "expect": String(expect),
+        ..
+      } else {
+      fail("invalid case")
+    }
+    let expect = if is_go && case is { "go_expect": String(go_expect), .. } {
+      go_expect
+    } else {
+      expect
+    }
+    assert_true(
+      [
+        "success", "raw-output", "text-output", "file-output", "error", "io-error",
+        "unsupported", "unsupported-reference-error",
+      ].contains(expect),
+    )
     let path = work + "/" + name + ".jsonnet"
     @fs.write_file(path, source)
     // Absolute input paths give both trace sinks the same diagnostic filename.
     // Existing non-trace fixtures retain their original invocation paths.
-    let path = if case is { "trace": String(_), .. } { @fs.realpath(path) } else { path }
+    let path = if case is { "trace": String(_), .. } {
+      @fs.realpath(path)
+    } else {
+      path
+    }
     let extra_args = match case {
-      {"args": Array(args), ..} => args.map(arg => match arg {String(s) => s.replace_all(old="<work>",new=work); _ => fail("expected CLI argument string")})
+      { "args": Array(args), .. } =>
+        args.map(arg => {
+          match arg {
+            String(s) => s.replace_all(old="<work>", new=work)
+            _ => fail("expected CLI argument string")
+          }
+        })
       _ => []
     }
-    if case is {"files": Object(files), ..} {
+    if case is { "files": Object(files), .. } {
       for name, content in files {
-        guard content is String(content) else {fail("expected fixture text")}
+        guard content is String(content) else { fail("expected fixture text") }
         let path = work + "/" + name
-        if path.rev_find("/") is Some(i) { @fs.mkdir(path[:i],recursive=true,allow_exist=true) }
-        @fs.write_file(path,content)
+        if path.rev_find("/") is Some(i) {
+          @fs.mkdir(path[:i], recursive=true, allow_exist=true)
+        }
+        @fs.write_file(path, content)
       }
     }
-    let environment : Map[String,String] = Map([])
-    if case is {"env": Object(vars), ..} {
+    let environment : Map[String, String] = Map([])
+    if case is { "env": Object(vars), .. } {
       for name, value in vars {
-        guard value is String(value) else {fail("expected environment string")}
-        environment[name] = value.replace_all(old="<work>",new=work)
+        guard value is String(value) else {
+          fail("expected environment string")
+        }
+        environment[name] = value.replace_all(old="<work>", new=work)
       }
     }
-    let mode = match case {{"input":String(mode),..}=>mode;_=>"file"}
-    assert_true(["file","exec","stdin"].contains(mode))
-    let input = match case {
-      {"input_arg":String(arg),..} => arg.replace_all(old="<work>",new=work)
-      _ => if mode=="exec" {source} else if mode=="stdin" {"-"} else {path}
+    let mode = match case {
+      { "input": String(mode), .. } => mode
+      _ => "file"
     }
-    let stdin = match case {{"stdin":String(s),..}=>s;_=>if mode=="stdin" {source} else {""}}
-    let cwd = match case {{"cwd":String(dir),..}=>Some(dir.replace_all(old="<work>",new=work));_=>None}
+    assert_true(["file", "exec", "stdin"].contains(mode))
+    let input = match case {
+      { "input_arg": String(arg), .. } =>
+        arg.replace_all(old="<work>", new=work)
+      _ =>
+        if mode == "exec" {
+          source
+        } else if mode == "stdin" {
+          "-"
+        } else {
+          path
+        }
+    }
+    let stdin = match case {
+      { "stdin": String(s), .. } => s
+      _ => if mode == "stdin" { source } else { "" }
+    }
+    let cwd = match case {
+      { "cwd": String(dir), .. } =>
+        Some(dir.replace_all(old="<work>", new=work))
+      _ => None
+    }
     // File-output fixtures must never share generated files between interpreters.
     let out_a = @fs.realpath(work) + "/" + name + ".reference-output"
     let out_b = @fs.realpath(work) + "/" + name + ".moonjsonnet-output"
-    if case is {"output_files":Object(_),..} {
-      for base in [out_a,out_b] { prepare_output(case,base) }
+    if case is { "output_files": Object(_), .. } {
+      for base in [out_a, out_b] {
+        prepare_output(case, base)
+      }
       file_output_cases += 1
     }
-    let args_a = extra_args.map(s=>s.replace_all(old="<out>",new=out_a)) + [input]
-    let args_b = extra_args.map(s=>s.replace_all(old="<out>",new=out_b)) + [input]
-    let a = @shell.Cmd(@fs.realpath(reference), args_a,env=environment,cwd?,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
-    let b = @shell.Cmd(@fs.realpath(cli), args_b,env=environment,cwd?,stdin=@shell.Text(stdin)).output(timeout_ms=10000)
-    let files_a = observe_output(case,out_a)
-    let files_b = observe_output(case,out_b)
+    let args_a = extra_args.map(s => s.replace_all(old="<out>", new=out_a)) +
+      [input]
+    let args_b = extra_args.map(s => s.replace_all(old="<out>", new=out_b)) +
+      [input]
+    let a = @shell.Cmd(
+      @fs.realpath(reference),
+      args_a,
+      env=environment,
+      cwd?,
+      stdin=@shell.Text(stdin),
+    ).output(timeout_ms=10000)
+    let b = @shell.Cmd(
+      @fs.realpath(cli),
+      args_b,
+      env=environment,
+      cwd?,
+      stdin=@shell.Text(stdin),
+    ).output(timeout_ms=10000)
+    let files_a = observe_output(case, out_a)
+    let files_b = observe_output(case, out_b)
     let output_ok = match case {
-      {"output_files":Object(expected),..} => Json::object(files_a)==Json::object(expected) && Json::object(files_b)==Json::object(expected)
+      { "output_files": Object(expected), .. } =>
+        Json::object(files_a) == Json::object(expected) &&
+        Json::object(files_b) == Json::object(expected)
       _ => true
     }
-    let difference = if !is_go && case is { "cpp_difference": difference, .. } { Some(difference) } else { None }
+    let difference = if !is_go && case is { "cpp_difference": difference, .. } {
+      Some(difference)
+    } else {
+      None
+    }
     let matches_difference = match difference {
       Some(difference) => {
         let reference_matches = match difference {
-          { "reference": expected, .. } => a.exit_code() == 0 && @json.parse(a.stdout()) == expected
-          { "reference_error": String(kind), .. } => a.exit_code() == 1 && a.stderr().has_prefix(kind + ":")
+          { "reference": expected, .. } =>
+            a.exit_code() == 0 && @json.parse(a.stdout()) == expected
+          { "reference_error": String(kind), .. } =>
+            a.exit_code() == 1 && a.stderr().has_prefix(kind + ":")
           _ => fail("missing reference outcome for C++ difference")
         }
         let actual_matches = match difference {
-          { "moonjsonnet": expected, .. } => b.exit_code() == 0 && @json.parse(b.stdout()) == expected
-          { "moonjsonnet_error": String(kind), .. } => b.exit_code() == 1 && b.stderr().contains(": " + kind + ":")
+          { "moonjsonnet": expected, .. } =>
+            if name == "format-dynamic-fractional" {
+              assert_eq(
+                source,
+                match fractional_evidence {
+                  { "source": String(s), .. } => s
+                  _ => fail("missing frozen source")
+                },
+              )
+              let expected_stdout = fractional_stdout(
+                fractional_evidence,
+                system,
+                machine,
+                reference_version,
+                match reference_commit {
+                  String(s) => s
+                  _ => ""
+                },
+              ).unwrap()
+              b.exit_code() == 0 &&
+              b.stdout() == expected_stdout &&
+              b.stderr().is_empty()
+            } else {
+              b.exit_code() == 0 && @json.parse(b.stdout()) == expected
+            }
+          {
+            "moonjsonnet_error": String(kind),
+            "moonjsonnet_error_message": String(message),
+            ..
+          } =>
+            declared_runtime_error(
+              kind,
+              message,
+              b.exit_code(),
+              b.stdout(),
+              b.stderr(),
+            )
           _ => fail("missing MoonJsonnet outcome for C++ difference")
         }
         reference_matches && actual_matches
@@ -138,64 +343,199 @@ async fn main {
       raw_output_cases += 1
       // Go sum/avg can emit +Inf/-Inf/NaN, which are not JSON. Pin the exact
       // scalar spelling on both sides instead of silently dropping the input.
-      guard case is { "raw_output": String(expected), .. } else { fail("missing exact raw output") }
+      guard case is { "raw_output": String(expected), .. } else {
+        fail("missing exact raw output")
+      }
       assert_true(["+Inf", "-Inf", "NaN"].contains(expected))
-      a.exit_code() == 0 && b.exit_code() == 0 && a.stdout().trim().to_owned() == expected && b.stdout().trim().to_owned() == expected
+      a.exit_code() == 0 &&
+      b.exit_code() == 0 &&
+      a.stdout().trim().to_owned() == expected &&
+      b.stdout().trim().to_owned() == expected
     } else if expect == "text-output" || expect == "file-output" {
       text_output_cases += 1
-      guard case is {"stdout":String(expected),..} else {fail("missing exact text output")}
-      a.exit_code()==0 && b.exit_code()==0 && a.stdout().replace_all(old=out_a,new="<out>")==expected && b.stdout().replace_all(old=out_b,new="<out>")==expected
+      guard case is { "stdout": String(expected), .. } else {
+        fail("missing exact text output")
+      }
+      a.exit_code() == 0 &&
+      b.exit_code() == 0 &&
+      a.stdout().replace_all(old=out_a, new="<out>") == expected &&
+      b.stdout().replace_all(old=out_b, new="<out>") == expected
     } else if expect == "unsupported" || expect == "unsupported-reference-error" {
-      (if expect == "unsupported" { a.exit_code() == 0 } else { a.exit_code() != 0 }) && b.exit_code() != 0 && b.stderr().contains("Unsupported")
+      (if expect == "unsupported" {
+        a.exit_code() == 0
+      } else {
+        a.exit_code() != 0
+      }) &&
+      b.exit_code() != 0 &&
+      b.stderr().contains("Unsupported")
     } else if expect == "io-error" {
       io_error_cases += 1
       errors += 1
-      guard case is {"stdout":String(expected),"reference_error":String(reference_error),"moonjsonnet_cli_error":String(actual),..} else {fail("missing exact I/O error expectation")}
-      a.exit_code()==1 && b.exit_code()==1 && a.stdout().replace_all(old=out_a,new="<out>")==expected && b.stdout().replace_all(old=out_b,new="<out>")==expected && a.stderr().contains(reference_error) && b.stderr().contains(actual)
+      guard case
+        is {
+          "stdout": String(expected),
+          "reference_error": String(reference_error),
+          "moonjsonnet_cli_error": String(actual),
+          ..
+        } else {
+        fail("missing exact I/O error expectation")
+      }
+      a.exit_code() == 1 &&
+      b.exit_code() == 1 &&
+      a.stdout().replace_all(old=out_a, new="<out>") == expected &&
+      b.stdout().replace_all(old=out_b, new="<out>") == expected &&
+      a.stderr().contains(reference_error) &&
+      b.stderr().contains(actual)
     } else if expect == "error" {
       errors += 1
-      a.exit_code() == 1 && b.exit_code() == 1 && a.stdout().is_empty() && b.stdout().is_empty() && !a.stderr().contains("INTERNAL ERROR")
+      a.exit_code() == 1 &&
+      b.exit_code() == 1 &&
+      a.stdout().is_empty() &&
+      b.stdout().is_empty() &&
+      !a.stderr().contains("INTERNAL ERROR")
     } else {
-      a.exit_code() == 0 && b.exit_code() == 0 && @json.parse(a.stdout()) == @json.parse(b.stdout())
+      a.exit_code() == 0 &&
+      b.exit_code() == 0 &&
+      @json.parse(a.stdout()) == @json.parse(b.stdout())
     }
     let trace_ok = match case {
       { "trace": String(expected), .. } => {
         let expected = expected.replace_all(old="<file>", new=path)
-        if expect == "success" { a.stderr() == expected && b.stderr() == expected }
-        else {
-          a.stderr().has_prefix(expected) && b.stderr().has_prefix(expected) &&
-          !a.stderr()[expected.length():].contains("TRACE:") && !b.stderr()[expected.length():].contains("TRACE:")
+        if expect == "success" {
+          a.stderr() == expected && b.stderr() == expected
+        } else {
+          a.stderr().has_prefix(expected) &&
+          b.stderr().has_prefix(expected) &&
+          !a.stderr()[expected.length():].contains("TRACE:") &&
+          !b.stderr()[expected.length():].contains("TRACE:")
         }
       }
       _ => true
     }
     let expected_ok = match case {
-      {"result": expected, ..} => a.exit_code()==0 && b.exit_code()==0 && @json.parse(a.stdout())==expected && @json.parse(b.stdout())==expected
-      {"reference_error": String(kind),"moonjsonnet_cli_error":String(actual), ..} => a.stderr().contains(kind) && b.stderr().contains(actual)
-      {"reference_error": String(kind),"moonjsonnet_error":String(actual), ..} => a.stderr().contains(kind) && b.stderr().contains(": "+actual+":")
+      { "result": expected, .. } =>
+        a.exit_code() == 0 &&
+        b.exit_code() == 0 &&
+        @json.parse(a.stdout()) == expected &&
+        @json.parse(b.stdout()) == expected
+      {
+        "reference_error": String(kind),
+        "moonjsonnet_cli_error": String(actual),
+        ..
+      } => a.stderr().contains(kind) && b.stderr().contains(actual)
+      {
+        "reference_error": String(kind),
+        "moonjsonnet_error": String(actual),
+        ..
+      } => a.stderr().contains(kind) && b.stderr().contains(": " + actual + ":")
       _ => true
     }
     let stderr_ok = (match case {
-      {"reference_stderr":String(expected),..} => a.stderr()==expected
-      _ => true
-    }) && (match case {
-      {"moonjsonnet_stderr":String(expected),..} => b.stderr()==expected
-      _ => true
-    })
+        { "reference_stderr": String(expected), .. } => a.stderr() == expected
+        _ => true
+      }) &&
+      (match case {
+        { "moonjsonnet_stderr": String(expected), .. } => b.stderr() == expected
+        _ => true
+      })
     let ok = outcome_ok && trace_ok && expected_ok && output_ok && stderr_ok
     let status = if difference is Some(_) {
-      if matches_difference && !ok { reference_differences += 1; "reference-difference" } else { failed += 1; "failed" }
-    } else if !ok { failed += 1; "failed" } else if expect.has_prefix("unsupported") { unsupported += 1; "unsupported" } else { passed += 1; "passed" }
-    if status == "failed" { println("FAIL \{name}: reference_exit=\{a.exit_code()}, moonjsonnet_exit=\{b.exit_code()} (details in \{work}/report.json)") }
-    if status == "reference-difference" { println("DIFF \{name}: exact declared C++/MoonJsonnet outcomes verified") }
-    rows.push({ "name": name, "source": source, "input":mode,"input_arg":input,"stdin":stdin,"cwd":cwd,"args":extra_args,"files":match case {{"files":files,..}=>files;_=>Json::object(Map([]))},"env":match case {{"env":vars,..}=>vars;_=>Json::object(Map([]))}, "expect": expect, "status": status, "passed": status == "passed", "cpp_difference": difference.unwrap_or(Json::null()), "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr(), "output_fixture":match case {{"output_files":_,..}=>case;_=>null}, "stderr_fixture":match case {{"reference_stderr":_,..}|{"moonjsonnet_stderr":_,..}=>case;_=>null}, "reference_args":args_a, "moonjsonnet_args":args_b, "reference_output_files":files_a, "moonjsonnet_output_files":files_b })
+      if matches_difference && !ok {
+        reference_differences += 1
+        "reference-difference"
+      } else {
+        failed += 1
+        "failed"
+      }
+    } else if !ok {
+      failed += 1
+      "failed"
+    } else if expect.has_prefix("unsupported") {
+      unsupported += 1
+      "unsupported"
+    } else {
+      passed += 1
+      "passed"
+    }
+    if status == "failed" {
+      println(
+        "FAIL \{name}: reference_exit=\{a.exit_code()}, moonjsonnet_exit=\{b.exit_code()} (details in \{work}/report.json)",
+      )
+    }
+    if status == "reference-difference" {
+      println("DIFF \{name}: exact declared C++/MoonJsonnet outcomes verified")
+    }
+    rows.push({
+      "name": name,
+      "source": source,
+      "input": mode,
+      "input_arg": input,
+      "stdin": stdin,
+      "cwd": cwd,
+      "args": extra_args,
+      "files": match case {
+        { "files": files, .. } => files
+        _ => Json::object(Map([]))
+      },
+      "env": match case {
+        { "env": vars, .. } => vars
+        _ => Json::object(Map([]))
+      },
+      "expect": expect,
+      "status": status,
+      "passed": status == "passed",
+      "cpp_difference": difference.unwrap_or(Json::null()),
+      "reference_exit": a.exit_code(),
+      "moonjsonnet_exit": b.exit_code(),
+      "reference_stdout": a.stdout(),
+      "reference_stderr": a.stderr(),
+      "moonjsonnet_stdout": b.stdout(),
+      "moonjsonnet_stderr": b.stderr(),
+      "output_fixture": match case {
+        { "output_files": _, .. } => case
+        _ => null
+      },
+      "stderr_fixture": match case {
+        { "reference_stderr": _, .. } | { "moonjsonnet_stderr": _, .. } => case
+        _ => null
+      },
+      "reference_args": args_a,
+      "moonjsonnet_args": args_b,
+      "reference_output_files": files_a,
+      "moonjsonnet_output_files": files_b,
+    })
   }
-  for path in ["examples/environments/main.jsonnet", "examples/dashboards/main.jsonnet", "examples/embedded/config/main.jsonnet"] {
+  for
+    path in [
+      "examples/environments/main.jsonnet", "examples/dashboards/main.jsonnet", "examples/embedded/config/main.jsonnet",
+    ] {
     let a = @shell.Cmd(reference, ["--ext-code", "replicas=3", path]).output()
     let b = @shell.Cmd(cli, ["--ext-code", "replicas=3", path]).output()
-    let ok = a.exit_code() == 0 && b.exit_code() == 0 && @json.parse(a.stdout()) == @json.parse(b.stdout())
-    if ok { passed += 1 } else { failed += 1; println("FAIL example \{path}: \{b.stderr()}") }
-    rows.push({ "name": path, "expect": "success", "status": if ok { "passed" } else { "failed" }, "passed": ok, "reference_exit": a.exit_code(), "moonjsonnet_exit": b.exit_code(), "reference_stdout": a.stdout(), "reference_stderr": a.stderr(), "moonjsonnet_stdout": b.stdout(), "moonjsonnet_stderr": b.stderr() })
+    let ok = a.exit_code() == 0 &&
+      b.exit_code() == 0 &&
+      @json.parse(a.stdout()) == @json.parse(b.stdout())
+    if ok {
+      passed += 1
+    } else {
+      failed += 1
+      println("FAIL example \{path}: \{b.stderr()}")
+    }
+    rows.push({
+      "name": path,
+      "expect": "success",
+      "status": if ok {
+        "passed"
+      } else {
+        "failed"
+      },
+      "passed": ok,
+      "reference_exit": a.exit_code(),
+      "moonjsonnet_exit": b.exit_code(),
+      "reference_stdout": a.stdout(),
+      "reference_stderr": a.stderr(),
+      "moonjsonnet_stdout": b.stdout(),
+      "moonjsonnet_stderr": b.stderr(),
+    })
   }
   let commit = @shell.Cmd("git", ["rev-parse", "HEAD"]).output()
   commit.check()
@@ -203,49 +543,337 @@ async fn main {
   dirty.check()
   let hashes = @shell.Cmd("shasum", ["-a", "256", reference, cli]).output()
   hashes.check()
-  let report : Json = { "source_commit": commit.stdout().trim().to_owned(), "source_dirty": !dirty.stdout().is_empty(), "binary_sha256": hashes.stdout(), "reference": reference_version, "reference_commit": reference_commit, "total": rows.length(), "passed": passed, "failed": failed, "skipped": 0, "unsupported_cases": unsupported, "reference_differences": reference_differences, "error_cases": errors, "raw_output_cases": raw_output_cases, "text_output_cases":text_output_cases, "file_output_cases":file_output_cases, "io_error_cases":io_error_cases, "cases": rows }
+  let report : Json = {
+    "source_commit": commit.stdout().trim().to_owned(),
+    "source_dirty": !dirty.stdout().is_empty(),
+    "binary_sha256": hashes.stdout(),
+    "reference": reference_version,
+    "reference_commit": reference_commit,
+    "validation_platform": {
+      "system": system,
+      "machine": machine,
+      "native_reference_and_cli_verified": !is_go,
+    },
+    "fractional_golden_evidence": evidence_path,
+    "total": rows.length(),
+    "passed": passed,
+    "failed": failed,
+    "skipped": 0,
+    "unsupported_cases": unsupported,
+    "reference_differences": reference_differences,
+    "error_cases": errors,
+    "raw_output_cases": raw_output_cases,
+    "text_output_cases": text_output_cases,
+    "file_output_cases": file_output_cases,
+    "io_error_cases": io_error_cases,
+    "cases": rows,
+  }
   @fs.write_file(work + "/report.json", report.stringify(indent=2))
-  println("Differential: passed=\{passed}, failed=\{failed}, skipped=0, explicitly unsupported=\{unsupported}, declared reference differences=\{reference_differences}, expected errors=\{errors}")
-  if failed != 0 { fail("differential validation failed; all cases retained") }
+  println(
+    "Differential: passed=\{passed}, failed=\{failed}, skipped=0, explicitly unsupported=\{unsupported}, declared reference differences=\{reference_differences}, expected errors=\{errors}",
+  )
+  if failed != 0 {
+    fail("differential validation failed; all cases retained")
+  }
 }
 
+///|
 async fn prepare_output(case : Json, base : String) -> Unit {
-  if @fs.exists(base) { @fs.rmdir(base,recursive=true) }
+  if @fs.exists(base) {
+    @fs.rmdir(base, recursive=true)
+  }
   @fs.mkdir(base)
-  if case is {"output_directories":Array(dirs),..} {
+  if case is { "output_directories": Array(dirs), .. } {
     for dir in dirs {
-      guard dir is String(dir) else {fail("expected output directory")}
-      @fs.mkdir(base+"/"+dir,recursive=true,allow_exist=true)
+      guard dir is String(dir) else { fail("expected output directory") }
+      @fs.mkdir(base + "/" + dir, recursive=true, allow_exist=true)
     }
   }
-  if case is {"output_setup":Object(files),..} {
-    for path,content in files {
-      guard content is String(content) else {fail("expected initial output content")}
-      if path.rev_find("/") is Some(i) { @fs.mkdir(base+"/"+path[:i].to_owned(),recursive=true,allow_exist=true) }
-      @fs.write_file(base+"/"+path,content.replace_all(old="<out>",new=base))
+  if case is { "output_setup": Object(files), .. } {
+    for path, content in files {
+      guard content is String(content) else {
+        fail("expected initial output content")
+      }
+      if path.rev_find("/") is Some(i) {
+        @fs.mkdir(
+          base + "/" + path[:i].to_owned(),
+          recursive=true,
+          allow_exist=true,
+        )
+      }
+      @fs.write_file(
+        base + "/" + path,
+        content.replace_all(old="<out>", new=base),
+      )
     }
   }
-  if case is {"output_links":Object(links),..} {
-    for path,target in links {
-      guard target is String(target) else {fail("expected output symlink target")}
-      @fs.symlink(target~,base+"/"+path)
+  if case is { "output_links": Object(links), .. } {
+    for path, target in links {
+      guard target is String(target) else {
+        fail("expected output symlink target")
+      }
+      @fs.symlink(target~, base + "/" + path)
     }
   }
 }
 
-async fn observe_output(case : Json, base : String) -> Map[String,Json] {
-  let observed : Map[String,Json] = Map([])
-  if case is {"output_files":Object(files),..} {
-    for path,_ in files {
+///|
+async fn observe_output(case : Json, base : String) -> Map[String, Json] {
+  let observed : Map[String, Json] = Map([])
+  if case is { "output_files": Object(files), .. } {
+    for path, _ in files {
       // A path below a regular file cannot exist; async/fs reports ENOTDIR
       // rather than false. Preserve that absence without hiding other errors.
-      let exists = @fs.exists(base+"/"+path) catch {
-        e => if e.to_string().contains("Not a directory") { false } else {raise e}
+      let exists = @fs.exists(base + "/" + path) catch {
+        e =>
+          if e.to_string().contains("Not a directory") {
+            false
+          } else {
+            raise e
+          }
       }
       observed[path] = if exists {
-        Json::string(@fs.read_file(base+"/"+path).text().replace_all(old=base,new="<out>"))
-      } else { null }
+        Json::string(
+          @fs.read_file(base + "/" + path)
+          .text()
+          .replace_all(old=base, new="<out>"),
+        )
+      } else {
+        null
+      }
     }
   }
   observed
+}
+
+///|
+fn declared_runtime_error(
+  kind : String,
+  message : String,
+  code : Int,
+  stdout : String,
+  stderr : String,
+) -> Bool {
+  if kind != "Runtime" || code != 1 || !stdout.is_empty() || message.is_empty() {
+    return false
+  }
+  let lines = stderr.split("\n").collect()
+  if lines.is_empty() || lines[0] != "RUNTIME ERROR: " + message {
+    return false
+  }
+  // Only the supported Go-style CLI stack continuation is allowed; no arbitrary
+  // exception, second diagnostic, or hidden internal failure can satisfy a row.
+  for line in lines[1:] {
+    if !line.is_empty() &&
+      (!line.has_prefix("\t") || line.contains("INTERNAL ERROR")) {
+      return false
+    }
+  }
+  true
+}
+
+///|
+fn fractional_stdout(
+  evidence : Json,
+  system : String,
+  machine : String,
+  reference_version : String,
+  reference_commit : String,
+) -> String? {
+  if reference_version != "Jsonnet commandline interpreter v0.21.0" ||
+    reference_commit != "bbb38f1020be1f5aed560928fb839b2c448cefb4" {
+    return None
+  }
+  let (expected, archive, source_commit) = match (system, machine) {
+    ("Linux", "x86_64") =>
+      (
+        "[\n   \" x\",\n   \"128.0.099999999999999339\",\n   \"01\",\n   \"1.8.3772233983162039\"\n]\n",
+        "b9a4316be9365219adc51712a077e6e2eaabeda67fe174a4104179c8acabe0ce", "bc1d3c3db355b1ce22a95b424e1a0f2e73f2b849",
+      )
+    ("Darwin", "arm64") =>
+      (
+        "[\n   \" x\",\n   \"128.0.099999999999999339\",\n   \"01\",\n   \"1.8.3772233983162003\"\n]\n",
+        "26c8f2e4361763555e94a13ed6e8aaffc19ce7e544b6fbba7e989f65eeeef775", "a021c19059f8d5120a7a58343e5bedfe34d8c087",
+      )
+    _ => return None
+  }
+  guard evidence
+    is {
+      "case": String("format-dynamic-fractional"),
+      "cpp_reference_version": String(cpp_version),
+      "cpp_reference_commit": String(cpp_commit),
+      "source": String(source),
+      "records": Array(records),
+      ..
+    } else {
+    return None
+  }
+  if cpp_version != reference_version ||
+    cpp_commit != reference_commit ||
+    source !=
+    "['%*s' % [1.5,'x'], '%.*f' % [-1,123.45], '%.*d' % [1.5,1], '%.*f' % [1.5,1.25]]" {
+    return None
+  }
+  for record in records {
+    if record
+      is {
+        "system": String(os),
+        "machine": String(arch),
+        "reference_version": String(
+          "Jsonnet commandline interpreter (Go implementation) v0.21.0"
+        ),
+        "reference_commit": String("67968688d9952f50662e979fab1bef889d0d3e57"),
+        "go_toolchain": String("go1.24.0"),
+        "status": String("passed"),
+        "archive_sha256": String(hash),
+        "source_commit": String(commit),
+        "stdout": String(output),
+        ..
+      } &&
+      os == system &&
+      arch == machine &&
+      hash == archive &&
+      commit == source_commit &&
+      output == expected {
+      return Some(output)
+    }
+  }
+  None
+}
+
+///|
+test "declared Runtime errors require current header and exact message" {
+  assert_true(
+    declared_runtime_error(
+      "Runtime", "unused", 1, "", "RUNTIME ERROR: unused\n\tcase.jsonnet:1:1\t$\n\tDuring evaluation\n\n",
+    ),
+  )
+}
+
+///|
+test "declared Runtime errors reject arbitrary exceptions" {
+  for
+    (kind, message, code, stdout, stderr) in [
+      ("Runtime", "unused", 0, "", "RUNTIME ERROR: unused\n"),
+      ("Runtime", "unused", 1, "value", "RUNTIME ERROR: unused\n"),
+      ("Runtime", "unused", 1, "", "STATIC ERROR: unused\n"),
+      ("Runtime", "unused", 1, "", "RUNTIME ERROR: another failure\n"),
+      ("Runtime", "unused", 1, "", "case: Runtime: another failure\n"),
+      ("Unknown", "unused", 1, "", "RUNTIME ERROR: unused\n"),
+      (
+        "Runtime", "unused", 1, "", "RUNTIME ERROR: unused\nINTERNAL ERROR: broken\n",
+      ),
+    ] {
+    assert_true(!declared_runtime_error(kind, message, code, stdout, stderr))
+  }
+}
+
+///|
+async test "fractional golden is exact and bound to frozen platform and reference" {
+  let fixture = if @fs.exists("tests/reference/fractional-format-evidence.json") {
+    "tests/reference/fractional-format-evidence.json"
+  } else {
+    "../tests/reference/fractional-format-evidence.json"
+  }
+  let evidence = @json.parse(@fs.read_file(fixture).text())
+  let cpp_version = "Jsonnet commandline interpreter v0.21.0"
+  let cpp_commit = "bbb38f1020be1f5aed560928fb839b2c448cefb4"
+  let linux = fractional_stdout(
+    evidence, "Linux", "x86_64", cpp_version, cpp_commit,
+  ).unwrap()
+  let macos = fractional_stdout(
+    evidence, "Darwin", "arm64", cpp_version, cpp_commit,
+  ).unwrap()
+  assert_eq(
+    linux, "[\n   \" x\",\n   \"128.0.099999999999999339\",\n   \"01\",\n   \"1.8.3772233983162039\"\n]\n",
+  )
+  assert_eq(
+    macos, "[\n   \" x\",\n   \"128.0.099999999999999339\",\n   \"01\",\n   \"1.8.3772233983162003\"\n]\n",
+  )
+  assert_true(linux != macos)
+  assert_eq(
+    fractional_stdout(evidence, "Linux", "aarch64", cpp_version, cpp_commit),
+    None,
+  )
+  assert_eq(
+    fractional_stdout(evidence, "Darwin", "x86_64", cpp_version, cpp_commit),
+    None,
+  )
+  assert_eq(
+    fractional_stdout(
+      evidence, "Linux", "x86_64", "Jsonnet commandline interpreter v0.20.0", cpp_commit,
+    ),
+    None,
+  )
+  assert_eq(
+    fractional_stdout(evidence, "Linux", "x86_64", cpp_version, "wrong-commit"),
+    None,
+  )
+}
+
+///|
+fn native_binary_platform(
+  system : String,
+  machine : String,
+  identity : String,
+) -> Bool {
+  match (system, machine) {
+    ("Linux", "x86_64") =>
+      identity.has_prefix("ELF 64-bit") && identity.contains("x86-64")
+    ("Darwin", "arm64") => identity.has_prefix("Mach-O 64-bit executable arm64")
+    _ => false
+  }
+}
+
+///|
+test "golden platform cannot be inferred from a different binary target" {
+  assert_true(
+    native_binary_platform(
+      "Linux", "x86_64", "ELF 64-bit LSB pie executable, x86-64",
+    ),
+  )
+  assert_true(
+    native_binary_platform("Darwin", "arm64", "Mach-O 64-bit executable arm64"),
+  )
+  assert_true(
+    !native_binary_platform(
+      "Linux", "x86_64", "ELF 64-bit LSB executable, ARM aarch64",
+    ),
+  )
+  assert_true(
+    !native_binary_platform(
+      "Darwin", "arm64", "Mach-O 64-bit executable x86_64",
+    ),
+  )
+  assert_true(
+    !native_binary_platform(
+      "Linux", "aarch64", "ELF 64-bit LSB executable, ARM aarch64",
+    ),
+  )
+}
+
+///|
+async test "golden rejects unproven provenance and any altered byte" {
+  let fixture = if @fs.exists("tests/reference/fractional-format-evidence.json") {
+    "tests/reference/fractional-format-evidence.json"
+  } else {
+    "../tests/reference/fractional-format-evidence.json"
+  }
+  let text = @fs.read_file(fixture).text()
+  for
+    (old, new) in [
+      ("1.8.3772233983162039", "1.8.3772233983162038"),
+      ("go1.24.0", "go1.25.0"),
+      ("67968688d9952f50662e979fab1bef889d0d3e57", "unknown-reference"),
+      ("bc1d3c3db355b1ce22a95b424e1a0f2e73f2b849", "unknown-source"),
+      ("passed", "failed"),
+    ] {
+    let altered = @json.parse(text.replace_all(old~, new~))
+    assert_eq(
+      fractional_stdout(
+        altered, "Linux", "x86_64", "Jsonnet commandline interpreter v0.21.0", "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+      ),
+      None,
+    )
+  }
 }
