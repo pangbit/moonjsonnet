@@ -134,4 +134,4 @@ CLI/Evaluator/lint/诊断/AST/调试/格式化对照。完整报告与日志写�
 该分支目前未执行；缺少时报告所需授权，不安装。父会话初次安装请求未包含
 unzip/perl，两者仍未获授权，也不得自行安装。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

@@ -120,4 +120,4 @@ test_suite/tla.simple.jsonnet
 断言字段分类、方法字段名、隐式对象相加和文本块。深树仍按前批设计要求先证明
 迭代解析后处理/导出与独立格式化准入，不能仅提高预算来计为通过。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

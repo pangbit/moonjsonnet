@@ -431,4 +431,4 @@ TTY 缺少静态片段颜色，真实终端对照 25/25，API 1323/1323、捕获
 修复范围已完成，原兼容例外确认与Linux隔离安装授权仍待用户决定；整体目标
 仍未标记完成，没有推送、部署或发布。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

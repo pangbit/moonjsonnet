@@ -56,4 +56,4 @@ moon run tools/formatter-cli-host.mbtx _build/native/release/build/cmd/jsonnetfm
 没有把这些旧失败改为通过。完整 I/O 诊断、运行时帧/config/hook/debugger、
 FormatNode 与可编辑原始树、Linux 实测仍待整体核验。没有推送、部署或发布。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

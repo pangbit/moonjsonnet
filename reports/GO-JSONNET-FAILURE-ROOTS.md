@@ -155,4 +155,4 @@ Evaluator可新增可选结果查询或生命周期明确的适配器以保留�
 依据18项原stderr确认前8类全部含堆栈、地址参数及机器绝对源码路径。
 这些可能变化的字节不授予行为例外；未为复制崩溃改坏正常结果。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

@@ -142,4 +142,4 @@ Linux阶段结束时macOS重测尚未执行；后续独立执行已在跨平台�
 本报告仅覆盖列明语料、已实现功能和既有宿主策略，不声明任意Jsonnet输入均
 无条件等价，也不删除根目录、UTF-8和资源预算合同。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

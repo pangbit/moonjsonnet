@@ -66,4 +66,4 @@ native 301、宿主集成 97、multi 26、导入/诊断/独立栈各 20、实际
 现有标准库错误分支及原始/降级断点先取得具体证据。旧参考缺陷和 Linux 安装
 授权仍待决定，没有标记整体完成。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

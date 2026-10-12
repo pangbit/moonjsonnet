@@ -55,4 +55,4 @@ multi26、导入/诊断/独立栈各20、实际Go CLI4095、TTY25、依赖33+13�
 本地 Failure 源码位置与 Go 简短 CLI 消息的差异，作为独立下一阶段；输入 I/O、
 既有标准库错误分支与原始/降级断点仍需核验。Linux 安装和参考例外尚未获授权。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

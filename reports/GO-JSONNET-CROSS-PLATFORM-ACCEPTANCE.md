@@ -131,4 +131,4 @@ ASan关闭leak detection，不声明泄漏检查完成。所有结论限于列�
 宿主/资源合同，不声明任意Jsonnet输入无条件等价。远端CI、推送、registry
 发布及部署不在本次授权范围。列明范围内已无开发验收阻塞或未解决的权限问题。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

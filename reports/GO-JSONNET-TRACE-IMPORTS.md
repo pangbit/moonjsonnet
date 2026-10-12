@@ -122,4 +122,4 @@ v2仅改为数字JSON模式；首次脚本/错误日志和实际v2均归档，�
 - [完整归档](${LOCAL_PATH_014}/import-trace-evidence.tar.gz)
 - [本地提交绑定侧车](${LOCAL_PATH_014}/local-commit-binding.json)
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

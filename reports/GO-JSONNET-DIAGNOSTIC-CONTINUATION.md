@@ -95,4 +95,4 @@ lint CLI23、格式化宿主、节点56、冻结调试器43、冻结API1323全�
 具体方案见 [Linux 隔离验收方案](LINUX-ACCEPTANCE-PLAN.md)。没有执行未授权操作。
 远端 CI、推送和发布不在本地授权范围。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

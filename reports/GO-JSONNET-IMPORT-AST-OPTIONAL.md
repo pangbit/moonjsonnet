@@ -131,4 +131,4 @@ canonical别名/AST来源探针未通过，详见[上一批](GO-JSONNET-TRACE-IM
 - [完整证据归档](${LOCAL_PATH_019}/nil-ast-evidence.tar.gz)
 - [本地提交绑定](${LOCAL_PATH_019}/local-commit-binding.json)
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

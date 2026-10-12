@@ -65,4 +65,4 @@ moon run tools/upstream-formatter.mbtx _build/native/release/build/examples/form
 历史结果仍绑定此前提交。Go CLI 18 项、lint 参考崩溃、Evaluator 缓存差异、
 FormatNode/jsonnetfmt 等整体缺口继续保留。仅本地提交，未推送或发布。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

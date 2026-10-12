@@ -309,4 +309,4 @@ UTC02:54:00：24逻辑CPU；内存15GiB、可用12GiB；磁盘剩余61GiB；负�
 UTC03:24:52再次查询验收UID65534，无残留测试/构建进程；最后字符日志mtime为
 UTC03:20:50.150802147，已释放本任务的远端重型时段。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

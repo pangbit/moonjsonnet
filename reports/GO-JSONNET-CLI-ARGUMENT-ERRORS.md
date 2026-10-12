@@ -75,4 +75,4 @@ char(55296)本地拒绝代理项，Go输出替代字符。char(65.5)两边均截
 直接当公开断点。当前26项未覆盖这一范围。输入/输出I/O消息、其余现有原生错误
 分支、Linux和原参考例外仍待继续，整体目标未标记完成。
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.

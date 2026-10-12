@@ -112,4 +112,4 @@ Mac目录`${LOCAL_PATH_027}`，可直接读取：
 - [完整归档](${LOCAL_PATH_027}/trace-entry-evidence.tar.gz)
 - [本地提交与源码覆盖绑定](${LOCAL_PATH_027}/local-commit-binding.json)
 
-> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. No tests were rerun on the privacy-rewritten commit.
+> Privacy redaction: This public copy replaces environment-specific host and filesystem identifiers with placeholders. Unredacted evidence and original recorded hashes are retained locally. Counts and outcomes describe the original execution; exact diagnostic and path bytes may be redacted. The privacy rewrite did not rerun the original validation. Any subsequent CI run is separate evidence.
