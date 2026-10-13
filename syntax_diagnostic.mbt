@@ -1,3 +1,13 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: error_formatter.go
+// Source: internal/parser/string_util.go
+// Source: ast/location.go
+// Copyright 2017 Google Inc. All rights reserved.
+// Copyright 2016 Google Inc. All rights reserved.
+// Modifications: Adapted raw-parser range rendering and malformed-Unicode byte context to local diagnostics.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 /// Render a raw-parser diagnostic in Go formatter style, without a final LF.
 /// Successful lexing supplies the offending token's exclusive end position;

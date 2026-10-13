@@ -71,8 +71,9 @@ resolver, so `FileHost` resolves them relative to its root. Origins are preserve
 in lexical environments independently of diagnostic names. A file option
 imports the supplied file normally, giving it its own identity and relative
 imports. Parameter code shares step/depth/stack/output/import budgets and is checked
-against `source_bytes` when forced. Each `evaluate` call starts fresh; reusable
-VM/AST interfaces and their reset/cache lifecycle are still pending.
+against `source_bytes` when forced. Global `evaluate` calls start fresh;
+[reusable evaluators](#reusable-evaluator) retain import caches with explicit reset
+rules, and [parsed programs](#parsed-programs) can be reused.
 
 Like the pinned Go implementation, `sum`/`avg` can return non-finite numbers.
 The returned `Json::Number` keeps Infinity/NaN and a spelling preserved by
@@ -484,11 +485,9 @@ the stored diagnostic or provides evaluator stack frames.
 Computed-import ranges use a bounded operand reparse under default syntax budgets,
 falling back to the opening token if that lookup fails.
 
-**Incomplete:** complete comment placement and broader layout rules remain
-under differential validation. `FormatNode` and the full editable raw tree are
-still pending; `cmd/jsonnetfmt` now provides the source formatter CLI. See
-[the overall parity status](GO-PARITY.md);
-the available options do not imply complete formatter compatibility.
+`RawAst`, `format_node` and `cmd/jsonnetfmt` provide editable syntax and source
+formatting. See the [recorded formatter checks](COMPATIBILITY.md#recorded-acceptance-boundary)
+for the tested scope; these finite corpora do not prove equivalence for every input.
 
 ## Reusable evaluator
 
@@ -636,10 +635,11 @@ ext/native/TLA/trace setters and resets, and `set_importer` clears it together w
 all import caches. Importer/UTF-8 and resource errors never become successful nil;
 cached nil results still obey current byte limits. A cached valid AST rechecks depth.
 The original differential fixture calls the strict `import_program` operation;
-that unchanged call still differs from Go's retry. Adding the nullable entry alone
-does not close that fixture or grant a compatibility exception.
+that unchanged call still differs from Go's retry. The optional nullable entry
+has a separate passing corpus under the [recorded acceptance contract](COMPATIBILITY.md#recorded-acceptance-boundary);
+the original 20/21 result is retained.
 
-## Lint analysis (partial)
+## Lint analysis
 
 `lint(snippets: Array[Source], resolver?, limits?) -> Array[Diagnostic] raise JsonnetError`
 checks entry snippets without executing Jsonnet. It reports syntax/static errors,
@@ -666,15 +666,16 @@ For duplicate entry filenames, only the last successfully parsed entry provides
 inferred types; earlier entries are checked on their own syntax with `void`
 types, following Go. If an explicit entry is also imported under the same identity,
 the local graph uses the entry root; the observed Go panic remains a differential
-failure, not an accepted compatibility exception.
+failure covered by the recorded reference-crash exception contract. It is not
+counted as a compatible output.
 
 Limits abort analysis with JsonnetError; parse/import findings otherwise collect
 across entries. Source, depth, import bytes/count and analysis steps are bounded.
 The local-cycle and type-component graph walks are iterative; recursive index
 expansion has a depth limit and graph traversal consumes analysis steps.
-Location points use the current AST;
-unused bindings point to their initializer because declaration ranges are not
-yet represented. Diagnostic location/text formatting parity remains incomplete.
+Unused-binding locations use the retained declaration-range start, with an empty
+location when a manual or synthetic binding has no range. The recorded location
+corpus covers 190/190 cases; this does not establish equivalence for every AST.
 
 `cmd/lint` supports multiple files, `-J`/`--jpath`, `JSONNET_PATH`, `--`, short
 option expansion, help/version, and the local `--root` confinement option. Exit 0

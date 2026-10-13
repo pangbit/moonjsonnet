@@ -1,3 +1,13 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/formatter/jsonnetfmt.go
+// Source: internal/formatter/unparser.go
+// Source: internal/parser/lexer.go
+// Copyright 2019 Google Inc. All rights reserved.
+// Copyright 2016 Google Inc. All rights reserved.
+// Modifications: Implemented formatting controls and structural emission with local syntax containers and budgets.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 pub(all) enum FormatStringStyle {
   DoubleQuotes
@@ -14,7 +24,7 @@ pub(all) enum FormatCommentStyle {
 
 ///|
 /// Formatting controls corresponding to go-jsonnet formatter.Options.
-/// Formatter compatibility is still in progress; see docs/GO-PARITY.md.
+/// See docs/COMPATIBILITY.md for the bounded formatter validation scope.
 pub(all) struct FormatOptions {
   indent : Int
   max_blank_lines : Int
@@ -50,8 +60,8 @@ pub fn FormatOptions::default() -> FormatOptions {
 }
 
 ///|
-/// Format source without evaluation or import resolution. Compatibility with
-/// all Go formatting passes is not yet complete.
+/// Format source without evaluation or import resolution.
+/// See docs/COMPATIBILITY.md for the tested Go compatibility scope.
 pub fn format_source(
   source : String,
   filename? : String = "<input>",

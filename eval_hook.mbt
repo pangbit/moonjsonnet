@@ -1,3 +1,11 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: interpreter.go
+// Source: debugger.go
+// Copyright 2016 Google Inc. All rights reserved.
+// Modifications: Implemented observation contracts using MoonBit callbacks and scoped value handles.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 /// Callbacks observe admitted expressions and their lazy results. Contexts and
 /// value handles are valid only during the callback; copy node/range/text views

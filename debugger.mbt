@@ -1,3 +1,10 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: debugger.go
+// Upstream attribution: Google Inc. (see NOTICE).
+// Modifications: Adapted stepping and breakpoint contracts to synchronous MoonBit callbacks.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 pub(all) enum DebugStopReason {
   Step

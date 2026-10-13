@@ -5,20 +5,48 @@ import {
 }
 
 async fn main {
-  @shell.Cmd("moon", ["package"]).run()
+  @shell.Cmd("moon", ["package", "--frozen"]).run()
   let archive = @fs.realpath("_build/publish/pangbit-moonjsonnet-0.1.0.zip")
   let listing = @shell.Cmd("unzip", ["-Z1", archive]).output()
   listing.check()
-  for required in ["NOTICE", "licenses/GO-BSD-3-Clause.txt", "licenses/GO-MATH-NOTICES.txt", "licenses/YAML-MIT.txt", "licenses/GOYAML-LIBYAML-MIT.txt", "internal/yaml/parser.mbt", "json_diagnostic.mbt", "stdlib_source.mbt", "unicode_fold.mbt"] {
-    assert_true(listing.stdout().split("\n").any(path => path == required), msg="missing archive attribution: " + required)
+  let package_docs = ["docs/API.md", "docs/CLI.md", "docs/COMPATIBILITY.md", "docs/VERSIONS.md", "docs/GO-STDLIB-SURFACE.md"]
+  let required_files = ["moon.mod", "moon.pkg", "pkg.generated.mbti", "README.mbt.md", "LICENSE", "NOTICE", "SECURITY.md", "licenses/GO-BSD-3-Clause.txt", "licenses/GO-MATH-NOTICES.txt", "licenses/YAML-MIT.txt", "licenses/GOYAML-LIBYAML-MIT.txt", "internal/number/format.c", "internal/number/math.c", "internal/posix/io.c", "internal/yaml/parser.mbt", "json_diagnostic.mbt", "stdlib_source.mbt", "unicode_fold.mbt"]
+  for required in required_files + package_docs {
+    assert_true(listing.stdout().split("\n").any(path => path == required), msg="missing archive file: " + required)
   }
   for path in listing.stdout().split("\n") {
-    assert_true(!path.has_prefix("examples/") && !path.has_prefix("tools/") && !path.has_prefix("tests/") && !path.has_suffix("_test.mbt") && !path.has_suffix("_wbtest.mbt"), msg=path.to_owned())
+    assert_true(!path.has_prefix("examples/") && !path.has_prefix("tools/") && !path.has_prefix("tests/") && !path.has_prefix("reports/") && !path.has_prefix(".") && path != "AGENTS.md" && path != "CONTRIBUTING.md" && path != "MoonJsonnet_REQUIREMENTS.md" && !path.has_suffix("_test.mbt") && !path.has_suffix("_wbtest.mbt"), msg=path.to_owned())
+    if path.has_prefix("docs/") {
+      assert_true(package_docs.any(doc => doc == path.to_owned()), msg="unexpected archive documentation: " + path.to_owned())
+    }
   }
   let work = @fs.tmpdir(prefix="moonjsonnet-consumer-")
   @fs.mkdir(work + "/package")
   @fs.mkdir(work + "/consumer")
   @shell.Cmd("unzip", ["-q", archive, "-d", work + "/package"]).run()
+  // Relative documentation links must also work outside a repository checkout.
+  for path in listing.stdout().split("\n") {
+    if path.has_suffix(".md") {
+      let source = @fs.read_file(work + "/package/" + path.to_owned()).text()
+      let components = path.split("/").map(part => part.to_owned()).collect()
+      ignore(components.pop())
+      let parent = components.join("/")
+      let mut first = true
+      for part in source.split("](") {
+        if first {
+          first = false
+          continue
+        }
+        let destination = part.split(")").next().unwrap().split("#").next().unwrap()
+        if destination.is_empty() || destination.contains("://") || destination.has_prefix("mailto:") {
+          continue
+        }
+        let target = work + "/package/" + parent + "/" + destination.to_owned()
+        let exists = @shell.Cmd("test", ["-e", target]).output()
+        exists.check()
+      }
+    }
+  }
   @fs.write_file(work + "/consumer/moon.mod", "name = \"pangbit/moonjsonnet_consumer_check\"\nversion = \"0.0.0\"\npreferred_target = \"native\"\nimport { \"pangbit/moonjsonnet@0.1.0\" }\n")
   @fs.write_file(work + "/consumer/moon.pkg", "import { \"pangbit/moonjsonnet\", \"pangbit/moonjsonnet/fs\" } for \"test\"\nsupported_targets = \"native\"\n")
   @fs.write_file(work + "/consumer/native.jsonnet", "std.trace('file consumer',std.native('id')(42))")

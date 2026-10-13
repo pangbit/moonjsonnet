@@ -1,3 +1,12 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: error_formatter.go
+// Source: runtime_error.go
+// Source: ast/location.go
+// Copyright 2017 Google Inc. All rights reserved.
+// Modifications: Adapted trace cropping and source/color rendering to MoonBit diagnostics.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 /// Source spans and synthetic runtime sites share the same trace representation.
 pub(all) enum TraceLocation {

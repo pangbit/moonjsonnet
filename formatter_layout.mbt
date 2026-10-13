@@ -1,3 +1,12 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/formatter/fix_newlines.go
+// Source: internal/formatter/fix_trailing_commas.go
+// Source: internal/formatter/enforce_max_blank_lines.go
+// Copyright 2019 Google Inc. All rights reserved.
+// Modifications: Adapted layout and trailing-comma passes to local token/trivia containers.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 priv struct FormatLayout {
   close : Array[Int]

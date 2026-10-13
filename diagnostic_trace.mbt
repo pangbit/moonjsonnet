@@ -1,3 +1,14 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: interpreter.go
+// Source: runtime_error.go
+// Source: internal/parser/context.go
+// Source: internal/program/desugarer.go
+// Copyright 2016 Google Inc. All rights reserved.
+// Copyright 2017 Google Inc. All rights reserved.
+// Modifications: Adapted named contexts, clean frames and synthetic trace sites to MoonBit execution state.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 priv struct RuntimeFrame {
   trimmable : Bool

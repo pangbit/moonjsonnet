@@ -1,3 +1,10 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: linter/internal/types/build_graph.go
+// Upstream attribution: Google Inc. (see NOTICE).
+// Modifications: Ported type-graph construction to bounded MoonBit data structures.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 fn LintGraph::build(
   self : LintGraph,

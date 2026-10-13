@@ -1,3 +1,9 @@
+# Standard-library surface
+
+All 163 reflected members of go-jsonnet v0.21.0 at commit
+`67968688d9952f50662e979fab1bef889d0d3e57` are registered below. Registration is
+not proof of equivalent behavior for every argument; see [compatibility](COMPATIBILITY.md).
+
 | std member | Kind | Required arguments | Surface status |
 | --- | --- | ---: | --- |
 | `$flatMapArray` | function | 2 | registered |

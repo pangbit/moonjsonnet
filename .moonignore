@@ -8,6 +8,13 @@ examples/
 tests/
 tools/
 reports/
+/CONTRIBUTING.md
+/docs/*
+!/docs/API.md
+!/docs/CLI.md
+!/docs/COMPATIBILITY.md
+!/docs/VERSIONS.md
+!/docs/GO-STDLIB-SURFACE.md
 *_test.mbt
 *_wbtest.mbt
 _build/

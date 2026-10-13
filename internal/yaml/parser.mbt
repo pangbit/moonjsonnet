@@ -1,3 +1,12 @@
+// Adapted from moonbit-community/yaml.mbt, parser.mbt at
+// e2f1129249a7cc707aa1c9c39bd8bfe207c93821 (MIT).
+// Copyright 2025 International Digital Economy Academy.
+// Modifications: Exposed bounded token consumption and adjusted colon, directive,
+// anchor and parser/scanner diagnostic rules for the pinned Go YAML contracts.
+// Additional reference: sigs.k8s.io/yaml v1.4.0 goyaml.v2/parserc.go (libyaml MIT)
+// and decode.go (Apache-2.0). See ../../NOTICE, ../../LICENSE,
+// ../../licenses/YAML-MIT.txt and ../../licenses/GOYAML-LIBYAML-MIT.txt.
+
 ///|
 priv enum State {
   /// We await the start of the stream.

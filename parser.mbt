@@ -1,3 +1,12 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/parser/parser.go
+// Source: ast/ast.go
+// Source: internal/program/desugarer.go
+// Copyright 2016 Google Inc. All rights reserved.
+// Modifications: Adapted parsing, binding ranges and diagnostics to the local AST and bounded parser; raw-tree instrumentation is local.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 priv struct Parser {
   tokens : Array[Token]

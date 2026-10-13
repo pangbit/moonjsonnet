@@ -1,3 +1,11 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/program/static_analyzer.go
+// Source: interpreter.go
+// Copyright 2016 Google Inc. All rights reserved.
+// Modifications: Adapted captured-variable analysis to local environments and bounded inspection.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 priv struct DebugBoundScope {
   names : Map[String, Unit]

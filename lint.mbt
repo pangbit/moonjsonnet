@@ -1,3 +1,12 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: linter/internal/variables/find_variables.go
+// Source: linter/internal/traversal/traversal.go
+// Source: internal/parser/context.go
+// Copyright 2017 Google Inc. All rights reserved.
+// Modifications: Ported lexical-use and eager-cycle analysis to MoonBit ASTs with bounded traversal.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 priv struct LintBinding {
   name : String

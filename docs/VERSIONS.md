@@ -17,32 +17,34 @@ Semantic sources: <https://jsonnet.org/ref/spec.html>,
 <https://jsonnet.org/ref/language.html>, <https://jsonnet.org/ref/stdlib.html>.
 These live pages can change; v0.21.0 source and behavior are the pinned
 compatibility oracle. Reference source is a test dependency, never linked into
-or invoked by the interpreter. The implementation and committed differential
-inputs are original; `tools/upstream-language.mbtx` additionally executes the
-Apache-2.0 upstream test fixtures from the external reference checkout.
+or invoked by the interpreter. The MoonBit implementation includes attributed
+adaptations and embedded standard-library source; [NOTICE](../NOTICE) identifies
+their origins and licenses. Development fixtures include attributed upstream
+inputs and are excluded from the published archive.
 
 CI pins the installer argument and reference commit. Toolchain download archives
 have an upstream retention policy; if the pinned build becomes unavailable,
 refresh the toolchain baseline and rerun acceptance instead of silently falling
 back to a newer compiler. Final macOS ARM64 and Linux AMD64 native debug/release
-tests pass 330/330 on the same product implementation. The macOS run binds clean
-`a021c19`; product inputs are byte-identical to the accepted Linux 8e23306/bc1d3c3/
-bf447a9 snapshots. Both platforms completed pinned Go 1.24.0 comparisons, related
-ASan checks and an independent archive consumer (31/31). See the
-[final cross-platform report](../reports/GO-JSONNET-CROSS-PLATFORM-ACCEPTANCE.md)
-for exact source, binary and fixture hashes, attempt logs and timing.
+tests pass 330/330 in the recorded baseline. Both platforms completed pinned
+Go 1.24.0 comparisons, related ASan checks and an independent archive consumer
+(31/31). See the fixed [cross-platform report](https://github.com/pangbit/moonjsonnet/blob/c7f8a8e977e54ab7b0329c3069a7320a0eb81915/reports/GO-JSONNET-CROSS-PLATFORM-ACCEPTANCE.md)
+for source, binary and fixture hashes. These historical results are not a claim
+of new platform runs for subsequent documentation or packaging changes.
 
 Raw whole-CLI results remain 1132/1150 on ARM64 and 1131/1150 on AMD64; raw
-Evaluator and lint results remain 20/21 and 409/410. Acceptance uses the user's
-explicitly approved 18 CLI plus 1 lint reference-crash exceptions, the new optional
+Evaluator and lint results remain 20/21 and 409/410. The recorded acceptance contract
+uses 18 CLI plus 1 lint reference-crash exceptions, the optional
 import_ast API while import_program remains strict, and same-architecture NaN
 behavior. NaN succeeds on ARM64 and returns the same complete error output as Go
 on AMD64; its frozen ARM64 success expectation is unchanged. No additional
-exceptions were introduced. ASan leak detection remains disabled, and installed
-runtime hashes are unchanged. Earlier platform stages remain in the
-[SSH acceptance report](../reports/SSH-LINUX-ACCEPTANCE.md).
+exceptions were introduced. ASan leak detection was disabled. The C++ corpus
+retains 98 compatible cases plus 10 declared differences out of 108; see
+[compatibility](COMPATIBILITY.md#recorded-acceptance-boundary).
 
 Design: parse into located expressions; resolve names statically; evaluate
 lexical closures with memoized thunks; represent objects as ordered layers whose
 fields are rebound to the final self. Manifest only visible fields into JSON.
-Each evaluation owns its caches, counters and importer; there is no global VM.
+Global evaluation helpers and `Program` methods create independent state.
+An `Evaluator` retains its configured importer and import caches across calls;
+its counters and reset rules follow the [API contract](API.md#reusable-evaluator).

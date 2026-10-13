@@ -1,3 +1,14 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: value.go
+// Source: thunks.go
+// Source: interpreter.go
+// Source: runtime_error.go
+// Copyright 2017 Google Inc. All rights reserved.
+// Copyright 2016 Google Inc. All rights reserved.
+// Modifications: Adapted repeated parameter binding, lazy evaluation observation and trace contracts to the MoonBit evaluator and its budgets.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 fn Vm::eval(
   self : Vm,

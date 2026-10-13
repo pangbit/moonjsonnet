@@ -1,3 +1,10 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/parser/lexer.go
+// Copyright 2016 Google Inc. All rights reserved.
+// Modifications: Adapted token classification, numeric scanning and errors to MoonBit source spans.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 // Diagnostic token names and rendering follow the pinned Go parser/lexer.
 // Copyright Google Inc.; Apache-2.0; see NOTICE.
 

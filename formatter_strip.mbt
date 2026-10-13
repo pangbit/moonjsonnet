@@ -1,3 +1,14 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/formatter/strip.go
+// Source: internal/parser/lexer.go
+// Source: ast/fodder.go
+// Copyright 2019 Google Inc. All rights reserved.
+// Copyright 2016 Google Inc. All rights reserved.
+// Copyright 2018 Google Inc. All rights reserved.
+// Modifications: Adapted stripping and fodder classification to local token/trivia containers.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 // Fodder classification and stripping follow go-jsonnet v0.21.0 lexer.go,
 // ast/fodder.go and internal/formatter/strip.go. Apache-2.0; see NOTICE.
 

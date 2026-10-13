@@ -1,3 +1,12 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/formatter/enforce_comment_style.go
+// Source: ast/fodder.go
+// Copyright 2019 Google Inc. All rights reserved.
+// Copyright 2018 Google Inc. All rights reserved.
+// Modifications: Adapted comment formatting to local token/trivia containers.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 // Paragraph normalization follows the pinned Go lexer; see NOTICE.
 
 ///|

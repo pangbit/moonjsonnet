@@ -1,3 +1,10 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/parser/context.go
+// Copyright 2017 Google Inc. All rights reserved.
+// Modifications: Adapted child traversal to MoonBit AST forms and analysis-only lowering.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 // Child traversal for lint analysis. Direct children follow the fixed reference's
 // desugared eager edges; thunks, functions, locals and lowered std calls stop it.

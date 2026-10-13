@@ -1,3 +1,12 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: linter/internal/types/graph.go
+// Source: linter/internal/types/placeholder.go
+// Source: linter/internal/types/process_graph.go
+// Upstream attribution: Google Inc. (see NOTICE).
+// Modifications: Ported type-graph propagation to bounded MoonBit data structures.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 priv enum LintIndex {
   AnyIndex

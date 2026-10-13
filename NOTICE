@@ -54,7 +54,8 @@ LiteralNumber evaluation path in interpreter.go at the same pinned revision.
 Copyright Google Inc.; Apache License 2.0 (see LICENSE).
 tools/embed-lint-stdlib.mbtx verifies the reference revision and source hash.
 
-lint_quote.mbt, lexer_number.mbt rune quoting and lint_print.mbt adapt Go 1.24.0 src/strconv/quote.go and
+internal/quote/quote.mbt, lexer_number.mbt rune quoting and internal/quote/print.mbt
+adapt Go 1.24.0 src/strconv/quote.go and
 src/strconv/isprint.go. Copyright 2009 The Go Authors. All rights reserved.
 BSD 3-Clause terms: licenses/GO-BSD-3-Clause.txt.
 tools/embed-lint-print.mbtx verifies the exact source SHA-256 before extraction.
@@ -83,8 +84,9 @@ Copyright 2009 The Go Authors. All rights reserved.
 It is distributed under the BSD 3-Clause terms in licenses/GO-BSD-3-Clause.txt.
 This is separate from the development-only go-jsonnet interpreter reference.
 
-reference_math.mbt and reference_trig.mbt adapt Go 1.24.0 src/math/atan.go,
-atan2.go, asin.go, exp.go, exp_arm64.s, pow.go, sin.go, tan.go, and trig_reduce.go:
+reference_math.mbt, reference_trig.mbt, reference_log.mbt and internal/number/math.c
+adapt Go 1.24.0 src/math/atan.go, atan2.go, asin.go, exp.go, exp_arm64.s,
+exp_amd64.s, log_amd64.s, pow.go, sin.go, tan.go, and trig_reduce.go:
 https://github.com/golang/go/tree/go1.24.0/src/math
 Copyright 2009, 2011, 2017, 2018 The Go Authors. All rights reserved.
 BSD 3-Clause terms: licenses/GO-BSD-3-Clause.txt. Inherited Cephes and Sun
@@ -133,7 +135,7 @@ ErrorFormatter APIs; product execution and rendering remain entirely MoonBit.
 
 formatter*.mbt (except formatter_sort*.mbt) implement formatting rules from internal/formatter,
 internal/parser/lexer.go and internal/parser/string_util.go at the same pinned go-jsonnet revision.
-Copyright Google Inc.; Apache License 2.0 (see LICENSE). This partial native
+Copyright Google Inc.; Apache License 2.0 (see LICENSE). This native
 formatter does not bundle or invoke Go at runtime.
 
 formatter_sort.mbt, formatter_sort_partition.mbt and formatter_sort_pivot.mbt

@@ -1,3 +1,10 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/formatter/fix_indentation.go
+// Copyright 2019 Google Inc. All rights reserved.
+// Modifications: Ported indentation rules to bounded local syntax traversal.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 // Expression indentation follows the pinned Go formatter's base/lineUp model.
 // Copyright Google Inc.; Apache-2.0; see NOTICE.
 

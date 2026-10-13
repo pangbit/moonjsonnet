@@ -1,3 +1,13 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/formatter/jsonnetfmt.go
+// Source: internal/formatter/unparser.go
+// Source: internal/parser/lexer.go
+// Copyright 2019 Google Inc. All rights reserved.
+// Copyright 2016 Google Inc. All rights reserved.
+// Modifications: Implemented formatting controls and structural emission with local syntax containers and budgets.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 // Structural edits use parsed expression ranges rather than guessing operator
 // precedence from adjacent tokens. The token stream retains parentheses that

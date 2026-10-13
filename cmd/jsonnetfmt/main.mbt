@@ -1,3 +1,10 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: cmd/jsonnetfmt/cmd.go
+// Copyright 2019 Google Inc. All rights reserved.
+// Modifications: Ported CLI option ordering and file-mode flow to the bounded POSIX MoonBit host.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 fn version() -> String {
   "moonjsonnet reformatter 0.1.0 (Jsonnet v0.21.0 subset)\n"

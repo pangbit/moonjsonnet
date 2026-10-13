@@ -1,3 +1,10 @@
+// YAML diagnostic and decoding contracts adapted from sigs.k8s.io/yaml v1.4.0,
+// goyaml.v2/decode.go (Apache-2.0) and parserc.go (libyaml MIT).
+// https://github.com/kubernetes-sigs/yaml/tree/v1.4.0/goyaml.v2
+// Modifications: Implemented bounded event-to-value decoding, scalar resolution,
+// stream splitting and diagnostic translation in MoonBit.
+// License and retained attribution: LICENSE, NOTICE and licenses/GOYAML-LIBYAML-MIT.txt.
+
 ///|
 priv enum ParsedYamlNode {
   Scalar(String, @yaml.TScalarStyle, @yaml.Tag?)

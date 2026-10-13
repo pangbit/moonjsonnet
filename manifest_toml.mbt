@@ -1,3 +1,12 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: builtins.go
+// Source: interpreter.go
+// Copyright 2017 Google Inc. All rights reserved.
+// Copyright 2016 Google Inc. All rights reserved.
+// Modifications: Ported native text-rendering and quoting paths to MoonBit values with output budgets.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 // Adapted from go-jsonnet v0.21.0 native TOML rendering. See NOTICE and LICENSE.
 fn toml_key(key : String) -> String {

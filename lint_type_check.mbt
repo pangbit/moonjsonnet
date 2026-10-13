@@ -1,3 +1,10 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: linter/internal/types/check.go
+// Upstream attribution: Google Inc. (see NOTICE).
+// Modifications: Ported conservative type checks and diagnostics to MoonBit ASTs.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 fn LintGraph::check_args(
   self : LintGraph,

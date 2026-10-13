@@ -1,7 +1,8 @@
-# Compatibility: Jsonnet v0.21.0 language and standard-library subset
+# Compatibility: Jsonnet v0.21.0
 
 The language target is Jsonnet v0.21.0, without intentionally excluded language
-constructs. The standard library is a documented subset. Passing
+constructs. All 163 members in the fixed Go standard-library reflection inventory
+are registered; [surface coverage](GO-STDLIB-SURFACE.md) is distinct from behavioral equivalence. Passing
 the committed corpus does not prove compatibility with all Jsonnet programs.
 The official C++ v0.21.0 interpreter is a development-only oracle. Input, imports,
 parameters and expected categories are committed under `tests/` and `examples/`.
@@ -14,18 +15,38 @@ contents and filename lists in isolated reference/local output directories.
 ## Implementation reference
 
 [google/go-jsonnet](https://github.com/google/go-jsonnet) is the functional
-implementation reference for future language semantics, standard-library coverage,
+implementation reference for language semantics, standard-library coverage,
 embedding capabilities and CLI behavior. MoonBit APIs follow this project's host
 contract; differences from the reference must be documented and tested.
 
 The Go baseline is v0.21.0, commit `67968688d9952f50662e979fab1bef889d0d3e57`.
-The expanded overall parity objective, complete standard-library inventory and
-CLI/embedding gaps are tracked in [GO-PARITY](GO-PARITY.md). Overall parity is not complete.
 The differential runner compares identical inputs, imports and parameters and
 records Go and C++ results separately, including failed and unsupported cases.
 The existing C++ v0.21.0 results remain evidence for that baseline only. Selecting
-go-jsonnet as a reference does not establish compatibility with it. See
-[validation](VALIDATION.md) for reproduction and report locations.
+go-jsonnet as a reference does not establish compatibility with it.
+
+## Recorded acceptance boundary
+
+The [fixed cross-platform evidence](https://github.com/pangbit/moonjsonnet/blob/c7f8a8e977e54ab7b0329c3069a7320a0eb81915/reports/GO-JSONNET-CROSS-PLATFORM-ACCEPTANCE.md)
+records macOS ARM64 and Linux AMD64 with Go 1.24.0. These are recorded results,
+not a claim that every release-preparation edit reruns the full reference suite.
+
+| Corpus | Raw result / boundary |
+| --- | --- |
+| C++ v0.21.0 | 108 cases: 98 compatible, 10 declared differences, 0 skipped |
+| Go whole CLI | ARM64 1132/1150; AMD64 1131/1150 |
+| Go reusable evaluator | 20/21; strict `import_program` retry remains different |
+| Go lint | 409/410; one reference internal crash remains a raw failure |
+| Opt-in nullable `import_ast` | 13/13 cases, 37 observations; does not reclassify the original evaluator fixture |
+| Formatting | 736/736 frozen checks, 178/178 upstream fixtures, 255/255 CLI checks; 4 identity/help checks separately |
+
+The recorded acceptance contract permits 18 CLI and 1 lint reference-crash
+exceptions, the separately tested opt-in `import_ast` API, and same-architecture
+NaN behavior. Raw failures remain in the reports. AMD64 NaN behavior matches Go's
+complete error output but still fails the frozen ARM64 success expectation.
+These bounds do not establish universal Go parity. Repository
+[validation instructions](https://github.com/pangbit/moonjsonnet/blob/main/docs/VALIDATION.md)
+describe reproduction; development fixtures and reports are excluded from the archive.
 
 ## Language
 
@@ -74,10 +95,11 @@ and uses a trampoline for tail calls; a 10,000-iteration regression verifies thi
 Bitwise operators truncate operands to signed 64-bit integers, with shift counts
 reduced modulo 64. Left shifts wrap at 64 bits and right shifts preserve the sign,
 matching Go. Negative shift counts are rejected before truncation. Operands must
-be within `[-2^63, 2^63]` before conversion; the upper endpoint explicitly maps
-to MaxInt64. NaN explicitly maps to zero. Complement saturates out-of-range values
-before inversion, matching the pinned arm64 Go binary; no out-of-range native
-cast is performed. Results are converted back to binary64.
+be within `[-2^63, 2^63]` before conversion. ARM64 maps the upper endpoint to
+MaxInt64 and NaN to zero, and saturates complement operands before inversion.
+AMD64 maps NaN and out-of-range conversions to MinInt64. These explicit paths
+follow the pinned architecture's Go binary without an out-of-range native cast.
+Results are converted back to binary64.
 
 Dynamic fractional format precision uses Go's exponent decomposition and ordered
 scaling for powers of ten. Integral precision and scientific mantissa scaling
@@ -92,9 +114,8 @@ The pinned Go implementation admits the positive `2^63` boundary because its
 floating-point range check rounds `MaxInt64` upward. Conversion of that value to
 `int64` is outside the representable range and is
 [implementation-dependent in Go](https://go.dev/ref/spec#Conversions_between_numeric_types).
-MoonJsonnet now reproduces the pinned arm64 result with an explicit branch;
-`bitwise-int64-upper-boundary` is retained and passes. This is not evidence for
-Go's conversion behavior on other architectures, which remains to be validated.
+MoonJsonnet reproduces the pinned ARM64 and AMD64 results with explicit branches;
+the boundary fixture is retained. Other architectures remain unverified.
 C++ also rejects
 fractional indices, operands beyond its safe-integer bound and positive left-shift
 overflow. Those previously shared cases now record explicit C++/MoonJsonnet outcomes.
@@ -206,16 +227,18 @@ arrays/objects, matching Go. These tokens are outside strict JSON. The returned
 MoonBit `Json::Number` retains the numeric value and its spelling for `stringify`.
 Numeric formatting rejects non-finite operands; `%s` uses their string spelling.
 NaN comparison follows Go's comparator (`<`/`>` false, `<=`/`>=` true), while NaN
-equality remains false. NaN index/character/bitwise conversion explicitly uses
-zero to match the pinned arm64 reference without a non-finite native cast.
+equality remains false. NaN index/character/bitwise conversion uses explicit
+architecture-specific conversion as described above; AMD64 can therefore report
+an error for an input that succeeds on ARM64.
 
 Trigonometric, inverse trigonometric, exponential and power algorithms preserve
-the fixed Go 1.24.0 ARM64 reference's operation order, including explicit fused
+the fixed Go 1.24.0 ARM64/AMD64 reference's operation order, including explicit fused
 multiply-add and Payne–Hanek reduction for huge angles. The reference ARM64
 exponential's lowest subnormal boundary is preserved (`std.exp(-745)` is 0).
 These exact results do not establish equivalence to every Go architecture or
-toolchain. The algorithms are implemented in MoonBit; a scalar C `fma` wrapper
-provides one-rounding multiply-add without linking a reference interpreter.
+toolchain. MoonBit implementations and the native numeric C stub preserve the
+architecture-specific paths and one-rounding multiply-add without linking a
+reference interpreter.
 
 Integer-only standard function bounds and resource limits may reject inputs that
 the reference accepts. Restricted argument domains return an error and are not
@@ -225,16 +248,17 @@ uses the C locale, fixed integer formatting or 17 significant digits.
 including subnormal numbers and signed zero. It uses MoonBit core's shortest
 conversion and expands exponents; expanded output remains subject to the output
 byte limit. C++ uses the older numeric text rule for both operations, so the
-shared numeric-string fixture records both exact outputs as a declared difference. CLI JSON
-uses MoonBit core's JSON serialization; comparisons operate on parsed values.
+shared numeric-string fixture records both exact outputs as a declared difference.
+CLI JSON follows the pinned Go layout described in [CLI](CLI.md), with complete
+stdout-byte comparisons in its dedicated corpus.
 
 JSON and Python output read only visible fields; empty or hidden-only objects do
 not force assertions. Visible fields still trigger object assertions. JSON
 output traverses lazy values directly, enforcing depth and byte budgets. For
 `std.manifestJsonMinified({x:self})`, the pinned Go binary fatally overflows its
 stack (exit 2); this implementation returns `Limit`. This input remains an
-explicit differential failure, not an expected-error pass or a final accepted
-compatibility exception.
+explicit differential failure and is covered by the recorded reference-crash
+exception contract; it is not relabeled as a compatible expected-error pass.
 
 Deletion follows the pinned Go implementation's observable mutation: deleting
 index 1 from `[1,2,3,4]` returns `[1,3,4]` while leaving the original array as
@@ -313,7 +337,8 @@ and CLI. Top-level functions are applied exactly once; other top-level values
 ignore TLAs. Code parameters have separate scopes, cached values/errors and
 synthetic filenames, but imports originate at the host root. The CLI supports
 string/code/file/environment forms and last-assignment wins. File reads retain
-the project's restricted-root policy. Reusable VM/reset/AST capabilities remain pending.
+the project's restricted-root policy. Reusable evaluator/reset/import caches and
+semantic/raw AST APIs are available; see [API](API.md).
 CLI inline (`-e`), stdin (`-`), `--` and bytewise short-option expansion are now
 available. Anonymous entry `std.thisFile` and import origin are empty, with
 synthetic diagnostic filenames. Argument/evaluation/output failures exit 1.
@@ -327,12 +352,13 @@ automatic output-directory creation are also available through `-m`/`-c` and
 have no added newline. Like Go, `-c` applies to ordinary output and multi data
 parents, while stream/list parents must already exist. Identical output content
 preserves modification time; I/O failure can leave partial files and lists.
-Import search paths, stack/trace options and other CLI capabilities remain pending.
+Import search paths and stack/trace controls are available; see [CLI](CLI.md).
 
 The POSIX host accepts regular files within one canonical root. Text imports
 require valid UTF-8; binary imports do not decode their contents. Custom
-importers have a separate trust contract. No JS/Wasm/Windows host, formatter, LSP,
-package manager or full standard library are provided.
+importers have a separate trust contract. No JS/Wasm/Windows host, LSP or package
+manager is provided. Standard-library registration and formatter availability
+do not remove the behavioral boundaries recorded above.
 
 Host native functions and trace sinks are available through `evaluate` and
 `fs.evaluate_file`; see the [embedding contract](API.md). Native calls bind
@@ -345,6 +371,6 @@ trusted host code outside the interpreter's preemptive control.
 Duplicate JSON keys passed to `parseJson` follow the core parser behavior.
 Error categories and locations are stable concepts, not exact upstream wording.
 
-See the acceptance report linked from [validation](VALIDATION.md) for passed,
-failed, skipped and unsupported counts. Unsupported cases are retained in the
+See the recorded acceptance boundary above for passed, failed and difference
+counts. Unsupported cases are retained in the
 corpus, and previously discovered defects remain as regression tests.

@@ -98,7 +98,7 @@ identity, including its selected library directory. Imported traces, errors and
 `std.thisFile` use that identity; nested imports resolve beside that lexical path.
 Distinct symlink aliases can therefore evaluate independently. Text and binary
 imports cannot relabel a code AST. Embedding callbacks and `FileHost` retain their
-existing contracts; see the [import identity verification](../reports/GO-JSONNET-IMPORT-IDENTITY.md).
+existing contracts; see the [import identity verification](https://github.com/pangbit/moonjsonnet/blob/c7f8a8e977e54ab7b0329c3069a7320a0eb81915/reports/GO-JSONNET-IMPORT-IDENTITY.md).
 Import policy and independent resource-budget errors retain
 the older category/context format; runtime frame exhaustion uses Go-style frames.
 Captured-output comparisons do not establish every standard-library, I/O or
@@ -206,9 +206,9 @@ output paths follow the filesystem and do not expand input admission.
 
 Raw syntax diagnostics include token end ranges and preserve fixed Go's exact
 malformed-Unicode context bytes, even when its four-byte slice is invalid UTF-8.
-Help/version identify the local package and subset status. Full evaluator
-diagnostic frames/configuration and all I/O message variants remain under the
-overall parity plan; formatter CLI checks do not establish those capabilities.
+Help/version identify the local package. Configurable evaluator diagnostic
+frames are documented in [API](API.md); formatter CLI checks do not establish
+byte-for-byte equivalence for arbitrary evaluator or operating-system errors.
 
 ## Static dependency tool
 

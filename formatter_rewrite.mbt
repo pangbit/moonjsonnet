@@ -1,3 +1,14 @@
+// Portions adapted from google/go-jsonnet v0.21.0 (Apache-2.0).
+// https://github.com/google/go-jsonnet/tree/67968688d9952f50662e979fab1bef889d0d3e57
+// Source: internal/formatter/pretty_field_names.go
+// Source: internal/formatter/no_redundant_slice_colon.go
+// Source: internal/formatter/remove_plus_object.go
+// Source: internal/formatter/add_plus_object.go
+// Source: internal/formatter/fix_parens.go
+// Copyright 2019 Google Inc. All rights reserved.
+// Modifications: Adapted syntax rewrite passes to local token ranges without evaluating Jsonnet.
+// License and retained attribution: LICENSE and NOTICE at the module root.
+
 ///|
 fn format_name(token : Token) -> String? {
   match token.value {
