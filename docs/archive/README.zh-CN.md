@@ -11,6 +11,8 @@ JSON 结果和包清单保留原始字节，其中可能包含原源码目录布
 
 | 报告或数据文件 | 语言 |
 | --- | --- |
+| [DOCUMENTATION-LAYOUT-2026-10-13.md](reports/DOCUMENTATION-LAYOUT-2026-10-13.md) | 英文 |
+| [documentation-package-2026-10-13.txt](reports/documentation-package-2026-10-13.txt) | 证据数据 |
 | [ACCEPTANCE-0.1.0.md](reports/ACCEPTANCE-0.1.0.md) | 中文 |
 | [GO-JSONNET-AGGREGATES.md](reports/GO-JSONNET-AGGREGATES.md) | 中文 |
 | [GO-JSONNET-ARGUMENT-DIAGNOSTICS.md](reports/GO-JSONNET-ARGUMENT-DIAGNOSTICS.md) | 中文 |

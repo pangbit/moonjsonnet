@@ -13,6 +13,8 @@ The latest source behavior is documented in the [compatibility reference](../ref
 
 | Report or data file | Language |
 | --- | --- |
+| [DOCUMENTATION-LAYOUT-2026-10-13.md](reports/DOCUMENTATION-LAYOUT-2026-10-13.md) | English |
+| [documentation-package-2026-10-13.txt](reports/documentation-package-2026-10-13.txt) | Evidence data |
 | [ACCEPTANCE-0.1.0.md](reports/ACCEPTANCE-0.1.0.md) | Chinese |
 | [GO-JSONNET-AGGREGATES.md](reports/GO-JSONNET-AGGREGATES.md) | Chinese |
 | [GO-JSONNET-ARGUMENT-DIAGNOSTICS.md](reports/GO-JSONNET-ARGUMENT-DIAGNOSTICS.md) | Chinese |
