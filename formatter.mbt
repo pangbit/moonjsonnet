@@ -24,7 +24,7 @@ pub(all) enum FormatCommentStyle {
 
 ///|
 /// Formatting controls corresponding to go-jsonnet formatter.Options.
-/// See docs/COMPATIBILITY.md for the bounded formatter validation scope.
+/// See docs/reference/COMPATIBILITY.md for the bounded formatter validation scope.
 pub(all) struct FormatOptions {
   indent : Int
   max_blank_lines : Int
@@ -61,7 +61,7 @@ pub fn FormatOptions::default() -> FormatOptions {
 
 ///|
 /// Format source without evaluation or import resolution.
-/// See docs/COMPATIBILITY.md for the tested Go compatibility scope.
+/// See docs/reference/COMPATIBILITY.md for the tested Go compatibility scope.
 pub fn format_source(
   source : String,
   filename? : String = "<input>",

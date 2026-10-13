@@ -9,13 +9,13 @@ async fn main {
   let archive = @fs.realpath("_build/publish/pangbit-moonjsonnet-0.1.0.zip")
   let listing = @shell.Cmd("unzip", ["-Z1", archive]).output()
   listing.check()
-  let package_docs = ["docs/API.md", "docs/CLI.md", "docs/COMPATIBILITY.md", "docs/VERSIONS.md", "docs/GO-STDLIB-SURFACE.md"]
-  let required_files = ["moon.mod", "moon.pkg", "pkg.generated.mbti", "README.mbt.md", "LICENSE", "NOTICE", "SECURITY.md", "licenses/GO-BSD-3-Clause.txt", "licenses/GO-MATH-NOTICES.txt", "licenses/YAML-MIT.txt", "licenses/GOYAML-LIBYAML-MIT.txt", "internal/number/format.c", "internal/number/math.c", "internal/posix/io.c", "internal/yaml/parser.mbt", "json_diagnostic.mbt", "stdlib_source.mbt", "unicode_fold.mbt"]
+  let package_docs = ["docs/README.md", "docs/README.zh-CN.md", "docs/reference/API.md", "docs/reference/CLI.md", "docs/reference/COMPATIBILITY.md", "docs/reference/VERSIONS.md", "docs/reference/GO-STDLIB-SURFACE.md"]
+  let required_files = ["moon.mod", "moon.pkg", "pkg.generated.mbti", "README.md", "README.mbt.md", "README.zh-CN.md", "LICENSE", "NOTICE", "SECURITY.md", "licenses/GO-BSD-3-Clause.txt", "licenses/GO-MATH-NOTICES.txt", "licenses/YAML-MIT.txt", "licenses/GOYAML-LIBYAML-MIT.txt", "internal/number/format.c", "internal/number/math.c", "internal/posix/io.c", "internal/yaml/parser.mbt", "json_diagnostic.mbt", "stdlib_source.mbt", "unicode_fold.mbt"]
   for required in required_files + package_docs {
     assert_true(listing.stdout().split("\n").any(path => path == required), msg="missing archive file: " + required)
   }
   for path in listing.stdout().split("\n") {
-    assert_true(!path.has_prefix("examples/") && !path.has_prefix("tools/") && !path.has_prefix("tests/") && !path.has_prefix("reports/") && !path.has_prefix(".") && path != "AGENTS.md" && path != "CONTRIBUTING.md" && path != "MoonJsonnet_REQUIREMENTS.md" && !path.has_suffix("_test.mbt") && !path.has_suffix("_wbtest.mbt"), msg=path.to_owned())
+    assert_true(!path.has_prefix("examples/") && !path.has_prefix("tools/") && !path.has_prefix("tests/") && !path.has_prefix("docs/archive/") && !path.has_prefix("docs/development/") && !path.has_prefix(".") && path != "AGENTS.md" && path != "CONTRIBUTING.md" && !path.has_suffix("_test.mbt") && !path.has_suffix("_wbtest.mbt"), msg=path.to_owned())
     if path.has_prefix("docs/") {
       assert_true(package_docs.any(doc => doc == path.to_owned()), msg="unexpected archive documentation: " + path.to_owned())
     }

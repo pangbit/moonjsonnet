@@ -19,6 +19,8 @@ jobs:
         run: moon update
       - name: Test differential validator regressions
         run: moon test tools/differential.mbtx --deny-warn
+      - name: Check documentation layout and links
+        run: moon run tools/documentation.mbtx
       - run: moon version --all
       - run: moon check --target native --deny-warn
       - run: moon test --target native --deny-warn

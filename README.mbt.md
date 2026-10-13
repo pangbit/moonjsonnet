@@ -1,23 +1,38 @@
 # MoonJsonnet
 
+[Chinese overview](README.zh-CN.md) · [Documentation](docs/README.md)
+
 An embeddable Jsonnet interpreter written in MoonBit. It parses and evaluates
 source directly; no Jsonnet executable or shared library is required at runtime.
 
-MoonBit 原生 Jsonnet 解释器，可作为库嵌入，也提供 CLI。支持惰性求值、词法闭包、
-对象继承、受控导入和 JSON 输出。语言以 Jsonnet v0.21.0 为完整实现目标，
-不额外裁剪语言特性；已注册对照版本的 163 个标准库成员，兼容性以差分验收
-范围和明确保留的差异为依据，并不保证所有输入均与上游一致。
+The library and CLI support lazy evaluation, lexical closures, object inheritance,
+controlled imports and JSON output. The language target is Jsonnet v0.21.0 with
+no intentionally excluded language constructs. All 163 standard-library members
+in the fixed reference inventory are registered; finite differential checks and
+documented differences define the tested scope, not universal equivalence.
 
-功能实现以 [google/go-jsonnet](https://github.com/google/go-jsonnet) 为对照项目，
-用于后续语言语义、标准库、嵌入接口和 CLI 行为的实现与差异核对。
-差分工具分别记录固定版本的 Go/C++ Jsonnet v0.21.0 结果；
-对照约定与已验证范围见 [兼容性说明](docs/COMPATIBILITY.md)。
+[google/go-jsonnet](https://github.com/google/go-jsonnet) is the functional reference
+for language semantics, standard-library behavior, embedding APIs and CLI behavior.
+The differential tools record pinned Go/C++ Jsonnet v0.21.0 results separately.
+See [compatibility](docs/reference/COMPATIBILITY.md) for the reference contract and tested scope.
 
 ## Status and installation
 
 Version 0.1.0 targets **native on macOS and Linux**. File access uses POSIX libc;
 the evaluator itself has no third-party runtime dependency. See
-[compatibility](docs/COMPATIBILITY.md) before adopting existing Jsonnet programs.
+[compatibility](docs/reference/COMPATIBILITY.md) before adopting existing Jsonnet programs.
+
+The recorded compatibility boundary retains all known differences:
+
+| Reference corpus | Raw result |
+| --- | --- |
+| C++ | 108 cases: 98 compatible + 10 declared differences |
+| Go whole CLI | ARM64 1132/1150; AMD64 1131/1150 |
+| Go reusable evaluator / lint | 20/21 / 409/410 |
+
+The documented acceptance contract retains 18 CLI and 1 lint reference-crash
+exceptions, the separate optional `import_ast` API and same-architecture NaN
+behavior. Those raw failures are not relabeled as passes.
 
 After this version is published to Mooncakes:
 
@@ -75,7 +90,7 @@ import resolver and per-evaluation limits. It returns `Json` or `JsonnetError`.
 `evaluate_text` returns formatted JSON or plain strings; `evaluate_stream`
 returns JSON documents from a top-level array. `evaluate_multi` returns
 filename/content pairs without writing files. The separate `pangbit/moonjsonnet/fs`
-package loads files within a configured root. See [API and host contract](docs/API.md).
+package loads files within a configured root. See [API and host contract](docs/reference/API.md).
 
 ```mbt check
 ///|
@@ -115,7 +130,7 @@ test "readme native callback and trace" {
 Diagnostics retain source ranges and named/synthetic trace frames. The configurable
 `DiagnosticFormatter` renders Go-style errors; the original `Diagnostic::format`
 remains available. Supply source text to render static error snippets and optional
-color. See [diagnostics](docs/API.md).
+color. See [diagnostics](docs/reference/API.md).
 
 ```mbt check
 ///|
@@ -137,7 +152,7 @@ test "readme structured diagnostic trace" {
 
 Evaluator hooks observe demanded expressions. Inspect values inside the callback;
 copy returned nodes, text or JSON to retain them. The synchronous debugger adds
-breakpoints, stepping, finish and termination. See [API](docs/API.md).
+breakpoints, stepping, finish and termination. See [API](docs/reference/API.md).
 
 ```mbt check
 ///|
@@ -166,12 +181,12 @@ test "readme evaluation hook" {
 `format_source` and `ParsedSource::format` format source without evaluating it or
 resolving imports. The formatter, editable raw tree and formatter CLI are available;
 their tested scope and remaining compatibility boundaries are recorded in
-[compatibility](docs/COMPATIBILITY.md).
+[compatibility](docs/reference/COMPATIBILITY.md).
 `format_syntax_source` and `SyntaxDocument` provide independent source-tooling
 budgets for deep trees; evaluator admission and existing `Limits` stay unchanged.
 `RawAst` exposes ordered tokens, trivia and child nodes for lossless edits.
 `format_node` formats the edited expression with separate EOF fodder; `clone`
-isolates mutable containers. See the [raw syntax contract](docs/API.md).
+isolates mutable containers. See the [raw syntax contract](docs/reference/API.md).
 
 ```mbt check
 ///|
@@ -223,8 +238,8 @@ moon run cmd/main -- --root examples/environments -o result.json main.jsonnet
 
 CLI success writes manifested output; errors go to stderr and return a nonzero status.
 Output is normally JSON; Go-compatible `sum`/`avg` overflow can emit `+Inf`, `-Inf`
-or `NaN`, which are outside strict JSON. See [compatibility](docs/COMPATIBILITY.md).
-`--ext-code` accepts Jsonnet expressions evaluated lazily when used. See [CLI](docs/CLI.md).
+or `NaN`, which are outside strict JSON. See [compatibility](docs/reference/COMPATIBILITY.md).
+`--ext-code` accepts Jsonnet expressions evaluated lazily when used. See [CLI](docs/reference/CLI.md).
 
 ## Validation and contribution
 
@@ -233,10 +248,10 @@ a pinned official-reference differential suite, host/CLI integration tests and
 package-consumer checks. CI runs the repository's pinned checks on macOS and Linux;
 the full Go differential and sanitizer evidence comes from separate recorded runs.
 Development commands and fixtures require a source checkout and are excluded from
-the published archive. See repository [validation](https://github.com/pangbit/moonjsonnet/blob/main/docs/VALIDATION.md),
-[release procedure](https://github.com/pangbit/moonjsonnet/blob/main/docs/RELEASING.md)
+the published archive. See repository [validation](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/VALIDATION.md),
+[release procedure](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/RELEASING.md)
 and [contribution guide](https://github.com/pangbit/moonjsonnet/blob/main/CONTRIBUTING.md).
 
-资源限制不等于通用安全沙箱。宿主决定导入权限；请阅读
-[安全边界](SECURITY.md)。本项目采用 [Apache-2.0](LICENSE)，参考资料和测试来源见
-[NOTICE](NOTICE)。
+Resource limits do not provide a general security sandbox. The host controls import
+permissions; read the [security boundary](SECURITY.md). The project uses
+[Apache-2.0](LICENSE); reference material and test provenance are recorded in [NOTICE](NOTICE).

@@ -8,8 +8,10 @@ reproducible local baseline are preferred over branch/process ceremony.
    removing existing failures or relabeling supported behavior as unsupported.
 3. Keep parser, evaluator and host responsibilities separate. Public API types
    belong to the package users import. Never manually edit generated `.mbti`.
-4. Run the commands in [validation](docs/VALIDATION.md), including zero-warning
-   checks. Use `.mbtx` for project automation.
+4. Run the commands in [validation](docs/development/VALIDATION.md), including zero-warning
+   checks and `moon run tools/documentation.mbtx`. Follow the
+   [documentation layout and language policy](docs/development/DOCUMENTATION.md).
+   Use `.mbtx` for project automation.
 5. Use conventional commits (`feat:`, `fix:`, `test:`, `docs:`, `chore:`); describe
    the user-visible change and keep the commit scope narrow. Stage explicit paths.
 

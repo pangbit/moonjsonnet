@@ -1,0 +1,106 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+}
+
+fn parent(path : String) -> String {
+  let parts = path.split("/").map(part => part.to_owned()).collect()
+  ignore(parts.pop())
+  parts.join("/")
+}
+
+fn code_blocks(source : String) -> Array[String] {
+  let blocks : Array[String] = []
+  for i, part in source.split("```").collect() {
+    if i % 2 == 1 { blocks.push(part.to_owned()) }
+  }
+  blocks
+}
+
+async fn main {
+  let listed = @shell.Cmd("git", ["ls-files", "--cached", "--others", "--exclude-standard", "--", "*.md"]).output()
+  listed.check()
+  let root_docs = ["README.md", "README.mbt.md", "README.zh-CN.md", "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md", "AGENTS.md"]
+  let failures : Array[String] = []
+  let mut documents = 0
+  let mut links = 0
+  for path in listed.stdout().split("\n") {
+    if path.is_empty() { continue }
+    let path = path.to_owned()
+    // A staged/unstaged move may leave the deleted source in git ls-files.
+    if @shell.Cmd("test", ["-f", path]).output().exit_code() != 0 { continue }
+    if !path.contains("/") && !root_docs.contains(path) {
+      failures.push("Unexpected root document: " + path)
+    }
+    if path == "README.md" { continue }
+    documents += 1
+    let source = @fs.read_file(path).text()
+    let mut fenced = false
+    let mut chinese_lines = 0
+    let chinese_candidates : Array[String] = []
+    let english_candidates : Array[String] = []
+    for index, line in source.split("\n").collect() {
+      let line = line.trim()
+      if line.has_prefix("```") { fenced = !fenced; continue }
+      if fenced || line.is_empty() { continue }
+      let plain = StringBuilder()
+      for i, part in line.split("`").collect() {
+        if i % 2 == 0 { plain.write_string(part.to_owned()) }
+      }
+      let body = plain.to_string()
+      if body.iter().any(c => c >= '\u3400' && c <= '\u9fff') {
+        chinese_lines += 1
+        chinese_candidates.push("\{path}:\{index+1}")
+      } else {
+        let words = body.split(" ").filter(word => word.iter().any(c => (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))).count()
+        if words >= 6 && !line.has_prefix("http") {
+          english_candidates.push("\{path}:\{index+1}")
+        }
+      }
+      let pieces = line.split("](").collect()
+      for i in 1..<pieces.length() {
+        let destination = pieces[i].split(")").next().unwrap().split("#").next().unwrap().to_owned()
+        if destination.is_empty() { continue }
+        let target = if destination.has_prefix("https://github.com/pangbit/moonjsonnet/blob/main/") {
+          destination.split("/blob/main/").collect()[1].to_owned()
+        } else if destination.contains("://") || destination.has_prefix("mailto:") {
+          continue
+        } else { parent(path) + "/" + destination }
+        let target = if target.has_prefix("/") && !path.contains("/") { "." + target } else { target }
+        links += 1
+        if @shell.Cmd("test", ["-e", target]).output().exit_code() != 0 {
+          failures.push("Missing link in \{path}: " + destination)
+        }
+      }
+    }
+    if chinese_lines > 0 && !english_candidates.is_empty() {
+      let candidates = if chinese_lines >= english_candidates.length() { english_candidates } else { chinese_candidates }
+      failures.push("Mixed-language prose candidates: " + candidates.join(", "))
+    }
+  }
+  let english = @fs.read_file("README.mbt.md").text()
+  let chinese = @fs.read_file("README.zh-CN.md").text()
+  assert_eq(code_blocks(english), code_blocks(chinese), msg="README code examples diverged")
+  assert_true(english.contains("](README.zh-CN.md)") && chinese.contains("](README.mbt.md)"))
+  for boundary in ["1132/1150", "1131/1150", "20/21", "409/410", "import_ast", "NaN"] {
+    assert_true(english.contains(boundary) && chinese.contains(boundary), msg="README boundary missing: " + boundary)
+  }
+  assert_true(english.contains("98 compatible + 10 declared differences"))
+  assert_true(chinese.contains("98 项兼容＋10 项声明差异"))
+  let readme_link = @shell.Cmd("readlink", ["README.md"]).output()
+  readme_link.check()
+  assert_eq(readme_link.stdout().trim(), "README.mbt.md")
+  assert_true(@fs.read_file("moon.mod").text().contains("readme = \"README.mbt.md\""))
+  let mapping = @fs.read_file("docs/development/documentation-migration-2026-10-13.tsv").text()
+  for index, line in mapping.split("\n").collect() {
+    if index == 0 || line.is_empty() { continue }
+    let columns = line.split("\t").collect()
+    assert_eq(columns.length(), 2)
+    @shell.Cmd("test", ["-f", columns[1].to_owned()]).run()
+    assert_true(@shell.Cmd("test", ["-e", columns[0].to_owned()]).output().exit_code() != 0, msg="old document path remains")
+  }
+  for failure in failures { println(failure) }
+  assert_true(failures.is_empty(), msg="documentation checks failed")
+  println("Documentation: \{documents} files, \{links} local/current-source links, root layout, language candidates, README parity and migration targets passed.")
+}

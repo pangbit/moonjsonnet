@@ -33,5 +33,5 @@
 - Pinned go-jsonnet differential reports retain mismatches separately from C++ acceptance.
 - Three runnable examples, fixed-reference differential and host integration tests.
 - Apache-2.0 metadata, per-file adaptation notices, generated API interfaces
-  and archive consumer checks. See [compatibility](docs/COMPATIBILITY.md) for
+  and archive consumer checks. See [compatibility](docs/reference/COMPATIBILITY.md) for
   retained Go failures and the 10 declared C++ differences.
