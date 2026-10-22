@@ -47,3 +47,6 @@ Exact diagnostic wording is a tool contract, not standardized by the language.
 
 This batch is separate from frozen af188da Linux verification. Neither its tar
 nor its additional archive controller is modified by the new tests or fixes.
+
+The [execution evidence](SPEC-STRING-CONTRACTS-EVIDENCE-2026-10-22.md) retains
+the actual failures, two legacy assertion conflicts, minimal fixes and hashes.

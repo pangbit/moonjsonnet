@@ -77,6 +77,9 @@ unresolved cardinality/predicate observations without granting passing status.
 The [object-contract stage](SPEC-OBJECT-CONTRACTS-EVIDENCE-2026-10-22.md) reviews
 six visibility/lookup functions, distinguishing structural reflection, selected
 field assertions and lazy defaults without changing product implementation.
+The [string/Unicode stage](SPEC-STRING-CONTRACTS-EVIDENCE-2026-10-22.md) reviews
+seven public contracts and fixes fractional char IDs plus substring clipping and
+guard/index forcing. Its newer source stays separate from frozen af188da Linux work.
 The counts below retain the original first-stage scope.
 
 P0 fixes are local commits `001679a` (immutability), `dd3b9d0` (finite aggregates),
