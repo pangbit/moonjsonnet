@@ -134,7 +134,10 @@ fn Vm::yaml_value(
   match value {
     Nil => out.write("null")
     Bool(v) => out.write(if v { "true" } else { "false" })
-    Num(v) => out.write(manifest_number(v))
+    Num(v) => {
+      ignore(finite(v, loc))
+      out.write(manifest_number(v))
+    }
     Str(s) =>
       if s.has_suffix("\n") {
         out.write("|")
@@ -147,8 +150,8 @@ fn Vm::yaml_value(
       } else {
         out.write(manifest_text_quote(s))
       }
-    // Native Go omits a function case and returns an empty string.
-    Closure(_, _, _) | Builtin(_) | Native(_) => ()
+    Closure(_, _, _) | Builtin(_) | Native(_) =>
+      raise problem(Runtime, loc, "couldn't manifest function as YAML")
     ArrayValue(items) => {
       if items.is_empty() {
         out.write("[]")
@@ -223,8 +226,6 @@ fn Vm::yaml_value(
         } else {
           out.write(" ")
         }
-        // Go discards this recursive call's error, keeping its partial output.
-        // Resource limits remain mandatory and cannot be swallowed.
         self.yaml_value(
           child,
           indent_arrays,
@@ -233,10 +234,7 @@ fn Vm::yaml_value(
           depth + 1,
           out,
           loc,
-        ) catch {
-          Error(d) => if d.kind == Limit { raise Error(d) }
-          e => raise e
-        }
+        )
       }
     }
   }

@@ -16,7 +16,7 @@ test "TOML layouts and string contracts" {
 }
 
 ///|
-test "YAML layout quoting and native error behavior" {
+test "YAML layout quoting and visible fields" {
   for
     (source, expected) in [
       (
@@ -24,8 +24,6 @@ test "YAML layout quoting and native error behavior" {
       ),
       ("std.manifestYamlDoc({a:[1,2]},true,false)", "a:\n  - 1\n  - 2"),
       ("std.manifestYamlDoc('x\\n\\n')", "|\n  x\n  "),
-      ("std.manifestYamlDoc({a:[1,error 'nested']})", "\"a\":\n- 1\n"),
-      ("std.manifestYamlDoc(function()0)", ""),
       ("std.manifestYamlDoc({assert false})", "{}"),
       (
         "std.manifestYamlDoc({'true':1,'1e309':2,'x0xffz':3,'a/b':4},quote_keys=false)",
@@ -43,6 +41,7 @@ test "TOML YAML parameter errors and resource limits" {
     source in [
       "std.manifestToml([])", "std.manifestToml({a:null})", "std.manifestTomlEx({},1)",
       "std.manifestYamlDoc(quote_keys=false)", "std.manifestYamlDoc(1,0)", "std.manifestYamlDoc({a:error 'forced'})",
+      "std.manifestYamlDoc({a:[1,error 'nested']})", "std.manifestYamlDoc(function()0)",
     ] {
     try @moonjsonnet.evaluate(source) catch {
       @moonjsonnet.Error(d) => assert_true(d.kind != @moonjsonnet.Unsupported)
