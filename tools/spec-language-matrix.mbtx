@@ -264,7 +264,7 @@ async fn main {
     "Populated cells identify manually examined assertions. Empty cells remain unreviewed. Explicit completed-rule reviews below concern only their named judgments; N/A cells have stated in-rule reasons, not missing passing tests. Runtime errors include host Type/Assertion categories after successful parsing. ",
   )
   markdown.write_string(
-    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md), [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md), [binary byte-substitution report](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md) and [UTF-8 text-substitution report](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
+    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md), [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md), [binary byte-substitution report](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md), [UTF-8 text-substitution report](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md) and [conditional-rule report](SPEC-CONDITIONAL-EVIDENCE-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
   )
   markdown.write_string(
     "Reproduce with `moon run --frozen tools/spec-language-matrix.mbtx REFERENCE_DIR EVIDENCE_DIR`; REFERENCE_DIR supplies pinned spec.html and language.md. This command validates assertion locations/hashes and regenerates this matrix; it never infers results or runs upstream tools.\n\n",
@@ -303,11 +303,72 @@ async fn main {
       assert_eq(field(item, "kind"), "named-rule")
       assert_eq(text_field(record, "rule"), id)
       assert_eq(text_field(record, "decision"), "complete")
-      assert_true(
-        id.has_prefix("chk-") &&
-        spec.split("\n").collect()[rule_lines[id]].trim() == "} {",
-        msg="completion requires a premise-free static rule",
-      )
+      let form = if record is Object(fields) {
+        match fields.get("review_form") {
+          None => "premise-free"
+          Some(String(form)) => form
+          _ => fail("review form must be a string")
+        }
+      } else {
+        fail("review record")
+      }
+      if form == "premise-free" {
+        assert_true(
+          id.has_prefix("chk-") &&
+          spec.split("\n").collect()[rule_lines[id]].trim() == "} {",
+          msg="completion requires a premise-free static rule",
+        )
+      } else if form == "conditional-transfer" {
+        // Only the explicitly reviewed conditional forms may use this record.
+        // A source match is provenance validation, not a semantic proof.
+        let statement = match id {
+          "chk-if" =>
+            "\\rule{chk-if} { Γ ⊢ e_1, e_2, e_3 } { Γ ⊢ \\if{e_1}{e_2}{e_3} }"
+          "if-true" =>
+            "\\rule{if-true} { e_1 ↓ \\true \\hspace{15pt} e_2 ↓ v } { \\if{e_1}{e_2}{e_3} ↓ v }"
+          "if-false" =>
+            "\\rule{if-false} { e_1 ↓ \\false \\hspace{15pt} e_3 ↓ v } { \\if{e_1}{e_2}{e_3} ↓ v }"
+          _ => fail("conditional completion is restricted to reviewed forms")
+        }
+        let head = "\\rule{" + id + "} {"
+        let parts = spec.split(head).collect()
+        assert_eq(parts.length(), 2)
+        let actual = head + parts[1].split("\\]").next().unwrap().to_owned()
+        assert_eq(
+          normalized(actual),
+          statement,
+          msg="fixed conditional source mismatch",
+        )
+        assert_eq(
+          text_field(record, "fixed_statement"),
+          statement,
+          msg="reviewed conditional statement mismatch",
+        )
+        let roles : Json = match id {
+          "chk-if" => ["condition", "then", "else"]
+          "if-true" => ["condition-true", "then-value"]
+          _ => ["condition-false", "else-value"]
+        }
+        assert_eq(
+          field(record, "premise_roles"),
+          roles,
+          msg="conditional premise roles",
+        )
+        assert_true(!text_field(record, "child_judgments_assumed").is_empty())
+        let required = if id == "chk-if" {
+          ["static_error", "boundary"]
+        } else {
+          ["runtime_error", "lazy", "boundary"]
+        }
+        for name in required {
+          assert_true(
+            !dimension(row, name).is_empty(),
+            msg="conditional evidence gap: " + name,
+          )
+        }
+      } else {
+        fail("unsupported explicit review form")
+      }
       assert_true(!dimension(row, "normal").is_empty() && remaining.is_empty())
       assert_true(
         !text_field(record, "scope").is_empty() &&
@@ -324,9 +385,19 @@ async fn main {
       guard field(record, "not_applicable") is Object(reasons) else {
         fail("N/A reasons")
       }
-      assert_true(
-        reasons.contains("static_error") && reasons.contains("runtime_error"),
-      )
+      if form == "premise-free" {
+        assert_true(
+          reasons.contains("static_error") && reasons.contains("runtime_error"),
+        )
+      } else if id == "chk-if" {
+        assert_true(
+          reasons.contains("runtime_error") && !reasons.contains("static_error"),
+        )
+      } else {
+        assert_true(
+          reasons.contains("static_error") && !reasons.contains("runtime_error"),
+        )
+      }
       for name, reason in reasons {
         guard reason is String(reason) && !reason.is_empty() else {
           fail("N/A reason")
@@ -409,7 +480,15 @@ async fn main {
       "#" +
       text_field(item, "section") +
       ")" +
-      (if review is Some(_) { " **complete static rule**" } else { "" }) +
+      (if review is Some(_) {
+        if id.has_prefix("chk-") {
+          " **complete static rule**"
+        } else {
+          " **complete evaluation rule**"
+        }
+      } else {
+        ""
+      }) +
       " |",
     )
     for name in ["normal", "static_error", "runtime_error", "lazy", "boundary"] {
@@ -418,7 +497,7 @@ async fn main {
     markdown.write_string(
       " " +
       (if review is Some(_) {
-        "None within this named static judgment; see explicit exclusions below."
+        "None within this named judgment; see explicit exclusions and child assumptions below."
       } else {
         remaining
       }) +
@@ -428,7 +507,7 @@ async fn main {
   assert_eq(used.length(), evidence.length(), msg="orphan evidence mappings")
   if !completed.is_empty() {
     markdown.write_string(
-      "\n## Completed named-rule reviews\n\nThese are recorded manual decisions from constructor case analysis plus executed controls. The tool checks the fixed rule's empty premises, inspected implementation/test hashes and explicit scope; it does not infer semantic correctness or whole-language acceptance.\n\n",
+      "\n## Completed named-rule reviews\n\nThese are recorded manual decisions from constructor case analysis plus executed controls. The tool checks empty premises for premise-free judgments, or the exact fixed conditional statement and premise roles for the three reviewed conditional forms. It also checks inspected implementation/test hashes and explicit scope; source/name matches do not prove semantic correctness. Conditional transfer judgments assume their child judgments and do not complete other language rules or whole-language acceptance.\n\n",
     )
     for (id, record) in completed {
       let report = text_field(record, "review_report")
@@ -482,6 +561,12 @@ async fn main {
     "prose_grammar_rows": clauses.length(),
     "manually_reviewed_subset_rows": reviewed,
     "completed_rule_rows": completed.length(),
+    "completed_static_rule_rows": completed
+    .filter(pair => pair.0.has_prefix("chk-"))
+    .length(),
+    "completed_evaluation_rule_rows": completed
+    .filter(pair => !pair.0.has_prefix("chk-"))
+    .length(),
     "unreviewed_rows": rows.length() - reviewed - completed.length(),
     "complete_conformance": false,
     "execution_inferred": false,

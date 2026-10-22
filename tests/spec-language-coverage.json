@@ -357,6 +357,36 @@
       "assertions": ["assert_eq(result, [\"é😀\\u0000\", \"é😀\\u0000\"])", "assert_eq(requests, [(\"virtual-utf8-entry\", \"data\")])"],
       "checks": "Repeated identical source and handmade importstr requests each produce the explicit two-element Unicode/NUL array with one callback. Distinct aliases and cross-mode caches are not exercised."
     },
+    "IF1": {
+      "file": "spec_conditional_static_test.mbt",
+      "test": "conditional validates condition then and else scopes even when unused",
+      "assertions": ["children[role] = conditional_ast(Var(\"missing\"))", "conditional_static(sources[role], tree)", "conditional_local(\"unused\", tree, conditional_ast(Literal(42)))", "assert_eq(program.evaluate(), true)", "assert_eq(d.kind, @moonjsonnet.Syntax)"],
+      "checks": "Reviewed/pinned conditional_static helper requires Static and the entry identity independently for source parse and handmade AST creation. All three child roles reject alone and in unused wrappers; valid Gamma binds every role. Three malformed source forms separately reject Syntax; no malformed-text AST claim."
+    },
+    "IF2": {
+      "file": "spec_conditional_static_test.mbt",
+      "test": "conditional preserves object context and isolates sibling local scopes",
+      "assertions": ["conditional_static(source, tree)", "conditional_static( sources[role], conditional_ast(If(children[0], children[1], children[2])), )", "Json::number(7)", "Json::number(9)", "assert_eq(program.evaluate(), 7)"],
+      "checks": "Source/handmade sibling-local leaks and self/super in each out-of-object role reject via the reviewed helper. Inherited self/super cases yield 7/9 for true/false, and a condition-local shadow preserves outer x=7 in the chosen branch. These verify conditional context transfer, not full object/binder algebra."
+    },
+    "IF3": {
+      "file": "spec_conditional_runtime_test.mbt",
+      "test": "conditional rejects every nonboolean condition before either branch",
+      "assertions": ["conditional_ast(Func([], latent))", "try program.evaluate(native_functions=natives) catch", "assert_eq(d.kind, @moonjsonnet.Type)", "assert_eq(events, [])"],
+      "checks": "All six non-Boolean outer value kinds create Programs through source/handmade AST then reject at runtime with zero branch or nested payload callbacks. Public Type is an embedding category; the normative condition is Boolean-only evaluation."
+    },
+    "IF4": {
+      "file": "spec_conditional_runtime_test.mbt",
+      "test": "conditional demands condition then selected branch and preserves failures",
+      "assertions": ["for choice in [true, false]", "for failure in [\"none\", \"condition\", selected]", "assert_eq( events, if failure == \"condition\" { [\"condition\"] } else { [\"condition\", selected] }, )", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_true(d.message.contains(\"conditional marker \" + failure))", "assert_eq(program.evaluate(native_functions=natives), 42)", "assert_eq(events, [])"],
+      "checks": "Both source/handmade choices record condition then only the selected child, or only condition when it fails. Exact 7/9 values and Runtime markers separate success and required-child failure. An entirely unused conditional invokes no callbacks. Marker/category checks are host phase controls, not specified diagnostic wording."
+    },
+    "IF5": {
+      "file": "spec_conditional_runtime_test.mbt",
+      "test": "conditional transfers all value kinds without manifesting a selected closure",
+      "assertions": ["assert_eq(program.evaluate(native_functions=natives), expected)", "assert_eq(calls, 0)", "assert_eq(program.evaluate(native_functions=natives), 42)", "assert_eq(events, [\"body\"])"],
+      "checks": "Both choices and both entry paths retain exact null/Boolean/number/Unicode-string/array/object values, with zero unselected calls. A selected closure is applied afterward, returns 42 and invokes its body exactly once; no eager manifestation or unused-branch demand is accepted."
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "test": "P0 JSON manifestation rejects nonfinite internal values defensively",
@@ -365,6 +395,75 @@
     }
   },
   "rules": {
+    "chk-if": {
+      "normal": ["IF1", "IF2", "IF3"], "static_error": ["IF1", "IF2", "A1", "AP6"],
+      "lazy": ["A1", "AP6"], "boundary": ["IF1", "IF3"],
+      "remaining": "", "implementation": ["validate.mbt", "ast_convert.mbt", "ast_validate.mbt"],
+      "rule_review": {
+        "rule": "chk-if", "decision": "complete", "review_form": "conditional-transfer",
+        "fixed_statement": "\\rule{chk-if} { Γ ⊢ e_1, e_2, e_3 } { Γ ⊢ \\if{e_1}{e_2}{e_3} }",
+        "premise_roles": ["condition", "then", "else"],
+        "child_judgments_assumed": "Each child checker implements its own judgment; this review closes only the conditional's same-Gamma/context delegation to all three children.",
+        "scope": "The chk-if constructor-transfer judgment only, relative to its three child static judgments.",
+        "reasoning": "The If arm checks a, b and c unconditionally with the identical names/in_object inputs, introduces no binding and preserves each typed child in AST conversion. Executed role/context/leak probes support that case analysis; reused A1/AP6 are not new groups.",
+        "review_report": "docs/development/SPEC-CONDITIONAL-REVIEW.md",
+        "remaining_in_rule": [],
+        "not_applicable": {"runtime_error": "This static judgment has no evaluation or Boolean-type premise; runtime controls are separate boundaries."},
+        "excluded_obligations": ["Correctness/completeness of all child judgments and object/binder algebra", "Full surface grammar/desugaring and malformed host metadata", "Runtime conditional evaluation and diagnostic priorities", "Host limits, stack exhaustion and CLI rendering"],
+        "inspection": [
+          {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"If(a, b, c) => {","argument":"The reviewed arm calls validate on a, b, c with the same names and in_object; it neither skips an unselected child nor mutates their environment."},
+          {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"If(a, b, c) => If(visit(a), visit(b), visit(c))","argument":"Conversion preserves the ordered three children without selecting a runtime branch."},
+          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"_ => ()","argument":"No conditional-specific Boolean/type requirement is added during shape validation; common host metadata checks are excluded."}
+        ],
+        "evidence_sha256": {"spec_conditional_static_test.mbt":"6f596f443401defc8c4865a5ac19084973c1bc27aeba11dd487e131462b4ea8e","spec_conditional_runtime_test.mbt":"ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf","spec_language_forms_ast_test.mbt":"4d2bd9c0303a756cfc457fa4cff910f80e094447aaa1b86014b9d3849a90738d","spec_language_call_test.mbt":"a9a8489f31f3fce9d3266602fbad788e3ba63a50daa1b66f99cfb9f1ea13724a"}
+      }
+    },
+    "if-true": {
+      "normal": ["IF2", "IF4", "IF5"], "runtime_error": ["IF3", "IF4"],
+      "lazy": ["IF4", "IF5"], "boundary": ["IF2", "IF3", "IF5"],
+      "remaining": "", "implementation": ["eval.mbt", "runtime_types.mbt", "diagnostic_trace.mbt"],
+      "rule_review": {
+        "rule": "if-true", "decision": "complete", "review_form": "conditional-transfer",
+        "fixed_statement": "\\rule{if-true} { e_1 ↓ \\true \\hspace{15pt} e_2 ↓ v } { \\if{e_1}{e_2}{e_3} ↓ v }",
+        "premise_roles": ["condition-true", "then-value"],
+        "child_judgments_assumed": "Condition and selected-child evaluation obey their own judgments within resource bounds; this review closes only the conditional selection/environment transfer.",
+        "scope": "The if-true constructor-transfer judgment, assuming its condition/selected-child premises; adjacent failures are boundary controls.",
+        "reasoning": "The evaluator computes the condition once, strictly requires Bool, selects yes on true, and continues with that expression. trace_context copies semantic environment fields. Executed event/value/closure/context probes observe the required order and no unselected demand.",
+        "review_report": "docs/development/SPEC-CONDITIONAL-REVIEW.md",
+        "remaining_in_rule": [],
+        "not_applicable": {"static_error": "This execution judgment assumes a statically checked expression; chk-if is reviewed separately."},
+        "excluded_obligations": ["All child evaluation rules, manifestation and full closure/object algebra", "Complete source grammar/desugaring and host AST shape constraints", "Diagnostic wording/trace formats and relative order of unrelated failures", "Host resource/stack limits and CLI exits"],
+        "inspection": [
+          {"file":"eval.mbt","sha256":"f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3","anchor":"expr = if boolean(self.eval(c, env), c.loc) { yes } else { no }","argument":"The condition is evaluated before selection; the yes child becomes the next expression only on true, with no evaluation of the no child."},
+          {"file":"runtime_types.mbt","sha256":"eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9","anchor":"fn boolean(v : Value, loc : Location) -> Bool raise {","argument":"Only Bool(b) returns a Boolean. Other outer values raise Type without forcing array/object/function payloads."},
+          {"file":"diagnostic_trace.mbt","sha256":"77acadcefa568a59944499ca5457811880a48b3d9fcbf6ac12a3a5eb3e3e57a4","anchor":"fn Env::trace_context(","argument":"The returned Env spreads self and replaces diagnostic_context only, preserving names, parents and semantic object context."}
+        ],
+        "evidence_sha256": {"spec_conditional_static_test.mbt":"6f596f443401defc8c4865a5ac19084973c1bc27aeba11dd487e131462b4ea8e","spec_conditional_runtime_test.mbt":"ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf"}
+      }
+    },
+    "if-false": {
+      "normal": ["IF2", "IF4", "IF5", "IU3"], "runtime_error": ["IF3", "IF4"],
+      "lazy": ["IF4", "IF5", "IU3"], "boundary": ["IF2", "IF3", "IF5"],
+      "remaining": "", "implementation": ["eval.mbt", "runtime_types.mbt", "diagnostic_trace.mbt"],
+      "rule_review": {
+        "rule": "if-false", "decision": "complete", "review_form": "conditional-transfer",
+        "fixed_statement": "\\rule{if-false} { e_1 ↓ \\false \\hspace{15pt} e_3 ↓ v } { \\if{e_1}{e_2}{e_3} ↓ v }",
+        "premise_roles": ["condition-false", "else-value"],
+        "child_judgments_assumed": "Condition and selected-child evaluation obey their own judgments within resource bounds; this review closes only the conditional selection/environment transfer.",
+        "scope": "The if-false constructor-transfer judgment, assuming its condition/selected-child premises; adjacent failures are boundary controls.",
+        "reasoning": "The evaluator computes the condition once, strictly requires Bool, selects no on false, and continues with that expression. Semantic environment fields survive trace_context. New event/value/context probes and reused IU3 observe no unselected request or callback; IU3 is not a new group.",
+        "review_report": "docs/development/SPEC-CONDITIONAL-REVIEW.md",
+        "remaining_in_rule": [],
+        "not_applicable": {"static_error": "This execution judgment assumes a statically checked expression; chk-if is reviewed separately."},
+        "excluded_obligations": ["All child evaluation rules, manifestation and full closure/object algebra", "Complete source grammar/desugaring and host AST shape constraints", "Diagnostic wording/trace formats and relative order of unrelated failures", "Host resource/stack limits and CLI exits"],
+        "inspection": [
+          {"file":"eval.mbt","sha256":"f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3","anchor":"expr = if boolean(self.eval(c, env), c.loc) { yes } else { no }","argument":"The condition is evaluated before selection; the no child becomes the next expression only on false, with no evaluation of the yes child."},
+          {"file":"runtime_types.mbt","sha256":"eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9","anchor":"fn boolean(v : Value, loc : Location) -> Bool raise {","argument":"Only Bool(b) returns a Boolean. Other outer values raise Type before branch/payload demand."},
+          {"file":"diagnostic_trace.mbt","sha256":"77acadcefa568a59944499ca5457811880a48b3d9fcbf6ac12a3a5eb3e3e57a4","anchor":"fn Env::trace_context(","argument":"Only diagnostic_context changes in a spread copy of the same environment; branch bindings remain unchanged."}
+        ],
+        "evidence_sha256": {"spec_conditional_static_test.mbt":"6f596f443401defc8c4865a5ac19084973c1bc27aeba11dd487e131462b4ea8e","spec_conditional_runtime_test.mbt":"ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf","spec_importstr_utf8_test.mbt":"e59bf7fd40462e618b5894504d1893bda4d46dd634e457b573b35cfd1cb2b8e8"}
+      }
+    },
     "chk-self": {"normal": ["F6", "O1", "O2"], "static_error": ["O1"], "remaining": "All enclosing expression forms and public-AST combinations.", "implementation": ["validate.mbt"]},
     "chk-super": {"normal": ["F6", "O2"], "remaining": "Top-level/standalone super and every syntactic context not newly reviewed.", "implementation": ["validate.mbt"]},
     "chk-object": {"normal": ["O1"], "static_error": ["O1"], "remaining": "Literal duplicate names, object-local recursion and statics in every assertion/value position.", "implementation": ["validate.mbt"]},
@@ -467,7 +566,7 @@
     {"id": "DESUGAR-FIELDS", "section": "desugaring", "obligation": "Dot lookup, object extension, additive fields and methods", "normal": ["F6", "O2"], "remaining": "All additive forms and nested inheritance source transformations.", "implementation": ["parser.mbt", "objects.mbt"]},
     {"id": "DESUGAR-OPERATORS", "section": "desugaring", "obligation": "Percent, equality, in, unary plus and std binding", "remaining": "Independent equivalence under std shadowing and lazy/errors.", "implementation": ["eval.mbt", "operators.mbt"]},
     {"id": "DESUGAR-COMPREHENSIONS", "section": "desugaring", "obligation": "Array/object comprehension domains, order, filters and shadowing", "normal": ["C1", "C6"], "static_error": ["O1", "R2", "A2"], "runtime_error": ["C4", "C5", "C7"], "lazy": ["C2", "C3", "C4", "C5"], "boundary": ["C2", "A3", "A4"], "remaining": "Exhaustive nesting/domain/body combinations and mechanical string/object/function domain extensions remain unreviewed.", "implementation": ["eval.mbt"]},
-    {"id": "STATIC-TRAVERSAL", "section": "static_checking", "obligation": "Check unused defaults, bodies, branches and argument expressions", "static_error": ["F5", "S1", "O1", "R2", "A1", "A2", "AP6"], "remaining": "Other chk-* rules remain explicitly unmapped below.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
+    {"id": "STATIC-TRAVERSAL", "section": "static_checking", "obligation": "Check unused defaults, bodies, branches and argument expressions", "static_error": ["F5", "S1", "O1", "R2", "A1", "A2", "AP6", "IF1", "IF2"], "remaining": "Other unreviewed chk-* rules and full enclosing/host shape boundaries remain open; completed constructor judgments do not complete all child rules.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
     {"id": "VALUE-FINITE", "section": "jsonnet_values", "obligation": "Finite binary64 values and immutable arrays/objects", "boundary": ["FINITE", "O2"], "remaining": "Producer overflow and array immutability evidence lives in P0 matrix; not newly credited here.", "implementation": ["runtime_types.mbt", "manifest.mbt"]},
     {"id": "VALUE-UNICODE", "section": "jsonnet_values", "obligation": "Codepoint strings, strict contents and Unicode comparison", "normal": ["IDX"], "runtime_error": ["IDX"], "remaining": "Whole string semantics, collation, normalization and surrogate ambiguity.", "implementation": ["eval.mbt", "sequence.mbt"]},
     {"id": "HIDDEN-INHERITANCE", "section": "hidden_inheritance", "obligation": "Inherited default, hidden and forced-visible fields", "normal": ["O6"], "lazy": ["O6", "O7"], "boundary": ["O6"], "remaining": "Equality and every multi-layer/additive combination.", "implementation": ["objects.mbt", "manifest.mbt"]},
