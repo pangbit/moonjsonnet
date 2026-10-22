@@ -181,9 +181,9 @@ Only the following functions are supported. Arity/named-argument violations are
 | `objectFieldsEx(obj,hidden)`, `objectHasEx(obj,fname,hidden)` | Native reflection with explicit hidden-field selection and reference parameter names |
 | `primitiveEquals(x,y)`, `equals(x,y)` | Primitive comparison or recursive equality; unlike types compare false, same-type functions cannot be compared; parameter names follow Go's native override |
 | `filter(func,arr)` | Array filtering; predicate must return boolean |
-| `flatMap(func,arr)` | Concatenates callback arrays or strings; string input uses Unicode code points; callback results are forced but returned array elements stay lazy; null results are errors |
-| `foldl(func,arr,init)` | Iterative left fold over array/string; forces function, sequence, initial value and each callback result; elements and nested fields remain lazy |
-| `foldr(func,arr,init)` | Iterative right fold over array/string; callback receives element then accumulator; same forcing contract as `foldl` |
+| `flatMap(func,arr)` | Validates the function before demanding the input; concatenates callback arrays or strings using Unicode code points; callback result heads are forced but returned array elements stay lazy; out-of-documented-kind return policies remain under review |
+| `foldl(func,arr,init)` | Iterative left fold over array/string; empty input returns init without using func, the first callback may ignore init, and each intermediate result head is forced; elements and nested fields remain lazy |
+| `foldr(func,arr,init)` | Iterative right fold over array/string; callback receives element then accumulator, with the same empty/initial/intermediate forcing rules as `foldl` |
 | `range(from,to)` | Source-defined inclusive unit steps; finite endpoints are not narrowed, including fractional bounds with integral length; generated size remains subject to host limits |
 | `join(sep,arr)` | String/array separator with like-typed entries; skips null entries |
 | `split(str,c)` | Nonempty string delimiter; empty delimiter is `Runtime` |
@@ -336,11 +336,14 @@ intentionally differs from Go's required-only count. Duplicate formal parameters
 are rejected statically under the specification's unique-name rule, even where
 frozen Go fixtures accept them. Original comparison inputs/results remain
 unchanged and have not been rerun for these fixes.
-`foldl` follows Go's strict argument and intermediate-result
-evaluation. It does not deeply manifest the accumulator or force unused array
-elements. This changes the earlier C++-based behavior for unused erroneous
-functions/initial values. The shared corpus preserves these inputs and verifies
-the exact differing outcomes separately from compatibility passes.
+`foldl` and `foldr` follow the fixed source definitions: an empty sequence does
+not use the callback, and the first callback can ignore the original initial
+value. The tailstrict recursion requires every new accumulator head, while
+nested payloads and unused elements remain lazy. The implementation remains
+iterative. This intentionally supersedes the old strict-Go argument assertions;
+original frozen comparison inputs and results are retained without being rerun.
+See the [array contract review](../development/SPEC-ARRAY-COMBINATORS-REVIEW.md)
+for independently established expectations and unresolved boundaries.
 
 ## Known boundaries
 

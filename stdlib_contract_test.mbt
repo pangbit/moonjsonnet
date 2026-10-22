@@ -21,6 +21,8 @@ test "foldl is left associative and preserves lazy elements and fields" {
     ("std.foldl(function(a,b=9)a+b,[1,2],0)", "3"),
     ("std.foldl(function(a,b)a+b,[],5)", "5"),
     ("std.foldl(function(a,b)a+b,'',5)", "5"),
+    ("std.foldl(error 'unused function',[],7)", "7"),
+    ("std.foldl(function(a,b)b,[1,2],error 'unused initial')", "2"),
   ]
   for (source, expected) in cases {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))
@@ -28,20 +30,16 @@ test "foldl is left associative and preserves lazy elements and fields" {
 }
 
 ///|
-test "foldl forces its arguments and every intermediate result" {
+test "foldl demands its sequence and every intermediate result" {
   let cases = [
-    (
-      "std.foldl(function(a,b)b,[1,2],error 'forced init')",
-      @moonjsonnet.Runtime,
-    ),
-    ("std.foldl(error 'forced function',[],1)", @moonjsonnet.Runtime),
+    ("std.foldl(error 'forced function',[1],1)", @moonjsonnet.Runtime),
     ("std.foldl(function(a,b)b,[],error 'forced init')", @moonjsonnet.Runtime),
     ("std.foldl(function(a,b)a,error 'forced array',0)", @moonjsonnet.Runtime),
     (
       "std.foldl(function(a,b)if b==1 then error 'intermediate' else b,[1,2],0)",
       @moonjsonnet.Runtime,
     ),
-    ("std.foldl(1,[],0)", @moonjsonnet.Type),
+    ("std.foldl(1,[1],0)", @moonjsonnet.Type),
     ("std.foldl(function(a,b)b,{},0)", @moonjsonnet.Type),
     ("std.foldl(function(a)a,[1],0)", @moonjsonnet.Runtime),
   ]

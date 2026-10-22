@@ -62,7 +62,7 @@ test "sequence combinators force results and validate empty input contracts" {
       "std.flatMap(function(x)if x==1 then [1] else error 'forced',[1,2])[0]",
       @moonjsonnet.Runtime,
     ),
-    ("std.foldr(1,[],0)", @moonjsonnet.Type),
+    ("std.foldr(1,[1],0)", @moonjsonnet.Type),
     ("std.foldr(function(x,a)a,{},0)", @moonjsonnet.Type),
     ("std.foldr(function(x,a)a,[],error 'forced init')", @moonjsonnet.Runtime),
     (

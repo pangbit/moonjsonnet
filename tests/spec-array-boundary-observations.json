@@ -1,0 +1,13 @@
+[
+  {"id":"makeArray-negative","question":"negative cardinality","source":"std.makeArray(-1,function(i)i)","adjudication":"unresolved; no expected result"},
+  {"id":"makeArray-fraction","question":"fractional cardinality","source":"std.makeArray(1.5,function(i)i)","adjudication":"unresolved; no expected result"},
+  {"id":"makeArray-negative-fraction","question":"negative fractional cardinality","source":"std.makeArray(-0.5,function(i)i)","adjudication":"unresolved; no expected result"},
+  {"id":"range-negative-cardinality","question":"negative cardinality delegated to makeArray","source":"std.range(3,1)","adjudication":"unresolved; no expected result"},
+  {"id":"range-fractional-cardinality","question":"nonintegral cardinality delegated to makeArray","source":"std.range(0,0.5)","adjudication":"unresolved; no expected result"},
+  {"id":"filter-number","question":"nonboolean predicate","source":"std.filter(function(x)0,[1])","adjudication":"unresolved; no expected result"},
+  {"id":"filter-null","question":"nonboolean predicate","source":"std.filter(function(x)null,[1])","adjudication":"unresolved; no expected result"},
+  {"id":"filter-string","question":"nonboolean predicate","source":"std.filter(function(x)'true',[1])","adjudication":"unresolved; no expected result"},
+  {"id":"filter-array","question":"nonboolean predicate","source":"std.filter(function(x)[],[1])","adjudication":"unresolved; no expected result"},
+  {"id":"filter-object","question":"nonboolean predicate","source":"std.filter(function(x){},[1])","adjudication":"unresolved; no expected result"},
+  {"id":"filter-function","question":"nonboolean predicate","source":"std.filter(function(x)function()true,[1])","adjudication":"unresolved; no expected result"}
+]

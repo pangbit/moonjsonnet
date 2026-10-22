@@ -47,6 +47,54 @@ fn Vm::sequence(self : Vm, value : Value, loc : Location) -> Array[Int] raise {
 }
 
 ///|
+// Source fold helpers do not use func for an empty sequence. The original init
+// remains a thunk for the first callback; tailstrict forces each new result head.
+fn Vm::fold_sequence(
+  self : Vm,
+  name : String,
+  input : Value,
+  func : Int,
+  initial : Int,
+  loc : Location,
+) -> Value raise {
+  let empty = match input {
+    ArrayValue(items) => items.is_empty()
+    Str(text) => text.is_empty()
+    _ =>
+      raise problem(
+        Type,
+        loc,
+        name +
+        " second parameter should be string or array, got " +
+        value_type(input),
+      )
+  }
+  if empty {
+    return self.force(initial, loc)
+  }
+  let callback = self.force(func, loc)
+  if value_type(callback) != "function" {
+    raise problem(
+      Type,
+      loc,
+      "Unexpected type " + value_type(callback) + ", expected function",
+    )
+  }
+  let items = self.sequence(input, loc)
+  let mut accumulator = initial
+  for i in 0..<items.length() {
+    self.tick(loc)
+    let args = if name == "foldl" {
+      [(None, accumulator), (None, items[i])]
+    } else {
+      [(None, items[items.length() - i - 1]), (None, accumulator)]
+    }
+    accumulator = self.store(Ready(self.call(callback, args, loc)))
+  }
+  self.force(accumulator, loc)
+}
+
+///|
 fn Vm::flat_map(
   self : Vm,
   func : Value,

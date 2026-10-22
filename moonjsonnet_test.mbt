@@ -114,13 +114,10 @@ test "regressions for standard string manifests static super and token names" {
   } noraise {
     _ => fail("expected static error")
   }
-  try
-    @moonjsonnet.evaluate("std.foldl(function(a,b)b,[1,2],error 'unused')")
-  catch {
-    @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Runtime)
-  } noraise {
-    _ => fail("foldl must force its initial value, as in go-jsonnet")
-  }
+  assert_eq(
+    @moonjsonnet.evaluate("std.foldl(function(a,b)b,[1,2],error 'unused')"),
+    Json::number(2),
+  )
 }
 
 ///|

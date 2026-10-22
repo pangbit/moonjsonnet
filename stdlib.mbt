@@ -177,6 +177,26 @@ fn Vm::builtin(
     let on_empty = ids.get("onEmpty").map(t => self.force(t, loc))
     return self.extreme_value(input, key, on_empty, name == "maxArray", loc)
   }
+  if name == "foldl" || name == "foldr" {
+    return self.fold_sequence(
+      name,
+      self.force(ids["arr"], loc),
+      ids["func"],
+      ids["init"],
+      loc,
+    )
+  }
+  if name == "flatMap" {
+    let func = self.force(ids["func"], loc)
+    if value_type(func) != "function" {
+      raise problem(
+        Type,
+        loc,
+        "Unexpected type " + value_type(func) + ", expected function",
+      )
+    }
+    return self.flat_map(func, self.force(ids["arr"], loc), loc)
+  }
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
@@ -371,38 +391,6 @@ fn Vm::builtin(
     "$flatMapArray" => {
       ignore(array_value(values[1], loc))
       self.flat_map(x, values[1], loc)
-    }
-    "flatMap" => self.flat_map(x, values[1], loc)
-    "foldl" | "foldr" => {
-      if value_type(x) != "function" {
-        raise problem(
-          Type,
-          loc,
-          "Unexpected type " + value_type(x) + ", expected function",
-        )
-      }
-      if !(values[1] is ArrayValue(_)) && !(values[1] is Str(_)) {
-        raise problem(
-          Type,
-          loc,
-          name +
-          " second parameter should be string or array, got " +
-          value_type(values[1]),
-        )
-      }
-      let a = self.sequence(values[1], loc)
-      let mut acc = values[2]
-      for i in 0..<a.length() {
-        self.tick(loc)
-        let accumulator = self.store(Ready(acc))
-        let args = if name == "foldl" {
-          [(None, accumulator), (None, a[i])]
-        } else {
-          [(None, a[a.length() - i - 1]), (None, accumulator)]
-        }
-        acc = self.call(x, args, loc)
-      }
-      acc
     }
     "lines" => {
       let mut result = Str("")
