@@ -74,6 +74,9 @@ its table separates reviewed dimensions, oracle corrections and unresolved cases
 The [array-combinator stage](SPEC-ARRAY-COMBINATORS-EVIDENCE-2026-10-22.md)
 reviews five adjacent contracts, fixes fold/flatMap forcing and preserves
 unresolved cardinality/predicate observations without granting passing status.
+The [object-contract stage](SPEC-OBJECT-CONTRACTS-EVIDENCE-2026-10-22.md) reviews
+six visibility/lookup functions, distinguishing structural reflection, selected
+field assertions and lazy defaults without changing product implementation.
 The counts below retain the original first-stage scope.
 
 P0 fixes are local commits `001679a` (immutability), `dd3b9d0` (finite aggregates),

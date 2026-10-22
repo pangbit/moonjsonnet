@@ -55,3 +55,6 @@ inheritance, assertion, resource or public-function contract. The eleven older
 cardinality/filter observations and earlier signature/default conflicts remain
 unresolved; they are neither rerun nor relabeled by this batch. Every new input
 is synthetic and contains no business data or private application content.
+
+The [execution evidence](SPEC-OBJECT-CONTRACTS-EVIDENCE-2026-10-22.md) records
+actual baseline, aggregate and CLI results independently of the expectations.
