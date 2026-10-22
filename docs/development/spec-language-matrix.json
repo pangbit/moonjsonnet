@@ -2,8 +2,8 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "ad739d296aa57fdbed6fa1b456c281d08b2b46061f2d880e6bf5251aa50d0063",
-  "tool_sha256": "0a7358cb85ea1233107b335b17c3806ec57738a4e8062ba103c74ef35b425cc6",
+  "mapping_sha256": "cd589e3f707f8dd2c2f4f8d9ff235566c79bbae43d29c54946729d6fa9e21f89",
+  "tool_sha256": "e2184e0521296deda32f8d0b8f8587ffbe3daf5b3659499e9c88f52b8a32360e",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 41,
@@ -1180,6 +1180,47 @@
       "checks": "A length-three acyclic field graph is checked under original seed/goal 1/3 and merged 10/12, with both operands retaining two predicates. Actual original success precedes result 12; unordered ID/context membership proves the in-progress return did not lose remaining checks and the merged receiver did not reuse original check/scope state. Error-valued messages stay lazy. Every evaluation has explicit step/depth/stack bounds. This is operational evidence relative to existing self-field semantics, not a finite formal derivation from the state-free printed object-index rule.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "CK1": {
+      "file": "spec_object_comp_keys_test.mbt",
+      "line": 173,
+      "test": "dynamic tuple key collisions fail construction before any selected value",
+      "assertions": [
+        "for mode in [\"unused\", \"shape\", \"field\"]",
+        "comp_keys_source(true)",
+        "comp_keys_tree(true, body)",
+        "limits=comp_keys_limits()",
+        "assert_eq(keys.length(), 0)",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(d.location.file, \"forms-ast\")",
+        "assert_eq(keys.get(\"1:1\"), Some(Json::string(\"first\")))",
+        "assert_eq(keys.get(\"2:2\"), Some(Json::string(\"first\")))",
+        "assert_eq(bodies.length(), 0)"
+      ],
+      "checks": "Different tuples (1,1)/(2,2) dynamically produce the same first name across dependent generators that shadow outer x/y. Program creation and an unused field binding stay lazy; structural demand and direct first-field demand reject Runtime during construction before any value body. The two collision tuples are required but unrelated key order/count after failure is not prescribed. Source and independent handmade AST use bounded evaluations.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "CK2": {
+      "file": "spec_object_comp_keys_test.mbt",
+      "line": 226,
+      "test": "mixed null keys retain lazy values and each iteration definition context",
+      "assertions": [
+        "for mode in [\"shape\", \"first\", \"second\"]",
+        "comp_keys_source(false)",
+        "[\"object\", 2]",
+        "[1, 1]",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(d.message, \"retained-body-marker\")",
+        "assert_true(bodies.contains(\"2:2\"))",
+        "assert_true(bodies.contains(\"1:1\"))",
+        "assert_eq(keys.length(), 4)",
+        "assert_eq(keys.get(\"1:0\"), Some(Json::null()))",
+        "assert_eq(keys.get(\"2:0\"), Some(Json::null()))",
+        "assert_eq(keys.get(\"2:2\"), Some(Json::string(\"second\")))",
+        "assert_true(ready.val)"
+      ],
+      "checks": "Repeated dynamic null names are filtered while first/second names survive. Metadata gives object/2 with no bodies; first yields [1,1] while the second error stays lazy; second demand raises its fixed Runtime marker with body tuple (2,2). Outer x=99/y=88 cannot replace iterator captures from for y in [0,x]. A sticky observer verifies all successful key tuples preceded any body entry. Maps compare membership, not universal callback counts or key order.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -1222,6 +1263,7 @@
     "error_value_test.mbt": "93c73e09eefdbc9ad41e149b52d3b723f5a841309e675682aa50d1d26b29f579",
     "spec_assertion_local_test.mbt": "4ec20f1a324e8655c194e1b9d4aa1553218cb45d2d279e3c255e3eeab555a155",
     "spec_assertion_conjunction_test.mbt": "737b61a9ad4bb78a506f25be00c1c4533a75f2711390bae6023e79d388e380c9",
+    "spec_object_comp_keys_test.mbt": "cce9e374299a7688c84fd62133d52d5047a59985d92e4f8260c2a8648dfe27de",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -2046,27 +2088,35 @@
         "normal": [
           "C1",
           "C6",
-          "A3"
+          "A3",
+          "CK2"
         ],
         "static_error": [],
         "runtime_error": [
           "C4",
           "C7",
-          "A4"
+          "A4",
+          "CK1",
+          "CK2"
         ],
         "lazy": [
           "C2",
           "C3",
           "C4",
-          "C5"
+          "C5",
+          "A3",
+          "CK1",
+          "CK2"
         ],
         "boundary": [
           "C2",
           "A3",
-          "A4"
+          "A4",
+          "CK1",
+          "CK2"
         ]
       },
-      "remaining": "Exhaustive nested generators, all key scalar kinds and multiple failing key order; mechanical non-array domain extensions remain unadjudicated.",
+      "remaining": "The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) is reviewed complete. Existing C2/C3/C4/A3/A4 are reused without new execution. No whole core-rule constructor decision or general filter/nesting/domain-desugaring acceptance is recorded; other invalid-key shapes remain credited only where existing controls apply. The rule does not prescribe which independent key error is first, so an arbitrary first-error order is not a missing acceptance requirement.",
       "implementation": [
         "eval.mbt",
         "objects.mbt"
@@ -3893,7 +3943,8 @@
       "dimensions": {
         "normal": [
           "C1",
-          "C6"
+          "C6",
+          "CK2"
         ],
         "static_error": [
           "O1",
@@ -3903,21 +3954,28 @@
         "runtime_error": [
           "C4",
           "C5",
-          "C7"
+          "C7",
+          "CK1",
+          "CK2"
         ],
         "lazy": [
           "C2",
           "C3",
           "C4",
-          "C5"
+          "C5",
+          "A3",
+          "CK1",
+          "CK2"
         ],
         "boundary": [
           "C2",
           "A3",
-          "A4"
+          "A4",
+          "CK1",
+          "CK2"
         ]
       },
-      "remaining": "Exhaustive nesting/domain/body combinations and mechanical string/object/function domain extensions remain unreviewed.",
+      "remaining": "The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) reviews dependent iterator tuples, mixed null names, dynamic conflicts and delayed value capture. Full comprehension lowering and mechanical non-array domain extensions remain unadjudicated; existing empty/filter/type controls retain their own scopes. No unrelated key-error ordering is standardized.",
       "implementation": [
         "eval.mbt"
       ],
@@ -4067,7 +4125,8 @@
           "AS1",
           "AX1",
           "AL1",
-          "AC2"
+          "AC2",
+          "CK2"
         ],
         "static_error": [
           "F5",
@@ -4096,10 +4155,11 @@
           "AX2",
           "AL1",
           "AL2",
-          "AC2"
+          "AC2",
+          "CK2"
         ]
       },
-      "remaining": "Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule.",
+      "remaining": "The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) adds iteration-tuple capture after construction, without completing general substitution. Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt",
