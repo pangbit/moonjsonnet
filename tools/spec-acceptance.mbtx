@@ -54,6 +54,8 @@ async fn main {
     "spec_index_test.mbt", "spec_yaml_test.mbt", "spec_manifest_wbtest.mbt",
     "spec_yaml_wbtest.mbt", "spec_length_test.mbt", "spec_static_test.mbt",
     "spec_text_block_test.mbt", "spec_import_scope_test.mbt", "spec_text_chomp_test.mbt",
+    "spec_foundation_types_test.mbt", "spec_foundation_numbers_test.mbt",
+    "spec_foundation_arrays_test.mbt", "spec_foundation_calls_test.mbt",
   ]
   let input_hashes : Map[String, Json] = Map([])
   for path in input_paths { input_hashes[path] = Json::string(sha256(path)) }
@@ -132,10 +134,10 @@ async fn main {
     "platform": platform, "toolchain": version, "input_sha256": input_hashes,
     "cli_sha256": sha256(cli), "embedded_sha256": sha256(embedded),
     "build_command": build_args, "build_exit": build.exit_code(),
-    "scope": "focused normative P0/P1 lexical CLI and three application scenarios; not full conformance or upstream parity",
+    "scope": "focused normative CLI regressions and three application scenarios; not full conformance or upstream parity",
     "passed": passed, "total": rows.length(), "failed": rows.length() - passed, "cases": rows,
     "selected_case_ids": selected,
-    "unresolved_outside_suite": ["removeAt parameter-name conflict", "escapeStringXml spelling conflict", "manifestYamlStream default conflict", "complete public-contract adjudication and cross-platform acceptance"],
+    "unresolved_outside_suite": ["removeAt parameter-name conflict", "escapeStringXml spelling conflict", "manifestYamlStream default conflict", "range negative/nonintegral cardinalities", "filter nonboolean predicate results", "complete public-contract adjudication and cross-platform acceptance"],
   }
   @fs.write_file(evidence + "/report.json", report.stringify(indent=2) + "\n")
   println("Normative CLI and application scenarios: \{passed}/\{rows.length()}; \{evidence}")

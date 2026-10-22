@@ -1,4 +1,7 @@
 [
+  {"id":"range-fractional-interval","axis":"P1-foundations","args":["-e","std.range(0.5,2.5)"],"value":[0.5,1.5,2.5]},
+  {"id":"range-large-endpoints","axis":"P1-foundations","args":["-e","[std.range(2147483648,2147483650),std.range(1e308,1e308)]"],"value":[[2147483648,2147483649,2147483650],[1e308]]},
+  {"id":"range-size-overflow","axis":"P1-foundations","args":["-e","std.type(std.range(-1e308,1e308))"],"error":"Overflow"},
   {"id":"text-chomp-CRLF","axis":"P1-LEX","args":["-e","|||-\r\n\r\n  x\r\n\r\n|||"],"value":"\r\nx\r\n"},
   {"id":"text-chomp-preceding-CR","axis":"P1-LEX","args":["-e","|||-\n  x\r\r\n|||"],"value":"x\r"},
   {"id":"remove-original","axis":"P0-IMM","args":["-e","local a=[1,2,3,4]; [std.removeAt(a,1),a]"],"value":[[1,3,4],[1,2,3,4]]},

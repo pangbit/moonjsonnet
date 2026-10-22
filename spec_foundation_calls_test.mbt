@@ -36,6 +36,17 @@ test "foundation argument binding rejects unknown names without evaluating value
     } noraise {
       _ => fail("unknown parameter was accepted for " + name)
     }
+    assert_eq(
+      @moonjsonnet.evaluate(
+        "if false then std." + name + "(unknown=std.native('touch')()) else 42",
+        native_functions=Map([("touch", callback)]),
+      ),
+      42,
+    )
+    assert_eq(
+      @moonjsonnet.evaluate("if false then std." + name + "() else 42"),
+      42,
+    )
     assert_eq(calls, 0)
   }
 }

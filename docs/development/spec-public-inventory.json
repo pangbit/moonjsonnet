@@ -5,9 +5,102 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "e59151f4613c6c5699c651fd9abc7e8b2663f383",
-  "coverage_sha256": "c072cb83470070cf721d872f70fd67f31121764e4eccb4f55c0135b300aa33ab",
-  "generator_sha256": "6419232a80972d6bf3b0c92190329fdd5c75ceff4e31a9c0ca237c6b7607bed5",
+  "input_source_commit": "4a1401f05bcd25c3af5248423745c66f58cd0fa2",
+  "uncommitted_test_paths": "spec_foundation_arrays_test.mbt\nspec_foundation_calls_test.mbt",
+  "test_input_sha256": {
+    "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
+    "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
+    "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336",
+    "array_std_test.mbt": "a1e5f588530cb2efabb9b4f9f85644869a76996288479c53f583cca8c36e74cc",
+    "ast_cache_test.mbt": "2015b907b9f41c593033d79932da0597244989fb42d367d19a74c918f38c4c71",
+    "ast_export_wbtest.mbt": "4f878774005cb5745d1a73f232e153face7e01132cb30b417fadc582a3968a2c",
+    "ast_test.mbt": "b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c",
+    "binding_range_test.mbt": "dee6a796e026029547e7c184087dea60f0ebcdb159db930f4126ffd20cb51e67",
+    "debug_scope_wbtest.mbt": "0b0c8f400a337bc755366d16f0b9746e23ffc9ee9564ad48e52d27eb304adf36",
+    "debugger_test.mbt": "0db4d25b01bc765d9953baa1a743bd05ec8128d0272a9ba669afcffe8d6c30b0",
+    "dependencies_test.mbt": "1b1ad199eb068256b8de8c8581dd1b98f09c3df0e0ae63faebb46369253077cf",
+    "diagnostic_test.mbt": "36ba9b6de53a98e96b373156c9c37213f037de8cce9904caee26635fcbdf5114",
+    "diagnostic_trace_test.mbt": "551921d41d8743c0f1ba18ffed0f5766186ceebe10f40234afe6ef156f0c1d0a",
+    "digest_test.mbt": "16beb2e230cf482726d301488f3546667d7cf87c45764019219add27cb35dfcc",
+    "error_value_test.mbt": "93c73e09eefdbc9ad41e149b52d3b723f5a841309e675682aa50d1d26b29f579",
+    "eval_hook_test.mbt": "b600568e5fd81b5f7c627f21eb4594b4f469d46014b856cd177cb1ae9467fc40",
+    "evaluator_import_ast_test.mbt": "92e5bb9115b4f566373d576346124c27e7670b0f1adc1461656230267b9e2e5f",
+    "evaluator_import_ast_wbtest.mbt": "11227de45c99caacff6ea5e66bd669a58348fee1270a8f0f237d3aad545649d7",
+    "evaluator_imports_test.mbt": "0f451c04d5703370cd625cf78fa1c8990914f02a7153a120675c552b6cd05939",
+    "evaluator_imports_wbtest.mbt": "525257976c3c721cd5a63a379523c651fb92948638919d29e8244f67a469d0fa",
+    "evaluator_test.mbt": "4591b1c78be8ae7e848fa2625b92b154302a818a8afbc41b5c85fcc202d53fc0",
+    "evaluator_wbtest.mbt": "8a904f5695e006a2c172e4e6e3452c5ac427c41fff062d8b5083bd51d08ad53f",
+    "extrema_test.mbt": "1096e365b4990978b897f833cd3193d7b12410bf4415309e9a71b5dd8cd9a9d0",
+    "format_power_test.mbt": "da72e8d480093ae4efe9cd82e08db27627a92afacd8f63d7225fa07191ffb977",
+    "formatter_boundaries_test.mbt": "ee363b9c727f0ebbbf63da0646f58593d6f7032367a1f661bff06104bdedec1c",
+    "formatter_context_test.mbt": "093edeaab7f8872dc285388b0a5b25914a4380f9f0a685d1b175154c65ea96d1",
+    "formatter_imports_test.mbt": "c8e0e0dd7bc49878fbbeda3a05d97340f570b8d7227d3a9fa8cc586bb6301bbf",
+    "formatter_sort_wbtest.mbt": "7748d9b01c81d20e2f80579de88008e9050d4066326a070ea33c50b450e144c8",
+    "formatter_test.mbt": "5b31ab6d4d46c7f90f4dfd89eb6fe8ac059d4913f94317a9ab420bfd00ff0e7a",
+    "json_yaml_diagnostic_test.mbt": "f98f5b3013afd6f6a821e528d67c06a1b6acd2c8a83e22b21354b6c237caa668",
+    "language_test.mbt": "d3f79117d44309c608996f50473574dd3b74ae51e3421a46955c610348156746",
+    "lazy_reentry_test.mbt": "b1b84360eeaa5ef971d747c87d62fc9d3ccb167a26d385b94afa820c19eea4f7",
+    "lexer_diagnostic_test.mbt": "52e8f307a8ed0a658fd97d484c677991f5e21c9b8c15c5f7424415b9b3c9e7b0",
+    "lint_test.mbt": "48250b24e39a9c262d164b5062661dbc478dab0831c04d4987c864a7b214d66a",
+    "lint_type_test.mbt": "e27ba58bcba118b22f3ef891d0f7834c66e767134a56eb1c6148be3d802758af",
+    "moonjsonnet_test.mbt": "afddcb5a5b573e5ce8c3c3d88ca78ee48d268d2912abd272a8bdd32fe7736b15",
+    "moonjsonnet_wbtest.mbt": "762da4eccc655f45c4ae330b648c5fa49579c4dae264665af80070e4d96cc30c",
+    "multi_test.mbt": "7aeef64e6be30ce040ba060d20dbfb12c4b36d290d2e8ae5632bb0e436a7eab6",
+    "native_test.mbt": "abc42f546f6334e3176c150b1384b0b8e45d50bbd0ce729bffb34e2b9b677221",
+    "number_literal_test.mbt": "64cfee9e4e5ad73bffcfa6c785e26a7f44496eb28d2ed12683aaabcf84f7d3b3",
+    "numeric_test.mbt": "02c7fde8a421ac112288e099e582858a7e0271bf87a1bfcf6a6e7173b1e46148",
+    "object_std_test.mbt": "d50e1d3aaf64177eba736edf7f6f42c8425a4fc58d6272d5407bac70e0c0c601",
+    "output_diagnostic_test.mbt": "59a0dd561045cb5712634ebf2f37d2654ce9e2a40ae7f5ce4df64fb70ca719bc",
+    "output_test.mbt": "5aef7a557d2f9b8410122277e45f67739ec97dcc2bc204986f16e5b6ff5eef8e",
+    "parameter_forwarding_test.mbt": "a3ed58d902ed801f47dd3a891cde9922dc0566c1f574d3b2f3c913739f350e35",
+    "parameter_range_test.mbt": "d4b69de5fd88b14cc9ec9507fde0a17d654be0da1740dc57c0260932f702cbbe",
+    "parameters_test.mbt": "49afc09505389ede48474e8d2bf9c9e02346592cd901df7313cc02addf669cd0",
+    "parse_yaml_test.mbt": "6d9ef6181f74e9207b8eea6eba4634a587270890dc733aa7f09a1845d83ca748",
+    "parsed_source_test.mbt": "69a376b9911f0a64b6586a9223244a4e37c6ca72aa3d0f2bd61b87310f9eaa9c",
+    "parser_diagnostic_test.mbt": "8274fdc918873dd15b13b510fb0356fc644d42e752cfe704ae394120aab92167",
+    "program_parameters_test.mbt": "c6491f7f73ec8dafcd0ab97bfb10606c251b6ba1722cbbca2a492a622a39b91e",
+    "program_test.mbt": "7932f143daf41eae2d477be035bf0ff059b23094c7e1786cec01ad750ff43be6",
+    "raw_ast_test.mbt": "9009981d5a1e56a1e1fdd33f43c937b0f4638f4393e35e61c847fd64b6a5b4e5",
+    "remove_test.mbt": "69f6fb8769d683a9567f0b60d52f24a5df54dd2ba2aa92ce6be9efb39fec6888",
+    "render_test.mbt": "de5bec68aa7a01e91b9c4033e04a822752f562f69a560c4e197fe9de63c451e3",
+    "sequence_combine_test.mbt": "dd71c05f46a84d0beedcc7fe77d18ad496c3220d0bd0710c06f2c0767589c5e4",
+    "sequence_test.mbt": "b8197157eda107e717d3198d27cdc9f3c6d7d73e7fc16617c6a1f51e70287926",
+    "sets_test.mbt": "d0b7871aa99c4f457a595585cdcdf8cc174e8450d53c9016f7eaafa925c0598d",
+    "sha256_test.mbt": "fa8fb6a5ee0d46f4d253be1df8c3df200926d865b84049f243fecf00469de1e1",
+    "sort_test.mbt": "a21d14f8cd67f0c5045930d3030d6f64d8b9d1fa5f3ebcd0cbd62390c2c8a844",
+    "source_fidelity_wbtest.mbt": "15ab02366daf8fbbcc88abcf17fa46a0886eeaabe4e0aff52aefe854de61441d",
+    "source_range_test.mbt": "6816cf11eb3a70e8ce82cd1f2eaffa711ceee6cf8fca2b20efbbebbe94383790",
+    "spec_aggregate_test.mbt": "ba202765fb4669f805d00b087666df00be4ff3f128bd2f98bc8451bdd9b8f50c",
+    "spec_foundation_arrays_test.mbt": "beb47db7cee9b2ebf3372954ae2c975810b9b61daa3f14448f847ea67b18a19f",
+    "spec_foundation_calls_test.mbt": "7cdf4c0397458504515322c6b14893628f0ed3ba31a99ee75a7af2654f0a28c1",
+    "spec_foundation_numbers_test.mbt": "1939b305dea9021bbb2e8e9065e60f5ba7400346a1defe0d05f1844377078920",
+    "spec_foundation_types_test.mbt": "0c209adf036e789c5ad2407352188125e985367ba756fc2664f3220859063392",
+    "spec_import_scope_test.mbt": "a267fed917387b8edf62b4d1b72ed7764680cd14b919ced2af7f298847a9d2ed",
+    "spec_index_test.mbt": "8082f3d1253b242b9e6b4fd6f1397275fe1f5732c8ae62f922fc2c32963b2b67",
+    "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
+    "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7",
+    "spec_remove_test.mbt": "94b514e9ba69c2b5ad55f8c8e020ec7ab44ceac495150b9cd7020cbdea37c75c",
+    "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
+    "spec_static_test.mbt": "2b56b8efa83348f0ab266b8f18d00d31cf2a5e0543920e7cfb1d2c0d66923491",
+    "spec_text_block_test.mbt": "6172f19cc234f3dd909ee9ab1ab46000d4beaece199c366e37d59b6b1966c3a6",
+    "spec_text_chomp_test.mbt": "72d6b50c1c56686e26978f01eba5ac54c59d1a0fe9643199797090660d70a1fa",
+    "spec_yaml_test.mbt": "f3e780945664c28724177b15d5f8540ff668526218e1b6ab0c55b468c2bb280d",
+    "spec_yaml_wbtest.mbt": "a9d65846e43f8cb06e783f6138fde5f1afd3e8da1a8cc2f0b4a74441f1141dba",
+    "stack_test.mbt": "70a86f582e38e7fac74448bf8e28079400855538d574a27cdbc5f528a53f0634",
+    "standard_character_test.mbt": "cc3e25d5bda8f495ca016b450a6abb63ce36a021c0c2aaccd1b3c746f6f0bbb1",
+    "standard_native_diagnostics_test.mbt": "c4822ccc6fdd6d74edcb9dd7be44a2f4697d5466dfea701517363bfaeba51133",
+    "std_encoding_test.mbt": "671ee68b1e5657c821ac581967fa57507822c8f1fefd2a4256821f8145458886",
+    "std_manifest_test.mbt": "9ac18a22b46088773fe007d191942c806eb134d2c92cf18321a35f0b541f1c9f",
+    "std_math_test.mbt": "91c779e2736c616f258aa1563537c05d1cd86ec9a21bdbca68456bd29a44b9cc",
+    "std_string_test.mbt": "19cc7ae9d34b85633d218673c20df4859627e212e5422d7e7263dc8548b6bf45",
+    "stdlib_contract_test.mbt": "4a8e7065d6be551acdfc96cb6595cfb74cee84fa3c794e1ca1766d7e3b32978e",
+    "string_literal_test.mbt": "9b20b698e56ad17e2688d7bb88663587cdb9f1f09d2dddf787f9ebf24bb51e6f",
+    "syntax_diagnostic_test.mbt": "32d3f2b3b7846d58000f605abd3dd145eab700ecc38a9a58ce756c8eeec3a846",
+    "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
+    "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
+  },
+  "coverage_sha256": "4506ee5fcb5884fdf0b0fd45fd2dbb506ef9bb3b3dbdc5dcfca0420bdee34a87",
+  "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
     {
@@ -18,8 +111,50 @@
         "source": "std.abs(n)",
         "source_line": "852"
       },
-      "reviewed_subset": null,
-      "test_reference_candidates": [],
+      "reviewed_subset": {
+        "name": "abs",
+        "signature_review": {
+          "parameters": [
+            "n"
+          ],
+          "defaults": {},
+          "test": "spec_foundation_calls_test.mbt",
+          "status": "Required-only source/documented signature."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Positive/negative fractional values follow n>0?n:-n."
+          },
+          "E": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Every nonnumeric value kind and demanded error rejected; invalid numeric producer fails first."
+          },
+          "L": {
+            "test": "spec_foundation_calls_test.mbt",
+            "expectation": "Unused binding/argument, branch, short circuit and hidden call remain unforced."
+          },
+          "B": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Numeric zero, negative zero, subnormal and finite extreme results stay finite."
+          }
+        },
+        "remaining": "Signed-zero output spelling is not adjudicated; no complete diagnostic-format claim."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"foundation functions have no public default arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_numbers_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"foundation abs uses the fixed numeric definition\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
     },
     {
@@ -788,12 +923,54 @@
         "heading": "std.filter(func, arr)",
         "heading_line": "2200"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "filter",
+        "signature_review": {
+          "parameters": [
+            "func",
+            "arr"
+          ],
+          "defaults": {},
+          "test": "spec_foundation_calls_test.mbt",
+          "status": "Required-only documented signature; reordered named call succeeds."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "True/false predicates select original elements while preserving input."
+          },
+          "E": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Non-array/non-function and demanded callback/application errors fail."
+          },
+          "L": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Predicates run but unused retained/excluded payloads stay lazy; native counter executes once per predicate."
+          },
+          "B": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Empty input, all-false, all-true with error payload, and lazy object fields."
+          }
+        },
+        "remaining": "Nonboolean predicate results are explicitly unresolved by this review, not treated as normative failures or Go-derived passes. Complete callback-declaration/default and resource-bound matrix remains pending."
+      },
       "test_reference_candidates": [
         {
           "file": "remove_test.mbt",
           "line": 17,
           "test_declaration": "test \"remove and removeAt preserve lazy payloads and immutable inputs\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_arrays_test.mbt",
+          "line": 109,
+          "test_declaration": "test \"foundation filter selects original elements with unchanged input\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"foundation functions have no public default arguments\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -1161,8 +1338,56 @@
         "source": "std.isNumber(v)",
         "source_line": "31"
       },
-      "reviewed_subset": null,
-      "test_reference_candidates": [],
+      "reviewed_subset": {
+        "name": "isNumber",
+        "signature_review": {
+          "parameters": [
+            "v"
+          ],
+          "defaults": {},
+          "test": "spec_foundation_calls_test.mbt",
+          "status": "Required-only source/documented signature."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_foundation_types_test.mbt",
+            "expectation": "Only numbers return true; every other value type returns false, not a type error."
+          },
+          "E": {
+            "test": "spec_foundation_types_test.mbt",
+            "expectation": "Outer error propagates; arity/naming rejection is in the common binding tests."
+          },
+          "L": {
+            "test": "spec_foundation_types_test.mbt",
+            "expectation": "Nested error payloads/assertions/function bodies/defaults remain unforced."
+          },
+          "B": {
+            "test": "spec_foundation_types_test.mbt",
+            "expectation": "Negative zero, minimum positive subnormal and maximum finite binary64 are numbers."
+          }
+        },
+        "remaining": "All host/source combinations remain outside this bounded review."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"foundation functions have no public default arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_numbers_test.mbt",
+          "line": 78,
+          "test_declaration": "test \"foundation pow rejects nonfinite results at the producing expression\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_types_test.mbt",
+          "line": 15,
+          "test_declaration": "test \"foundation isNumber accepts every value type and finite numeric boundaries\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
     },
     {
@@ -1386,6 +1611,12 @@
           "file": "spec_aggregate_test.mbt",
           "line": 43,
           "test_declaration": "test \"P0 lazy boundaries and finite aggregate results remain valid\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_arrays_test.mbt",
+          "line": 37,
+          "test_declaration": "test \"foundation range does not narrow large finite endpoints\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -1910,7 +2141,37 @@
         "source": "std.map(func, arr)",
         "source_line": "273"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "map",
+        "signature_review": {
+          "parameters": [
+            "func",
+            "arr"
+          ],
+          "defaults": {},
+          "test": "spec_foundation_calls_test.mbt",
+          "status": "Required-only source/documentation signature; reordered named call succeeds."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Array or Unicode-string input yields an array of callback values; numeric/string results and unchanged array input."
+          },
+          "E": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Non-function/non-sequence and demanded callback/application errors fail."
+          },
+          "L": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Length avoids callback/payload execution for array/string inputs, unselected payloads stay lazy, repeated result callback executes once."
+          },
+          "B": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Empty array/string, supplementary Unicode codepoints and error payload selection."
+          }
+        },
+        "remaining": "Initial flatMap-like string expectations were corrected from fixed source; original false failures retained. Complete callback declaration/default/limit/error-order matrix remains unadjudicated."
+      },
       "test_reference_candidates": [
         {
           "file": "error_value_test.mbt",
@@ -1934,6 +2195,18 @@
           "file": "remove_test.mbt",
           "line": 10,
           "test_declaration": "test \"remove and removeAt preserve lazy payloads and immutable inputs\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_arrays_test.mbt",
+          "line": 61,
+          "test_declaration": "test \"foundation map maps arrays and Unicode strings with unchanged inputs\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"foundation functions have no public default arguments\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -1991,12 +2264,54 @@
         "source": "std.max(a, b)",
         "source_line": "868"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "max",
+        "signature_review": {
+          "parameters": [
+            "a",
+            "b"
+          ],
+          "defaults": {},
+          "test": "spec_foundation_calls_test.mbt",
+          "status": "Required-only source/documented signature; named arguments reordered successfully."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Select greater finite numeric value using fixed source comparison."
+          },
+          "E": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Each nonnumeric kind in either position rejected; overflow producer and needed operand errors propagate."
+          },
+          "L": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Invalid first type stops before second expression; unused-call controls in common tests."
+          },
+          "B": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Equal, zero, subnormal and maximum finite magnitudes without narrowing."
+          }
+        },
+        "remaining": "Signed-zero output/tie representation and all nested diagnostic combinations remain unadjudicated."
+      },
       "test_reference_candidates": [
         {
           "file": "array_std_test.mbt",
           "line": 29,
           "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"foundation functions have no public default arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_numbers_test.mbt",
+          "line": 35,
+          "test_declaration": "test \"foundation max compares finite values without narrowing\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -2106,12 +2421,54 @@
         "source": "std.min(a, b)",
         "source_line": "876"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "min",
+        "signature_review": {
+          "parameters": [
+            "a",
+            "b"
+          ],
+          "defaults": {},
+          "test": "spec_foundation_calls_test.mbt",
+          "status": "Required-only source/documented signature; named arguments reordered successfully."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Select lesser finite numeric value using fixed source comparison."
+          },
+          "E": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Each nonnumeric kind in either position rejected; overflow producer and demanded operand errors propagate."
+          },
+          "L": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Invalid first type stops before second expression; unused call controls in common tests."
+          },
+          "B": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Equal, zero, subnormal and maximum finite magnitudes without narrowing."
+          }
+        },
+        "remaining": "Signed-zero output/tie representation and all nested diagnostic combinations remain unadjudicated."
+      },
       "test_reference_candidates": [
         {
           "file": "array_std_test.mbt",
           "line": 29,
           "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"foundation functions have no public default arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_numbers_test.mbt",
+          "line": 25,
+          "test_declaration": "test \"foundation min compares finite values without narrowing\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -2250,6 +2607,24 @@
           "file": "program_test.mbt",
           "line": 129,
           "test_declaration": "test \"program native functions traces and binary imports use each call configuration\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_arrays_test.mbt",
+          "line": 37,
+          "test_declaration": "test \"foundation range does not narrow large finite endpoints\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 31,
+          "test_declaration": "test \"foundation argument binding rejects unknown names without evaluating values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_types_test.mbt",
+          "line": 35,
+          "test_declaration": "test \"foundation type and isNumber inspect no nested payload assertion or function\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -2640,8 +3015,50 @@
         "inline": "std.pow(x, n)",
         "inline_line": "234"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "pow",
+        "signature_review": {
+          "parameters": [
+            "x",
+            "n"
+          ],
+          "defaults": {},
+          "test": "spec_foundation_calls_test.mbt",
+          "status": "Required-only public documentation signature; formal mathematical metavariables do not rename parameters."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Positive, negative-integer, fractional exponent, reciprocal and zero-exponent real examples."
+          },
+          "E": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Nonnumeric inputs and non-real/overflow results fail, including before type/predicate/min/max consumers."
+          },
+          "L": {
+            "test": "spec_foundation_calls_test.mbt",
+            "expectation": "Unused/short-circuit/hidden/argument overflow calls stay unforced."
+          },
+          "B": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Finite large result, zero positive power, underflow-to-zero and negative bases with integer exponents."
+          }
+        },
+        "remaining": "pow(0,0), exhaustive rounding/domain/identity-forcing combinations remain unadjudicated."
+      },
       "test_reference_candidates": [
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"foundation functions have no public default arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_numbers_test.mbt",
+          "line": 45,
+          "test_declaration": "test \"foundation pow covers finite real values and underflow\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
         {
           "file": "spec_review_test.mbt",
           "line": 7,
@@ -2720,7 +3137,37 @@
         "source": "std.range(from, to)",
         "source_line": "195"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "range",
+        "signature_review": {
+          "parameters": [
+            "from",
+            "to"
+          ],
+          "defaults": {},
+          "test": "spec_foundation_calls_test.mbt",
+          "status": "Required-only source/documentation signature; reordered named call succeeds."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Inclusive unit steps follow makeArray(to-from+1,function(i)i+from)."
+          },
+          "E": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Operand types and overflowing size arithmetic fail; needed parameters have no defaults."
+          },
+          "L": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Source parameter callback cached once across length/elements/slice alias; unused-call controls in common tests."
+          },
+          "B": {
+            "test": "spec_foundation_arrays_test.mbt",
+            "expectation": "Zero/singleton length, integral-sized fractional intervals and finite starts beyond Int32 including +/-1e308."
+          }
+        },
+        "remaining": "Negative/nonintegral cardinalities and sizes exceeding host allocation bounds remain unadjudicated. Public source dispatch was fixed after two real failed groups."
+      },
       "test_reference_candidates": [
         {
           "file": "aggregate_test.mbt",
@@ -2762,6 +3209,18 @@
           "file": "sort_test.mbt",
           "line": 72,
           "test_declaration": "test \"sort scales iteratively and respects the step budget\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_arrays_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"foundation range follows inclusive unit steps and required named parameters\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"foundation functions have no public default arguments\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -3191,8 +3650,49 @@
         "source": "std.sign(n)",
         "source_line": "858"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "sign",
+        "signature_review": {
+          "parameters": [
+            "n"
+          ],
+          "defaults": {},
+          "test": "spec_foundation_calls_test.mbt",
+          "status": "Required-only source/documented signature."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Negative/positive numbers yield -1/1; zero yields 0."
+          },
+          "E": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Every nonnumeric kind and needed error rejected; invalid producer propagates."
+          },
+          "L": {
+            "test": "spec_foundation_calls_test.mbt",
+            "expectation": "Unselected/unused calls stay lazy."
+          },
+          "B": {
+            "test": "spec_foundation_numbers_test.mbt",
+            "expectation": "Both zeros, finite extremes and positive/negative subnormal signs."
+          }
+        },
+        "remaining": "No arbitrary-input host/diagnostic ordering proof."
+      },
       "test_reference_candidates": [
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"foundation functions have no public default arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_numbers_test.mbt",
+          "line": 15,
+          "test_declaration": "test \"foundation sign uses the fixed numeric definition\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
         {
           "file": "std_math_test.mbt",
           "line": 14,
@@ -3668,7 +4168,36 @@
         "heading": "std.type(x)",
         "heading_line": "123"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "type",
+        "signature_review": {
+          "parameters": [
+            "x"
+          ],
+          "defaults": {},
+          "test": "spec_foundation_calls_test.mbt",
+          "status": "Required-only documented signature; missing/extra/unknown names fail only if called and do not force rejected argument values."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_foundation_types_test.mbt",
+            "expectation": "All seven documented type tags, including named x call."
+          },
+          "E": {
+            "test": "spec_foundation_types_test.mbt",
+            "expectation": "Demanded outer error propagates; no input value type itself is invalid."
+          },
+          "L": {
+            "test": "spec_foundation_types_test.mbt",
+            "expectation": "No nested array/field/assertion/default/body/native callback execution."
+          },
+          "B": {
+            "test": "spec_foundation_types_test.mbt",
+            "expectation": "Empty containers, functions and Unicode values classified by outer type."
+          }
+        },
+        "remaining": "Exhaustive host-native/import/error-order combinations are not accepted by this finite subset."
+      },
       "test_reference_candidates": [
         {
           "file": "aggregate_test.mbt",
@@ -3686,6 +4215,30 @@
           "file": "spec_aggregate_test.mbt",
           "line": 10,
           "test_declaration": "test \"P0 aggregate overflow errors when the operation is evaluated\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_arrays_test.mbt",
+          "line": 83,
+          "test_declaration": "test \"foundation map delays payloads callbacks and unused result elements\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_calls_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"foundation functions have no public default arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_numbers_test.mbt",
+          "line": 78,
+          "test_declaration": "test \"foundation pow rejects nonfinite results at the producing expression\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_foundation_types_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"foundation type returns every documented tag\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {

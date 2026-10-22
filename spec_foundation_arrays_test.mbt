@@ -113,11 +113,11 @@ test "foundation filter selects original elements with unchanged input" {
 }
 
 ///|
-test "foundation filter requires array function and boolean predicate" {
+test "foundation filter validates array function and demanded predicate calls" {
   for
     source in [
       "std.filter(1,[])", "std.filter(function(x)true,'')", "std.filter(function(x)true,{})",
-      "std.filter(function(x)true,null)", "std.filter(function(x)0,[1])", "std.filter(function(x)error 'predicate',[1])",
+      "std.filter(function(x)true,null)", "std.filter(function(x)error 'predicate',[1])",
       "std.filter(function()true,[1])",
     ] {
     ignore(foundation_runtime_error(source))

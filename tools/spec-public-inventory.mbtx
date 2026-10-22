@@ -120,10 +120,12 @@ async fn main {
     ("objectFieldsEx", "parameter names not specified by formal rule"),
   ] { add(entries, name, "specification", signature, 0) }
   let candidates : Map[String, Array[Json]] = Map([])
+  let test_hashes : Map[String, Json] = Map([])
   let paths = checked("git", ["ls-files", "--", "*.mbt"])
   for path in paths.split("\n") {
     if !(path.has_suffix("_test.mbt") || path.has_suffix("_wbtest.mbt")) || path.contains("/") { continue }
     let path = path.to_owned()
+    test_hashes[path] = Json::string(sha256(path))
     let mut group = "outside test declaration"
     for i, line in @fs.read_file(path).text().split("\n").collect() {
       if line.has_prefix("test ") { group = line.to_owned() }
@@ -204,6 +206,8 @@ async fn main {
   let report : Json = {
     "reference_commit":pinned,"reference_sha256":hashes,
     "input_source_commit":checked("git",["rev-parse","HEAD"]),
+    "uncommitted_test_paths":checked("git",["diff","--name-only","HEAD","--","*_test.mbt","*_wbtest.mbt"]),
+    "test_input_sha256":test_hashes,
     "coverage_sha256":sha256(coverage_path),"generator_sha256":sha256("tools/spec-public-inventory.mbtx"),
     "public_function_candidates":rows.length(),"functions":rows,"nonfunction_properties":property_rows,
     "source_internal_helpers":internals,"other_go_reflected_members":other_reflected,

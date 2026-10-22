@@ -37,8 +37,9 @@ that no test exists anywhere.
 N/E/L/B in the table are normal/error/lazy/boundary dimensions. R means only the
 specific assertions reviewed against the fixed contract in
 [manual case mappings](../../tests/spec-public-coverage.json). U means that
-dimension remains unreviewed/unmapped. Seven functions currently have reviewed
-subsets; even these functions have unresolved or uncovered contracts. No whole
+dimension remains unreviewed/unmapped. Seventeen functions currently have reviewed
+subsets, including the ten independent [foundation reviews](SPEC-FOUNDATIONS-REVIEW.md);
+even these functions have unresolved or uncovered contracts. No whole
 function is accepted as fully conforming by this inventory. Earlier executed
 test counts remain tied to their respective stage sources, not to a new claim
 about every signature, type, default or forcing order.
@@ -46,9 +47,11 @@ about every signature, type, default or forcing order.
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its
 source-header assumptions were reviewed against those exact bytes. It records
-the generator/manual-map hashes and the Git identity of the existing test inputs.
-The generator itself was new at that input commit and is identified separately
-by its hash. This generated document is an audit snapshot, not a clean-source
+the generator/manual-map hashes, hashes of every scanned root test, the Git base
+identity and any uncommitted test paths. Candidate references can therefore be
+checked against their actual bytes even during a review with pending test edits.
+The generator and manual case map are independently identified by their hashes.
+This generated document is an audit snapshot, not a clean-source
 execution report. Regenerate with the same public reference files:
 
 ```sh

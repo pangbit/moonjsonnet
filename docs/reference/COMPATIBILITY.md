@@ -184,7 +184,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `flatMap(func,arr)` | Concatenates callback arrays or strings; string input uses Unicode code points; callback results are forced but returned array elements stay lazy; null results are errors |
 | `foldl(func,arr,init)` | Iterative left fold over array/string; forces function, sequence, initial value and each callback result; elements and nested fields remain lazy |
 | `foldr(func,arr,init)` | Iterative right fold over array/string; callback receives element then accumulator; same forcing contract as `foldl` |
-| `range(from,to)` | Inclusive integer range; arguments restricted to signed 32-bit integers |
+| `range(from,to)` | Source-defined inclusive unit steps; finite endpoints are not narrowed, including fractional bounds with integral length; generated size remains subject to host limits |
 | `join(sep,arr)` | String/array separator with like-typed entries; skips null entries |
 | `split(str,c)` | Nonempty string delimiter; empty delimiter is `Runtime` |
 | `splitLimit(str,c,maxsplits)`, `splitLimitR(str,c,maxsplits)` | Split from left/right with nonempty delimiter; -1 means unlimited, otherwise nonnegative signed 32-bit integer limit |
