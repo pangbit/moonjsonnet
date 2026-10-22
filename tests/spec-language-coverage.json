@@ -3,6 +3,57 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "policy": "Manual assertion review only. References and matching names never establish passing behavior. An empty dimension is unreviewed. Executed outcomes live in the separate source-bound evidence report. Completed prose constructor transfers are relative to child judgments and counted separately from completed named rules.",
   "evidence": {
+    "FL0SEL": {
+      "file": "spec_foundation_arrays_test.mbt",
+      "test": "foundation filter selects original elements with unchanged input",
+      "assertions": [
+        "[[2, 4], [1, 2, 3, 4], [], [{ \"x\": 1 }]]"
+      ],
+      "checks": "Reused unchanged source-only selection, reordered names, empty callback and input-preservation assertions. Historical execution remains 539/539 only at 5651ae9; it is not a new run or independent AST proof."
+    },
+    "FL0LAZY": {
+      "file": "spec_foundation_arrays_test.mbt",
+      "test": "foundation filter evaluates predicates without forcing unused payloads",
+      "assertions": [
+        "[[], 1, 7]",
+        "assert_eq(predicates, 2)"
+      ],
+      "checks": "Reused unchanged source controls distinguish excluded/retained errors, selective object fields and preserved input. The recorded native predicate count is an embedding trace, not a specified universal callback order/count. Nonboolean-result observations are separate and remain unadjudicated."
+    },
+    "FL1": {
+      "file": "spec_filter_test.mbt",
+      "test": "filter Boolean masks retain original order duplicates and unchanged input",
+      "assertions": [
+        "([true, false, true], [20, 20])",
+        "([true, true, false], [20, 10])",
+        "([true, true, true], [20, 10, 20])",
+        "sequence_value(value, Json::array([expected, [20, 10, 20]]))"
+      ],
+      "checks": "All eight literal masks on unsorted duplicate labels are checked through independent source/object/Function/call ASTs. Selected subsequences retain multiplicity/order and original input; unrelated poison fields remain lazy. Stable subsequence is the stated public array-filter interpretation, not a proof of an increasing-j premise absent from the printed set."
+    },
+    "FL2": {
+      "file": "spec_filter_test.mbt",
+      "test": "filter classifies members without reading excluded or retained payloads",
+      "assertions": [
+        "sequence_value(filter_call(no, input), [])",
+        "[3, 7, 7, 3]",
+        "Some(\"retained-payload\")",
+        "Some(\"membership-required\")"
+      ],
+      "checks": "Separate source and handmade AST controls keep excluded/retained error payloads unforced under filtering/shape/safe-index demand, then force a selected retained error only on read. One required membership error prevents length and first-result field access before the premature retained payload can be read. No relative ordering among predicate calls or competing failures is asserted."
+    },
+    "FL3": {
+      "file": "spec_filter_test.mbt",
+      "test": "filter validates empty heads and invokes predicates only when needed",
+      "assertions": [
+        "Some(\"function-head\")",
+        "Some(\"array-head\")",
+        "sequence_value(filter_call(dormant, empty), [])",
+        "sequence_value(filter_call(make_function([], sequence_num(1)), empty), [])",
+        "assert_eq(d.kind, @moonjsonnet.Static)"
+      ],
+      "checks": "Every wrong Function/Array head kind rejects Type through source and independent ASTs; isolated heads propagate Runtime. Empty input does not apply an erroneous or number-returning Function. Nonempty wrong arity fails at membership even under length. Hidden unused unknown predicate names still reject Static. The zero-input number-returning function produces no nonboolean result and does not adjudicate the nonempty result domain."
+    },
     "MA0BUILD": {
       "file": "spec_array_build_test.mbt",
       "test": "array makeArray uses integer indices named arguments and callback defaults",
@@ -996,6 +1047,36 @@
     }
   },
   "rules": {
+    "filter": {
+      "normal": [
+        "FL0SEL",
+        "FL1",
+        "FL2",
+        "FL3"
+      ],
+      "runtime_error": [
+        "FL2",
+        "FL3"
+      ],
+      "lazy": [
+        "FL0LAZY",
+        "FL1",
+        "FL2",
+        "FL3"
+      ],
+      "boundary": [
+        "FL1",
+        "FL2",
+        "FL3"
+      ],
+      "remaining": "The [filter record](SPEC-FILTER-2026-10-22.md) covers Function/Array head domains, Boolean membership, retained-subsequence interpretation, duplicate/input preservation and source/independent-AST classification-versus-payload timing. Temporal ordering of independent callbacks is not specified or asserted. The existing public-array adjudication still leaves nonboolean predicate rejection versus exclusion unresolved; old null observations are unchanged, no new rejection assertion or conformance credit is added, and project compatibility policy is not substituted for fixed official semantics. The set formula does not explicitly order j_i, so the public-subsequence inference is not a whole formal-rule completion. Full callback/default/resource/static/producer/invocation and map/fold/flatMap contracts remain separate; A0/B0/N0/R0/PE0 are unchanged.",
+      "implementation": [
+        "stdlib.mbt",
+        "sequence.mbt",
+        "runtime_types.mbt",
+        "ast_convert.mbt"
+      ]
+    },
     "makeArray": {
       "normal": [
         "MA0BUILD",

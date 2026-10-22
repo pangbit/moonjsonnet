@@ -64,3 +64,15 @@ and earlier public-source conflicts are unchanged.
 The [execution evidence](SPEC-ARRAY-COMBINATORS-EVIDENCE-2026-10-22.md) retains
 baseline failures, the test-construction correction, fixes and source-bound
 validation. Observations and normative assertions remain separate.
+
+## Later scoped adjudications
+
+The earlier negative/fractional makeArray discussion above describes this
+review's original baseline. The subsequent [makeArray cardinality review](SPEC-MAKEARRAY-2026-10-22.md)
+adjudicated the direct sz-element contract and committed a negative-size
+rejection at 7445b3f after a preserved failing regression. That later direct
+makeArray decision supersedes this earlier undecided item; it does not
+automatically adjudicate range or the other original public-library gaps.
+The [filter continuation](SPEC-FILTER-2026-10-22.md) reuses the nonboolean
+predicate question without adding a rejection oracle or replaying observations.
+Original historical inputs, logs and null observation statuses are retained.
