@@ -59,6 +59,8 @@ async fn main {
     "spec_array_build_test.mbt", "spec_array_fold_test.mbt",
     "spec_array_flatmap_test.mbt", "spec_array_slice_test.mbt",
     "tests/spec-array-boundary-observations.json",
+    "spec_object_calls_test.mbt", "spec_object_reflection_test.mbt",
+    "spec_object_get_test.mbt", "spec_object_values_test.mbt",
   ]
   let input_hashes : Map[String, Json] = Map([])
   for path in input_paths { input_hashes[path] = Json::string(sha256(path)) }

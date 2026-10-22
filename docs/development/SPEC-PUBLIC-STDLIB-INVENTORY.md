@@ -60,7 +60,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `foldl` | D: `std.foldl(func, arr, init)` | S: `std.foldl(func, arr, init)` | R/R/R/R | [moonjsonnet_test.mbt:118](../../moonjsonnet_test.mbt#L118); [spec_array_fold_test.mbt:5](../../spec_array_fold_test.mbt#L5); [spec_array_slice_test.mbt:61](../../spec_array_slice_test.mbt#L61) |
 | `foldr` | D: `std.foldr(func, arr, init)` | S: `std.foldr(func, arr, init)` | R/R/R/R | [sequence_combine_test.mbt:35](../../sequence_combine_test.mbt#L35); [spec_array_fold_test.mbt:5](../../spec_array_fold_test.mbt#L5); [spec_array_slice_test.mbt:61](../../spec_array_slice_test.mbt#L61) |
 | `format` | D: `std.format(str, vals)` | S: `std.format(str, vals)` | U/U/U/U | [standard_native_diagnostics_test.mbt:43](../../standard_native_diagnostics_test.mbt#L43) |
-| `get` | D: `std.get(o, f, default=null, inc_hidden=true)` | S: `std.get(o, f, default=null, inc_hidden=true)` | U/U/U/U | [object_std_test.mbt:10](../../object_std_test.mbt#L10); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23) |
+| `get` | D: `std.get(o, f, default=null, inc_hidden=true)` | S: `std.get(o, f, default=null, inc_hidden=true)` | R/R/R/R | [object_std_test.mbt:10](../../object_std_test.mbt#L10); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [spec_object_calls_test.mbt:15](../../spec_object_calls_test.mbt#L15) |
 | `hypot` | I: `std.hypot(a, b)` | Native/not defined in std.jsonnet | U/U/U/U | [spec_review_test.mbt:8](../../spec_review_test.mbt#L8); [std_math_test.mbt:6](../../std_math_test.mbt#L6) |
 | `isArray` | I: `std.isArray(v)` | S: `std.isArray(v)` | U/U/U/U | No direct test reference found |
 | `isBoolean` | I: `std.isBoolean(v)` | S: `std.isBoolean(v)` | U/U/U/U | No direct test reference found |
@@ -106,16 +106,16 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `mod` | I: `std.mod(a, b)` | S: `std.mod(a, b)` | U/U/U/U | [std_math_test.mbt:6](../../std_math_test.mbt#L6) |
 | `modulo` | Not listed | F: `std.modulo(a, b)` | U/U/U/U | [std_math_test.mbt:6](../../std_math_test.mbt#L6) |
 | `native` | Not listed | F: `std.native(x)` | U/U/U/U | [evaluator_import_ast_test.mbt:83](../../evaluator_import_ast_test.mbt#L83); [evaluator_imports_test.mbt:20](../../evaluator_imports_test.mbt#L20); [evaluator_test.mbt:6](../../evaluator_test.mbt#L6) |
-| `objectFields` | D: `std.objectFields(o)` | S: `std.objectFields(o)` | U/U/U/U | No direct test reference found |
-| `objectFieldsAll` | D: `std.objectFieldsAll(o)` | S: `std.objectFieldsAll(o)` | U/U/U/U | [object_std_test.mbt:94](../../object_std_test.mbt#L94); [remove_test.mbt:69](../../remove_test.mbt#L69) |
+| `objectFields` | D: `std.objectFields(o)` | S: `std.objectFields(o)` | R/R/R/R | [spec_object_calls_test.mbt:14](../../spec_object_calls_test.mbt#L14); [spec_object_get_test.mbt:104](../../spec_object_get_test.mbt#L104); [spec_object_reflection_test.mbt:5](../../spec_object_reflection_test.mbt#L5) |
+| `objectFieldsAll` | D: `std.objectFieldsAll(o)` | S: `std.objectFieldsAll(o)` | R/R/R/R | [object_std_test.mbt:94](../../object_std_test.mbt#L94); [remove_test.mbt:69](../../remove_test.mbt#L69); [spec_object_calls_test.mbt:14](../../spec_object_calls_test.mbt#L14) |
 | `objectFieldsEx` | Not listed | F: `parameter names not specified by formal rule` | U/U/U/U | [object_std_test.mbt:6](../../object_std_test.mbt#L6) |
-| `objectHas` | D: `std.objectHas(o, f)` | S: `std.objectHas(o, f)` | U/U/U/U | [aggregate_test.mbt:10](../../aggregate_test.mbt#L10); [extrema_test.mbt:21](../../extrema_test.mbt#L21); [sequence_combine_test.mbt:84](../../sequence_combine_test.mbt#L84) |
-| `objectHasAll` | D: `std.objectHasAll(o, f)` | S: `std.objectHasAll(o, f)` | U/U/U/U | [sequence_combine_test.mbt:84](../../sequence_combine_test.mbt#L84); [sequence_test.mbt:76](../../sequence_test.mbt#L76); [sets_test.mbt:37](../../sets_test.mbt#L37) |
+| `objectHas` | D: `std.objectHas(o, f)` | S: `std.objectHas(o, f)` | R/R/R/R | [aggregate_test.mbt:10](../../aggregate_test.mbt#L10); [extrema_test.mbt:21](../../extrema_test.mbt#L21); [sequence_combine_test.mbt:84](../../sequence_combine_test.mbt#L84) |
+| `objectHasAll` | D: `std.objectHasAll(o, f)` | S: `std.objectHasAll(o, f)` | R/R/R/R | [sequence_combine_test.mbt:84](../../sequence_combine_test.mbt#L84); [sequence_test.mbt:76](../../sequence_test.mbt#L76); [sets_test.mbt:37](../../sets_test.mbt#L37) |
 | `objectHasEx` | Not listed | F: `parameter names not specified by formal rule` | U/U/U/U | [object_std_test.mbt:6](../../object_std_test.mbt#L6) |
 | `objectKeysValues` | D: `std.objectKeysValues(o)` | S: `std.objectKeysValues(o)` | U/U/U/U | [object_std_test.mbt:16](../../object_std_test.mbt#L16) |
 | `objectKeysValuesAll` | D: `std.objectKeysValuesAll(o)` | S: `std.objectKeysValuesAll(o)` | U/U/U/U | [object_std_test.mbt:19](../../object_std_test.mbt#L19) |
 | `objectRemoveKey` | D: `std.objectRemoveKey(obj, key)` | S: `std.objectRemoveKey(obj, key)` | U/U/U/U | [object_std_test.mbt:23](../../object_std_test.mbt#L23) |
-| `objectValues` | D: `std.objectValues(o)` | S: `std.objectValues(o)` | U/U/U/U | [object_std_test.mbt:13](../../object_std_test.mbt#L13) |
+| `objectValues` | D: `std.objectValues(o)` | S: `std.objectValues(o)` | R/R/R/R | [object_std_test.mbt:13](../../object_std_test.mbt#L13); [spec_object_calls_test.mbt:15](../../spec_object_calls_test.mbt#L15); [spec_object_get_test.mbt:104](../../spec_object_get_test.mbt#L104) |
 | `objectValuesAll` | D: `std.objectValuesAll(o)` | S: `std.objectValuesAll(o)` | U/U/U/U | [object_std_test.mbt:14](../../object_std_test.mbt#L14) |
 | `parseHex` | D: `std.parseHex(str)` | S: `std.parseHex(str)` | U/U/U/U | [std_string_test.mbt:22](../../std_string_test.mbt#L22) |
 | `parseInt` | D: `std.parseInt(str)` | S: `std.parseInt(str)` | U/U/U/U | [std_string_test.mbt:22](../../std_string_test.mbt#L22) |

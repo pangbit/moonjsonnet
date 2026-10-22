@@ -5,7 +5,7 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "bdd43e49d28c87fe6fb5eeb8b02e1663c027d82d",
+  "input_source_commit": "62f97198233e22ba9c44d131f1c10228eff64091",
   "uncommitted_test_paths": "",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
@@ -83,6 +83,10 @@
     "spec_index_test.mbt": "8082f3d1253b242b9e6b4fd6f1397275fe1f5732c8ae62f922fc2c32963b2b67",
     "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7",
+    "spec_object_calls_test.mbt": "ccfa3809c50d5914725dbf7807fcfe6fea401cef806e3a3099e7398eb6767ed3",
+    "spec_object_get_test.mbt": "b9e2052f29872281e062d7c8d3662fd8a46284117ec763d6f8d971125aaef13a",
+    "spec_object_reflection_test.mbt": "f656b0c8191c5e69e1b7baccfc4ae2783ec11f856b445d7bb27e90131837bbe7",
+    "spec_object_values_test.mbt": "10758f7bd07a14a7580082d79f57abe642ccb2a43bfa8e431bd84008bb09ba92",
     "spec_remove_test.mbt": "94b514e9ba69c2b5ad55f8c8e020ec7ab44ceac495150b9cd7020cbdea37c75c",
     "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
     "spec_static_test.mbt": "2b56b8efa83348f0ab266b8f18d00d31cf2a5e0543920e7cfb1d2c0d66923491",
@@ -103,7 +107,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "d4d57e2911210a1104f1d7ec8f440542272c3eb7f39ac15741453df45d3782d8",
+  "coverage_sha256": "610982b0467b27a91878abf90fdc65d09a83b78e0ce38cf9f691279e5f3330d3",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -1303,7 +1307,42 @@
         "source": "std.get(o, f, default=null, inc_hidden=true)",
         "source_line": "1555"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "get",
+        "signature_review": {
+          "parameters": [
+            "o",
+            "f",
+            "default",
+            "inc_hidden"
+          ],
+          "defaults": {
+            "default": null,
+            "inc_hidden": true
+          },
+          "test": "spec_object_get_test.mbt",
+          "status": "First two required; default=null and inc_hidden=true tested by omission, positional override and reordered named arguments. Invalid binding cases are in spec_object_calls_test."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_object_get_test.mbt",
+            "expectation": "Existing, null, hidden, absent and empty names; inherited self/super select the correct field while the original object remains unchanged."
+          },
+          "E": {
+            "test": "spec_object_get_test.mbt",
+            "expectation": "Needed field/default/flag errors propagate; flag type checked, present selected fields check inherited assertions. Shared reflection tests cover all object/name type kinds."
+          },
+          "L": {
+            "test": "spec_object_get_test.mbt",
+            "expectation": "Default runs only for missing/excluded fields, with exactly two native calls; returned nested/function payloads stay lazy, and get/objectValues/direct lookup share one field/assertion execution."
+          },
+          "B": {
+            "test": "spec_object_get_test.mbt",
+            "expectation": "Present null does not use default; hidden exclusion and missing keys avoid source assertion; selected hidden/null fields do check assertions."
+          }
+        },
+        "remaining": "Exact presentation and competing required-input error order, exhaustive native/reentrant/resource/visibility combinations remain outside this review."
+      },
       "test_reference_candidates": [
         {
           "file": "object_std_test.mbt",
@@ -1315,6 +1354,30 @@
           "file": "spec_length_test.mbt",
           "line": 23,
           "test_declaration": "test \"function length includes source and builtin optional parameters\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_calls_test.mbt",
+          "line": 15,
+          "test_declaration": "test \"object contracts require documented arguments and reject excess arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_get_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"get applies documented defaults and named hidden-field selection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_reflection_test.mbt",
+          "line": 29,
+          "test_declaration": "test \"object visibility inheritance follows all nine fixed separator combinations\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_values_test.mbt",
+          "line": 49,
+          "test_declaration": "test \"objectValues follows element demand order and shares selected source thunks\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -1791,6 +1854,24 @@
           "file": "spec_length_test.mbt",
           "line": 9,
           "test_declaration": "test \"function length counts all declared parameters without forcing defaults\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_get_test.mbt",
+          "line": 43,
+          "test_declaration": "test \"get preserves selected errors and lazy returned container or function heads\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_reflection_test.mbt",
+          "line": 71,
+          "test_declaration": "test \"object reflection and missing lookup do not execute assertions or fields\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_values_test.mbt",
+          "line": 15,
+          "test_declaration": "test \"objectValues empty and hidden-only results avoid source assertions and bodies\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -2856,6 +2937,30 @@
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
+          "file": "spec_object_calls_test.mbt",
+          "line": 39,
+          "test_declaration": "test \"object contract binding errors do not evaluate rejected arguments or unused calls\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_get_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"get evaluates defaults only for missing or excluded fields\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_reflection_test.mbt",
+          "line": 71,
+          "test_declaration": "test \"object reflection and missing lookup do not execute assertions or fields\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_values_test.mbt",
+          "line": 49,
+          "test_declaration": "test \"objectValues follows element demand order and shares selected source thunks\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
           "file": "spec_review_test.mbt",
           "line": 30,
           "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
@@ -2872,8 +2977,62 @@
         "source": "std.objectFields(o)",
         "source_line": "1558"
       },
-      "reviewed_subset": null,
-      "test_reference_candidates": [],
+      "reviewed_subset": {
+        "name": "objectFields",
+        "signature_review": {
+          "parameters": [
+            "o"
+          ],
+          "defaults": {},
+          "test": "spec_object_calls_test.mbt",
+          "status": "One required argument; named o call, missing/excess/unknown rejection and unused-call control tested."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Sorted unique visible names, inherited fields/overrides and all separator visibility combinations."
+          },
+          "E": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Every nonobject kind raises Type; object construction/computed-name error is still demanded."
+          },
+          "L": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Names do not evaluate payloads, assertion callbacks or hidden fields; native check/read counters stay zero."
+          },
+          "B": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Empty/prefix names, null-omitted fields and Unicode order including private-use versus supplementary codepoints."
+          }
+        },
+        "remaining": "Exhaustive resource/dynamic-name/diagnostic-error ordering and inherited-object combinations remain pending; examples are partial coverage."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "spec_object_calls_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"object contracts require documented arguments and reject excess arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_get_test.mbt",
+          "line": 104,
+          "test_declaration": "test \"get and objectValues share field caches and check derived assertions once\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_reflection_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"object reflection distinguishes missing hidden null and omitted keys\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_values_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"objectValues selects sorted inherited values with self and super\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
     },
     {
@@ -2884,7 +3043,36 @@
         "source": "std.objectFieldsAll(o)",
         "source_line": "1561"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "objectFieldsAll",
+        "signature_review": {
+          "parameters": [
+            "o"
+          ],
+          "defaults": {},
+          "test": "spec_object_calls_test.mbt",
+          "status": "One required documented/source parameter; named/binding/lazy-call cases exercised."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Sorted names include hidden and inherited fields with overridden names appearing once."
+          },
+          "E": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Nonobject kinds raise Type, and computed-name construction errors propagate without demanding values."
+          },
+          "L": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Visible and hidden field bodies/assertions remain unforced by enumeration."
+          },
+          "B": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Empty names, prefixes, null-omitted keys, supplementary Unicode and every visibility inheritance combination."
+          }
+        },
+        "remaining": "Complete dynamic-key, layer, error-precedence and limit combinations are not accepted by this subset."
+      },
       "test_reference_candidates": [
         {
           "file": "object_std_test.mbt",
@@ -2896,6 +3084,18 @@
           "file": "remove_test.mbt",
           "line": 69,
           "test_declaration": "test \"flat object merge keeps bindings visibility and self while dropping assertions\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_calls_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"object contracts require documented arguments and reject excess arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_reflection_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"object reflection distinguishes missing hidden null and omitted keys\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -2926,7 +3126,37 @@
         "source": "std.objectHas(o, f)",
         "source_line": "1564"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "objectHas",
+        "signature_review": {
+          "parameters": [
+            "o",
+            "f"
+          ],
+          "defaults": {},
+          "test": "spec_object_calls_test.mbt",
+          "status": "Both parameters required; named calls are in spec_object_reflection_test; rejected arguments and unused calls remain lazy."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Present/null/empty-string names are present, missing/hidden fields false, and inherited visibility follows the fixed nine-case table."
+          },
+          "E": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "All nonobject object-argument kinds and nonstring field-name kinds raise Type; construction-name errors propagate."
+          },
+          "L": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Membership does not evaluate field bodies or object assertions, verified with native counters returning false from the forbidden assertion callback."
+          },
+          "B": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Null values versus omitted null keys, empty field name and all inherited visibility combinations."
+          }
+        },
+        "remaining": "Complete resource/outer-error/argument-error precedence and arbitrary inheritance/assertion combinations remain unadjudicated; no full-function acceptance inferred."
+      },
       "test_reference_candidates": [
         {
           "file": "aggregate_test.mbt",
@@ -2963,6 +3193,18 @@
           "line": 14,
           "test_declaration": "test \"sort supports defaults named keys stability and array ordering\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_calls_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"object contracts require documented arguments and reject excess arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_reflection_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"object reflection distinguishes missing hidden null and omitted keys\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -2975,7 +3217,37 @@
         "source": "std.objectHasAll(o, f)",
         "source_line": "1567"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "objectHasAll",
+        "signature_review": {
+          "parameters": [
+            "o",
+            "f"
+          ],
+          "defaults": {},
+          "test": "spec_object_calls_test.mbt",
+          "status": "Required documented/source names; named calls and invalid binding rejection tested separately."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Visible and hidden names count as present, including inherited/overridden visibility combinations; missing is false."
+          },
+          "E": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Nonobject/nonstring kinds raise Type and computed-name construction errors propagate."
+          },
+          "L": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Hidden or visible membership does not force payloads or assertions; rejected argument expressions remain lazy in common binding tests."
+          },
+          "B": {
+            "test": "spec_object_reflection_test.mbt",
+            "expectation": "Null-valued versus missing fields, empty name and nine separator combinations."
+          }
+        },
+        "remaining": "Arbitrary layer/error/limit combinations and competing-error ordering remain outside this finite reviewed subset."
+      },
       "test_reference_candidates": [
         {
           "file": "sequence_combine_test.mbt",
@@ -2999,6 +3271,18 @@
           "file": "sort_test.mbt",
           "line": 14,
           "test_declaration": "test \"sort supports defaults named keys stability and array ordering\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_calls_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"object contracts require documented arguments and reject excess arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_reflection_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"object reflection distinguishes missing hidden null and omitted keys\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -3086,12 +3370,65 @@
         "source": "std.objectValues(o)",
         "source_line": "1570"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "objectValues",
+        "signature_review": {
+          "parameters": [
+            "o"
+          ],
+          "defaults": {},
+          "test": "spec_object_calls_test.mbt",
+          "status": "One required source/documented parameter, with named call in spec_object_values_test and common invalid binding controls."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_object_values_test.mbt",
+            "expectation": "Values align with sorted visible inherited fields; self/super and source-object immutability preserved."
+          },
+          "E": {
+            "test": "spec_object_values_test.mbt",
+            "expectation": "Selected field access checks direct/inherited assertions; shared reflection tests reject nonobjects and propagate construction errors."
+          },
+          "L": {
+            "test": "spec_object_values_test.mbt",
+            "expectation": "Shape/length do not evaluate values or assertions; nested arrays/objects/functions remain lazy at head, and native visits occur in demand order b,a with repeated b shared through get."
+          },
+          "B": {
+            "test": "spec_object_values_test.mbt",
+            "expectation": "Empty/hidden-only objects with false assertions yield empty arrays; nonempty shape can be inspected without indexing; hidden function bodies are excluded."
+          }
+        },
+        "remaining": "Complete limits, arbitrary inheritance and manifestations are not accepted. In particular std.manifestJson({assert false}) remains a distinct unchanged source path, not a defect inferred here."
+      },
       "test_reference_candidates": [
         {
           "file": "object_std_test.mbt",
           "line": 13,
           "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_calls_test.mbt",
+          "line": 15,
+          "test_declaration": "test \"object contracts require documented arguments and reject excess arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_get_test.mbt",
+          "line": 104,
+          "test_declaration": "test \"get and objectValues share field caches and check derived assertions once\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_reflection_test.mbt",
+          "line": 29,
+          "test_declaration": "test \"object visibility inheritance follows all nine fixed separator combinations\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_values_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"objectValues selects sorted inherited values with self and super\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -4517,6 +4854,18 @@
           "file": "spec_foundation_types_test.mbt",
           "line": 5,
           "test_declaration": "test \"foundation type returns every documented tag\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_get_test.mbt",
+          "line": 43,
+          "test_declaration": "test \"get preserves selected errors and lazy returned container or function heads\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_object_values_test.mbt",
+          "line": 15,
+          "test_declaration": "test \"objectValues empty and hidden-only results avoid source assertions and bodies\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {

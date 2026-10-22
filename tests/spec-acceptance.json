@@ -1,4 +1,10 @@
 [
+  {"id":"object-inherited-reflection","axis":"P1-object-contracts","args":["-e","local base={assert false,a:null,h::error 'hidden'}; local o=base+{b:2}; [std.objectHas(o,'a'),std.objectHasAll(o,'h'),std.objectHas(o,'h'),std.objectFields(o),std.objectFieldsAll(o),std.get(o,'missing',7)]"],"value":[true,true,false,["a","b"],["a","b","h"],7]},
+  {"id":"object-get-defaults","axis":"P1-object-contracts","args":["-e","local o={a:null,h::error 'hidden'}; [std.get(o,'a',error 'default'),std.get(o,'h',3,false),std.get(o,'missing'),std.type(std.get({},'x',function()error 'body'))]"],"value":[null,3,null,"function"]},
+  {"id":"object-get-inherited-assertion","axis":"P1-object-contracts","args":["-e","std.get({assert false,a:1}+{b:2},'b')"],"error":"Object assertion failed"},
+  {"id":"object-values-shape-lazy","axis":"P1-object-contracts","args":["-e","std.length(std.objectValues({assert false,a:error 'value',h::error 'hidden'}))"],"value":1},
+  {"id":"object-values-selected-assertion","axis":"P1-object-contracts","args":["-e","std.objectValues({assert false,a:1})[0]"],"error":"Object assertion failed"},
+  {"id":"object-values-inherited-self","axis":"P1-object-contracts","args":["-e","local base={a:1,v:self.a,h::error 'hidden'}; local o=base+{a:2,z:super.a}; [std.objectValues(o),std.objectFields(base),base.a]"],"value":[[2,2,1],["a","v"],1]},
   {"id":"foldl-unused-empty-callback","axis":"P1-array-combinators","args":["-e","std.foldl(error 'unused callback',[],42)"],"value":42},
   {"id":"foldr-unused-empty-callback","axis":"P1-array-combinators","args":["-e","std.foldr(error 'unused callback','',42)"],"value":42},
   {"id":"foldl-unused-initial","axis":"P1-array-combinators","args":["-e","std.foldl(function(a,x)x,[1,2],error 'unused initial')"],"value":2},
