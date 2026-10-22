@@ -22,17 +22,28 @@ async fn sha256(path : String) -> String {
 ///|
 async fn main {
   let args = @env.args()
-  guard args.length() == 2 else {
-    fail("Usage: moon run --frozen tools/spec-language-forms.mbtx EVIDENCE_DIR")
+  guard args.length() == 2 || args.length() == 3 else {
+    fail(
+      "Usage: moon run --frozen tools/spec-language-forms.mbtx EVIDENCE_DIR [forms|calls]",
+    )
   }
+  let corpus = args.get(2).unwrap_or("forms")
+  assert_true(corpus == "forms" || corpus == "calls", msg="unknown corpus")
   let evidence = args[1]
   @fs.mkdir(evidence, recursive=true, allow_exist=true)
   let commit = checked("git", ["rev-parse", "HEAD"])
   ignore(checked("git", ["diff", "HEAD", "--exit-code"]))
-  let paths = [
-    "tests/spec-language-forms-cli.json", "tools/spec-language-forms.mbtx", "spec_language_forms_test.mbt",
-    "spec_language_forms_ast_test.mbt", "docs/development/SPEC-LANGUAGE-FORMS-REVIEW.md",
-  ]
+  let paths = if corpus == "calls" {
+    [
+      "tests/spec-language-call-cli.json", "tools/spec-language-forms.mbtx", "spec_language_call_test.mbt",
+      "docs/development/SPEC-LANGUAGE-CALL-REVIEW.md",
+    ]
+  } else {
+    [
+      "tests/spec-language-forms-cli.json", "tools/spec-language-forms.mbtx", "spec_language_forms_test.mbt",
+      "spec_language_forms_ast_test.mbt", "docs/development/SPEC-LANGUAGE-FORMS-REVIEW.md",
+    ]
+  }
   let hashes : Map[String, Json] = Map([])
   for path in paths {
     hashes[path] = Json::string(sha256(path))
@@ -113,6 +124,7 @@ async fn main {
   let report : Json = {
     "source_commit": commit,
     "tracked_source_clean": true,
+    "corpus": corpus,
     "input_sha256": hashes,
     "toolchain": checked("moon", ["version", "--all"]),
     "platform": checked("uname", ["-sm"]),
