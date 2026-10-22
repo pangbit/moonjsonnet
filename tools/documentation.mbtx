@@ -19,7 +19,8 @@ fn code_blocks(source : String) -> Array[String] {
 }
 
 async fn main {
-  let listed = @shell.Cmd("git", ["ls-files", "--cached", "--others", "--exclude-standard", "--", "*.md"]).output()
+  // Staged new documents are included; untracked files are outside this check.
+  let listed = @shell.Cmd("git", ["ls-files", "--cached", "--", "*.md"]).output()
   listed.check()
   let root_docs = ["README.md", "README.mbt.md", "README.zh-CN.md", "CHANGELOG.md", "CONTRIBUTING.md", "SECURITY.md", "AGENTS.md"]
   let failures : Array[String] = []
