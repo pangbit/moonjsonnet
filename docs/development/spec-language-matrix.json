@@ -2,8 +2,8 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "735c2f56b8b2b27534fd68bab3ffa72e90248db1d97ddacedb74f7fdec6e65ee",
-  "tool_sha256": "e85a100054bc3e0bd28e96f5dd55b92355e66c72b737dc648de540e867f6ee2f",
+  "mapping_sha256": "524f80bcdbc15d1513c4db06e84a0c9749b6dc28182a81503e7dabdd15a89000",
+  "tool_sha256": "45a49f09948a08e915d9fa91f2223a77a399cbe919c5c45520816370c18a1e48",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 57,
@@ -1359,6 +1359,63 @@
       "checks": "Unknown names in either operand reject Static at Program creation through source and independent handmade ASTs, under shortcut/longcut Boolean left values and unused wrappers. Missing operands are separate source-only Syntax controls, with no malformed typed-AST equivalence or complete grammar/static constructor claim.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "IC1": {
+      "file": "spec_import_closure_test.mbt",
+      "line": 108,
+      "test": "imported factory closures retain module locals self root and dependency origin",
+      "assertions": [
+        "[10, 2, 12, 3, 12, 11]",
+        "[10, 900, 910, 700, 12, 11]",
+        "[10, 700, 710, 3, 12, 11]",
+        "root_local(",
+        "root_var(\"x\")",
+        "root_path(\"self\", [\"x\"])",
+        "root_path(\"$\", [\"x\"])",
+        "limits=import_closure_limits()",
+        "assert_true(requests.contains((\"root-scope-entry\", \"module\")))",
+        "assert_true(requests.contains((\"closure-module.libsonnet\", \"dep\")))",
+        "assert_eq(requests.length(), 2)"
+      ],
+      "checks": "Independent source-entry and handmade-entry ASTs extract a factory and call its returned closure under colliding caller locals and object/root contexts. Module local x=10, default dependency 2/3, nested self=12 and root=11 remain lexical. Explicit caller x/self/root arguments are still passed normally. Imported modules are fixed Source.text on both entry paths, not claimed independent module ASTs. Resolver-ID membership is a synthetic host-protocol control, not general path/cache policy.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "IC2": {
+      "file": "spec_import_closure_test.mbt",
+      "line": 170,
+      "test": "imported unused function bodies cannot capture caller namespaces",
+      "assertions": [
+        "[777, 100, 99, 100]",
+        "for body in [\"caller\", \"self.x\", \"super.x\", \"$.x\"]",
+        "\"function()\" + body",
+        "import_closure_type(root_ast(ImportFile(\"module\", false)))",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(d.location.file, \"closure-module.libsonnet\")",
+        "assert_eq(requests.length(), 1)"
+      ],
+      "checks": "A positive caller-context control establishes valid local/self/super/root values. Merely inspecting the imported function type then rejects Static in its own module for each free namespace, even though the invalid function body would not execute. Entry Program creation succeeds first. Both entry adapters are independent; module source parsing is shared by the import API.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "IC3": {
+      "file": "spec_import_closure_test.mbt",
+      "line": 227,
+      "test": "imported closure defaults defer nested dependency compile and runtime failures",
+      "assertions": [
+        "(\"function(\", @moonjsonnet.Syntax)",
+        "(\"local unused=function() x;{a:2,b:3}\", @moonjsonnet.Static)",
+        "(\"{a:error 'dep-default-required',b:3}\", @moonjsonnet.Runtime)",
+        "for mode in [\"factory-type\", \"closure-type\", \"override\", \"force\"]",
+        "assert_eq(d.kind, kind)",
+        "assert_eq(d.location.file, \"closure-dep.libsonnet\")",
+        "assert_eq(d.message, \"dep-default-required\")",
+        "Json::array([10, 5, 15, 7, 12, 11])",
+        "Json::string(\"function\")",
+        "assert_true(!requests.contains((\"closure-module.libsonnet\", \"dep\")))",
+        "assert_eq(requests.length(), 1)",
+        "assert_eq(requests.length(), 2)"
+      ],
+      "checks": "Factory/returned-closure type and explicit seed/arg overrides avoid loading the nested dependency despite its Syntax/Static/Runtime failure. Default demand loads it from the defining module context and exposes its own phase/marker. A free x in an unused dependency function cannot capture the intermediate module local either. Request maps collapse repeated IDs and claim no cache lifetime/callback count/order policy.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -1405,6 +1462,7 @@
     "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
     "spec_foundation_calls_test.mbt": "7cdf4c0397458504515322c6b14893628f0ed3ba31a99ee75a7af2654f0a28c1",
     "spec_boolean_shortcircuit_test.mbt": "730b05bfade40138c803a0223387fee8b11f92117fcc1996dda46cf8c71109ef",
+    "spec_import_closure_test.mbt": "e8136fdc0bb06add93a8589d9409b3b579aaa653077d0700fe4fcf244c02da58",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -4064,24 +4122,29 @@
           "IB4",
           "IB5",
           "IU1",
-          "IU4"
+          "IU4",
+          "IC1"
         ],
         "static_error": [
           "I1",
           "I3",
           "IB3",
-          "IR4"
+          "IR4",
+          "IC2",
+          "IC3"
         ],
         "runtime_error": [
           "IB3",
           "IU2",
-          "IU3"
+          "IU3",
+          "IC3"
         ],
         "lazy": [
           "I2",
           "I3",
           "IB2",
-          "IU3"
+          "IU3",
+          "IC3"
         ],
         "boundary": [
           "IB1",
@@ -4091,15 +4154,22 @@
           "IU1",
           "IU2",
           "IU3",
-          "IU4"
+          "IU4",
+          "IC1",
+          "IC2",
+          "IC3"
         ]
       },
-      "remaining": "Importbin byte-value substitution and bounded BOM-free importstr UTF-8 substitution are reviewed in their respective evidence reports. Initial-BOM interpretation and precise normative diagnostics remain unknown. This broader row still lacks complete canonical aliases, cycles, code-import scope/decoding, cross-mode/source/value/failure cache identity/lifetimes, host resolver policy and resources.",
+      "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) closes exported-factory lexical isolation and deferred nested-import/default boundaries, reusing I1-I3; no whole CORE-IMPORT or generic child judgment is completed. Importbin byte-value and bounded BOM-free importstr reviews retain their scopes. General code-import source/decoding forms, initial BOM, canonical aliases, cycles, cross-mode/source/value/failure cache identity/lifetimes, host resolver/I/O policy and resources remain unadjudicated; diagnostic details are host controls.",
       "implementation": [
         "imports.mbt",
         "evaluator_imports.mbt",
         "eval.mbt",
-        "validate.mbt"
+        "validate.mbt",
+        "parser.mbt",
+        "runtime_types.mbt",
+        "objects.mbt",
+        "ast_convert.mbt"
       ],
       "obligation": [
         "Import substitutions, lazy loading and independent static checking of imported programs"
@@ -4580,7 +4650,8 @@
           "AX1",
           "AL1",
           "AC2",
-          "CK2"
+          "CK2",
+          "IC1"
         ],
         "static_error": [
           "F5",
@@ -4595,7 +4666,8 @@
           "SR2",
           "SP3",
           "RT3",
-          "AL2"
+          "AL2",
+          "IC3"
         ],
         "boundary": [
           "SR1",
@@ -4610,14 +4682,17 @@
           "AL1",
           "AL2",
           "AC2",
-          "CK2"
+          "CK2",
+          "IC1",
+          "IC3"
         ]
       },
-      "remaining": "The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) adds iteration-tuple capture after construction, without completing general substitution. Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule.",
+      "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) adds definition-context capture across code-import and lazy default/dependency boundaries, without completing general substitution. The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) adds iteration-tuple capture after construction, without completing general substitution. Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt",
-        "objects.mbt"
+        "objects.mbt",
+        "imports.mbt"
       ],
       "obligation": [
         "Capture avoidance and lexical closure/default binding"
