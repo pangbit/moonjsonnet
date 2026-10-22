@@ -100,7 +100,9 @@ async fn main {
     #|  assert_eq(parameter.range.unwrap().format(),"consumer:1:10-14")
     #|  assert_true(parameter.default_value.unwrap().kind is NumberLiteral("42"))
     #|  assert_eq(@moonjsonnet.Program::from_ast(function).evaluate(),42)
-    #|  assert_eq(@moonjsonnet.evaluate("(function(x,x) x)(1,42)"),42)
+    #|  try @moonjsonnet.Program::parse("(function(x,x) x)(1,42)") catch {
+    #|    @moonjsonnet.Error(d) => assert_eq(d.kind,@moonjsonnet.Static)
+    #|  } noraise { _ => fail("duplicate formal parameters accepted") }
     #|  let raw_source="/*source*/ unknown + @'it''s' //tail\r\n"
     #|  let parsed=@moonjsonnet.ParsedSource::parse(raw_source,filename="consumer")
     #|  assert_eq(parsed.text(),raw_source)

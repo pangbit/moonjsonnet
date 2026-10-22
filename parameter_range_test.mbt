@@ -31,31 +31,19 @@ test "parameter metadata survives independent AST edits and program copies" {
 }
 
 ///|
-test "repeated formal names bind last positional and first default lazily" {
-  for
-    (source, expected) in [
-      ("std.length(function(x,x) x)", 2),
-      ("std.length(function(x=1,x) x)", 2),
-      ("(function(x,x) x)(42)", 42),
-      ("(function(x,x) x)(1,42)", 42),
-      ("(function(x,x) x)(x=42)", 42),
-      ("(function(x=42,x=1) x)()", 42),
-      ("(function(x=42,x=error 'unused') x)()", 42),
-      ("(function(x,x) x)(error 'unused',42) tailstrict", 42),
-      ("{f(x,x):x}.f(1,42)", 42),
-      ("local f(x,x)=x;f(1,42)", 42),
-    ] {
-    assert_eq(@moonjsonnet.evaluate(source), Json::number(expected.to_double()))
-  }
+test "repeated formal names are static errors independent of invocation" {
   for
     source in [
-      "(function(x=1,x) x)()", "(function(x,x=1) x)()", "(function(x,x) x)(1,x=2)",
-      "(function(x,x) x)(1,2,3)", "(function(x,x) x)(y=42)",
+      "std.length(function(x,x) x)", "std.length(function(x=1,x) x)", "(function(x,x) x)(42)",
+      "(function(x,x) x)(1,42)", "(function(x,x) x)(x=42)", "(function(x=42,x=1) x)()",
+      "(function(x=42,x=error 'unused') x)()", "(function(x,x) x)(error 'unused',42) tailstrict",
+      "{f(x,x):x}.f(1,42)", "local f(x,x)=x;f(1,42)", "(function(x=1,x) x)()", "(function(x,x=1) x)()",
+      "(function(x,x) x)(1,x=2)", "(function(x,x) x)(1,2,3)", "(function(x,x) x)(y=42)",
     ] {
-    try @moonjsonnet.evaluate(source) catch {
-      @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Runtime)
+    try @moonjsonnet.Program::parse(source) catch {
+      @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Static)
     } noraise {
-      _ => fail("invalid invocation accepted")
+      _ => fail("duplicate formal parameters accepted")
     }
   }
 }
@@ -75,7 +63,11 @@ test "manual parameter ranges validate without forcing defaults" {
     _ => fail("invalid parameter range accepted")
   }
   ps[0] = { ..ps[0], range: None, }
-  // Repeated names remain valid for manually constructed trees too.
-  ps.push(ps[0])
   assert_eq(@moonjsonnet.Program::from_ast(tree).evaluate(), 42)
+  ps.push(ps[0])
+  try @moonjsonnet.Program::from_ast(tree) catch {
+    @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Static)
+  } noraise {
+    _ => fail("duplicate AST parameters accepted")
+  }
 }

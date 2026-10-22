@@ -53,8 +53,17 @@ fn validate(
     }
     Func(ps, body) => {
       let scope = names.copy()
-      for { name: n, .. } in ps {
-        scope.push(n)
+      let seen : Map[String, Bool] = Map([])
+      for p in ps {
+        if seen.contains(p.name) {
+          raise problem(
+            Static,
+            p.range.map(r => r.begin).unwrap_or(e.loc),
+            "duplicate parameter '\{p.name}'",
+          )
+        }
+        seen[p.name] = true
+        scope.push(p.name)
       }
       for { default_value: d, .. } in ps {
         if d is Some(v) {
