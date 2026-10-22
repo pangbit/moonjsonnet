@@ -1,0 +1,131 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+///|
+async fn checked(program : String, args : Array[String]) -> String {
+  let result = @shell.Cmd(program, args).output(timeout_ms=10000)
+  result.check()
+  result.stdout().trim().to_owned()
+}
+
+///|
+async fn sha256(path : String) -> String {
+  checked("shasum", ["-a", "256", path]).split(" ").next().unwrap().to_owned()
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 2 else {
+    fail("Usage: moon run --frozen tools/spec-language-forms.mbtx EVIDENCE_DIR")
+  }
+  let evidence = args[1]
+  @fs.mkdir(evidence, recursive=true, allow_exist=true)
+  let commit = checked("git", ["rev-parse", "HEAD"])
+  ignore(checked("git", ["diff", "HEAD", "--exit-code"]))
+  let paths = [
+    "tests/spec-language-forms-cli.json", "tools/spec-language-forms.mbtx", "spec_language_forms_test.mbt",
+    "spec_language_forms_ast_test.mbt", "docs/development/SPEC-LANGUAGE-FORMS-REVIEW.md",
+  ]
+  let hashes : Map[String, Json] = Map([])
+  for path in paths {
+    hashes[path] = Json::string(sha256(path))
+  }
+  let build_args = [
+    "build", "cmd/main", "--target", "native", "--frozen", "--deny-warn", "-j", "1",
+  ]
+  let build = @shell.Cmd("moon", build_args).output(timeout_ms=180000)
+  @fs.write_file(evidence + "/build.stdout", build.stdout())
+  @fs.write_file(evidence + "/build.stderr", build.stderr())
+  build.check()
+  let cli = @fs.realpath("_build/native/debug/build/cmd/main/main.exe")
+  let cli_hash = sha256(cli)
+  guard @json.parse(@fs.read_file(paths[0]).text()) is Array(fixtures) else {
+    fail("fixture array")
+  }
+  let rows : Array[Json] = []
+  let ids : Map[String, Bool] = Map([])
+  let mut passed = 0
+  for fixture in fixtures {
+    guard fixture is Object(fields) &&
+      fixture is { "id": String(id), "source": String(source), .. } else {
+      fail("fixture shape")
+    }
+    assert_true(!ids.contains(id), msg="duplicate case " + id)
+    ids[id] = true
+    let result = @shell.Cmd(cli, ["-e", source]).output(timeout_ms=5000)
+    let rendered_class = if result.stderr().has_prefix("RUNTIME ERROR:") {
+      "runtime"
+    } else if result.stderr().has_prefix("<cmdline>:") {
+      "source"
+    } else {
+      "other"
+    }
+    let ok = if fields.get("error_class") is Some(String(expected_class)) {
+      guard fields.get("fragment") is Some(String(fragment)) else {
+        fail("diagnostic fragment")
+      }
+      result.exit_code() == 1 &&
+      result.stdout().is_empty() &&
+      rendered_class == expected_class &&
+      result.stderr().contains(fragment)
+    } else {
+      result.exit_code() == 0 &&
+      result.stderr().is_empty() &&
+      (try @json.parse(result.stdout()) == fields["value"] catch {
+        _ => false
+      })
+    }
+    if ok {
+      passed += 1
+    }
+    let actual_class : String? = if result.exit_code() == 0 {
+      None
+    } else {
+      Some(rendered_class)
+    }
+    rows.push({
+      "input": fixture,
+      "exit": result.exit_code(),
+      "stdout": result.stdout(),
+      "stderr": result.stderr(),
+      "rendered_error_class": actual_class,
+      "passed": ok,
+    })
+    @fs.write_file(
+      evidence + "/cases.json",
+      Json::array(rows).stringify(indent=2) + "\n",
+    )
+    println(id + ": " + (if ok { "PASS" } else { "FAIL" }))
+  }
+  assert_eq(checked("git", ["rev-parse", "HEAD"]), commit)
+  ignore(checked("git", ["diff", "HEAD", "--exit-code"]))
+  for path in paths {
+    assert_eq(Json::string(sha256(path)), hashes[path])
+  }
+  assert_eq(sha256(cli), cli_hash)
+  let report : Json = {
+    "source_commit": commit,
+    "tracked_source_clean": true,
+    "input_sha256": hashes,
+    "toolchain": checked("moon", ["version", "--all"]),
+    "platform": checked("uname", ["-sm"]),
+    "cli_sha256": cli_hash,
+    "build_args": build_args,
+    "build_exit": build.exit_code(),
+    "passed": passed,
+    "total": rows.length(),
+    "failed": rows.length() - passed,
+    "scope": "Source CLI only; library diagnostic kinds and handmade AST rejection are separate assertions, not inferred from CLI text. No Go/C++ or Linux run.",
+    "cases": rows,
+  }
+  @fs.write_file(evidence + "/report.json", report.stringify(indent=2) + "\n")
+  println("Focused source CLI: \{passed}/\{rows.length()}")
+  assert_eq(passed, rows.length())
+}
