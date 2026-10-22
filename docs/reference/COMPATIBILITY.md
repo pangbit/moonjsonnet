@@ -153,7 +153,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `extVar(x)` | Memoized JSON value or lazy Jsonnet code in a clean scope; missing/cyclic names are `Runtime` |
 | `type(x)` | Jsonnet type string |
 | `isArray(v)`, `isBoolean(v)`, `isFunction(v)`, `isNumber(v)`, `isObject(v)`, `isString(v)` | Type predicates; do not manifest values |
-| `length(x)` | Unicode string, array, visible object fields, or required function parameter count (excluding defaults, as in Go) |
+| `length(x)` | Unicode string, array, visible object fields, or currently required function parameter count; excluding defaults is a known normative conformance gap |
 | `objectFields(o)`, `objectFieldsAll(o)` | Sorted Unicode keys, excluding/including hidden fields |
 | `objectHas(o,f)`, `objectHasAll(o,f)` | Membership excluding/including hidden fields |
 | `map(func,arr)` | Lazy mapped array; accepts array or string |
@@ -324,8 +324,10 @@ The new sequence corpus is checked against Go; the original C++ corpus is
 retained unchanged. Sequence allocation consumes the evaluation step budget
 even when generated elements are never forced.
 
-`length` on a function excludes defaulted parameters, as in Go; C++ counts all
-declared parameters. `foldl` follows Go's strict argument and intermediate-result
+`length` on a function currently excludes defaulted parameters, as in Go. The
+fixed public documentation requires all declared parameters, including defaults;
+this known mismatch must be corrected before conformance acceptance. C++ counting
+corroborates the documentation. `foldl` follows Go's strict argument and intermediate-result
 evaluation. It does not deeply manifest the accumulator or force unused array
 elements. This changes the earlier C++-based behavior for unused erroneous
 functions/initial values. The shared corpus preserves these inputs and verifies

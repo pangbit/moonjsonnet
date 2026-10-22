@@ -7,14 +7,14 @@ Unknown coverage is not passing. Historical Go/C++ fixtures remain unchanged.
 
 ## Function length decision
 
-The fixed [stdlib length documentation](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html#L147-L166)
+The fixed [stdlib length documentation](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html)
 defines a function's parameter count. The
 [language reference](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/language.html.md#function-parameters)
 classifies both required and optional declarations as parameters. Thus
 `std.length(function(a,b=1)a)` should be 2; counting must not evaluate defaults
 or the body. The core specification supplies array/object/string length rules
 but no competing required-only function rule. The fixed
-[C++ implementation](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/core/vm.cpp#L1100-L1127)
+[C++ implementation](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/core/vm.cpp)
 counts all closure parameters and corroborates this reading. Its behavior is
 supporting implementation evidence, not the normative authority.
 
@@ -41,9 +41,9 @@ approval addressing the automatic-review rejection.
 
 ## removeAt named-argument conflict
 
-The fixed [public documentation](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html#L2771-L2787)
+The fixed [public documentation](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html)
 names the index `idx`; the same version's
-[source definition](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1680-L1684)
+[source definition](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet)
 names it `at`. MoonJsonnet currently uses `i` from its Go-compatible binding.
 The specification's named-call rules make parameter names observable, but these
 two pinned public sources do not give a unique signature. No new alias or

@@ -59,7 +59,11 @@ and strict string concatenation. It does not impose integer validation on every
 slice bound or change unrelated integer conversions. Runtime diagnostic wording
 is a tool contract; success versus runtime/static error is normative.
 
-## Stage evidence and remaining work
+## First-stage evidence and remaining work
+
+The subsequent [independent review and scenario report](SPEC-REVIEW-EVIDENCE-2026-10-22.md)
+records full native release and focused CLI/application validation. The counts
+below retain the original first-stage scope.
 
 P0 fixes are local commits `001679a` (immutability), `dd3b9d0` (finite aggregates),
 `ece4ff1` (integer indices/lazy slices), and `069b9de` (YAML errors).
@@ -91,8 +95,9 @@ mark missing normal/error/lazy/boundary coverage as untested. In particular:
 
 - `removeAt`'s documented `idx`, C++ source `at`, and current `i` are an unresolved
   named-argument conflict; this batch does not select a new signature.
-- `std.length(function(a,b=1)a)` needs an explicit public-contract decision;
-  current required-parameter counting is unchanged.
+- `std.length(function(a,b=1)a)` has now been adjudicated to require 2 under the
+  fixed public documentation. The current result remains 1; the candidate fix
+  was blocked by automatic approval review. See the [contract review](SPEC-CONTRACT-REVIEW.md).
 - `std.manifestJson({assert false})` is distinct from top-level manifestation;
   this batch preserves both existing paths and does not invent an assertion rule.
 - Existing Go/C++ fixtures and historical exception reports are unchanged. Fresh

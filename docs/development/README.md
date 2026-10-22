@@ -8,6 +8,8 @@
 - [Differential-validator design](CI-VALIDATION.md)
 - [Documentation layout and language policy](DOCUMENTATION.md)
 - [Specification acceptance contract and P0 matrix](SPEC-CONFORMANCE.md)
+- [Focused public-contract review and initial P1 mapping](SPEC-CONTRACT-REVIEW.md)
+- [Independent P0 review and local scenario evidence](SPEC-REVIEW-EVIDENCE-2026-10-22.md)
 - [Original requirements — Chinese](zh-CN/REQUIREMENTS.md)
 - [Functional parity plan — Chinese](zh-CN/GO-PARITY.md)
 - [Completion history — Chinese](zh-CN/COMPLETION-CHECKLIST.md)
