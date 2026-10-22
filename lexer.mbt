@@ -156,6 +156,9 @@ fn lex(
       }
       if chomp {
         ignore(content.pop())
+        if content.get(content.length() - 1) == Some('\r') {
+          ignore(content.pop())
+        }
       }
       let b = StringBuilder()
       for ch in content {
