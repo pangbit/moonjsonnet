@@ -73,3 +73,9 @@ method/body separator. Both inputs were syntax errors, so that run exercised
 neither method-default expectation. The corrected inputs use `:` as required by
 the field grammar. The original oracle, test sources and failed log remain in
 the local stage evidence directory. No product fix follows from that failure.
+
+Later steering released the separately approved frozen af188da Linux window
+after the local language checkpoint. That isolated run and cleanup are recorded
+in [their own report](SPEC-LINUX-AF188DA-EVIDENCE-2026-10-22.md); no newer language
+source or changed oracle was inserted into the frozen packet. The initial
+local-only scope statement above describes the scope before that steering.

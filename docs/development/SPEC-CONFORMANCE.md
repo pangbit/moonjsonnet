@@ -87,6 +87,10 @@ rules plus 24 initial prose/grammar obligations, with manually reviewed assertio
 subsets and explicit unreviewed dimensions; full prose/desugaring decomposition
 and conformance remain pending. [Go/C++ status](SPEC-LANGUAGE-COMPARISON-2026-10-22.md)
 is separate from normative execution results.
+The subsequently released [approved Linux window](SPEC-LINUX-AF188DA-EVIDENCE-2026-10-22.md)
+validated only the frozen af188da archive: native debug/release each 425/425,
+CLI/application checks 59/59, with completed cleanup. This is not a Linux result
+for the newer string/Unicode or language-stage source.
 The counts below retain the original first-stage scope.
 
 P0 fixes are local commits `001679a` (immutability), `dd3b9d0` (finite aggregates),

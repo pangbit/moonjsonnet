@@ -88,6 +88,8 @@ used for these native runs remain unchanged.
 | Matrix source/locations/assertion anchors | 70 named rules + 24 prose rows validated |
 | Matrix negative controls | Changed assertion and changed reference bytes both rejected before output |
 | Documentation at matrix checkpoint | 126 files / 957 links passed |
+| Final documentation after frozen-Linux report | 127 files / 963 links passed |
+| Final info then fmt, script format and whitespace | Passed; no .mbti changes |
 
 Exact execution commands were `moon test --target native --frozen --deny-warn
 -j 2` and `moon test spec_language_function_test.mbt
@@ -118,3 +120,10 @@ identity. The newer language source stays separate from the approved
 `af188da` archive/controller: no current file is substituted into that Linux job.
 The private proposal and pre-existing untracked repository proposal are
 unchanged. No push, release or tag is part of this stage.
+
+After the parent released the preapproved remote window, the separate
+[frozen af188da Linux run](SPEC-LINUX-AF188DA-EVIDENCE-2026-10-22.md) passed
+425/425 native debug, 425/425 native release and 59/59 CLI/application checks.
+Its source identity, budget, hashes and completed cleanup are independent of
+this newer local language-stage result. It grants no Linux credit to 2dd6dd4
+or 4dacc18.
