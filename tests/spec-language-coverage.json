@@ -276,8 +276,8 @@
     "IR0": {
       "file": "ast_test.mbt",
       "test": "semantic AST round trip covers expression forms and source identities",
-      "assertions": ["@moonjsonnet.Program::parse(source", "@moonjsonnet.Program::from_ast(original.ast().clone())", "text:importstr 'text'"],
-      "checks": "Existing source and exported-AST creation accepts an object containing importstr. Only creation acceptance is reused; source/copy equality is not a new value oracle."
+      "assertions": ["@moonjsonnet.Program::parse(source", "@moonjsonnet.Program::from_ast(original.ast().clone())", "code:import 'code'", "text:importstr 'text'", "bytes:importbin 'raw'"],
+      "checks": "Existing source and exported-AST creation accepts an object containing import, importstr and importbin. Only creation acceptance is reused for the adjacent premise-free judgments; source/copy equality is not a new value oracle or new execution group."
     },
     "IR1": {
       "file": "spec_importstr_static_test.mbt",
@@ -303,6 +303,36 @@
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Syntax)", "assert_eq(d.kind, @moonjsonnet.Static)"],
       "checks": "Nonliteral/computed source operands reject Syntax; undefined sibling expressions reject Static through source and handmade AST. These are outside-rule boundary controls."
     },
+    "IB1": {
+      "file": "spec_importbin_bytes_test.mbt",
+      "test": "importbin substitutes every unsigned byte in source and handmade AST",
+      "assertions": ["let permutation = [ for i in 0..<256 => (i * 73 + 19) % 256 ]", "Json::array(permutation.map(n => Json::number(n.to_double())))", "assert_true(program.ast().kind is ImportBinary(path) && path == \"data\")", "assert_eq(program.evaluate(binary_resolver~), expected)", "assert_eq(requests, [(\"virtual-entry\", \"data\")])"],
+      "checks": "Source and handmade AST independently match exact arrays for all 256 byte values in nonmonotone order, empty/repeated/high-bit/NUL/malformed-UTF8 and code-looking data. Creation makes zero requests; each forced leaf makes one virtual request."
+    },
+    "IB2": {
+      "file": "spec_importbin_bytes_test.mbt",
+      "test": "unused importbin source and handmade expressions make zero requests",
+      "assertions": ["assert_eq( @moonjsonnet.Program::parse(source).evaluate(binary_resolver~), 42, )", "assert_eq(program.evaluate(binary_resolver~), 42)", "assert_eq(requests.length(), 0)"],
+      "checks": "Five unused source contexts and handmade local/branch contexts return 42 with zero virtual binary requests; any callback demand would fail. This does not certify every enclosing lazy construct."
+    },
+    "IB3": {
+      "file": "spec_importbin_bytes_test.mbt",
+      "test": "importbin separates creation errors from demanded resolver failures",
+      "assertions": ["assert_eq(d.kind, @moonjsonnet.Syntax)", "assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(d.kind, @moonjsonnet.Import)", "assert_eq(d.location.file, \"virtual-entry\")", "assert_true(d.message.contains(\"virtual unavailable\"))", "assert_eq(reads, 1)"],
+      "checks": "Three nonliteral source operands fail Syntax, undefined siblings fail Static through source and handmade AST, and successfully created demanded leaves report public Import only during evaluation for disabled/failing virtual resolvers. No CLI exit status is inferred."
+    },
+    "IB4": {
+      "file": "spec_importbin_bytes_test.mbt",
+      "test": "handmade repeated importbin demands share one request and exact bytes",
+      "assertions": ["assert_eq(result, [[0, 255, 128, 0], [0, 255, 128, 0]])", "assert_eq(requests, [(\"virtual-entry\", \"data\")])"],
+      "checks": "Two handmade imports of the identical request return the same explicit byte arrays with one callback; a second callback would return different data. Alias, cross-mode and failure-cache contracts remain open."
+    },
+    "IB5": {
+      "file": "language_test.mbt",
+      "test": "binary import is byte preserving and memoized by canonical identity",
+      "assertions": ["assert_eq(reads, 1)", "assert_eq(result.stringify(), \"[[0,255,254,128],[0,255,254,128]]\")"],
+      "checks": "Existing source case observes exact unsigned-byte arrays and one callback for the same path used twice. Despite its historical title, it does not exercise distinct aliases or prove canonical-identity caching. Reused, not a new test group."
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "test": "P0 JSON manifestation rejects nonfinite internal values defensively",
@@ -319,7 +349,25 @@
     "chk-apply": {"normal": ["F1", "AP1", "AP2"], "static_error": ["F5", "AP6"], "remaining": "Every argument expression form and exhaustive named/positional combinations across source and handmade AST paths.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
     "chk-var": {"normal": ["F1"], "static_error": ["F5", "I1"], "remaining": "All binders and unused expression positions.", "implementation": ["validate.mbt"]},
     "chk-function": {"normal": ["F1", "F6", "AP1", "AP2"], "static_error": ["F5", "S1"], "boundary": ["F1", "AP2"], "remaining": "Every default/body AST form; parameter metadata is a separate host contract.", "implementation": ["validate.mbt"]},
-    "chk-import": {"normal": ["I1", "I2", "I3"], "lazy": ["I2", "I3"], "remaining": "Every import expression/string form and isolated std binding.", "implementation": ["validate.mbt", "imports.mbt"]},
+    "chk-import": {
+      "normal": ["IR0", "I1", "I2", "I3"], "lazy": ["I2", "I3"],
+      "remaining": "", "implementation": ["validate.mbt", "ast_convert.mbt", "ast_validate.mbt"],
+      "rule_review": {
+        "rule": "chk-import", "decision": "complete",
+        "scope": "The premise-free core static judgment Gamma |- import s only; reuses the adjacent constructor argument rather than adding duplicate tests.",
+        "reasoning": "The wildcard ImportFile arm accepts the false/raw-code mode without inspecting names, context or target. AST conversion preserves the typed leaf; existing source/exported-AST creation and I1-I3 boundary controls are reused, not counted as new tests.",
+        "review_report": "docs/development/SPEC-IMPORTBIN-BYTES-REVIEW.md",
+        "remaining_in_rule": [],
+        "not_applicable": {"static_error": "No rejecting premise exists for a well-formed core import leaf; imported program checking is a separate loading obligation.", "runtime_error": "This is a static judgment with no evaluation premise."},
+        "excluded_obligations": ["Full source grammar and enclosing/host shape checks", "Imported code parsing, scope, evaluation and runtime errors", "Lazy loading, canonical identity, cycles and cache contracts", "Host permissions, resolver policy and resources"],
+        "inspection": [
+          {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"| ImportFile(_, _)","argument":"The typed path/raw flag is ignored and the arm returns Unit without any name/context lookup or resolver call."},
+          {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"ImportFile(p, s) => ImportFile(p, s)","argument":"The code-import typed leaf and mode are preserved, without reading target contents."},
+          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"_ => ()","argument":"No import-specific payload or scope restriction is added; common host shape checks are outside this judgment."}
+        ],
+        "evidence_sha256": {"ast_test.mbt":"b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c","spec_import_scope_test.mbt":"a267fed917387b8edf62b4d1b72ed7764680cd14b919ced2af7f298847a9d2ed"}
+      }
+    },
     "chk-importstr": {
       "normal": ["IR0", "IR1", "IR2"], "lazy": ["IR3"], "boundary": ["IR4"],
       "remaining": "", "implementation": ["validate.mbt", "ast_convert.mbt", "ast_validate.mbt"],
@@ -337,6 +385,25 @@
           {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"_ => ()","argument":"Shape validation adds no ImportFile payload/scope constraint; shared metadata/shape checks are a separate boundary."}
         ],
         "evidence_sha256": {"spec_importstr_static_test.mbt":"0b97cd9cac93bf34e84d075f45ac4a1691844d473bcd749df42d5321d3779f7d","ast_test.mbt":"b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c"}
+      }
+    },
+    "chk-importbin": {
+      "normal": ["IR0", "IB1"], "lazy": ["IB2"], "boundary": ["IB3"],
+      "remaining": "", "implementation": ["validate.mbt", "ast_convert.mbt", "ast_validate.mbt"],
+      "rule_review": {
+        "rule": "chk-importbin", "decision": "complete",
+        "scope": "The premise-free core static judgment Gamma |- importbin s only; the value-substitution contract is reviewed separately inside CORE-IMPORT.",
+        "reasoning": "The wildcard ImportBinary arm returns Unit independently of payload/environment, and conversion preserves the typed leaf. Existing creation acceptance is reused; new source/handmade byte tests also construct the leaf before any resolver demand. Runtime loading is not a premise of this rule.",
+        "review_report": "docs/development/SPEC-IMPORTBIN-BYTES-REVIEW.md",
+        "remaining_in_rule": [],
+        "not_applicable": {"static_error": "No rejecting premise exists for a well-formed core importbin leaf; source grammar and undefined siblings are outside-rule controls.", "runtime_error": "This is a static judgment with no evaluation premise."},
+        "excluded_obligations": ["Full source grammar and enclosing/host shape checks", "Binary byte substitution and runtime loading/errors", "Canonical aliases, cross-mode caching and failure history", "Host permissions, resolver policy and resources"],
+        "inspection": [
+          {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"| ImportBinary(_)","argument":"All typed paths are ignored by an unconditional Unit arm with no environment or resolver use."},
+          {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"ImportBinary(p) => ImportBinary(p)","argument":"The typed binary leaf is preserved without parsing bytes or adding variable children."},
+          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"_ => ()","argument":"No binary-import-specific payload/scope restriction is added; common host shape/resource checks stay separate."}
+        ],
+        "evidence_sha256": {"ast_test.mbt":"b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c","spec_importbin_bytes_test.mbt":"86ef28d64434865b8ad76b553478546fcc876a7866c0095a43b1af420b3df46d"}
       }
     },
     "object": {"normal": ["O1"], "lazy": ["O4"], "remaining": "Computed null/nonstring/duplicate names, all object local forms.", "implementation": ["eval.mbt"]},
@@ -369,7 +436,7 @@
     {"id": "SYN-OBJECT", "section": "abstract_syntax", "obligation": "Object fields, locals, methods, assertions and comprehension grammar", "normal": ["F6", "O1"], "remaining": "Every separator, additive form, comma and malformed construction.", "implementation": ["parser.mbt"]},
     {"id": "SYN-CALL", "section": "abstract_syntax", "obligation": "Positional arguments before named arguments and parameter grammar", "normal": ["F1", "AP1"], "boundary": ["AP7"], "remaining": "Malformed ordering/trailing-comma grid and positional-after-named fine diagnostic classification; AP7 is source Syntax evidence, not a handmade AST Static result.", "implementation": ["parser.mbt", "ast_validate.mbt"]},
     {"id": "SYN-PRECEDENCE", "section": "associativity_precedence", "obligation": "Every operator precedence and associativity relation", "remaining": "Pairwise expression grid and long-binding expression extents.", "implementation": ["parser.mbt"]},
-    {"id": "CORE-IMPORT", "section": "core_syntax", "obligation": "Lazy imports; independent static checking of each imported program", "normal": ["I1", "I3"], "static_error": ["I1", "I3"], "lazy": ["I2", "I3"], "remaining": "Canonical aliases, cycles, importstr/importbin combinations and cache identity.", "implementation": ["imports.mbt", "validate.mbt"]},
+    {"id": "CORE-IMPORT", "section": "core_syntax", "obligation": "Import substitutions, lazy loading and independent static checking of imported programs", "normal": ["I1", "I3", "IB1", "IB4", "IB5"], "static_error": ["I1", "I3", "IB3"], "runtime_error": ["IB3"], "lazy": ["I2", "I3", "IB2"], "boundary": ["IB1", "IB3", "IB4", "IB5"], "remaining": "The line-916 importbin byte-value substitution sentence is reviewed complete in SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md. This broader row still lacks complete canonical aliases, cycles, code-import scope, UTF-8 text decoding, cross-mode/source/value/failure cache identity/lifetimes, host resolver policy and resources.", "implementation": ["imports.mbt", "eval.mbt", "validate.mbt"]},
     {"id": "DESUGAR-ROOT", "section": "desugaring", "obligation": "Object root $, enclosing self/super and local scope", "normal": ["O1", "O2", "F6"], "static_error": ["O1"], "remaining": "All nested comprehension/root and object-local combinations.", "implementation": ["validate.mbt", "objects.mbt"]},
     {"id": "DESUGAR-ASSERT", "section": "desugaring", "obligation": "Expression/object assertions and lazy failure messages", "normal": ["O3", "O5"], "runtime_error": ["O3", "O5"], "lazy": ["O5"], "remaining": "Expression assertions, default/nonstring messages and condition type errors.", "implementation": ["eval.mbt", "objects.mbt"]},
     {"id": "DESUGAR-SLICE", "section": "desugaring", "obligation": "Missing bounds and slice lowering to fixed stdlib source", "normal": ["SLICE"], "runtime_error": ["SLICE"], "lazy": ["SLICE"], "remaining": "Full negative/null/step/domain matrix and retained cardinality ambiguity.", "implementation": ["eval.mbt", "slice.mbt"]},

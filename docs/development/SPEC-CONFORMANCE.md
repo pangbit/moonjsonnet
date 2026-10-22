@@ -101,6 +101,16 @@ closes that premise-free static judgment using constructor analysis and 16/16
 focused checks. The matrix now distinguishes one completed named rule, 43
 partial rows and 50 unreviewed rows. Runtime import obligations and whole-language
 acceptance remain incomplete; public stdlib counts do not change.
+The [binary byte-substitution review](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md)
+at `10982a4` adds four virtual-import groups and passes one affected 26/26 native
+debug run. It completes the bounded importbin byte-value sentence, including all
+256 values through source and handmade AST; the broader CORE-IMPORT row remains
+partial with explicit loading/cache/error-policy gaps. The adjacent chk-import
+and chk-importbin static judgments reuse the shared constructor argument and
+existing creation controls, rather than adding duplicate tests. The matrix now
+records three completed named static judgments, 42 partial rows and 49 unreviewed
+rows, with no new inventory rows or interpreter/API changes. Public stdlib counts
+remain unchanged.
 The subsequently released [approved Linux window](SPEC-LINUX-AF188DA-EVIDENCE-2026-10-22.md)
 validated only the frozen af188da archive: native debug/release each 425/425,
 CLI/application checks 59/59, with completed cleanup. This is not a Linux result

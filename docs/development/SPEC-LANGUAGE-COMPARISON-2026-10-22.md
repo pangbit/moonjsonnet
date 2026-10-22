@@ -37,3 +37,9 @@ The [chk-importstr review](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md) at
 `2295c82` completes only its premise-free static judgment by constructor analysis
 and offline controls. No Go/C++ comparison was run; its completion decision is
 not a compatibility result or acceptance of runtime import behavior.
+
+The [binary byte-substitution batch](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md)
+at `10982a4` uses exact byte/JSON oracles and virtual source/handmade-AST controls.
+No fresh Go/C++ execution was performed. Reused adjacent static-rule evidence and
+the bounded runtime-byte decision establish neither reference compatibility nor
+general import-loading conformance; both fixed-reference verdicts remain unknown.
