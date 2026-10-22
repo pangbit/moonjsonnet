@@ -1,10 +1,10 @@
 ///|
-test "character conversion retains truncation and replaces surrogates" {
+test "legacy surrogate replacement and overflow remain unchanged" {
   assert_eq(
     @moonjsonnet.evaluate(
-      "[std.char(65.5),std.char(55296),std.char(57343),std.codepoint(std.char(55296)),std.codepoint('😀')]",
+      "[std.char(55296),std.char(57343),std.codepoint(std.char(55296)),std.codepoint('😀')]",
     ).stringify(),
-    "[\"A\",\"�\",\"�\",65533,128512]",
+    "[\"�\",\"�\",65533,128512]",
   )
   try
     @moonjsonnet.evaluate(
@@ -21,7 +21,7 @@ test "character conversion retains truncation and replaces surrogates" {
 }
 
 ///|
-test "character errors use numeric bounds before truncation and Go messages" {
+test "character bounds and input length retain existing diagnostic wording" {
   for
     (source, expected) in [
       ("std.char(-1)", "Codepoints must be >= 0, got -1"),

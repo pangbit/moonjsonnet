@@ -426,6 +426,13 @@ fn Vm::builtin(
           "Codepoints must be >= 0, got " + diagnostic_number(n),
         )
       }
+      if n != n.trunc() {
+        raise problem(
+          Runtime,
+          loc,
+          "Codepoints must be integers, got " + diagnostic_number(n),
+        )
+      }
       // Go's rune-to-string conversion replaces surrogate code points.
       let c = @number.reference_rune(n).to_char().unwrap_or('�')
       Str(c.to_string())

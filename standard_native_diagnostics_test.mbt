@@ -1,11 +1,9 @@
 ///|
-test "native error messages preserve types numeric precision and raw byte offsets" {
+test "standard error messages preserve types and raw byte offsets" {
   for
     (source, expected) in [
       ("std.avg([])", "Cannot calculate average of an empty array."),
-      (
-        "std.substr('x',-1.0000005,1)", "substr second parameter should be an integer, got -1.000001",
-      ),
+      ("std.substr('x',-1.0000005,1)", "Index must be a finite integer"),
       (
         "std.base64DecodeBytes('AAAAéxx')", "failed to decode: illegal base64 data at input byte 4",
       ),

@@ -205,7 +205,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `decodeUTF8(arr)` | Integer bytes in 0..255; each malformed UTF-8 byte becomes U+FFFD, including incomplete multibyte sequences |
 | `base64(input)` | Standard padded alphabet; accepts a byte array or a string with code points <=255, then encodes the string's UTF-8 bytes |
 | `base64DecodeBytes(str)`, `base64Decode(str)` | Original UTF-8 byte length must be divisible by 4; ignore CR/LF only; require complete padding, accept nonzero unused pad bits; text output follows decodeUTF8 replacement rules |
-| `substr(str,from,len)` | Code-point substring; nonnegative signed 32-bit indices; out-of-range start gives empty string |
+| `substr(str,from,len)` | Source-defined code-point substring; validates types/length in source order and clips length to the available suffix before allocation; an empty result performs no character lookup |
 | `strReplace(str,from,to)` | Nonoverlapping literal replacement; empty pattern rejected |
 | `startsWith(a,b)`, `endsWith(a,b)` | String prefix/suffix checks |
 | `parseJson(str)` | Core JSON parser with bounded nesting; malformed JSON is `Runtime` |
@@ -230,7 +230,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `xor(x,y)`, `xnor(x,y)` | Eager boolean-only operands |
 | `format(str,vals)` | Same formatting semantics as string `%` |
 | `slice(indexable,index,end,step)` | Same semantics as array/string slice syntax |
-| `char(n)`, `codepoint(str)` | Unicode scalar conversion / one-code-point string |
+| `char(n)`, `codepoint(str)` | Integral identifier conversion / one-code-point string; scalar round trips and fractional-ID rejection reviewed; surrogate-ID policy remains unadjudicated |
 | `assertEqual(a,b)` | Returns true or reports `Assertion` |
 | `lines(arr)` | Join non-null strings with a newline after each |
 | `sha256(s)` | SHA-256 of UTF-8 string bytes, lowercase hexadecimal; rounds consume the evaluation step budget |
@@ -240,6 +240,12 @@ Non-finite numbers are invalid Jsonnet values. Aggregate evaluation fails before
 they can reach comparison, string conversion or indexing. JSON and YAML
 manifestation also reject internal non-finite values defensively. Frozen Go
 Infinity/NaN outputs remain historical compatibility evidence, not normative passes.
+
+The [string contract review](../development/SPEC-STRING-CONTRACTS-REVIEW.md)
+records the fixed substring definition's clipping and forcing order, and char's
+integer-identifier criterion. Original Go truncation and early substring-error
+fixtures remain preserved as comparison evidence; they do not establish these
+normative contracts and have not been rerun for the changes.
 
 Trigonometric, inverse trigonometric, exponential and power algorithms preserve
 the fixed Go 1.24.0 ARM64/AMD64 reference's operation order, including explicit fused
