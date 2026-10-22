@@ -1,0 +1,266 @@
+{
+  "source_commit": "9f6fce65e2a44da24900b31c10d4f70b7ecbf688",
+  "tracked_source_clean": true,
+  "corpus": "calls",
+  "input_sha256": {
+    "tests/spec-language-call-cli.json": "19308b060c80ddc3cb1def5b73f05ecbf7d57f16be32d2961301c647f87d1682",
+    "tools/spec-language-forms.mbtx": "a42786f6e077c27162ba640710a391835a294d9048aaad57756e2a20a60fd56c",
+    "spec_language_call_test.mbt": "a9a8489f31f3fce9d3266602fbad788e3ba63a50daa1b66f99cfb9f1ea13724a",
+    "docs/development/SPEC-LANGUAGE-CALL-REVIEW.md": "f31d912d2fd33739097fa91b3695d16736febf7e632d9460d7feeef9edf1696e"
+  },
+  "toolchain": "moon 0.1.20260920 (914d7da 2026-09-20) ~/.moon/bin/moon\nmoonc v0.10.14+7d59c7ec9 (2026-09-18) ~/.moon/bin/moonc\nmoonrun 0.1.20260920 (914d7da 2026-09-20) ~/.moon/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "platform": "Darwin arm64",
+  "cli_sha256": "c41f07805590ddf79326634ece3030355d3776edec3fc6de28463207c14be6cc",
+  "build_args": [
+    "build",
+    "cmd/main",
+    "--target",
+    "native",
+    "--frozen",
+    "--deny-warn",
+    "-j",
+    "1"
+  ],
+  "build_exit": 0,
+  "passed": 15,
+  "total": 15,
+  "failed": 0,
+  "scope": "Source CLI only; library diagnostic kinds and handmade AST rejection are separate assertions, not inferred from CLI text. No Go/C++ or Linux run.",
+  "cases": [
+    {
+      "input": {
+        "id": "default-closure-scope",
+        "source": "local x=10,f(a=x,g=function()a)=g();local a=99;[f(),f(20),f(g=function()a)]",
+        "value": [
+          10,
+          20,
+          99
+        ]
+      },
+      "exit": 0,
+      "stdout": "[\n   10,\n   20,\n   99\n]\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "recursive-default-closures",
+        "source": "local x=100,run(f=function(n)if n==0 then x else g(n-1),g=function(n)if n==0 then x else f(n-1),x=42)=f(3);[run(),run(x=7)]",
+        "value": [
+          42,
+          7
+        ]
+      },
+      "exit": 0,
+      "stdout": "[\n   42,\n   7\n]\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "unused-invalid-application",
+        "source": "local unused=7(unknown=error 'argument');42",
+        "value": 42
+      },
+      "exit": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "control-missing-binding",
+        "source": "(function(req,opt=error 'default')error 'body')()",
+        "error_class": "runtime",
+        "library_kind": "Runtime",
+        "fragment": "Missing argument: req"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: Missing argument: req\n\t<cmdline>:1:1-50\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "control-unknown-binding",
+        "source": "(function(req,opt=error 'default')error 'body')(req=1,unknown=error 'argument')",
+        "error_class": "runtime",
+        "library_kind": "Runtime",
+        "fragment": "function has no parameter unknown"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: function has no parameter unknown\n\t<cmdline>:1:1-80\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "control-overlapping-binding",
+        "source": "(function(req,opt=error 'default')error 'body')(error 'argument',req=error 'argument')",
+        "error_class": "runtime",
+        "library_kind": "Runtime",
+        "fragment": "Argument req already provided"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: Argument req already provided\n\t<cmdline>:1:1-87\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "control-extra-binding",
+        "source": "(function(req,opt=error 'default')error 'body')(error 'argument',error 'argument',error 'argument')",
+        "error_class": "runtime",
+        "library_kind": "Runtime",
+        "fragment": "function expected 2 positional argument(s), but got 3"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: function expected 2 positional argument(s), but got 3\n\t<cmdline>:1:1-100\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "number-head-before-argument",
+        "source": "7(unknown=error 'argument')",
+        "error_class": "runtime",
+        "library_kind": "Type",
+        "fragment": "expected function"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: Unexpected type number, expected function\n\t<cmdline>:1:1-28\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "object-head-before-assertion",
+        "source": "({assert false})(unknown=error 'argument')",
+        "error_class": "runtime",
+        "library_kind": "Type",
+        "fragment": "expected function"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: Unexpected type object, expected function\n\t<cmdline>:1:1-43\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "callee-error-before-argument",
+        "source": "(error 'callee')(unknown=error 'argument')",
+        "error_class": "runtime",
+        "library_kind": "Runtime",
+        "fragment": "RUNTIME ERROR: callee"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: callee\n\t<cmdline>:1:2-16\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "duplicate-name-in-unused-call",
+        "source": "if false then (function(a)42)(a=1,a=2) else 42",
+        "error_class": "source",
+        "library_kind": "Static",
+        "fragment": "duplicate argument"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:37-38 duplicate argument 'a'\n\nif false then (function(a)42)(a=1,a=2) else 42\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "undefined-argument-before-binding",
+        "source": "if false then (function()42)(unknown=missing) else 42",
+        "error_class": "source",
+        "library_kind": "Static",
+        "fragment": "Unknown variable: missing"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:38-45 Unknown variable: missing\n\nif false then (function()42)(unknown=missing) else 42\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "malformed-argument-expression",
+        "source": "(function(a)a)(a=)",
+        "error_class": "source",
+        "library_kind": "Syntax",
+        "fragment": "Unexpected"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:18-19 Unexpected: \")\" while parsing terminal\n\n(function(a)a)(a=)\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "malformed-default-expression",
+        "source": "(function(a=)a)()",
+        "error_class": "source",
+        "library_kind": "Syntax",
+        "fragment": "Unexpected"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:13-14 Unexpected: \")\" while parsing terminal\n\n(function(a=)a)()\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "malformed-call-close",
+        "source": "(function(a)a)(1",
+        "error_class": "source",
+        "library_kind": "Syntax",
+        "fragment": "Expected"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:17 Expected a comma before next function argument, got end of file\n\n(function(a)a)(1\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    }
+  ]
+}

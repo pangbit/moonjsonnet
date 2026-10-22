@@ -252,7 +252,7 @@ async fn main {
     "Each populated cell identifies manually examined assertions, not a passing status. Empty cells remain unreviewed even if historical tests mention the feature. Runtime errors include host Type/Assertion categories after successful parsing. ",
   )
   markdown.write_string(
-    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md) and [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. No row claims complete conformance.\n\n",
+    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md) and [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. No row claims complete conformance.\n\n",
   )
   markdown.write_string(
     "Reproduce with `moon run --frozen tools/spec-language-matrix.mbtx REFERENCE_DIR EVIDENCE_DIR`; REFERENCE_DIR supplies pinned spec.html and language.md. This command validates assertion locations/hashes and regenerates this matrix; it never infers results or runs upstream tools.\n\n",

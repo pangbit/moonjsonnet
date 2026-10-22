@@ -92,6 +92,10 @@ adds 15 assertion groups plus 30 source CLI checks for two formerly unreviewed
 rules and adjacent scope/forcing dimensions. The focused single-worker affected
 run passes 44/44 without a product fix; the matrix now has 43 partially reviewed
 rows and 51 unreviewed rows. This does not change the public-stdlib coverage count.
+The [application entry-path batch](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md)
+adds seven groups for handmade calls, recursive closure defaults and callee
+forcing, validated by 29/29 affected checks and a 15/15 source CLI corpus.
+These extend already partial rows; the 43/51 matrix and stdlib counts are unchanged.
 The subsequently released [approved Linux window](SPEC-LINUX-AF188DA-EVIDENCE-2026-10-22.md)
 validated only the frozen af188da archive: native debug/release each 425/425,
 CLI/application checks 59/59, with completed cleanup. This is not a Linux result

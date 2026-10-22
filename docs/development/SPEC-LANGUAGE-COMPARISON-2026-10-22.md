@@ -27,3 +27,8 @@ at `e49dd7d` adds 15 library groups and 30 source CLI checks. No fresh Go/C++
 reference execution was performed for it either. Its normative results do not
 establish compatibility; both fixed-reference compatibility verdicts remain
 unknown. No historical comparison count is carried forward as a passing result.
+
+The [application entry-path batch](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md) at
+`9f6fce6` likewise has no fresh Go/C++ reference execution. Its handmade AST,
+library-kind and CLI-exit results are independent normative evidence; both
+fixed-reference compatibility verdicts for those paths remain unknown.
