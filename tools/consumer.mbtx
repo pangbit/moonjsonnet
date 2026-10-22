@@ -150,7 +150,7 @@ async fn main {
     #|  assert_eq(@moonjsonnet.evaluate("std.manifestJsonMinified({b:[true],a:{}})"), Json::string("{\"a\":{},\"b\":[true]}"))
     #|  assert_eq(@moonjsonnet.evaluate("std.manifestPython([true,null])"), Json::string("[True, None]"))
     #|  assert_eq(@moonjsonnet.evaluate("std.manifestXmlJsonml(['p','text'])"), Json::string("<p>text</p>"))
-    #|  assert_eq(@moonjsonnet.evaluate("local a=[1,2,3]; [std.removeAt(a,0),a]").stringify(), "[[2,3],[2,3,3]]")
+    #|  assert_eq(@moonjsonnet.evaluate("local a=[1,2,3]; [std.removeAt(a,0),a]").stringify(), "[[2,3],[1,2,3]]")
     #|  assert_eq(@moonjsonnet.evaluate("std['$objectFlatMerge']([{[k]:k for k in ['a']}])").stringify(), "{\"a\":\"a\"}")
     #|  assert_eq(@moonjsonnet.evaluate("std.manifestToml({'':1})"), Json::string("'' = 1"))
     #|  assert_eq(@moonjsonnet.evaluate("std.manifestYamlDoc({a:[1,2]},true,false)"), Json::string("a:\n  - 1\n  - 2"))

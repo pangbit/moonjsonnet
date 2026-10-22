@@ -181,7 +181,7 @@ test "parsed parameter failure and container mutation do not escape an execution
         "local a=std.extVar('x'); [std.removeAt(a,0),a]",
         ext_programs=Map([("x", array)]),
       ),
-      [[2, 3], [2, 3, 3]],
+      [[2, 3], [1, 2, 3]],
     )
   }
 }

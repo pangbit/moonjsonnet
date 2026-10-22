@@ -184,7 +184,7 @@ test "program execution rechecks byte and AST budgets and recovers after limits"
 test "program object and array mutation cannot contaminate later evaluations" {
   for
     (source, expected) in [
-      ("local a=[1,2,3]; [std.removeAt(a,0),a]", "[[2,3],[2,3,3]]"),
+      ("local a=[1,2,3]; [std.removeAt(a,0),a]", "[[2,3],[1,2,3]]"),
       ("local o={local x=21,a:x*2,b:self.a}; o+{a:1}", "{\"a\":1,\"b\":1}"),
       (
         "local f(n)=if n==0 then 42 else f(n-1) tailstrict; f(1000) tailstrict",
