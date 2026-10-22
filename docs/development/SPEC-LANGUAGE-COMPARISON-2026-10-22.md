@@ -21,3 +21,9 @@ fixed source/build identities and differences separately from normative decision
 The separately approved frozen `af188da` Linux verification executes MoonJsonnet
 only. Its native and 59 CLI/application checks cannot establish Go/C++ agreement
 for either `af188da` or the newer language-stage source.
+
+The later [recursive-binding/comprehension batch](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md)
+at `e49dd7d` adds 15 library groups and 30 source CLI checks. No fresh Go/C++
+reference execution was performed for it either. Its normative results do not
+establish compatibility; both fixed-reference compatibility verdicts remain
+unknown. No historical comparison count is carried forward as a passing result.

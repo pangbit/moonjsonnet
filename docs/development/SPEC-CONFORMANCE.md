@@ -87,6 +87,11 @@ rules plus 24 initial prose/grammar obligations, with manually reviewed assertio
 subsets and explicit unreviewed dimensions; full prose/desugaring decomposition
 and conformance remain pending. [Go/C++ status](SPEC-LANGUAGE-COMPARISON-2026-10-22.md)
 is separate from normative execution results.
+The [recursive-binding/comprehension continuation](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md)
+adds 15 assertion groups plus 30 source CLI checks for two formerly unreviewed
+rules and adjacent scope/forcing dimensions. The focused single-worker affected
+run passes 44/44 without a product fix; the matrix now has 43 partially reviewed
+rows and 51 unreviewed rows. This does not change the public-stdlib coverage count.
 The subsequently released [approved Linux window](SPEC-LINUX-AF188DA-EVIDENCE-2026-10-22.md)
 validated only the frozen af188da archive: native debug/release each 425/425,
 CLI/application checks 59/59, with completed cleanup. This is not a Linux result

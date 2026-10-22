@@ -1,0 +1,492 @@
+{
+  "source_commit": "e49dd7d8baa9881bf47a731ec4ebb1826a3723df",
+  "tracked_source_clean": true,
+  "input_sha256": {
+    "tests/spec-language-forms-cli.json": "f5490eedc29da5b9f1d39bf2f6edd5c070739505fedcda11bb33980621043136",
+    "tools/spec-language-forms.mbtx": "2844d3fb5b2112aa0f9561bc696bafe3bea1d446a6f1002e7276826d58c6a924",
+    "spec_language_forms_test.mbt": "c8e1af3588e9b5fe69b603575c8c807a0a58023d8db3f9ed1df3898275b224fb",
+    "spec_language_forms_ast_test.mbt": "4d2bd9c0303a756cfc457fa4cff910f80e094447aaa1b86014b9d3849a90738d",
+    "docs/development/SPEC-LANGUAGE-FORMS-REVIEW.md": "35a0522d93ae411c111f50e290b9fac85aefca03ac2c7c20217cc701cd2b3770"
+  },
+  "toolchain": "moon 0.1.20260920 (914d7da 2026-09-20) ~/.moon/bin/moon\nmoonc v0.10.14+7d59c7ec9 (2026-09-18) ~/.moon/bin/moonc\nmoonrun 0.1.20260920 (914d7da 2026-09-20) ~/.moon/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "platform": "Darwin arm64",
+  "cli_sha256": "c41f07805590ddf79326634ece3030355d3776edec3fc6de28463207c14be6cc",
+  "build_args": [
+    "build",
+    "cmd/main",
+    "--target",
+    "native",
+    "--frozen",
+    "--deny-warn",
+    "-j",
+    "1"
+  ],
+  "build_exit": 0,
+  "passed": 30,
+  "total": 30,
+  "failed": 0,
+  "scope": "Source CLI only; library diagnostic kinds and handmade AST rejection are separate assertions, not inferred from CLI text. No Go/C++ or Linux run.",
+  "cases": [
+    {
+      "input": {
+        "id": "local-forward",
+        "source": "local a=b,b=42;a",
+        "value": 42
+      },
+      "exit": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "local-mutual-functions",
+        "source": "local even(n)=if n==0 then true else odd(n-1),odd(n)=if n==0 then false else even(n-1);[even(6),odd(5),even(5)]",
+        "value": [
+          true,
+          true,
+          false
+        ]
+      },
+      "exit": 0,
+      "stdout": "[\n   true,\n   true,\n   false\n]\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "local-shadow",
+        "source": "local x=error 'outer';local x=42,y=x;[x,y]",
+        "value": [
+          42,
+          42
+        ]
+      },
+      "exit": 0,
+      "stdout": "[\n   42,\n   42\n]\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "local-unused-recursion",
+        "source": "local a=error 'unused',b=b;42",
+        "value": 42
+      },
+      "exit": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "object-local-final-self-super",
+        "source": "local o={base:2}+{local a=b,local b=self.base+super.base,x:a};[o.x,(o+{base:3}).x,o.x]",
+        "value": [
+          4,
+          5,
+          4
+        ]
+      },
+      "exit": 0,
+      "stdout": "[\n   4,\n   5,\n   4\n]\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "cartesian-order",
+        "source": "[[x,y] for x in [1,2] for y in [x,x+10]]",
+        "value": [
+          [
+            1,
+            1
+          ],
+          [
+            1,
+            11
+          ],
+          [
+            2,
+            2
+          ],
+          [
+            2,
+            12
+          ]
+        ]
+      },
+      "exit": 0,
+      "stdout": "[\n   [\n      1,\n      1\n   ],\n   [\n      1,\n      11\n   ],\n   [\n      2,\n      2\n   ],\n   [\n      2,\n      12\n   ]\n]\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "generator-enclosing-domain",
+        "source": "local x=['a','b'];{[x]:x for x in x}",
+        "value": {
+          "a": "a",
+          "b": "b"
+        }
+      },
+      "exit": 0,
+      "stdout": "{\n   \"a\": \"a\",\n   \"b\": \"b\"\n}\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "generator-shadow",
+        "source": "[x for x in [1,2] for x in [x+10]]",
+        "value": [
+          11,
+          12
+        ]
+      },
+      "exit": 0,
+      "stdout": "[\n   11,\n   12\n]\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "empty-object-domain",
+        "source": "{[error 'key']:error 'body' for x in []}",
+        "value": {}
+      },
+      "exit": 0,
+      "stdout": "{ }\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "null-keys-skip-bodies",
+        "source": "{[null]:error 'body' for x in [1,2]}",
+        "value": {}
+      },
+      "exit": 0,
+      "stdout": "{ }\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "false-filter-skips-domain",
+        "source": "{[error 'key']:error 'body' for x in [1] if false for y in error 'domain'}",
+        "value": {}
+      },
+      "exit": 0,
+      "stdout": "{ }\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "array-shape-lazy",
+        "source": "std.length([error 'body' for x in [1,2]])",
+        "value": 2
+      },
+      "exit": 0,
+      "stdout": "2\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "array-selected-payload",
+        "source": "[if x==1 then 42 else error 'unused' for x in [1,2]][0]",
+        "value": 42
+      },
+      "exit": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "comprehension-inherited-locals",
+        "source": "local o={n:10}+{local k=self.n+super.n,[x]:k+x for x in ['a','b']};[o.a,(o+{n:20}).a,o.a]",
+        "value": [
+          "20a",
+          "30a",
+          "20a"
+        ]
+      },
+      "exit": 0,
+      "stdout": "[\n   \"20a\",\n   \"30a\",\n   \"20a\"\n]\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "comprehension-enclosing-self-root",
+        "source": "local o={name:'a',rows:{[self.name]:$.name for x in [0]}};[o.rows,(o+{name:'b'}).rows]",
+        "value": [
+          {
+            "a": "a"
+          },
+          {
+            "b": "b"
+          }
+        ]
+      },
+      "exit": 0,
+      "stdout": "[\n   {\n      \"a\": \"a\"\n   },\n   {\n      \"b\": \"b\"\n   }\n]\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "comprehension-unused-iterator",
+        "source": "std.length({['a']:42 for x in [error 'unused iterator']})",
+        "value": 1
+      },
+      "exit": 0,
+      "stdout": "1\n",
+      "stderr": "",
+      "rendered_error_class": null,
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "static-local-duplicate-unused",
+        "source": "if false then local x=1,x=2;x else 42",
+        "error_class": "source",
+        "library_kind": "Static",
+        "fragment": "Duplicate local var"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:25-26 Duplicate local var: x\n\nif false then local x=1,x=2;x else 42\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "static-object-local-duplicate",
+        "source": "{local x=1,local x=2,a:42}",
+        "error_class": "source",
+        "library_kind": "Static",
+        "fragment": "Duplicate local var"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:18-19 Duplicate local var: x\n\n{local x=1,local x=2,a:42}\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "static-comprehension-local-duplicate-empty",
+        "source": "{local x=1,[v]:42,local x=2 for v in []}",
+        "error_class": "source",
+        "library_kind": "Static",
+        "fragment": "Duplicate local var"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:25-26 Duplicate local var: x\n\n{local x=1,[v]:42,local x=2 for v in []}\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "static-generator-forward-reference",
+        "source": "[x for x in y for y in []]",
+        "error_class": "source",
+        "library_kind": "Static",
+        "fragment": "Unknown variable"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:13-14 Unknown variable: y\n\n[x for x in y for y in []]\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "static-comprehension-key-local",
+        "source": "{local k='a',[k]:42 for x in []}",
+        "error_class": "source",
+        "library_kind": "Static",
+        "fragment": "Unknown variable"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:15-16 Unknown variable: k\n\n{local k='a',[k]:42 for x in []}\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "static-literal-field-duplicate",
+        "source": "{same:1,same:2}",
+        "error_class": "source",
+        "library_kind": "Static",
+        "fragment": "Duplicate field"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "<cmdline>:1:9-13 Duplicate field: same\n\n{same:1,same:2}\n\n\n",
+      "rendered_error_class": [
+        "source"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "runtime-comprehension-duplicate-key",
+        "source": "std.type({['same']:error 'unused body' for x in [1,2]})",
+        "error_class": "runtime",
+        "library_kind": "Runtime",
+        "fragment": "duplicate field"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: duplicate field 'same'\n\t<cmdline>:1:10-55\t\n\t<cmdline>:1:1-56\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "runtime-computed-duplicate-key",
+        "source": "std.type({['s'+'ame']:1,['same']:2})",
+        "error_class": "runtime",
+        "library_kind": "Runtime",
+        "fragment": "duplicate field"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: duplicate field 'same'\n\t<cmdline>:1:10-36\tthunk from <$>\n\t<cmdline>:1:1-37\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "runtime-key-error-before-body",
+        "source": "std.type({[error 'key']:error 'body' for x in [1]})",
+        "error_class": "runtime",
+        "library_kind": "Runtime",
+        "fragment": "RUNTIME ERROR: key"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: key\n\t<cmdline>:1:12-23\tthunk from <$>\n\t<cmdline>:1:10-51\t\n\t<cmdline>:1:1-52\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "runtime-key-type-before-body",
+        "source": "std.type({[1]:error 'body' for x in [1]})",
+        "error_class": "runtime",
+        "library_kind": "Type",
+        "fragment": "field name must be string or null"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: field name must be string or null\n\t<cmdline>:1:10-41\t\n\t<cmdline>:1:1-42\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "runtime-array-filter-type",
+        "source": "[x for x in [1] if 0]",
+        "error_class": "runtime",
+        "library_kind": "Type",
+        "fragment": "expected boolean"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: Unexpected type number, expected boolean\n\t<cmdline>:1:1-22\t\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "runtime-object-filter-type",
+        "source": "{[x]:42 for x in ['a'] if 0}",
+        "error_class": "runtime",
+        "library_kind": "Type",
+        "fragment": "expected boolean"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: Unexpected type number, expected boolean\n\t<cmdline>:1:1-29\t\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "runtime-number-domain",
+        "source": "{[x]:42 for x in 1}",
+        "error_class": "runtime",
+        "library_kind": "Type",
+        "fragment": "expected array"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: Unexpected type number, expected array\n\t<cmdline>:1:1-20\t\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    },
+    {
+      "input": {
+        "id": "runtime-demanded-body",
+        "source": "({[x]:error 'body' for x in ['a']}).a",
+        "error_class": "runtime",
+        "library_kind": "Runtime",
+        "fragment": "RUNTIME ERROR: body"
+      },
+      "exit": 1,
+      "stdout": "",
+      "stderr": "RUNTIME ERROR: body\n\t<cmdline>:1:7-19\t\n\t<cmdline>:1:1-38\t$\n\tDuring evaluation\t\n\n",
+      "rendered_error_class": [
+        "runtime"
+      ],
+      "passed": true
+    }
+  ]
+}

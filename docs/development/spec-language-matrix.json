@@ -2,12 +2,12 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "28941e7afcd66b605a564180e880b925e9f9506bb4b72bc5e354d106973313db",
-  "tool_sha256": "d9315e91e295727795ea73196358168196d88bba24432ae11837c1ad9c62d9a5",
+  "mapping_sha256": "780f16215fbdeb96f0f4e5e8ad24b886fcc22afe27d4a9d0b6ede392efbbf092",
+  "tool_sha256": "5302fc1668f97396c99a828407645e5f6622f5792ccdff947a6a3bd5edb0e428",
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 41,
-  "unreviewed_rows": 53,
+  "manually_reviewed_subset_rows": 43,
+  "unreviewed_rows": 51,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -265,6 +265,176 @@
       "checks": "Final CRLF chomp is checked as exact UTF-8 bytes, not a visually equivalent string.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "R1": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 33,
+      "test": "recursive local groups bind forward references and mutually recursive functions",
+      "assertions": [
+        "local a=b,b=42;a",
+        "[true, true, false]",
+        "local a=error 'unused',b=b; 42"
+      ],
+      "checks": "forms_value asserts exact JSON through parsed source and exported AST: forward/mutual recursion, shadowing and unused divergent/error bindings.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "R2": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 44,
+      "test": "duplicate local groups and sibling scope fail statically before unused execution",
+      "assertions": [
+        "@moonjsonnet.Program::parse(source",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "for v in []"
+      ],
+      "checks": "Eleven source cases reject at creation: duplicate local groups/functions/object locals/empty comprehension locals, duplicate literal fields, inaccessible sibling/later/outside variables.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "R3": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 66,
+      "test": "recursive local aliases share one demanded initializer and skip unused ones",
+      "assertions": [
+        "[1, 1, 1, 1]",
+        "assert_eq(calls, 1)"
+      ],
+      "checks": "Four alias demands share one native local initializer; the unused local callback is not executed.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "R4": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 86,
+      "test": "recursive object local aliases rebind final self and keep lexical super",
+      "assertions": [
+        "local a=b,local b=self.base+super.base",
+        "[4, 5, 4]"
+      ],
+      "checks": "Parsed source and exported AST distinguish original/derived/original results for forward object-local aliases using final self and lexical super.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "C1": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 94,
+      "test": "comprehension domains shadow sequentially and preserve Cartesian order",
+      "assertions": [
+        "[1, 1], [1, 11], [2, 2], [2, 12],",
+        "[11, 12]",
+        "local x=['a','b']; {[x]:x for x in x}"
+      ],
+      "checks": "forms_value checks exact Cartesian order, enclosing-domain scope and repeated generator shadowing through both entry paths.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "C2": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 110,
+      "test": "comprehensions skip excluded domains and keep generated payloads lazy",
+      "assertions": [
+        "if false for y in error 'domain'",
+        "{[null]:error 'body' for x in [1,2]}",
+        "unused iterator"
+      ],
+      "checks": "Seven exact-value cases via forms_value cover skipped domains, lazy array bodies, selected elements, empty/null keys and an unneeded error-valued iterator.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "C3": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 124,
+      "test": "comprehension shape constructs keys before forcing cached selected bodies",
+      "assertions": [
+        "[2, \"object\", 1, 1]",
+        "assert_eq((keys, bodies), (2, 1))"
+      ],
+      "checks": "Shape constructs two keys; repeated selected field body executes once, other/null-key bodies execute zero times.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "C4": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 160,
+      "test": "duplicate and invalid comprehension keys fail before any body callbacks",
+      "assertions": [
+        "assert_eq(d.kind, kind)",
+        "assert_eq((keys, bodies), (expected_keys, 0))"
+      ],
+      "checks": "Both parsed source and exported AST create successfully, then duplicate/nonstring key construction fails as Runtime/Type; counters prove 2/1 key calls and zero bodies.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "C5": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 207,
+      "test": "nonboolean comprehension filters reject before later native domains",
+      "assertions": [
+        "assert_eq(d.kind, @moonjsonnet.Type)",
+        "assert_eq(domains, 0)"
+      ],
+      "checks": "Array/object invalid filters reject at evaluation through both entry paths, before any later native domain execution.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "C6": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 233,
+      "test": "comprehension fields inherit self super locals and root without freezing originals",
+      "assertions": [
+        "[\"20a\", \"30a\", \"20a\"]",
+        "[{ \"a\": \"a\" }, { \"b\": \"b\" }]"
+      ],
+      "checks": "forms_value checks original/derived comprehension locals using self/super and enclosing-self keys with root $ through parsed source and exported AST.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "C7": {
+      "file": "spec_language_forms_test.mbt",
+      "line": 245,
+      "test": "comprehension key and filter errors remain runtime after valid parsing",
+      "assertions": [
+        "message=\"key\"",
+        "message=\"body\"",
+        "forms_runtime(source, @moonjsonnet.Type)"
+      ],
+      "checks": "forms_runtime creates each parsed/AST Program before asserting Runtime/Type and source file; exact key/body error markers distinguish demand sites. Controls skip invalid later numeric domains.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "A1": {
+      "file": "spec_language_forms_ast_test.mbt",
+      "line": 9,
+      "test": "handmade AST duplicate local groups reject ordinary and empty comprehension scopes",
+      "assertions": [
+        "@moonjsonnet.Program::from_ast(forms_ast(kind))",
+        "assert_eq(d.kind, @moonjsonnet.Static)"
+      ],
+      "checks": "Four hand-built local/object/empty-comprehension/unused-branch ASTs reject duplicate groups at creation, without parser participation.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "A2": {
+      "file": "spec_language_forms_ast_test.mbt",
+      "line": 39,
+      "test": "handmade AST comprehension key and domain scope reject inaccessible bindings",
+      "assertions": [
+        "@moonjsonnet.Program::from_ast(forms_ast(kind))",
+        "assert_eq(d.kind, @moonjsonnet.Static)"
+      ],
+      "checks": "Three hand-built ASTs reject a new object local in key scope and later-loop variables in earlier array/object domains.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "A3": {
+      "file": "spec_language_forms_ast_test.mbt",
+      "line": 70,
+      "test": "handmade AST recursive locals and null comprehension keys stay lazy",
+      "assertions": [
+        "assert_eq(@moonjsonnet.Program::from_ast(forward).evaluate(), 42)",
+        "assert_eq(@moonjsonnet.Program::from_ast(no_field).evaluate(), {})"
+      ],
+      "checks": "Hand-built forward local group yields 42; repeated null comprehension keys suppress the error body and yield an empty object.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "A4": {
+      "file": "spec_language_forms_ast_test.mbt",
+      "line": 94,
+      "test": "handmade AST dynamic duplicate keys are runtime and literal duplicates static",
+      "assertions": [
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(d.kind, @moonjsonnet.Static)"
+      ],
+      "checks": "Hand-built comprehension creates successfully then rejects duplicate runtime keys; literal duplicate object fields reject before Program creation.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -286,6 +456,8 @@
     "spec_foundation_types_test.mbt": "0c209adf036e789c5ad2407352188125e985367ba756fc2664f3220859063392",
     "spec_text_block_test.mbt": "6172f19cc234f3dd909ee9ab1ab46000d4beaece199c366e37d59b6b1966c3a6",
     "spec_text_chomp_test.mbt": "72d6b50c1c56686e26978f01eba5ac54c59d1a0fe9643199797090660d70a1fa",
+    "spec_language_forms_test.mbt": "c8e1af3588e9b5fe69b603575c8c807a0a58023d8db3f9ed1df3898275b224fb",
+    "spec_language_forms_ast_test.mbt": "4d2bd9c0303a756cfc457fa4cff910f80e094447aaa1b86014b9d3849a90738d",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -383,17 +555,23 @@
       "source_line": 1600,
       "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "C1",
+          "C6"
+        ],
         "static_error": [
-          "O1"
+          "O1",
+          "R2",
+          "A2"
         ],
         "runtime_error": [],
         "lazy": [],
         "boundary": []
       },
-      "remaining": "Normal/key/domain/local scope cross-product and malformed comprehensions.",
+      "remaining": "Exhaustive key/domain/local scope cross-product and malformed comprehensions; only listed source and handmade AST cases reviewed.",
       "implementation": [
-        "validate.mbt"
+        "validate.mbt",
+        "ast_validate.mbt"
       ],
       "obligation": null
     },
@@ -483,16 +661,27 @@
       "kind": "named-rule",
       "section": "static_checking",
       "source_line": 1655,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
+        "normal": [
+          "R1",
+          "R4",
+          "A3"
+        ],
+        "static_error": [
+          "R2",
+          "A1"
+        ],
         "runtime_error": [],
         "lazy": [],
         "boundary": []
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Every binder/initializer AST form, all mutually recursive structures and exhaustive object/comprehension nesting.",
+      "implementation": [
+        "validate.mbt",
+        "ast_validate.mbt",
+        "parser.mbt"
+      ],
       "obligation": null
     },
     {
@@ -696,16 +885,36 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2182,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "C1",
+          "C6",
+          "A3"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "C4",
+          "C7",
+          "A4"
+        ],
+        "lazy": [
+          "C2",
+          "C3",
+          "C4",
+          "C5"
+        ],
+        "boundary": [
+          "C2",
+          "A3",
+          "A4"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Exhaustive nested generators, all key scalar kinds and multiple failing key order; mechanical non-array domain extensions remain unadjudicated.",
+      "implementation": [
+        "eval.mbt",
+        "objects.mbt"
+      ],
       "obligation": null
     },
     {
@@ -805,16 +1014,20 @@
       "state": "manually-reviewed-subset",
       "dimensions": {
         "normal": [
-          "F1"
+          "F1",
+          "R1",
+          "R4"
         ],
         "static_error": [],
         "runtime_error": [],
         "lazy": [
-          "F2"
+          "F2",
+          "R1",
+          "R3"
         ],
         "boundary": []
       },
-      "remaining": "Local-function mutual recursion and every desugared object/comprehension binding.",
+      "remaining": "All recursive group shapes and every desugared object/comprehension binding; the finite even/odd pair is a subset.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt"
@@ -829,12 +1042,14 @@
       "state": "manually-reviewed-subset",
       "dimensions": {
         "normal": [
-          "F1"
+          "F1",
+          "R1"
         ],
         "static_error": [],
         "runtime_error": [],
         "lazy": [
-          "F3"
+          "F3",
+          "R3"
         ],
         "boundary": []
       },
@@ -2058,15 +2273,33 @@
       "source_line": 1096,
       "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
-        "static_error": [
-          "O1"
+        "normal": [
+          "C1",
+          "C6"
         ],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "static_error": [
+          "O1",
+          "R2",
+          "A2"
+        ],
+        "runtime_error": [
+          "C4",
+          "C5",
+          "C7"
+        ],
+        "lazy": [
+          "C2",
+          "C3",
+          "C4",
+          "C5"
+        ],
+        "boundary": [
+          "C2",
+          "A3",
+          "A4"
+        ]
       },
-      "remaining": "Normal nested generators, null keys, callbacks, filters and domain failures.",
+      "remaining": "Exhaustive nesting/domain/body combinations and mechanical string/object/function domain extensions remain unreviewed.",
       "implementation": [
         "eval.mbt"
       ],
@@ -2085,7 +2318,10 @@
         "static_error": [
           "F5",
           "S1",
-          "O1"
+          "O1",
+          "R2",
+          "A1",
+          "A2"
         ],
         "runtime_error": [],
         "lazy": [],
@@ -2093,7 +2329,8 @@
       },
       "remaining": "Other chk-* rules remain explicitly unmapped below.",
       "implementation": [
-        "validate.mbt"
+        "validate.mbt",
+        "ast_validate.mbt"
       ],
       "obligation": [
         "Check unused defaults, bodies, branches and argument expressions"
