@@ -68,6 +68,9 @@ fix, unique formal parameters, CRLF empty text-block lines and import isolation.
 The subsequent [chomp and public-inventory stage](SPEC-CHOMP-EVIDENCE-2026-10-22.md)
 resolves the final-CRLF boundary and maps official candidate signatures separately
 from registration, with unknown coverage retained.
+The [foundation stage](SPEC-FOUNDATIONS-EVIDENCE-2026-10-22.md) independently
+reviews ten type/numeric/array contracts and corrects range endpoint narrowing;
+its table separates reviewed dimensions, oracle corrections and unresolved cases.
 The counts below retain the original first-stage scope.
 
 P0 fixes are local commits `001679a` (immutability), `dd3b9d0` (finite aggregates),

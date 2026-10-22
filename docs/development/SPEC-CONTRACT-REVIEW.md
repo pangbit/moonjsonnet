@@ -7,6 +7,9 @@ Unknown coverage is not passing. Historical Go/C++ fixtures remain unchanged.
 The separate [official public inventory](SPEC-PUBLIC-STDLIB-REVIEW.md) now lists
 fixed documentation/source/specification API candidates and maps each to reviewed
 subsets or explicit unknown dimensions. It does not use registration as acceptance.
+The [ten-function foundation evidence](SPEC-FOUNDATIONS-EVIDENCE-2026-10-22.md)
+adds parameter/default and N/E/L/B assertions with actual range failures and a
+minimal public-dispatch fix; it does not relabel older Go snapshots as reviewed.
 
 ## Function length decision
 
