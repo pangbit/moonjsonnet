@@ -399,6 +399,36 @@
       "assertions": ["error_static_ast(Fail(operand))", "let program = error_static_program(source, tree, handmade)", "assert_eq(calls, 0)", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(d.message, \"operand marker\")", "assert_eq(program.evaluate(native_functions=natives), 42)", "assert_eq(calls, if demanded { 1 } else { 0 })"],
       "checks": "Source and handmade Programs create without invoking the operand callback. Unused-local and unselected-branch evaluation returns 42 with zero callbacks; demanded error calls the same string operand once and raises Runtime with its independent marker. These are phase/demand boundaries, not completion of error conversion or diagnostics."
     },
+    "US0": {
+      "file": "ast_test.mbt",
+      "test": "AST construction validates names scopes operators and shapes",
+      "assertions": ["Unary(\"bad\", one)", "assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(d.location, loc)"],
+      "checks": "Reused handmade invalid-operator case rejects Static at AST Program creation with its explicit location. It is a host shape boundary outside the well-formed four-symbol chk-unary domain, not source Syntax or runtime Type evidence."
+    },
+    "UP0": {
+      "file": "parser_diagnostic_test.mbt",
+      "test": "operator boundaries retain unary suffixes comments and field visibility",
+      "assertions": ["\"[1+-2,1- -2,!!true,~-1,1+/*comment*/2,1+//comment\\n2]\"", "[-1, 3, true, 0, 3, 3]"],
+      "checks": "Reused independent finite source result covers prefix minus, logical-not and bitwise-not combinations. Creation/normal controls do not establish complete unary evaluation or every symbol's valid-value semantics."
+    },
+    "US1": {
+      "file": "spec_unary_static_test.mbt",
+      "test": "unary delegates unchanged operand scope for all four symbols",
+      "assertions": ["for op in [\"-\", \"+\", \"!\", \"~\"]", "unary_static_ast(Unary(op, unary_static_ast(Var(\"missing\"))))", "for name in [\"self\", \"super\"]", "unary_static_program(source, tree, handmade)", "assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(d.location.file, \"unary-static-entry\")", "\"local n=0;local unused=\" + op + \" n;42\"", "assert_eq(program.evaluate(), 42)"],
+      "checks": "All four symbols and both independent entry paths reject missing operands directly and under unused-local/unselected-branch wrappers, plus self/super outside objects. Bound numeric n and own/inherited object contexts accept while unused and yield outer 42; ! over numeric n is statically valid without imposing its later Boolean requirement."
+    },
+    "US2": {
+      "file": "spec_unary_static_test.mbt",
+      "test": "unary operand callbacks stay lazy before demanded type rejection",
+      "assertions": ["unary_static_ast(Unary(op, operand))", "let program = unary_static_program(source, tree, handmade)", "assert_eq(calls, 0)", "assert_eq(d.kind, @moonjsonnet.Type)", "assert_eq(program.evaluate(native_functions=natives), 42)", "assert_eq(calls, if demanded { 1 } else { 0 })"],
+      "checks": "For all four symbols and both entry paths, valid Programs create with zero operand calls. Unused locals and unselected branches return 42 without calls; demanded null operands run once then raise host Type. These are static/runtime demand boundaries, not completion of the unary evaluation rules."
+    },
+    "US3": {
+      "file": "spec_unary_static_test.mbt",
+      "test": "unary missing source operands reject syntax before program creation",
+      "assertions": ["for source in [\"-\", \"+\", \"!\", \"~\"]", "assert_eq(d.kind, @moonjsonnet.Syntax)", "assert_eq(d.location.file, \"unary-static-entry\")"],
+      "checks": "Four bare legal unary prefixes reject source Syntax before a Program exists. Typed Unary nodes require a child, so no absent-child handmade-AST or Static counterpart is asserted."
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "test": "P0 JSON manifestation rejects nonfinite internal values defensively",
@@ -407,6 +437,29 @@
     }
   },
   "rules": {
+    "chk-unary": {
+      "normal": ["US1", "US2", "UP0"], "static_error": ["US1"],
+      "lazy": ["US1", "US2"], "boundary": ["US0", "US2", "US3"],
+      "remaining": "", "implementation": ["validate.mbt", "ast_convert.mbt", "ast_validate.mbt"],
+      "rule_review": {
+        "rule": "chk-unary", "decision": "complete", "review_form": "unary-static-transfer",
+        "fixed_statement": "\\rule{chk-unary} { Γ ⊢ e } { Γ ⊢ \\unary{sym}{e} }",
+        "premise_roles": ["operand"], "operator_domain": ["-", "+", "!", "~"],
+        "child_judgments_assumed": "Each operand checker implements its own judgment. Completion covers only unchanged Gamma/object-context delegation for the four well-formed symbols; child and unary evaluation judgments retain their separate status.",
+        "scope": "The chk-unary static constructor-transfer judgment for the fixed four-symbol grammar, relative to its operand judgment.",
+        "reasoning": "Unary(_, a) forwards only a to validate with identical names/in_object, preserving symbol/child during conversion and adding no type/evaluation premise. Three new groups exercise both independent entry paths and separate source Syntax, static rejection and runtime Type; US0/UP0 reuse existing controls without new execution counts.",
+        "review_report": "docs/development/SPEC-UNARY-STATIC-REVIEW.md",
+        "remaining_in_rule": [],
+        "not_applicable": {"runtime_error": "This static judgment contains no evaluation or operand-type premise. Runtime Type observations are adjacent demand boundaries only."},
+        "excluded_obligations": ["Correctness/completeness of operand and enclosing child judgments", "All unary evaluation rules, numeric/Boolean semantics, signed-64-bit conversion and overflow", "Full source grammar/desugaring and malformed host AST metadata beyond the reused operator control", "Diagnostic presentation, host resource/stack limits and CLI exits"],
+        "inspection": [
+          {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"Unary(_, a) | Fail(a) => validate(a, names, in_object)","argument":"The Unary alternative checks its sole child with unchanged names/in_object, without introducing bindings, evaluating it or inspecting its runtime type."},
+          {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"Unary(op, a) => Unary(op, visit(a))","argument":"Typed conversion preserves the symbol and operand; no child is omitted or selected by value."},
+          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"if op != \"+\" && op != \"-\" && op != \"!\" && op != \"~\" {","argument":"Host shape validation accepts exactly the four grammar symbols, with no operand numeric/Boolean predicate. Malformed operator metadata is outside the named well-formed judgment."}
+        ],
+        "evidence_sha256": {"spec_unary_static_test.mbt":"4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d","ast_test.mbt":"b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c","parser_diagnostic_test.mbt":"8274fdc918873dd15b13b510fb0356fc644d42e752cfe704ae394120aab92167"}
+      }
+    },
     "chk-error": {
       "normal": ["ES1", "ES2", "A3", "AP4"], "static_error": ["ES1"],
       "lazy": ["ES1", "ES2", "A3"], "boundary": ["ES1", "ES2", "AP4"],
@@ -601,7 +654,7 @@
     {"id": "DESUGAR-FIELDS", "section": "desugaring", "obligation": "Dot lookup, object extension, additive fields and methods", "normal": ["F6", "O2"], "remaining": "All additive forms and nested inheritance source transformations.", "implementation": ["parser.mbt", "objects.mbt"]},
     {"id": "DESUGAR-OPERATORS", "section": "desugaring", "obligation": "Percent, equality, in, unary plus and std binding", "remaining": "Independent equivalence under std shadowing and lazy/errors.", "implementation": ["eval.mbt", "operators.mbt"]},
     {"id": "DESUGAR-COMPREHENSIONS", "section": "desugaring", "obligation": "Array/object comprehension domains, order, filters and shadowing", "normal": ["C1", "C6"], "static_error": ["O1", "R2", "A2"], "runtime_error": ["C4", "C5", "C7"], "lazy": ["C2", "C3", "C4", "C5"], "boundary": ["C2", "A3", "A4"], "remaining": "Exhaustive nesting/domain/body combinations and mechanical string/object/function domain extensions remain unreviewed.", "implementation": ["eval.mbt"]},
-    {"id": "STATIC-TRAVERSAL", "section": "static_checking", "obligation": "Check unused defaults, bodies, branches and argument expressions", "static_error": ["F5", "S1", "O1", "R2", "A1", "A2", "AP6", "IF1", "IF2", "ES1"], "remaining": "Other unreviewed chk-* rules and full enclosing/host shape boundaries remain open; completed constructor judgments do not complete all child rules.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
+    {"id": "STATIC-TRAVERSAL", "section": "static_checking", "obligation": "Check unused defaults, bodies, branches and argument expressions", "static_error": ["F5", "S1", "O1", "R2", "A1", "A2", "AP6", "IF1", "IF2", "ES1", "US1"], "remaining": "Other unreviewed chk-* rules and full enclosing/host shape boundaries remain open; completed constructor judgments do not complete all child rules.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
     {"id": "VALUE-FINITE", "section": "jsonnet_values", "obligation": "Finite binary64 values and immutable arrays/objects", "boundary": ["FINITE", "O2"], "remaining": "Producer overflow and array immutability evidence lives in P0 matrix; not newly credited here.", "implementation": ["runtime_types.mbt", "manifest.mbt"]},
     {"id": "VALUE-UNICODE", "section": "jsonnet_values", "obligation": "Codepoint strings, strict contents and Unicode comparison", "normal": ["IDX"], "runtime_error": ["IDX"], "remaining": "Whole string semantics, collation, normalization and surrogate ambiguity.", "implementation": ["eval.mbt", "sequence.mbt"]},
     {"id": "HIDDEN-INHERITANCE", "section": "hidden_inheritance", "obligation": "Inherited default, hidden and forced-visible fields", "normal": ["O6"], "lazy": ["O6", "O7"], "boundary": ["O6"], "remaining": "Equality and every multi-layer/additive combination.", "implementation": ["objects.mbt", "manifest.mbt"]},

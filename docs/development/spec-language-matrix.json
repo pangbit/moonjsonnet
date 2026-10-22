@@ -2,15 +2,15 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "298e3c77619350730e9f0207886cddf828a6eeea895a3f1b099f785da6b6a742",
-  "tool_sha256": "2ccc665e5f13bb46aa08b2a93d1cc883f005ed5f1ebad82e68689b208bbb9631",
+  "mapping_sha256": "6a419a848781d070efc75d1536a2a88e2cb91dd0b6382200a34a0d73e7375ae5",
+  "tool_sha256": "2498727f41ae032b39d020a3d4e8e7e4624584d58aad40d3bce04b97a3244a1e",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 42,
-  "completed_rule_rows": 7,
-  "completed_static_rule_rows": 5,
+  "completed_rule_rows": 8,
+  "completed_static_rule_rows": 6,
   "completed_evaluation_rule_rows": 2,
-  "unreviewed_rows": 45,
+  "unreviewed_rows": 44,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -796,6 +796,73 @@
       "checks": "Source and handmade Programs create without invoking the operand callback. Unused-local and unselected-branch evaluation returns 42 with zero callbacks; demanded error calls the same string operand once and raises Runtime with its independent marker. These are phase/demand boundaries, not completion of error conversion or diagnostics.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "US0": {
+      "file": "ast_test.mbt",
+      "line": 68,
+      "test": "AST construction validates names scopes operators and shapes",
+      "assertions": [
+        "Unary(\"bad\", one)",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(d.location, loc)"
+      ],
+      "checks": "Reused handmade invalid-operator case rejects Static at AST Program creation with its explicit location. It is a host shape boundary outside the well-formed four-symbol chk-unary domain, not source Syntax or runtime Type evidence.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "UP0": {
+      "file": "parser_diagnostic_test.mbt",
+      "line": 35,
+      "test": "operator boundaries retain unary suffixes comments and field visibility",
+      "assertions": [
+        "\"[1+-2,1- -2,!!true,~-1,1+/*comment*/2,1+//comment\\n2]\"",
+        "[-1, 3, true, 0, 3, 3]"
+      ],
+      "checks": "Reused independent finite source result covers prefix minus, logical-not and bitwise-not combinations. Creation/normal controls do not establish complete unary evaluation or every symbol's valid-value semantics.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "US1": {
+      "file": "spec_unary_static_test.mbt",
+      "line": 53,
+      "test": "unary delegates unchanged operand scope for all four symbols",
+      "assertions": [
+        "for op in [\"-\", \"+\", \"!\", \"~\"]",
+        "unary_static_ast(Unary(op, unary_static_ast(Var(\"missing\"))))",
+        "for name in [\"self\", \"super\"]",
+        "unary_static_program(source, tree, handmade)",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(d.location.file, \"unary-static-entry\")",
+        "\"local n=0;local unused=\" + op + \" n;42\"",
+        "assert_eq(program.evaluate(), 42)"
+      ],
+      "checks": "All four symbols and both independent entry paths reject missing operands directly and under unused-local/unselected-branch wrappers, plus self/super outside objects. Bound numeric n and own/inherited object contexts accept while unused and yield outer 42; ! over numeric n is statically valid without imposing its later Boolean requirement.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "US2": {
+      "file": "spec_unary_static_test.mbt",
+      "line": 149,
+      "test": "unary operand callbacks stay lazy before demanded type rejection",
+      "assertions": [
+        "unary_static_ast(Unary(op, operand))",
+        "let program = unary_static_program(source, tree, handmade)",
+        "assert_eq(calls, 0)",
+        "assert_eq(d.kind, @moonjsonnet.Type)",
+        "assert_eq(program.evaluate(native_functions=natives), 42)",
+        "assert_eq(calls, if demanded { 1 } else { 0 })"
+      ],
+      "checks": "For all four symbols and both entry paths, valid Programs create with zero operand calls. Unused locals and unselected branches return 42 without calls; demanded null operands run once then raise host Type. These are static/runtime demand boundaries, not completion of the unary evaluation rules.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "US3": {
+      "file": "spec_unary_static_test.mbt",
+      "line": 222,
+      "test": "unary missing source operands reject syntax before program creation",
+      "assertions": [
+        "for source in [\"-\", \"+\", \"!\", \"~\"]",
+        "assert_eq(d.kind, @moonjsonnet.Syntax)",
+        "assert_eq(d.location.file, \"unary-static-entry\")"
+      ],
+      "checks": "Four bare legal unary prefixes reject source Syntax before a Program exists. Typed Unary nodes require a child, so no absent-child handmade-AST or Static counterpart is asserted.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -828,6 +895,8 @@
     "spec_conditional_static_test.mbt": "6f596f443401defc8c4865a5ac19084973c1bc27aeba11dd487e131462b4ea8e",
     "spec_conditional_runtime_test.mbt": "ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf",
     "spec_error_static_test.mbt": "b931793ba7ad955b4a83f30600f6eeaca66c2ff0e99640004c059254866e9610",
+    "parser_diagnostic_test.mbt": "8274fdc918873dd15b13b510fb0356fc644d42e752cfe704ae394120aab92167",
+    "spec_unary_static_test.mbt": "4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -1180,18 +1249,90 @@
       "kind": "named-rule",
       "section": "static_checking",
       "source_line": 1684,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
+        "normal": [
+          "US1",
+          "US2",
+          "UP0"
+        ],
+        "static_error": [
+          "US1"
+        ],
         "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "lazy": [
+          "US1",
+          "US2"
+        ],
+        "boundary": [
+          "US0",
+          "US2",
+          "US3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "validate.mbt",
+        "ast_convert.mbt",
+        "ast_validate.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "chk-unary",
+          "decision": "complete",
+          "review_form": "unary-static-transfer",
+          "fixed_statement": "\\rule{chk-unary} { Γ ⊢ e } { Γ ⊢ \\unary{sym}{e} }",
+          "premise_roles": [
+            "operand"
+          ],
+          "operator_domain": [
+            "-",
+            "+",
+            "!",
+            "~"
+          ],
+          "child_judgments_assumed": "Each operand checker implements its own judgment. Completion covers only unchanged Gamma/object-context delegation for the four well-formed symbols; child and unary evaluation judgments retain their separate status.",
+          "scope": "The chk-unary static constructor-transfer judgment for the fixed four-symbol grammar, relative to its operand judgment.",
+          "reasoning": "Unary(_, a) forwards only a to validate with identical names/in_object, preserving symbol/child during conversion and adding no type/evaluation premise. Three new groups exercise both independent entry paths and separate source Syntax, static rejection and runtime Type; US0/UP0 reuse existing controls without new execution counts.",
+          "review_report": "docs/development/SPEC-UNARY-STATIC-REVIEW.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "runtime_error": "This static judgment contains no evaluation or operand-type premise. Runtime Type observations are adjacent demand boundaries only."
+          },
+          "excluded_obligations": [
+            "Correctness/completeness of operand and enclosing child judgments",
+            "All unary evaluation rules, numeric/Boolean semantics, signed-64-bit conversion and overflow",
+            "Full source grammar/desugaring and malformed host AST metadata beyond the reused operator control",
+            "Diagnostic presentation, host resource/stack limits and CLI exits"
+          ],
+          "inspection": [
+            {
+              "file": "validate.mbt",
+              "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+              "anchor": "Unary(_, a) | Fail(a) => validate(a, names, in_object)",
+              "argument": "The Unary alternative checks its sole child with unchanged names/in_object, without introducing bindings, evaluating it or inspecting its runtime type."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Unary(op, a) => Unary(op, visit(a))",
+              "argument": "Typed conversion preserves the symbol and operand; no child is omitted or selected by value."
+            },
+            {
+              "file": "ast_validate.mbt",
+              "sha256": "cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c",
+              "anchor": "if op != \"+\" && op != \"-\" && op != \"!\" && op != \"~\" {",
+              "argument": "Host shape validation accepts exactly the four grammar symbols, with no operand numeric/Boolean predicate. Malformed operator metadata is outside the named well-formed judgment."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_unary_static_test.mbt": "4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d",
+            "ast_test.mbt": "b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c",
+            "parser_diagnostic_test.mbt": "8274fdc918873dd15b13b510fb0356fc644d42e752cfe704ae394120aab92167"
+          }
+        }
+      ]
     },
     {
       "id": "chk-function",
@@ -3255,7 +3396,8 @@
           "AP6",
           "IF1",
           "IF2",
-          "ES1"
+          "ES1",
+          "US1"
         ],
         "runtime_error": [],
         "lazy": [],
