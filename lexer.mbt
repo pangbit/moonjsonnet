@@ -92,7 +92,12 @@ fn lex(
       }
       i += 1
       let content : Array[Char] = []
-      while chars.get(i) == Some('\n') {
+      while chars.get(i) == Some('\n') ||
+            (chars.get(i) == Some('\r') && chars.get(i + 1) == Some('\n')) {
+        if chars.get(i) == Some('\r') {
+          content.push('\r')
+          i += 1
+        }
         content.push('\n')
         i += 1
       }
@@ -118,7 +123,12 @@ fn lex(
         }
         content.push('\n')
         i += 1
-        while chars.get(i) == Some('\n') {
+        while chars.get(i) == Some('\n') ||
+              (chars.get(i) == Some('\r') && chars.get(i + 1) == Some('\n')) {
+          if chars.get(i) == Some('\r') {
+            content.push('\r')
+            i += 1
+          }
           content.push('\n')
           i += 1
         }
