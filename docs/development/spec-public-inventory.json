@@ -5,7 +5,7 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "62f97198233e22ba9c44d131f1c10228eff64091",
+  "input_source_commit": "57aad77ee50ff82d6d5b6dd7e6c8e9da0425cede",
   "uncommitted_test_paths": "",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
@@ -90,13 +90,17 @@
     "spec_remove_test.mbt": "94b514e9ba69c2b5ad55f8c8e020ec7ab44ceac495150b9cd7020cbdea37c75c",
     "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
     "spec_static_test.mbt": "2b56b8efa83348f0ab266b8f18d00d31cf2a5e0543920e7cfb1d2c0d66923491",
+    "spec_string_calls_test.mbt": "6ef8384308df23e37c2fa8ffeb1466b10590b7fac001119aab41742e6bb58a90",
+    "spec_string_scalar_test.mbt": "422d8276072c90119c1840fb53f3586ef2458eb54476118e2129e7db106d7cf3",
+    "spec_string_sequence_test.mbt": "d48c9b7bff19d5859281d46d80eac467be009fe4c81028ee7475a8ba8523e2c7",
+    "spec_string_substr_test.mbt": "793ebb182eb3a8b7283cb475c4e705034035d151048648d248968588b1cf0b71",
     "spec_text_block_test.mbt": "6172f19cc234f3dd909ee9ab1ab46000d4beaece199c366e37d59b6b1966c3a6",
     "spec_text_chomp_test.mbt": "72d6b50c1c56686e26978f01eba5ac54c59d1a0fe9643199797090660d70a1fa",
     "spec_yaml_test.mbt": "f3e780945664c28724177b15d5f8540ff668526218e1b6ab0c55b468c2bb280d",
     "spec_yaml_wbtest.mbt": "a9d65846e43f8cb06e783f6138fde5f1afd3e8da1a8cc2f0b4a74441f1141dba",
     "stack_test.mbt": "70a86f582e38e7fac74448bf8e28079400855538d574a27cdbc5f528a53f0634",
-    "standard_character_test.mbt": "cc3e25d5bda8f495ca016b450a6abb63ce36a021c0c2aaccd1b3c746f6f0bbb1",
-    "standard_native_diagnostics_test.mbt": "c4822ccc6fdd6d74edcb9dd7be44a2f4697d5466dfea701517363bfaeba51133",
+    "standard_character_test.mbt": "9ab07f6906a677b840de2d4a7e6b12ac4b492a91272c58d869a74c965e2ac4ab",
+    "standard_native_diagnostics_test.mbt": "1d3e6e75c75ac79fdb1abb003f0869d45b9ac82b68d4eae6e4c573476531a2a2",
     "std_encoding_test.mbt": "671ee68b1e5657c821ac581967fa57507822c8f1fefd2a4256821f8145458886",
     "std_manifest_test.mbt": "9ac18a22b46088773fe007d191942c806eb134d2c92cf18321a35f0b541f1c9f",
     "std_math_test.mbt": "91c779e2736c616f258aa1563537c05d1cd86ec9a21bdbca68456bd29a44b9cc",
@@ -107,7 +111,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "610982b0467b27a91878abf90fdc65d09a83b78e0ce38cf9f691279e5f3330d3",
+  "coverage_sha256": "f443546c461e838441ab3b66031684edc4f0070e3d5e952a4a1204dfd18e1c56",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -374,7 +378,7 @@
         {
           "file": "standard_native_diagnostics_test.mbt",
           "line": 5,
-          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "test_declaration": "test \"standard error messages preserve types and raw byte offsets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -436,8 +440,8 @@
         },
         {
           "file": "standard_native_diagnostics_test.mbt",
-          "line": 10,
-          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "line": 8,
+          "test_declaration": "test \"standard error messages preserve types and raw byte offsets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -465,12 +469,53 @@
         "heading": "std.char(n)",
         "heading_line": "423"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "char",
+        "signature_review": {
+          "parameters": [
+            "n"
+          ],
+          "defaults": {},
+          "test": "spec_string_calls_test.mbt",
+          "status": "One required documented parameter, named n call, missing/extra/unknown rejection without rejected-argument evaluation."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_string_scalar_test.mbt",
+            "expectation": "Scalar integer identifiers round-trip through codepoint, including NUL, CJK, supplementary, replacement and maximum codepoint."
+          },
+          "E": {
+            "test": "spec_string_scalar_test.mbt",
+            "expectation": "Fractional identifiers fail at conversion before type/codepoint consumers; nonnumber heads fail as Type without payload execution; an overflowing numeric producer fails first."
+          },
+          "L": {
+            "test": "spec_string_calls_test.mbt",
+            "expectation": "Unused binding/argument, branch, short circuit and hidden invalid conversion remain unforced."
+          },
+          "B": {
+            "test": "spec_string_scalar_test.mbt",
+            "expectation": "Zero/NUL, non-BMP and maximum scalar; fractional subnormal and fractional values near upper bound reject. Existing standard_character_test retains reviewed numeric range checks separately."
+          }
+        },
+        "remaining": "Surrogate-ID representation/error policy remains unadjudicated; legacy U+FFFD replacement tests are not normative passing criteria. Complete error presentation/resource/native combinations remain pending."
+      },
       "test_reference_candidates": [
+        {
+          "file": "spec_string_calls_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"string public signatures have required parameters and documented names\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_scalar_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"char and codepoint round trip scalar identifiers including NUL and non BMP\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
         {
           "file": "standard_character_test.mbt",
           "line": 5,
-          "test_declaration": "test \"character conversion retains truncation and replaces surrogates\" {",
+          "test_declaration": "test \"legacy surrogate replacement and overflow remain unchanged\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -501,7 +546,36 @@
         "heading": "std.codepoint(str)",
         "heading_line": "395"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "codepoint",
+        "signature_review": {
+          "parameters": [
+            "str"
+          ],
+          "defaults": {},
+          "test": "spec_string_calls_test.mbt",
+          "status": "One required documented parameter with named str call and binding rejection controls."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_string_scalar_test.mbt",
+            "expectation": "One-codepoint strings return their integer identifiers; NUL returns 0 under the char inverse relation."
+          },
+          "E": {
+            "test": "spec_string_scalar_test.mbt",
+            "expectation": "Every nonstring kind fails as Type without container/assertion/body execution; empty or multiple-codepoint strings fail and demanded error propagates."
+          },
+          "L": {
+            "test": "spec_string_calls_test.mbt",
+            "expectation": "Unselected/unused/short-circuit/hidden calls remain lazy; invalid nonstring payloads are also not forced by the scalar type check."
+          },
+          "B": {
+            "test": "spec_string_scalar_test.mbt",
+            "expectation": "NUL, supplementary/maximal scalars, combining graphemes and emoji ZWJ sequences distinguished by codepoint count."
+          }
+        },
+        "remaining": "Lone-surrogate representation and arbitrary host/native/error-context combinations remain outside this finite subset; positive wording is reconciled with the zero-based inverse/codepoint model."
+      },
       "test_reference_candidates": [
         {
           "file": "spec_review_test.mbt",
@@ -510,9 +584,21 @@
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
+          "file": "spec_string_calls_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"string public signatures have required parameters and documented names\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_scalar_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"char and codepoint round trip scalar identifiers including NUL and non BMP\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
           "file": "standard_character_test.mbt",
           "line": 5,
-          "test_declaration": "test \"character conversion retains truncation and replaces surrogates\" {",
+          "test_declaration": "test \"legacy surrogate replacement and overflow remain unchanged\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -653,8 +739,51 @@
         "source": "std.endsWith(a, b)",
         "source_line": "53"
       },
-      "reviewed_subset": null,
-      "test_reference_candidates": [],
+      "reviewed_subset": {
+        "name": "endsWith",
+        "signature_review": {
+          "parameters": [
+            "a",
+            "b"
+          ],
+          "defaults": {},
+          "test": "spec_string_calls_test.mbt",
+          "status": "Both documented/source parameters required; named order and invalid binding controls exercised."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "String suffix comparison follows codepoint sequence, including non-BMP and combining examples."
+          },
+          "E": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "Primitive length-invalid input kinds in either position and needed outer errors fail."
+          },
+          "L": {
+            "test": "spec_string_calls_test.mbt",
+            "expectation": "Unused and unselected calls, hidden fields and short circuits keep argument errors lazy."
+          },
+          "B": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "Empty suffix is true, longer suffix false, and composed/decomposed endings remain distinct."
+          }
+        },
+        "remaining": "Array/object/function source extensions, competing-input error precedence and exhaustive resource/Unicode combinations remain unadjudicated."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "spec_string_calls_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"string public signatures have required parameters and documented names\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_sequence_test.mbt",
+          "line": 75,
+          "test_declaration": "test \"string prefix and suffix compare codepoint sequences including empties\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
     },
     {
@@ -1030,8 +1159,50 @@
         "source": "std.findSubstr(pat, str)",
         "source_line": "1642"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "findSubstr",
+        "signature_review": {
+          "parameters": [
+            "pat",
+            "str"
+          ],
+          "defaults": {},
+          "test": "spec_string_calls_test.mbt",
+          "status": "Required-only source/documentation names with reordered named call and common binding controls."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "All overlapping matches return codepoint offsets, including non-BMP and decomposed combining sequences without normalization."
+          },
+          "E": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "All nonstring pattern/haystack kinds fail under explicit source checks; invalid pattern stops before native haystack callback."
+          },
+          "L": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "Native counter remains zero for the unused haystack after pattern guard failure; common tests cover unselected calls."
+          },
+          "B": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "Empty pattern/input and longer-than-input pattern return empty; overlapping aa and supplementary matches preserve exact offsets."
+          }
+        },
+        "remaining": "Full guard/error-order/resource, repeated native-input and arbitrary Unicode-combination contracts remain unreviewed; no complete function acceptance."
+      },
       "test_reference_candidates": [
+        {
+          "file": "spec_string_calls_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"string public signatures have required parameters and documented names\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_sequence_test.mbt",
+          "line": 38,
+          "test_declaration": "test \"findSubstr returns overlapping codepoint offsets and source empty boundaries\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
         {
           "file": "std_string_test.mbt",
           "line": 14,
@@ -1292,7 +1463,7 @@
       "test_reference_candidates": [
         {
           "file": "standard_native_diagnostics_test.mbt",
-          "line": 43,
+          "line": 41,
           "test_declaration": "test \"source standard formatting and YAML retain laziness and explicit budgets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
@@ -1628,7 +1799,7 @@
       "test_reference_candidates": [
         {
           "file": "standard_native_diagnostics_test.mbt",
-          "line": 38,
+          "line": 36,
           "test_declaration": "test \"source standard formatting and YAML retain laziness and explicit budgets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
@@ -1884,6 +2055,18 @@
           "file": "spec_review_test.mbt",
           "line": 53,
           "test_declaration": "test \"deletion shares cached payloads without forcing removed or retained errors\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_scalar_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"char and codepoint round trip scalar identifiers including NUL and non BMP\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_sequence_test.mbt",
+          "line": 26,
+          "test_declaration": "test \"stringChars shares its required outer input across length and selections\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -2168,8 +2351,8 @@
         },
         {
           "file": "standard_native_diagnostics_test.mbt",
-          "line": 17,
-          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "line": 15,
+          "test_declaration": "test \"standard error messages preserve types and raw byte offsets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -2248,8 +2431,8 @@
       "test_reference_candidates": [
         {
           "file": "standard_native_diagnostics_test.mbt",
-          "line": 20,
-          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "line": 18,
+          "test_declaration": "test \"standard error messages preserve types and raw byte offsets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -2620,8 +2803,8 @@
         },
         {
           "file": "standard_native_diagnostics_test.mbt",
-          "line": 15,
-          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "line": 13,
+          "test_declaration": "test \"standard error messages preserve types and raw byte offsets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -2964,6 +3147,24 @@
           "file": "spec_review_test.mbt",
           "line": 30,
           "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_calls_test.mbt",
+          "line": 52,
+          "test_declaration": "test \"string public binding rejects unknown names before their values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_sequence_test.mbt",
+          "line": 26,
+          "test_declaration": "test \"stringChars shares its required outer input across length and selections\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_substr_test.mbt",
+          "line": 43,
+          "test_declaration": "test \"substr first type guard does not demand later arguments\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -3561,8 +3762,8 @@
         },
         {
           "file": "standard_native_diagnostics_test.mbt",
-          "line": 23,
-          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "line": 21,
+          "test_declaration": "test \"standard error messages preserve types and raw byte offsets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -4384,7 +4585,7 @@
       "test_reference_candidates": [
         {
           "file": "standard_native_diagnostics_test.mbt",
-          "line": 38,
+          "line": 36,
           "test_declaration": "test \"source standard formatting and YAML retain laziness and explicit budgets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
@@ -4454,8 +4655,51 @@
         "source": "std.startsWith(a, b)",
         "source_line": "47"
       },
-      "reviewed_subset": null,
-      "test_reference_candidates": [],
+      "reviewed_subset": {
+        "name": "startsWith",
+        "signature_review": {
+          "parameters": [
+            "a",
+            "b"
+          ],
+          "defaults": {},
+          "test": "spec_string_calls_test.mbt",
+          "status": "Both documented/source arguments required; reordered named and rejected binding cases tested."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "String prefix uses exact codepoint sequence, with CJK/supplementary and case/normalization distinctions."
+          },
+          "E": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "Primitive length-invalid input kinds in each position fail; needed first/second outer errors propagate."
+          },
+          "L": {
+            "test": "spec_string_calls_test.mbt",
+            "expectation": "Unselected/unused/short-circuit/hidden calls do not evaluate required string expressions."
+          },
+          "B": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "Empty prefix including empty input succeeds; longer prefix and differing composed/decomposed sequences return false."
+          }
+        },
+        "remaining": "Nonstrings accepted by mechanical source length/early branches and competing-invalid-input error order are unadjudicated; complete resource/Unicode matrix remains pending."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "spec_string_calls_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"string public signatures have required parameters and documented names\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_sequence_test.mbt",
+          "line": 75,
+          "test_declaration": "test \"string prefix and suffix compare codepoint sequences including empties\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
     },
     {
@@ -4478,12 +4722,53 @@
         "source": "std.stringChars(str)",
         "source_line": "75"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "stringChars",
+        "signature_review": {
+          "parameters": [
+            "str"
+          ],
+          "defaults": {},
+          "test": "spec_string_calls_test.mbt",
+          "status": "One required source/documented argument, named str and common rejected-binding controls."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "String input splits into one-codepoint strings in order, including CJK, non-BMP, combining mark and NUL."
+          },
+          "E": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "Primitive null/boolean/number inputs on which source length fails raise runtime/type errors; common tests validate demanded binding failures."
+          },
+          "L": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "Native outer string is executed once across array construction/length/reordered/repeated selections; unselected calls also remain lazy."
+          },
+          "B": {
+            "test": "spec_string_sequence_test.mbt",
+            "expectation": "Empty string gives empty array; supplementary and combining characters remain separate codepoints."
+          }
+        },
+        "remaining": "Array/object/function inputs can pass source length outside the documented string domain; their success/error policy is unadjudicated rather than inferred from Go. Complete resource/host/error combinations remain pending."
+      },
       "test_reference_candidates": [
         {
           "file": "lint_type_test.mbt",
           "line": 114,
           "test_declaration": "test \"lint standard-library types follow the pinned analysis declarations\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_calls_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"string public signatures have required parameters and documented names\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_sequence_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"stringChars splits Unicode codepoints and rejects primitive nonstrings\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -4522,7 +4807,38 @@
         "source": "std.substr(str, from, len)",
         "source_line": "40"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "substr",
+        "signature_review": {
+          "parameters": [
+            "str",
+            "from",
+            "len"
+          ],
+          "defaults": {},
+          "test": "spec_string_calls_test.mbt",
+          "status": "All three source/documented arguments required; reordered names and invalid binding evaluated independently."
+        },
+        "dimensions": {
+          "N": {
+            "test": "spec_string_substr_test.mbt",
+            "expectation": "Codepoint offsets select Unicode substrings; zero/end/above-end bounds and huge finite starts give the source-defined suffix/empty results."
+          },
+          "E": {
+            "test": "spec_string_substr_test.mbt",
+            "expectation": "Needed types, negative length and actual fractional/negative character indices fail; first and second guard failure do not execute later native arguments."
+          },
+          "L": {
+            "test": "spec_string_substr_test.mbt",
+            "expectation": "Explicit source guards stop before later arguments, and zero generated size does not evaluate nonexistent character indices. Common tests preserve unused outer-call boundaries."
+          },
+          "B": {
+            "test": "spec_string_substr_test.mbt",
+            "expectation": "Requested lengths 2^31, 2^53 and 1e308 clamp to a short finite suffix before allocation; fractional/negative offsets with zero count and fractional requested length clamped by empty input return empty."
+          }
+        },
+        "remaining": "Nonintegral computed makeArray sizes remain unadjudicated, as do huge effective allocations and all resource/error-order combinations. Legacy Go early-integer diagnostics are preserved separately, not contract criteria."
+      },
       "test_reference_candidates": [
         {
           "file": "arguments_test.mbt",
@@ -4537,9 +4853,21 @@
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
+          "file": "spec_string_calls_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"string public signatures have required parameters and documented names\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_substr_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"substr selects codepoints and clips ordinary suffix boundaries\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
           "file": "standard_native_diagnostics_test.mbt",
-          "line": 7,
-          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "line": 6,
+          "test_declaration": "test \"standard error messages preserve types and raw byte offsets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],
@@ -4601,9 +4929,15 @@
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
+          "file": "spec_string_scalar_test.mbt",
+          "line": 59,
+          "test_declaration": "test \"codepoint counts codepoints rather than graphemes and propagates needed errors\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
           "file": "standard_character_test.mbt",
           "line": 11,
-          "test_declaration": "test \"character conversion retains truncation and replaces surrogates\" {",
+          "test_declaration": "test \"legacy surrogate replacement and overflow remain unchanged\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -4872,6 +5206,12 @@
           "file": "spec_review_test.mbt",
           "line": 7,
           "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_string_scalar_test.mbt",
+          "line": 15,
+          "test_declaration": "test \"char rejects fractional identifiers at the actual conversion\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
       ],

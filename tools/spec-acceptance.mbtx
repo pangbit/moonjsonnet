@@ -61,6 +61,8 @@ async fn main {
     "tests/spec-array-boundary-observations.json",
     "spec_object_calls_test.mbt", "spec_object_reflection_test.mbt",
     "spec_object_get_test.mbt", "spec_object_values_test.mbt",
+    "spec_string_calls_test.mbt", "spec_string_scalar_test.mbt",
+    "spec_string_substr_test.mbt", "spec_string_sequence_test.mbt",
   ]
   let input_hashes : Map[String, Json] = Map([])
   for path in input_paths { input_hashes[path] = Json::string(sha256(path)) }
@@ -142,7 +144,7 @@ async fn main {
     "scope": "focused normative CLI regressions and three application scenarios; not full conformance or upstream parity",
     "passed": passed, "total": rows.length(), "failed": rows.length() - passed, "cases": rows,
     "selected_case_ids": selected,
-    "unresolved_outside_suite": ["removeAt parameter-name conflict", "escapeStringXml spelling conflict", "manifestYamlStream default conflict", "makeArray/range negative/nonintegral cardinalities", "filter nonboolean predicate results", "makeArray callback declaration-count wording", "folds on empty non-sequences", "flatMap out-of-documented-kind callback results", "complete public-contract adjudication and cross-platform acceptance"],
+    "unresolved_outside_suite": ["removeAt parameter-name conflict", "escapeStringXml spelling conflict", "manifestYamlStream default conflict", "makeArray/range negative/nonintegral cardinalities", "filter nonboolean predicate results", "makeArray callback declaration-count wording", "folds on empty non-sequences", "flatMap out-of-documented-kind callback results", "char surrogate-identifier policy", "stringChars/prefix-suffix nonstring source extensions", "substring nonintegral generated cardinalities", "complete public-contract adjudication and cross-platform acceptance"],
   }
   @fs.write_file(evidence + "/report.json", report.stringify(indent=2) + "\n")
   println("Normative CLI and application scenarios: \{passed}/\{rows.length()}; \{evidence}")

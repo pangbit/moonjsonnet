@@ -25,11 +25,11 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `avg` | D: `std.avg(arr)` | S: `std.avg(arr)` | R/R/R/R | [aggregate_test.mbt:6](../../aggregate_test.mbt#L6); [spec_aggregate_test.mbt:9](../../spec_aggregate_test.mbt#L9); [spec_review_test.mbt:9](../../spec_review_test.mbt#L9) |
 | `base64` | D: `std.base64(input)` | S: `std.base64(input)` | U/U/U/U | [std_encoding_test.mbt:16](../../std_encoding_test.mbt#L16) |
 | `base64Decode` | D: `std.base64Decode(str)` | S: `std.base64Decode(str)` | U/U/U/U | [std_encoding_test.mbt:20](../../std_encoding_test.mbt#L20) |
-| `base64DecodeBytes` | D: `std.base64DecodeBytes(str)` | S: `std.base64DecodeBytes(str)` | U/U/U/U | [lint_type_test.mbt:111](../../lint_type_test.mbt#L111); [standard_native_diagnostics_test.mbt:10](../../standard_native_diagnostics_test.mbt#L10); [std_encoding_test.mbt:20](../../std_encoding_test.mbt#L20) |
+| `base64DecodeBytes` | D: `std.base64DecodeBytes(str)` | S: `std.base64DecodeBytes(str)` | U/U/U/U | [lint_type_test.mbt:111](../../lint_type_test.mbt#L111); [standard_native_diagnostics_test.mbt:8](../../standard_native_diagnostics_test.mbt#L8); [std_encoding_test.mbt:20](../../std_encoding_test.mbt#L20) |
 | `ceil` | I: `std.ceil(x)` | Native/not defined in std.jsonnet | U/U/U/U | No direct test reference found |
-| `char` | D: `std.char(n)` | Native/not defined in std.jsonnet | U/U/U/U | [standard_character_test.mbt:5](../../standard_character_test.mbt#L5) |
+| `char` | D: `std.char(n)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_scalar_test.mbt:5](../../spec_string_scalar_test.mbt#L5); [standard_character_test.mbt:5](../../standard_character_test.mbt#L5) |
 | `clamp` | D: `std.clamp(x, minVal, maxVal)` | S: `std.clamp(x, minVal, maxVal)` | U/U/U/U | [array_std_test.mbt:29](../../array_std_test.mbt#L29) |
-| `codepoint` | D: `std.codepoint(str)` | Native/not defined in std.jsonnet | U/U/U/U | [spec_review_test.mbt:71](../../spec_review_test.mbt#L71); [standard_character_test.mbt:5](../../standard_character_test.mbt#L5) |
+| `codepoint` | D: `std.codepoint(str)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_review_test.mbt:71](../../spec_review_test.mbt#L71); [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_scalar_test.mbt:5](../../spec_string_scalar_test.mbt#L5) |
 | `contains` | D: `std.contains(arr, elem)` | S: `std.contains(arr, elem)` | U/U/U/U | [extrema_test.mbt:50](../../extrema_test.mbt#L50) |
 | `cos` | I: `std.cos(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |
 | `count` | D: `std.count(arr, x)` | S: `std.count(arr, x)` | U/U/U/U | [array_std_test.mbt:22](../../array_std_test.mbt#L22) |
@@ -37,7 +37,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `deepJoin` | D: `std.deepJoin(arr)` | S: `std.deepJoin(arr)` | U/U/U/U | [array_std_test.mbt:27](../../array_std_test.mbt#L27) |
 | `deg2rad` | I: `std.deg2rad(x)` | S: `std.deg2rad(x)` | U/U/U/U | [std_math_test.mbt:14](../../std_math_test.mbt#L14) |
 | `encodeUTF8` | D: `std.encodeUTF8(str)` | Native/not defined in std.jsonnet | U/U/U/U | [std_encoding_test.mbt:6](../../std_encoding_test.mbt#L6) |
-| `endsWith` | D: `std.endsWith(a, b)` | S: `std.endsWith(a, b)` | U/U/U/U | No direct test reference found |
+| `endsWith` | D: `std.endsWith(a, b)` | S: `std.endsWith(a, b)` | R/R/R/R | [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_sequence_test.mbt:75](../../spec_string_sequence_test.mbt#L75) |
 | `equals` | Not listed | S: `std.equals(a, b)` | U/U/U/U | [object_std_test.mbt:48](../../object_std_test.mbt#L48) |
 | `equalsIgnoreCase` | D: `std.equalsIgnoreCase(str1, str2)` | S: `std.equalsIgnoreCase(str1, str2)` | U/U/U/U | [std_string_test.mbt:26](../../std_string_test.mbt#L26) |
 | `escapeStringBash` | D: `std.escapeStringBash(str)` | S: `std.escapeStringBash(str_)` | U/U/U/U | [std_string_test.mbt:34](../../std_string_test.mbt#L34) |
@@ -52,14 +52,14 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `filter` | D: `std.filter(func, arr)` | Native/not defined in std.jsonnet | R/R/R/R | [remove_test.mbt:17](../../remove_test.mbt#L17); [spec_foundation_arrays_test.mbt:109](../../spec_foundation_arrays_test.mbt#L109); [spec_foundation_calls_test.mbt:6](../../spec_foundation_calls_test.mbt#L6) |
 | `filterMap` | D: `std.filterMap(filter_func, map_func, arr)` | S: `std.filterMap(filter_func, map_func, arr)` | U/U/U/U | [array_std_test.mbt:18](../../array_std_test.mbt#L18) |
 | `find` | D: `std.find(value, arr)` | S: `std.find(value, arr)` | U/U/U/U | [array_std_test.mbt:26](../../array_std_test.mbt#L26) |
-| `findSubstr` | D: `std.findSubstr(pat, str)` | S: `std.findSubstr(pat, str)` | U/U/U/U | [std_string_test.mbt:14](../../std_string_test.mbt#L14) |
+| `findSubstr` | D: `std.findSubstr(pat, str)` | S: `std.findSubstr(pat, str)` | R/R/R/R | [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_sequence_test.mbt:38](../../spec_string_sequence_test.mbt#L38); [std_string_test.mbt:14](../../std_string_test.mbt#L14) |
 | `flatMap` | D: `std.flatMap(func, arr)` | S: `std.flatMap(func, arr)` | R/R/R/R | [sequence_combine_test.mbt:4](../../sequence_combine_test.mbt#L4); [spec_array_flatmap_test.mbt:5](../../spec_array_flatmap_test.mbt#L5); [spec_array_slice_test.mbt:62](../../spec_array_slice_test.mbt#L62) |
 | `flattenArrays` | D: `std.flattenArrays(arr)` | S: `std.flattenArrays(arrs)` | U/U/U/U | [array_std_test.mbt:11](../../array_std_test.mbt#L11) |
 | `flattenDeepArray` | D: `std.flattenDeepArray(value)` | S: `std.flattenDeepArray(value)` | U/U/U/U | [array_std_test.mbt:14](../../array_std_test.mbt#L14) |
 | `floor` | I: `std.floor(x)` | Native/not defined in std.jsonnet | U/U/U/U | No direct test reference found |
 | `foldl` | D: `std.foldl(func, arr, init)` | S: `std.foldl(func, arr, init)` | R/R/R/R | [moonjsonnet_test.mbt:118](../../moonjsonnet_test.mbt#L118); [spec_array_fold_test.mbt:5](../../spec_array_fold_test.mbt#L5); [spec_array_slice_test.mbt:61](../../spec_array_slice_test.mbt#L61) |
 | `foldr` | D: `std.foldr(func, arr, init)` | S: `std.foldr(func, arr, init)` | R/R/R/R | [sequence_combine_test.mbt:35](../../sequence_combine_test.mbt#L35); [spec_array_fold_test.mbt:5](../../spec_array_fold_test.mbt#L5); [spec_array_slice_test.mbt:61](../../spec_array_slice_test.mbt#L61) |
-| `format` | D: `std.format(str, vals)` | S: `std.format(str, vals)` | U/U/U/U | [standard_native_diagnostics_test.mbt:43](../../standard_native_diagnostics_test.mbt#L43) |
+| `format` | D: `std.format(str, vals)` | S: `std.format(str, vals)` | U/U/U/U | [standard_native_diagnostics_test.mbt:41](../../standard_native_diagnostics_test.mbt#L41) |
 | `get` | D: `std.get(o, f, default=null, inc_hidden=true)` | S: `std.get(o, f, default=null, inc_hidden=true)` | R/R/R/R | [object_std_test.mbt:10](../../object_std_test.mbt#L10); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [spec_object_calls_test.mbt:15](../../spec_object_calls_test.mbt#L15) |
 | `hypot` | I: `std.hypot(a, b)` | Native/not defined in std.jsonnet | U/U/U/U | [spec_review_test.mbt:8](../../spec_review_test.mbt#L8); [std_math_test.mbt:6](../../std_math_test.mbt#L6) |
 | `isArray` | I: `std.isArray(v)` | S: `std.isArray(v)` | U/U/U/U | No direct test reference found |
@@ -72,7 +72,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `isNumber` | I: `std.isNumber(v)` | S: `std.isNumber(v)` | R/R/R/R | [spec_foundation_calls_test.mbt:5](../../spec_foundation_calls_test.mbt#L5); [spec_foundation_numbers_test.mbt:78](../../spec_foundation_numbers_test.mbt#L78); [spec_foundation_types_test.mbt:15](../../spec_foundation_types_test.mbt#L15) |
 | `isObject` | I: `std.isObject(v)` | S: `std.isObject(v)` | U/U/U/U | No direct test reference found |
 | `isOdd` | I: `std.isOdd(x)` | S: `std.isOdd(x)` | U/U/U/U | [std_math_test.mbt:22](../../std_math_test.mbt#L22) |
-| `isString` | I: `std.isString(v)` | S: `std.isString(v)` | U/U/U/U | [standard_native_diagnostics_test.mbt:38](../../standard_native_diagnostics_test.mbt#L38) |
+| `isString` | I: `std.isString(v)` | S: `std.isString(v)` | U/U/U/U | [standard_native_diagnostics_test.mbt:36](../../standard_native_diagnostics_test.mbt#L36) |
 | `join` | D: `std.join(sep, arr)` | S: `std.join(sep, arr)` | U/U/U/U | No direct test reference found |
 | `length` | D: `std.length(x)` | Native/not defined in std.jsonnet | R/R/R/R | [aggregate_test.mbt:10](../../aggregate_test.mbt#L10); [arguments_test.mbt:4](../../arguments_test.mbt#L4); [array_std_test.mbt:25](../../array_std_test.mbt#L25) |
 | `lines` | D: `std.lines(arr)` | S: `std.lines(arr)` | U/U/U/U | No direct test reference found |
@@ -83,11 +83,11 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `makeArray` | D: `std.makeArray(sz, func)` | Native/not defined in std.jsonnet | R/R/R/R | [aggregate_test.mbt:29](../../aggregate_test.mbt#L29); [array_std_test.mbt:59](../../array_std_test.mbt#L59); [error_value_test.mbt:80](../../error_value_test.mbt#L80) |
 | `manifestIni` | D: `std.manifestIni(ini)` | S: `std.manifestIni(ini)` | U/U/U/U | [std_manifest_test.mbt:33](../../std_manifest_test.mbt#L33) |
 | `manifestJson` | D: `std.manifestJson(value)` | S: `std.manifestJson(value)` | U/U/U/U | [moonjsonnet_test.mbt:152](../../moonjsonnet_test.mbt#L152); [native_test.mbt:102](../../native_test.mbt#L102); [render_test.mbt:19](../../render_test.mbt#L19) |
-| `manifestJsonEx` | D: `std.manifestJsonEx(value, indent, newline, key_val_sep)` | S: `std.manifestJsonEx(value, indent, newline='\n', key_val_sep=': ')` | U/U/U/U | [arguments_test.mbt:6](../../arguments_test.mbt#L6); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [standard_native_diagnostics_test.mbt:17](../../standard_native_diagnostics_test.mbt#L17) |
+| `manifestJsonEx` | D: `std.manifestJsonEx(value, indent, newline, key_val_sep)` | S: `std.manifestJsonEx(value, indent, newline='\n', key_val_sep=': ')` | U/U/U/U | [arguments_test.mbt:6](../../arguments_test.mbt#L6); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [standard_native_diagnostics_test.mbt:15](../../standard_native_diagnostics_test.mbt#L15) |
 | `manifestJsonMinified` | D: `std.manifestJsonMinified(value)` | S: `std.manifestJsonMinified(value)` | U/U/U/U | [std_manifest_test.mbt:12](../../std_manifest_test.mbt#L12) |
 | `manifestPython` | D: `std.manifestPython(v)` | S: `std.manifestPython(v)` | U/U/U/U | [std_manifest_test.mbt:28](../../std_manifest_test.mbt#L28) |
 | `manifestPythonVars` | D: `std.manifestPythonVars(conf)` | S: `std.manifestPythonVars(conf)` | U/U/U/U | [std_manifest_test.mbt:30](../../std_manifest_test.mbt#L30) |
-| `manifestToml` | Not listed | S: `std.manifestToml(value)` | U/U/U/U | [standard_native_diagnostics_test.mbt:20](../../standard_native_diagnostics_test.mbt#L20); [toml_yaml_test.mbt:5](../../toml_yaml_test.mbt#L5) |
+| `manifestToml` | Not listed | S: `std.manifestToml(value)` | U/U/U/U | [standard_native_diagnostics_test.mbt:18](../../standard_native_diagnostics_test.mbt#L18); [toml_yaml_test.mbt:5](../../toml_yaml_test.mbt#L5) |
 | `manifestTomlEx` | D: `std.manifestTomlEx(toml, indent)` | S: `std.manifestTomlEx(value, indent)` | U/U/U/U | [toml_yaml_test.mbt:42](../../toml_yaml_test.mbt#L42) |
 | `manifestXmlJsonml` | D: `std.manifestXmlJsonml(value)` | S: `std.manifestXmlJsonml(value)` | U/U/U/U | [std_manifest_test.mbt:37](../../std_manifest_test.mbt#L37) |
 | `manifestYamlDoc` | D: `std.manifestYamlDoc(value, indent_array_in_object=false, quote_keys=true)` | S: `std.manifestYamlDoc(value, indent_array_in_object=false, quote_keys=true)` | U/R/R/U | [spec_aggregate_test.mbt:49](../../spec_aggregate_test.mbt#L49); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [spec_review_test.mbt:104](../../spec_review_test.mbt#L104) |
@@ -97,7 +97,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `mapWithIndex` | D: `std.mapWithIndex(func, arr)` | S: `std.mapWithIndex(func, arr)` | U/U/U/U | [sequence_test.mbt:23](../../sequence_test.mbt#L23) |
 | `mapWithKey` | D: `std.mapWithKey(func, obj)` | S: `std.mapWithKey(func, obj)` | U/U/U/U | [object_std_test.mbt:25](../../object_std_test.mbt#L25) |
 | `max` | I: `std.max(a, b)` | S: `std.max(a, b)` | R/R/R/R | [array_std_test.mbt:29](../../array_std_test.mbt#L29); [spec_foundation_calls_test.mbt:5](../../spec_foundation_calls_test.mbt#L5); [spec_foundation_numbers_test.mbt:35](../../spec_foundation_numbers_test.mbt#L35) |
-| `maxArray` | D: `std.maxArray(arr, keyF, onEmpty)` | S: `std.maxArray(arr, keyF=id, onEmpty=error 'Expected at least one element in array. Got none')` | U/U/U/U | [extrema_test.mbt:5](../../extrema_test.mbt#L5); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [standard_native_diagnostics_test.mbt:15](../../standard_native_diagnostics_test.mbt#L15) |
+| `maxArray` | D: `std.maxArray(arr, keyF, onEmpty)` | S: `std.maxArray(arr, keyF=id, onEmpty=error 'Expected at least one element in array. Got none')` | U/U/U/U | [extrema_test.mbt:5](../../extrema_test.mbt#L5); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [standard_native_diagnostics_test.mbt:13](../../standard_native_diagnostics_test.mbt#L13) |
 | `md5` | D: `std.md5(s)` | Native/not defined in std.jsonnet | U/U/U/U | [digest_test.mbt:38](../../digest_test.mbt#L38) |
 | `member` | D: `std.member(arr, x)` | S: `std.member(arr, x)` | U/U/U/U | [extrema_test.mbt:50](../../extrema_test.mbt#L50) |
 | `mergePatch` | D: `std.mergePatch(target, patch)` | S: `std.mergePatch(target, patch)` | U/U/U/U | [sets_test.mbt:16](../../sets_test.mbt#L16) |
@@ -147,15 +147,15 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `sin` | I: `std.sin(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |
 | `slice` | D: `std.slice(indexable, index, end, step)` | S: `std.slice(indexable, index, end, step)` | R/R/R/R | [numeric_test.mbt:26](../../numeric_test.mbt#L26); [spec_array_slice_test.mbt:5](../../spec_array_slice_test.mbt#L5); [spec_index_test.mbt:32](../../spec_index_test.mbt#L32) |
 | `sort` | D: `std.sort(arr, keyF=id)` | S: `std.sort(arr, keyF=id)` | U/U/U/U | [arguments_test.mbt:7](../../arguments_test.mbt#L7); [sort_test.mbt:4](../../sort_test.mbt#L4); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23) |
-| `split` | D: `std.split(str, c)` | S: `std.split(str, c)` | U/U/U/U | [standard_native_diagnostics_test.mbt:38](../../standard_native_diagnostics_test.mbt#L38) |
+| `split` | D: `std.split(str, c)` | S: `std.split(str, c)` | U/U/U/U | [standard_native_diagnostics_test.mbt:36](../../standard_native_diagnostics_test.mbt#L36) |
 | `splitLimit` | D: `std.splitLimit(str, c, maxsplits)` | S: `std.splitLimit(str, c, maxsplits)` | U/U/U/U | [std_string_test.mbt:18](../../std_string_test.mbt#L18) |
 | `splitLimitR` | D: `std.splitLimitR(str, c, maxsplits)` | S: `std.splitLimitR(str, c, maxsplits)` | U/U/U/U | [std_string_test.mbt:18](../../std_string_test.mbt#L18) |
 | `sqrt` | I: `std.sqrt(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:6](../../std_math_test.mbt#L6) |
-| `startsWith` | D: `std.startsWith(a, b)` | S: `std.startsWith(a, b)` | U/U/U/U | No direct test reference found |
+| `startsWith` | D: `std.startsWith(a, b)` | S: `std.startsWith(a, b)` | R/R/R/R | [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_sequence_test.mbt:75](../../spec_string_sequence_test.mbt#L75) |
 | `strReplace` | D: `std.strReplace(str, from, to)` | S: `std.strReplace(str, from, to)` | U/U/U/U | No direct test reference found |
-| `stringChars` | D: `std.stringChars(str)` | S: `std.stringChars(str)` | U/U/U/U | [lint_type_test.mbt:114](../../lint_type_test.mbt#L114); [std_string_test.mbt:6](../../std_string_test.mbt#L6) |
+| `stringChars` | D: `std.stringChars(str)` | S: `std.stringChars(str)` | R/R/R/R | [lint_type_test.mbt:114](../../lint_type_test.mbt#L114); [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_sequence_test.mbt:5](../../spec_string_sequence_test.mbt#L5) |
 | `stripChars` | D: `std.stripChars(str, chars)` | S: `std.stripChars(str, chars)` | U/U/U/U | [std_string_test.mbt:10](../../std_string_test.mbt#L10) |
-| `substr` | D: `std.substr(str, from, len)` | S: `std.substr(str, from, len)` | U/U/U/U | [arguments_test.mbt:5](../../arguments_test.mbt#L5); [moonjsonnet_test.mbt:20](../../moonjsonnet_test.mbt#L20); [standard_native_diagnostics_test.mbt:7](../../standard_native_diagnostics_test.mbt#L7) |
+| `substr` | D: `std.substr(str, from, len)` | S: `std.substr(str, from, len)` | R/R/R/R | [arguments_test.mbt:5](../../arguments_test.mbt#L5); [moonjsonnet_test.mbt:20](../../moonjsonnet_test.mbt#L20); [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21) |
 | `sum` | D: `std.sum(arr)` | S: `std.sum(arr)` | R/R/R/R | [aggregate_test.mbt:6](../../aggregate_test.mbt#L6); [output_test.mbt:11](../../output_test.mbt#L11); [spec_aggregate_test.mbt:9](../../spec_aggregate_test.mbt#L9) |
 | `tan` | I: `std.tan(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |
 | `toString` | D: `std.toString(a)` | S: `std.toString(a)` | U/U/U/U | [aggregate_test.mbt:46](../../aggregate_test.mbt#L46); [debugger_test.mbt:159](../../debugger_test.mbt#L159); [moonjsonnet_test.mbt:105](../../moonjsonnet_test.mbt#L105) |

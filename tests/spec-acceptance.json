@@ -1,4 +1,12 @@
 [
+  {"id":"char-fractional-identifier","axis":"P1-string-contracts","args":["-e","std.char(65.5)"],"error":"Codepoints must be integers"},
+  {"id":"char-scalar-roundtrip","axis":"P1-string-contracts","args":["-e","[std.char(128512),std.codepoint(std.char(0)),std.codepoint(std.char(1114111))]"],"value":["😀",0,1114111]},
+  {"id":"substr-large-clamped-length","axis":"P1-string-contracts","args":["-e","std.substr('你😀a',1,1e308)"],"value":"😀a"},
+  {"id":"substr-empty-indices-lazy","axis":"P1-string-contracts","args":["-e","[std.substr('abc',0.5,0),std.substr('abc',-1,0),std.substr('',0,0.5)]"],"value":["","",""]},
+  {"id":"substr-first-guard","axis":"P1-string-contracts","args":["-e","std.substr(null,error 'later from',error 'later length')"],"error":"substr first parameter should be a string"},
+  {"id":"substr-second-guard","axis":"P1-string-contracts","args":["-e","std.substr('abc',null,error 'later length')"],"error":"substr second parameter should"},
+  {"id":"string-unused-invalid-conversion","axis":"P1-string-contracts","args":["-e","local unused=std.char(0.5); [if false then std.char(0.5) else 42,true || std.char(0.5),({hidden::std.substr(error 'unused',0,1),good:1}).good]"],"value":[42,true,1]},
+  {"id":"string-search-codepoints","axis":"P1-string-contracts","args":["-e","[std.findSubstr('😀','😀a😀'),std.stringChars('你😀'),std.startsWith('你😀a','你😀'),std.endsWith('你😀a','😀a')]"],"value":[[0,2],["你","😀"],true,true]},
   {"id":"object-inherited-reflection","axis":"P1-object-contracts","args":["-e","local base={assert false,a:null,h::error 'hidden'}; local o=base+{b:2}; [std.objectHas(o,'a'),std.objectHasAll(o,'h'),std.objectHas(o,'h'),std.objectFields(o),std.objectFieldsAll(o),std.get(o,'missing',7)]"],"value":[true,true,false,["a","b"],["a","b","h"],7]},
   {"id":"object-get-defaults","axis":"P1-object-contracts","args":["-e","local o={a:null,h::error 'hidden'}; [std.get(o,'a',error 'default'),std.get(o,'h',3,false),std.get(o,'missing'),std.type(std.get({},'x',function()error 'body'))]"],"value":[null,3,null,"function"]},
   {"id":"object-get-inherited-assertion","axis":"P1-object-contracts","args":["-e","std.get({assert false,a:1}+{b:2},'b')"],"error":"Object assertion failed"},
