@@ -6,16 +6,18 @@ test "character conversion retains truncation and replaces surrogates" {
     ).stringify(),
     "[\"A\",\"�\",\"�\",65533,128512]",
   )
-  assert_eq(
+  try
     @moonjsonnet.evaluate(
       "local inf=std.sum([1e308,1e308]); local nan=std.sum([inf,-inf]); std.codepoint(std.char(nan))",
-    ).stringify(),
-    if @number.reference_amd64() {
-      "65533"
-    } else {
-      "0"
-    },
-  )
+    )
+  catch {
+    @moonjsonnet.Error(d) => {
+      assert_eq(d.kind, @moonjsonnet.Runtime)
+      assert_eq(d.message, "Overflow")
+    }
+  } noraise {
+    _ => fail("expected overflow before character conversion")
+  }
 }
 
 ///|

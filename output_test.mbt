@@ -8,7 +8,11 @@ test "text output uses Go layout, escaping and numeric representation" {
     @moonjsonnet.evaluate_text("['<>&\\u0080\\u2028',1e-8,1e21]"),
     "[\n   \"<>&\\u0080\u2028\",\n   1e-08,\n   1000000000000000000000\n]\n",
   )
-  assert_eq(@moonjsonnet.evaluate_text("std.sum([1e308,1e308])"), "+Inf\n")
+  try @moonjsonnet.evaluate_text("std.sum([1e308,1e308])") catch {
+    @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Runtime)
+  } noraise {
+    _ => fail("expected overflow before rendering")
+  }
   assert_eq(@moonjsonnet.evaluate_text("[]"), "[ ]\n")
   assert_eq(@moonjsonnet.evaluate_text("{}"), "{ }\n")
   assert_eq(

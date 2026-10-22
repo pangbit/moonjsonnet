@@ -61,12 +61,10 @@ fn Vm::manifest(
         let j = match value {
           Nil => Json::null()
           Bool(b) => Json::boolean(b)
-          Num(n) =>
-            if n.is_inf() || n.is_nan() {
-              Json::number(n, repr=manifest_number(n))
-            } else {
-              Json::number(n)
-            }
+          Num(n) => {
+            ignore(finite(n, loc))
+            Json::number(n)
+          }
           Str(s) => Json::string(s)
           _ => abort("unreachable non-scalar")
         }

@@ -294,11 +294,17 @@ fn Vm::builtin(
       let mut sum = 0.0
       for t in items {
         self.tick(loc)
-        sum += number_value(self.force(t, loc), loc)
+        let next = number_value(self.force(t, loc), loc)
+        sum = number_value(finite(sum + next, loc), loc)
       }
-      // The Go builtins omit makeDoubleCheck, retaining IEEE
-      // infinity/NaN after overflow, unlike ordinary arithmetic operators.
-      Num(if name == "avg" { sum / items.length().to_double() } else { sum })
+      finite(
+        if name == "avg" {
+          sum / items.length().to_double()
+        } else {
+          sum
+        },
+        loc,
+      )
     }
     "member" | "contains" =>
       if name == "member" && x is Str(s) {

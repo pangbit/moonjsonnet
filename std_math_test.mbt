@@ -34,10 +34,6 @@ test "math and boolean standard functions use Go contracts" {
         "[std.mantissa(8),std.exponent(8),std.mantissa(-0.25),std.exponent(-0.25),std.mantissa(5e-324),std.exponent(5e-324),std.mantissa(1.7976931348623157e308),std.exponent(1.7976931348623157e308)]",
         "[0.5,4,-0.5,-1,0.5,-1073,0.9999999999999999,1024]",
       ),
-      (
-        "local inf=std.sum([1e308,1e308]); local nan=std.sum([inf,-inf]); [std.exponent(inf),std.exponent(nan),std.isEven(inf),std.isOdd(inf),std.isInteger(inf),std.isDecimal(inf),std.sign(nan),std.pow(nan,0)]",
-        "[0,0,false,true,false,true,0,1]",
-      ),
     ] {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))
   }

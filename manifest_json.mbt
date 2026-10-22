@@ -29,7 +29,10 @@ fn Vm::manifest_json_ex(
   match value {
     Nil => write("null")
     Bool(b) => write(if b { "true" } else { "false" })
-    Num(n) => write(manifest_number(n))
+    Num(n) => {
+      ignore(finite(n, loc))
+      write(manifest_number(n))
+    }
     Str(s) => write(manifest_json_quote(s))
     Closure(_, _, _) | Builtin(_) | Native(_) =>
       raise problem(
