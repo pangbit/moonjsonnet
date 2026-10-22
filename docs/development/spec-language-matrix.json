@@ -1,0 +1,2292 @@
+{
+  "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+  "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
+  "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
+  "mapping_sha256": "28941e7afcd66b605a564180e880b925e9f9506bb4b72bc5e354d106973313db",
+  "tool_sha256": "d9315e91e295727795ea73196358168196d88bba24432ae11837c1ad9c62d9a5",
+  "named_rules": 70,
+  "prose_grammar_rows": 24,
+  "manually_reviewed_subset_rows": 41,
+  "unreviewed_rows": 53,
+  "complete_conformance": false,
+  "execution_inferred": false,
+  "evidence": {
+    "F1": {
+      "file": "spec_language_function_test.mbt",
+      "line": 5,
+      "test": "language defaults distinguish definition caller and formal environments",
+      "assertions": [
+        "[[10, 10], [99, 99]]",
+        "[[7, 7], [9, 9], [3, 7], [4, 5], [2, 6]]",
+        "[[1, 4, 5], [2, 5, 7], [1, 3, 9]]"
+      ],
+      "checks": "Exact JSON distinguishes definition/caller scope, forward defaults, positional/reordered names and interleaved required/optional formals.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "F2": {
+      "file": "spec_language_function_test.mbt",
+      "line": 25,
+      "test": "language explicit arguments override lazy defaults and ignore recursive defaults",
+      "assertions": [
+        "(function(a=a)42)()",
+        "assert_eq(@moonjsonnet.evaluate(source), 42)"
+      ],
+      "checks": "Six explicit sources return 42 without demanding recursive or error-valued arguments/defaults.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "F3": {
+      "file": "spec_language_function_test.mbt",
+      "line": 36,
+      "test": "language defaults cache once per call and share dependent parameters",
+      "assertions": [
+        "[[1, 1, 1], [2, 2, 2]]",
+        "assert_eq(calls, 2)"
+      ],
+      "checks": "Native counter is two after two demanded calls and remains two after two unused defaults.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "F4": {
+      "file": "spec_language_function_test.mbt",
+      "line": 65,
+      "test": "language invalid binding executes no argument default or body callbacks",
+      "assertions": [
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(calls, 0)"
+      ],
+      "checks": "Four parse-valid missing/unknown/duplicate-positional-named/extra calls fail at evaluation with no native argument/default/body execution.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "F5": {
+      "file": "spec_language_function_test.mbt",
+      "line": 91,
+      "test": "language statics traverse unused defaults bodies and named arguments",
+      "assertions": [
+        "@moonjsonnet.Program::parse(source",
+        "assert_eq(d.kind, @moonjsonnet.Static)"
+      ],
+      "checks": "Six invalid unused or overridden defaults/bodies/call sites are rejected during parse, without evaluation.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "F6": {
+      "file": "spec_language_function_test.mbt",
+      "line": 115,
+      "test": "language method defaults retain late self and lexical super",
+      "assertions": [
+        "[1, 2, 1]",
+        "[1, 1]"
+      ],
+      "checks": "Original/derived method defaults select late self and the method layer's super independently.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "O1": {
+      "file": "spec_language_object_test.mbt",
+      "line": 4,
+      "test": "language object keys exclude new self locals and comprehension self",
+      "assertions": [
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "{ \"x\": \"inner\", \"key\": \"inner\" }"
+      ],
+      "checks": "Six parse-only key-scope rejections plus one exact JSON control separate outer key self from inner value self.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "O2": {
+      "file": "spec_language_object_test.mbt",
+      "line": 30,
+      "test": "language inherited fields separate late self super root and original objects",
+      "assertions": [
+        "[1, 2, 2, 1]",
+        "{ \"x\": 2, \"r\": 3, \"s\": 2 }"
+      ],
+      "checks": "Exact arrays distinguish final self, super-field self, immutable originals, root $ and nested self.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "O3": {
+      "file": "spec_language_object_test.mbt",
+      "line": 46,
+      "test": "language inherited assertions use final self for access and manifestation",
+      "assertions": [
+        "{ \"x\": 2 }",
+        "assert_eq(d.kind, @moonjsonnet.Assertion)"
+      ],
+      "checks": "One repaired-base success and four assertion errors on derived/visible/hidden access or manifestation.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "O4": {
+      "file": "spec_language_object_test.mbt",
+      "line": 62,
+      "test": "language manifestation checks assertion only objects recursively",
+      "assertions": [
+        "assert_eq(d.kind, @moonjsonnet.Assertion)",
+        "[\"object\", 1, {}, 42]"
+      ],
+      "checks": "Four recursive assertion-only manifestation errors and exact lazy shape/hidden/ignored-argument controls.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "O5": {
+      "file": "spec_language_object_test.mbt",
+      "line": 82,
+      "test": "language assertions cache checks and do not force messages or failed fields",
+      "assertions": [
+        "[1, 2, 1]",
+        "assert_eq((checks, payloads), (1, 0))",
+        "assert_eq(d.kind, @moonjsonnet.Assertion)"
+      ],
+      "checks": "Repeated fields check once, true assertion message runs zero times, false assertion blocks selected native payload.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "O6": {
+      "file": "spec_language_object_test.mbt",
+      "line": 122,
+      "test": "language visibility inheritance controls JSON output and direct access",
+      "assertions": [
+        "assert_eq(@moonjsonnet.evaluate(source), [Json::object(fields), 2])",
+        "{hidden::error 'unused'}+{hidden:function()0}"
+      ],
+      "checks": "All nine separator pairs compare manifested object and direct selected value; hidden overridden function is omitted.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "O7": {
+      "file": "spec_language_object_test.mbt",
+      "line": 150,
+      "test": "language JSON conversion rejects demanded nested functions and errors",
+      "assertions": [
+        "assert_eq(d.kind, kind)",
+        "assert_eq(@moonjsonnet.evaluate(\"[{a::function()error 'body'}]\"), [{}])"
+      ],
+      "checks": "Four function manifestations are Type errors, three demanded error expressions are Runtime errors, hidden function body stays uncalled.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "S1": {
+      "file": "spec_static_test.mbt",
+      "line": 4,
+      "test": "duplicate formal parameters fail statically before any invocation",
+      "assertions": [
+        "@moonjsonnet.Program::parse(source",
+        "assert_eq(d.kind, @moonjsonnet.Static)"
+      ],
+      "checks": "Seven duplicate declaration forms, including unused functions, reject at Program creation.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "I1": {
+      "file": "spec_import_scope_test.mbt",
+      "line": 5,
+      "test": "imported free variables cannot capture caller locals",
+      "assertions": [
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(reads, 1)"
+      ],
+      "checks": "Parse resolves nothing; forced imported free x rejects in dependency file after exactly one resolver read.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "I2": {
+      "file": "spec_import_scope_test.mbt",
+      "line": 29,
+      "test": "unused imports never resolve even when the target would fail parsing",
+      "assertions": [
+        "assert_eq(reads, 0)",
+        "assert_eq(program.evaluate(resolver~), Json::number(expected.to_double()))"
+      ],
+      "checks": "Six unused local/branch/argument/default/hidden/array imports execute zero resolver calls.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "I3": {
+      "file": "spec_import_scope_test.mbt",
+      "line": 51,
+      "test": "import syntax and statics are checked only when the import is forced",
+      "assertions": [
+        "assert_eq(d.kind, kind)",
+        "assert_eq(reads, 1)",
+        "assert_eq(d.location.file, \"dep.libsonnet\")"
+      ],
+      "checks": "Same parsed entry skips invalid dependency then separately observes Syntax/Static errors only after demand, with dependency location and entry context.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "IDX": {
+      "file": "spec_index_test.mbt",
+      "line": 6,
+      "test": "P0 indices require integers before conversion for arrays and Unicode strings",
+      "assertions": [
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_true(d.message != \"element must stay lazy\")",
+        "[10,20,10,\\\"😀\\\"]"
+      ],
+      "checks": "Ten fractional/huge/empty/out-of-bounds errors and integral/Unicode controls, with invalid index preceding lazy payload.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SLICE": {
+      "file": "spec_index_test.mbt",
+      "line": 28,
+      "test": "P0 slicing defers array indexing and keeps strings strict",
+      "assertions": [
+        "assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)"
+      ],
+      "checks": "Six expected slice results and three forced-index failures distinguish lazy array slices and strict string slices.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "TYPE": {
+      "file": "spec_foundation_types_test.mbt",
+      "line": 2,
+      "test": "foundation type returns every documented tag",
+      "assertions": [
+        "[\"null\", \"boolean\", \"number\", \"string\", \"array\", \"object\", \"function\"]"
+      ],
+      "checks": "One array compares all seven explicit type tags.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "TYPELAZY": {
+      "file": "spec_foundation_types_test.mbt",
+      "line": 22,
+      "test": "foundation type and isNumber inspect no nested payload assertion or function",
+      "assertions": [
+        "[\"array\", \"object\", \"function\", false, false, false]",
+        "callback: _ => fail(\"type reflection called native function\")"
+      ],
+      "checks": "Outer type inspection avoids error payloads/assertions/defaults/body and cannot invoke registered native function.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "CRLF": {
+      "file": "spec_text_block_test.mbt",
+      "line": 12,
+      "test": "text blocks preserve interior and consecutive CRLF blank lines",
+      "assertions": [
+        "assert_eq(@utf8.encode(text), expected)"
+      ],
+      "checks": "Byte assertions retain interior/consecutive CRLF blank lines; no inference about all string lexing.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "CHOMP": {
+      "file": "spec_text_chomp_test.mbt",
+      "line": 5,
+      "test": "text-block chomp removes the complete final CRLF",
+      "assertions": [
+        "assert_eq(@utf8.encode(text), b\"x\")"
+      ],
+      "checks": "Final CRLF chomp is checked as exact UTF-8 bytes, not a visually equivalent string.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "FINITE": {
+      "file": "spec_manifest_wbtest.mbt",
+      "line": 2,
+      "test": "P0 JSON manifestation rejects nonfinite internal values defensively",
+      "assertions": [
+        "assert_eq(d.kind, Runtime)",
+        "for number in [1.0 / 0.0, -1.0 / 0.0, 0.0 / 0.0]"
+      ],
+      "checks": "Direct internal +/-Inf/NaN fail both structured and string JSON output paths.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    }
+  },
+  "test_file_sha256": {
+    "spec_language_function_test.mbt": "ddf1840ccfcd89545ddb6e51fcead6404999484697dbd3ad8649ae7b29b0f39a",
+    "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d",
+    "spec_static_test.mbt": "2b56b8efa83348f0ab266b8f18d00d31cf2a5e0543920e7cfb1d2c0d66923491",
+    "spec_import_scope_test.mbt": "a267fed917387b8edf62b4d1b72ed7764680cd14b919ced2af7f298847a9d2ed",
+    "spec_index_test.mbt": "8082f3d1253b242b9e6b4fd6f1397275fe1f5732c8ae62f922fc2c32963b2b67",
+    "spec_foundation_types_test.mbt": "0c209adf036e789c5ad2407352188125e985367ba756fc2664f3220859063392",
+    "spec_text_block_test.mbt": "6172f19cc234f3dd909ee9ab1ab46000d4beaece199c366e37d59b6b1966c3a6",
+    "spec_text_chomp_test.mbt": "72d6b50c1c56686e26978f01eba5ac54c59d1a0fe9643199797090660d70a1fa",
+    "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
+  },
+  "clauses": [
+    {
+      "id": "chk-lit",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1560,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "chk-self",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1568,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F6",
+          "O1",
+          "O2"
+        ],
+        "static_error": [
+          "O1"
+        ],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "All enclosing expression forms and public-AST combinations.",
+      "implementation": [
+        "validate.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "chk-super",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1577,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F6",
+          "O2"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Top-level/standalone super and every syntactic context not newly reviewed.",
+      "implementation": [
+        "validate.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "chk-object",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1586,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "O1"
+        ],
+        "static_error": [
+          "O1"
+        ],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Literal duplicate names, object-local recursion and statics in every assertion/value position.",
+      "implementation": [
+        "validate.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "chk-object-comp",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1600,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [],
+        "static_error": [
+          "O1"
+        ],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Normal/key/domain/local scope cross-product and malformed comprehensions.",
+      "implementation": [
+        "validate.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "chk-array",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1613,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "chk-array-index",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1622,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "chk-apply",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1633,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F1"
+        ],
+        "static_error": [
+          "F5"
+        ],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Every argument expression form; AST/source distinctions.",
+      "implementation": [
+        "validate.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "chk-var",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1646,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F1"
+        ],
+        "static_error": [
+          "F5",
+          "I1"
+        ],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "All binders and unused expression positions.",
+      "implementation": [
+        "validate.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "chk-local",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1655,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "chk-if",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1666,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "chk-binary",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1675,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "chk-unary",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1684,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "chk-function",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1693,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F1",
+          "F6"
+        ],
+        "static_error": [
+          "F5",
+          "S1"
+        ],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": [
+          "F1"
+        ]
+      },
+      "remaining": "Every default/body AST form; parameter metadata is a separate host contract.",
+      "implementation": [
+        "validate.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "chk-import",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1706,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "I1",
+          "I2",
+          "I3"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [
+          "I2",
+          "I3"
+        ],
+        "boundary": []
+      },
+      "remaining": "Every import expression/string form and isolated std binding.",
+      "implementation": [
+        "validate.mbt",
+        "imports.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "chk-importstr",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1714,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "chk-importbin",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1722,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "chk-error",
+      "kind": "named-rule",
+      "section": "static_checking",
+      "source_line": 1730,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "value",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2153,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "object",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2163,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "O1"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [
+          "O4"
+        ],
+        "boundary": []
+      },
+      "remaining": "Computed null/nonstring/duplicate names, all object local forms.",
+      "implementation": [
+        "eval.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "object-comp",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2182,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "array-index",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2201,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "IDX"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "IDX"
+        ],
+        "lazy": [
+          "IDX"
+        ],
+        "boundary": [
+          "IDX"
+        ]
+      },
+      "remaining": "Exhaustive numeric/operator combinations and all target/key type failures.",
+      "implementation": [
+        "eval.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "object-index",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2215,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "O2",
+          "O6"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "O3",
+          "O5"
+        ],
+        "lazy": [
+          "O5"
+        ],
+        "boundary": [
+          "O4"
+        ]
+      },
+      "remaining": "Missing fields, invalid keys, multiple failing assertions, equality/assertion interactions.",
+      "implementation": [
+        "eval.mbt",
+        "objects.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "apply",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2231,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F1",
+          "F6"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "F4"
+        ],
+        "lazy": [
+          "F2",
+          "F3",
+          "F4"
+        ],
+        "boundary": [
+          "F1",
+          "F3"
+        ]
+      },
+      "remaining": "Non-function targets, all recursive closure forms and exhaustive tailstrict interactions.",
+      "implementation": [
+        "eval.mbt",
+        "arguments.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "local",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2251,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F1"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [
+          "F2"
+        ],
+        "boundary": []
+      },
+      "remaining": "Local-function mutual recursion and every desugared object/comprehension binding.",
+      "implementation": [
+        "eval.mbt",
+        "runtime_types.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "local-var",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2261,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F1"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [
+          "F3"
+        ],
+        "boundary": []
+      },
+      "remaining": "Capture avoidance across every binder and recursive expression.",
+      "implementation": [
+        "eval.mbt",
+        "runtime_types.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "if-true",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2273,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "if-false",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2283,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "object-inherit",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2293,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "O2",
+          "F6"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "O3"
+        ],
+        "lazy": [
+          "O5",
+          "O6"
+        ],
+        "boundary": [
+          "O6"
+        ]
+      },
+      "remaining": "Full algebra, additive nested fields, association with super and duplicate dynamic names.",
+      "implementation": [
+        "operators.mbt",
+        "objects.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "array-concat",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2335,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "string-concat",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2347,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "less-than-true",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2360,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "less-than-false",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2370,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "greater-than-true",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2382,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "greater-than-false",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2392,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "less-or-equal-true",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2404,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "less-or-equal-false",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2416,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "greater-or-equal-true",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2426,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "greater-or-equal-false",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2438,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "cmp-array-left-empty",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2448,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "cmp-array-right-empty",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2460,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "cmp-array-both-empty",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2472,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "cmp-array-first-different",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2482,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "cmp-array-first-equal",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2498,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "cmp-string",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2514,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "cmp-number",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2528,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "boolean-and-shortcut",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2542,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "boolean-and-longcut",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2552,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "boolean-or-shortcut",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2564,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "boolean-or-longcut",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2574,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "not-true",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2586,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "not-false",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2596,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "primitiveEquals",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2606,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "length-array",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2620,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "O4",
+          "I2"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [
+          "O4",
+          "I2"
+        ],
+        "boundary": []
+      },
+      "remaining": "Full length contract belongs to public-library matrix.",
+      "implementation": [
+        "stdlib.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "length-object",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2630,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "length-string",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2640,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "makeArray",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2650,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "filter",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2662,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "type-null",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2676,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "TYPE"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Outer demanded-error cases not assigned to this row.",
+      "implementation": [
+        "stdlib.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "type-boolean",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2686,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "TYPE"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Outer demanded-error cases not assigned to this row.",
+      "implementation": [
+        "stdlib.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "type-number",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2696,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "TYPE"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "All finite/invalid producer boundaries are tracked separately.",
+      "implementation": [
+        "stdlib.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "type-string",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2706,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "TYPE"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "All Unicode and demanded-string error boundaries.",
+      "implementation": [
+        "stdlib.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "type-object",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2716,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "TYPE"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [
+          "TYPELAZY",
+          "O4"
+        ],
+        "boundary": []
+      },
+      "remaining": "All computed-key construction failures.",
+      "implementation": [
+        "stdlib.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "type-function",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2726,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "TYPE"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [
+          "TYPELAZY"
+        ],
+        "boundary": []
+      },
+      "remaining": "Every native/builtin/closure signature form.",
+      "implementation": [
+        "stdlib.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "type-array",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2736,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "TYPE"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [
+          "TYPELAZY"
+        ],
+        "boundary": []
+      },
+      "remaining": "All array-producing expressions and invalid outer errors.",
+      "implementation": [
+        "stdlib.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "object-has-ex",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2746,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "object-fields-ex",
+      "kind": "named-rule",
+      "section": "execution",
+      "source_line": 2762,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+      "implementation": [],
+      "obligation": null
+    },
+    {
+      "id": "manifest-value",
+      "kind": "named-rule",
+      "section": "manifestation",
+      "source_line": 2965,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F1"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "FINITE"
+        ],
+        "lazy": [],
+        "boundary": [
+          "FINITE"
+        ]
+      },
+      "remaining": "Exact preservation of every scalar kind/Unicode sequence and finite extreme.",
+      "implementation": [
+        "manifest.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "manifest-object",
+      "kind": "named-rule",
+      "section": "manifestation",
+      "source_line": 2974,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "O2",
+          "O6"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "O3",
+          "O4",
+          "O7"
+        ],
+        "lazy": [
+          "O4",
+          "O6",
+          "O7"
+        ],
+        "boundary": [
+          "O4",
+          "O6"
+        ]
+      },
+      "remaining": "Cycles, field-order independence, all nested hidden/visible errors and std.manifestJson distinctions.",
+      "implementation": [
+        "manifest.mbt",
+        "objects.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "manifest-array",
+      "kind": "named-rule",
+      "section": "manifestation",
+      "source_line": 2991,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F1",
+          "O2"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "O4",
+          "O7"
+        ],
+        "lazy": [
+          "O7"
+        ],
+        "boundary": [
+          "O4"
+        ]
+      },
+      "remaining": "Cycles, every nested shape and resource-independent evaluation boundaries.",
+      "implementation": [
+        "manifest.mbt"
+      ],
+      "obligation": null
+    },
+    {
+      "id": "LEX-ENCODING",
+      "kind": "prose-or-grammar-obligation",
+      "section": "lexing",
+      "source_line": 113,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Not manually mapped in this stage; retained lexer tests are candidates only.",
+      "implementation": [
+        "lexer.mbt"
+      ],
+      "obligation": [
+        "UTF-8 source, whitespace, all comment forms and greedy tokens"
+      ]
+    },
+    {
+      "id": "LEX-NAMES",
+      "kind": "prose-or-grammar-obligation",
+      "section": "lexing",
+      "source_line": 113,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Positive/negative/adjacent-token grid.",
+      "implementation": [
+        "lexer.mbt",
+        "parser.mbt"
+      ],
+      "obligation": [
+        "Identifier alphabet, reserved keywords and operator tokenization"
+      ]
+    },
+    {
+      "id": "LEX-NUMBERS",
+      "kind": "prose-or-grammar-obligation",
+      "section": "lexing",
+      "source_line": 113,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Full grammar, greedy lexing and malformed/boundary grid.",
+      "implementation": [
+        "lexer_number.mbt"
+      ],
+      "obligation": [
+        "JSON number grammar without leading minus"
+      ]
+    },
+    {
+      "id": "LEX-STRINGS",
+      "kind": "prose-or-grammar-obligation",
+      "section": "lexing",
+      "source_line": 113,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "All four quoted forms, malformed escapes, controls and surrogate ambiguity.",
+      "implementation": [
+        "lexer.mbt"
+      ],
+      "obligation": [
+        "Quoted and verbatim strings, escapes and Unicode"
+      ]
+    },
+    {
+      "id": "LEX-TEXT-BLOCK",
+      "kind": "prose-or-grammar-obligation",
+      "section": "lexing",
+      "source_line": 113,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "CRLF",
+          "CHOMP"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": [
+          "CRLF",
+          "CHOMP"
+        ]
+      },
+      "remaining": "Full malformed indentation/whitespace-only-line matrix.",
+      "implementation": [
+        "lexer.mbt"
+      ],
+      "obligation": [
+        "Text-block indentation, blank lines and final chomp"
+      ]
+    },
+    {
+      "id": "SYN-EXPR",
+      "kind": "prose-or-grammar-obligation",
+      "section": "abstract_syntax",
+      "source_line": 246,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "No coverage inferred from AST variant registration or example names.",
+      "implementation": [
+        "parser.mbt"
+      ],
+      "obligation": [
+        "Every expression alternative and optional/trailing syntax"
+      ]
+    },
+    {
+      "id": "SYN-OBJECT",
+      "kind": "prose-or-grammar-obligation",
+      "section": "abstract_syntax",
+      "source_line": 246,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F6",
+          "O1"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Every separator, additive form, comma and malformed construction.",
+      "implementation": [
+        "parser.mbt"
+      ],
+      "obligation": [
+        "Object fields, locals, methods, assertions and comprehension grammar"
+      ]
+    },
+    {
+      "id": "SYN-CALL",
+      "kind": "prose-or-grammar-obligation",
+      "section": "abstract_syntax",
+      "source_line": 246,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F1"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Malformed ordering, trailing commas and public-AST validation.",
+      "implementation": [
+        "parser.mbt"
+      ],
+      "obligation": [
+        "Positional arguments before named arguments and parameter grammar"
+      ]
+    },
+    {
+      "id": "SYN-PRECEDENCE",
+      "kind": "prose-or-grammar-obligation",
+      "section": "associativity_precedence",
+      "source_line": 791,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Pairwise expression grid and long-binding expression extents.",
+      "implementation": [
+        "parser.mbt"
+      ],
+      "obligation": [
+        "Every operator precedence and associativity relation"
+      ]
+    },
+    {
+      "id": "CORE-IMPORT",
+      "kind": "prose-or-grammar-obligation",
+      "section": "core_syntax",
+      "source_line": 868,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "I1",
+          "I3"
+        ],
+        "static_error": [
+          "I1",
+          "I3"
+        ],
+        "runtime_error": [],
+        "lazy": [
+          "I2",
+          "I3"
+        ],
+        "boundary": []
+      },
+      "remaining": "Canonical aliases, cycles, importstr/importbin combinations and cache identity.",
+      "implementation": [
+        "imports.mbt",
+        "validate.mbt"
+      ],
+      "obligation": [
+        "Lazy imports; independent static checking of each imported program"
+      ]
+    },
+    {
+      "id": "DESUGAR-ROOT",
+      "kind": "prose-or-grammar-obligation",
+      "section": "desugaring",
+      "source_line": 1096,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "O1",
+          "O2",
+          "F6"
+        ],
+        "static_error": [
+          "O1"
+        ],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "All nested comprehension/root and object-local combinations.",
+      "implementation": [
+        "validate.mbt",
+        "objects.mbt"
+      ],
+      "obligation": [
+        "Object root $, enclosing self/super and local scope"
+      ]
+    },
+    {
+      "id": "DESUGAR-ASSERT",
+      "kind": "prose-or-grammar-obligation",
+      "section": "desugaring",
+      "source_line": 1096,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "O3",
+          "O5"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "O3",
+          "O5"
+        ],
+        "lazy": [
+          "O5"
+        ],
+        "boundary": []
+      },
+      "remaining": "Expression assertions, default/nonstring messages and condition type errors.",
+      "implementation": [
+        "eval.mbt",
+        "objects.mbt"
+      ],
+      "obligation": [
+        "Expression/object assertions and lazy failure messages"
+      ]
+    },
+    {
+      "id": "DESUGAR-SLICE",
+      "kind": "prose-or-grammar-obligation",
+      "section": "desugaring",
+      "source_line": 1096,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "SLICE"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "SLICE"
+        ],
+        "lazy": [
+          "SLICE"
+        ],
+        "boundary": []
+      },
+      "remaining": "Full negative/null/step/domain matrix and retained cardinality ambiguity.",
+      "implementation": [
+        "eval.mbt",
+        "slice.mbt"
+      ],
+      "obligation": [
+        "Missing bounds and slice lowering to fixed stdlib source"
+      ]
+    },
+    {
+      "id": "DESUGAR-FIELDS",
+      "kind": "prose-or-grammar-obligation",
+      "section": "desugaring",
+      "source_line": 1096,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F6",
+          "O2"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "All additive forms and nested inheritance source transformations.",
+      "implementation": [
+        "parser.mbt",
+        "objects.mbt"
+      ],
+      "obligation": [
+        "Dot lookup, object extension, additive fields and methods"
+      ]
+    },
+    {
+      "id": "DESUGAR-OPERATORS",
+      "kind": "prose-or-grammar-obligation",
+      "section": "desugaring",
+      "source_line": 1096,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Independent equivalence under std shadowing and lazy/errors.",
+      "implementation": [
+        "eval.mbt",
+        "operators.mbt"
+      ],
+      "obligation": [
+        "Percent, equality, in, unary plus and std binding"
+      ]
+    },
+    {
+      "id": "DESUGAR-COMPREHENSIONS",
+      "kind": "prose-or-grammar-obligation",
+      "section": "desugaring",
+      "source_line": 1096,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [],
+        "static_error": [
+          "O1"
+        ],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Normal nested generators, null keys, callbacks, filters and domain failures.",
+      "implementation": [
+        "eval.mbt"
+      ],
+      "obligation": [
+        "Array/object comprehension domains, order, filters and shadowing"
+      ]
+    },
+    {
+      "id": "STATIC-TRAVERSAL",
+      "kind": "prose-or-grammar-obligation",
+      "section": "static_checking",
+      "source_line": 1525,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [],
+        "static_error": [
+          "F5",
+          "S1",
+          "O1"
+        ],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Other chk-* rules remain explicitly unmapped below.",
+      "implementation": [
+        "validate.mbt"
+      ],
+      "obligation": [
+        "Check unused defaults, bodies, branches and argument expressions"
+      ]
+    },
+    {
+      "id": "VALUE-FINITE",
+      "kind": "prose-or-grammar-obligation",
+      "section": "jsonnet_values",
+      "source_line": 1776,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": [
+          "FINITE",
+          "O2"
+        ]
+      },
+      "remaining": "Producer overflow and array immutability evidence lives in P0 matrix; not newly credited here.",
+      "implementation": [
+        "runtime_types.mbt",
+        "manifest.mbt"
+      ],
+      "obligation": [
+        "Finite binary64 values and immutable arrays/objects"
+      ]
+    },
+    {
+      "id": "VALUE-UNICODE",
+      "kind": "prose-or-grammar-obligation",
+      "section": "jsonnet_values",
+      "source_line": 1776,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "IDX"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "IDX"
+        ],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Whole string semantics, collation, normalization and surrogate ambiguity.",
+      "implementation": [
+        "eval.mbt",
+        "sequence.mbt"
+      ],
+      "obligation": [
+        "Codepoint strings, strict contents and Unicode comparison"
+      ]
+    },
+    {
+      "id": "HIDDEN-INHERITANCE",
+      "kind": "prose-or-grammar-obligation",
+      "section": "hidden_inheritance",
+      "source_line": 1867,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "O6"
+        ],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [
+          "O6",
+          "O7"
+        ],
+        "boundary": [
+          "O6"
+        ]
+      },
+      "remaining": "Equality and every multi-layer/additive combination.",
+      "implementation": [
+        "objects.mbt",
+        "manifest.mbt"
+      ],
+      "obligation": [
+        "Inherited default, hidden and forced-visible fields"
+      ]
+    },
+    {
+      "id": "SUBSTITUTION",
+      "kind": "prose-or-grammar-obligation",
+      "section": "substitution",
+      "source_line": 1898,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "F1",
+          "F6",
+          "O2"
+        ],
+        "static_error": [
+          "F5",
+          "O1"
+        ],
+        "runtime_error": [],
+        "lazy": [
+          "F2",
+          "F3"
+        ],
+        "boundary": []
+      },
+      "remaining": "All binder forms and the full self/super substitution algebra.",
+      "implementation": [
+        "eval.mbt",
+        "runtime_types.mbt",
+        "objects.mbt"
+      ],
+      "obligation": [
+        "Capture avoidance and lexical closure/default binding"
+      ]
+    },
+    {
+      "id": "EXEC-OPERATORS",
+      "kind": "prose-or-grammar-obligation",
+      "section": "execution",
+      "source_line": 2124,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Independent normal/error/lazy/numeric grid; historical upstream agreement is insufficient.",
+      "implementation": [
+        "operators.mbt"
+      ],
+      "obligation": [
+        "Arithmetic, bitwise, equality, coercion and other prose-defined operators"
+      ]
+    },
+    {
+      "id": "EXEC-BUILTINS",
+      "kind": "prose-or-grammar-obligation",
+      "section": "execution",
+      "source_line": 2124,
+      "state": "unreviewed",
+      "dimensions": {
+        "normal": [],
+        "static_error": [],
+        "runtime_error": [],
+        "lazy": [],
+        "boundary": []
+      },
+      "remaining": "Separate public-library matrix and explicit host contracts; not complete from registration.",
+      "implementation": [
+        "stdlib.mbt",
+        "native.mbt"
+      ],
+      "obligation": [
+        "Prose-defined mathematical builtins and host extVar/native"
+      ]
+    },
+    {
+      "id": "JSON-VALUES",
+      "kind": "prose-or-grammar-obligation",
+      "section": "json_values",
+      "source_line": 2868,
+      "state": "manually-reviewed-subset",
+      "dimensions": {
+        "normal": [
+          "O6"
+        ],
+        "static_error": [],
+        "runtime_error": [
+          "O4",
+          "O7",
+          "FINITE"
+        ],
+        "lazy": [
+          "O4",
+          "O6",
+          "O7"
+        ],
+        "boundary": [
+          "O4"
+        ]
+      },
+      "remaining": "Every scalar/shape and recursion boundary; top-level function application is a separate host convention.",
+      "implementation": [
+        "manifest.mbt"
+      ],
+      "obligation": [
+        "Recursively force visible fields/elements, assertions, reject functions"
+      ]
+    }
+  ]
+}

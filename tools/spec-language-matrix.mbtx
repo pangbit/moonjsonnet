@@ -1,0 +1,407 @@
+///|
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+///|
+async fn checked(program : String, args : Array[String]) -> String {
+  let result = @shell.Cmd(program, args).output(timeout_ms=10000)
+  result.check()
+  result.stdout().trim().to_owned()
+}
+
+///|
+async fn sha256(path : String) -> String {
+  checked("shasum", ["-a", "256", path]).split(" ").next().unwrap().to_owned()
+}
+
+///|
+fn field(value : Json, key : String) -> Json {
+  guard value is Object(fields) else { abort("object required") }
+  fields.get(key).unwrap()
+}
+
+///|
+fn text_field(value : Json, key : String) -> String {
+  guard field(value, key) is String(text) else {
+    abort("string required: " + key)
+  }
+  text
+}
+
+///|
+fn normalized(text : String) -> String {
+  let out = StringBuilder()
+  let mut space = false
+  for c in text {
+    if c == ' ' || c == '\n' || c == '\r' || c == '\t' {
+      space = true
+    } else {
+      if space {
+        out.write_char(' ')
+      }
+      space = false
+      out.write_char(c)
+    }
+  }
+  out.to_string()
+}
+
+///|
+fn dimension(row : Json, name : String) -> Array[Json] {
+  guard row is Object(fields) else { abort("coverage row") }
+  match fields.get(name) {
+    None => []
+    Some(Array(values)) => values
+    _ => abort("dimension must be an evidence array: " + name)
+  }
+}
+
+///|
+fn evidence_ids(row : Json) -> Array[String] {
+  let ids : Array[String] = []
+  for name in ["normal", "static_error", "runtime_error", "lazy", "boundary"] {
+    for value in dimension(row, name) {
+      guard value is String(id) else { abort("evidence ID must be string") }
+      if !ids.contains(id) {
+        ids.push(id)
+      }
+    }
+  }
+  ids
+}
+
+///|
+fn dimension_text(row : Json, name : String) -> String {
+  let ids = dimension(row, name).map(value => {
+    match value {
+      String(id) => "[" + id + "](#assertion-evidence)"
+      _ => abort("evidence ID")
+    }
+  })
+  if ids.is_empty() {
+    "unreviewed"
+  } else {
+    ids.join(", ")
+  }
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 3 else {
+    fail(
+      "Usage: moon run --frozen tools/spec-language-matrix.mbtx REFERENCE_DIR EVIDENCE_DIR",
+    )
+  }
+  let pinned = "bbb38f1020be1f5aed560928fb839b2c448cefb4"
+  let reference = args[1]
+  let output = args[2]
+  let spec_hash = "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a"
+  let language_hash = "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be"
+  assert_eq(sha256(reference + "/spec.html"), spec_hash)
+  assert_eq(sha256(reference + "/language.md"), language_hash)
+  let spec = @fs.read_file(reference + "/spec.html").text()
+  let mapping_path = "tests/spec-language-coverage.json"
+  let mapping = @json.parse(@fs.read_file(mapping_path).text())
+  assert_eq(text_field(mapping, "spec_commit"), pinned)
+  guard field(mapping, "evidence") is Object(evidence) else {
+    fail("evidence table")
+  }
+  guard field(mapping, "rules") is Object(mapped_rules) else {
+    fail("rule table")
+  }
+  guard field(mapping, "clauses") is Array(clauses) else {
+    fail("clause table")
+  }
+  let test_hashes : Map[String, Json] = Map([])
+  let locations : Map[String, Json] = Map([])
+  for id, item in evidence {
+    let path = text_field(item, "file")
+    let source = @fs.read_file(path).text()
+    test_hashes[path] = Json::string(sha256(path))
+    let declaration = "test \"" + text_field(item, "test") + "\" {"
+    let fragments = source.split(declaration).collect()
+    assert_eq(fragments.length(), 2, msg="unique test declaration for " + id)
+    let block = normalized(
+      fragments[1].split("\n///|").next().unwrap().to_owned(),
+    )
+    guard field(item, "assertions") is Array(assertions) else {
+      fail("assertion list")
+    }
+    assert_true(
+      !assertions.is_empty(),
+      msg="explicit assertion anchors for " + id,
+    )
+    assert_true(
+      !text_field(item, "checks").is_empty(),
+      msg="manual semantic explanation for " + id,
+    )
+    for value in assertions {
+      guard value is String(assertion) else { fail("assertion text") }
+      assert_true(
+        block.contains(normalized(assertion)),
+        msg="assertion anchor changed: " + id + ": " + assertion,
+      )
+    }
+    let line = fragments[0].split("\n").count()
+    locations[id] = {
+      "file": path,
+      "line": line,
+      "test": text_field(item, "test"),
+      "assertions": assertions,
+      "checks": text_field(item, "checks"),
+      "status": "manually reviewed assertion subset; execution is separate",
+    }
+  }
+  let rule_lines : Map[String, Int] = Map([])
+  let sections : Map[String, Int] = Map([])
+  for i, line in spec.split("\n").collect() {
+    if line.contains("<h") && line.contains(" id=\"") {
+      let anchor = line.split(" id=\"").collect()[1]
+        .split("\"")
+        .next()
+        .unwrap()
+        .to_owned()
+      sections[anchor] = i + 1
+    }
+    if line.contains("\\rule{") {
+      let rule = line.split("\\rule{").collect()[1]
+        .split("}")
+        .next()
+        .unwrap()
+        .to_owned()
+      assert_true(
+        !rule_lines.contains(rule),
+        msg="duplicate source rule " + rule,
+      )
+      rule_lines[rule] = i + 1
+    }
+  }
+  assert_eq(rule_lines.length(), 70, msg="pinned named-rule inventory")
+  for name, _ in mapped_rules {
+    assert_true(
+      rule_lines.contains(name),
+      msg="mapping names an absent rule: " + name,
+    )
+  }
+  let rows : Array[Json] = []
+  for name, line in rule_lines {
+    let section = if name.has_prefix("chk-") {
+      "static_checking"
+    } else if name.has_prefix("manifest-") {
+      "manifestation"
+    } else {
+      "execution"
+    }
+    let row = mapped_rules
+      .get(name)
+      .unwrap_or({
+        "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
+        "implementation": [],
+      })
+    rows.push({
+      "id": name,
+      "section": section,
+      "source_line": line,
+      "kind": "named-rule",
+      "coverage": row,
+    })
+  }
+  let clause_ids : Map[String, Bool] = Map([])
+  for clause in clauses {
+    let id = text_field(clause, "id")
+    let section = text_field(clause, "section")
+    assert_true(
+      sections.contains(section),
+      msg="unknown source anchor " + section,
+    )
+    assert_true(!clause_ids.contains(id), msg="duplicate clause " + id)
+    clause_ids[id] = true
+    rows.push({
+      "id": id,
+      "section": section,
+      "source_line": sections[section],
+      "kind": "prose-or-grammar-obligation",
+      "coverage": clause,
+    })
+  }
+  let source_base = "https://github.com/google/jsonnet/blob/" +
+    pinned +
+    "/doc/ref/spec.html"
+  let markdown = StringBuilder()
+  markdown.write_string("# Language clause matrix\n\n")
+  markdown.write_string(
+    "Generated by [spec-language-matrix.mbtx](../../tools/spec-language-matrix.mbtx) from [manual assertion mappings](../../tests/spec-language-coverage.json). ",
+  )
+  markdown.write_string(
+    "Fixed [specification](" +
+    source_base +
+    ") and [language reference](https://github.com/google/jsonnet/blob/" +
+    pinned +
+    "/doc/ref/language.html.md).\n\n",
+  )
+  markdown.write_string(
+    "All 70 named inference rules are enumerated, including specification builtins. The additional prose/grammar rows are an initial obligation inventory, not a claim that every prose/desugaring clause has been decomposed. ",
+  )
+  markdown.write_string(
+    "Each populated cell identifies manually examined assertions, not a passing status. Empty cells remain unreviewed even if historical tests mention the feature. Runtime errors include host Type/Assertion categories after successful parsing. ",
+  )
+  markdown.write_string(
+    "Independent outcomes are in [the language evidence report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. No row claims complete conformance.\n\n",
+  )
+  markdown.write_string(
+    "Reproduce with `moon run --frozen tools/spec-language-matrix.mbtx REFERENCE_DIR EVIDENCE_DIR`; REFERENCE_DIR supplies pinned spec.html and language.md. This command validates assertion locations/hashes and regenerates this matrix; it never infers results or runs upstream tools.\n\n",
+  )
+  markdown.write_string(
+    "| Clause / fixed source | Normal | Static error | Runtime error | Lazy | Boundary | Remaining obligations |\n| --- | --- | --- | --- | --- | --- | --- |\n",
+  )
+  let enriched : Array[Json] = []
+  let mut reviewed = 0
+  let used : Map[String, Bool] = Map([])
+  for item in rows {
+    let id = text_field(item, "id")
+    let row = field(item, "coverage")
+    let ids = evidence_ids(row)
+    let state = if ids.is_empty() {
+      "unreviewed"
+    } else {
+      "manually-reviewed-subset"
+    }
+    if !ids.is_empty() {
+      reviewed += 1
+    }
+    for evidence_id in ids {
+      assert_true(
+        evidence.contains(evidence_id),
+        msg="unknown evidence ID " + evidence_id,
+      )
+      used[evidence_id] = true
+    }
+    let remaining = text_field(row, "remaining")
+    assert_true(
+      !remaining.is_empty(),
+      msg="no complete-conformance state is supported",
+    )
+    guard field(row, "implementation") is Array(paths) else {
+      fail("implementation pointers")
+    }
+    for path in paths {
+      guard path is String(path) else { fail("implementation path") }
+      ignore(@fs.read_file(path))
+    }
+    let dimensions : Map[String, Json] = Map([])
+    for name in ["normal", "static_error", "runtime_error", "lazy", "boundary"] {
+      dimensions[name] = Json::array(dimension(row, name))
+    }
+    let obligation : String? = if row is Object(fields) {
+      match fields.get("obligation") {
+        Some(String(text)) => Some(text)
+        _ => None
+      }
+    } else {
+      None
+    }
+    enriched.push({
+      "id": id,
+      "kind": field(item, "kind"),
+      "section": field(item, "section"),
+      "source_line": field(item, "source_line"),
+      "state": state,
+      "dimensions": dimensions,
+      "remaining": remaining,
+      "implementation": paths,
+      "obligation": obligation,
+    })
+    markdown.write_string(
+      "| [" +
+      id +
+      "](" +
+      source_base +
+      "#" +
+      text_field(item, "section") +
+      ") |",
+    )
+    for name in ["normal", "static_error", "runtime_error", "lazy", "boundary"] {
+      markdown.write_string(" " + dimension_text(row, name) + " |")
+    }
+    markdown.write_string(" " + remaining + " |\n")
+  }
+  assert_eq(used.length(), evidence.length(), msg="orphan evidence mappings")
+  markdown.write_string(
+    "\n## Assertion evidence\n\nEach description records what was checked in the assertion body; a declaration name or a textual anchor alone proves no semantic result. Shared evidence is counted once, regardless of how many clauses cite it. Implementation paths and individual dimensions are retained in [the machine-readable matrix](spec-language-matrix.json).\n\n",
+  )
+  markdown.write_string(
+    "| ID | Exact test block | Reviewed assertion meaning |\n| --- | --- | --- |\n",
+  )
+  for id, item in locations {
+    markdown.write_string(
+      "| " +
+      id +
+      " | [" +
+      text_field(item, "file") +
+      "](../../" +
+      text_field(item, "file") +
+      "): `" +
+      text_field(item, "test") +
+      "` | " +
+      text_field(item, "checks") +
+      " |\n",
+    )
+  }
+  markdown.write_string(
+    "\nLexical UTF-8/tokenization, full grammar/precedence, unassigned chk-* rules, recursive comprehension/desugaring details and all unassigned operator rules remain open. The public standard-library inventory, eleven array observations, removeAt naming and Unicode surrogate ambiguity retain their existing status.\n",
+  )
+  let result : Json = {
+    "spec_commit": pinned,
+    "spec_sha256": spec_hash,
+    "language_reference_sha256": language_hash,
+    "mapping_sha256": sha256(mapping_path),
+    "tool_sha256": sha256("tools/spec-language-matrix.mbtx"),
+    "named_rules": rule_lines.length(),
+    "prose_grammar_rows": clauses.length(),
+    "manually_reviewed_subset_rows": reviewed,
+    "unreviewed_rows": rows.length() - reviewed,
+    "complete_conformance": false,
+    "execution_inferred": false,
+    "evidence": locations,
+    "test_file_sha256": test_hashes,
+    "clauses": enriched,
+  }
+  @fs.mkdir(output, recursive=true, allow_exist=true)
+  let json = result.stringify(indent=2) + "\n"
+  @fs.write_file(
+    "docs/development/SPEC-LANGUAGE-MATRIX.md",
+    markdown.to_string(),
+  )
+  @fs.write_file("docs/development/spec-language-matrix.json", json)
+  @fs.write_file(output + "/matrix.json", json)
+  @fs.write_file(
+    output + "/validation.json",
+    Json::object(
+      Map([
+        ("source_head", Json::string(checked("git", ["rev-parse", "HEAD"]))),
+        (
+          "tracked_diff",
+          Json::string(checked("git", ["diff", "HEAD", "--stat"])),
+        ),
+        (
+          "matrix_sha256",
+          Json::string(sha256("docs/development/spec-language-matrix.json")),
+        ),
+        (
+          "markdown_sha256",
+          Json::string(sha256("docs/development/SPEC-LANGUAGE-MATRIX.md")),
+        ),
+      ]),
+    ).stringify(indent=2) +
+    "\n",
+  )
+  println(
+    "Enumerated \{rule_lines.length()} named rules and \{clauses.length()} prose/grammar rows; \{reviewed} manually reviewed subsets, \{rows.length() - reviewed} unreviewed rows. No execution or full-conformance conclusion inferred.",
+  )
+}

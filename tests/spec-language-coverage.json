@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+  "policy": "Manual assertion review only. References and matching names never establish passing behavior. An empty dimension is unreviewed. Executed outcomes live in the separate source-bound evidence report.",
+  "evidence": {
+    "F1": {
+      "file": "spec_language_function_test.mbt",
+      "test": "language defaults distinguish definition caller and formal environments",
+      "assertions": ["[[10, 10], [99, 99]]", "[[7, 7], [9, 9], [3, 7], [4, 5], [2, 6]]", "[[1, 4, 5], [2, 5, 7], [1, 3, 9]]"],
+      "checks": "Exact JSON distinguishes definition/caller scope, forward defaults, positional/reordered names and interleaved required/optional formals."
+    },
+    "F2": {
+      "file": "spec_language_function_test.mbt",
+      "test": "language explicit arguments override lazy defaults and ignore recursive defaults",
+      "assertions": ["(function(a=a)42)()", "assert_eq(@moonjsonnet.evaluate(source), 42)"],
+      "checks": "Six explicit sources return 42 without demanding recursive or error-valued arguments/defaults."
+    },
+    "F3": {
+      "file": "spec_language_function_test.mbt",
+      "test": "language defaults cache once per call and share dependent parameters",
+      "assertions": ["[[1, 1, 1], [2, 2, 2]]", "assert_eq(calls, 2)"],
+      "checks": "Native counter is two after two demanded calls and remains two after two unused defaults."
+    },
+    "F4": {
+      "file": "spec_language_function_test.mbt",
+      "test": "language invalid binding executes no argument default or body callbacks",
+      "assertions": ["assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(calls, 0)"],
+      "checks": "Four parse-valid missing/unknown/duplicate-positional-named/extra calls fail at evaluation with no native argument/default/body execution."
+    },
+    "F5": {
+      "file": "spec_language_function_test.mbt",
+      "test": "language statics traverse unused defaults bodies and named arguments",
+      "assertions": ["@moonjsonnet.Program::parse(source", "assert_eq(d.kind, @moonjsonnet.Static)"],
+      "checks": "Six invalid unused or overridden defaults/bodies/call sites are rejected during parse, without evaluation."
+    },
+    "F6": {
+      "file": "spec_language_function_test.mbt",
+      "test": "language method defaults retain late self and lexical super",
+      "assertions": ["[1, 2, 1]", "[1, 1]"],
+      "checks": "Original/derived method defaults select late self and the method layer's super independently."
+    },
+    "O1": {
+      "file": "spec_language_object_test.mbt",
+      "test": "language object keys exclude new self locals and comprehension self",
+      "assertions": ["assert_eq(d.kind, @moonjsonnet.Static)", "{ \"x\": \"inner\", \"key\": \"inner\" }"],
+      "checks": "Six parse-only key-scope rejections plus one exact JSON control separate outer key self from inner value self."
+    },
+    "O2": {
+      "file": "spec_language_object_test.mbt",
+      "test": "language inherited fields separate late self super root and original objects",
+      "assertions": ["[1, 2, 2, 1]", "{ \"x\": 2, \"r\": 3, \"s\": 2 }"],
+      "checks": "Exact arrays distinguish final self, super-field self, immutable originals, root $ and nested self."
+    },
+    "O3": {
+      "file": "spec_language_object_test.mbt",
+      "test": "language inherited assertions use final self for access and manifestation",
+      "assertions": ["{ \"x\": 2 }", "assert_eq(d.kind, @moonjsonnet.Assertion)"],
+      "checks": "One repaired-base success and four assertion errors on derived/visible/hidden access or manifestation."
+    },
+    "O4": {
+      "file": "spec_language_object_test.mbt",
+      "test": "language manifestation checks assertion only objects recursively",
+      "assertions": ["assert_eq(d.kind, @moonjsonnet.Assertion)", "[\"object\", 1, {}, 42]"],
+      "checks": "Four recursive assertion-only manifestation errors and exact lazy shape/hidden/ignored-argument controls."
+    },
+    "O5": {
+      "file": "spec_language_object_test.mbt",
+      "test": "language assertions cache checks and do not force messages or failed fields",
+      "assertions": ["[1, 2, 1]", "assert_eq((checks, payloads), (1, 0))", "assert_eq(d.kind, @moonjsonnet.Assertion)"],
+      "checks": "Repeated fields check once, true assertion message runs zero times, false assertion blocks selected native payload."
+    },
+    "O6": {
+      "file": "spec_language_object_test.mbt",
+      "test": "language visibility inheritance controls JSON output and direct access",
+      "assertions": ["assert_eq(@moonjsonnet.evaluate(source), [Json::object(fields), 2])", "{hidden::error 'unused'}+{hidden:function()0}"],
+      "checks": "All nine separator pairs compare manifested object and direct selected value; hidden overridden function is omitted."
+    },
+    "O7": {
+      "file": "spec_language_object_test.mbt",
+      "test": "language JSON conversion rejects demanded nested functions and errors",
+      "assertions": ["assert_eq(d.kind, kind)", "assert_eq(@moonjsonnet.evaluate(\"[{a::function()error 'body'}]\"), [{}])"],
+      "checks": "Four function manifestations are Type errors, three demanded error expressions are Runtime errors, hidden function body stays uncalled."
+    },
+    "S1": {
+      "file": "spec_static_test.mbt",
+      "test": "duplicate formal parameters fail statically before any invocation",
+      "assertions": ["@moonjsonnet.Program::parse(source", "assert_eq(d.kind, @moonjsonnet.Static)"],
+      "checks": "Seven duplicate declaration forms, including unused functions, reject at Program creation."
+    },
+    "I1": {
+      "file": "spec_import_scope_test.mbt",
+      "test": "imported free variables cannot capture caller locals",
+      "assertions": ["assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(reads, 1)"],
+      "checks": "Parse resolves nothing; forced imported free x rejects in dependency file after exactly one resolver read."
+    },
+    "I2": {
+      "file": "spec_import_scope_test.mbt",
+      "test": "unused imports never resolve even when the target would fail parsing",
+      "assertions": ["assert_eq(reads, 0)", "assert_eq(program.evaluate(resolver~), Json::number(expected.to_double()))"],
+      "checks": "Six unused local/branch/argument/default/hidden/array imports execute zero resolver calls."
+    },
+    "I3": {
+      "file": "spec_import_scope_test.mbt",
+      "test": "import syntax and statics are checked only when the import is forced",
+      "assertions": ["assert_eq(d.kind, kind)", "assert_eq(reads, 1)", "assert_eq(d.location.file, \"dep.libsonnet\")"],
+      "checks": "Same parsed entry skips invalid dependency then separately observes Syntax/Static errors only after demand, with dependency location and entry context."
+    },
+    "IDX": {
+      "file": "spec_index_test.mbt",
+      "test": "P0 indices require integers before conversion for arrays and Unicode strings",
+      "assertions": ["assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_true(d.message != \"element must stay lazy\")", "[10,20,10,\\\"😀\\\"]"],
+      "checks": "Ten fractional/huge/empty/out-of-bounds errors and integral/Unicode controls, with invalid index preceding lazy payload."
+    },
+    "SLICE": {
+      "file": "spec_index_test.mbt",
+      "test": "P0 slicing defers array indexing and keeps strings strict",
+      "assertions": ["assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))", "assert_eq(d.kind, @moonjsonnet.Runtime)"],
+      "checks": "Six expected slice results and three forced-index failures distinguish lazy array slices and strict string slices."
+    },
+    "TYPE": {
+      "file": "spec_foundation_types_test.mbt",
+      "test": "foundation type returns every documented tag",
+      "assertions": ["[\"null\", \"boolean\", \"number\", \"string\", \"array\", \"object\", \"function\"]"],
+      "checks": "One array compares all seven explicit type tags."
+    },
+    "TYPELAZY": {
+      "file": "spec_foundation_types_test.mbt",
+      "test": "foundation type and isNumber inspect no nested payload assertion or function",
+      "assertions": ["[\"array\", \"object\", \"function\", false, false, false]", "callback: _ => fail(\"type reflection called native function\")"],
+      "checks": "Outer type inspection avoids error payloads/assertions/defaults/body and cannot invoke registered native function."
+    },
+    "CRLF": {
+      "file": "spec_text_block_test.mbt",
+      "test": "text blocks preserve interior and consecutive CRLF blank lines",
+      "assertions": ["assert_eq(@utf8.encode(text), expected)"],
+      "checks": "Byte assertions retain interior/consecutive CRLF blank lines; no inference about all string lexing."
+    },
+    "CHOMP": {
+      "file": "spec_text_chomp_test.mbt",
+      "test": "text-block chomp removes the complete final CRLF",
+      "assertions": ["assert_eq(@utf8.encode(text), b\"x\")"],
+      "checks": "Final CRLF chomp is checked as exact UTF-8 bytes, not a visually equivalent string."
+    },
+    "FINITE": {
+      "file": "spec_manifest_wbtest.mbt",
+      "test": "P0 JSON manifestation rejects nonfinite internal values defensively",
+      "assertions": ["assert_eq(d.kind, Runtime)", "for number in [1.0 / 0.0, -1.0 / 0.0, 0.0 / 0.0]"],
+      "checks": "Direct internal +/-Inf/NaN fail both structured and string JSON output paths."
+    }
+  },
+  "rules": {
+    "chk-self": {"normal": ["F6", "O1", "O2"], "static_error": ["O1"], "remaining": "All enclosing expression forms and public-AST combinations.", "implementation": ["validate.mbt"]},
+    "chk-super": {"normal": ["F6", "O2"], "remaining": "Top-level/standalone super and every syntactic context not newly reviewed.", "implementation": ["validate.mbt"]},
+    "chk-object": {"normal": ["O1"], "static_error": ["O1"], "remaining": "Literal duplicate names, object-local recursion and statics in every assertion/value position.", "implementation": ["validate.mbt"]},
+    "chk-object-comp": {"static_error": ["O1"], "remaining": "Normal/key/domain/local scope cross-product and malformed comprehensions.", "implementation": ["validate.mbt"]},
+    "chk-apply": {"normal": ["F1"], "static_error": ["F5"], "remaining": "Every argument expression form; AST/source distinctions.", "implementation": ["validate.mbt"]},
+    "chk-var": {"normal": ["F1"], "static_error": ["F5", "I1"], "remaining": "All binders and unused expression positions.", "implementation": ["validate.mbt"]},
+    "chk-function": {"normal": ["F1", "F6"], "static_error": ["F5", "S1"], "boundary": ["F1"], "remaining": "Every default/body AST form; parameter metadata is a separate host contract.", "implementation": ["validate.mbt"]},
+    "chk-import": {"normal": ["I1", "I2", "I3"], "lazy": ["I2", "I3"], "remaining": "Every import expression/string form and isolated std binding.", "implementation": ["validate.mbt", "imports.mbt"]},
+    "object": {"normal": ["O1"], "lazy": ["O4"], "remaining": "Computed null/nonstring/duplicate names, all object local forms.", "implementation": ["eval.mbt"]},
+    "array-index": {"normal": ["IDX"], "runtime_error": ["IDX"], "lazy": ["IDX"], "boundary": ["IDX"], "remaining": "Exhaustive numeric/operator combinations and all target/key type failures.", "implementation": ["eval.mbt"]},
+    "object-index": {"normal": ["O2", "O6"], "runtime_error": ["O3", "O5"], "lazy": ["O5"], "boundary": ["O4"], "remaining": "Missing fields, invalid keys, multiple failing assertions, equality/assertion interactions.", "implementation": ["eval.mbt", "objects.mbt"]},
+    "apply": {"normal": ["F1", "F6"], "runtime_error": ["F4"], "lazy": ["F2", "F3", "F4"], "boundary": ["F1", "F3"], "remaining": "Non-function targets, all recursive closure forms and exhaustive tailstrict interactions.", "implementation": ["eval.mbt", "arguments.mbt"]},
+    "local": {"normal": ["F1"], "lazy": ["F2"], "remaining": "Local-function mutual recursion and every desugared object/comprehension binding.", "implementation": ["eval.mbt", "runtime_types.mbt"]},
+    "local-var": {"normal": ["F1"], "lazy": ["F3"], "remaining": "Capture avoidance across every binder and recursive expression.", "implementation": ["eval.mbt", "runtime_types.mbt"]},
+    "object-inherit": {"normal": ["O2", "F6"], "runtime_error": ["O3"], "lazy": ["O5", "O6"], "boundary": ["O6"], "remaining": "Full algebra, additive nested fields, association with super and duplicate dynamic names.", "implementation": ["operators.mbt", "objects.mbt"]},
+    "length-array": {"normal": ["O4", "I2"], "lazy": ["O4", "I2"], "remaining": "Full length contract belongs to public-library matrix.", "implementation": ["stdlib.mbt"]},
+    "type-null": {"normal": ["TYPE"], "remaining": "Outer demanded-error cases not assigned to this row.", "implementation": ["stdlib.mbt"]},
+    "type-boolean": {"normal": ["TYPE"], "remaining": "Outer demanded-error cases not assigned to this row.", "implementation": ["stdlib.mbt"]},
+    "type-number": {"normal": ["TYPE"], "remaining": "All finite/invalid producer boundaries are tracked separately.", "implementation": ["stdlib.mbt"]},
+    "type-string": {"normal": ["TYPE"], "remaining": "All Unicode and demanded-string error boundaries.", "implementation": ["stdlib.mbt"]},
+    "type-object": {"normal": ["TYPE"], "lazy": ["TYPELAZY", "O4"], "remaining": "All computed-key construction failures.", "implementation": ["stdlib.mbt"]},
+    "type-function": {"normal": ["TYPE"], "lazy": ["TYPELAZY"], "remaining": "Every native/builtin/closure signature form.", "implementation": ["stdlib.mbt"]},
+    "type-array": {"normal": ["TYPE"], "lazy": ["TYPELAZY"], "remaining": "All array-producing expressions and invalid outer errors.", "implementation": ["stdlib.mbt"]},
+    "manifest-value": {"normal": ["F1"], "runtime_error": ["FINITE"], "boundary": ["FINITE"], "remaining": "Exact preservation of every scalar kind/Unicode sequence and finite extreme.", "implementation": ["manifest.mbt"]},
+    "manifest-object": {"normal": ["O2", "O6"], "runtime_error": ["O3", "O4", "O7"], "lazy": ["O4", "O6", "O7"], "boundary": ["O4", "O6"], "remaining": "Cycles, field-order independence, all nested hidden/visible errors and std.manifestJson distinctions.", "implementation": ["manifest.mbt", "objects.mbt"]},
+    "manifest-array": {"normal": ["F1", "O2"], "runtime_error": ["O4", "O7"], "lazy": ["O7"], "boundary": ["O4"], "remaining": "Cycles, every nested shape and resource-independent evaluation boundaries.", "implementation": ["manifest.mbt"]}
+  },
+  "clauses": [
+    {"id": "LEX-ENCODING", "section": "lexing", "obligation": "UTF-8 source, whitespace, all comment forms and greedy tokens", "remaining": "Not manually mapped in this stage; retained lexer tests are candidates only.", "implementation": ["lexer.mbt"]},
+    {"id": "LEX-NAMES", "section": "lexing", "obligation": "Identifier alphabet, reserved keywords and operator tokenization", "remaining": "Positive/negative/adjacent-token grid.", "implementation": ["lexer.mbt", "parser.mbt"]},
+    {"id": "LEX-NUMBERS", "section": "lexing", "obligation": "JSON number grammar without leading minus", "remaining": "Full grammar, greedy lexing and malformed/boundary grid.", "implementation": ["lexer_number.mbt"]},
+    {"id": "LEX-STRINGS", "section": "lexing", "obligation": "Quoted and verbatim strings, escapes and Unicode", "remaining": "All four quoted forms, malformed escapes, controls and surrogate ambiguity.", "implementation": ["lexer.mbt"]},
+    {"id": "LEX-TEXT-BLOCK", "section": "lexing", "obligation": "Text-block indentation, blank lines and final chomp", "normal": ["CRLF", "CHOMP"], "boundary": ["CRLF", "CHOMP"], "remaining": "Full malformed indentation/whitespace-only-line matrix.", "implementation": ["lexer.mbt"]},
+    {"id": "SYN-EXPR", "section": "abstract_syntax", "obligation": "Every expression alternative and optional/trailing syntax", "remaining": "No coverage inferred from AST variant registration or example names.", "implementation": ["parser.mbt"]},
+    {"id": "SYN-OBJECT", "section": "abstract_syntax", "obligation": "Object fields, locals, methods, assertions and comprehension grammar", "normal": ["F6", "O1"], "remaining": "Every separator, additive form, comma and malformed construction.", "implementation": ["parser.mbt"]},
+    {"id": "SYN-CALL", "section": "abstract_syntax", "obligation": "Positional arguments before named arguments and parameter grammar", "normal": ["F1"], "remaining": "Malformed ordering, trailing commas and public-AST validation.", "implementation": ["parser.mbt"]},
+    {"id": "SYN-PRECEDENCE", "section": "associativity_precedence", "obligation": "Every operator precedence and associativity relation", "remaining": "Pairwise expression grid and long-binding expression extents.", "implementation": ["parser.mbt"]},
+    {"id": "CORE-IMPORT", "section": "core_syntax", "obligation": "Lazy imports; independent static checking of each imported program", "normal": ["I1", "I3"], "static_error": ["I1", "I3"], "lazy": ["I2", "I3"], "remaining": "Canonical aliases, cycles, importstr/importbin combinations and cache identity.", "implementation": ["imports.mbt", "validate.mbt"]},
+    {"id": "DESUGAR-ROOT", "section": "desugaring", "obligation": "Object root $, enclosing self/super and local scope", "normal": ["O1", "O2", "F6"], "static_error": ["O1"], "remaining": "All nested comprehension/root and object-local combinations.", "implementation": ["validate.mbt", "objects.mbt"]},
+    {"id": "DESUGAR-ASSERT", "section": "desugaring", "obligation": "Expression/object assertions and lazy failure messages", "normal": ["O3", "O5"], "runtime_error": ["O3", "O5"], "lazy": ["O5"], "remaining": "Expression assertions, default/nonstring messages and condition type errors.", "implementation": ["eval.mbt", "objects.mbt"]},
+    {"id": "DESUGAR-SLICE", "section": "desugaring", "obligation": "Missing bounds and slice lowering to fixed stdlib source", "normal": ["SLICE"], "runtime_error": ["SLICE"], "lazy": ["SLICE"], "remaining": "Full negative/null/step/domain matrix and retained cardinality ambiguity.", "implementation": ["eval.mbt", "slice.mbt"]},
+    {"id": "DESUGAR-FIELDS", "section": "desugaring", "obligation": "Dot lookup, object extension, additive fields and methods", "normal": ["F6", "O2"], "remaining": "All additive forms and nested inheritance source transformations.", "implementation": ["parser.mbt", "objects.mbt"]},
+    {"id": "DESUGAR-OPERATORS", "section": "desugaring", "obligation": "Percent, equality, in, unary plus and std binding", "remaining": "Independent equivalence under std shadowing and lazy/errors.", "implementation": ["eval.mbt", "operators.mbt"]},
+    {"id": "DESUGAR-COMPREHENSIONS", "section": "desugaring", "obligation": "Array/object comprehension domains, order, filters and shadowing", "static_error": ["O1"], "remaining": "Normal nested generators, null keys, callbacks, filters and domain failures.", "implementation": ["eval.mbt"]},
+    {"id": "STATIC-TRAVERSAL", "section": "static_checking", "obligation": "Check unused defaults, bodies, branches and argument expressions", "static_error": ["F5", "S1", "O1"], "remaining": "Other chk-* rules remain explicitly unmapped below.", "implementation": ["validate.mbt"]},
+    {"id": "VALUE-FINITE", "section": "jsonnet_values", "obligation": "Finite binary64 values and immutable arrays/objects", "boundary": ["FINITE", "O2"], "remaining": "Producer overflow and array immutability evidence lives in P0 matrix; not newly credited here.", "implementation": ["runtime_types.mbt", "manifest.mbt"]},
+    {"id": "VALUE-UNICODE", "section": "jsonnet_values", "obligation": "Codepoint strings, strict contents and Unicode comparison", "normal": ["IDX"], "runtime_error": ["IDX"], "remaining": "Whole string semantics, collation, normalization and surrogate ambiguity.", "implementation": ["eval.mbt", "sequence.mbt"]},
+    {"id": "HIDDEN-INHERITANCE", "section": "hidden_inheritance", "obligation": "Inherited default, hidden and forced-visible fields", "normal": ["O6"], "lazy": ["O6", "O7"], "boundary": ["O6"], "remaining": "Equality and every multi-layer/additive combination.", "implementation": ["objects.mbt", "manifest.mbt"]},
+    {"id": "SUBSTITUTION", "section": "substitution", "obligation": "Capture avoidance and lexical closure/default binding", "normal": ["F1", "F6", "O2"], "static_error": ["F5", "O1"], "lazy": ["F2", "F3"], "remaining": "All binder forms and the full self/super substitution algebra.", "implementation": ["eval.mbt", "runtime_types.mbt", "objects.mbt"]},
+    {"id": "EXEC-OPERATORS", "section": "execution", "obligation": "Arithmetic, bitwise, equality, coercion and other prose-defined operators", "remaining": "Independent normal/error/lazy/numeric grid; historical upstream agreement is insufficient.", "implementation": ["operators.mbt"]},
+    {"id": "EXEC-BUILTINS", "section": "execution", "obligation": "Prose-defined mathematical builtins and host extVar/native", "remaining": "Separate public-library matrix and explicit host contracts; not complete from registration.", "implementation": ["stdlib.mbt", "native.mbt"]},
+    {"id": "JSON-VALUES", "section": "json_values", "obligation": "Recursively force visible fields/elements, assertions, reject functions", "normal": ["O6"], "runtime_error": ["O4", "O7", "FINITE"], "lazy": ["O4", "O6", "O7"], "boundary": ["O4"], "remaining": "Every scalar/shape and recursion boundary; top-level function application is a separate host convention.", "implementation": ["manifest.mbt"]}
+  ]
+}

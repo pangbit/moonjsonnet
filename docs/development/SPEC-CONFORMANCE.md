@@ -80,6 +80,13 @@ field assertions and lazy defaults without changing product implementation.
 The [string/Unicode stage](SPEC-STRING-CONTRACTS-EVIDENCE-2026-10-22.md) reviews
 seven public contracts and fixes fractional char IDs plus substring clipping and
 guard/index forcing. Its newer source stays separate from frozen af188da Linux work.
+The [language-clause stage](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md) adds independent
+function/default and object/assertion/JSON checks without changing the interpreter.
+Its [language matrix](SPEC-LANGUAGE-MATRIX.md) enumerates 70 named inference
+rules plus 24 initial prose/grammar obligations, with manually reviewed assertion
+subsets and explicit unreviewed dimensions; full prose/desugaring decomposition
+and conformance remain pending. [Go/C++ status](SPEC-LANGUAGE-COMPARISON-2026-10-22.md)
+is separate from normative execution results.
 The counts below retain the original first-stage scope.
 
 P0 fixes are local commits `001679a` (immutability), `dd3b9d0` (finite aggregates),
