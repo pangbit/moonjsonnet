@@ -62,8 +62,10 @@ is a tool contract; success versus runtime/static error is normative.
 ## First-stage evidence and remaining work
 
 The subsequent [independent review and scenario report](SPEC-REVIEW-EVIDENCE-2026-10-22.md)
-records full native release and focused CLI/application validation. The counts
-below retain the original first-stage scope.
+records full native release and focused CLI/application validation. The latest
+[P1 stage](SPEC-P1-EVIDENCE-2026-10-22.md) records the approved function-length
+fix, unique formal parameters, CRLF empty text-block lines and import isolation.
+The counts below retain the original first-stage scope.
 
 P0 fixes are local commits `001679a` (immutability), `dd3b9d0` (finite aggregates),
 `ece4ff1` (integer indices/lazy slices), and `069b9de` (YAML errors).
@@ -84,9 +86,9 @@ Program/parameter tests still expecting input mutation; their expected results
 were corrected to the same immutable-array rule. The subsequent full native debug
 run passed 336/336. Focused native release regressions passed 8/8, the extracted
 archive consumer passed 31/31, and documentation validation passed 107 files and
-530 links. These are macOS ARM64 results only. Full release, CLI scenario, Linux
-and fresh Go/C++ runs remain pending. Binary and input hashes are recorded in a
-separate source-bound stage report.
+530 links. These were macOS ARM64 results only; full release and CLI scenarios
+were then pending and are covered by subsequent source-bound stage reports.
+Linux and fresh Go/C++ runs remain pending for the changed implementation.
 
 P1 must enumerate every language rule and public standard-library entry, rather
 than treating the 163-member reflection inventory as the public contract list.
@@ -96,8 +98,9 @@ mark missing normal/error/lazy/boundary coverage as untested. In particular:
 - `removeAt`'s documented `idx`, C++ source `at`, and current `i` are an unresolved
   named-argument conflict; this batch does not select a new signature.
 - `std.length(function(a,b=1)a)` has now been adjudicated to require 2 under the
-  fixed public documentation. The current result remains 1; the candidate fix
-  was blocked by automatic approval review. See the [contract review](SPEC-CONTRACT-REVIEW.md).
+  fixed public documentation and fixed in `2cee5de` after the user's exact
+  confirmation. The previous approval blocker is resolved. See the
+  [contract review](SPEC-CONTRACT-REVIEW.md).
 - `std.manifestJson({assert false})` is distinct from top-level manifestation;
   this batch preserves both existing paths and does not invent an assertion rule.
 - Existing Go/C++ fixtures and historical exception reports are unchanged. Fresh

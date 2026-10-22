@@ -91,6 +91,10 @@ Complete but invalid surrogate combinations (for example `\uD800\u0041`)
 decode to U+FFFD. Normal quoted strings are validated when the parser consumes
 their tokens, after full-source lexing; verbatim strings keep backslashes literal.
 Source locations use one-based UTF-8 byte columns. AST source ranges have exclusive ends.
+Repeated formal parameter names are Static errors, including in unused branches,
+methods and manually supplied Program ASTs; nested scopes may still shadow names.
+Empty text-block lines preserve their LF or CRLF bytes. The focused CRLF
+regressions do not establish the CRLF `|||-` chomp boundary.
 
 Array/string indices must be finite integers within bounds before conversion.
 Slices support omitted/null bounds, negative bounds and positive steps. Fractional
@@ -153,7 +157,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `extVar(x)` | Memoized JSON value or lazy Jsonnet code in a clean scope; missing/cyclic names are `Runtime` |
 | `type(x)` | Jsonnet type string |
 | `isArray(v)`, `isBoolean(v)`, `isFunction(v)`, `isNumber(v)`, `isObject(v)`, `isString(v)` | Type predicates; do not manifest values |
-| `length(x)` | Unicode string, array, visible object fields, or currently required function parameter count; excluding defaults is a known normative conformance gap |
+| `length(x)` | Unicode string, array, visible object fields, or all declared function parameters including defaults; reflection does not force defaults or the body |
 | `objectFields(o)`, `objectFieldsAll(o)` | Sorted Unicode keys, excluding/including hidden fields |
 | `objectHas(o,f)`, `objectHasAll(o,f)` | Membership excluding/including hidden fields |
 | `map(func,arr)` | Lazy mapped array; accepts array or string |
@@ -324,10 +328,13 @@ The new sequence corpus is checked against Go; the original C++ corpus is
 retained unchanged. Sequence allocation consumes the evaluation step budget
 even when generated elements are never forced.
 
-`length` on a function currently excludes defaulted parameters, as in Go. The
-fixed public documentation requires all declared parameters, including defaults;
-this known mismatch must be corrected before conformance acceptance. C++ counting
-corroborates the documentation. `foldl` follows Go's strict argument and intermediate-result
+`length` on a function counts all declared parameters, including defaults, under
+the fixed public contract; C++ counting corroborates the documentation. This
+intentionally differs from Go's required-only count. Duplicate formal parameters
+are rejected statically under the specification's unique-name rule, even where
+frozen Go fixtures accept them. Original comparison inputs/results remain
+unchanged and have not been rerun for these fixes.
+`foldl` follows Go's strict argument and intermediate-result
 evaluation. It does not deeply manifest the accumulator or force unused array
 elements. This changes the earlier C++-based behavior for unused erroneous
 functions/initial values. The shared corpus preserves these inputs and verifies

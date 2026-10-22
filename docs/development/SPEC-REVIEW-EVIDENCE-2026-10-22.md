@@ -2,8 +2,11 @@
 
 This second stage extends [P0 evidence](SPEC-P0-EVIDENCE-2026-10-22.md).
 It does not establish complete specification conformance. The
-[contract review](SPEC-CONTRACT-REVIEW.md) records the initial P1 mapping, a known
-function-length failure, and the unresolved removeAt signature conflict.
+[contract review](SPEC-CONTRACT-REVIEW.md) records the initial P1 mapping and the
+unresolved removeAt signature conflict. This historical report retains the
+function-length failure and approval state at its recorded commits. The
+[later P1 stage](SPEC-P1-EVIDENCE-2026-10-22.md) supersedes that blocker with the
+approved fix and fresh source-bound validation; the old packet below is stale.
 
 ## Reviewed source and results
 
@@ -125,7 +128,7 @@ differences. No fresh Go/C++ build, broad differential suite, ASan, dependency
 upgrade, service restart or unrelated filesystem/database access is requested in
 this first Linux scope. Those are separate later acceptance stages.
 
-## Approval blocker and remaining work
+## Approval blocker at this historical stage
 
 The known function-length mismatch remains unchanged. Automatic approval review
 rejected the attempted local commit containing that behavior change because it

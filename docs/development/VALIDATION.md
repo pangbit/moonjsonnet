@@ -7,6 +7,12 @@ and their focused evidence. Frozen Go/C++ inputs and historical results below
 are preserved; their old acceptance exceptions do not waive the complete
 v0.21.0 conformance target or establish results for the changed implementation.
 
+The [P1 stage](SPEC-P1-EVIDENCE-2026-10-22.md) rejects duplicate formal names
+statically under the fixed specification, including public Program AST input.
+Historical repeated-parameter success fixtures below remain unchanged and are
+now comparison differences, not normative passing expectations. Their original
+Go/AST/lint/differential suites have not been rerun for this change.
+
 The [final cross-platform report](../archive/reports/GO-JSONNET-CROSS-PLATFORM-ACCEPTANCE.md)
 records completed macOS ARM64 and Linux AMD64 fixed-Go comparisons, package consumer
 and related ASan checks. Acceptance passed under the user's precise compatibility
