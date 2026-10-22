@@ -5,6 +5,7 @@ fn source_standard_function(name : String) -> Bool {
   match name {
     "map"
     | "mapWithIndex"
+    | "range"
     | "assertEqual"
     | "objectFields"
     | "objectFieldsAll"
