@@ -2,16 +2,16 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "524f80bcdbc15d1513c4db06e84a0c9749b6dc28182a81503e7dabdd15a89000",
-  "tool_sha256": "45a49f09948a08e915d9fa91f2223a77a399cbe919c5c45520816370c18a1e48",
+  "mapping_sha256": "0c4bd268e52728d36f42ef32ff2d130e98d7d14788095bb020da69dea1baf9cd",
+  "tool_sha256": "e66311b9d78175d1569c330cbaeee6c8c4dc71d675130f1277ae733da544353b",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 57,
-  "completed_rule_rows": 10,
+  "completed_rule_rows": 12,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
-  "completed_evaluation_rule_rows": 4,
-  "unreviewed_rows": 26,
+  "completed_evaluation_rule_rows": 6,
+  "unreviewed_rows": 24,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -1416,6 +1416,105 @@
       "checks": "Factory/returned-closure type and explicit seed/arg overrides avoid loading the nested dependency despite its Syntax/Static/Runtime failure. Default demand loads it from the defining module context and exposes its own phase/marker. A free x in an unused dependency function cannot capture the intermediate module local either. Request maps collapse repeated IDs and claim no cache lifetime/callback count/order policy.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "SQ0IMM": {
+      "file": "spec_remove_test.mbt",
+      "line": 6,
+      "test": "P0 immutable array deletion preserves originals and deferred aliases",
+      "assertions": [
+        "[b,a]",
+        "[std.removeAt(b,0),b,a]",
+        "assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))"
+      ],
+      "checks": "Reused deletion/original/map/slice/chained alias controls establish prior array immutability scope; no fresh execution and no claim that these old cases already test concat.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SQ0LEN": {
+      "file": "spec_length_test.mbt",
+      "line": 30,
+      "test": "length keeps native functions and nonfunction contracts separate",
+      "assertions": [
+        "[2, 1, 2, 1]",
+        "@moonjsonnet.Type"
+      ],
+      "checks": "Reused source array-element laziness and two-codepoint String length controls, with adjacent rejected primitive kinds. Native/function/object portions retain their earlier public-contract scope and are not new full-library acceptance or fresh execution.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SQ0UNI": {
+      "file": "spec_review_test.mbt",
+      "line": 68,
+      "test": "Unicode codepoint and slice boundaries retain exact error timing",
+      "assertions": [
+        "[4, \"😀\", \"e\", \"́\", 0, \"😀́\"]"
+      ],
+      "checks": "Reused existing String length four across an astral, combining mark and NUL. Only its explicit length/codepoint assertion is credited; slice tests in the same group do not become additional length or concat judgments. No rerun.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SQ1": {
+      "file": "spec_sequence_structure_test.mbt",
+      "line": 129,
+      "test": "sequence concatenation preserves all elements and lazy seam payloads",
+      "assertions": [
+        "(empty, empty, [])",
+        "(empty, left, [10, 20])",
+        "(left, empty, [10, 20])",
+        "(left, right, [10, 20, 30, 40])",
+        "sequence_value(sequence_call(\"length\", [empty]), 0)",
+        "[\"array\", 4, 10, 30]",
+        "index(0), index(2)"
+      ],
+      "checks": "Independent source and handmade ASTs preserve empty-side identity and every appended element, including input position zero. Array type/length and offsets zero/two avoid erroneous seam payloads one/three. The behavior oracle is fixed prose/official flattenArrays; printed index mismatch A0 is not silently closed.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SQ2": {
+      "file": "spec_sequence_structure_test.mbt",
+      "line": 179,
+      "test": "sequence aliases survive deletion before and after warm concatenation",
+      "assertions": [
+        "for removals_first in [false, true]",
+        "removed_len(\"left\", 0)",
+        "removed_len(\"right\", 1)",
+        "(len(\"joined\"), 4)",
+        "(len(\"alias\"), 4)",
+        "(len(\"twice\"), 6)",
+        "(len(\"mapped\"), 4)",
+        "removed_len(\"joined\", 1)",
+        "sequence_gate(checks, result)",
+        "[10, 20, 30, 40, 10, 20]"
+      ],
+      "checks": "Nested-if structural gates force warm concat/alias/chained concat/deferred map before input/result deletions, and also reverse input deletion versus construction order. Literal vectors preserve both input aliases, warm aliases, cold concat and deferred map. This distinguishes in-place concat, mutation of sources/results and poisoned delayed views without relying on final array manifestation order.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SQ3": {
+      "file": "spec_sequence_structure_test.mbt",
+      "line": 249,
+      "test": "sequence length counts String codepoints and requires the evaluated child",
+      "assertions": [
+        "(\"''\", \"\", 0)",
+        "(\"'😀'\", \"😀\", 1)",
+        "Json::number(size.to_double())",
+        "sequence_failure(failed, @moonjsonnet.Runtime, Some(\"string-required\"))",
+        "sequence_value(ordering_unused(sequence_call(\"length\", [text])), 42)"
+      ],
+      "checks": "Separate source literals and direct typed String values count empty/astral/decomposed-combining cases as zero/one/three codepoints, then four after Z. A required String-producing error propagates its fixed marker while an unused whole call remains lazy. This does not assert lazy String contents, source-encoding completeness or grapheme normalization.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SQ4": {
+      "file": "spec_sequence_structure_test.mbt",
+      "line": 278,
+      "test": "sequence boundaries separate required heads selected payloads and statics",
+      "assertions": [
+        "(ordering_error(\"left-head\"), empty, \"left-head\")",
+        "(empty, ordering_error(\"right-head\"), \"right-head\")",
+        "[(1, \"left-payload\"), (3, \"right-payload\")]",
+        "sequence_failure(value, @moonjsonnet.Type, None)",
+        "ordering_leaf(\"seq_missing\", Var(\"seq_missing\"))",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "@moonjsonnet.Program::parse(\"[1]+\")",
+        "assert_eq(d.kind, @moonjsonnet.Syntax)"
+      ],
+      "checks": "Both concat heads are required even beside empty arrays, but only the selected seam failure is forced; unused whole failures stay lazy. Numeric/array mismatches and length(number) reject Type. A statically invalid unselected tail is rejected under length or first-index demand through source/handmade AST; missing operand Syntax is a separate source-only control.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -1463,6 +1562,10 @@
     "spec_foundation_calls_test.mbt": "7cdf4c0397458504515322c6b14893628f0ed3ba31a99ee75a7af2654f0a28c1",
     "spec_boolean_shortcircuit_test.mbt": "730b05bfade40138c803a0223387fee8b11f92117fcc1996dda46cf8c71109ef",
     "spec_import_closure_test.mbt": "e8136fdc0bb06add93a8589d9409b3b579aaa653077d0700fe4fcf244c02da58",
+    "spec_remove_test.mbt": "94b514e9ba69c2b5ad55f8c8e020ec7ab44ceac495150b9cd7020cbdea37c75c",
+    "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
+    "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
+    "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -1596,13 +1699,14 @@
           "AO1"
         ],
         "static_error": [
-          "AO3"
+          "AO3",
+          "SQ4"
         ],
         "runtime_error": [],
         "lazy": [],
         "boundary": []
       },
-      "remaining": "Only finite valid arrays and unknown-name rejection in skipped array tails of the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are mapped. The general all-element static constructor and full child judgments have no completion review.",
+      "remaining": "The combined sequence batch adds invalid unforced concat-tail controls to the existing reviewed subsets. No general all-child static constructor or admission judgment is completed.",
       "implementation": [
         "validate.mbt",
         "ast_convert.mbt"
@@ -1812,13 +1916,14 @@
         ],
         "static_error": [
           "AO3",
-          "BS3"
+          "BS3",
+          "SQ4"
         ],
         "runtime_error": [],
         "lazy": [],
         "boundary": []
       },
-      "remaining": "Bounded <, <= and Boolean operator scopes are mapped in their evidence reports, including unknown names under unused locals/shortcuts. Other operators, admission metadata and the general two-child static constructor are not completed.",
+      "remaining": "The combined sequence batch adds invalid unforced concat-tail controls to the existing reviewed subsets. No general all-child static constructor or admission judgment is completed.",
       "implementation": [
         "validate.mbt",
         "ast_validate.mbt",
@@ -2787,16 +2892,33 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2335,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "normal": [
+          "SQ1",
+          "SQ2"
+        ],
+        "static_error": [
+          "SQ4"
+        ],
+        "runtime_error": [
+          "SQ4"
+        ],
+        "lazy": [
+          "SQ1"
+        ],
+        "boundary": [
+          "SQ1",
+          "SQ2",
+          "SQ4"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Bounded append/shape/element-laziness and two-order alias immutability behavior is reviewed in [the combined sequence record](SPEC-SEQUENCE-STRUCTURE-2026-10-22.md). A0 remains unadjudicated: the fixed first premise lists e_0 but the conclusion starts at e_1. The independent language/official flattenArrays oracle retains all elements; no literal formula completion, producer/overload or host-resource judgment is inferred.",
+      "implementation": [
+        "operators.mbt",
+        "eval.mbt",
+        "std_remove.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -3513,26 +3635,98 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2620,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
           "O4",
-          "I2"
+          "I2",
+          "SQ0LEN",
+          "SQ1",
+          "SQ2"
         ],
         "static_error": [],
-        "runtime_error": [],
+        "runtime_error": [
+          "SQ4"
+        ],
         "lazy": [
           "O4",
-          "I2"
+          "I2",
+          "SQ1",
+          "SQ2"
         ],
-        "boundary": []
+        "boundary": [
+          "SQ1",
+          "SQ2",
+          "SQ4"
+        ]
       },
-      "remaining": "Full length contract belongs to public-library matrix.",
+      "remaining": "",
       "implementation": [
-        "stdlib.mbt"
+        "stdlib.mbt",
+        "eval.mbt",
+        "runtime_types.mbt",
+        "ast_convert.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "length-array",
+          "decision": "complete",
+          "review_form": "sequence-length-transfer",
+          "fixed_statement": "\\rule{length-array} { e ↓ \\array{e_0 \\ldots e_{n - 1}} } { \\texttt{std.length}(e) ↓ n }",
+          "premise_roles": [
+            "array-value"
+          ],
+          "length_unit": "elements",
+          "child_judgments_assumed": "The argument has evaluated according to its own judgment to an admitted Array/String value within resource bounds, and the official std.length intrinsic is called. This review counts that value; it does not complete producers, generic invocation or local std rebinding.",
+          "scope": "The full length-array count transfer relative to its evaluated-value child, with adjacent failure and unused-call controls.",
+          "reasoning": "The builtin forces only the argument head; the ArrayValue branch reads the vector length without forcing element thunks. Empty, concatenated erroneous payloads and explicit alias-order gates exercise this path. Finite host vector lengths are represented exactly as Double.",
+          "review_report": "docs/development/SPEC-SEQUENCE-STRUCTURE-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This execution rule assumes a statically checked expression. SQ4 maps the separate still-partial array/binary static constructors."
+          },
+          "excluded_obligations": [
+            "Array-concat formal index mismatch (A0)",
+            "Whole Array/String producer, static, encoding, generic apply and local std rebinding judgments",
+            "Full public std.length function/object/signature contract and other overloads",
+            "Host resource/size limits, diagnostics and CLI behavior; B0/N0/R0 remain unchanged"
+          ],
+          "inspection": [
+            {
+              "file": "stdlib.mbt",
+              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "anchor": "let values = params.map(n => self.force(ids[n], loc))",
+              "argument": "The one official length parameter is forced to its outer Value; this does not traverse array payloads."
+            },
+            {
+              "file": "stdlib.mbt",
+              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "anchor": "ArrayValue(a) => a.length().to_double()",
+              "argument": "This exhaustive value-kind arm implements element count without payload demand."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "self.store(Pending(e, env.debug_capture([e]).trace_thunk()))",
+              "argument": "Array construction stores lazy element expressions; a shape count need not force them."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Call(visit(f), args.map(a => (a.0, visit(a.1))), strict)",
+              "argument": "Typed calls retain the callee and argument expression; child static/admission checks are not skipped."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_import_scope_test.mbt": "a267fed917387b8edf62b4d1b72ed7764680cd14b919ced2af7f298847a9d2ed",
+            "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d",
+            "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30"
+          }
+        }
+      ]
     },
     {
       "id": "length-object",
@@ -3557,18 +3751,93 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2640,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "SQ0LEN",
+          "SQ0UNI",
+          "SQ3"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "SQ3",
+          "SQ4"
+        ],
+        "lazy": [
+          "SQ3"
+        ],
+        "boundary": [
+          "SQ0UNI",
+          "SQ3",
+          "SQ4"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "stdlib.mbt",
+        "eval.mbt",
+        "runtime_types.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "length-string",
+          "decision": "complete",
+          "review_form": "sequence-length-transfer",
+          "fixed_statement": "\\rule{length-string} { e ↓ v ∈ String } { \\texttt{std.length}(e) ↓ strlen(v) }",
+          "premise_roles": [
+            "string-value"
+          ],
+          "length_unit": "Unicode-codepoints",
+          "child_judgments_assumed": "The argument has evaluated according to its own judgment to an admitted Array/String value within resource bounds, and the official std.length intrinsic is called. This review counts that value; it does not complete producers, generic invocation or local std rebinding.",
+          "scope": "The full length-string count transfer relative to its evaluated-value child, with adjacent failure and unused-call controls.",
+          "reasoning": "The builtin forces its argument head; the Str branch counts its codepoint iterator, with no byte/UTF-16/grapheme count or normalization operation. Separate source/direct typed values cover empty, astral and combining boundaries. Child failure and unused-call controls separate required String production from whole-call laziness.",
+          "review_report": "docs/development/SPEC-SEQUENCE-STRUCTURE-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This execution rule assumes a statically checked expression. SQ4 maps the separate still-partial array/binary static constructors."
+          },
+          "excluded_obligations": [
+            "Array-concat formal index mismatch (A0)",
+            "Whole Array/String producer, static, encoding, generic apply and local std rebinding judgments",
+            "Full public std.length function/object/signature contract and other overloads",
+            "Host resource/size limits, diagnostics and CLI behavior; B0/N0/R0 remain unchanged"
+          ],
+          "inspection": [
+            {
+              "file": "stdlib.mbt",
+              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "anchor": "let values = params.map(n => self.force(ids[n], loc))",
+              "argument": "The one official length parameter is forced to its outer Value; this does not traverse array payloads."
+            },
+            {
+              "file": "stdlib.mbt",
+              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "anchor": "Str(s) => s.iter().count().to_double()",
+              "argument": "This value-kind arm counts Unicode codepoints of the already produced String."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "self.store(Pending(e, env.debug_capture([e]).trace_thunk()))",
+              "argument": "Array construction stores lazy element expressions; a shape count need not force them."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Call(visit(f), args.map(a => (a.0, visit(a.1))), strict)",
+              "argument": "Typed calls retain the callee and argument expression; child static/admission checks are not skipped."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
+            "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30"
+          }
+        }
+      ]
     },
     {
       "id": "makeArray",
@@ -4556,10 +4825,12 @@
         "lazy": [],
         "boundary": [
           "FINITE",
-          "O2"
+          "O2",
+          "SQ0IMM",
+          "SQ2"
         ]
       },
-      "remaining": "Producer overflow and array immutability evidence lives in P0 matrix; not newly credited here.",
+      "remaining": "The sequence batch adds two-order concat/alias immutability evidence, reusing the P0 deletion controls without fresh execution. Producer overflow, whole array/object immutability and value-domain judgments retain their separate P0/unreviewed scopes.",
       "implementation": [
         "runtime_types.mbt",
         "manifest.mbt"
@@ -4709,12 +4980,15 @@
         "normal": [
           "AO1",
           "AO2",
-          "BS1"
+          "BS1",
+          "SQ1",
+          "SQ2"
         ],
         "static_error": [],
         "runtime_error": [
           "AO3",
-          "BS2"
+          "BS2",
+          "SQ4"
         ],
         "lazy": [
           "AO1",
@@ -4722,16 +4996,20 @@
           "AO3",
           "BS0",
           "BS1",
-          "BS2"
+          "BS2",
+          "SQ1"
         ],
         "boundary": [
           "AO1",
           "AO3",
           "BS1",
-          "BS2"
+          "BS2",
+          "SQ1",
+          "SQ2",
+          "SQ4"
         ]
       },
-      "remaining": "The bounded array-ordering and [Boolean operator review](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md) keep their separate scopes. Only the two explicit Boolean shortcuts have named transfer decisions; longcut non-Boolean RHS domain B0 stays unknown. Arithmetic, bitwise, equality, coercion, other relational operators and whole scalar/producer judgments remain unadjudicated.",
+      "remaining": "The combined sequence batch closes bounded append/alias behavior while A0 printed array-concat indexing stays unadjudicated; the two length named transfers assume their own children. The bounded array-ordering and [Boolean operator review](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md) keep their separate scopes. Only the two explicit Boolean shortcuts have named transfer decisions; longcut non-Boolean RHS domain B0 stays unknown. Arithmetic, bitwise, equality, coercion, other relational operators and whole scalar/producer judgments remain unadjudicated.",
       "implementation": [
         "operators.mbt",
         "eval.mbt",
