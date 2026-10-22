@@ -1,13 +1,17 @@
 # Compatibility: Jsonnet v0.21.0
 
 The language target is Jsonnet v0.21.0, without intentionally excluded language
-constructs. All 163 members in the fixed Go standard-library reflection inventory
+constructs. The final conformance target covers every language rule and public
+standard-library contract at Google Jsonnet commit
+`bbb38f1020be1f5aed560928fb839b2c448cefb4`; unresolved or untested contracts are
+not accepted as conforming. Go/C++ behavior is comparison evidence and cannot
+override explicit normative requirements. All 163 members in the fixed Go standard-library reflection inventory
 are registered; [surface coverage](GO-STDLIB-SURFACE.md) is distinct from behavioral equivalence. Passing
 the committed corpus does not prove compatibility with all Jsonnet programs.
 The official C++ v0.21.0 interpreter is a development-only oracle. Input, imports,
 parameters and expected categories are committed under `tests/` and `examples/`.
 Success comparisons parse JSON and ignore object order and insignificant whitespace;
-non-finite aggregate scalar outputs use exact spelling checks instead. The Go
+historical non-finite aggregate scalar outputs use exact spelling checks instead. The Go
 CLI output corpus also pins complete stdout bytes for JSON layout, plain strings
 and YAML document streams. Multi-file fixtures separately compare complete file
 contents and filename lists in isolated reference/local output directories.
@@ -44,7 +48,11 @@ The recorded acceptance contract permits 18 CLI and 1 lint reference-crash
 exceptions, the separately tested opt-in `import_ast` API, and same-architecture
 NaN behavior. Raw failures remain in the reports. AMD64 NaN behavior matches Go's
 complete error output but still fails the frozen ARM64 success expectation.
-These bounds do not establish universal Go parity. Repository
+These historical bounds do not establish current conformance or universal Go parity.
+The subsequent immutability, finite-number, integer-index and YAML-error fixes
+intentionally diverge from some frozen Go expectations. Those inputs and original
+reports remain unchanged; the whole reference corpora have not been rerun for
+these fixes. Repository
 [validation instructions](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/VALIDATION.md)
 describe reproduction; development fixtures and reports are excluded from the archive.
 
@@ -70,12 +78,12 @@ before accessing values or triggering assertions. Object assertions
 are checked on field access/manifestation, including inherited assertions bound to
 the final object. An unused error or failed assertion is not evaluated.
 
-Numbers use IEEE-754 binary64. Division by zero and non-finite ordinary arithmetic
+Numbers use IEEE-754 binary64. Division by zero and non-finite arithmetic
 results are errors. Numeric tokens retain their original spelling and convert
 when evaluated: overflow is a runtime error, unused overflow literals stay lazy,
 and underflow can produce zero, matching the pinned Go reference.
-As in the pinned Go reference, `sum`/`avg` retain overflow
-Infinity/NaN, which unary signs, comparisons and string conversion can consume;
+`sum`/`avg` reject overflow at the first invalid addition, before later operands
+or consumers are evaluated. Unused aggregates remain lazy;
 integer precision is not guaranteed above 2^53. Strings/indexing/length/substrings
 use Unicode code points, not bytes, UTF-16 units or grapheme clusters. Paired Unicode
 escapes are decoded; lone surrogate escapes are syntax errors, as in v0.21.0.
@@ -84,11 +92,11 @@ decode to U+FFFD. Normal quoted strings are validated when the parser consumes
 their tokens, after full-source lexing; verbatim strings keep backslashes literal.
 Source locations use one-based UTF-8 byte columns. AST source ranges have exclusive ends.
 
-Array/string indices truncate toward zero before checking bounds, matching Go;
-this includes negative fractions between -1 and 0 selecting the first element.
+Array/string indices must be finite integers within bounds before conversion.
 Slices support omitted/null bounds, negative bounds and positive steps. Fractional
-bounds and steps retain their fractional progression; each selected index is
-then truncated. Zero or negative steps are errors in the reference language too. Formatting supports
+bounds and steps retain their fractional progression. Array slices defer index
+validation until an element is accessed; strings are strict. A fractional end
+bound need not generate fractional indices. Zero or negative steps are errors in the reference language too. Formatting supports
 mapping keys, flags, dynamic width/precision, length modifiers and every v0.21.0
 conversion (`diuoxXeEfFgGcs%`). `tailstrict` forces supplied/default parameters
 and uses a trampoline for tail calls; a 10,000-iteration regression verifies this.
@@ -157,7 +165,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `mergePatch(target,patch)` | Recursive JSON merge patch with null deletion, visible fields, lazy retained values and scalar replacement |
 | `all`, `any`, `filterMap`, `flattenArrays`, `flattenDeepArray`, `count`, `repeat`, `find`, `deepJoin` | Pinned source definitions; boolean short circuit, lazy retained values, nested flattening and Unicode strings |
 | `min`, `max`, `clamp` | Source numeric min/max and lazy clamp branches |
-| `sum(arr)`, `avg(arr)` | Numeric left-to-right aggregation; avg rejects an empty array; overflow retains Infinity/NaN as in Go |
+| `sum(arr)`, `avg(arr)` | Numeric left-to-right aggregation; avg rejects an empty array; each addition rejects non-finite results |
 | `member(arr,x)`, `contains(arr,elem)` | Native short-circuit membership; member also accepts a string substring (including empty substring), contains requires an array |
 | `minArray(arr,keyF=function(x)x,onEmpty=error ...)`, `maxArray(...)` | Native stable extrema; force elements, compute each key once, preserve lazy fields, force explicitly supplied onEmpty even when nonempty |
 | `$flatMapArray(func,arr)` | Reflected Go helper; flatMap behavior restricted to array input |
@@ -185,7 +193,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `escapeStringJson(str_)`, `escapeStringPython(str)`, `escapeStringBash(str_)`, `escapeStringDollars(str_)`, `escapeStringXML(str_)` | String coercion and context-specific escaping, including C0/C1 JSON controls |
 | `resolvePath(f,r)` | Pinned lexical directory joining; does not normalize .. or treat r as an absolute replacement |
 | `id(x)` | Eager identity; nested array/object values remain lazy |
-| `remove(arr,elem)`, `removeAt(arr,i)` | Remove the first equal value or an integer index; preserve Go's mutation of input slots, then return an independent shorter array; remove searches only through the first match, removeAt does not force elements |
+| `remove(arr,elem)`, `removeAt(arr,i)` | Return a new array while preserving the original and its aliases; remove searches only through the first match, removeAt does not force elements; the public named-index contract remains under review |
 | `$objectFlatMerge(x)` | Internal helper: merge simple objects with disjoint keys, preserving field visibility and bindings, rebinding self, dropping assertions; explicit object locals and inherited objects are rejected |
 | `encodeUTF8(str)` | UTF-8 bytes, with BOM and zero characters preserved |
 | `decodeUTF8(arr)` | Integer bytes in 0..255; each malformed UTF-8 byte becomes U+FFFD, including incomplete multibyte sequences |
@@ -201,17 +209,17 @@ Only the following functions are supported. Arity/named-argument violations are
 | `manifestIni(ini)` | Optional main object and required sections object; sorted fields, array values emit repeated key lines, no escaping |
 | `manifestXmlJsonml(value)` | Pinned source JsonML conversion; sorted visible attributes and paired tags; text and attribute values are emitted without automatic XML escaping |
 | `manifestToml(value)`, `manifestTomlEx(value,indent)` | Native Go table/array-of-tables layout; default indent is two spaces; empty key is `''`; null and functions rejected; numeric coercion uses 17 significant digits |
-| `manifestYamlDoc(value,indent_array_in_object=false,quote_keys=true)` | Native layout, shortest fixed-decimal numbers, newline-terminated block strings, conservative bare-key recognition; function values render as empty text |
+| `manifestYamlDoc(value,indent_array_in_object=false,quote_keys=true)` | Native layout, shortest fixed-decimal numbers, newline-terminated block strings, conservative bare-key recognition; functions and nested errors fail the call |
 | `manifestYamlStream(value,indent_array_in_object=false,c_document_end=true,quote_keys=true)` | Pinned source document separators and optional final marker; empty stream preserves separators and leaves unused document options lazy |
 | `toString(a)` | Strings unchanged; other manifestable values become compact JSON with Jsonnet spacing |
 | `floor(x)`, `ceil(x)` | Reject non-finite results |
-| `abs(n)` | Go source rule: retain n if positive, otherwise negate; preserves non-finite values and flips signed zero |
-| `sqrt(x)`, `sin(x)`, `cos(x)`, `tan(x)`, `asin(x)`, `acos(x)`, `atan(x)`, `log(x)`, `exp(x)` | Numeric functions; non-finite results are Runtime errors; finite outputs from non-finite inputs are accepted |
-| `hypot(x,y)`, `atan2(y,x)`, `pow(x,n)`, `modulo(x,y)` | Native numeric argument names, signed-zero and non-finite special cases; modulo rejects zero divisor |
+| `abs(n)` | Go source rule: retain n if positive, otherwise negate; flips signed zero |
+| `sqrt(x)`, `sin(x)`, `cos(x)`, `tan(x)`, `asin(x)`, `acos(x)`, `atan(x)`, `log(x)`, `exp(x)` | Numeric functions; non-finite results are Runtime errors |
+| `hypot(x,y)`, `atan2(y,x)`, `pow(x,n)`, `modulo(x,y)` | Native numeric argument names and signed-zero handling; modulo rejects zero divisor |
 | `round(x)` | Nearest integer, half away from zero, preserving negative zero |
-| `mantissa(x)`, `exponent(x)` | Binary fraction and exponent, including subnormal normalization; exponent returns 0 for zero/Infinity/NaN |
-| `isEven(x)`, `isOdd(x)` | Parity of truncated numeric value; Infinity/NaN yield false/true respectively |
-| `isInteger(x)`, `isDecimal(x)` | Zero/nonzero fractional part; Infinity/NaN yield false/true respectively |
+| `mantissa(x)`, `exponent(x)` | Binary fraction and exponent, including subnormal normalization; exponent returns 0 for zero |
+| `isEven(x)`, `isOdd(x)` | Parity of truncated numeric value |
+| `isInteger(x)`, `isDecimal(x)` | Zero/nonzero fractional part |
 | `pi`, `deg2rad(x)`, `rad2deg(x)`, `log2(x)`, `log10(x)`, `sign(n)`, `mod(a,b)` | Pinned source definitions; mod dispatches numeric modulo or string formatting |
 | `xor(x,y)`, `xnor(x,y)` | Eager boolean-only operands |
 | `format(str,vals)` | Same formatting semantics as string `%` |
@@ -222,14 +230,10 @@ Only the following functions are supported. Arity/named-argument violations are
 | `sha256(s)` | SHA-256 of UTF-8 string bytes, lowercase hexadecimal; rounds consume the evaluation step budget |
 | `md5(s)`, `sha1(s)`, `sha512(s)`, `sha3(s)` | MD5, SHA-1, SHA-512 and SHA3-512 of UTF-8 string bytes; lowercase hexadecimal; require strings and consume a work step per compression/permutation round |
 
-Non-finite aggregate values manifest as `+Inf`, `-Inf`, or `NaN`, including in
-arrays/objects, matching Go. These tokens are outside strict JSON. The returned
-MoonBit `Json::Number` retains the numeric value and its spelling for `stringify`.
-Numeric formatting rejects non-finite operands; `%s` uses their string spelling.
-NaN comparison follows Go's comparator (`<`/`>` false, `<=`/`>=` true), while NaN
-equality remains false. NaN index/character/bitwise conversion uses explicit
-architecture-specific conversion as described above; AMD64 can therefore report
-an error for an input that succeeds on ARM64.
+Non-finite numbers are invalid Jsonnet values. Aggregate evaluation fails before
+they can reach comparison, string conversion or indexing. JSON and YAML
+manifestation also reject internal non-finite values defensively. Frozen Go
+Infinity/NaN outputs remain historical compatibility evidence, not normative passes.
 
 Trigonometric, inverse trigonometric, exponential and power algorithms preserve
 the fixed Go 1.24.0 ARM64/AMD64 reference's operation order, including explicit fused
@@ -260,12 +264,11 @@ stack (exit 2); this implementation returns `Limit`. This input remains an
 explicit differential failure and is covered by the recorded reference-crash
 exception contract; it is not relabeled as a compatible expected-error pass.
 
-Deletion follows the pinned Go implementation's observable mutation: deleting
+Deletion preserves Jsonnet immutability: deleting
 index 1 from `[1,2,3,4]` returns `[1,3,4]` while leaving the original array as
-`[1,3,4,4]`. The returned array is independent; removing from it does not mutate
-the original again. `map`, `mapWithIndex` and array slices defer reading the slot
-until their element is demanded, and `filter` reads the selected slot after its
-predicate, so they observe these changes. Ordinary concatenation copies slots.
+`[1,2,3,4]`. The returned array, original, aliases, and previously created lazy
+maps or slices remain independent of subsequent deletions. Payload thunks remain
+lazy; querying the result length does not force its elements.
 Out-of-bounds `removeAt` inputs cause an internal Go crash but return `Runtime`
 here; those cases remain differential failures.
 
@@ -283,12 +286,10 @@ before grouping scalar output ahead of sections, preserving evaluation order.
 YAML bare keys follow Go's case-sensitive binary and unanchored hexadecimal
 checks, decimal underscores, overflow/underflow and reserved-word rules.
 
-The Go YAML object renderer ignores recursive rendering errors. This can return
-partial text, such as `"a":\n- 1\n` for `{a:[1,error 'nested']}`. These successful
-partial results are preserved. If later fields need evaluation, the reference
-can internally crash with `Saving empty traceElement on stack`; that input is
-retained as a differential failure. MoonJsonnet keeps valid VM state. Depth,
-step and output limits always propagate, including inside YAML object fields.
+YAML rendering propagates nested errors and rejects functions at every level.
+`{a:[1,error 'nested']}` therefore fails instead of returning partial text.
+Frozen Go truncation and reference-crash cases remain in the differential
+fixtures. Depth, step and output limits propagate inside YAML object fields.
 
 `parseYaml(str)` parses block/flow collections, quoted/plain/block scalars,
 anchors, aliases, merge keys, tags and Go-style document streams. YAML 1.1

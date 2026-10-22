@@ -30,9 +30,12 @@ The recorded compatibility boundary retains all known differences:
 | Go whole CLI | ARM64 1132/1150; AMD64 1131/1150 |
 | Go reusable evaluator / lint | 20/21 / 409/410 |
 
-The documented acceptance contract retains 18 CLI and 1 lint reference-crash
+The historical acceptance contract retained 18 CLI and 1 lint reference-crash
 exceptions, the separate optional `import_ast` API and same-architecture NaN
-behavior. Those raw failures are not relabeled as passes.
+behavior. Those raw failures are not relabeled as passes. Subsequent normative
+fixes reject non-finite numbers and fractional indices, preserve array
+immutability and propagate YAML errors. The recorded totals have not been rerun
+for these changes and do not establish full specification conformance.
 
 After this version is published to Mooncakes:
 
@@ -237,8 +240,7 @@ moon run cmd/main -- --root examples/environments -o result.json main.jsonnet
 ```
 
 CLI success writes manifested output; errors go to stderr and return a nonzero status.
-Output is normally JSON; Go-compatible `sum`/`avg` overflow can emit `+Inf`, `-Inf`
-or `NaN`, which are outside strict JSON. See [compatibility](docs/reference/COMPATIBILITY.md).
+Aggregate overflow returns a runtime error. See [compatibility](docs/reference/COMPATIBILITY.md).
 `--ext-code` accepts Jsonnet expressions evaluated lazily when used. See [CLI](docs/reference/CLI.md).
 
 ## Validation and contribution

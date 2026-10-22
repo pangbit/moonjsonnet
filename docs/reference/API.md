@@ -75,11 +75,9 @@ against `source_bytes` when forced. Global `evaluate` calls start fresh;
 [reusable evaluators](#reusable-evaluator) retain import caches with explicit reset
 rules, and [parsed programs](#parsed-programs) can be reused.
 
-Like the pinned Go implementation, `sum`/`avg` can return non-finite numbers.
-The returned `Json::Number` keeps Infinity/NaN and a spelling preserved by
-`stringify` (`+Inf`, `-Inf`, `NaN`). Those spellings are not valid strict JSON;
-this applies inside arrays/objects as well. Ordinary arithmetic still rejects
-non-finite results. See [compatibility](COMPATIBILITY.md) for conversion details.
+Numbers must be finite. `sum`/`avg` reject overflow at the addition that causes
+it, before returning a result; unused expressions remain lazy. Manifestation also
+rejects internal non-finite numbers. See [compatibility](COMPATIBILITY.md).
 
 The resolver has signature `(from: String, path: String) -> Source raise`.
 `Source { id, text }` must use a stable canonical identity for one immutable

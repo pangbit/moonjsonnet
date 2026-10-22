@@ -2,6 +2,9 @@
 
 ## 0.1.0 — Unreleased
 
+- Preserve immutable arrays during removal; reject aggregate overflow when
+  evaluated and fractional array/string indices; propagate nested YAML errors
+  and reject YAML function values. Array slices retain lazy index validation.
 - All 163 reflected go-jsonnet v0.21.0 standard-library members, with bounded
   differential evidence and explicit compatibility differences.
 - Native MoonBit `sha256` over UTF-8 strings with bounded work and known-answer tests.
@@ -23,7 +26,7 @@
 - Stable `sort` with an optional key function, cached keys, lazy payloads and
   iterative merging bounded by the evaluation step limit.
 - Go-compatible required function arity and iterative `foldl` argument/result evaluation.
-- Fractional indexing/slicing and signed 64-bit wrapping bitwise operators;
+- Fractional slice progression and signed 64-bit wrapping bitwise operators;
   explicit ARM64/AMD64 conversion paths preserve the pinned Go behavior for
   positive `2^63` and NaN without an out-of-range C cast.
 - Go-compatible shortest fixed decimal numbers in `manifestJson`, preserving signed

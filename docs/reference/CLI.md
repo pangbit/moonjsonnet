@@ -164,8 +164,8 @@ Multi payloads share one budget, excluding JSON final newlines; the complete
 filename list has another check against `output_bytes` before opening any output.
 
 Exit 0 means manifested output was emitted (or help/version was requested).
-Go-compatible aggregate overflow may emit `+Inf`, `-Inf`, or `NaN` instead of
-strict JSON, including within arrays/objects. Interpreter
+Aggregate overflow is a runtime error; invalid non-finite numbers are not
+successful JSON output. Interpreter
 errors and CLI argument/output errors exit 1, matching Go. This changes the
 earlier CLI argument/output exit code 2. Diagnostics go to stderr.
 Evaluation failure does not open or truncate the output file. On successful

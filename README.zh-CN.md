@@ -26,8 +26,10 @@ Jsonnet v0.21.0，不主动裁剪语言结构。固定参考清单中的 163 个
 | Go 整体 CLI | ARM64 1132/1150；AMD64 1131/1150 |
 | Go 可复用求值器／静态检查 | 20/21／409/410 |
 
-文档中的验收契约保留 18 项 CLI 和 1 项静态检查的参考崩溃例外、独立的可选
+历史验收契约保留 18 项 CLI 和 1 项静态检查的参考崩溃例外、独立的可选
 `import_ast` API，以及与同架构参考一致的 NaN 行为。原始失败没有重新标记为通过。
+后续规范整改已拒绝非有限数和小数索引、保持数组不可变，并传播 YAML 错误。
+这些更改尚未重跑上述参考语料，历史计数不代表完整规范符合性。
 
 此版本发布到 Mooncakes 后，可运行：
 
@@ -226,8 +228,7 @@ moon run cmd/main -- --root examples/environments -o result.json main.jsonnet
 ```
 
 CLI 成功时写入求值后的输出；错误写入标准错误并返回非零退出状态。
-通常输出为 JSON；与 Go 一致的 `sum`/`avg` 溢出可产生 `+Inf`、`-Inf` 或 `NaN`，
-这些内容不属于严格 JSON，详见[兼容性说明](docs/reference/COMPATIBILITY.md)。
+聚合运算溢出返回运行时错误，详见[兼容性说明](docs/reference/COMPATIBILITY.md)。
 `--ext-code` 接受 Jsonnet 表达式，并在使用时惰性求值，详见[CLI 文档](docs/reference/CLI.md)。
 
 ## 验收与贡献

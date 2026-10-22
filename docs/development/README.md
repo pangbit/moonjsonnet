@@ -7,6 +7,7 @@
 - [Release procedure](RELEASING.md)
 - [Differential-validator design](CI-VALIDATION.md)
 - [Documentation layout and language policy](DOCUMENTATION.md)
+- [Specification acceptance contract and P0 matrix](SPEC-CONFORMANCE.md)
 - [Original requirements — Chinese](zh-CN/REQUIREMENTS.md)
 - [Functional parity plan — Chinese](zh-CN/GO-PARITY.md)
 - [Completion history — Chinese](zh-CN/COMPLETION-CHECKLIST.md)
