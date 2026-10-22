@@ -38,6 +38,6 @@
   {"id":"embedded-missing-parameter","axis":"scenario-embedded","args":["--root","examples/embedded/config","main.jsonnet"],"error":"replicas","location":"main.jsonnet"},
   {"id":"embedded-invalid-type","axis":"scenario-embedded","args":["--root","examples/embedded/config","--ext-str","replicas=bad","main.jsonnet"],"error":"replicas must be numeric","location":"main.jsonnet"},
   {"id":"embedded-invalid-value","axis":"scenario-embedded","args":["--root","examples/embedded/config","--ext-code","replicas=0","main.jsonnet"],"error":"replicas out of range","location":"main.jsonnet"},
-  {"id":"embedded-import-escape","axis":"scenario-embedded","args":["--root","examples/embedded/config","-e","import '../../../moon.mod'"],"error":"import escapes allowed root"},
-  {"id":"embedded-step-limit","axis":"scenario-embedded","args":["--root","examples/embedded/config","--ext-code","replicas=3","--max-steps","1","main.jsonnet"],"error":"evaluation step limit exceeded"}
+  {"id":"embedded-import-escape","axis":"scenario-embedded","args":["--root","examples/embedded/config","-e","import '../../../moon.mod'"],"error":"import escapes allowed root","diagnostic_kind":"Import"},
+  {"id":"embedded-step-limit","axis":"scenario-embedded","args":["--root","examples/embedded/config","--ext-code","replicas=3","--max-steps","1","main.jsonnet"],"error":"evaluation step limit exceeded","diagnostic_kind":"Limit"}
 ]

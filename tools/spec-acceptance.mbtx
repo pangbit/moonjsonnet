@@ -30,10 +30,11 @@ fn json_matches(actual : String, expected : Json) -> Bool {
 ///|
 async fn main {
   let args = @env.args()
-  guard args.length() == 2 else {
-    fail("Usage: moon run --frozen tools/spec-acceptance.mbtx EVIDENCE_DIR")
+  guard args.length() >= 2 else {
+    fail("Usage: moon run --frozen tools/spec-acceptance.mbtx EVIDENCE_DIR [CASE_ID ...]")
   }
   let evidence = args[1]
+  let selected = args[2:].to_owned()
   @fs.mkdir(evidence, recursive=true, allow_exist=true)
   let source_commit = checked_text("git", ["rev-parse", "HEAD"])
   // Existing private untracked files are neither read nor copied. Every tracked
@@ -71,6 +72,7 @@ async fn main {
   for fixture in fixtures {
     guard fixture is Object(fields) else { fail("fixture object") }
     guard fixture is { "id": String(id), "axis": String(axis), "args": Array(raw_args), .. } else { fail("fixture shape") }
+    if !selected.is_empty() && !selected.contains(id) { continue }
     let command = raw_args.map(value => match value { String(s) => s; _ => abort("argument string") })
     let output_file = fields.get("output_file") == Some(Json::boolean(true))
     if output_file {
@@ -82,8 +84,12 @@ async fn main {
     let file_text = if output_file { Some(@fs.read_file(output_path).text()) } else { None }
     let payload = file_text.unwrap_or(actual.stdout())
     let ok = if fields.get("error") is Some(String(message)) {
+      let diagnostic_matches = match fields.get("diagnostic_kind") {
+        Some(String(kind)) => actual.stderr().split("\n").next().unwrap().contains(": " + kind + ": " + message)
+        _ => actual.stderr().has_prefix("RUNTIME ERROR:")
+      }
       actual.exit_code() == 1 && actual.stdout().is_empty() &&
-      actual.stderr().has_prefix("RUNTIME ERROR:") && actual.stderr().contains(message) &&
+      diagnostic_matches && actual.stderr().contains(message) &&
       (!output_file || file_text == Some(sentinel)) &&
       (match fields.get("location") {
         Some(String(location)) => actual.stderr().contains(location)
@@ -104,17 +110,20 @@ async fn main {
     @fs.write_file(evidence + "/cases.json", Json::array(rows).stringify(indent=2) + "\n")
     println("\{id}: \{if ok { "PASS" } else { "FAIL" }}")
   }
-  let embedded_result = @shell.Cmd(embedded, []).output(timeout_ms=10000)
-  let embedded_ok = embedded_result.exit_code() == 0 && embedded_result.stderr().is_empty() &&
-    json_matches(embedded_result.stdout().split("\n").next().unwrap().to_owned(),
-      { "app": "checkout", "port": 8080, "retries": 3, "replicas": 3 }) &&
-    embedded_result.stdout().contains("replicas must be numeric") &&
-    embedded_result.stdout().contains("replicas out of range") &&
-    embedded_result.stdout().contains("import escapes allowed root")
-  if embedded_ok { passed += 1 }
-  rows.push({ "id": "embedded-library-executable", "axis": "scenario-embedded",
-    "exit": embedded_result.exit_code(), "stdout": embedded_result.stdout(),
-    "stderr": embedded_result.stderr(), "passed": embedded_ok })
+  if selected.is_empty() || selected.contains("embedded-library-executable") {
+    let embedded_result = @shell.Cmd(embedded, []).output(timeout_ms=10000)
+    let embedded_ok = embedded_result.exit_code() == 0 && embedded_result.stderr().is_empty() &&
+      json_matches(embedded_result.stdout().split("\n").next().unwrap().to_owned(),
+        { "app": "checkout", "port": 8080, "retries": 3, "replicas": 3 }) &&
+      embedded_result.stdout().contains("replicas must be numeric") &&
+      embedded_result.stdout().contains("replicas out of range") &&
+      embedded_result.stdout().contains("import escapes allowed root")
+    if embedded_ok { passed += 1 }
+    rows.push({ "id": "embedded-library-executable", "axis": "scenario-embedded",
+      "exit": embedded_result.exit_code(), "stdout": embedded_result.stdout(),
+      "stderr": embedded_result.stderr(), "passed": embedded_ok })
+  }
+  if !selected.is_empty() { assert_eq(rows.length(), selected.length()) }
   assert_eq(checked_text("git", ["rev-parse", "HEAD"]), source_commit)
   ignore(checked_text("git", ["diff", "HEAD", "--exit-code"]))
   let report : Json = {
@@ -124,6 +133,7 @@ async fn main {
     "build_command": build_args, "build_exit": build.exit_code(),
     "scope": "focused normative P0 CLI and three application scenarios; not full conformance or upstream parity",
     "passed": passed, "total": rows.length(), "failed": rows.length() - passed, "cases": rows,
+    "selected_case_ids": selected,
     "unresolved_outside_suite": ["removeAt parameter-name conflict", "function length nonconformance; candidate fix blocked by approval"],
   }
   @fs.write_file(evidence + "/report.json", report.stringify(indent=2) + "\n")
