@@ -2,8 +2,8 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "6a419a848781d070efc75d1536a2a88e2cb91dd0b6382200a34a0d73e7375ae5",
-  "tool_sha256": "2498727f41ae032b39d020a3d4e8e7e4624584d58aad40d3bce04b97a3244a1e",
+  "mapping_sha256": "d66926c0fbcd8a54c6a53f6d41e70d83829d4206c8331bebff8784897dbf5154",
+  "tool_sha256": "38cbb9cea745103e6e99946044676d08683a6767fc9fe8fd9633e091dc288cc1",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 42,
@@ -863,6 +863,51 @@
       "checks": "Four bare legal unary prefixes reject source Syntax before a Program exists. Typed Unary nodes require a child, so no absent-child handmade-AST or Static counterpart is asserted.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "SR1": {
+      "file": "spec_inherited_self_test.mbt",
+      "line": 106,
+      "test": "inherited detached functions retain distinct warmed receivers after rehosting",
+      "assertions": [
+        "receiver_extend(\"base\", 2)",
+        "receiver_extend(\"base\", 3)",
+        "receiver_extend(\"left\", 4)",
+        "receiver_call(receiver_var(\"before\"))",
+        "receiver_call(receiver_index(receiver_var(\"holder\"), \"g\"))",
+        "assert_eq(program.evaluate(), [1, 2, 3, 2, 1, 4, 3, 1, 2])"
+      ],
+      "checks": "Independent source/handmade programs first force the base function, then interleave original/sibling/descendant closures. The explicit array distinguishes receiver n=1/2/3/4; an extracted n=2 function stored in holder with n=99 still returns 2. This is the bounded plain-function receiver-retention group, not complete object or closure algebra.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SR2": {
+      "file": "spec_inherited_self_test.mbt",
+      "line": 171,
+      "test": "retrieving inherited closures defers their bodies until detached invocation",
+      "assertions": [
+        "(\"saved\", receiver_index(receiver_var(\"derived\"), \"f\"))",
+        "let program = receiver_program(source, tree, handmade)",
+        "assert_eq(events, [])",
+        "let expected : Json = if demanded { 7 } else { [\"function\", \"function\"] }",
+        "assert_eq(program.evaluate(native_functions=natives), expected)",
+        "assert_eq(events, if demanded { [Json::number(7)] } else { [] })"
+      ],
+      "checks": "Both entry paths create Programs without callbacks. Original/derived function retrieval stays lazy even though the original lacks n; metadata inspection produces two function tags with zero body calls. Invoking the derived saved closure yields 7 with callback argument 7 once. No general native memoization or failure-cache policy is inferred.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SR3": {
+      "file": "spec_inherited_self_test.mbt",
+      "line": 244,
+      "test": "a healthy derived receiver does not repair the original detached closure",
+      "assertions": [
+        "(\"original\", receiver_index(receiver_var(\"base\"), \"f\"))",
+        "receiver_native(\"checked\", [])",
+        "receiver_call(receiver_var(\"original\"))",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(d.location.file, \"inherited-self-entry\")",
+        "assert_eq(events, [\"derived-ok\"])"
+      ],
+      "checks": "Both entry paths create successfully. A guarded derived call must first return 7 and record derived-ok; calling the original extracted function then rejects Runtime because its receiver still lacks n. A wrong derived value returns normally and fails the test, while an earlier failure lacks the required event. Exact diagnostic text is not an oracle.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -897,6 +942,7 @@
     "spec_error_static_test.mbt": "b931793ba7ad955b4a83f30600f6eeaca66c2ff0e99640004c059254866e9610",
     "parser_diagnostic_test.mbt": "8274fdc918873dd15b13b510fb0356fc644d42e752cfe704ae394120aab92167",
     "spec_unary_static_test.mbt": "4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d",
+    "spec_inherited_self_test.mbt": "0a387afc9ba8bc35ba54a7ada36f8c1ef9f27d5c88f40393cfea73a371b7f780",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -1786,21 +1832,27 @@
       "dimensions": {
         "normal": [
           "O2",
-          "O6"
+          "O6",
+          "SR1",
+          "SR2"
         ],
         "static_error": [],
         "runtime_error": [
           "O3",
-          "O5"
+          "O5",
+          "SR3"
         ],
         "lazy": [
-          "O5"
+          "O5",
+          "SR2"
         ],
         "boundary": [
-          "O4"
+          "O4",
+          "SR1",
+          "SR3"
         ]
       },
-      "remaining": "Missing fields, invalid keys, multiple failing assertions, equality/assertion interactions.",
+      "remaining": "The bounded [plain-function receiver-retention group](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) is reviewed. General missing-field/key errors, multiple failing assertions, equality/assertion interactions and arbitrary field/closure shapes remain open.",
       "implementation": [
         "eval.mbt",
         "objects.mbt"
@@ -2088,7 +2140,9 @@
       "dimensions": {
         "normal": [
           "O2",
-          "F6"
+          "F6",
+          "SR1",
+          "SR2"
         ],
         "static_error": [],
         "runtime_error": [
@@ -2096,16 +2150,20 @@
         ],
         "lazy": [
           "O5",
-          "O6"
+          "O6",
+          "SR2"
         ],
         "boundary": [
-          "O6"
+          "O6",
+          "SR1",
+          "SR3"
         ]
       },
-      "remaining": "Full algebra, additive nested fields, association with super and duplicate dynamic names.",
+      "remaining": "The bounded [plain-function receiver-retention group](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) is reviewed. Full inheritance algebra, additive/nested fields, super association, computed duplicate names and arbitrary field/closure shapes remain open; SR3 is a later-demand boundary, not an error of object addition.",
       "implementation": [
         "operators.mbt",
-        "objects.mbt"
+        "objects.mbt",
+        "eval.mbt"
       ],
       "obligation": null,
       "rule_review": null
@@ -3508,7 +3566,8 @@
           "F6",
           "O2",
           "AP1",
-          "AP2"
+          "AP2",
+          "SR1"
         ],
         "static_error": [
           "F5",
@@ -3518,11 +3577,15 @@
         "lazy": [
           "F2",
           "F3",
-          "AP5"
+          "AP5",
+          "SR2"
         ],
-        "boundary": []
+        "boundary": [
+          "SR1",
+          "SR3"
+        ]
       },
-      "remaining": "All binder forms and the full self/super substitution algebra.",
+      "remaining": "The bounded [plain inherited-function receiver-retention group](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) is reviewed. Other binder/capture boundaries and the full self/super substitution algebra remain open.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt",
