@@ -1,0 +1,132 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+///|
+async fn checked_text(program : String, args : Array[String]) -> String {
+  let result = @shell.Cmd(program, args).output(timeout_ms=10000)
+  result.check()
+  result.stdout().trim().to_owned()
+}
+
+///|
+async fn sha256(path : String) -> String {
+  checked_text("shasum", ["-a", "256", path]).split(" ").next().unwrap().to_owned()
+}
+
+///|
+fn json_matches(actual : String, expected : Json) -> Bool {
+  try @json.parse(actual) catch {
+    _ => false
+  } noraise {
+    value => value == expected
+  }
+}
+
+///|
+async fn main {
+  let args = @env.args()
+  guard args.length() == 2 else {
+    fail("Usage: moon run --frozen tools/spec-acceptance.mbtx EVIDENCE_DIR")
+  }
+  let evidence = args[1]
+  @fs.mkdir(evidence, recursive=true, allow_exist=true)
+  let source_commit = checked_text("git", ["rev-parse", "HEAD"])
+  // Existing private untracked files are neither read nor copied. Every tracked
+  // input must match the committed source used for this run.
+  ignore(checked_text("git", ["diff", "HEAD", "--exit-code"]))
+  let fixture_path = "tests/spec-acceptance.json"
+  let fixture_text = @fs.read_file(fixture_path).text()
+  guard @json.parse(fixture_text) is Array(fixtures) else { fail("fixture array") }
+  let input_paths = [
+    fixture_path, "tools/spec-acceptance.mbtx", "examples/examples_test.mbt",
+    "examples/moon.pkg", "examples/embedded/main.mbt", "examples/embedded/moon.pkg",
+    "examples/environments/main.jsonnet", "examples/environments/template.libsonnet",
+    "examples/environments/expected.json", "examples/dashboards/main.jsonnet",
+    "examples/dashboards/services.json", "examples/dashboards/expected.json",
+    "examples/embedded/config/main.jsonnet", "examples/embedded/config/defaults.libsonnet",
+    "spec_review_test.mbt", "spec_remove_test.mbt", "spec_aggregate_test.mbt",
+    "spec_index_test.mbt", "spec_yaml_test.mbt", "spec_manifest_wbtest.mbt",
+    "spec_yaml_wbtest.mbt",
+  ]
+  let input_hashes : Map[String, Json] = Map([])
+  for path in input_paths { input_hashes[path] = Json::string(sha256(path)) }
+  let version = checked_text("moon", ["version", "--all"])
+  let platform = checked_text("uname", ["-sm"])
+  let build_args = ["build", "cmd/main", "examples/embedded", "--target", "native", "--release", "--deny-warn", "--frozen", "-j", "2"]
+  let build = @shell.Cmd("moon", build_args).output(timeout_ms=180000)
+  @fs.write_file(evidence + "/build.stdout", build.stdout())
+  @fs.write_file(evidence + "/build.stderr", build.stderr())
+  build.check()
+  let cli = @fs.realpath("_build/native/release/build/cmd/main/main.exe")
+  let embedded = @fs.realpath("_build/native/release/build/examples/embedded/embedded.exe")
+  let output_path = @fs.realpath(evidence) + "/output.json"
+  let sentinel = "existing output must survive an evaluation error\n"
+  let rows : Array[Json] = []
+  let mut passed = 0
+  for fixture in fixtures {
+    guard fixture is Object(fields) else { fail("fixture object") }
+    guard fixture is { "id": String(id), "axis": String(axis), "args": Array(raw_args), .. } else { fail("fixture shape") }
+    let command = raw_args.map(value => match value { String(s) => s; _ => abort("argument string") })
+    let output_file = fields.get("output_file") == Some(Json::boolean(true))
+    if output_file {
+      @fs.write_file(output_path, sentinel)
+      command.push("-o")
+      command.push(output_path)
+    }
+    let actual = @shell.Cmd(cli, command).output(timeout_ms=10000)
+    let file_text = if output_file { Some(@fs.read_file(output_path).text()) } else { None }
+    let payload = file_text.unwrap_or(actual.stdout())
+    let ok = if fields.get("error") is Some(String(message)) {
+      actual.exit_code() == 1 && actual.stdout().is_empty() &&
+      actual.stderr().has_prefix("RUNTIME ERROR:") && actual.stderr().contains(message) &&
+      (!output_file || file_text == Some(sentinel)) &&
+      (match fields.get("location") {
+        Some(String(location)) => actual.stderr().contains(location)
+        _ => true
+      })
+    } else {
+      let expected = match fields.get("value_file") {
+        Some(String(path)) => @json.parse(@fs.read_file(path).text())
+        _ => fields.get("value").unwrap()
+      }
+      actual.exit_code() == 0 && actual.stderr().is_empty() &&
+      (!output_file || actual.stdout().is_empty()) && json_matches(payload, expected)
+    }
+    if ok { passed += 1 }
+    rows.push({ "id": id, "axis": axis, "input": fixture,
+      "exit": actual.exit_code(), "stdout": actual.stdout(), "stderr": actual.stderr(),
+      "output_file": file_text, "passed": ok })
+    @fs.write_file(evidence + "/cases.json", Json::array(rows).stringify(indent=2) + "\n")
+    println("\{id}: \{if ok { "PASS" } else { "FAIL" }}")
+  }
+  let embedded_result = @shell.Cmd(embedded, []).output(timeout_ms=10000)
+  let embedded_ok = embedded_result.exit_code() == 0 && embedded_result.stderr().is_empty() &&
+    json_matches(embedded_result.stdout().split("\n").next().unwrap().to_owned(),
+      { "app": "checkout", "port": 8080, "retries": 3, "replicas": 3 }) &&
+    embedded_result.stdout().contains("replicas must be numeric") &&
+    embedded_result.stdout().contains("replicas out of range") &&
+    embedded_result.stdout().contains("import escapes allowed root")
+  if embedded_ok { passed += 1 }
+  rows.push({ "id": "embedded-library-executable", "axis": "scenario-embedded",
+    "exit": embedded_result.exit_code(), "stdout": embedded_result.stdout(),
+    "stderr": embedded_result.stderr(), "passed": embedded_ok })
+  assert_eq(checked_text("git", ["rev-parse", "HEAD"]), source_commit)
+  ignore(checked_text("git", ["diff", "HEAD", "--exit-code"]))
+  let report : Json = {
+    "source_commit": source_commit, "tracked_inputs_clean": true,
+    "platform": platform, "toolchain": version, "input_sha256": input_hashes,
+    "cli_sha256": sha256(cli), "embedded_sha256": sha256(embedded),
+    "build_command": build_args, "build_exit": build.exit_code(),
+    "scope": "focused normative P0 CLI and three application scenarios; not full conformance or upstream parity",
+    "passed": passed, "total": rows.length(), "failed": rows.length() - passed, "cases": rows,
+    "unresolved_outside_suite": ["removeAt parameter-name conflict", "function length nonconformance; candidate fix blocked by approval"],
+  }
+  @fs.write_file(evidence + "/report.json", report.stringify(indent=2) + "\n")
+  println("P0 CLI and application scenarios: \{passed}/\{rows.length()}; \{evidence}")
+  if passed != rows.length() { fail("P0/scenario failures retained in report") }
+}
