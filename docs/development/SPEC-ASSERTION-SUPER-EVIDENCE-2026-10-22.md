@@ -79,6 +79,11 @@ before the payload. No product implementation or public interface changed.
 
 ## Object-assertion acceptance ledger
 
+This ledger records the 260a131 batch. The subsequent
+[U1 object-local review](SPEC-ASSERTION-LOCAL-EVIDENCE-2026-10-22.md) closes
+the bounded U1 endpoint below; U2 and N0 remain open. The original evidence
+and execution results below retain their own source identity.
+
 This ledger concerns the object-assertion constructor and its direct demand
 contract, relative to the child expression/name/Boolean/error judgments. It
 does not require all object, equality, stdlib or host contracts to be complete.
