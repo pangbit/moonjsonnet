@@ -504,6 +504,9 @@ fn Vm::builtin(
     }
     "makeArray" => {
       let size = integer(x, loc)
+      if size < 0 {
+        raise problem(Runtime, loc, "makeArray size must be non-negative")
+      }
       let func = values[1]
       if value_type(func) != "function" {
         raise problem(

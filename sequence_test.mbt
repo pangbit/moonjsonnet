@@ -4,7 +4,6 @@ test "makeArray preserves lazy elements and named arguments" {
     ("std.makeArray(4, function(i) i*i)", "[0,1,4,9]"),
     ("std.makeArray(func=function(i) i+1, sz=2)", "[1,2]"),
     ("std.makeArray(0, function(i) error 'unused')", "[]"),
-    ("std.makeArray(-1, function(i) i)", "[]"),
     ("std.length(std.makeArray(2, function(a,b) a))", "2"),
     ("std.makeArray(0, function(a,b=1) a)", "[]"),
     ("std.makeArray(2, function(i) if i==0 then 7 else error 'unused')[0]", "7"),
@@ -52,6 +51,7 @@ test "reverse preserves lazy elements and leaves its input unchanged" {
 ///|
 test "sequence functions validate arguments and remain hidden" {
   let cases = [
+    ("std.makeArray(-1, function(i) i)", @moonjsonnet.Runtime),
     ("std.makeArray(1.5,function(i)i)", @moonjsonnet.Runtime),
     ("std.makeArray(2147483648,function(i)i)", @moonjsonnet.Runtime),
     ("std.makeArray('2',function(i)i)", @moonjsonnet.Type),

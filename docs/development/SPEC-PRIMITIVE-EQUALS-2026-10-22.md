@@ -175,3 +175,26 @@ Next distinct candidate: makeArray's size/function domain and lazy indexed
 element contract, first mapping existing sequence and callback evidence.
 It has not been started here; PE0 should not grow into repeated behavior
 microprobes without new normative evidence.
+
+## Subsequent bounded applicability review
+
+At base 56ef58b, a [strict same-version review](SPEC-MAKEARRAY-2026-10-22.md)
+examined the Value grammar, value rule, stuck-execution model, metavalue
+relations, public stdlib introduction, equals source and language equality.
+It does not establish a Primitive-only applicability restriction: v ranges
+over Value, and the primitive predicate is in the result equation. No found
+passage defines metavalue equality only for Primitive. Conversely, treating
+that relation as total makes the false result for a function F compared with
+itself pass through equals/==, inconsistent with the language's rule that
+observationally equivalent values cannot be unequal. A partial-relation
+interpretation can avoid that conclusion, but its domain is not specified.
+
+PE0 is therefore more precisely an underdefined **metavalue equality/rule
+applicability domain**, with a conditional function self-equality conflict.
+It is not an unconditional claim that all nonscalar primitiveEquals behavior
+contradicts the language's separate == contract. Array/Object rejection
+does not follow merely from the function restriction. The linked review
+gives exact source ranges, applicable premises, both incompatible conclusions
+under the total reading, and the minimum clarification needed. No new PE0
+semantic test or interpreter change is justified; the original six null
+CLI observations, raw hashes and historical outcomes remain unchanged.

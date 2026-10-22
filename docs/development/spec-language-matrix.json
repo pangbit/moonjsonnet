@@ -2,19 +2,92 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "b23fb1695fd7e980b8c58350ac43aace46c855fc6849ffdbb658625038ff20e5",
-  "tool_sha256": "eeb95f1f1e33fab679f036724d667172871787459cd31b0f5a4532a6d286d086",
+  "mapping_sha256": "a4044badf4527c8ec56c2eaac3f1f0e6980de2320d7edf3bb93151815310db0b",
+  "tool_sha256": "d9299e5f6ae5be4ecfc250c194221e181ed89198f7ec14632796840af464638f",
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 60,
+  "manually_reviewed_subset_rows": 61,
   "completed_rule_rows": 14,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
   "completed_evaluation_rule_rows": 8,
-  "unreviewed_rows": 19,
+  "unreviewed_rows": 18,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
+    "MA0BUILD": {
+      "file": "spec_array_build_test.mbt",
+      "line": 2,
+      "test": "array makeArray uses integer indices named arguments and callback defaults",
+      "assertions": [
+        "[[0, 1, 4], [], [], [0, 1], \"function\"]"
+      ],
+      "checks": "Unchanged source-only indices/defaults/named-call/zero controls reused and freshly run in the directly affected file. Function-valued elements stay unevaluated bodies. This is not whole callback/application conformance.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "MA0LAZY": {
+      "file": "spec_array_build_test.mbt",
+      "line": 26,
+      "test": "array makeArray defers callback bodies and initializes in demand order once",
+      "assertions": [
+        "[3, 21]",
+        "assert_eq(Json::array(seen), [2, 0])"
+      ],
+      "checks": "Unchanged source lazy body/selected element and cached native callback trace reused and freshly run. The exact native observation is an embedding/cache control, not a universal side-effect ordering requirement imposed by the formal pure language.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "MA1": {
+      "file": "spec_make_array_test.mbt",
+      "line": 31,
+      "test": "makeArray produces exact nonnegative cardinalities and positional indices",
+      "assertions": [
+        "sequence_value(make_array(sequence_num(0), func), [])",
+        "sequence_value(make_array(sequence_num(1), func), [5])",
+        "sequence_value(make_array(sequence_num(3), func), [5, 15, 25])",
+        "sequence_value(make_array(negative_zero, func), [])"
+      ],
+      "checks": "Separate source and handmade call/Function trees verify literal 0/1/3 lengths, all zero-based affine initializer results and negative zero as zero. The expected arrays are fixed before execution.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "MA2": {
+      "file": "spec_make_array_test.mbt",
+      "line": 49,
+      "test": "makeArray rejects invalid cardinalities instead of clamping negative sizes",
+      "assertions": [
+        "[sequence_num(-1), sequence_num(-2), token_number(\"1.5\")]",
+        "sequence_failure(make_array(size, func), @moonjsonnet.Runtime, None)",
+        "sequence_failure(make_array(size, func), @moonjsonnet.Type, None)"
+      ],
+      "checks": "Public sz-element cardinality independently requires a nonnegative integer. First unmodified-interpreter run fails at source -1 returning successfully; original test/log and old [] expectation preserved. Identical new expectations pass after a size<0 guard. Other size value kinds reject Type; erroneous callback bodies and unused whole calls stay unforced.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "MA3": {
+      "file": "spec_make_array_test.mbt",
+      "line": 68,
+      "test": "makeArray demands both argument heads even at zero but never unused bodies",
+      "assertions": [
+        "Some(\"function-head\")",
+        "Some(\"size-head\")",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "sequence_value(make_array(sequence_num(0), func), [])"
+      ],
+      "checks": "Source and independent ASTs require a Function head even at zero, reject all non-Function value kinds Type, propagate isolated size/function-head errors and keep body/whole-call demand lazy. Unknown names in a zero-size unused initializer still reject Static; these are adjacent child checks, not a completed static or generic apply judgment.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "MA4": {
+      "file": "spec_make_array_test.mbt",
+      "line": 119,
+      "test": "makeArray delays selected callback applications and arity errors",
+      "assertions": [
+        "[3, 21, 21]",
+        "Some(\"other-element\")",
+        "sequence_value(make_array(sequence_num(0), two), [])",
+        "sequence_value(sequence_call(\"length\", [one]), 1)",
+        "sequence_failure(make_index(one, 0), @moonjsonnet.Runtime, None)"
+      ],
+      "checks": "Separate source and handmade Function/call/index trees select only index 1 through repeated aliases and shape demand; actually selected index 0 raises its marker. A two-required-formal Function forms an empty array and one-element shape, while actual element application rejects missing argument Runtime. No extra initializer body is forced.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "PG1": {
       "file": "spec_primitive_equals_test.mbt",
       "line": 22,
@@ -1800,6 +1873,8 @@
     }
   },
   "test_file_sha256": {
+    "spec_array_build_test.mbt": "fcc4c68261358372994b4c2c48b4b734412531bafbafe503b97a1361a088b0c1",
+    "spec_make_array_test.mbt": "2528ec26e9449cd6bc1a9acb2819258c79dca4d24d1916b3a263008a0c867554",
     "spec_primitive_equals_test.mbt": "0d67a459511e3f84426e992d391337f87f8ac6fce084e267acc61e708dee9fe8",
     "spec_object_reflection_test.mbt": "f656b0c8191c5e69e1b7baccfc4ae2783ec11f856b445d7bb27e90131837bbe7",
     "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
@@ -3918,7 +3993,7 @@
           "PG4"
         ]
       },
-      "remaining": "The [primitive equality record](SPEC-PRIMITIVE-EQUALS-2026-10-22.md) covers only primitive values, disjoint value classes, finite/String edges and required-head/error/unused-call boundaries through source and independent ASTs. PE0 is unadjudicated: the fixed rule makes primitive membership part of the result conjunction, suggesting false on nonprimitive left values, but official equals forwards functions and the language forbids function equality. Same-type Array/Object/Function false versus rejection cannot be promoted from local or Go/C++ behavior; six local CLI observations have null normative verdicts and no passing assertion mapping. No rule completion, recursive equals/== equivalence, full value producer/rounding/lexing/invocation or native-function domain is established. A0/B0/N0/R0 remain unknown.",
+      "remaining": "The [bounded PE0 review](SPEC-MAKEARRAY-2026-10-22.md) found v ranges over all Value and no explicit Primitive-only domain for metavalue equality. A total-relation reading yields primitiveEquals(F,F)=false, passed through fixed equals/==, conflicting with the language fact that a value is equivalent to itself and equivalent values cannot be unequal. A partial relation could avoid the derivation, but its domain/applicability is not specified; no-rule-as-error alone does not add a missing premise. PE0 therefore remains unadjudicated for same-type Array/Object/Function false versus rejection, not an unconditional claim equating meta = with language ==. The minimum question is the metavalue relation domain or a correction to the function delegation/result rule. Original six null CLI observations and PG1-PG4 scoped partial evidence are unchanged; no interpreter change or full-rule completion follows. A0/B0/N0/R0 remain unknown.",
       "implementation": [
         "stdlib.mbt",
         "operators.mbt",
@@ -3992,13 +4067,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
               "anchor": "let values = params.map(n => self.force(ids[n], loc))",
               "argument": "The one official length parameter is forced to its outer Value; this does not traverse array payloads."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
               "anchor": "ArrayValue(a) => a.length().to_double()",
               "argument": "This exhaustive value-kind arm implements element count without payload demand."
             },
@@ -4104,13 +4179,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
               "anchor": "let values = params.map(n => self.force(ids[n], loc))",
               "argument": "The one official length parameter is forced to its outer Value; this does not traverse array payloads."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
               "anchor": "Str(s) => s.iter().count().to_double()",
               "argument": "This value-kind arm counts Unicode codepoints of the already produced String."
             },
@@ -4141,16 +4216,39 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2650,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "MA0BUILD",
+          "MA1",
+          "MA4"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "MA2",
+          "MA3",
+          "MA4"
+        ],
+        "lazy": [
+          "MA0LAZY",
+          "MA2",
+          "MA3",
+          "MA4"
+        ],
+        "boundary": [
+          "MA1",
+          "MA2",
+          "MA3",
+          "MA4"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "The [makeArray record](SPEC-MAKEARRAY-2026-10-22.md) closes this bounded cardinality/function-head/lazy indexed-element contract through independent source/AST controls and fixes negative sizes that previously clamped to []. Nonnegative integer cardinality follows from the public sz-element count contract; the printed n premise does not separately spell that domain. The complete named producer judgment, general integer conversion/resource/host-size bounds, every Function/builtin/native application/default/strictness interaction and std rebinding are not completed. Existing cache observations do not define arbitrary native callback order. PE0 is separately narrowed to an unspecified metavalue-equality applicability domain; A0/B0/N0/R0 stay unadjudicated.",
+      "implementation": [
+        "stdlib.mbt",
+        "sequence.mbt",
+        "runtime_types.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -4402,13 +4500,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
               "anchor": "let values = params.map(n => self.force(ids[n], loc))",
               "argument": "Only explicit Object/String/Boolean argument heads are forced, without field traversal."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
               "anchor": "Bool(self.has_field(id, top, k) && (hidden || self.visible(id, top, k)))",
               "argument": "The predicate is name membership conjoined with include-hidden or effective visibility; neither helper reads payloads/assertion bodies."
             },
@@ -4450,7 +4548,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "Output elements are ready String names, not deferred field reads, and cannot force values or assertion bodies."
             },
@@ -4538,13 +4636,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
               "anchor": "let values = params.map(n => self.force(ids[n], loc))",
               "argument": "Only explicit Object/String/Boolean argument heads are forced, without field traversal."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
               "anchor": "Bool(self.has_field(id, top, k) && (hidden || self.visible(id, top, k)))",
               "argument": "The predicate is name membership conjoined with include-hidden or effective visibility; neither helper reads payloads/assertion bodies."
             },
@@ -4586,7 +4684,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "279bd70043cce3a665ab9699b70c5109dcb6ec4ee9b5d8ffcb273c869684e224",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "Output elements are ready String names, not deferred field reads, and cannot force values or assertion bodies."
             },
