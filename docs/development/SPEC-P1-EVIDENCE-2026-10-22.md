@@ -7,6 +7,9 @@ still requires every fixed v0.21.0 language/public-library rule and source-bound
 native debug/release library, CLI and three-scenario evidence on both target
 platforms. No private application content is copied into this report or tests;
 all new inputs are synthetic and contain no business data.
+The later [chomp/public-inventory stage](SPEC-CHOMP-EVIDENCE-2026-10-22.md)
+supersedes this report's untested CRLF chomp boundary while preserving its
+original counts, sources and package hashes.
 
 ## Source and normative decisions
 

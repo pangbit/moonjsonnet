@@ -65,6 +65,9 @@ The subsequent [independent review and scenario report](SPEC-REVIEW-EVIDENCE-202
 records full native release and focused CLI/application validation. The latest
 [P1 stage](SPEC-P1-EVIDENCE-2026-10-22.md) records the approved function-length
 fix, unique formal parameters, CRLF empty text-block lines and import isolation.
+The subsequent [chomp and public-inventory stage](SPEC-CHOMP-EVIDENCE-2026-10-22.md)
+resolves the final-CRLF boundary and maps official candidate signatures separately
+from registration, with unknown coverage retained.
 The counts below retain the original first-stage scope.
 
 P0 fixes are local commits `001679a` (immutability), `dd3b9d0` (finite aggregates),

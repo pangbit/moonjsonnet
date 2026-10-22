@@ -94,7 +94,9 @@ Source locations use one-based UTF-8 byte columns. AST source ranges have exclus
 Repeated formal parameter names are Static errors, including in unused branches,
 methods and manually supplied Program ASTs; nested scopes may still shadow names.
 Empty text-block lines preserve their LF or CRLF bytes. The focused CRLF
-regressions do not establish the CRLF `|||-` chomp boundary.
+regressions also verify that `|||-` removes one complete final LF or CRLF while
+preserving preceding endings and content CR bytes. Retained source keeps its
+original bytes independently of the canonical string value.
 
 Array/string indices must be finite integers within bounds before conversion.
 Slices support omitted/null bounds, negative bounds and positive steps. Fractional
