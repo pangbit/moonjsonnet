@@ -273,6 +273,36 @@
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Syntax)", "assert_eq(d.location.file, \"call-source\")"],
       "checks": "Three malformed source texts reject Syntax at Program creation; no equivalent malformed-text handmade AST or Static result is claimed."
     },
+    "IR0": {
+      "file": "ast_test.mbt",
+      "test": "semantic AST round trip covers expression forms and source identities",
+      "assertions": ["@moonjsonnet.Program::parse(source", "@moonjsonnet.Program::from_ast(original.ast().clone())", "text:importstr 'text'"],
+      "checks": "Existing source and exported-AST creation accepts an object containing importstr. Only creation acceptance is reused; source/copy equality is not a new value oracle."
+    },
+    "IR1": {
+      "file": "spec_importstr_static_test.mbt",
+      "test": "chk importstr accepts opaque canonical strings in source and handmade AST",
+      "assertions": ["assert_true(parsed.ast().kind is ImportFile(p, true) && p == path)", "assert_true(synthetic.ast().kind is ImportFile(p, true) && p == path)"],
+      "checks": "Source and handmade typed leaves accept exact empty, keyword-like, NUL and Unicode/newline string payloads without target data."
+    },
+    "IR2": {
+      "file": "spec_importstr_static_test.mbt",
+      "test": "chk importstr ignores surrounding static names and object context",
+      "assertions": ["ignore(@moonjsonnet.Program::parse(source))", "assert_eq(program.ast().loc.file, \"virtual-entry\")"],
+      "checks": "Creation succeeds in shadowed-std/local/function/object/key/unselected source contexts and handmade local/function/object/branch contexts; no resolver is supplied."
+    },
+    "IR3": {
+      "file": "spec_importstr_static_test.mbt",
+      "test": "importstr static acceptance does not resolve targets or parse opaque data",
+      "assertions": ["assert_eq(requests.length(), 0)", "assert_eq(program.evaluate(resolver~), Json::string(data))", "assert_eq(requests, [(\"virtual-entry\", \"opaque\")])"],
+      "checks": "All virtual targets are self-made data; creation resolves none, forced source/handmade leaves return opaque invalid-code text, unused controls resolve none. Runtime controls do not close loading/cache rules."
+    },
+    "IR4": {
+      "file": "spec_importstr_static_test.mbt",
+      "test": "importstr does not waive grammar or surrounding static rejection",
+      "assertions": ["assert_eq(d.kind, @moonjsonnet.Syntax)", "assert_eq(d.kind, @moonjsonnet.Static)"],
+      "checks": "Nonliteral/computed source operands reject Syntax; undefined sibling expressions reject Static through source and handmade AST. These are outside-rule boundary controls."
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "test": "P0 JSON manifestation rejects nonfinite internal values defensively",
@@ -290,6 +320,25 @@
     "chk-var": {"normal": ["F1"], "static_error": ["F5", "I1"], "remaining": "All binders and unused expression positions.", "implementation": ["validate.mbt"]},
     "chk-function": {"normal": ["F1", "F6", "AP1", "AP2"], "static_error": ["F5", "S1"], "boundary": ["F1", "AP2"], "remaining": "Every default/body AST form; parameter metadata is a separate host contract.", "implementation": ["validate.mbt"]},
     "chk-import": {"normal": ["I1", "I2", "I3"], "lazy": ["I2", "I3"], "remaining": "Every import expression/string form and isolated std binding.", "implementation": ["validate.mbt", "imports.mbt"]},
+    "chk-importstr": {
+      "normal": ["IR0", "IR1", "IR2"], "lazy": ["IR3"], "boundary": ["IR4"],
+      "remaining": "", "implementation": ["validate.mbt", "ast_convert.mbt", "ast_validate.mbt"],
+      "rule_review": {
+        "rule": "chk-importstr", "decision": "complete",
+        "scope": "The premise-free core static judgment Gamma |- importstr s only.",
+        "reasoning": "The wildcard constructor arm returns Unit for every string payload/environment; AST conversion preserves the typed leaf. Executed source/handmade controls support the structural case analysis. No in-rule rejecting or runtime premise exists.",
+        "review_report": "docs/development/SPEC-IMPORTSTR-STATIC-REVIEW.md",
+        "remaining_in_rule": [],
+        "not_applicable": {"static_error": "No rejecting premise exists for a well-formed core importstr leaf; malformed source is outside this judgment.", "runtime_error": "This is a static judgment with no evaluation premise."},
+        "excluded_obligations": ["Source lexing/quoting and enclosing checker rules", "Target loading, decoding, caching and resolver errors", "Host file permissions and resource limits", "Import/importbin and all other language rules"],
+        "inspection": [
+          {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"| ImportFile(_, _)","argument":"The match arm accepts the wildcard constructor directly, without names/context inspection or any resolver/evaluator call."},
+          {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"ImportFile(p, s) => ImportFile(p, s)","argument":"The visitor preserves the typed string/raw-flag leaf without parsing target contents or adding variable children."},
+          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"_ => ()","argument":"Shape validation adds no ImportFile payload/scope constraint; shared metadata/shape checks are a separate boundary."}
+        ],
+        "evidence_sha256": {"spec_importstr_static_test.mbt":"0b97cd9cac93bf34e84d075f45ac4a1691844d473bcd749df42d5321d3779f7d","ast_test.mbt":"b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c"}
+      }
+    },
     "object": {"normal": ["O1"], "lazy": ["O4"], "remaining": "Computed null/nonstring/duplicate names, all object local forms.", "implementation": ["eval.mbt"]},
     "object-comp": {"normal": ["C1", "C6", "A3"], "runtime_error": ["C4", "C7", "A4"], "lazy": ["C2", "C3", "C4", "C5"], "boundary": ["C2", "A3", "A4"], "remaining": "Exhaustive nested generators, all key scalar kinds and multiple failing key order; mechanical non-array domain extensions remain unadjudicated.", "implementation": ["eval.mbt", "objects.mbt"]},
     "array-index": {"normal": ["IDX"], "runtime_error": ["IDX"], "lazy": ["IDX"], "boundary": ["IDX"], "remaining": "Exhaustive numeric/operator combinations and all target/key type failures.", "implementation": ["eval.mbt"]},

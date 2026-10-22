@@ -32,3 +32,8 @@ The [application entry-path batch](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md) at
 `9f6fce6` likewise has no fresh Go/C++ reference execution. Its handmade AST,
 library-kind and CLI-exit results are independent normative evidence; both
 fixed-reference compatibility verdicts for those paths remain unknown.
+
+The [chk-importstr review](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md) at
+`2295c82` completes only its premise-free static judgment by constructor analysis
+and offline controls. No Go/C++ comparison was run; its completion decision is
+not a compatibility result or acceptance of runtime import behavior.

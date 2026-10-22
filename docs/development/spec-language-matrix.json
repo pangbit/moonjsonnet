@@ -2,12 +2,13 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "823ab391a6b22a50a55cbbdb8c981e479d5bf52592b79ccba74613bea047f86e",
-  "tool_sha256": "989bbbd474c68cf3bdfd9a1921c020eda441afab98d348546c2cdf0deee828c2",
+  "mapping_sha256": "f45ff1acdebf61be37b95171fb863c07a4012c6dd594d412bfdc988290ca67ef",
+  "tool_sha256": "59255f39208c4df5d335edee5f369c5eab4a8ec064fd4df9dca46d2b0fff667a",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 43,
-  "unreviewed_rows": 51,
+  "completed_rule_rows": 1,
+  "unreviewed_rows": 50,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -515,6 +516,63 @@
       "checks": "Three malformed source texts reject Syntax at Program creation; no equivalent malformed-text handmade AST or Static result is claimed.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "IR0": {
+      "file": "ast_test.mbt",
+      "line": 2,
+      "test": "semantic AST round trip covers expression forms and source identities",
+      "assertions": [
+        "@moonjsonnet.Program::parse(source",
+        "@moonjsonnet.Program::from_ast(original.ast().clone())",
+        "text:importstr 'text'"
+      ],
+      "checks": "Existing source and exported-AST creation accepts an object containing importstr. Only creation acceptance is reused; source/copy equality is not a new value oracle.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "IR1": {
+      "file": "spec_importstr_static_test.mbt",
+      "line": 10,
+      "test": "chk importstr accepts opaque canonical strings in source and handmade AST",
+      "assertions": [
+        "assert_true(parsed.ast().kind is ImportFile(p, true) && p == path)",
+        "assert_true(synthetic.ast().kind is ImportFile(p, true) && p == path)"
+      ],
+      "checks": "Source and handmade typed leaves accept exact empty, keyword-like, NUL and Unicode/newline string payloads without target data.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "IR2": {
+      "file": "spec_importstr_static_test.mbt",
+      "line": 23,
+      "test": "chk importstr ignores surrounding static names and object context",
+      "assertions": [
+        "ignore(@moonjsonnet.Program::parse(source))",
+        "assert_eq(program.ast().loc.file, \"virtual-entry\")"
+      ],
+      "checks": "Creation succeeds in shadowed-std/local/function/object/key/unselected source contexts and handmade local/function/object/branch contexts; no resolver is supplied.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "IR3": {
+      "file": "spec_importstr_static_test.mbt",
+      "line": 59,
+      "test": "importstr static acceptance does not resolve targets or parse opaque data",
+      "assertions": [
+        "assert_eq(requests.length(), 0)",
+        "assert_eq(program.evaluate(resolver~), Json::string(data))",
+        "assert_eq(requests, [(\"virtual-entry\", \"opaque\")])"
+      ],
+      "checks": "All virtual targets are self-made data; creation resolves none, forced source/handmade leaves return opaque invalid-code text, unused controls resolve none. Runtime controls do not close loading/cache rules.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "IR4": {
+      "file": "spec_importstr_static_test.mbt",
+      "line": 92,
+      "test": "importstr does not waive grammar or surrounding static rejection",
+      "assertions": [
+        "assert_eq(d.kind, @moonjsonnet.Syntax)",
+        "assert_eq(d.kind, @moonjsonnet.Static)"
+      ],
+      "checks": "Nonliteral/computed source operands reject Syntax; undefined sibling expressions reject Static through source and handmade AST. These are outside-rule boundary controls.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -539,6 +597,8 @@
     "spec_language_forms_test.mbt": "c8e1af3588e9b5fe69b603575c8c807a0a58023d8db3f9ed1df3898275b224fb",
     "spec_language_forms_ast_test.mbt": "4d2bd9c0303a756cfc457fa4cff910f80e094447aaa1b86014b9d3849a90738d",
     "spec_language_call_test.mbt": "a9a8489f31f3fce9d3266602fbad788e3ba63a50daa1b66f99cfb9f1ea13724a",
+    "ast_test.mbt": "b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c",
+    "spec_importstr_static_test.mbt": "0b97cd9cac93bf34e84d075f45ac4a1691844d473bcd749df42d5321d3779f7d",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -557,7 +617,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-self",
@@ -582,7 +643,8 @@
       "implementation": [
         "validate.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-super",
@@ -604,7 +666,8 @@
       "implementation": [
         "validate.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-object",
@@ -627,7 +690,8 @@
       "implementation": [
         "validate.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-object-comp",
@@ -654,7 +718,8 @@
         "validate.mbt",
         "ast_validate.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-array",
@@ -671,7 +736,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-array-index",
@@ -688,7 +754,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-apply",
@@ -715,7 +782,8 @@
         "validate.mbt",
         "ast_validate.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-var",
@@ -739,7 +807,8 @@
       "implementation": [
         "validate.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-local",
@@ -767,7 +836,8 @@
         "ast_validate.mbt",
         "parser.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-if",
@@ -784,7 +854,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-binary",
@@ -801,7 +872,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-unary",
@@ -818,7 +890,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-function",
@@ -848,7 +921,8 @@
       "implementation": [
         "validate.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-import",
@@ -875,24 +949,81 @@
         "validate.mbt",
         "imports.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-importstr",
       "kind": "named-rule",
       "section": "static_checking",
       "source_line": 1714,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "IR0",
+          "IR1",
+          "IR2"
+        ],
         "static_error": [],
         "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "lazy": [
+          "IR3"
+        ],
+        "boundary": [
+          "IR4"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
-      "obligation": null
+      "remaining": "",
+      "implementation": [
+        "validate.mbt",
+        "ast_convert.mbt",
+        "ast_validate.mbt"
+      ],
+      "obligation": null,
+      "rule_review": [
+        {
+          "rule": "chk-importstr",
+          "decision": "complete",
+          "scope": "The premise-free core static judgment Gamma |- importstr s only.",
+          "reasoning": "The wildcard constructor arm returns Unit for every string payload/environment; AST conversion preserves the typed leaf. Executed source/handmade controls support the structural case analysis. No in-rule rejecting or runtime premise exists.",
+          "review_report": "docs/development/SPEC-IMPORTSTR-STATIC-REVIEW.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "No rejecting premise exists for a well-formed core importstr leaf; malformed source is outside this judgment.",
+            "runtime_error": "This is a static judgment with no evaluation premise."
+          },
+          "excluded_obligations": [
+            "Source lexing/quoting and enclosing checker rules",
+            "Target loading, decoding, caching and resolver errors",
+            "Host file permissions and resource limits",
+            "Import/importbin and all other language rules"
+          ],
+          "inspection": [
+            {
+              "file": "validate.mbt",
+              "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+              "anchor": "| ImportFile(_, _)",
+              "argument": "The match arm accepts the wildcard constructor directly, without names/context inspection or any resolver/evaluator call."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "ImportFile(p, s) => ImportFile(p, s)",
+              "argument": "The visitor preserves the typed string/raw-flag leaf without parsing target contents or adding variable children."
+            },
+            {
+              "file": "ast_validate.mbt",
+              "sha256": "cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c",
+              "anchor": "_ => ()",
+              "argument": "Shape validation adds no ImportFile payload/scope constraint; shared metadata/shape checks are a separate boundary."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_importstr_static_test.mbt": "0b97cd9cac93bf34e84d075f45ac4a1691844d473bcd749df42d5321d3779f7d",
+            "ast_test.mbt": "b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c"
+          }
+        }
+      ]
     },
     {
       "id": "chk-importbin",
@@ -909,7 +1040,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "chk-error",
@@ -926,7 +1058,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "value",
@@ -943,7 +1076,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "object",
@@ -966,7 +1100,8 @@
       "implementation": [
         "eval.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "object-comp",
@@ -1003,7 +1138,8 @@
         "eval.mbt",
         "objects.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "array-index",
@@ -1030,7 +1166,8 @@
       "implementation": [
         "eval.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "object-index",
@@ -1060,7 +1197,8 @@
         "eval.mbt",
         "objects.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "apply",
@@ -1101,7 +1239,8 @@
         "eval.mbt",
         "arguments.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "local",
@@ -1129,7 +1268,8 @@
         "eval.mbt",
         "runtime_types.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "local-var",
@@ -1155,7 +1295,8 @@
         "eval.mbt",
         "runtime_types.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "if-true",
@@ -1172,7 +1313,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "if-false",
@@ -1189,7 +1331,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "object-inherit",
@@ -1219,7 +1362,8 @@
         "operators.mbt",
         "objects.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "array-concat",
@@ -1236,7 +1380,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "string-concat",
@@ -1253,7 +1398,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "less-than-true",
@@ -1270,7 +1416,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "less-than-false",
@@ -1287,7 +1434,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "greater-than-true",
@@ -1304,7 +1452,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "greater-than-false",
@@ -1321,7 +1470,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "less-or-equal-true",
@@ -1338,7 +1488,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "less-or-equal-false",
@@ -1355,7 +1506,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "greater-or-equal-true",
@@ -1372,7 +1524,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "greater-or-equal-false",
@@ -1389,7 +1542,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "cmp-array-left-empty",
@@ -1406,7 +1560,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "cmp-array-right-empty",
@@ -1423,7 +1578,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "cmp-array-both-empty",
@@ -1440,7 +1596,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "cmp-array-first-different",
@@ -1457,7 +1614,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "cmp-array-first-equal",
@@ -1474,7 +1632,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "cmp-string",
@@ -1491,7 +1650,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "cmp-number",
@@ -1508,7 +1668,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "boolean-and-shortcut",
@@ -1525,7 +1686,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "boolean-and-longcut",
@@ -1542,7 +1704,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "boolean-or-shortcut",
@@ -1559,7 +1722,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "boolean-or-longcut",
@@ -1576,7 +1740,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "not-true",
@@ -1593,7 +1758,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "not-false",
@@ -1610,7 +1776,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "primitiveEquals",
@@ -1627,7 +1794,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "length-array",
@@ -1652,7 +1820,8 @@
       "implementation": [
         "stdlib.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "length-object",
@@ -1669,7 +1838,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "length-string",
@@ -1686,7 +1856,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "makeArray",
@@ -1703,7 +1874,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "filter",
@@ -1720,7 +1892,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "type-null",
@@ -1741,7 +1914,8 @@
       "implementation": [
         "stdlib.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "type-boolean",
@@ -1762,7 +1936,8 @@
       "implementation": [
         "stdlib.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "type-number",
@@ -1783,7 +1958,8 @@
       "implementation": [
         "stdlib.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "type-string",
@@ -1804,7 +1980,8 @@
       "implementation": [
         "stdlib.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "type-object",
@@ -1828,7 +2005,8 @@
       "implementation": [
         "stdlib.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "type-function",
@@ -1851,7 +2029,8 @@
       "implementation": [
         "stdlib.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "type-array",
@@ -1874,7 +2053,8 @@
       "implementation": [
         "stdlib.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "object-has-ex",
@@ -1891,7 +2071,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "object-fields-ex",
@@ -1908,7 +2089,8 @@
       },
       "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
       "implementation": [],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "manifest-value",
@@ -1933,7 +2115,8 @@
       "implementation": [
         "manifest.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "manifest-object",
@@ -1967,7 +2150,8 @@
         "manifest.mbt",
         "objects.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "manifest-array",
@@ -1996,7 +2180,8 @@
       "implementation": [
         "manifest.mbt"
       ],
-      "obligation": null
+      "obligation": null,
+      "rule_review": null
     },
     {
       "id": "LEX-ENCODING",
@@ -2017,7 +2202,8 @@
       ],
       "obligation": [
         "UTF-8 source, whitespace, all comment forms and greedy tokens"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "LEX-NAMES",
@@ -2039,7 +2225,8 @@
       ],
       "obligation": [
         "Identifier alphabet, reserved keywords and operator tokenization"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "LEX-NUMBERS",
@@ -2060,7 +2247,8 @@
       ],
       "obligation": [
         "JSON number grammar without leading minus"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "LEX-STRINGS",
@@ -2081,7 +2269,8 @@
       ],
       "obligation": [
         "Quoted and verbatim strings, escapes and Unicode"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "LEX-TEXT-BLOCK",
@@ -2108,7 +2297,8 @@
       ],
       "obligation": [
         "Text-block indentation, blank lines and final chomp"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "SYN-EXPR",
@@ -2129,7 +2319,8 @@
       ],
       "obligation": [
         "Every expression alternative and optional/trailing syntax"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "SYN-OBJECT",
@@ -2153,7 +2344,8 @@
       ],
       "obligation": [
         "Object fields, locals, methods, assertions and comprehension grammar"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "SYN-CALL",
@@ -2180,7 +2372,8 @@
       ],
       "obligation": [
         "Positional arguments before named arguments and parameter grammar"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "SYN-PRECEDENCE",
@@ -2201,7 +2394,8 @@
       ],
       "obligation": [
         "Every operator precedence and associativity relation"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "CORE-IMPORT",
@@ -2232,7 +2426,8 @@
       ],
       "obligation": [
         "Lazy imports; independent static checking of each imported program"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "DESUGAR-ROOT",
@@ -2260,7 +2455,8 @@
       ],
       "obligation": [
         "Object root $, enclosing self/super and local scope"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "DESUGAR-ASSERT",
@@ -2290,7 +2486,8 @@
       ],
       "obligation": [
         "Expression/object assertions and lazy failure messages"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "DESUGAR-SLICE",
@@ -2318,7 +2515,8 @@
       ],
       "obligation": [
         "Missing bounds and slice lowering to fixed stdlib source"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "DESUGAR-FIELDS",
@@ -2343,7 +2541,8 @@
       ],
       "obligation": [
         "Dot lookup, object extension, additive fields and methods"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "DESUGAR-OPERATORS",
@@ -2365,7 +2564,8 @@
       ],
       "obligation": [
         "Percent, equality, in, unary plus and std binding"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "DESUGAR-COMPREHENSIONS",
@@ -2406,7 +2606,8 @@
       ],
       "obligation": [
         "Array/object comprehension domains, order, filters and shadowing"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "STATIC-TRAVERSAL",
@@ -2436,7 +2637,8 @@
       ],
       "obligation": [
         "Check unused defaults, bodies, branches and argument expressions"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "VALUE-FINITE",
@@ -2461,7 +2663,8 @@
       ],
       "obligation": [
         "Finite binary64 values and immutable arrays/objects"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "VALUE-UNICODE",
@@ -2487,7 +2690,8 @@
       ],
       "obligation": [
         "Codepoint strings, strict contents and Unicode comparison"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "HIDDEN-INHERITANCE",
@@ -2516,7 +2720,8 @@
       ],
       "obligation": [
         "Inherited default, hidden and forced-visible fields"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "SUBSTITUTION",
@@ -2552,7 +2757,8 @@
       ],
       "obligation": [
         "Capture avoidance and lexical closure/default binding"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "EXEC-OPERATORS",
@@ -2573,7 +2779,8 @@
       ],
       "obligation": [
         "Arithmetic, bitwise, equality, coercion and other prose-defined operators"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "EXEC-BUILTINS",
@@ -2595,7 +2802,8 @@
       ],
       "obligation": [
         "Prose-defined mathematical builtins and host extVar/native"
-      ]
+      ],
+      "rule_review": null
     },
     {
       "id": "JSON-VALUES",
@@ -2628,7 +2836,8 @@
       ],
       "obligation": [
         "Recursively force visible fields/elements, assertions, reject functions"
-      ]
+      ],
+      "rule_review": null
     }
   ]
 }

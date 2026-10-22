@@ -96,6 +96,11 @@ The [application entry-path batch](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md)
 adds seven groups for handmade calls, recursive closure defaults and callee
 forcing, validated by 29/29 affected checks and a 15/15 source CLI corpus.
 These extend already partial rows; the 43/51 matrix and stdlib counts are unchanged.
+The subsequent [chk-importstr review](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md)
+closes that premise-free static judgment using constructor analysis and 16/16
+focused checks. The matrix now distinguishes one completed named rule, 43
+partial rows and 50 unreviewed rows. Runtime import obligations and whole-language
+acceptance remain incomplete; public stdlib counts do not change.
 The subsequently released [approved Linux window](SPEC-LINUX-AF188DA-EVIDENCE-2026-10-22.md)
 validated only the frozen af188da archive: native debug/release each 425/425,
 CLI/application checks 59/59, with completed cleanup. This is not a Linux result

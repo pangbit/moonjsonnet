@@ -76,6 +76,12 @@ fn evidence_ids(row : Json) -> Array[String] {
 }
 
 ///|
+fn rule_review(row : Json) -> Json? {
+  guard row is Object(fields) else { abort("coverage row") }
+  fields.get("rule_review")
+}
+
+///|
 fn dimension_text(row : Json, name : String) -> String {
   let ids = dimension(row, name).map(value => {
     match value {
@@ -84,7 +90,13 @@ fn dimension_text(row : Json, name : String) -> String {
     }
   })
   if ids.is_empty() {
-    "unreviewed"
+    if rule_review(row) is Some(review) &&
+      field(review, "not_applicable") is Object(reasons) &&
+      reasons.contains(name) {
+      "N/A (named rule)"
+    } else {
+      "unreviewed"
+    }
   } else {
     ids.join(", ")
   }
@@ -249,10 +261,10 @@ async fn main {
     "All 70 named inference rules are enumerated, including specification builtins. The additional prose/grammar rows are an initial obligation inventory, not a claim that every prose/desugaring clause has been decomposed. ",
   )
   markdown.write_string(
-    "Each populated cell identifies manually examined assertions, not a passing status. Empty cells remain unreviewed even if historical tests mention the feature. Runtime errors include host Type/Assertion categories after successful parsing. ",
+    "Populated cells identify manually examined assertions. Empty cells remain unreviewed. Explicit completed-rule reviews below concern only their named judgments; N/A cells have stated in-rule reasons, not missing passing tests. Runtime errors include host Type/Assertion categories after successful parsing. ",
   )
   markdown.write_string(
-    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md) and [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. No row claims complete conformance.\n\n",
+    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md) and [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
   )
   markdown.write_string(
     "Reproduce with `moon run --frozen tools/spec-language-matrix.mbtx REFERENCE_DIR EVIDENCE_DIR`; REFERENCE_DIR supplies pinned spec.html and language.md. This command validates assertion locations/hashes and regenerates this matrix; it never infers results or runs upstream tools.\n\n",
@@ -262,17 +274,21 @@ async fn main {
   )
   let enriched : Array[Json] = []
   let mut reviewed = 0
+  let completed : Array[(String, Json)] = []
   let used : Map[String, Bool] = Map([])
   for item in rows {
     let id = text_field(item, "id")
     let row = field(item, "coverage")
     let ids = evidence_ids(row)
-    let state = if ids.is_empty() {
+    let review = rule_review(row)
+    let state = if review is Some(_) {
+      "completed-rule-review"
+    } else if ids.is_empty() {
       "unreviewed"
     } else {
       "manually-reviewed-subset"
     }
-    if !ids.is_empty() {
+    if !ids.is_empty() && review is None {
       reviewed += 1
     }
     for evidence_id in ids {
@@ -283,10 +299,77 @@ async fn main {
       used[evidence_id] = true
     }
     let remaining = text_field(row, "remaining")
-    assert_true(
-      !remaining.is_empty(),
-      msg="no complete-conformance state is supported",
-    )
+    if review is Some(record) {
+      assert_eq(field(item, "kind"), "named-rule")
+      assert_eq(text_field(record, "rule"), id)
+      assert_eq(text_field(record, "decision"), "complete")
+      assert_true(
+        id.has_prefix("chk-") &&
+        spec.split("\n").collect()[rule_lines[id]].trim() == "} {",
+        msg="completion requires a premise-free static rule",
+      )
+      assert_true(!dimension(row, "normal").is_empty() && remaining.is_empty())
+      assert_true(
+        !text_field(record, "scope").is_empty() &&
+        !text_field(record, "reasoning").is_empty(),
+      )
+      guard field(record, "remaining_in_rule") is Array(open) && open.is_empty() else {
+        fail("in-rule obligations remain")
+      }
+      guard field(record, "excluded_obligations") is Array(excluded) &&
+        !excluded.is_empty() else {
+        fail("completion needs an explicit boundary")
+      }
+      ignore(@fs.read_file(text_field(record, "review_report")))
+      guard field(record, "not_applicable") is Object(reasons) else {
+        fail("N/A reasons")
+      }
+      assert_true(
+        reasons.contains("static_error") && reasons.contains("runtime_error"),
+      )
+      for name, reason in reasons {
+        guard reason is String(reason) && !reason.is_empty() else {
+          fail("N/A reason")
+        }
+        assert_true(
+          ["static_error", "runtime_error", "lazy", "boundary"].contains(name) &&
+          dimension(row, name).is_empty(),
+        )
+      }
+      guard field(record, "inspection") is Array(inspections) &&
+        !inspections.is_empty() else {
+        fail("constructor inspection required")
+      }
+      for inspection in inspections {
+        let path = text_field(inspection, "file")
+        assert_eq(
+          sha256(path),
+          text_field(inspection, "sha256"),
+          msg="inspected implementation changed: " + path,
+        )
+        assert_true(
+          @fs.read_file(path).text().contains(text_field(inspection, "anchor")),
+        )
+        assert_true(!text_field(inspection, "argument").is_empty())
+      }
+      guard field(record, "evidence_sha256") is Object(snapshot) &&
+        !snapshot.is_empty() else {
+        fail("reviewed test snapshot required")
+      }
+      for path, expected in snapshot {
+        assert_eq(
+          Json::string(sha256(path)),
+          expected,
+          msg="reviewed tests changed: " + path,
+        )
+      }
+      completed.push((id, record))
+    } else {
+      assert_true(
+        !remaining.is_empty(),
+        msg="partial rows must state remaining obligations",
+      )
+    }
     guard field(row, "implementation") is Array(paths) else {
       fail("implementation pointers")
     }
@@ -316,6 +399,7 @@ async fn main {
       "remaining": remaining,
       "implementation": paths,
       "obligation": obligation,
+      "rule_review": review,
     })
     markdown.write_string(
       "| [" +
@@ -324,14 +408,46 @@ async fn main {
       source_base +
       "#" +
       text_field(item, "section") +
-      ") |",
+      ")" +
+      (if review is Some(_) { " **complete static rule**" } else { "" }) +
+      " |",
     )
     for name in ["normal", "static_error", "runtime_error", "lazy", "boundary"] {
       markdown.write_string(" " + dimension_text(row, name) + " |")
     }
-    markdown.write_string(" " + remaining + " |\n")
+    markdown.write_string(
+      " " +
+      (if review is Some(_) {
+        "None within this named static judgment; see explicit exclusions below."
+      } else {
+        remaining
+      }) +
+      " |\n",
+    )
   }
   assert_eq(used.length(), evidence.length(), msg="orphan evidence mappings")
+  if !completed.is_empty() {
+    markdown.write_string(
+      "\n## Completed named-rule reviews\n\nThese are recorded manual decisions from constructor case analysis plus executed controls. The tool checks the fixed rule's empty premises, inspected implementation/test hashes and explicit scope; it does not infer semantic correctness or whole-language acceptance.\n\n",
+    )
+    for (id, record) in completed {
+      let report = text_field(record, "review_report")
+        .strip_prefix("docs/development/")
+        .unwrap()
+        .to_owned()
+      markdown.write_string(
+        "- **" +
+        id +
+        "**: " +
+        text_field(record, "scope") +
+        " " +
+        text_field(record, "reasoning") +
+        " [Criteria and exclusions](" +
+        report +
+        ").\n",
+      )
+    }
+  }
   markdown.write_string(
     "\n## Assertion evidence\n\nEach description records what was checked in the assertion body; a declaration name or a textual anchor alone proves no semantic result. Shared evidence is counted once, regardless of how many clauses cite it. Implementation paths and individual dimensions are retained in [the machine-readable matrix](spec-language-matrix.json).\n\n",
   )
@@ -365,7 +481,8 @@ async fn main {
     "named_rules": rule_lines.length(),
     "prose_grammar_rows": clauses.length(),
     "manually_reviewed_subset_rows": reviewed,
-    "unreviewed_rows": rows.length() - reviewed,
+    "completed_rule_rows": completed.length(),
+    "unreviewed_rows": rows.length() - reviewed - completed.length(),
     "complete_conformance": false,
     "execution_inferred": false,
     "evidence": locations,
@@ -402,6 +519,6 @@ async fn main {
     "\n",
   )
   println(
-    "Enumerated \{rule_lines.length()} named rules and \{clauses.length()} prose/grammar rows; \{reviewed} manually reviewed subsets, \{rows.length() - reviewed} unreviewed rows. No execution or full-conformance conclusion inferred.",
+    "Enumerated \{rule_lines.length()} named rules and \{clauses.length()} prose/grammar rows; \{completed.length()} completed named-rule reviews, \{reviewed} partial rows, \{rows.length() - reviewed - completed.length()} unreviewed rows. No execution or whole-language acceptance inferred.",
   )
 }
