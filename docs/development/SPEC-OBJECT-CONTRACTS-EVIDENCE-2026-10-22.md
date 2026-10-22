@@ -93,7 +93,8 @@ The earlier 4b6a4a6 tar/bundle are unchanged and remain bound to that commit.
 The tar's 547 entries comprise 510 file/symlink entries and 37 directories:
 244 .mbt, 43 .mbtx, 20 .pkg, 20 .mbti, one .mod, 32 .json, four .jsonnet,
 two .libsonnet, three .c, eight .go, 119 .md, six .txt, one .tsv, two .yml,
-two dotfiles and three extensionless license/notice files. Go files are reference
+two dotfiles and three extensionless files: LICENSE, NOTICE and the repository's
+.githooks/pre-commit script. Go files are reference
 adapter sources; they are not executed by the proposed native acceptance scope.
 The bundle contains incremental Git commit/tree/blob objects and commit
 metadata, requiring the same-project 8e661f9 baseline, rather than a checkout.
