@@ -2,16 +2,16 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "4b995b3ed773cef7a28cbc22895ed62b853dd3332366fcd2217064252391f145",
-  "tool_sha256": "681ddfb5d9383af0db75cc7fdfefc8a49d1560ae110a5e67893654714183e803",
+  "mapping_sha256": "735c2f56b8b2b27534fd68bab3ffa72e90248db1d97ddacedb74f7fdec6e65ee",
+  "tool_sha256": "e85a100054bc3e0bd28e96f5dd55b92355e66c72b737dc648de540e867f6ee2f",
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 55,
-  "completed_rule_rows": 8,
+  "manually_reviewed_subset_rows": 57,
+  "completed_rule_rows": 10,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
-  "completed_evaluation_rule_rows": 2,
-  "unreviewed_rows": 30,
+  "completed_evaluation_rule_rows": 4,
+  "unreviewed_rows": 26,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -1285,6 +1285,80 @@
       "checks": "Required outer/prefix/nested explicit errors propagate their literal Runtime markers; noncomparable boolean/null elements, mixed number/string or number/array elements and non-array partners reject Type. All parse-valid failures remain lazy in unused bindings. Unknown names in either skipped array tail or either binary operand instead reject Static during source/handmade-AST Program creation, even under unused locals. No arbitrary ordering among competing failures is imposed.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "BS0": {
+      "file": "spec_foundation_calls_test.mbt",
+      "line": 55,
+      "test": "foundation unselected calls keep invalid computations lazy",
+      "assertions": [
+        "\" else 42,true || \"",
+        "\",false && \"",
+        "[42, true, false, 42, 42]"
+      ],
+      "checks": "Reused pre-existing source controls skip invalid/erroneous public-library calls behind true || and false &&. This mapping reviews only the shortcut meaning; it adds no fresh execution, no independent handmade AST claim and no new public-library completion.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "BS1": {
+      "file": "spec_boolean_shortcircuit_test.mbt",
+      "line": 122,
+      "test": "Boolean operators transfer the full truth table and required lexical operands",
+      "assertions": [
+        "(false, false, false, false)",
+        "(false, true, false, true)",
+        "(true, false, false, true)",
+        "(true, true, true, true)",
+        "(\"&&\", and_value, left)",
+        "(\"||\", or_value, !left)",
+        "boolean_pair(left, op, right)",
+        "for unused in [false, true]",
+        "if unused { Json::number(42) } else { Json::boolean(expected) }",
+        "assert_true(seen.contains(\"L\"))",
+        "assert_eq(seen.contains(\"R\"), need_right)",
+        "assert_eq(seen.length(), if need_right { 2 } else { 1 })"
+      ],
+      "checks": "All four Boolean input pairs for both operators use source and independent handmade ASTs with local x/y operands. Literal expected outputs distinguish shortcut and Boolean longcut transfer. Observer-ID membership requires the left and only the needed right; an unused whole operation returns 42 with no IDs. Maps collapse repetitions rather than standardizing callback count/order.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "BS2": {
+      "file": "spec_boolean_shortcircuit_test.mbt",
+      "line": 169,
+      "test": "Boolean left type gates and shortcuts preserve dormant right shapes and errors",
+      "assertions": [
+        "ordering_leaf(\"null\", Literal(null))",
+        "ordering_leaf(\"0\", Literal(0))",
+        "ordering_leaf(\"''\", Literal(\"\"))",
+        "ordering_array([payload])",
+        "Func([], payload.tree)",
+        "(\"&&\", false, true)",
+        "(\"||\", true, false)",
+        "ordering_binary(nonboolean, op, rhs)",
+        "@moonjsonnet.Type",
+        "Json::boolean(shortcut)",
+        "ordering_error(\"left-required\")",
+        "Some(\"left-required\")",
+        "ordering_error(\"right-required\")",
+        "Some(\"right-required\")"
+      ],
+      "checks": "Six non-Boolean left kinds reject Type without right or nested-payload callbacks; unused whole operations return 42. The same six right kinds remain unforced behind the explicit shortcuts. Left errors and required explicit right errors propagate their fixed Runtime markers. Forced non-Boolean RHS is deliberately absent because B0 is unadjudicated, not passing.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "BS3": {
+      "file": "spec_boolean_shortcircuit_test.mbt",
+      "line": 239,
+      "test": "Boolean statics visit both operands even under shortcuts and unused bindings",
+      "assertions": [
+        "let missing = ordering_leaf(\"boolean_missing\", Var(\"boolean_missing\"))",
+        "for op in [\"&&\", \"||\"]",
+        "for choice in [false, true]",
+        "ordering_binary(missing, op, flag)",
+        "ordering_binary(flag, op, missing)",
+        "for subject in [value, ordering_unused(value)]",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "for source in [\"true \" + op, op + \" true\"]",
+        "assert_eq(d.kind, @moonjsonnet.Syntax)"
+      ],
+      "checks": "Unknown names in either operand reject Static at Program creation through source and independent handmade ASTs, under shortcut/longcut Boolean left values and unused wrappers. Missing operands are separate source-only Syntax controls, with no malformed typed-AST equivalence or complete grammar/static constructor claim.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -1329,6 +1403,8 @@
     "spec_assertion_conjunction_test.mbt": "737b61a9ad4bb78a506f25be00c1c4533a75f2711390bae6023e79d388e380c9",
     "spec_object_comp_keys_test.mbt": "cce9e374299a7688c84fd62133d52d5047a59985d92e4f8260c2a8648dfe27de",
     "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+    "spec_foundation_calls_test.mbt": "7cdf4c0397458504515322c6b14893628f0ed3ba31a99ee75a7af2654f0a28c1",
+    "spec_boolean_shortcircuit_test.mbt": "730b05bfade40138c803a0223387fee8b11f92117fcc1996dda46cf8c71109ef",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -1673,16 +1749,18 @@
       "state": "manually-reviewed-subset",
       "dimensions": {
         "normal": [
-          "AO1"
+          "AO1",
+          "BS1"
         ],
         "static_error": [
-          "AO3"
+          "AO3",
+          "BS3"
         ],
         "runtime_error": [],
         "lazy": [],
         "boundary": []
       },
-      "remaining": "Only < and <= in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md), including unknown names in both operands under unused locals, are mapped. Other operators, admission metadata and the general two-child static constructor are not completed.",
+      "remaining": "Bounded <, <= and Boolean operator scopes are mapped in their evidence reports, including unknown names under unused locals/shortcuts. Other operators, admission metadata and the general two-child static constructor are not completed.",
       "implementation": [
         "validate.mbt",
         "ast_validate.mbt",
@@ -3081,34 +3159,119 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2542,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "BS1",
+          "BS2"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "BS2"
+        ],
+        "lazy": [
+          "BS0",
+          "BS1",
+          "BS2"
+        ],
+        "boundary": [
+          "BS1",
+          "BS2"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "eval.mbt",
+        "runtime_types.mbt",
+        "validate.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "boolean-and-shortcut",
+          "decision": "complete",
+          "review_form": "boolean-shortcut-transfer",
+          "fixed_statement": "\\rule{boolean-and-shortcut} { e_L ↓ \\false } { e_L \\texttt{ &amp;&amp; } e_R ↓ \\false }",
+          "premise_roles": [
+            "left-false"
+          ],
+          "child_judgments_assumed": "The statically valid left child evaluates according to its own judgment within resource bounds. This closes only the explicit matching-left shortcut transfer, not the child evaluator or any longcut domain.",
+          "scope": "The full one-premise boolean-and-shortcut constructor-transfer judgment, relative to its left child; static validation and adjacent failures retain separate scopes.",
+          "reasoning": "The evaluator first computes and Boolean-checks the left in the original environment. On false, this operator returns the identical Boolean without evaluating or type-checking any statically legal RHS. Exhaustive Value gating, unconditional two-child statics, exact formula inspection, truth/observer/type/error controls and reused BS0 support this decision. No implementation behavior fills B0.",
+          "review_report": "docs/development/SPEC-BOOLEAN-SHORTCIRCUIT-REVIEW.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This execution judgment assumes a statically checked expression; BS3 maps the separate still-partial chk-binary constructor."
+          },
+          "excluded_obligations": [
+            "Longcut non-Boolean RHS domain (B0)",
+            "Whole child evaluation judgments and general chk-binary/grammar/desugaring",
+            "Diagnostic wording, callback multiplicity/order and host native semantics",
+            "Host resource/stack limits, CLI exits and public-library acceptance"
+          ],
+          "inspection": [
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "Bool(boolean(left, loc) && boolean(self.eval(b, env), loc))",
+              "argument": "After evaluating the left in env, false returns without invoking the RHS evaluation or its Boolean gate; the || sibling analogously stops on true. The demanded child, when applicable, receives the same env."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn boolean(v : Value, loc : Location) -> Bool raise {",
+              "argument": "The exhaustive Bool arm returns its Boolean; all other outer Value variants raise Type without traversing their payloads. This supports invalid-left boundaries and cannot resolve the independent longcut RHS normative domain B0."
+            },
+            {
+              "file": "validate.mbt",
+              "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+              "anchor": "Index(a, b) | Binary(_, a, b) => {",
+              "argument": "Static validation visits both child expressions unconditionally, independently of Boolean demand. Runtime shortcut completion does not complete this static constructor."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Binary(op, a, b) => Binary(op, visit(a), visit(b))",
+              "argument": "The typed AST keeps the operator and both child expressions; it does not perform a shortcut which could skip static validation."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_boolean_shortcircuit_test.mbt": "730b05bfade40138c803a0223387fee8b11f92117fcc1996dda46cf8c71109ef",
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_foundation_calls_test.mbt": "7cdf4c0397458504515322c6b14893628f0ed3ba31a99ee75a7af2654f0a28c1"
+          }
+        }
+      ]
     },
     {
       "id": "boolean-and-longcut",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2552,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "BS1"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "BS2"
+        ],
+        "lazy": [
+          "BS1",
+          "BS2"
+        ],
+        "boundary": [
+          "BS1",
+          "BS2"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "The [Boolean operator review](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md) verifies Boolean right-result transfer and required explicit errors. B0 remains unknown: the printed e_R ↓ b has no explicit Boolean domain premise, and the fixed language/library sources do not settle forced non-Boolean RHS rejection versus transfer. No implementation/Go/C++ output resolves it and no forced non-Boolean RHS probe is counted passing. The general child judgments and static constructor remain separate.",
+      "implementation": [
+        "eval.mbt",
+        "runtime_types.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -3117,34 +3280,119 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2564,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "BS1",
+          "BS2"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "BS2"
+        ],
+        "lazy": [
+          "BS0",
+          "BS1",
+          "BS2"
+        ],
+        "boundary": [
+          "BS1",
+          "BS2"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "eval.mbt",
+        "runtime_types.mbt",
+        "validate.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "boolean-or-shortcut",
+          "decision": "complete",
+          "review_form": "boolean-shortcut-transfer",
+          "fixed_statement": "\\rule{boolean-or-shortcut} { e_L ↓ \\true } { e_L \\texttt{ || } e_R ↓ \\true }",
+          "premise_roles": [
+            "left-true"
+          ],
+          "child_judgments_assumed": "The statically valid left child evaluates according to its own judgment within resource bounds. This closes only the explicit matching-left shortcut transfer, not the child evaluator or any longcut domain.",
+          "scope": "The full one-premise boolean-or-shortcut constructor-transfer judgment, relative to its left child; static validation and adjacent failures retain separate scopes.",
+          "reasoning": "The evaluator first computes and Boolean-checks the left in the original environment. On true, this operator returns the identical Boolean without evaluating or type-checking any statically legal RHS. Exhaustive Value gating, unconditional two-child statics, exact formula inspection, truth/observer/type/error controls and reused BS0 support this decision. No implementation behavior fills B0.",
+          "review_report": "docs/development/SPEC-BOOLEAN-SHORTCIRCUIT-REVIEW.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This execution judgment assumes a statically checked expression; BS3 maps the separate still-partial chk-binary constructor."
+          },
+          "excluded_obligations": [
+            "Longcut non-Boolean RHS domain (B0)",
+            "Whole child evaluation judgments and general chk-binary/grammar/desugaring",
+            "Diagnostic wording, callback multiplicity/order and host native semantics",
+            "Host resource/stack limits, CLI exits and public-library acceptance"
+          ],
+          "inspection": [
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "Bool(boolean(left, loc) && boolean(self.eval(b, env), loc))",
+              "argument": "After evaluating the left in env, false returns without invoking the RHS evaluation or its Boolean gate; the || sibling analogously stops on true. The demanded child, when applicable, receives the same env."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn boolean(v : Value, loc : Location) -> Bool raise {",
+              "argument": "The exhaustive Bool arm returns its Boolean; all other outer Value variants raise Type without traversing their payloads. This supports invalid-left boundaries and cannot resolve the independent longcut RHS normative domain B0."
+            },
+            {
+              "file": "validate.mbt",
+              "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+              "anchor": "Index(a, b) | Binary(_, a, b) => {",
+              "argument": "Static validation visits both child expressions unconditionally, independently of Boolean demand. Runtime shortcut completion does not complete this static constructor."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Binary(op, a, b) => Binary(op, visit(a), visit(b))",
+              "argument": "The typed AST keeps the operator and both child expressions; it does not perform a shortcut which could skip static validation."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_boolean_shortcircuit_test.mbt": "730b05bfade40138c803a0223387fee8b11f92117fcc1996dda46cf8c71109ef",
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_foundation_calls_test.mbt": "7cdf4c0397458504515322c6b14893628f0ed3ba31a99ee75a7af2654f0a28c1"
+          }
+        }
+      ]
     },
     {
       "id": "boolean-or-longcut",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2574,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "BS1"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "BS2"
+        ],
+        "lazy": [
+          "BS1",
+          "BS2"
+        ],
+        "boundary": [
+          "BS1",
+          "BS2"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "The [Boolean operator review](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md) verifies Boolean right-result transfer and required explicit errors. B0 remains unknown: the printed e_R ↓ b has no explicit Boolean domain premise, and the fixed language/library sources do not settle forced non-Boolean RHS rejection versus transfer. No implementation/Go/C++ output resolves it and no forced non-Boolean RHS probe is counted passing. The general child judgments and static constructor remain separate.",
+      "implementation": [
+        "eval.mbt",
+        "runtime_types.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -4208,7 +4456,8 @@
           "IF2",
           "ES1",
           "US1",
-          "AO3"
+          "AO3",
+          "BS3"
         ],
         "runtime_error": [],
         "lazy": [],
@@ -4384,23 +4633,30 @@
       "dimensions": {
         "normal": [
           "AO1",
-          "AO2"
+          "AO2",
+          "BS1"
         ],
         "static_error": [],
         "runtime_error": [
-          "AO3"
+          "AO3",
+          "BS2"
         ],
         "lazy": [
           "AO1",
           "AO2",
-          "AO3"
+          "AO3",
+          "BS0",
+          "BS1",
+          "BS2"
         ],
         "boundary": [
           "AO1",
-          "AO3"
+          "AO3",
+          "BS1",
+          "BS2"
         ]
       },
-      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers array lexicographic < and <= only. Arithmetic, bitwise, equality, coercion, other relational operators and whole scalar/producer judgments remain unadjudicated. No general operator completion is inferred.",
+      "remaining": "The bounded array-ordering and [Boolean operator review](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md) keep their separate scopes. Only the two explicit Boolean shortcuts have named transfer decisions; longcut non-Boolean RHS domain B0 stays unknown. Arithmetic, bitwise, equality, coercion, other relational operators and whole scalar/producer judgments remain unadjudicated.",
       "implementation": [
         "operators.mbt",
         "eval.mbt",
