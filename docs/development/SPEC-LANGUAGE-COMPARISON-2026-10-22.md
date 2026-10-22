@@ -43,3 +43,10 @@ at `10982a4` uses exact byte/JSON oracles and virtual source/handmade-AST contro
 No fresh Go/C++ execution was performed. Reused adjacent static-rule evidence and
 the bounded runtime-byte decision establish neither reference compatibility nor
 general import-loading conformance; both fixed-reference verdicts remain unknown.
+
+The [importstr UTF-8 batch](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md) at
+`baf115c` likewise has no new Go/C++ execution. Manually paired raw bytes and
+Unicode strings determine its expected values. Host Import diagnostics, retained
+request observations and the explicitly unknown initial-BOM interpretation are
+not reference-compatibility verdicts; neither the initial failed test adapter nor
+the corrected native run is counted as an upstream pass.

@@ -111,6 +111,14 @@ existing creation controls, rather than adding duplicate tests. The matrix now
 records three completed named static judgments, 42 partial rows and 49 unreviewed
 rows, with no new inventory rows or interpreter/API changes. Public stdlib counts
 remain unchanged.
+The [importstr UTF-8 review](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md) at
+`baf115c` adds four source/handmade-AST virtual-byte groups and passes 17/17
+affected native debug checks after correcting a test-only host adapter. It
+reviews BOM-free text substitution and strict malformed-byte rejection while
+separating host diagnostic/cache observations from normative requirements.
+Initial-BOM interpretation remains explicitly unknown. The 3/42/49 matrix,
+stdlib counts and product/public interfaces are unchanged; CORE-IMPORT still
+lists its broader loading, caching and host-policy gaps.
 The subsequently released [approved Linux window](SPEC-LINUX-AF188DA-EVIDENCE-2026-10-22.md)
 validated only the frozen af188da archive: native debug/release each 425/425,
 CLI/application checks 59/59, with completed cleanup. This is not a Linux result

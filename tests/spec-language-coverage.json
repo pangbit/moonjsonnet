@@ -295,7 +295,7 @@
       "file": "spec_importstr_static_test.mbt",
       "test": "importstr static acceptance does not resolve targets or parse opaque data",
       "assertions": ["assert_eq(requests.length(), 0)", "assert_eq(program.evaluate(resolver~), Json::string(data))", "assert_eq(requests, [(\"virtual-entry\", \"opaque\")])"],
-      "checks": "All virtual targets are self-made data; creation resolves none, forced source/handmade leaves return opaque invalid-code text, unused controls resolve none. Runtime controls do not close loading/cache rules."
+      "checks": "Already decoded self-made Source.text data stays opaque: creation resolves none, source/handmade demand returns invalid-code text, unused controls resolve none. This text-resolver case does not test malformed-byte decoding or close loading/cache rules."
     },
     "IR4": {
       "file": "spec_importstr_static_test.mbt",
@@ -332,6 +332,30 @@
       "test": "binary import is byte preserving and memoized by canonical identity",
       "assertions": ["assert_eq(reads, 1)", "assert_eq(result.stringify(), \"[[0,255,254,128],[0,255,254,128]]\")"],
       "checks": "Existing source case observes exact unsigned-byte arrays and one callback for the same path used twice. Despite its historical title, it does not exercise distinct aliases or prove canonical-identity caching. Reused, not a new test group."
+    },
+    "IU1": {
+      "file": "spec_importstr_utf8_test.mbt",
+      "test": "importstr decodes explicit UTF8 scalar boundaries in source and handmade AST",
+      "assertions": ["evaluator.set_importer(binary_resolver=(from, path) =>", "assert_eq(actual, Json::string(expected))", "assert_eq(requests, [(\"virtual-utf8-entry\", \"data\")])"],
+      "checks": "Nine raw-byte/text vectors independently match exact Unicode through source and handmade AST: empty, NUL/CRLF, 1-4 byte scalar boundaries, combining forms, interior U+FEFF, valid U+FFFD and opaque code/escape text. Uses the reusable evaluator binary importer; initial-BOM treatment is excluded and unknown."
+    },
+    "IU2": {
+      "file": "spec_importstr_utf8_test.mbt",
+      "test": "importstr rejects malformed UTF8 bytes only on source and handmade demand",
+      "assertions": ["try evaluator.evaluate(program) catch", "fail(\"malformed UTF8 became a successful string import\")", "assert_eq(d.kind, @moonjsonnet.Import)", "assert_eq(d.location.file, \"virtual-utf8-data\")", "d.context.iter().any(loc => loc.file == \"virtual-utf8-entry\")", "assert_eq(reads, 1)"],
+      "checks": "Eighteen malformed byte vectors reject after source/handmade creation, including overlong, truncated, bad-continuation, encoded-surrogate and out-of-range cases. Import category/source/context are separately classified host observations; the fixed specification does not prescribe that diagnostic format."
+    },
+    "IU3": {
+      "file": "spec_importstr_utf8_test.mbt",
+      "test": "importstr unused invalid data stays lazy and retained bytes still reject",
+      "assertions": ["assert_eq(evaluator.evaluate(unused[i]), 42)", "assert_eq(requests.length(), 0)", "assert_eq(d.kind, @moonjsonnet.Import)", "fail(\"retained malformed bytes became a successful string\")", "assert_eq(requests, [(\"virtual-utf8-entry\", \"data\")])"],
+      "checks": "Source and handmade unselected branches return 42 with zero requests; two demands per evaluator both reject while one identical request's bytes are retained. This host observation does not complete general failure-cache identity/lifetime rules."
+    },
+    "IU4": {
+      "file": "spec_importstr_utf8_test.mbt",
+      "test": "importstr repeated source and handmade requests return exact Unicode text",
+      "assertions": ["assert_eq(result, [\"é😀\\u0000\", \"é😀\\u0000\"])", "assert_eq(requests, [(\"virtual-utf8-entry\", \"data\")])"],
+      "checks": "Repeated identical source and handmade importstr requests each produce the explicit two-element Unicode/NUL array with one callback. Distinct aliases and cross-mode caches are not exercised."
     },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
@@ -436,7 +460,7 @@
     {"id": "SYN-OBJECT", "section": "abstract_syntax", "obligation": "Object fields, locals, methods, assertions and comprehension grammar", "normal": ["F6", "O1"], "remaining": "Every separator, additive form, comma and malformed construction.", "implementation": ["parser.mbt"]},
     {"id": "SYN-CALL", "section": "abstract_syntax", "obligation": "Positional arguments before named arguments and parameter grammar", "normal": ["F1", "AP1"], "boundary": ["AP7"], "remaining": "Malformed ordering/trailing-comma grid and positional-after-named fine diagnostic classification; AP7 is source Syntax evidence, not a handmade AST Static result.", "implementation": ["parser.mbt", "ast_validate.mbt"]},
     {"id": "SYN-PRECEDENCE", "section": "associativity_precedence", "obligation": "Every operator precedence and associativity relation", "remaining": "Pairwise expression grid and long-binding expression extents.", "implementation": ["parser.mbt"]},
-    {"id": "CORE-IMPORT", "section": "core_syntax", "obligation": "Import substitutions, lazy loading and independent static checking of imported programs", "normal": ["I1", "I3", "IB1", "IB4", "IB5"], "static_error": ["I1", "I3", "IB3"], "runtime_error": ["IB3"], "lazy": ["I2", "I3", "IB2"], "boundary": ["IB1", "IB3", "IB4", "IB5"], "remaining": "The line-916 importbin byte-value substitution sentence is reviewed complete in SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md. This broader row still lacks complete canonical aliases, cycles, code-import scope, UTF-8 text decoding, cross-mode/source/value/failure cache identity/lifetimes, host resolver policy and resources.", "implementation": ["imports.mbt", "eval.mbt", "validate.mbt"]},
+    {"id": "CORE-IMPORT", "section": "core_syntax", "obligation": "Import substitutions, lazy loading and independent static checking of imported programs", "normal": ["I1", "I3", "IB1", "IB4", "IB5", "IU1", "IU4"], "static_error": ["I1", "I3", "IB3", "IR4"], "runtime_error": ["IB3", "IU2", "IU3"], "lazy": ["I2", "I3", "IB2", "IU3"], "boundary": ["IB1", "IB3", "IB4", "IB5", "IU1", "IU2", "IU3", "IU4"], "remaining": "Importbin byte-value substitution and bounded BOM-free importstr UTF-8 substitution are reviewed in their respective evidence reports. Initial-BOM interpretation and precise normative diagnostics remain unknown. This broader row still lacks complete canonical aliases, cycles, code-import scope/decoding, cross-mode/source/value/failure cache identity/lifetimes, host resolver policy and resources.", "implementation": ["imports.mbt", "evaluator_imports.mbt", "eval.mbt", "validate.mbt"]},
     {"id": "DESUGAR-ROOT", "section": "desugaring", "obligation": "Object root $, enclosing self/super and local scope", "normal": ["O1", "O2", "F6"], "static_error": ["O1"], "remaining": "All nested comprehension/root and object-local combinations.", "implementation": ["validate.mbt", "objects.mbt"]},
     {"id": "DESUGAR-ASSERT", "section": "desugaring", "obligation": "Expression/object assertions and lazy failure messages", "normal": ["O3", "O5"], "runtime_error": ["O3", "O5"], "lazy": ["O5"], "remaining": "Expression assertions, default/nonstring messages and condition type errors.", "implementation": ["eval.mbt", "objects.mbt"]},
     {"id": "DESUGAR-SLICE", "section": "desugaring", "obligation": "Missing bounds and slice lowering to fixed stdlib source", "normal": ["SLICE"], "runtime_error": ["SLICE"], "lazy": ["SLICE"], "remaining": "Full negative/null/step/domain matrix and retained cardinality ambiguity.", "implementation": ["eval.mbt", "slice.mbt"]},
