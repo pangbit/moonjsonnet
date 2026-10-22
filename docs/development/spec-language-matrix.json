@@ -2,16 +2,16 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "cd589e3f707f8dd2c2f4f8d9ff235566c79bbae43d29c54946729d6fa9e21f89",
-  "tool_sha256": "e2184e0521296deda32f8d0b8f8587ffbe3daf5b3659499e9c88f52b8a32360e",
+  "mapping_sha256": "4b995b3ed773cef7a28cbc22895ed62b853dd3332366fcd2217064252391f145",
+  "tool_sha256": "681ddfb5d9383af0db75cc7fdfefc8a49d1560ae110a5e67893654714183e803",
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 41,
+  "manually_reviewed_subset_rows": 55,
   "completed_rule_rows": 8,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
   "completed_evaluation_rule_rows": 2,
-  "unreviewed_rows": 44,
+  "unreviewed_rows": 30,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -1221,6 +1221,70 @@
       "checks": "Repeated dynamic null names are filtered while first/second names survive. Metadata gives object/2 with no bodies; first yields [1,1] while the second error stays lazy; second demand raises its fixed Runtime marker with body tuple (2,2). Outer x=99/y=88 cannot replace iterator captures from for y in [0,x]. A sticky observer verifies all successful key tuples preceded any body entry. Maps compare membership, not universal callback counts or key order.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "AO1": {
+      "file": "spec_array_ordering_test.mbt",
+      "line": 109,
+      "test": "array ordering covers empty prefix and recursive first difference cases",
+      "assertions": [
+        "(empty, empty, false, true)",
+        "(empty, ordering_array([right_tail]), true, true)",
+        "(ordering_array([left_tail]), empty, false, false)",
+        "(ordering_array([one]), ordering_array([one, right_tail]), true, true)",
+        "(ordering_array([one, left_tail]), ordering_array([one]), false, false)",
+        "ordering_array([ordering_array([one, left_tail]), left_tail])",
+        "ordering_array([ordering_array([one]), two, left_tail])",
+        "ordering_leaf(\"'\\\\uE000'\", Literal(\"\"))",
+        "for (op, expected) in [(\"<\", less), (\"<=\", less_equal)]",
+        "ordering_program(value, handmade).evaluate(limits=ordering_limits())",
+        "Json::boolean(expected)"
+      ],
+      "checks": "Explicit (<,<=) pairs distinguish all five finite array-comparison branches: empty/empty, one empty, equal prefix, unequal first values and recursive nested prefixes. Error-valued unmatched, inner and outer tails stay lazy. Ordinary numeric children and the U+E000/U+1F600 codepoint boundary are controls, not whole scalar-rule decisions. Source and separately constructed typed ASTs share literal fixtures but no parser export or computed comparison oracle.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "AO2": {
+      "file": "spec_array_ordering_test.mbt",
+      "line": 183,
+      "test": "array ordering observes only the necessary nested common prefix",
+      "assertions": [
+        "ordering_visit(\"LN1\", 4)",
+        "ordering_visit(\"RN1\", 5)",
+        "for op in [\"<\", \"<=\"]",
+        "for unused in [false, true]",
+        "if unused { Json::number(42) } else { Json::boolean(true) }",
+        "assert_eq(seen.length(), 0)",
+        "for id in [\"L0\", \"R0\", \"LN0\", \"RN0\", \"LN1\", \"RN1\"]",
+        "assert_true(seen.contains(id))",
+        "assert_eq(seen.length(), 6)",
+        "assert_true(!seen.contains(\"LT\") && !seen.contains(\"RT\"))"
+      ],
+      "checks": "Only the necessary common prefix and nested deciding pair are observed through source and independent handmade ASTs. Distinct outer LT/RT callbacks are absent; an unused comparison records nothing and returns 42. ID maps compare membership, not left/right callback order or universal invocation counts. Every evaluation is explicitly bounded.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "AO3": {
+      "file": "spec_array_ordering_test.mbt",
+      "line": 236,
+      "test": "array ordering separates demanded runtime failures from unused static errors",
+      "assertions": [
+        "ordering_error(\"required-left\")",
+        "ordering_error(\"required-right\")",
+        "ordering_error(\"nested-required\")",
+        "ordering_error(\"outer-left\")",
+        "ordering_error(\"outer-right\")",
+        "ordering_array([one, ordering_leaf(\"true\", Literal(true))])",
+        "(ordering_array([one]), ordering_array([text]), @moonjsonnet.Type, None)",
+        "(ordering_array([text]), ordering_array([one]), @moonjsonnet.Type, None)",
+        "ordering_program(ordering_unused(value), handmade).evaluate(",
+        "assert_eq(d.kind, kind)",
+        "assert_eq(d.message, text)",
+        "let missing = ordering_leaf(\"ordering_missing\", Var(\"ordering_missing\"))",
+        "(ordering_array([one, missing]), ordering_array([two]))",
+        "(empty, ordering_array([missing]))",
+        "for subject in [value, ordering_unused(value)]",
+        "assert_eq(d.kind, @moonjsonnet.Static)"
+      ],
+      "checks": "Required outer/prefix/nested explicit errors propagate their literal Runtime markers; noncomparable boolean/null elements, mixed number/string or number/array elements and non-array partners reject Type. All parse-valid failures remain lazy in unused bindings. Unknown names in either skipped array tail or either binary operand instead reject Static during source/handmade-AST Program creation, even under unused locals. No arbitrary ordering among competing failures is imposed.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -1264,6 +1328,7 @@
     "spec_assertion_local_test.mbt": "4ec20f1a324e8655c194e1b9d4aa1553218cb45d2d279e3c255e3eeab555a155",
     "spec_assertion_conjunction_test.mbt": "737b61a9ad4bb78a506f25be00c1c4533a75f2711390bae6023e79d388e380c9",
     "spec_object_comp_keys_test.mbt": "cce9e374299a7688c84fd62133d52d5047a59985d92e4f8260c2a8648dfe27de",
+    "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -1391,16 +1456,23 @@
       "kind": "named-rule",
       "section": "static_checking",
       "source_line": 1613,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
+        "normal": [
+          "AO1"
+        ],
+        "static_error": [
+          "AO3"
+        ],
         "runtime_error": [],
         "lazy": [],
         "boundary": []
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Only finite valid arrays and unknown-name rejection in skipped array tails of the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are mapped. The general all-element static constructor and full child judgments have no completion review.",
+      "implementation": [
+        "validate.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -1598,16 +1670,24 @@
       "kind": "named-rule",
       "section": "static_checking",
       "source_line": 1675,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
+        "normal": [
+          "AO1"
+        ],
+        "static_error": [
+          "AO3"
+        ],
         "runtime_error": [],
         "lazy": [],
         "boundary": []
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Only < and <= in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md), including unknown names in both operands under unused locals, are mapped. Other operators, admission metadata and the general two-child static constructor are not completed.",
+      "implementation": [
+        "validate.mbt",
+        "ast_validate.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2607,16 +2687,30 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2360,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1",
+          "AO2"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "AO3"
+        ],
+        "lazy": [
+          "AO1",
+          "AO2"
+        ],
+        "boundary": [
+          "AO1",
+          "AO3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Only bounded array operands in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are reviewed. Direct number/string operands, other producers and whole child-comparator judgments remain unadjudicated; this is not a named-rule completion record.",
+      "implementation": [
+        "operators.mbt",
+        "eval.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2625,16 +2719,28 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2370,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "AO3"
+        ],
+        "lazy": [
+          "AO1"
+        ],
+        "boundary": [
+          "AO1",
+          "AO3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Only bounded array operands in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are reviewed. Direct number/string operands, other producers and whole child-comparator judgments remain unadjudicated; this is not a named-rule completion record.",
+      "implementation": [
+        "operators.mbt",
+        "eval.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2679,16 +2785,30 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2404,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1",
+          "AO2"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "AO3"
+        ],
+        "lazy": [
+          "AO1",
+          "AO2"
+        ],
+        "boundary": [
+          "AO1",
+          "AO3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Only bounded array operands in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are reviewed. Direct number/string operands, other producers and whole child-comparator judgments remain unadjudicated; this is not a named-rule completion record.",
+      "implementation": [
+        "operators.mbt",
+        "eval.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2697,16 +2817,28 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2416,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "AO3"
+        ],
+        "lazy": [
+          "AO1"
+        ],
+        "boundary": [
+          "AO1",
+          "AO3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Only bounded array operands in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are reviewed. Direct number/string operands, other producers and whole child-comparator judgments remain unadjudicated; this is not a named-rule completion record.",
+      "implementation": [
+        "operators.mbt",
+        "eval.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2751,16 +2883,25 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2448,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1"
+        ],
         "static_error": [],
         "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "lazy": [
+          "AO1"
+        ],
+        "boundary": [
+          "AO1"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers this empty-shape case via < and <=. No generic constructor-transfer completion or completion of its head-evaluation children is recorded; std.cmp is specification notation, not a claimed public API.",
+      "implementation": [
+        "operators.mbt",
+        "eval.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2769,16 +2910,25 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2460,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1"
+        ],
         "static_error": [],
         "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "lazy": [
+          "AO1"
+        ],
+        "boundary": [
+          "AO1"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers this empty-shape case via < and <=. No generic constructor-transfer completion or completion of its head-evaluation children is recorded; std.cmp is specification notation, not a claimed public API.",
+      "implementation": [
+        "operators.mbt",
+        "eval.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2787,16 +2937,23 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2472,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1"
+        ],
         "static_error": [],
         "runtime_error": [],
         "lazy": [],
-        "boundary": []
+        "boundary": [
+          "AO1"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers this empty-shape case via < and <=. No generic constructor-transfer completion or completion of its head-evaluation children is recorded; std.cmp is specification notation, not a claimed public API.",
+      "implementation": [
+        "operators.mbt",
+        "eval.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2805,16 +2962,30 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2482,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1",
+          "AO2"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "AO3"
+        ],
+        "lazy": [
+          "AO1",
+          "AO2"
+        ],
+        "boundary": [
+          "AO1",
+          "AO3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers finite nested/equal-prefix and first-difference demand. General child comparison domains and producer judgments are not completed; cycles and host resource policies are outside this decision. Reuse the existing finite cases rather than treating arbitrary independent error order as a missing requirement.",
+      "implementation": [
+        "operators.mbt",
+        "runtime_types.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2823,16 +2994,30 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2498,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1",
+          "AO2"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "AO3"
+        ],
+        "lazy": [
+          "AO1",
+          "AO2"
+        ],
+        "boundary": [
+          "AO1",
+          "AO3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers finite nested/equal-prefix and first-difference demand. General child comparison domains and producer judgments are not completed; cycles and host resource policies are outside this decision. Reuse the existing finite cases rather than treating arbitrary independent error order as a missing requirement.",
+      "implementation": [
+        "operators.mbt",
+        "runtime_types.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2841,16 +3026,25 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2514,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1"
+        ],
         "static_error": [],
-        "runtime_error": [],
+        "runtime_error": [
+          "AO3"
+        ],
         "lazy": [],
-        "boundary": []
+        "boundary": [
+          "AO1",
+          "AO3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Only the U+E000/U+1F600 child comparison and mixed-type errors in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are mapped. String prefixes, equality and remaining codepoint/producer boundaries have no whole-rule decision.",
+      "implementation": [
+        "operators.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -2859,16 +3053,26 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2528,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1",
+          "AO2"
+        ],
         "static_error": [],
-        "runtime_error": [],
+        "runtime_error": [
+          "AO3"
+        ],
         "lazy": [],
-        "boundary": []
+        "boundary": [
+          "AO1",
+          "AO3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "Only small integer children of the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) and mixed-type rejection are mapped. Signed zero, fractional/subnormal/extreme finite operands and the full scalar judgment remain unreviewed here.",
+      "implementation": [
+        "operators.mbt"
+      ],
       "obligation": null,
       "rule_review": null
     },
@@ -4003,7 +4207,8 @@
           "IF1",
           "IF2",
           "ES1",
-          "US1"
+          "US1",
+          "AO3"
         ],
         "runtime_error": [],
         "lazy": [],
@@ -4175,17 +4380,31 @@
       "kind": "prose-or-grammar-obligation",
       "section": "execution",
       "source_line": 2124,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "AO1",
+          "AO2"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "AO3"
+        ],
+        "lazy": [
+          "AO1",
+          "AO2",
+          "AO3"
+        ],
+        "boundary": [
+          "AO1",
+          "AO3"
+        ]
       },
-      "remaining": "Independent normal/error/lazy/numeric grid; historical upstream agreement is insufficient.",
+      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers array lexicographic < and <= only. Arithmetic, bitwise, equality, coercion, other relational operators and whole scalar/producer judgments remain unadjudicated. No general operator completion is inferred.",
       "implementation": [
-        "operators.mbt"
+        "operators.mbt",
+        "eval.mbt",
+        "runtime_types.mbt"
       ],
       "obligation": [
         "Arithmetic, bitwise, equality, coercion and other prose-defined operators"
