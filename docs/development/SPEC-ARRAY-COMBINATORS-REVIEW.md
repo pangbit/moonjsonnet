@@ -60,3 +60,7 @@ on empty objects/functions versus the advertised sequence domain, and flatMap's
 null/string callback results outside the documented return-kind constraints.
 None earns acceptance from an existing Go-style error or success. removeAt naming
 and earlier public-source conflicts are unchanged.
+
+The [execution evidence](SPEC-ARRAY-COMBINATORS-EVIDENCE-2026-10-22.md) retains
+baseline failures, the test-construction correction, fixes and source-bound
+validation. Observations and normative assertions remain separate.
