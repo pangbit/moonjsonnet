@@ -3,6 +3,53 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "policy": "Manual assertion review only. References and matching names never establish passing behavior. An empty dimension is unreviewed. Executed outcomes live in the separate source-bound evidence report. Completed prose constructor transfers are relative to child judgments and counted separately from completed named rules.",
   "evidence": {
+    "PG1": {
+      "file": "spec_primitive_equals_test.mbt",
+      "test": "primitive equality scalar truth table does not coerce distinct types",
+      "assertions": [
+        "let expected = [",
+        "sequence_value(value, Json::boolean(expected[i][j]))",
+        "primitive_interfaces(values[i], values[j])"
+      ],
+      "checks": "Literal eight-value identity matrix covers Null/Boolean/Number/String same/different values and no coercion. Each independently constructed source/typed-AST primitiveEquals/equals/== entry is checked only on their common unambiguous primitive domain. This does not make their nonscalar or recursive contracts interchangeable."
+    },
+    "PG2": {
+      "file": "spec_primitive_equals_test.mbt",
+      "test": "primitive equality preserves finite signed zero and exact string values",
+      "assertions": [
+        "(zero, negative_zero, true)",
+        "(negative_zero, zero, true)",
+        "token_number(\"9007199254740992\")",
+        "Literal(Json::number(1.7976931348623157e308))",
+        "Literal(Json::number(5.0e-324))",
+        "sequence_value(value, Json::boolean(expected))"
+      ],
+      "checks": "Source and independent typed values check both signed-zero orders, alternate numeric spelling, exact 2^53/predecessor inequality, finite maximum identity and subnormal/nonzero distinction. Codepoint equality distinguishes composed/decomposed/case/NUL and agrees for literal versus escaped astral spelling. No NaN/Inf successful input or whole parsing/rounding acceptance is inferred."
+    },
+    "PG3": {
+      "file": "spec_primitive_equals_test.mbt",
+      "test": "primitive equality disjoint value classes require no recursive payloads",
+      "assertions": [
+        "if i != j {",
+        "sequence_value(value, false)",
+        "ordering_error(\"undemanded-payload\")",
+        "Func([], payload.tree)",
+        "sequence_call(\"equals\", [ordering_array([payload]), ordering_array([])])"
+      ],
+      "checks": "Both directions of all distinct pairs among seven value types and builtin-function/Number return false through source and handmade ASTs, without forcing array/object payloads or function bodies. Separate equals/== length-mismatch controls follow the official recursive definition. No expected result is asserted for same-type nonprimitive primitiveEquals; PE0 observations remain outside assertion evidence."
+    },
+    "PG4": {
+      "file": "spec_primitive_equals_test.mbt",
+      "test": "primitive equality requires both operand heads and rejects nonfinite producers",
+      "assertions": [
+        "ordering_error(\"left-required\")",
+        "ordering_error(\"right-required\")",
+        "sequence_failure(value, @moonjsonnet.Runtime, Some(\"overflow\"))",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(d.kind, @moonjsonnet.Syntax)"
+      ],
+      "checks": "One required operand failure at a time propagates its marker; either overflow-producing numeric token rejects Runtime before comparison, while unused whole calls remain lazy. Unselected unknown child fails Static at admission even if the whole call is unused; unfinished source alone fails Syntax. No competing-error order or short circuit of a required head is inferred."
+    },
     "EX0VIS": {
       "file": "spec_object_reflection_test.mbt",
       "test": "object visibility inheritance follows all nine fixed separator combinations",
@@ -888,6 +935,31 @@
     }
   },
   "rules": {
+    "primitiveEquals": {
+      "normal": [
+        "PG1",
+        "PG2",
+        "PG3"
+      ],
+      "runtime_error": [
+        "PG4"
+      ],
+      "lazy": [
+        "PG3",
+        "PG4"
+      ],
+      "boundary": [
+        "PG2",
+        "PG3",
+        "PG4"
+      ],
+      "remaining": "The [primitive equality record](SPEC-PRIMITIVE-EQUALS-2026-10-22.md) covers only primitive values, disjoint value classes, finite/String edges and required-head/error/unused-call boundaries through source and independent ASTs. PE0 is unadjudicated: the fixed rule makes primitive membership part of the result conjunction, suggesting false on nonprimitive left values, but official equals forwards functions and the language forbids function equality. Same-type Array/Object/Function false versus rejection cannot be promoted from local or Go/C++ behavior; six local CLI observations have null normative verdicts and no passing assertion mapping. No rule completion, recursive equals/== equivalence, full value producer/rounding/lexing/invocation or native-function domain is established. A0/B0/N0/R0 remain unknown.",
+      "implementation": [
+        "stdlib.mbt",
+        "operators.mbt",
+        "ast_convert.mbt"
+      ]
+    },
     "object-has-ex": {
       "normal": [
         "EX0VIS",
