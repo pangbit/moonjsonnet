@@ -33,12 +33,12 @@ fn Vm::slice(
   let out = []
   while index < stop && index < length {
     self.tick(loc)
-    let i = array_index(Num(index), items.length(), loc)
     out.push(
       if value is ArrayValue(_) {
+        // Array elements, including index validation, remain deferred.
         self.defer_index(value, index, loc)
       } else {
-        items[i]
+        items[array_index(Num(index), items.length(), loc)]
       },
     )
     index = number_value(finite(index + stride, loc), loc)

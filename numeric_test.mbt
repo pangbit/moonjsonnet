@@ -1,26 +1,30 @@
 ///|
-test "numeric indices truncate toward zero before bounds checks" {
-  let cases = [
-    ("[10,20,30][-0.9]", "10"),
-    ("[10,20,30][1.9]", "20"),
-    ("'你😀a'[1.9]", "\"😀\""),
-    ("[1,error 'unused'][0.9]", "1"),
-    ("'你😀a'[-0.9]", "\"你\""),
-  ]
-  for (source, expected) in cases {
-    assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))
+test "numeric indices reject fractional values before accessing elements" {
+  for
+    source in [
+      "[10,20,30][-0.9]", "[10,20,30][1.9]", "'你😀a'[1.9]", "[1,error 'unused'][0.9]",
+      "'你😀a'[-0.9]",
+    ] {
+    try @moonjsonnet.evaluate(source) catch {
+      @moonjsonnet.Error(d) => {
+        assert_eq(d.kind, @moonjsonnet.Runtime)
+        assert_eq(d.message, "Index must be a finite integer")
+      }
+    } noraise {
+      _ => fail("expected fractional index error")
+    }
   }
 }
 
 ///|
-test "fractional slices retain fractional progression and lazy elements" {
+test "fractional slices retain lazy progression and validate demanded indices" {
   let cases = [
-    ("[0,1,2][0.5:2.5:0.5]", "[0,1,1,2]"),
-    ("[0,1,2][-0.5:]", "[2]"),
+    ("std.length([0,1,2][0.5:2.5:0.5])", "4"),
+    ("std.length([0,1,2][-0.5:])", "1"),
     ("[0,1,2][:1.5]", "[0,1]"),
-    ("'你😀a'[0.5:2.5:0.5]", "\"你😀😀a\""),
-    ("std.slice([0,1,2],0.5,2.5,0.5)", "[0,1,1,2]"),
-    ("[0,error 'unused',2][0.5::2]", "[0,2]"),
+    ("'你😀a'[0:3:2]", "\"你a\""),
+    ("std.length(std.slice([0,1,2],0.5,2.5,0.5))", "4"),
+    ("[0,error 'unused',2][::2]", "[0,2]"),
   ]
   for (source, expected) in cases {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))

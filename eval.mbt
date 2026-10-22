@@ -570,13 +570,16 @@ fn Vm::index(
 ///|
 fn array_index(key : Value, length : Int, loc : Location) -> Int raise {
   let number = number_value(key, loc)
-  let n = reference_int64(number)
-  if n < 0L || n >= length.to_int64() {
+  if number.is_inf() || number.is_nan() || number != number.floor() {
+    raise problem(Runtime, loc, "Index must be a finite integer")
+  }
+  if number < 0 || number >= length.to_double() {
     raise problem(
       Runtime,
       loc,
-      "Index \{n} out of bounds, not within [0, \{length})",
+      "Index \{manifest_number(number)} out of bounds, not within [0, \{length})",
     )
   }
-  n.to_int()
+  // The checked range fits Int because length is an Int.
+  number.to_int()
 }
