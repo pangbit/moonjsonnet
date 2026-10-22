@@ -2,8 +2,8 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "c4b4efde488a7d2ab8749d0f41ce24fb5e8f243ca07a5d54e11b57292d67a73d",
-  "tool_sha256": "85c2e889a8b4bc90daba9c71439ca2aa6a0666e75e4105bd6cc474c66c977023",
+  "mapping_sha256": "df13f46514b10f96ad9723faf49377471efe8ae963633cca4336a04326b9e4e1",
+  "tool_sha256": "ba93d89ca4e670c2eedb173b6bc00efa84008f4fdf56c989263fc19e69d87a72",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 42,
@@ -1060,6 +1060,53 @@
       "checks": "Both entry paths construct/type-inspect the derived object without entering its inherited assertion closure; metadata and unused-field paths yield object/42 with zero events. Only actual field demand enters condition(3,2,bad), propagates its explicit Runtime marker and bypasses message/payload. No top-level or std.manifestJson behavior is adjudicated.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "AX1": {
+      "file": "spec_assertion_super_test.mbt",
+      "line": 207,
+      "test": "inherited assertions extract lower functions with separate super prefixes",
+      "assertions": [
+        "assertion_super_source(\"error\", 4)",
+        "assertion_self_index(\"d\", \"value\")",
+        "for handmade in [false, true]",
+        "program.evaluate(native_functions=assertion_super_natives(events)), 4,",
+        "assert_eq(events, [[\"condition\", 1, 4], [\"payload\", 4]])"
+      ],
+      "checks": "A C-layer assertion extracts B.probe and invokes it through a closure in final D. Its observed pair is A.n=1/D.n=4, and value 4 follows; C/D replacement functions cannot replace the assertion prefix or B function prefix. The erroneous lower message stays unforced. Layer-model behavioral evidence only: the fixed printed inheritance equation does not explicitly spell out assertion-prefix rewriting.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "AX2": {
+      "file": "spec_assertion_super_test.mbt",
+      "line": 226,
+      "test": "assertion message super errors stay lazy and cannot borrow newer fields",
+      "assertions": [
+        "for problem in [\"missing\", \"error\"]",
+        "for mode in [\"metadata\", \"unused\", \"forced\"]",
+        "assert_eq(events, [])",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(d.location.file, \"assertion-self-entry\")",
+        "assert_eq(d.message, \"assertion-super-marker\")",
+        "assert_eq(events, [[\"condition\", 1, 4], [\"message\", 1, 4]])",
+        "program.evaluate(native_functions=assertion_super_natives(events)), expected,"
+      ],
+      "checks": "After explicit D type inspection, metadata/unused-field paths yield object/42 with zero events. Actual demand makes the assertion false, extracts B.message from C super and enters it with its own A prefix/final D self. Missing/explicitly erroneous A.problem then raises Runtime without payload, despite B/C/D repair strings; the explicit marker survives. This is message failure, not condition failure or an addition error. The formal assertion-prefix transformation remains unadjudicated.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "AR0": {
+      "file": "error_value_test.mbt",
+      "line": 2,
+      "test": "error values and assertion messages use bounded Jsonnet string conversion",
+      "assertions": [
+        "for prefix in [\"error \", \"assert false:\", \"{assert false:\"]",
+        "assert_eq(d.message, expected)",
+        "fail(\"error value should fail\")",
+        "assert true:error 'unused';42",
+        "{assert true:error 'unused',a:42}",
+        "(\"assert false;42\", \"Assertion failed\")",
+        "(\"{assert false,a:42}\", \"Object assertion failed.\")"
+      ],
+      "checks": "Reused existing explicit default-message failures and true-condition error-message laziness for expression/object assertions, plus finite scalar/aggregate message conversion controls. The fixed spec does not standardize human error presentation, so exact rendering/default text is an embedding check. This is manual reuse, not a new execution or completion of arbitrary error conversion.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -1098,6 +1145,8 @@
     "spec_super_prefix_test.mbt": "cd91fcc5d2c41b3a08a0ef669c36c255231b0d608ddf88085b6a4b9a6c95ef5e",
     "spec_root_scope_test.mbt": "6f43b1017c33c74f6207911312193df725bf06d59d09d7464546a0a16cb461d5",
     "spec_assertion_self_test.mbt": "eaf067af506d8151d87cfe8f8cbe2527580cabb6d5a8b73ea2a56a88072faaf6",
+    "spec_assertion_super_test.mbt": "d118e17f3fd36f4bcfaa5ebbd6ec4131cb8794c738a6826cac0ea7c23b24f884",
+    "error_value_test.mbt": "93c73e09eefdbc9ad41e149b52d3b723f5a841309e675682aa50d1d26b29f579",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -1994,7 +2043,8 @@
           "SP2",
           "RT1",
           "RT2",
-          "AS1"
+          "AS1",
+          "AX1"
         ],
         "static_error": [],
         "runtime_error": [
@@ -2004,7 +2054,8 @@
           "SP3",
           "RT3",
           "AS2",
-          "AS3"
+          "AS3",
+          "AX2"
         ],
         "lazy": [
           "O5",
@@ -2013,7 +2064,9 @@
           "RT3",
           "AS1",
           "AS2",
-          "AS3"
+          "AS3",
+          "AX1",
+          "AX2"
         ],
         "boundary": [
           "O4",
@@ -2026,10 +2079,12 @@
           "RT2",
           "RT3",
           "AS2",
-          "AS3"
+          "AS3",
+          "AX1",
+          "AX2"
         ]
       },
-      "remaining": "Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [nested lexical roots](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. General missing-field/key errors, multiple failing assertions, equality/assertion interactions and arbitrary field/closure shapes remain open.",
+      "remaining": "See [assertion-prefix evidence and acceptance endpoints](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md) for new bounded behavior and the unresolved formal assertion-prefix rewrite. Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [nested lexical roots](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. General missing-field/key errors, multiple failing assertions, equality/assertion interactions and arbitrary field/closure shapes remain open.",
       "implementation": [
         "eval.mbt",
         "objects.mbt"
@@ -2324,7 +2379,8 @@
           "SP2",
           "RT1",
           "RT2",
-          "AS1"
+          "AS1",
+          "AX1"
         ],
         "static_error": [],
         "runtime_error": [
@@ -2335,7 +2391,8 @@
           "O6",
           "SR2",
           "SP3",
-          "AS3"
+          "AS3",
+          "AX2"
         ],
         "boundary": [
           "O6",
@@ -2348,10 +2405,12 @@
           "RT2",
           "AS1",
           "AS2",
-          "AS3"
+          "AS3",
+          "AX1",
+          "AX2"
         ]
       },
-      "remaining": "Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [nested lexical roots](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. Full inheritance/association algebra, additive/nested field shapes, computed duplicate names and arbitrary closures remain open; later-demand failures are not errors of object addition.",
+      "remaining": "See [assertion-prefix evidence and acceptance endpoints](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md) for new bounded behavior and the unresolved formal assertion-prefix rewrite. Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [nested lexical roots](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. Full inheritance/association algebra, additive/nested field shapes, computed duplicate names and arbitrary closures remain open; later-demand failures are not errors of object addition.",
       "implementation": [
         "operators.mbt",
         "objects.mbt",
@@ -3499,27 +3558,38 @@
         "normal": [
           "O3",
           "O5",
-          "AS1"
+          "AS1",
+          "AX1",
+          "AR0"
         ],
         "static_error": [],
         "runtime_error": [
           "O3",
           "O5",
           "AS2",
-          "AS3"
+          "AS3",
+          "AX2",
+          "AR0",
+          "IF4"
         ],
         "lazy": [
           "O5",
           "AS1",
           "AS2",
-          "AS3"
+          "AS3",
+          "AX1",
+          "AX2",
+          "AR0"
         ],
         "boundary": [
           "AS2",
-          "AS3"
+          "AS3",
+          "AX1",
+          "AX2",
+          "IF4"
         ]
       },
-      "remaining": "Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Expression assertions, default/nonstring messages, condition type errors, assertion super scope and multiple-assertion interactions remain open; top-level manifestation and std.manifestJson remain separate paths.",
+      "remaining": "See [assertion-prefix evidence and acceptance endpoints](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md): U1 object-local/nested-object assertion binding and U2 conjunction across assertion layers remain untested; N0 printed assertion-super rewriting remains a normative gap. Default-message failure/laziness controls are reused as AR0; IF4 plus the shared exhaustive boolean helper supplies the relative condition-type argument. General error conversion is a child obligation. No complete expression/object constructor review or formal inheritance equivalence is claimed.",
       "implementation": [
         "eval.mbt",
         "objects.mbt"
@@ -3787,7 +3857,8 @@
           "SP1",
           "RT1",
           "RT2",
-          "AS1"
+          "AS1",
+          "AX1"
         ],
         "static_error": [
           "F5",
@@ -3811,10 +3882,11 @@
           "RT1",
           "RT2",
           "RT3",
-          "AS2"
+          "AS2",
+          "AX2"
         ]
       },
-      "remaining": "Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Bounded [plain inherited-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [extracted super-prefix retention](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [lexical root retention](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. Other binder/capture boundaries and the full self/super/root substitution algebra remain open.",
+      "remaining": "See [assertion-prefix evidence and acceptance endpoints](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md) for new bounded behavior and the unresolved formal assertion-prefix rewrite. Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Bounded [plain inherited-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [extracted super-prefix retention](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [lexical root retention](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. Other binder/capture boundaries and the full self/super/root substitution algebra remain open.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt",
