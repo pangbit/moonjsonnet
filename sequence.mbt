@@ -1,6 +1,6 @@
 ///|
-// Source std.map and std.slice defer the indexing expression itself. Capturing
-// the current thunk would miss a subsequent removeAt mutation of the array.
+// Source std.map and std.slice defer the indexing expression itself, including
+// validation of an index until that array element is demanded.
 fn Vm::defer_index(
   self : Vm,
   value : Value,

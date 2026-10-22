@@ -1,5 +1,5 @@
 ///|
-test "remove and removeAt preserve lazy payloads and reference mutation" {
+test "remove and removeAt preserve lazy payloads and immutable inputs" {
   for
     (source, expected) in [
       ("std.remove([1,2,1,3],1)", "[2,1,3]"),
@@ -8,28 +8,28 @@ test "remove and removeAt preserve lazy payloads and reference mutation" {
       ("std.length(std.remove([1,error 'unused'],1))", "1"),
       (
         "local a=[1,2,3]; local m=std.map(function(x)x,a); [std.length(m),std.removeAt(a,0),m]",
-        "[3,[2,3],[2,3,3]]",
+        "[3,[2,3],[1,2,3]]",
       ),
       (
-        "local a=[1,2,3]; local s=a[:]; [std.length(s),std.removeAt(a,0),s]", "[3,[2,3],[2,3,3]]",
+        "local a=[1,2,3]; local s=a[:]; [std.length(s),std.removeAt(a,0),s]", "[3,[2,3],[1,2,3]]",
       ),
       (
         "local a=[1,2,3]; [std.filter(function(x) if x==1 then std.length(std.removeAt(a,0))>0 else true,a),a]",
-        "[[2,3,3],[2,3,3]]",
+        "[[1,2,3],[1,2,3]]",
       ),
       (
-        "local a=[1,2,3,4]; local b=std.removeAt(a,1); [b,a]", "[[1,3,4],[1,3,4,4]]",
+        "local a=[1,2,3,4]; local b=std.removeAt(a,1); [b,a]", "[[1,3,4],[1,2,3,4]]",
       ),
       (
         "local a=[1,2,3,4]; local b=std.removeAt(a,1); local c=std.removeAt(b,0); [c,b,a]",
-        "[[3,4],[3,4,4],[1,3,4,4]]",
+        "[[3,4],[1,3,4],[1,2,3,4]]",
       ),
       (
         "local a=[1,2,3,4]; local b=std.removeAt(a,1); [std.length(b),std.removeAt(a,0),b,a]",
-        "[3,[3,4,4],[1,3,4],[3,4,4,4]]",
+        "[3,[2,3,4],[1,3,4],[1,2,3,4]]",
       ),
       (
-        "local x=1; local a=[x,2,3]; [std.removeAt(a,0),x,a]", "[[2,3],1,[2,3,3]]",
+        "local x=1; local a=[x,2,3]; [std.removeAt(a,0),x,a]", "[[2,3],1,[1,2,3]]",
       ),
     ] {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))

@@ -8,11 +8,13 @@ fn Vm::remove_at(
   if index < 0 || index >= items.length() {
     raise problem(Runtime, loc, "removeAt index out of bounds")
   }
-  // Go append shifts the original slice, then makeValueArray copies the
-  // shorter result to exact capacity. Keep the old length and trailing slot.
-  for i in index..<(items.length() - 1) {
+  // Copy thunk references without forcing payloads or changing the input.
+  let out = []
+  for i, item in items {
     self.tick(loc)
-    items[i] = items[i + 1]
+    if i != index {
+      out.push(item)
+    }
   }
-  ArrayValue(items[:items.length() - 1].to_owned())
+  ArrayValue(out)
 }
