@@ -91,6 +91,11 @@ proof of all bindings or object syntax.
 
 ## Current object-assertion endpoints
 
+This table records the 0719f40 batch. The subsequent
+[U2 conjunction/constructor review](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md)
+closes the bounded U2 behavioral endpoint, preserves N0 and states the formal
+scope of self-index reentry. Original execution results below remain historical.
+
 The [prior acceptance ledger](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md)
 retains its earlier source-bound results and now links this continuation.
 
