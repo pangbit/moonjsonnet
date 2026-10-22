@@ -2,19 +2,46 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "957c9b5010d61c824839e558b99e1fd3459c0b4262194cf42406a8ea5a43d51a",
-  "tool_sha256": "c3aab3f420366b2e2cc9fa6fbcfc0235604778b1fd68752905b151c4a0ff5eb4",
+  "mapping_sha256": "bbe81835d879982074af31b5625fc1c9d2ace48f338460560b90c99a53ded6eb",
+  "tool_sha256": "95c31cb16c5ea130d6860961cb39faec694c40e9dc6f1b838debf2e19d2606d7",
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 62,
-  "completed_rule_rows": 14,
+  "manually_reviewed_subset_rows": 61,
+  "completed_rule_rows": 16,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
-  "completed_evaluation_rule_rows": 8,
-  "unreviewed_rows": 17,
+  "completed_evaluation_rule_rows": 10,
+  "unreviewed_rows": 16,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
+    "OH1": {
+      "file": "spec_object_head_test.mbt",
+      "line": 23,
+      "test": "object length and type consume visible key sets without reading values",
+      "assertions": [
+        "[0, \"object\", 0, 0]",
+        "object_head_summary(reflect_object([(key(\"h\"), 2, bad)]))",
+        "[2, \"object\", 2, 3]",
+        "object_head_summary(ordering_binary(base, \"+\", overlay))",
+        "[1, \"object\", 1, 1]"
+      ],
+      "checks": "Separate source and handmade Objects/calls use literal direct length/type and visible/all-name counts for empty, hidden-only, inherited overrides/forced visibility/new key and empty-name/null-key omission. Stored field payloads error but stay unread. Counts are frozen key-set cardinalities, not derived from observed Ex output; the existing Ex visibility lemma is reused.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "OH2": {
+      "file": "spec_object_head_test.mbt",
+      "line": 58,
+      "test": "object summaries require construction and preserve static and overload boundaries",
+      "assertions": [
+        "Some(\"head-required\")",
+        "Some(\"key-required\")",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "sequence_failure(sequence_call(\"length\", [value]), @moonjsonnet.Type, None)"
+      ],
+      "checks": "Source and independent AST length/type calls propagate isolated object-head/computed-key failures and leave unused whole calls lazy. An unknown hidden field rejects Static at admission. Only unsupported Null/Boolean/Number length arguments reject Type; Array/String/Function overloads remain separately documented, and all producer/static judgments remain assumed.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FL0SEL": {
       "file": "spec_foundation_arrays_test.mbt",
       "line": 106,
@@ -1934,6 +1961,7 @@
     }
   },
   "test_file_sha256": {
+    "spec_object_head_test.mbt": "026febcc69f4f2f243685569002b81c44fc8ed176aabe15f7e36a970eda648de",
     "spec_foundation_arrays_test.mbt": "beb47db7cee9b2ebf3372954ae2c975810b9b61daa3f14448f847ea67b18a19f",
     "spec_filter_test.mbt": "448e73f9a5810e72eecad905c9cffed2446d6a4e5b7acd8ac03e7070d31362fc",
     "spec_array_build_test.mbt": "fcc4c68261358372994b4c2c48b4b734412531bafbafe503b97a1361a088b0c1",
@@ -4168,18 +4196,112 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2630,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "EX1",
+          "OH1"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "OH2"
+        ],
+        "lazy": [
+          "EX0ASSERT",
+          "EX1",
+          "OH1",
+          "OH2"
+        ],
+        "boundary": [
+          "EX0VIS",
+          "EX2",
+          "OH1",
+          "OH2"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "stdlib.mbt",
+        "objects.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "length-object",
+          "decision": "complete",
+          "review_form": "object-head-transfer",
+          "fixed_statement": "\\rule{length-object} { \\texttt{std.length}(\\texttt{std.objectFieldsEx}(e, false) ↓ n } { \\texttt{std.length}(e) ↓ n }",
+          "interpreted_statement": "\\rule{length-object} { \\texttt{std.length}(\\texttt{std.objectFieldsEx}(e, false)) ↓ n } { \\texttt{std.length}(e) ↓ n }",
+          "premise_roles": [
+            "visible-name-array-count"
+          ],
+          "argument_domains": [
+            "Object"
+          ],
+          "result_contract": "visible-field-count",
+          "demand_policy": "object-head-only",
+          "dependency_rules": [
+            "object-fields-ex",
+            "length-array"
+          ],
+          "child_judgments_assumed": "The expression has evaluated under its own judgment to an admitted finite Object head within evaluator/host bounds. Its field names/effective visibility follow the separately reviewed object child representation. The official std intrinsic and unshadowed dependencies are called. Construction/static/inheritance/assertion, generic invocation and other overloads are assumed separately, not completed.",
+          "scope": "The length-object count transfer under its explicitly corroborated composition reading, relative to evaluated Object and completed object-fields-ex/length-array children.",
+          "reasoning": "The direct Object branch counts exactly the visible key vector of object-fields-ex(false), hence its length-array count. The raw printed delimiter blemish remains verbatim, separately interpreted and corroborated by fixed public field-count documentation.",
+          "review_report": "docs/development/SPEC-OBJECT-HEAD-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This evaluated-value transfer assumes a statically checked expression. OH2 maps adjacent hidden-field Static rejection without completing object/call statics."
+          },
+          "excluded_obligations": [
+            "Whole object construction/inheritance and N0/R0 assertion judgments.",
+            "Other length/type overloads, invocation/std rebinding and value producers.",
+            "A0/B0/PE0, encoding/rounding/resource and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "stdlib.mbt",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
+              "anchor": "let values = params.map(n => self.force(ids[n], loc))",
+              "argument": "The explicit argument head is forced before dispatch; any child construction/key error propagates without a catch, and no field/default/body traversal is added."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Call(visit(f), args.map(a => (a.0, visit(a.1))), strict)",
+              "argument": "Typed conversion retains callee and argument. Child scope/admission and generic invocation remain separate judgments."
+            },
+            {
+              "file": "stdlib.mbt",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
+              "anchor": "ObjectValue(id, top) => self.keys(id, top, false).length().to_double()",
+              "argument": "The Object overload counts the visible-only name vector used by objectFieldsEx(false), without demanding fields. Finite admitted host lengths are exact Double counts."
+            },
+            {
+              "file": "objects.mbt",
+              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "anchor": ".filter(k => hidden || self.visible(id, top, k))",
+              "argument": "The reviewed helper filters unique inherited names by effective visibility. Its producer/visibility proof is reused, not expanded."
+            },
+            {
+              "file": "stdlib.mbt",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
+              "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
+              "argument": "The completed object-fields-ex child has one ready String per name; length-array counts that vector. The direct Object branch is the same cardinality."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
+            "spec_object_reflection_test.mbt": "f656b0c8191c5e69e1b7baccfc4ae2783ec11f856b445d7bb27e90131837bbe7",
+            "spec_object_head_test.mbt": "026febcc69f4f2f243685569002b81c44fc8ed176aabe15f7e36a970eda648de",
+            "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
+            "spec_foundation_types_test.mbt": "0c209adf036e789c5ad2407352188125e985367ba756fc2664f3220859063392",
+            "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d"
+          }
+        }
+      ]
     },
     {
       "id": "length-string",
@@ -4448,25 +4570,100 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2716,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
-          "TYPE"
+          "TYPE",
+          "OH1"
         ],
         "static_error": [],
-        "runtime_error": [],
+        "runtime_error": [
+          "OH2"
+        ],
         "lazy": [
           "TYPELAZY",
-          "O4"
+          "O4",
+          "OH1",
+          "OH2"
         ],
-        "boundary": []
+        "boundary": [
+          "OH1",
+          "OH2"
+        ]
       },
-      "remaining": "All computed-key construction failures.",
+      "remaining": "",
       "implementation": [
-        "stdlib.mbt"
+        "stdlib.mbt",
+        "ast_convert.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "type-object",
+          "decision": "complete",
+          "review_form": "object-head-transfer",
+          "fixed_statement": "\\rule{type-object} { e ↓ v ∈ Object } { \\texttt{std.type}(e) ↓ \\texttt{\"object\"} }",
+          "interpreted_statement": "\\rule{type-object} { e ↓ v ∈ Object } { \\texttt{std.type}(e) ↓ \\texttt{\"object\"} }",
+          "premise_roles": [
+            "evaluated-object"
+          ],
+          "argument_domains": [
+            "Object"
+          ],
+          "result_contract": "literal-object-tag",
+          "demand_policy": "object-head-only",
+          "dependency_rules": [],
+          "child_judgments_assumed": "The expression has evaluated under its own judgment to an admitted finite Object head within evaluator/host bounds. Its field names/effective visibility follow the separately reviewed object child representation. The official std intrinsic and unshadowed dependencies are called. Construction/static/inheritance/assertion, generic invocation and other overloads are assumed separately, not completed.",
+          "scope": "The full type-object constant-tag transfer relative to its evaluated Object child, without nested value/assertion demand.",
+          "reasoning": "The evaluated Object value-kind arm returns exactly object. Computed-key failures propagate through shared head forcing before dispatch; those producers are assumed child judgments, not omitted tag-constructor cases.",
+          "review_report": "docs/development/SPEC-OBJECT-HEAD-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This evaluated-value transfer assumes a statically checked expression. OH2 maps adjacent hidden-field Static rejection without completing object/call statics."
+          },
+          "excluded_obligations": [
+            "Whole object construction/inheritance and N0/R0 assertion judgments.",
+            "Other length/type overloads, invocation/std rebinding and value producers.",
+            "A0/B0/PE0, encoding/rounding/resource and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "stdlib.mbt",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
+              "anchor": "let values = params.map(n => self.force(ids[n], loc))",
+              "argument": "The explicit argument head is forced before dispatch; any child construction/key error propagates without a catch, and no field/default/body traversal is added."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Call(visit(f), args.map(a => (a.0, visit(a.1))), strict)",
+              "argument": "Typed conversion retains callee and argument. Child scope/admission and generic invocation remain separate judgments."
+            },
+            {
+              "file": "stdlib.mbt",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
+              "anchor": "\"type\" => Str(value_type(x))",
+              "argument": "The intrinsic returns its evaluated head tag without nested demand."
+            },
+            {
+              "file": "stdlib.mbt",
+              "sha256": "c98c92f45860380fed4e259d125b2df098393b7808fcc7d5b764cf576bbf6499",
+              "anchor": "ObjectValue(_, _) => \"object\"",
+              "argument": "The exhaustive Object arm is exactly the required literal tag, independent of fields and pending assertions."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
+            "spec_object_reflection_test.mbt": "f656b0c8191c5e69e1b7baccfc4ae2783ec11f856b445d7bb27e90131837bbe7",
+            "spec_object_head_test.mbt": "026febcc69f4f2f243685569002b81c44fc8ed176aabe15f7e36a970eda648de",
+            "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
+            "spec_foundation_types_test.mbt": "0c209adf036e789c5ad2407352188125e985367ba756fc2664f3220859063392",
+            "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d"
+          }
+        }
+      ]
     },
     {
       "id": "type-function",

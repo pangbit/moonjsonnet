@@ -274,10 +274,10 @@ async fn main {
     "Populated cells identify manually examined assertions. Empty cells remain unreviewed. Completed named-rule reviews concern only their named judgments; completed prose constructor transfers are counted separately and assume their children. N/A cells have stated in-scope reasons, not missing passing tests. Runtime errors include host Type/Assertion categories after successful parsing. ",
   )
   markdown.write_string(
-    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md), [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md), [binary byte-substitution report](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md), [UTF-8 text-substitution report](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md), [conditional-rule report](SPEC-CONDITIONAL-EVIDENCE-2026-10-22.md), [static error report](SPEC-ERROR-STATIC-EVIDENCE-2026-10-22.md), [static unary report](SPEC-UNARY-STATIC-EVIDENCE-2026-10-22.md), [inherited-function receiver report](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix report](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md), [lexical-root report](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md), [assertion-self closure report](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md), [assertion-super report](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md), [assertion object-local report](SPEC-ASSERTION-LOCAL-EVIDENCE-2026-10-22.md), [assertion conjunction/constructor report](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md), [object-assertion adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md), [object-comprehension key report](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md), [array-ordering report](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md), [Boolean operator report](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md), [imported closure report](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md), [combined sequence record](SPEC-SEQUENCE-STRUCTURE-2026-10-22.md), [number-token record](SPEC-NUMBER-TOKENS-2026-10-22.md), [precedence record](SPEC-PRECEDENCE-2026-10-22.md), [object reflection Ex record](SPEC-OBJECT-REFLECTION-EX-2026-10-22.md), [primitive equality record](SPEC-PRIMITIVE-EQUALS-2026-10-22.md), [makeArray/PE0 record](SPEC-MAKEARRAY-2026-10-22.md) and [filter record](SPEC-FILTER-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
+    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md), [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md), [binary byte-substitution report](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md), [UTF-8 text-substitution report](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md), [conditional-rule report](SPEC-CONDITIONAL-EVIDENCE-2026-10-22.md), [static error report](SPEC-ERROR-STATIC-EVIDENCE-2026-10-22.md), [static unary report](SPEC-UNARY-STATIC-EVIDENCE-2026-10-22.md), [inherited-function receiver report](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix report](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md), [lexical-root report](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md), [assertion-self closure report](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md), [assertion-super report](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md), [assertion object-local report](SPEC-ASSERTION-LOCAL-EVIDENCE-2026-10-22.md), [assertion conjunction/constructor report](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md), [object-assertion adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md), [object-comprehension key report](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md), [array-ordering report](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md), [Boolean operator report](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md), [imported closure report](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md), [combined sequence record](SPEC-SEQUENCE-STRUCTURE-2026-10-22.md), [number-token record](SPEC-NUMBER-TOKENS-2026-10-22.md), [precedence record](SPEC-PRECEDENCE-2026-10-22.md), [object reflection Ex record](SPEC-OBJECT-REFLECTION-EX-2026-10-22.md), [primitive equality record](SPEC-PRIMITIVE-EQUALS-2026-10-22.md), [makeArray/PE0 record](SPEC-MAKEARRAY-2026-10-22.md), [filter record](SPEC-FILTER-2026-10-22.md) and [Object head/count record](SPEC-OBJECT-HEAD-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
   )
   markdown.write_string(
-    "Reproduce with `moon run --frozen tools/spec-language-matrix.mbtx REFERENCE_DIR EVIDENCE_DIR`; REFERENCE_DIR supplies pinned spec.html and language.md. This command validates assertion locations/hashes and regenerates this matrix; it never infers results or runs upstream tools.\n\n",
+    "Reproduce with `moon run --frozen tools/spec-language-matrix.mbtx REFERENCE_DIR EVIDENCE_DIR`; REFERENCE_DIR supplies pinned spec.html/language.md and, for Object head/count reviews, stdlib.html. This command validates assertion locations/hashes and regenerates this matrix; it never infers results or runs upstream tools.\n\n",
   )
   markdown.write_string(
     "| Clause / fixed source | Normal | Static error | Runtime error | Lazy | Boundary | Remaining obligations |\n| --- | --- | --- | --- | --- | --- | --- |\n",
@@ -504,6 +504,126 @@ async fn main {
           assert_true(
             !dimension(row, name).is_empty(),
             msg="sequence length evidence gap: " + name,
+          )
+        }
+      } else if form == "object-head-transfer" {
+        let (statement, interpreted, roles, result, dependencies) : (
+          String,
+          String,
+          Json,
+          String,
+          Array[String],
+        ) = match id {
+          "length-object" =>
+            (
+              "\\rule{length-object} { \\texttt{std.length}(\\texttt{std.objectFieldsEx}(e, false) ↓ n } { \\texttt{std.length}(e) ↓ n }",
+              "\\rule{length-object} { \\texttt{std.length}(\\texttt{std.objectFieldsEx}(e, false)) ↓ n } { \\texttt{std.length}(e) ↓ n }",
+              ["visible-name-array-count"],
+              "visible-field-count",
+              ["object-fields-ex", "length-array"],
+            )
+          "type-object" => {
+            let statement = "\\rule{type-object} { e ↓ v ∈ Object } { \\texttt{std.type}(e) ↓ \\texttt{\"object\"} }"
+            (
+              statement,
+              statement,
+              ["evaluated-object"],
+              "literal-object-tag",
+              [],
+            )
+          }
+          _ =>
+            fail(
+              "object-head completion is restricted to length-object/type-object",
+            )
+        }
+        let head = "\\rule{" + id + "} {"
+        let parts = spec.split(head).collect()
+        assert_eq(parts.length(), 2)
+        let actual = head + parts[1].split("\\]").next().unwrap().to_owned()
+        assert_eq(
+          normalized(actual),
+          statement,
+          msg="fixed object-head source mismatch",
+        )
+        assert_eq(
+          text_field(record, "fixed_statement"),
+          statement,
+          msg="reviewed object-head statement mismatch",
+        )
+        assert_eq(
+          text_field(record, "interpreted_statement"),
+          interpreted,
+          msg="object-head interpretation mismatch",
+        )
+        assert_eq(
+          field(record, "premise_roles"),
+          roles,
+          msg="object-head premise roles",
+        )
+        assert_eq(
+          field(record, "argument_domains"),
+          Json::array(["Object"]),
+          msg="object-head argument domain",
+        )
+        assert_eq(
+          text_field(record, "result_contract"),
+          result,
+          msg="object-head result contract",
+        )
+        assert_eq(
+          text_field(record, "demand_policy"),
+          "object-head-only",
+          msg="object-head demand policy",
+        )
+        assert_eq(
+          field(record, "dependency_rules"),
+          Json::array(dependencies.map(d => Json::string(d))),
+          msg="object-head dependencies",
+        )
+        for dependency in dependencies {
+          guard mapped_rules.get(dependency) is Some(row) &&
+            rule_review(row) is Some(review) else {
+            fail("object-head dependency review required: " + dependency)
+          }
+          assert_eq(
+            text_field(review, "decision"),
+            "complete",
+            msg="object-head dependency not complete",
+          )
+        }
+        assert_eq(
+          sha256(reference + "/stdlib.html"),
+          "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
+          msg="fixed object-head public source mismatch",
+        )
+        assert_true(
+          @fs.read_file(reference + "/stdlib.html")
+          .text()
+          .contains("number of fields in the object."),
+        )
+        assert_true(
+          !text_field(record, "child_judgments_assumed").is_empty(),
+          msg="object-head child assumptions required",
+        )
+        guard field(record, "excluded_obligations") is Array(excluded) else {
+          fail("object-head exclusions required")
+        }
+        for
+          exclusion in [
+            "Whole object construction/inheritance and N0/R0 assertion judgments.",
+            "Other length/type overloads, invocation/std rebinding and value producers.",
+            "A0/B0/PE0, encoding/rounding/resource and Go-C++ acceptance.",
+          ] {
+          assert_true(
+            excluded.contains(Json::string(exclusion)),
+            msg="object-head must exclude " + exclusion,
+          )
+        }
+        for name in ["runtime_error", "lazy", "boundary"] {
+          assert_true(
+            !dimension(row, name).is_empty(),
+            msg="object-head evidence gap: " + name,
           )
         }
       } else if form == "object-reflection-transfer" {
@@ -864,7 +984,7 @@ async fn main {
   assert_eq(used.length(), evidence.length(), msg="orphan evidence mappings")
   if !completed.is_empty() {
     markdown.write_string(
-      "\n## Completed named-rule reviews\n\nThese are recorded manual decisions from constructor case analysis plus executed controls. The tool checks empty premises for premise-free judgments, or exact fixed statements and premise roles for the explicitly supported conditional, Boolean shortcut, sequence-length, object-reflection, chk-error and chk-unary transfer judgments. The sequence form is restricted to length-array/string, pins element/codepoint units, and excludes the array-concat formal index discrepancy A0. The Boolean form is restricted to the two explicit shortcut rules and excludes the longcut non-Boolean RHS domain B0. The reflection form is restricted to object-has-ex/fields-ex, pins Object/String/Boolean domains, exact name membership or sorted unique name output, excludes payload demand and retains N0/R0/A0/B0 boundaries. The unary record also pins the four-symbol grammar domain. It checks inspected implementation/test hashes and explicit scope; source/name matches do not prove semantic correctness. Transfer judgments assume their child judgments and do not complete other language rules or whole-language acceptance.\n\n",
+      "\n## Completed named-rule reviews\n\nThese are recorded manual decisions from constructor case analysis plus executed controls. The tool checks empty premises for premise-free judgments, or exact fixed statements and premise roles for the explicitly supported conditional, Boolean shortcut, sequence-length, object-reflection, object-head, chk-error and chk-unary transfer judgments. The sequence form is restricted to length-array/string, pins element/codepoint units, and excludes the array-concat formal index discrepancy A0. The Boolean form is restricted to the two explicit shortcut rules and excludes the longcut non-Boolean RHS domain B0. The reflection form is restricted to object-has-ex/fields-ex, pins Object/String/Boolean domains, exact name membership or sorted unique name output, excludes payload demand and retains N0/R0/A0/B0 boundaries. The object-head form is restricted to length-object/type-object, preserves the raw length delimiter blemish and explicit composition interpretation, checks the fixed public field-count source and completed dependencies, and excludes nested value/assertion demand and N0/R0. The unary record also pins the four-symbol grammar domain. It checks inspected implementation/test hashes and explicit scope; source/name matches do not prove semantic correctness. Transfer judgments assume their child judgments and do not complete other language rules or whole-language acceptance.\n\n",
     )
     for (id, record) in completed {
       let report = text_field(record, "review_report")
