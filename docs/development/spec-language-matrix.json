@@ -2,15 +2,15 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "d936bb042623e2a1238b51cb6d096e4b58f15e34f56b172115f5924e67733824",
-  "tool_sha256": "a09fe05d511815ece7eda9197445e2064f1cb6b2c2a58c2e133bb059932c8daf",
+  "mapping_sha256": "298e3c77619350730e9f0207886cddf828a6eeea895a3f1b099f785da6b6a742",
+  "tool_sha256": "2ccc665e5f13bb46aa08b2a93d1cc883f005ed5f1ebad82e68689b208bbb9631",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 42,
-  "completed_rule_rows": 6,
-  "completed_static_rule_rows": 4,
+  "completed_rule_rows": 7,
+  "completed_static_rule_rows": 5,
   "completed_evaluation_rule_rows": 2,
-  "unreviewed_rows": 46,
+  "unreviewed_rows": 45,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -762,6 +762,40 @@
       "checks": "Both choices and both entry paths retain exact null/Boolean/number/Unicode-string/array/object values, with zero unselected calls. A selected closure is applied afterward, returns 42 and invokes its body exactly once; no eager manifestation or unused-branch demand is accepted.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "ES1": {
+      "file": "spec_error_static_test.mbt",
+      "line": 53,
+      "test": "error delegates operand scope even in unused expressions",
+      "assertions": [
+        "error_static_ast(Fail(error_static_ast(Var(\"missing\"))))",
+        "\"local unused=error missing;42\"",
+        "\"if false then error missing else 42\"",
+        "for name in [\"self\", \"super\"]",
+        "error_static_program(source, tree, handmade)",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(d.location.file, \"error-static-entry\")",
+        "\"local unused=error 42;42\"",
+        "assert_eq(program.evaluate(), 42)"
+      ],
+      "checks": "Both independent entry paths reject missing names in demanded, unused-local and unselected-branch errors, and self/super operands outside objects. Valid outer Gamma, numeric operands and self/super object contexts create successfully and yield outer 42. The reviewed helper chooses parse or from_ast without exporting a source AST.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "ES2": {
+      "file": "spec_error_static_test.mbt",
+      "line": 166,
+      "test": "error operand callbacks stay lazy until runtime demand",
+      "assertions": [
+        "error_static_ast(Fail(operand))",
+        "let program = error_static_program(source, tree, handmade)",
+        "assert_eq(calls, 0)",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(d.message, \"operand marker\")",
+        "assert_eq(program.evaluate(native_functions=natives), 42)",
+        "assert_eq(calls, if demanded { 1 } else { 0 })"
+      ],
+      "checks": "Source and handmade Programs create without invoking the operand callback. Unused-local and unselected-branch evaluation returns 42 with zero callbacks; demanded error calls the same string operand once and raises Runtime with its independent marker. These are phase/demand boundaries, not completion of error conversion or diagnostics.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -793,6 +827,7 @@
     "spec_importstr_utf8_test.mbt": "e59bf7fd40462e618b5894504d1893bda4d46dd634e457b573b35cfd1cb2b8e8",
     "spec_conditional_static_test.mbt": "6f596f443401defc8c4865a5ac19084973c1bc27aeba11dd487e131462b4ea8e",
     "spec_conditional_runtime_test.mbt": "ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf",
+    "spec_error_static_test.mbt": "b931793ba7ad955b4a83f30600f6eeaca66c2ff0e99640004c059254866e9610",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -1412,18 +1447,86 @@
       "kind": "named-rule",
       "section": "static_checking",
       "source_line": 1730,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
+        "normal": [
+          "ES1",
+          "ES2",
+          "A3",
+          "AP4"
+        ],
+        "static_error": [
+          "ES1"
+        ],
         "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "lazy": [
+          "ES1",
+          "ES2",
+          "A3"
+        ],
+        "boundary": [
+          "ES1",
+          "ES2",
+          "AP4"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "validate.mbt",
+        "ast_convert.mbt",
+        "ast_validate.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "chk-error",
+          "decision": "complete",
+          "review_form": "error-static-transfer",
+          "fixed_statement": "\\rule{chk-error} { Γ ⊢ e } { Γ ⊢ \\error{e} }",
+          "premise_roles": [
+            "operand"
+          ],
+          "child_judgments_assumed": "The operand checker implements its own judgment. This review closes only the error constructor's unchanged Gamma/object-context delegation; local, variable, object and other child rules keep their existing partial/completed status.",
+          "scope": "The chk-error static constructor-transfer judgment only, relative to its single operand judgment.",
+          "reasoning": "Fail(a) delegates unconditionally to validate(a, names, in_object), introduces no name/type/evaluation condition and preserves its sole child in AST conversion. Two new groups check both independent entry paths; A3/AP4 reuse literal-operand creation/demand controls without adding new test counts.",
+          "review_report": "docs/development/SPEC-ERROR-STATIC-REVIEW.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "runtime_error": "This static judgment has no evaluation premise. Runtime string-operand demand is recorded only as an adjacent boundary."
+          },
+          "excluded_obligations": [
+            "Correctness/completeness of operand and enclosing child judgments",
+            "Full error runtime conversion, manifestation and diagnostics",
+            "Full source grammar/desugaring and malformed host AST metadata",
+            "Host resource/stack limits and CLI exits"
+          ],
+          "inspection": [
+            {
+              "file": "validate.mbt",
+              "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+              "anchor": "Unary(_, a) | Fail(a) => validate(a, names, in_object)",
+              "argument": "The Fail alternative forwards its only child with identical names/in_object and adds no binding, type check or evaluation."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Fail(a) => Fail(visit(a))",
+              "argument": "Typed AST conversion retains the error constructor and its sole operand; it does not evaluate or replace the child."
+            },
+            {
+              "file": "ast_validate.mbt",
+              "sha256": "cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c",
+              "anchor": "_ => ()",
+              "argument": "There is no Fail-specific string/type/scope restriction; common host shape validation remains a separate boundary."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_error_static_test.mbt": "b931793ba7ad955b4a83f30600f6eeaca66c2ff0e99640004c059254866e9610",
+            "spec_language_forms_ast_test.mbt": "4d2bd9c0303a756cfc457fa4cff910f80e094447aaa1b86014b9d3849a90738d",
+            "spec_language_call_test.mbt": "a9a8489f31f3fce9d3266602fbad788e3ba63a50daa1b66f99cfb9f1ea13724a"
+          }
+        }
+      ]
     },
     {
       "id": "value",
@@ -3151,7 +3254,8 @@
           "A2",
           "AP6",
           "IF1",
-          "IF2"
+          "IF2",
+          "ES1"
         ],
         "runtime_error": [],
         "lazy": [],
