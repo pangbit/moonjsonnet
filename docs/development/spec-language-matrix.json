@@ -2,8 +2,8 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "16d4706b0536cf183dfbd39f6e6deb483b82d7f7cffb2c3197c0a45a9dbf8bd2",
-  "tool_sha256": "9362b9484211c4f1b421555f3f1f9e75b2adc1a355d90425a78aadec220f4b95",
+  "mapping_sha256": "4bd1951cb77d91699af1eed652c56efa24886d1c8cefe487cadb183b0922a439",
+  "tool_sha256": "81d790716783ae223e47bc22aef84af9d09f939f7b6cb024d52e6d080d00e1f5",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 42,
@@ -952,6 +952,64 @@
       "checks": "After warming the final receiver's x=99, metadata/unused-call paths retain zero body entries. Actual invocation of the extracted function enters once then rejects Runtime for a missing prefix x or a hidden prior error marker. Current/defining-layer x values 99/42 cannot repair the prefix, and the current-value guard prevents wrong routes from passing. These failures occur after successful object construction, not in addition.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "RT1": {
+      "file": "spec_root_scope_test.mbt",
+      "line": 103,
+      "test": "nested root and self remain distinct after inheritance extraction and rehosting",
+      "assertions": [
+        "root_factory_object(10, 1)",
+        "(\"localRoot\", root_path(\"$\", [\"tag\"]))",
+        "root_call(root_var(\"saved\"))",
+        "root_call(root_path(\"holder\", [\"f\"]))",
+        "[10, 1], [20, 1], [10, 2], [20, 3], 3, [20, 3], [20, 3], [10, 1],"
+      ],
+      "checks": "Independent source/handmade programs distinguish nested self from lexical root under outer and inner extension. Inherited functions retain roots 10/20; a standalone right-hand localRoot field introduces root self=3 in the same composite inner object. Extracted/rehosted functions retain root 20 and inner self 3, not holder 999; the original remains [10,1].",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "RT2": {
+      "file": "spec_root_scope_test.mbt",
+      "line": 163,
+      "test": "object factories keep their definition root context instead of the caller root",
+      "assertions": [
+        "root_factory_object(30, 4)",
+        "root_factory_object(40, 5)",
+        "root_call(root_var(\"savedMaker\"))",
+        "[30, 4], [10, 5], [30, 4], [20, 5], [30, 4], [10, 5],"
+      ],
+      "checks": "The outside-defined factory creates its own root 30 despite object callers. The inside-root factory's returned object tag 40 does not replace its lexical outer root 10/20. Saved factory and extracted result functions retain the separately specified contexts through both entry paths; no dynamic caller-root rule is inferred.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "RT3": {
+      "file": "spec_root_scope_test.mbt",
+      "line": 218,
+      "test": "root lookup errors remain deferred and cannot borrow a nested self field",
+      "assertions": [
+        "for explicit_error in [false, true]",
+        "for mode in [\"metadata\", \"unused\", \"forced\"]",
+        "root_path(\"root\", [\"inner\", \"needed\"])",
+        "assert_eq(events, [])",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(d.location.file, \"root-scope-entry\")",
+        "assert_eq(d.message, \"root-marker\")",
+        "assert_eq(events, [\"body\"])",
+        "assert_eq(program.evaluate(native_functions=natives), expected)"
+      ],
+      "checks": "Both entry paths create successfully and first verify inner needed=99. Metadata/unused-call paths retain zero body events. Actual detached demand enters once then rejects Runtime for a missing or explicitly erroneous root field, rather than borrowing inner self. These are later-demand/embedding boundaries, not failures of desugaring.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "RT4": {
+      "file": "spec_root_scope_test.mbt",
+      "line": 334,
+      "test": "an object caller cannot supply a missing lexical root to an outside function",
+      "assertions": [
+        "(\"getter\", root_ast(Func([], root_path(\"$\", [\"needed\"]))))",
+        "root_program(source, tree, handmade)",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(d.location.file, \"root-scope-entry\")"
+      ],
+      "checks": "A global getter with free $ rejects Static at Program creation through source and handmade AST even when its call site is inside an object with the required field. A caller object cannot retroactively supply the missing lexical root. No malformed-source Syntax or complete static-rule acceptance is claimed.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -988,6 +1046,7 @@
     "spec_unary_static_test.mbt": "4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d",
     "spec_inherited_self_test.mbt": "0a387afc9ba8bc35ba54a7ada36f8c1ef9f27d5c88f40393cfea73a371b7f780",
     "spec_super_prefix_test.mbt": "cd91fcc5d2c41b3a08a0ef669c36c255231b0d608ddf88085b6a4b9a6c95ef5e",
+    "spec_root_scope_test.mbt": "6f43b1017c33c74f6207911312193df725bf06d59d09d7464546a0a16cb461d5",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -1881,19 +1940,23 @@
           "SR1",
           "SR2",
           "SP1",
-          "SP2"
+          "SP2",
+          "RT1",
+          "RT2"
         ],
         "static_error": [],
         "runtime_error": [
           "O3",
           "O5",
           "SR3",
-          "SP3"
+          "SP3",
+          "RT3"
         ],
         "lazy": [
           "O5",
           "SR2",
-          "SP3"
+          "SP3",
+          "RT3"
         ],
         "boundary": [
           "O4",
@@ -1901,10 +1964,13 @@
           "SR3",
           "SP1",
           "SP2",
-          "SP3"
+          "SP3",
+          "RT1",
+          "RT2",
+          "RT3"
         ]
       },
-      "remaining": "Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) and [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) are reviewed. General missing-field/key errors, multiple failing assertions, equality/assertion interactions and arbitrary field/closure shapes remain open.",
+      "remaining": "Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [nested lexical roots](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. General missing-field/key errors, multiple failing assertions, equality/assertion interactions and arbitrary field/closure shapes remain open.",
       "implementation": [
         "eval.mbt",
         "objects.mbt"
@@ -2196,7 +2262,9 @@
           "SR1",
           "SR2",
           "SP1",
-          "SP2"
+          "SP2",
+          "RT1",
+          "RT2"
         ],
         "static_error": [],
         "runtime_error": [
@@ -2214,10 +2282,12 @@
           "SR3",
           "SP1",
           "SP2",
-          "SP3"
+          "SP3",
+          "RT1",
+          "RT2"
         ]
       },
-      "remaining": "Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) and [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) are reviewed. Full inheritance/association algebra, additive/nested fields, computed duplicate names and arbitrary field/closure shapes remain open; SR3/SP3 are later-demand boundaries, not errors of object addition.",
+      "remaining": "Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [nested lexical roots](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. Full inheritance/association algebra, additive/nested field shapes, computed duplicate names and arbitrary closures remain open; later-demand failures are not errors of object addition.",
       "implementation": [
         "operators.mbt",
         "objects.mbt",
@@ -3324,19 +3394,31 @@
         "normal": [
           "O1",
           "O2",
-          "F6"
+          "F6",
+          "C6",
+          "RT1",
+          "RT2"
         ],
         "static_error": [
-          "O1"
+          "O1",
+          "RT4"
         ],
         "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "lazy": [
+          "RT3"
+        ],
+        "boundary": [
+          "RT1",
+          "RT2",
+          "RT3"
+        ]
       },
-      "remaining": "All nested comprehension/root and object-local combinations.",
+      "remaining": "The bounded [named-field/factory lexical-root contract](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) is reviewed. Existing C6 is reused, not a new comprehension campaign. Full root/key/local/comprehension/default combinations and malformed contexts remain open; RT3 is a later lookup failure, not a desugaring error.",
       "implementation": [
         "validate.mbt",
-        "objects.mbt"
+        "objects.mbt",
+        "eval.mbt",
+        "ast_convert.mbt"
       ],
       "obligation": [
         "Object root $, enclosing self/super and local scope"
@@ -3629,11 +3711,14 @@
           "AP1",
           "AP2",
           "SR1",
-          "SP1"
+          "SP1",
+          "RT1",
+          "RT2"
         ],
         "static_error": [
           "F5",
-          "O1"
+          "O1",
+          "RT4"
         ],
         "runtime_error": [],
         "lazy": [
@@ -3641,16 +3726,20 @@
           "F3",
           "AP5",
           "SR2",
-          "SP3"
+          "SP3",
+          "RT3"
         ],
         "boundary": [
           "SR1",
           "SR3",
           "SP1",
-          "SP3"
+          "SP3",
+          "RT1",
+          "RT2",
+          "RT3"
         ]
       },
-      "remaining": "Bounded [plain inherited-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) and [extracted super-prefix retention](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) are reviewed. Other binder/capture boundaries and the full self/super substitution algebra remain open.",
+      "remaining": "Bounded [plain inherited-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [extracted super-prefix retention](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [lexical root retention](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. Other binder/capture boundaries and the full self/super/root substitution algebra remain open.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt",
