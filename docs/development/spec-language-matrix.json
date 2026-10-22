@@ -2,19 +2,95 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "43b3ef63310458bcc089b035c988a8debc7ac59b121f24586ba6d5897e4f4597",
-  "tool_sha256": "999b0945b340926a01fac50ccfbf809ef53dd949b4d2f68cae721ea5de6a1a05",
+  "mapping_sha256": "1c8f86f798a82509b0be91bf12f1ace9b8f5f40392327b2deb1965b98c2a9c28",
+  "tool_sha256": "ea80d05b3f82f9afb099a6094374a61bd2f65144af7dad628be1005849581859",
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 58,
+  "manually_reviewed_subset_rows": 59,
   "completed_rule_rows": 12,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
   "completed_evaluation_rule_rows": 6,
-  "unreviewed_rows": 23,
+  "unreviewed_rows": 22,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
+    "SP1": {
+      "file": "spec_super_prefix_test.mbt",
+      "line": 82,
+      "test": "super functions retain their defining prefix with final derived self",
+      "assertions": [
+        "prefix_call(prefix_index(\"super\", \"f\"))",
+        "(\"saved\", prefix_index(\"c\", \"f\"))",
+        "prefix_call(prefix_index(\"holder\", \"f\"))",
+        "assert_eq(program.evaluate(), [",
+        "12, 113, 999, [3, 3], [4, 4], [3, 3], [3, 3], [4, 4],"
+      ],
+      "checks": "Source and independently handmade multilayer objects distinguish lexical prefix selection from final self. Upper super.f reaches a lower function whose own super remains below its defining layer; extracted/rehosted functions retain that prefix and receiver despite n/v overrides. The explicit scalar/array oracle is not derived from implementation output.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SP2": {
+      "file": "spec_super_prefix_test.mbt",
+      "line": 182,
+      "test": "super reaches hidden prior fields while self remains the final receiver",
+      "assertions": [
+        "hidden=[\"h\"]",
+        "(\"b\", prefix_extend(\"a\", [(\"read\", prefix_index(\"super\", \"h\"))]))",
+        "assert_eq(program.evaluate(), [1, 7, 99])"
+      ],
+      "checks": "Both entry paths access a hidden prior-layer h through super while its self.n resolves against the final receiver. A current h=99 cannot replace that prior definition. This is direct prefix access, not completion of visibility/reflection or separator algebra.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SP3": {
+      "file": "spec_super_prefix_test.mbt",
+      "line": 218,
+      "test": "super missing and hidden error fields fail only on actual function demand",
+      "assertions": [
+        "for explicit_error in [false, true]",
+        "for mode in [\"metadata\", \"unused\", \"forced\"]",
+        "Binary(\"==\", prefix_index(\"c\", \"x\"), prefix_ast(Literal(99)))",
+        "assert_eq(events, [])",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(d.location.file, \"super-prefix-entry\")",
+        "assert_eq(d.message, \"lower-super-marker\")",
+        "assert_eq(events, [\"body\"])",
+        "assert_eq(program.evaluate(native_functions=natives), expected)"
+      ],
+      "checks": "After warming the final receiver's x=99, metadata/unused-call paths retain zero body entries. Actual invocation of the extracted function enters once then rejects Runtime for a missing prefix x or a hidden prior error marker. Current/defining-layer x values 99/42 cannot repair the prefix, and the current-value guard prevents wrong routes from passing. These failures occur after successful object construction, not in addition.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SP4": {
+      "file": "spec_precedence_test.mbt",
+      "line": 252,
+      "test": "precedence long expression bodies retain their maximal right extent",
+      "assertions": [
+        "prec_check(\"local x=a; x+b\", local_tree)",
+        "\"a * local x=b; x+c\"",
+        "\"function(x) x+b*c\"",
+        "\"assert a<b : a+b; a+b*c\"",
+        "prec_check(\"error a+b*c\", ordering_ast(Fail(tail)))",
+        "\"a + if true then b else c+a\""
+      ],
+      "checks": "Independent Local/Func/Assert/Fail/If trees establish right extent, delimiter children and nested-if else ownership, with a parenthesized If boundary. Only explicitly parenthesized imports are included and stay unused/unresolved. Unparenthesized import/string maximal extent and braced object application are excluded from adjudication.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SP5": {
+      "file": "spec_precedence_test.mbt",
+      "line": 320,
+      "test": "precedence grouped values errors and lazy branches have fixed outcomes",
+      "assertions": [
+        "\"32/4/2\"",
+        "\"1<<1+2\"",
+        "\"(function(x) x+1)(2)*3\"",
+        "sequence_value(shortcut, true)",
+        "sequence_failure(required, @moonjsonnet.Runtime, Some(\"required\"))",
+        "sequence_failure(wrong_type, @moonjsonnet.Type, None)",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(d.kind, @moonjsonnet.Syntax)"
+      ],
+      "checks": "Literal source/independent-AST results distinguish arithmetic left association, tier and parenthesis overrides, call/unary binding and If extent. Boolean grouping keeps a dormant error lazy and propagates only the required Runtime marker; maximal error message scope yields ab versus a. Chained comparison rejects Type only on demand, an unselected unknown rejects Static, and malformed source alone rejects Syntax. No forced non-Boolean RHS oracle or whole operator semantic claim is added.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "NT0ROUND": {
       "file": "number_literal_test.mbt",
       "line": 2,
@@ -1007,50 +1083,6 @@
       "checks": "Both entry paths create successfully. A guarded derived call must first return 7 and record derived-ok; calling the original extracted function then rejects Runtime because its receiver still lacks n. A wrong derived value returns normally and fails the test, while an earlier failure lacks the required event. Exact diagnostic text is not an oracle.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
-    "SP1": {
-      "file": "spec_super_prefix_test.mbt",
-      "line": 82,
-      "test": "super functions retain their defining prefix with final derived self",
-      "assertions": [
-        "prefix_call(prefix_index(\"super\", \"f\"))",
-        "(\"saved\", prefix_index(\"c\", \"f\"))",
-        "prefix_call(prefix_index(\"holder\", \"f\"))",
-        "assert_eq(program.evaluate(), [",
-        "12, 113, 999, [3, 3], [4, 4], [3, 3], [3, 3], [4, 4],"
-      ],
-      "checks": "Source and independently handmade multilayer objects distinguish lexical prefix selection from final self. Upper super.f reaches a lower function whose own super remains below its defining layer; extracted/rehosted functions retain that prefix and receiver despite n/v overrides. The explicit scalar/array oracle is not derived from implementation output.",
-      "status": "manually reviewed assertion subset; execution is separate"
-    },
-    "SP2": {
-      "file": "spec_super_prefix_test.mbt",
-      "line": 182,
-      "test": "super reaches hidden prior fields while self remains the final receiver",
-      "assertions": [
-        "hidden=[\"h\"]",
-        "(\"b\", prefix_extend(\"a\", [(\"read\", prefix_index(\"super\", \"h\"))]))",
-        "assert_eq(program.evaluate(), [1, 7, 99])"
-      ],
-      "checks": "Both entry paths access a hidden prior-layer h through super while its self.n resolves against the final receiver. A current h=99 cannot replace that prior definition. This is direct prefix access, not completion of visibility/reflection or separator algebra.",
-      "status": "manually reviewed assertion subset; execution is separate"
-    },
-    "SP3": {
-      "file": "spec_super_prefix_test.mbt",
-      "line": 218,
-      "test": "super missing and hidden error fields fail only on actual function demand",
-      "assertions": [
-        "for explicit_error in [false, true]",
-        "for mode in [\"metadata\", \"unused\", \"forced\"]",
-        "Binary(\"==\", prefix_index(\"c\", \"x\"), prefix_ast(Literal(99)))",
-        "assert_eq(events, [])",
-        "assert_eq(d.kind, @moonjsonnet.Runtime)",
-        "assert_eq(d.location.file, \"super-prefix-entry\")",
-        "assert_eq(d.message, \"lower-super-marker\")",
-        "assert_eq(events, [\"body\"])",
-        "assert_eq(program.evaluate(native_functions=natives), expected)"
-      ],
-      "checks": "After warming the final receiver's x=99, metadata/unused-call paths retain zero body entries. Actual invocation of the extracted function enters once then rejects Runtime for a missing prefix x or a hidden prior error marker. Current/defining-layer x values 99/42 cannot repair the prefix, and the current-value guard prevents wrong routes from passing. These failures occur after successful object construction, not in addition.",
-      "status": "manually reviewed assertion subset; execution is separate"
-    },
     "RT1": {
       "file": "spec_root_scope_test.mbt",
       "line": 103,
@@ -1626,6 +1658,8 @@
     }
   },
   "test_file_sha256": {
+    "spec_super_prefix_test.mbt": "cd91fcc5d2c41b3a08a0ef669c36c255231b0d608ddf88085b6a4b9a6c95ef5e",
+    "spec_precedence_test.mbt": "77c48b9b7cc730acd6bb1044319768ea6afb4c82214c5a03a75ba529dfe0456a",
     "number_literal_test.mbt": "64cfee9e4e5ad73bffcfa6c785e26a7f44496eb28d2ed12683aaabcf84f7d3b3",
     "source_fidelity_wbtest.mbt": "15ab02366daf8fbbcc88abcf17fa46a0886eeaabe4e0aff52aefe854de61441d",
     "lexer_diagnostic_test.mbt": "685eadc5726465791f271e9a029257899d481640895ba5b7e46d09de54c4bbdb",
@@ -1652,7 +1686,6 @@
     "parser_diagnostic_test.mbt": "8274fdc918873dd15b13b510fb0356fc644d42e752cfe704ae394120aab92167",
     "spec_unary_static_test.mbt": "4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d",
     "spec_inherited_self_test.mbt": "0a387afc9ba8bc35ba54a7ada36f8c1ef9f27d5c88f40393cfea73a371b7f780",
-    "spec_super_prefix_test.mbt": "cd91fcc5d2c41b3a08a0ef669c36c255231b0d608ddf88085b6a4b9a6c95ef5e",
     "spec_root_scope_test.mbt": "6f43b1017c33c74f6207911312193df725bf06d59d09d7464546a0a16cb461d5",
     "spec_assertion_self_test.mbt": "eaf067af506d8151d87cfe8f8cbe2527580cabb6d5a8b73ea2a56a88072faaf6",
     "spec_assertion_super_test.mbt": "d118e17f3fd36f4bcfaa5ebbd6ec4131cb8794c738a6826cac0ea7c23b24f884",
@@ -4480,15 +4513,37 @@
       "kind": "prose-or-grammar-obligation",
       "section": "associativity_precedence",
       "source_line": 791,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "normal": [
+          "SP1",
+          "SP2",
+          "SP3",
+          "SP4",
+          "SP5"
+        ],
+        "static_error": [
+          "SP5"
+        ],
+        "runtime_error": [
+          "SP5"
+        ],
+        "lazy": [
+          "SP1",
+          "SP2",
+          "SP3",
+          "SP4",
+          "SP5"
+        ],
+        "boundary": [
+          "SP1",
+          "SP2",
+          "SP3",
+          "SP4",
+          "SP5"
+        ]
       },
-      "remaining": "Pairwise expression grid and long-binding expression extents.",
+      "remaining": "The [precedence record](SPEC-PRECEDENCE-2026-10-22.md) covers the explicit 19-symbol binary table, same-tier left association, parentheses, four unary symbols, call/index/dot chaining, five expression-bearing right extents and selected literal/error/unused outcomes through independent typed trees. This is scoped partial evidence, not a formal whole-clause completion. Unparenthesized import/string maximal extent, braced object application, every named/default/tailstrict/comprehension grammar interaction and resources remain unreviewed here. Operator/child evaluation judgments stay separate; A0/B0/N0/R0 and complete lexical/rounding/Go-C++ contracts remain unchanged.",
       "implementation": [
         "parser.mbt"
       ],

@@ -3,6 +3,68 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "policy": "Manual assertion review only. References and matching names never establish passing behavior. An empty dimension is unreviewed. Executed outcomes live in the separate source-bound evidence report. Completed prose constructor transfers are relative to child judgments and counted separately from completed named rules.",
   "evidence": {
+    "SP1": {
+      "file": "spec_precedence_test.mbt",
+      "test": "precedence table orders every binary pair with left association",
+      "assertions": [
+        "if left_level <= right_level",
+        "prec_b(right, prec_b(left, a, b), c)",
+        "prec_b(left, a, prec_b(right, b, c))",
+        "assert_eq(pairs, 361)"
+      ],
+      "checks": "The literal fixed-spec tier list determines all 19x19 source groupings; every same-tier symbol pair associates left. Explicit right parentheses cover every binary symbol plus two mixed-tier overrides. Source syntax projection is compared with independent typed trees, then both statically admit inside an unused bounded environment; no mixed-type runtime result is inferred."
+    },
+    "SP2": {
+      "file": "spec_precedence_test.mbt",
+      "test": "precedence keeps unary operands above all binary tiers",
+      "assertions": [
+        "prec_b(binary, prec_u(unary, a), b)",
+        "prec_b(binary, a, prec_u(unary, b))",
+        "prec_u(unary, prec_u(inner, a))",
+        "prec_check(\"-(a + b)\", prec_u(\"-\", prec_b(\"+\", a, b)))"
+      ],
+      "checks": "All four unary symbols are checked against every binary symbol on both sides, against each nested prefix, and with an explicitly expanded parenthesized operand. Constructor/symbol/ordered-child shapes remain distinct; unused source and handmade entries yield 42 without forcing intentionally ill-typed operator combinations."
+    },
+    "SP3": {
+      "file": "spec_precedence_test.mbt",
+      "test": "precedence chains calls indexing and dot access before unary and binary",
+      "assertions": [
+        "let suffixes = [\"(b)\", \"[b]\", \".field\"]",
+        "prec_postfix(prec_postfix(a, first), second)",
+        "prec_b(binary, prec_postfix(a, first), c)",
+        "prec_b(binary, c, prec_postfix(a, first))",
+        "prec_check(\"-a[b:c]\", prec_u(\"-\", sliced))"
+      ],
+      "checks": "All call/index/dot postfix pairs nest left; each binds above every unary and binary tier. Two slice controls preserve postfix extent. Independent tree comparison and unused admission never demand the numeric placeholder as a function/object/array or resolve external resources."
+    },
+    "SP4": {
+      "file": "spec_precedence_test.mbt",
+      "test": "precedence long expression bodies retain their maximal right extent",
+      "assertions": [
+        "prec_check(\"local x=a; x+b\", local_tree)",
+        "\"a * local x=b; x+c\"",
+        "\"function(x) x+b*c\"",
+        "\"assert a<b : a+b; a+b*c\"",
+        "prec_check(\"error a+b*c\", ordering_ast(Fail(tail)))",
+        "\"a + if true then b else c+a\""
+      ],
+      "checks": "Independent Local/Func/Assert/Fail/If trees establish right extent, delimiter children and nested-if else ownership, with a parenthesized If boundary. Only explicitly parenthesized imports are included and stay unused/unresolved. Unparenthesized import/string maximal extent and braced object application are excluded from adjudication."
+    },
+    "SP5": {
+      "file": "spec_precedence_test.mbt",
+      "test": "precedence grouped values errors and lazy branches have fixed outcomes",
+      "assertions": [
+        "\"32/4/2\"",
+        "\"1<<1+2\"",
+        "\"(function(x) x+1)(2)*3\"",
+        "sequence_value(shortcut, true)",
+        "sequence_failure(required, @moonjsonnet.Runtime, Some(\"required\"))",
+        "sequence_failure(wrong_type, @moonjsonnet.Type, None)",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(d.kind, @moonjsonnet.Syntax)"
+      ],
+      "checks": "Literal source/independent-AST results distinguish arithmetic left association, tier and parenthesis overrides, call/unary binding and If extent. Boolean grouping keeps a dormant error lazy and propagates only the required Runtime marker; maximal error message scope yields ab versus a. Chained comparison rejects Type only on demand, an unselected unknown rejects Static, and malformed source alone rejects Syntax. No forced non-Boolean RHS oracle or whole operator semantic claim is added."
+    },
     "NT0ROUND": {
       "file": "number_literal_test.mbt",
       "test": "numeric spellings and overflow survive parsing and AST round trips",
@@ -1010,7 +1072,42 @@
     {"id": "SYN-EXPR", "section": "abstract_syntax", "obligation": "Every expression alternative and optional/trailing syntax", "remaining": "No coverage inferred from AST variant registration or example names.", "implementation": ["parser.mbt"]},
     {"id": "SYN-OBJECT", "section": "abstract_syntax", "obligation": "Object fields, locals, methods, assertions and comprehension grammar", "normal": ["F6", "O1"], "remaining": "Every separator, additive form, comma and malformed construction.", "implementation": ["parser.mbt"]},
     {"id": "SYN-CALL", "section": "abstract_syntax", "obligation": "Positional arguments before named arguments and parameter grammar", "normal": ["F1", "AP1"], "boundary": ["AP7"], "remaining": "Malformed ordering/trailing-comma grid and positional-after-named fine diagnostic classification; AP7 is source Syntax evidence, not a handmade AST Static result.", "implementation": ["parser.mbt", "ast_validate.mbt"]},
-    {"id": "SYN-PRECEDENCE", "section": "associativity_precedence", "obligation": "Every operator precedence and associativity relation", "remaining": "Pairwise expression grid and long-binding expression extents.", "implementation": ["parser.mbt"]},
+    {
+      "id": "SYN-PRECEDENCE",
+      "section": "associativity_precedence",
+      "obligation": "Every operator precedence and associativity relation",
+      "remaining": "The [precedence record](SPEC-PRECEDENCE-2026-10-22.md) covers the explicit 19-symbol binary table, same-tier left association, parentheses, four unary symbols, call/index/dot chaining, five expression-bearing right extents and selected literal/error/unused outcomes through independent typed trees. This is scoped partial evidence, not a formal whole-clause completion. Unparenthesized import/string maximal extent, braced object application, every named/default/tailstrict/comprehension grammar interaction and resources remain unreviewed here. Operator/child evaluation judgments stay separate; A0/B0/N0/R0 and complete lexical/rounding/Go-C++ contracts remain unchanged.",
+      "implementation": [
+        "parser.mbt"
+      ],
+      "normal": [
+        "SP1",
+        "SP2",
+        "SP3",
+        "SP4",
+        "SP5"
+      ],
+      "static_error": [
+        "SP5"
+      ],
+      "runtime_error": [
+        "SP5"
+      ],
+      "lazy": [
+        "SP1",
+        "SP2",
+        "SP3",
+        "SP4",
+        "SP5"
+      ],
+      "boundary": [
+        "SP1",
+        "SP2",
+        "SP3",
+        "SP4",
+        "SP5"
+      ]
+    },
     {"id": "CORE-IMPORT", "section": "core_syntax", "obligation": "Import substitutions, lazy loading and independent static checking of imported programs", "normal": ["I1", "I3", "IB1", "IB4", "IB5", "IU1", "IU4", "IC1"], "static_error": ["I1", "I3", "IB3", "IR4", "IC2", "IC3"], "runtime_error": ["IB3", "IU2", "IU3", "IC3"], "lazy": ["I2", "I3", "IB2", "IU3", "IC3"], "boundary": ["IB1", "IB3", "IB4", "IB5", "IU1", "IU2", "IU3", "IU4", "IC1", "IC2", "IC3"], "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) closes exported-factory lexical isolation and deferred nested-import/default boundaries, reusing I1-I3; no whole CORE-IMPORT or generic child judgment is completed. Importbin byte-value and bounded BOM-free importstr reviews retain their scopes. General code-import source/decoding forms, initial BOM, canonical aliases, cycles, cross-mode/source/value/failure cache identity/lifetimes, host resolver/I/O policy and resources remain unadjudicated; diagnostic details are host controls.", "implementation": ["imports.mbt", "evaluator_imports.mbt", "eval.mbt", "validate.mbt", "parser.mbt", "runtime_types.mbt", "objects.mbt", "ast_convert.mbt"]},
     {"id": "DESUGAR-ROOT", "section": "desugaring", "obligation": "Object root $, enclosing self/super and local scope", "normal": ["O1", "O2", "F6", "C6", "RT1", "RT2"], "static_error": ["O1", "RT4"], "lazy": ["RT3"], "boundary": ["RT1", "RT2", "RT3"], "remaining": "The bounded [named-field/factory lexical-root contract](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) is reviewed. Existing C6 is reused, not a new comprehension campaign. Full root/key/local/comprehension/default combinations and malformed contexts remain open; RT3 is a later lookup failure, not a desugaring error.", "implementation": ["validate.mbt", "objects.mbt", "eval.mbt", "ast_convert.mbt"]},
     {
