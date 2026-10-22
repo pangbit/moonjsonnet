@@ -2,8 +2,8 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "4bd1951cb77d91699af1eed652c56efa24886d1c8cefe487cadb183b0922a439",
-  "tool_sha256": "81d790716783ae223e47bc22aef84af9d09f939f7b6cb024d52e6d080d00e1f5",
+  "mapping_sha256": "c4b4efde488a7d2ab8749d0f41ce24fb5e8f243ca07a5d54e11b57292d67a73d",
+  "tool_sha256": "85c2e889a8b4bc90daba9c71439ca2aa6a0666e75e4105bd6cc474c66c977023",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 42,
@@ -1010,6 +1010,56 @@
       "checks": "A global getter with free $ rejects Static at Program creation through source and handmade AST even when its call site is inside an object with the required field. A caller object cannot retroactively supply the missing lexical root. No malformed-source Syntax or complete static-rule acceptance is claimed.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "AS1": {
+      "file": "spec_assertion_self_test.mbt",
+      "line": 241,
+      "test": "inherited assertion condition closures bind each compatible receiver self",
+      "assertions": [
+        "assertion_self_source(3, \"compatible\")",
+        "for handmade in [false, true]",
+        "program.evaluate(native_functions=assertion_self_natives(events)), 3,",
+        "[\"condition\", 2, 2, \"original\"]",
+        "[\"payload\", 2, \"original\"]",
+        "[\"condition\", 3, 3, \"compatible\"]",
+        "[\"payload\", 3, \"compatible\"]"
+      ],
+      "checks": "After original.value==2 has checked the original receiver, a compatible derived receiver returns 3. Condition-function native observations use current n/required/label in each receiver, inherited payloads use that same self, and no message runs. Source and independently handmade AST share explicit literal expectations.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "AS2": {
+      "file": "spec_assertion_self_test.mbt",
+      "line": 267,
+      "test": "a checked original cannot authorize derived assertion or message closures",
+      "assertions": [
+        "assertion_self_source(2, \"bad\")",
+        "assert_eq(d.kind, @moonjsonnet.Assertion)",
+        "assert_eq(d.location.file, \"assertion-self-entry\")",
+        "assert_eq(d.message, \"assertion-self-marker\")",
+        "[\"condition\", 2, 2, \"original\"]",
+        "[\"payload\", 2, \"original\"]",
+        "[\"condition\", 3, 2, \"bad\"]",
+        "[\"message\", 3, 2, \"bad\"]"
+      ],
+      "checks": "A successful original check does not authorize a derived receiver with n=3/required=2. Its inherited condition and failing message functions observe derived self, reject Assertion with the independent marker and suppress the derived payload. This is a demanded-field failure after object construction, not an addition error.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "AS3": {
+      "file": "spec_assertion_self_test.mbt",
+      "line": 296,
+      "test": "inherited assertion condition errors wait for field demand and bypass messages",
+      "assertions": [
+        "for mode in [\"metadata\", \"unused\", \"forced\"]",
+        "condition_error=true",
+        "assert_eq(events, [])",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(d.location.file, \"assertion-self-entry\")",
+        "assert_eq(d.message, \"condition-self-marker\")",
+        "assert_eq(events, [[\"condition\", 3, 2, \"bad\"]])",
+        "program.evaluate(native_functions=assertion_self_natives(events)), expected,"
+      ],
+      "checks": "Both entry paths construct/type-inspect the derived object without entering its inherited assertion closure; metadata and unused-field paths yield object/42 with zero events. Only actual field demand enters condition(3,2,bad), propagates its explicit Runtime marker and bypasses message/payload. No top-level or std.manifestJson behavior is adjudicated.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -1047,6 +1097,7 @@
     "spec_inherited_self_test.mbt": "0a387afc9ba8bc35ba54a7ada36f8c1ef9f27d5c88f40393cfea73a371b7f780",
     "spec_super_prefix_test.mbt": "cd91fcc5d2c41b3a08a0ef669c36c255231b0d608ddf88085b6a4b9a6c95ef5e",
     "spec_root_scope_test.mbt": "6f43b1017c33c74f6207911312193df725bf06d59d09d7464546a0a16cb461d5",
+    "spec_assertion_self_test.mbt": "eaf067af506d8151d87cfe8f8cbe2527580cabb6d5a8b73ea2a56a88072faaf6",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -1942,7 +1993,8 @@
           "SP1",
           "SP2",
           "RT1",
-          "RT2"
+          "RT2",
+          "AS1"
         ],
         "static_error": [],
         "runtime_error": [
@@ -1950,13 +2002,18 @@
           "O5",
           "SR3",
           "SP3",
-          "RT3"
+          "RT3",
+          "AS2",
+          "AS3"
         ],
         "lazy": [
           "O5",
           "SR2",
           "SP3",
-          "RT3"
+          "RT3",
+          "AS1",
+          "AS2",
+          "AS3"
         ],
         "boundary": [
           "O4",
@@ -1967,10 +2024,12 @@
           "SP3",
           "RT1",
           "RT2",
-          "RT3"
+          "RT3",
+          "AS2",
+          "AS3"
         ]
       },
-      "remaining": "Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [nested lexical roots](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. General missing-field/key errors, multiple failing assertions, equality/assertion interactions and arbitrary field/closure shapes remain open.",
+      "remaining": "Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [nested lexical roots](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. General missing-field/key errors, multiple failing assertions, equality/assertion interactions and arbitrary field/closure shapes remain open.",
       "implementation": [
         "eval.mbt",
         "objects.mbt"
@@ -2264,7 +2323,8 @@
           "SP1",
           "SP2",
           "RT1",
-          "RT2"
+          "RT2",
+          "AS1"
         ],
         "static_error": [],
         "runtime_error": [
@@ -2274,7 +2334,8 @@
           "O5",
           "O6",
           "SR2",
-          "SP3"
+          "SP3",
+          "AS3"
         ],
         "boundary": [
           "O6",
@@ -2284,10 +2345,13 @@
           "SP2",
           "SP3",
           "RT1",
-          "RT2"
+          "RT2",
+          "AS1",
+          "AS2",
+          "AS3"
         ]
       },
-      "remaining": "Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [nested lexical roots](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. Full inheritance/association algebra, additive/nested field shapes, computed duplicate names and arbitrary closures remain open; later-demand failures are not errors of object addition.",
+      "remaining": "Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [nested lexical roots](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. Full inheritance/association algebra, additive/nested field shapes, computed duplicate names and arbitrary closures remain open; later-demand failures are not errors of object addition.",
       "implementation": [
         "operators.mbt",
         "objects.mbt",
@@ -3434,19 +3498,28 @@
       "dimensions": {
         "normal": [
           "O3",
-          "O5"
+          "O5",
+          "AS1"
         ],
         "static_error": [],
         "runtime_error": [
           "O3",
-          "O5"
+          "O5",
+          "AS2",
+          "AS3"
         ],
         "lazy": [
-          "O5"
+          "O5",
+          "AS1",
+          "AS2",
+          "AS3"
         ],
-        "boundary": []
+        "boundary": [
+          "AS2",
+          "AS3"
+        ]
       },
-      "remaining": "Expression assertions, default/nonstring messages and condition type errors.",
+      "remaining": "Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Expression assertions, default/nonstring messages, condition type errors, assertion super scope and multiple-assertion interactions remain open; top-level manifestation and std.manifestJson remain separate paths.",
       "implementation": [
         "eval.mbt",
         "objects.mbt"
@@ -3713,7 +3786,8 @@
           "SR1",
           "SP1",
           "RT1",
-          "RT2"
+          "RT2",
+          "AS1"
         ],
         "static_error": [
           "F5",
@@ -3736,10 +3810,11 @@
           "SP3",
           "RT1",
           "RT2",
-          "RT3"
+          "RT3",
+          "AS2"
         ]
       },
-      "remaining": "Bounded [plain inherited-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [extracted super-prefix retention](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [lexical root retention](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. Other binder/capture boundaries and the full self/super/root substitution algebra remain open.",
+      "remaining": "Bounded [assertion-self closure demand](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md) is reviewed. Bounded [plain inherited-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [extracted super-prefix retention](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) and [lexical root retention](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) are reviewed. Other binder/capture boundaries and the full self/super/root substitution algebra remain open.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt",
