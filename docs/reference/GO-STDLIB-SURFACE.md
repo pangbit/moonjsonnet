@@ -3,6 +3,10 @@
 All 163 reflected members of go-jsonnet v0.21.0 at commit
 `67968688d9952f50662e979fab1bef889d0d3e57` are registered below. Registration is
 not proof of equivalent behavior for every argument; see [compatibility](COMPATIBILITY.md).
+The separate [fixed official public-contract inventory](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/SPEC-PUBLIC-STDLIB-REVIEW.md)
+distinguishes public declarations, internal helpers and unknown coverage. The
+required-argument column below is frozen Go metadata; it is not the current
+function-length contract or a signature-conformance result.
 
 | std member | Kind | Required arguments | Surface status |
 | --- | --- | ---: | --- |

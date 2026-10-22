@@ -1,0 +1,217 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+fn identifier(text : String) -> String {
+  let out = StringBuilder()
+  for c in text {
+    if (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+       (c >= '0' && c <= '9') || c == '_' || c == '$' {
+      out.write_char(c)
+    } else { break }
+  }
+  out.to_string()
+}
+
+fn lexical(a : String, b : String) -> Int {
+  let left = a.to_array()
+  let right = b.to_array()
+  for i in 0..<Int::min(left.length(), right.length()) {
+    if left[i] != right[i] { return left[i].to_int() - right[i].to_int() }
+  }
+  left.length() - right.length()
+}
+
+fn add(entries : Map[String, Map[String, String]], name : String, kind : String, signature : String, line : Int) -> Unit {
+  if !entries.contains(name) { entries[name] = Map([]) }
+  let entry = entries[name]
+  entry[kind] = signature
+  entry[kind + "_line"] = line.to_string()
+}
+
+async fn checked(program : String, args : Array[String]) -> String {
+  let result = @shell.Cmd(program, args).output(timeout_ms=10000)
+  result.check()
+  result.stdout().trim().to_owned()
+}
+
+async fn sha256(path : String) -> String {
+  checked("shasum", ["-a", "256", path]).split(" ").next().unwrap().to_owned()
+}
+
+async fn main {
+  let args = @env.args()
+  guard args.length() == 3 else {
+    fail("Usage: moon run --frozen tools/spec-public-inventory.mbtx REFERENCE_DIR OUTPUT_DIR")
+  }
+  let reference_dir = args[1]
+  let output_dir = args[2]
+  let pinned = "bbb38f1020be1f5aed560928fb839b2c448cefb4"
+  let inputs = [
+    ("spec.html", "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a"),
+    ("stdlib.html", "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853"),
+    ("upstream-std.jsonnet", "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"),
+  ]
+  let hashes : Map[String, Json] = Map([])
+  for (path, expected) in inputs {
+    let actual = sha256(reference_dir + "/" + path)
+    assert_eq(actual, expected, msg="pinned reference bytes changed: " + path)
+    hashes[path] = Json::string(actual)
+  }
+  let html = @fs.read_file(reference_dir + "/stdlib.html").text()
+  let source = @fs.read_file(reference_dir + "/upstream-std.jsonnet").text()
+  let entries : Map[String, Map[String, String]] = Map([])
+  let properties : Map[String, String] = Map([])
+  let internals : Array[Json] = []
+  let lines = html.split("\n").collect()
+  for i, line in lines {
+    if line.contains("<h4 id=\"std-") {
+      let declaration = lines[i + 1].trim().to_owned()
+      assert_true(declaration.has_prefix("std."))
+      let rest = declaration[4:].to_owned()
+      let name = identifier(rest)
+      if rest.has_prefix(name + "(") {
+        add(entries, name, "heading", declaration, i + 2)
+      } else {
+        properties[name] = "documentation field"
+      }
+    }
+  }
+  // Inline math/type/mod declarations have no individual h4. References are
+  // retained separately; a signature-looking mention is not a coverage result.
+  for i, line in lines {
+    let fragments = line.split("<code>std.").collect()
+    for j in 1..<fragments.length() {
+      let text = fragments[j].split("</code>").next().unwrap().to_owned()
+      let name = identifier(text)
+      if !name.is_empty() && text.has_prefix(name + "(") && !entries.contains(name) {
+        add(entries, name, "inline", "std." + text, i + 1)
+      }
+    }
+  }
+  // At this exact source hash all top-level function declarations have one-line
+  // headers indented by two spaces; nested/local functions are excluded.
+  for i, line in source.split("\n").collect() {
+    if !line.has_prefix("  ") || line.has_prefix("   ") { continue }
+    let text = line.trim().to_owned()
+    let name = identifier(text)
+    if name.is_empty() || name == "local" { continue }
+    if text.has_prefix(name + "(") && text.contains(")::") {
+      let signature = "std." + text.split(")::").next().unwrap().to_owned() + ")"
+      if name.has_prefix("__") || name.has_prefix("$") {
+        internals.push({"name":name,"source_signature":signature,"source_line":i+1})
+      } else { add(entries, name, "source", signature, i + 1) }
+    } else if text.has_prefix(name + "::") {
+      properties[name] = "source field"
+    } else if text.contains("::") {
+      fail("unclassified root declaration at line " + (i + 1).to_string())
+    }
+  }
+  // Explicit specification functions that are not documented/source-defined.
+  // Formal metavariables are not invented public parameter names.
+  for (name, signature) in [
+    ("modulo", "std.modulo(a, b)"), ("native", "std.native(x)"),
+    ("primitiveEquals", "parameter names not specified by formal rule"),
+    ("objectHasEx", "parameter names not specified by formal rule"),
+    ("objectFieldsEx", "parameter names not specified by formal rule"),
+  ] { add(entries, name, "specification", signature, 0) }
+  let candidates : Map[String, Array[Json]] = Map([])
+  let paths = checked("git", ["ls-files", "--", "*.mbt"])
+  for path in paths.split("\n") {
+    if !(path.has_suffix("_test.mbt") || path.has_suffix("_wbtest.mbt")) || path.contains("/") { continue }
+    let path = path.to_owned()
+    let mut group = "outside test declaration"
+    for i, line in @fs.read_file(path).text().split("\n").collect() {
+      if line.has_prefix("test ") { group = line.to_owned() }
+      let fragments = line.split("std.").collect()
+      for j in 1..<fragments.length() {
+        let name = identifier(fragments[j].to_owned())
+        if !entries.contains(name) { continue }
+        if !candidates.contains(name) { candidates[name] = [] }
+        let references = candidates[name]
+        if !references.any(row => row is {"file": String(f), ..} && f == path) {
+          references.push({"file":path,"line":i+1,"test_declaration":group,"classification":"reference candidate only; assertion and normative dimensions not inferred"})
+        }
+      }
+    }
+  }
+  let coverage_path = "tests/spec-public-coverage.json"
+  guard @json.parse(@fs.read_file(coverage_path).text()) is Array(reviewed) else { fail("reviewed coverage array") }
+  let coverage : Map[String, Json] = Map([])
+  for row in reviewed {
+    guard row is {"name": String(name), ..} else { fail("reviewed name") }
+    assert_true(entries.contains(name), msg="reviewed name outside official inventory")
+    assert_true(!coverage.contains(name), msg="duplicate manual coverage entry")
+    coverage[name] = row
+    if row is {"reference_candidates":Array(extra),..} {
+      if !candidates.contains(name) { candidates[name] = [] }
+      for reference in extra {
+        guard reference is {"file":String(file),"line":Number(line,..),..} else { fail("manual candidate shape") }
+        let source_lines = @fs.read_file(file).text().split("\n").count()
+        assert_true(line >= 1 && line <= source_lines.to_double())
+        if !candidates[name].any(row => row is {"file":String(f),..} && f == file) {
+          candidates[name].push(reference)
+        }
+      }
+    }
+  }
+  let names = entries.keys().collect()
+  names.sort_by(lexical)
+  let rows : Array[Json] = []
+  let table = StringBuilder()
+  table.write_string("# Fixed public standard-library inventory\n\n")
+  table.write_string("Generated from the pinned official sources by [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx).\n")
+  table.write_string("This is an inventory and partial coverage map, not conformance acceptance.\n")
+  table.write_string("See [review method and unresolved contracts](SPEC-PUBLIC-STDLIB-REVIEW.md).\n\n")
+  table.write_string("D = documentation heading; I = inline official API declaration/reference; S = source export; F = specification function.\n")
+  table.write_string("R = manually reviewed subset of a dimension; U = unreviewed/unmapped. R never means the complete contract passes.\n")
+  table.write_string("Candidate references may only reflect a function or expect a Go-specific result; they do not earn N/E/L/B coverage.\n\n")
+  table.write_string("Signatures are transcribed independently; conflicting names/defaults are not normalized. Full evidence is in [the JSON inventory](spec-public-inventory.json).\n\n")
+  table.write_string("| Function | D/I declaration | S/F declaration | N/E/L/B | Existing test-reference candidates |\n| --- | --- | --- | --- | --- |\n")
+  for name in names {
+    let entry = entries[name]
+    let refs = candidates.get(name).unwrap_or([])
+    let displayed = refs[:Int::min(refs.length(), 3)].map(row => {
+      guard row is {"file":String(file),"line":Number(line, ..),..} else { abort("reference shape") }
+      "[" + file + ":" + line.to_int().to_string() + "](../../" + file + "#L" + line.to_int().to_string() + ")"
+    }).join("; ")
+    let reviewed_row = coverage.get(name).unwrap_or(Json::null())
+    let dimensions = match reviewed_row {
+      Object(fields) => match fields.get("dimensions") {
+        Some(Object(dimensions)) => ["N","E","L","B"].map(axis => if dimensions.contains(axis) {"R"} else {"U"}).join("/")
+        _ => "U/U/U/U"
+      }
+      _ => "U/U/U/U"
+    }
+    let doc = entry.get("heading").map(s => "D: `" + s + "`").unwrap_or(entry.get("inline").map(s => "I: `" + s + "`").unwrap_or("Not listed"))
+    let src = entry.get("source").map(s => "S: `" + s + "`").unwrap_or(entry.get("specification").map(s => "F: `" + s + "`").unwrap_or("Native/not defined in std.jsonnet"))
+    table.write_string("| `" + name + "` | " + doc + " | " + src + " | " + dimensions + " | " + (if displayed.is_empty() {"No direct test reference found"} else {displayed}) + " |\n")
+    let declarations : Map[String, Json] = Map([])
+    for (key, value) in entry { declarations[key] = Json::string(value) }
+    rows.push({"name":name,"official_declarations":declarations,"reviewed_subset":reviewed_row,"test_reference_candidates":refs,"whole_contract_status":"unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"})
+  }
+  guard @json.parse(@fs.read_file("tests/go-stdlib-surface.json").text()) is Array(reflected) else { fail("reflection array") }
+  let other_reflected = reflected.filter(row => {
+    guard row is {"name":String(name),..} else { abort("reflected name") }
+    !entries.contains(name) && !properties.contains(name)
+  })
+  let property_rows = properties.keys().collect()
+  property_rows.sort_by(lexical)
+  let report : Json = {
+    "reference_commit":pinned,"reference_sha256":hashes,
+    "input_source_commit":checked("git",["rev-parse","HEAD"]),
+    "coverage_sha256":sha256(coverage_path),"generator_sha256":sha256("tools/spec-public-inventory.mbtx"),
+    "public_function_candidates":rows.length(),"functions":rows,"nonfunction_properties":property_rows,
+    "source_internal_helpers":internals,"other_go_reflected_members":other_reflected,
+    "specification_auxiliary_symbols":[{"name":"cmp","classification":"comparison relation with explicit TODO to introduce it; not a declared public callable"}],
+    "behavioral_conformance_proven":false,
+  }
+  @fs.mkdir(output_dir,recursive=true,allow_exist=true)
+  @fs.write_file(output_dir + "/public-inventory.json",report.stringify(indent=2) + "\n")
+  @fs.write_file(output_dir + "/public-inventory.md",table.to_string())
+  println("Official function candidates: \{rows.length()}; properties: \{property_rows.join(", ")}; source internal helpers: \{internals.length()}; other Go reflected members: \{other_reflected.length()}. No whole-contract passes inferred.")
+}

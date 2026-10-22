@@ -53,7 +53,7 @@ async fn main {
     "spec_review_test.mbt", "spec_remove_test.mbt", "spec_aggregate_test.mbt",
     "spec_index_test.mbt", "spec_yaml_test.mbt", "spec_manifest_wbtest.mbt",
     "spec_yaml_wbtest.mbt", "spec_length_test.mbt", "spec_static_test.mbt",
-    "spec_text_block_test.mbt", "spec_import_scope_test.mbt",
+    "spec_text_block_test.mbt", "spec_import_scope_test.mbt", "spec_text_chomp_test.mbt",
   ]
   let input_hashes : Map[String, Json] = Map([])
   for path in input_paths { input_hashes[path] = Json::string(sha256(path)) }
@@ -132,12 +132,12 @@ async fn main {
     "platform": platform, "toolchain": version, "input_sha256": input_hashes,
     "cli_sha256": sha256(cli), "embedded_sha256": sha256(embedded),
     "build_command": build_args, "build_exit": build.exit_code(),
-    "scope": "focused normative P0 CLI and three application scenarios; not full conformance or upstream parity",
+    "scope": "focused normative P0/P1 lexical CLI and three application scenarios; not full conformance or upstream parity",
     "passed": passed, "total": rows.length(), "failed": rows.length() - passed, "cases": rows,
     "selected_case_ids": selected,
-    "unresolved_outside_suite": ["removeAt parameter-name conflict", "CRLF text-block chomp boundary", "complete public-contract inventory and cross-platform acceptance"],
+    "unresolved_outside_suite": ["removeAt parameter-name conflict", "escapeStringXml spelling conflict", "manifestYamlStream default conflict", "complete public-contract adjudication and cross-platform acceptance"],
   }
   @fs.write_file(evidence + "/report.json", report.stringify(indent=2) + "\n")
-  println("P0 CLI and application scenarios: \{passed}/\{rows.length()}; \{evidence}")
+  println("Normative CLI and application scenarios: \{passed}/\{rows.length()}; \{evidence}")
   if passed != rows.length() { fail("P0/scenario failures retained in report") }
 }

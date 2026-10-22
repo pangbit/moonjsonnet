@@ -4,6 +4,9 @@ This initial P1 matrix maps selected real contracts to checks; it is not the
 complete language/public-standard-library inventory. All normative links use
 Google Jsonnet commit `bbb38f1020be1f5aed560928fb839b2c448cefb4`.
 Unknown coverage is not passing. Historical Go/C++ fixtures remain unchanged.
+The separate [official public inventory](SPEC-PUBLIC-STDLIB-REVIEW.md) now lists
+fixed documentation/source/specification API candidates and maps each to reviewed
+subsets or explicit unknown dimensions. It does not use registration as acceptance.
 
 ## Function length decision
 
@@ -80,7 +83,7 @@ report identifies actual executions. No row below establishes complete scope.
 | std.manifestYamlStream | stdlib source-defined stream behavior | [spec_yaml](../../spec_yaml_test.mbt), [TOML/YAML](../../toml_yaml_test.mbt): nested document errors and empty stream | [source layer](../../stdlib_source.mbt) | Partial coverage; all document-marker and quoting/indent options not established here |
 | Object assertion versus std.manifestJson | specification manifestation and std.jsonnet manifestJsonEx | [CLI fixtures](../../tests/spec-acceptance.json): top-level assertion errors; empty-object JSON string path retains source-defined behavior | [manifest](../../manifest.mbt), [JSON string](../../manifest_json.mbt) | Kept distinct; no blanket assertion change; complete inheritance/assertion matrix pending |
 | Unique formal parameter names | specification, Static Checking, chk-function | [spec_static](../../spec_static_test.mbt), [parameter ranges](../../parameter_range_test.mbt): bare/unused-branch/local/method declarations, public AST, error location, valid nested shadowing and lazy defaults | [validate Func](../../validate.mbt) | Two baseline groups failed; fixed in 0887fce; source/from_ast reject with Static before invocation; raw parsing remains a separate syntax-only API |
-| Empty text-block lines and preserved line endings | specification, Lexing | [spec_text_block](../../spec_text_block_test.mbt): byte-exact leading/interior/consecutive CRLF, mixed endings, tab indent, LF/nonempty CRLF/bare-CR controls | [lexer](../../lexer.mbt) | Two baseline groups failed; fixed in b982065; reviewed cases pass; CRLF chomp and every malformed/whitespace-only line remain untested here |
+| Empty text-block lines and preserved line endings | specification, Lexing | [spec_text_block](../../spec_text_block_test.mbt), [spec_text_chomp](../../spec_text_chomp_test.mbt): byte-exact leading/interior/consecutive CRLF, mixed endings, tab indent, LF/bare-CR controls, one complete final newline removed, retained-source/AST values | [lexer](../../lexer.mbt) | Empty-line fix b982065; chomp fix e59151f after three actual failing groups; reviewed cases pass; complete malformed/whitespace-only-line matrix remains untested |
 | Imported source isolation and lazy loading | specification, Core Syntax | [spec_import_scope](../../spec_import_scope_test.mbt): caller free variable rejected in child; own binding succeeds; unused branch/argument/default/hidden/array-length does not resolve; forcing exposes child Syntax/Static and parent context | [imports](../../imports.mbt) | Coverage gap closed for these cases; all three groups already passed before implementation changes; no import implementation fix needed; complete importstr/importbin/cache/identity matrix not established |
 
 Next matrix work must enumerate the remaining individual language rules and

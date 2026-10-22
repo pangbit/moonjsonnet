@@ -1,0 +1,3848 @@
+{
+  "reference_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+  "reference_sha256": {
+    "spec.html": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
+    "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
+    "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
+  },
+  "input_source_commit": "e59151f4613c6c5699c651fd9abc7e8b2663f383",
+  "coverage_sha256": "c072cb83470070cf721d872f70fd67f31121764e4eccb4f55c0135b300aa33ab",
+  "generator_sha256": "6419232a80972d6bf3b0c92190329fdd5c75ceff4e31a9c0ca237c6b7607bed5",
+  "public_function_candidates": 153,
+  "functions": [
+    {
+      "name": "abs",
+      "official_declarations": {
+        "inline": "std.abs(n)",
+        "inline_line": "230",
+        "source": "std.abs(n)",
+        "source_line": "852"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "acos",
+      "official_declarations": {
+        "inline": "std.acos(x)",
+        "inline_line": "248"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "all",
+      "official_declarations": {
+        "heading": "std.all(arr)",
+        "heading_line": "2636",
+        "source": "std.all(arr)",
+        "source_line": "1661"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "any",
+      "official_declarations": {
+        "heading": "std.any(arr)",
+        "heading_line": "2666",
+        "source": "std.any(arr)",
+        "source_line": "1676"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "asciiLower",
+      "official_declarations": {
+        "heading": "std.asciiLower(str)",
+        "heading_line": "913",
+        "source": "std.asciiLower(str)",
+        "source_line": "187"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "asciiUpper",
+      "official_declarations": {
+        "heading": "std.asciiUpper(str)",
+        "heading_line": "884",
+        "source": "std.asciiUpper(str)",
+        "source_line": "179"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "asin",
+      "official_declarations": {
+        "inline": "std.asin(x)",
+        "inline_line": "247"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "assertEqual",
+      "official_declarations": {
+        "heading": "std.assertEqual(a, b)",
+        "heading_line": "329",
+        "source": "std.assertEqual(a, b)",
+        "source_line": "842"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "atan",
+      "official_declarations": {
+        "inline": "std.atan(x)",
+        "inline_line": "249"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "atan2",
+      "official_declarations": {
+        "inline": "std.atan2(y, x)",
+        "inline_line": "250"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "avg",
+      "official_declarations": {
+        "heading": "std.avg(arr)",
+        "heading_line": "2812",
+        "source": "std.avg(arr)",
+        "source_line": "1726"
+      },
+      "reviewed_subset": {
+        "name": "avg",
+        "dimensions": {
+          "N": {
+            "test": "spec_aggregate_test.mbt",
+            "expectation": "Finite average of [1,2,3] is 2."
+          },
+          "E": {
+            "test": "spec_aggregate_test.mbt",
+            "expectation": "Intermediate sum overflow fails before division/cancellation or consumers."
+          },
+          "L": {
+            "test": "tests/spec-acceptance.json",
+            "case": "short-circuit-or",
+            "expectation": "The average on the unselected right side of true || remains unforced."
+          },
+          "B": {
+            "test": "spec_aggregate_test.mbt",
+            "expectation": "Large finite operands that overflow the intermediate sum are rejected."
+          }
+        },
+        "remaining": "Empty/type/signature/error-order coverage outside these reviewed tests remains unadjudicated."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "aggregate_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"sum and avg are numeric eager left to right aggregates\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_aggregate_test.mbt",
+          "line": 9,
+          "test_declaration": "test \"P0 aggregate overflow errors when the operation is evaluated\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_review_test.mbt",
+          "line": 9,
+          "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "standard_native_diagnostics_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "base64",
+      "official_declarations": {
+        "heading": "std.base64(input)",
+        "heading_line": "3396",
+        "source": "std.base64(input)",
+        "source_line": "1356"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_encoding_test.mbt",
+          "line": 16,
+          "test_declaration": "test \"UTF-8 and base64 match reference byte contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "base64Decode",
+      "official_declarations": {
+        "heading": "std.base64Decode(str)",
+        "heading_line": "3456",
+        "source": "std.base64Decode(str)",
+        "source_line": "1424"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_encoding_test.mbt",
+          "line": 20,
+          "test_declaration": "test \"UTF-8 and base64 match reference byte contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "base64DecodeBytes",
+      "official_declarations": {
+        "heading": "std.base64DecodeBytes(str)",
+        "heading_line": "3427",
+        "source": "std.base64DecodeBytes(str)",
+        "source_line": "1403"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "lint_type_test.mbt",
+          "line": 111,
+          "test_declaration": "test \"lint standard-library types follow the pinned analysis declarations\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "standard_native_diagnostics_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "std_encoding_test.mbt",
+          "line": 20,
+          "test_declaration": "test \"UTF-8 and base64 match reference byte contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "ceil",
+      "official_declarations": {
+        "inline": "std.ceil(x)",
+        "inline_line": "242"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "char",
+      "official_declarations": {
+        "heading": "std.char(n)",
+        "heading_line": "423"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "standard_character_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"character conversion retains truncation and replaces surrogates\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "clamp",
+      "official_declarations": {
+        "heading": "std.clamp(x, minVal, maxVal)",
+        "heading_line": "281",
+        "source": "std.clamp(x, minVal, maxVal)",
+        "source_line": "884"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 29,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "codepoint",
+      "official_declarations": {
+        "heading": "std.codepoint(str)",
+        "heading_line": "395"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "spec_review_test.mbt",
+          "line": 71,
+          "test_declaration": "test \"Unicode codepoint and slice boundaries retain exact error timing\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "standard_character_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"character conversion retains truncation and replaces surrogates\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "contains",
+      "official_declarations": {
+        "heading": "std.contains(arr, elem)",
+        "heading_line": "2785",
+        "source": "std.contains(arr, elem)",
+        "source_line": "1764"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "extrema_test.mbt",
+          "line": 50,
+          "test_declaration": "test \"member and contains short circuit with primitive and recursive equality\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "cos",
+      "official_declarations": {
+        "inline": "std.cos(x)",
+        "inline_line": "245"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "count",
+      "official_declarations": {
+        "heading": "std.count(arr, x)",
+        "heading_line": "2018",
+        "source": "std.count(arr, x)",
+        "source_line": "254"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 22,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "decodeUTF8",
+      "official_declarations": {
+        "heading": "std.decodeUTF8(arr)",
+        "heading_line": "1358"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_encoding_test.mbt",
+          "line": 9,
+          "test_declaration": "test \"UTF-8 and base64 match reference byte contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "deepJoin",
+      "official_declarations": {
+        "heading": "std.deepJoin(arr)",
+        "heading_line": "2427",
+        "source": "std.deepJoin(arr)",
+        "source_line": "330"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 27,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "deg2rad",
+      "official_declarations": {
+        "inline": "std.deg2rad(x)",
+        "inline_line": "251",
+        "source": "std.deg2rad(x)",
+        "source_line": "267"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "encodeUTF8",
+      "official_declarations": {
+        "heading": "std.encodeUTF8(str)",
+        "heading_line": "1330"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_encoding_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"UTF-8 and base64 match reference byte contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "endsWith",
+      "official_declarations": {
+        "heading": "std.endsWith(a, b)",
+        "heading_line": "540",
+        "source": "std.endsWith(a, b)",
+        "source_line": "53"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "equals",
+      "official_declarations": {
+        "source": "std.equals(a, b)",
+        "source_line": "1582"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 48,
+          "test_declaration": "test \"equality source functions and object argument contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "equalsIgnoreCase",
+      "official_declarations": {
+        "heading": "std.equalsIgnoreCase(str1, str2)",
+        "heading_line": "857",
+        "source": "std.equalsIgnoreCase(str1, str2)",
+        "source_line": "1766"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 26,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "escapeStringBash",
+      "official_declarations": {
+        "heading": "std.escapeStringBash(str)",
+        "heading_line": "1014",
+        "source": "std.escapeStringBash(str_)",
+        "source_line": "1028"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 34,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "escapeStringDollars",
+      "official_declarations": {
+        "heading": "std.escapeStringDollars(str)",
+        "heading_line": "1043",
+        "source": "std.escapeStringDollars(str_)",
+        "source_line": "1032"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 34,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "escapeStringJson",
+      "official_declarations": {
+        "heading": "std.escapeStringJson(str)",
+        "heading_line": "1071",
+        "source": "std.escapeStringJson(str_)",
+        "source_line": "1000"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 34,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "escapeStringPython",
+      "official_declarations": {
+        "heading": "std.escapeStringPython(str)",
+        "heading_line": "1102",
+        "source": "std.escapeStringPython(str)",
+        "source_line": "1025"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 34,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "escapeStringXML",
+      "official_declarations": {
+        "source": "std.escapeStringXML(str_)",
+        "source_line": "1044"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 34,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "escapeStringXml",
+      "official_declarations": {
+        "heading": "std.escapeStringXml(str)",
+        "heading_line": "1130"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "exp",
+      "official_declarations": {
+        "inline": "std.exp(x)",
+        "inline_line": "235"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "exponent",
+      "official_declarations": {
+        "inline": "std.exponent(x)",
+        "inline_line": "239"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 34,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "extVar",
+      "official_declarations": {
+        "heading": "std.extVar(x)",
+        "heading_line": "57"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "anonymous_test.mbt",
+          "line": 7,
+          "test_declaration": "test \"anonymous snippets use diagnostic names and empty import origins\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "ast_test.mbt",
+          "line": 62,
+          "test_declaration": "test \"AST edits and copies do not mutate validated programs or other copies\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "debugger_test.mbt",
+          "line": 101,
+          "test_declaration": "test \"debugger callback rejects reentry and retains caller configuration\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "digest_test.mbt",
+          "line": 18,
+          "test_declaration": "test \"digests of one million a bytes\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "evaluator_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"evaluator separates source cache and value cache invalidation\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "lazy_reentry_test.mbt",
+          "line": 148,
+          "test_declaration": "test \"non-tail external Code and Program reuse their actual independent scopes\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "multi_test.mbt",
+          "line": 75,
+          "test_declaration": "test \"multi preserves shared parameter and callback state\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "output_test.mbt",
+          "line": 151,
+          "test_declaration": "test \"new output APIs preserve parameters, anonymous origins and callbacks\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "parameter_forwarding_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"cyclic returned external parameters exhaust real clean frames\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "parameters_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"external code values use a clean environment and memoized thunks\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "program_parameters_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"parsed parameters share a thunk only within one execution\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "program_test.mbt",
+          "line": 37,
+          "test_declaration": "test \"program arguments and failures are independent on repeated execution\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sha256_test.mbt",
+          "line": 25,
+          "test_declaration": "test \"sha256 known answers and multi block padding\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_import_scope_test.mbt",
+          "line": 64,
+          "test_declaration": "test \"import syntax and statics are checked only when the import is forced\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "filter",
+      "official_declarations": {
+        "heading": "std.filter(func, arr)",
+        "heading_line": "2200"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "remove_test.mbt",
+          "line": 17,
+          "test_declaration": "test \"remove and removeAt preserve lazy payloads and immutable inputs\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "filterMap",
+      "official_declarations": {
+        "heading": "std.filterMap(filter_func, map_func, arr)",
+        "heading_line": "2129",
+        "source": "std.filterMap(filter_func, map_func, arr)",
+        "source_line": "832"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 18,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "find",
+      "official_declarations": {
+        "heading": "std.find(value, arr)",
+        "heading_line": "2045",
+        "source": "std.find(value, arr)",
+        "source_line": "1655"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 26,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "findSubstr",
+      "official_declarations": {
+        "heading": "std.findSubstr(pat, str)",
+        "heading_line": "485",
+        "source": "std.findSubstr(pat, str)",
+        "source_line": "1642"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "flatMap",
+      "official_declarations": {
+        "heading": "std.flatMap(func, arr)",
+        "heading_line": "2156",
+        "source": "std.flatMap(func, arr)",
+        "source_line": "297"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sequence_combine_test.mbt",
+          "line": 4,
+          "test_declaration": "test \"flatMap concatenates arrays and code point strings\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "flattenArrays",
+      "official_declarations": {
+        "heading": "std.flattenArrays(arr)",
+        "heading_line": "2489",
+        "source": "std.flattenArrays(arrs)",
+        "source_line": "889"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 11,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "flattenDeepArray",
+      "official_declarations": {
+        "heading": "std.flattenDeepArray(value)",
+        "heading_line": "2518",
+        "source": "std.flattenDeepArray(value)",
+        "source_line": "892"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "floor",
+      "official_declarations": {
+        "inline": "std.floor(x)",
+        "inline_line": "241"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "foldl",
+      "official_declarations": {
+        "heading": "std.foldl(func, arr, init)",
+        "heading_line": "2228",
+        "source": "std.foldl(func, arr, init)",
+        "source_line": "823"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "moonjsonnet_test.mbt",
+          "line": 118,
+          "test_declaration": "test \"regressions for standard string manifests static super and token names\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "stdlib_contract_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"function length counts declared parameters without evaluating defaults\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "foldr",
+      "official_declarations": {
+        "heading": "std.foldr(func, arr, init)",
+        "heading_line": "2260",
+        "source": "std.foldr(func, arr, init)",
+        "source_line": "815"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sequence_combine_test.mbt",
+          "line": 35,
+          "test_declaration": "test \"foldr evaluates from right to left with element before accumulator\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "format",
+      "official_declarations": {
+        "heading": "std.format(str, vals)",
+        "heading_line": "972",
+        "source": "std.format(str, vals)",
+        "source_line": "339"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "standard_native_diagnostics_test.mbt",
+          "line": 43,
+          "test_declaration": "test \"source standard formatting and YAML retain laziness and explicit budgets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "get",
+      "official_declarations": {
+        "heading": "std.get(o, f, default=null, inc_hidden=true)",
+        "heading_line": "3080",
+        "source": "std.get(o, f, default=null, inc_hidden=true)",
+        "source_line": "1555"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_length_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"function length includes source and builtin optional parameters\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "hypot",
+      "official_declarations": {
+        "inline": "std.hypot(a, b)",
+        "inline_line": "253"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "spec_review_test.mbt",
+          "line": 8,
+          "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "std_math_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isArray",
+      "official_declarations": {
+        "inline": "std.isArray(v)",
+        "inline_line": "143",
+        "source": "std.isArray(v)",
+        "source_line": "34"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isBoolean",
+      "official_declarations": {
+        "inline": "std.isBoolean(v)",
+        "inline_line": "143",
+        "source": "std.isBoolean(v)",
+        "source_line": "32"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isDecimal",
+      "official_declarations": {
+        "inline": "std.isDecimal(x)",
+        "inline_line": "258",
+        "source": "std.isDecimal(x)",
+        "source_line": "1771"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 22,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isEmpty",
+      "official_declarations": {
+        "heading": "std.isEmpty(str)",
+        "heading_line": "803",
+        "source": "std.isEmpty(str)",
+        "source_line": "1762"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 30,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isEven",
+      "official_declarations": {
+        "inline": "std.isEven(x)",
+        "inline_line": "255",
+        "source": "std.isEven(x)",
+        "source_line": "1768"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 22,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isFunction",
+      "official_declarations": {
+        "inline": "std.isFunction(v)",
+        "inline_line": "143",
+        "source": "std.isFunction(v)",
+        "source_line": "35"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "native_test.mbt",
+          "line": 57,
+          "test_declaration": "test \"native registration JSON conversion named arguments and higher order calls\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isInteger",
+      "official_declarations": {
+        "inline": "std.isInteger(x)",
+        "inline_line": "257",
+        "source": "std.isInteger(x)",
+        "source_line": "1770"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 22,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isNumber",
+      "official_declarations": {
+        "inline": "std.isNumber(v)",
+        "inline_line": "144",
+        "source": "std.isNumber(v)",
+        "source_line": "31"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isObject",
+      "official_declarations": {
+        "inline": "std.isObject(v)",
+        "inline_line": "144",
+        "source": "std.isObject(v)",
+        "source_line": "33"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isOdd",
+      "official_declarations": {
+        "inline": "std.isOdd(x)",
+        "inline_line": "256",
+        "source": "std.isOdd(x)",
+        "source_line": "1769"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 22,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "isString",
+      "official_declarations": {
+        "inline": "std.isString(v)",
+        "inline_line": "145",
+        "source": "std.isString(v)",
+        "source_line": "30"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "standard_native_diagnostics_test.mbt",
+          "line": 38,
+          "test_declaration": "test \"source standard formatting and YAML retain laziness and explicit budgets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "join",
+      "official_declarations": {
+        "heading": "std.join(sep, arr)",
+        "heading_line": "2392",
+        "source": "std.join(sep, arr)",
+        "source_line": "306"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "length",
+      "official_declarations": {
+        "heading": "std.length(x)",
+        "heading_line": "157"
+      },
+      "reviewed_subset": {
+        "name": "length",
+        "dimensions": {
+          "N": {
+            "test": "spec_length_test.mbt",
+            "expectation": "All declared function parameters and Unicode/array/visible-object lengths in the asserted examples."
+          },
+          "E": {
+            "test": "spec_length_test.mbt",
+            "expectation": "null/boolean/number inputs raise Type."
+          },
+          "L": {
+            "test": "spec_length_test.mbt",
+            "expectation": "Reflection does not force defaults, body, array payloads, hidden fields or native callback."
+          },
+          "B": {
+            "test": "spec_length_test.mbt",
+            "expectation": "Zero parameters, optional parameters and supplementary Unicode example."
+          }
+        },
+        "remaining": "Complete signature/arity/error-order and every container/visibility combination remain unreviewed."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "aggregate_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"sum and avg are numeric eager left to right aggregates\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "arguments_test.mbt",
+          "line": 4,
+          "test_declaration": "test \"builtin and closure argument validation precedes forcing\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "array_std_test.mbt",
+          "line": 25,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "error_value_test.mbt",
+          "line": 62,
+          "test_declaration": "test \"slice lowering preserves hidden standard alias and parameter laziness\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "evaluator_wbtest.mbt",
+          "line": 11,
+          "test_declaration": "test \"retained heap reaches steady size across repeated entries\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "extrema_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"array extrema use Go defaults named arguments and stable ties\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "language_test.mbt",
+          "line": 70,
+          "test_declaration": "test \"formatting conversions and ordinary std object\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "lint_type_test.mbt",
+          "line": 105,
+          "test_declaration": "test \"lint standard-library types follow the pinned analysis declarations\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "moonjsonnet_test.mbt",
+          "line": 20,
+          "test_declaration": "test \"laziness recursion lexical scope defaults comprehensions\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "native_test.mbt",
+          "line": 57,
+          "test_declaration": "test \"native registration JSON conversion named arguments and higher order calls\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "number_literal_test.mbt",
+          "line": 28,
+          "test_declaration": "test \"numeric spellings and overflow survive parsing and AST round trips\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "numeric_test.mbt",
+          "line": 22,
+          "test_declaration": "test \"fractional slices retain lazy progression and validate demanded indices\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "object_std_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "parameter_range_test.mbt",
+          "line": 37,
+          "test_declaration": "test \"repeated formal names are static errors independent of invocation\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "parameters_test.mbt",
+          "line": 105,
+          "test_declaration": "test \"top-level arguments defaults named calls and one application\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "remove_test.mbt",
+          "line": 8,
+          "test_declaration": "test \"remove and removeAt preserve lazy payloads and immutable inputs\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "render_test.mbt",
+          "line": 52,
+          "test_declaration": "test \"expanded manifest numbers respect the intermediate output limit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sequence_combine_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"flatMap preserves input and returned array element laziness\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sequence_test.mbt",
+          "line": 8,
+          "test_declaration": "test \"makeArray preserves lazy elements and named arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sets_test.mbt",
+          "line": 33,
+          "test_declaration": "test \"source standard library preserves laziness and reflection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sort_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"sort supports defaults named keys stability and array ordering\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_aggregate_test.mbt",
+          "line": 43,
+          "test_declaration": "test \"P0 lazy boundaries and finite aggregate results remain valid\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_import_scope_test.mbt",
+          "line": 42,
+          "test_declaration": "test \"unused imports never resolve even when the target would fail parsing\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_index_test.mbt",
+          "line": 31,
+          "test_declaration": "test \"P0 slicing defers array indexing and keeps strings strict\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_length_test.mbt",
+          "line": 9,
+          "test_declaration": "test \"function length counts all declared parameters without forcing defaults\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_remove_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"P0 immutable array deletion preserves originals and deferred aliases\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_review_test.mbt",
+          "line": 53,
+          "test_declaration": "test \"deletion shares cached payloads without forcing removed or retained errors\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "stack_test.mbt",
+          "line": 38,
+          "test_declaration": "test \"runtime frames count lazy work and manifestation rather than AST nodes\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "stdlib_contract_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"function length counts declared parameters without evaluating defaults\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "lines",
+      "official_declarations": {
+        "heading": "std.lines(arr)",
+        "heading_line": "2461",
+        "source": "std.lines(arr)",
+        "source_line": "327"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "log",
+      "official_declarations": {
+        "inline": "std.log(x)",
+        "inline_line": "236"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "log10",
+      "official_declarations": {
+        "inline": "std.log10(x)",
+        "inline_line": "238",
+        "source": "std.log10(x)",
+        "source_line": "271"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "log2",
+      "official_declarations": {
+        "inline": "std.log2(x)",
+        "inline_line": "237",
+        "source": "std.log2(x)",
+        "source_line": "270"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "lstripChars",
+      "official_declarations": {
+        "heading": "std.lstripChars(str, chars)",
+        "heading_line": "602",
+        "source": "std.lstripChars(str, chars)",
+        "source_line": "59"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "makeArray",
+      "official_declarations": {
+        "heading": "std.makeArray(sz, func)",
+        "heading_line": "1959"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "aggregate_test.mbt",
+          "line": 29,
+          "test_declaration": "test \"sum and avg are numeric eager left to right aggregates\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "array_std_test.mbt",
+          "line": 59,
+          "test_declaration": "test \"array source functions validate inputs and budget\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "error_value_test.mbt",
+          "line": 80,
+          "test_declaration": "test \"cached generated calls retain closures and arguments across heap collection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "lazy_reentry_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"recursive lazy demands retain real frame and expression limits\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "numeric_test.mbt",
+          "line": 80,
+          "test_declaration": "test \"numeric conversion rejects invalid bounds before native conversion\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sequence_combine_test.mbt",
+          "line": 95,
+          "test_declaration": "test \"sequence combinators enforce allocation and intermediate string budgets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sequence_test.mbt",
+          "line": 4,
+          "test_declaration": "test \"makeArray preserves lazy elements and named arguments\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestIni",
+      "official_declarations": {
+        "heading": "std.manifestIni(ini)",
+        "heading_line": "1398",
+        "source": "std.manifestIni(ini)",
+        "source_line": "898"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_manifest_test.mbt",
+          "line": 33,
+          "test_declaration": "test \"source output functions use reference layouts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestJson",
+      "official_declarations": {
+        "heading": "std.manifestJson(value)",
+        "heading_line": "1602",
+        "source": "std.manifestJson(value)",
+        "source_line": "1048"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "moonjsonnet_test.mbt",
+          "line": 155,
+          "test_declaration": "test \"pretty manifestation cannot bypass intermediate output budget\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "native_test.mbt",
+          "line": 102,
+          "test_declaration": "test \"native eager ordered manifestation lazy memoization and host errors\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "render_test.mbt",
+          "line": 19,
+          "test_declaration": "test \"manifest numbers use shortest fixed decimal text\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_aggregate_test.mbt",
+          "line": 11,
+          "test_declaration": "test \"P0 aggregate overflow errors when the operation is evaluated\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "std_manifest_test.mbt",
+          "line": 13,
+          "test_declaration": "test \"JSON output style defaults escaping and lazy objects\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestJsonEx",
+      "official_declarations": {
+        "heading": "std.manifestJsonEx(value, indent, newline, key_val_sep)",
+        "heading_line": "1535",
+        "source": "std.manifestJsonEx(value, indent, newline='\\n', key_val_sep=': ')",
+        "source_line": "1052"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "arguments_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"builtin and closure argument validation precedes forcing\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_length_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"function length includes source and builtin optional parameters\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "standard_native_diagnostics_test.mbt",
+          "line": 17,
+          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "std_manifest_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"JSON output style defaults escaping and lazy objects\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestJsonMinified",
+      "official_declarations": {
+        "heading": "std.manifestJsonMinified(value)",
+        "heading_line": "1657",
+        "source": "std.manifestJsonMinified(value)",
+        "source_line": "1050"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_manifest_test.mbt",
+          "line": 12,
+          "test_declaration": "test \"JSON output style defaults escaping and lazy objects\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestPython",
+      "official_declarations": {
+        "heading": "std.manifestPython(v)",
+        "heading_line": "1450",
+        "source": "std.manifestPython(v)",
+        "source_line": "1309"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_manifest_test.mbt",
+          "line": 28,
+          "test_declaration": "test \"source output functions use reference layouts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestPythonVars",
+      "official_declarations": {
+        "heading": "std.manifestPythonVars(conf)",
+        "heading_line": "1493",
+        "source": "std.manifestPythonVars(conf)",
+        "source_line": "1331"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_manifest_test.mbt",
+          "line": 30,
+          "test_declaration": "test \"source output functions use reference layouts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestToml",
+      "official_declarations": {
+        "source": "std.manifestToml(value)",
+        "source_line": "918"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "standard_native_diagnostics_test.mbt",
+          "line": 20,
+          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "toml_yaml_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"TOML layouts and string contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestTomlEx",
+      "official_declarations": {
+        "heading": "std.manifestTomlEx(toml, indent)",
+        "heading_line": "1877",
+        "source": "std.manifestTomlEx(value, indent)",
+        "source_line": "920"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "toml_yaml_test.mbt",
+          "line": 42,
+          "test_declaration": "test \"TOML YAML parameter errors and resource limits\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestXmlJsonml",
+      "official_declarations": {
+        "heading": "std.manifestXmlJsonml(value)",
+        "heading_line": "1806",
+        "source": "std.manifestXmlJsonml(value)",
+        "source_line": "1335"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_manifest_test.mbt",
+          "line": 37,
+          "test_declaration": "test \"source output functions use reference layouts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestYamlDoc",
+      "official_declarations": {
+        "heading": "std.manifestYamlDoc(value, indent_array_in_object=false, quote_keys=true)",
+        "heading_line": "1694",
+        "source": "std.manifestYamlDoc(value, indent_array_in_object=false, quote_keys=true)",
+        "source_line": "1089"
+      },
+      "reviewed_subset": {
+        "name": "manifestYamlDoc",
+        "dimensions": {
+          "E": {
+            "test": "spec_yaml_test.mbt",
+            "expectation": "Root/nested functions and nested runtime errors fail instead of returning partial YAML."
+          },
+          "L": {
+            "test": "spec_aggregate_test.mbt",
+            "expectation": "Unused manifestation and hidden fields remain unforced."
+          }
+        },
+        "remaining": "All formatting/options/normal-result/numeric/layout boundaries are not adjudicated by this error/lazy subset."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "spec_aggregate_test.mbt",
+          "line": 49,
+          "test_declaration": "test \"P0 lazy boundaries and finite aggregate results remain valid\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_length_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"function length includes source and builtin optional parameters\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_review_test.mbt",
+          "line": 104,
+          "test_declaration": "test \"YAML propagates runtime type assertion errors and leaves evaluator usable\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_yaml_test.mbt",
+          "line": 9,
+          "test_declaration": "test \"P0 YAML propagates nested errors and rejects function values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "toml_yaml_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"YAML layout quoting and visible fields\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "manifestYamlStream",
+      "official_declarations": {
+        "heading": "std.manifestYamlStream(value, indent_array_in_object=false, c_document_end=false, quote_keys=true)",
+        "heading_line": "1757",
+        "source": "std.manifestYamlStream(value, indent_array_in_object=false, c_document_end=true, quote_keys=true)",
+        "source_line": "1300"
+      },
+      "reviewed_subset": {
+        "name": "manifestYamlStream",
+        "dimensions": {
+          "E": {
+            "test": "spec_yaml_test.mbt",
+            "expectation": "Errors and functions in any demanded document fail the stream call."
+          }
+        },
+        "remaining": "Official documentation c_document_end=false conflicts with source default true; normal/default/options/lazy/boundary behavior remains unresolved or unmapped."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "spec_length_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"function length includes source and builtin optional parameters\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_yaml_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"P0 YAML propagates nested errors and rejects function values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "toml_yaml_test.mbt",
+          "line": 32,
+          "test_declaration": "test \"YAML layout quoting and visible fields\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "mantissa",
+      "official_declarations": {
+        "inline": "std.mantissa(x)",
+        "inline_line": "240"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 30,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "map",
+      "official_declarations": {
+        "heading": "std.map(func, arr)",
+        "heading_line": "2073",
+        "source": "std.map(func, arr)",
+        "source_line": "273"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "error_value_test.mbt",
+          "line": 80,
+          "test_declaration": "test \"cached generated calls retain closures and arguments across heap collection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "moonjsonnet_test.mbt",
+          "line": 18,
+          "test_declaration": "test \"laziness recursion lexical scope defaults comprehensions\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "native_test.mbt",
+          "line": 56,
+          "test_declaration": "test \"native registration JSON conversion named arguments and higher order calls\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "remove_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"remove and removeAt preserve lazy payloads and immutable inputs\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_remove_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"P0 immutable array deletion preserves originals and deferred aliases\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "mapWithIndex",
+      "official_declarations": {
+        "heading": "std.mapWithIndex(func, arr)",
+        "heading_line": "2100",
+        "source": "std.mapWithIndex(func, arr)",
+        "source_line": "281"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sequence_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"mapWithIndex uses code point indices and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "mapWithKey",
+      "official_declarations": {
+        "heading": "std.mapWithKey(func, obj)",
+        "heading_line": "3355",
+        "source": "std.mapWithKey(func, obj)",
+        "source_line": "289"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 25,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "max",
+      "official_declarations": {
+        "inline": "std.max(a, b)",
+        "inline_line": "232",
+        "source": "std.max(a, b)",
+        "source_line": "868"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 29,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "maxArray",
+      "official_declarations": {
+        "heading": "std.maxArray(arr, keyF, onEmpty)",
+        "heading_line": "2754",
+        "source": "std.maxArray(arr, keyF=id, onEmpty=error 'Expected at least one element in array. Got none')",
+        "source_line": "1744"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "extrema_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"array extrema use Go defaults named arguments and stable ties\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_length_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"function length includes source and builtin optional parameters\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "standard_native_diagnostics_test.mbt",
+          "line": 15,
+          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "md5",
+      "official_declarations": {
+        "heading": "std.md5(s)",
+        "heading_line": "3486"
+      },
+      "reviewed_subset": {
+        "name": "md5",
+        "dimensions": {},
+        "reference_candidates": [
+          {
+            "file": "digest_test.mbt",
+            "line": 38,
+            "classification": "Manual dynamic-call reference; values/types/work limits are asserted, but the complete normative contract has not been adjudicated."
+          }
+        ],
+        "remaining": "Dynamic test references are mapped without awarding normative N/E/L/B coverage."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "digest_test.mbt",
+          "line": 38,
+          "classification": "Manual dynamic-call reference; values/types/work limits are asserted, but the complete normative contract has not been adjudicated."
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "member",
+      "official_declarations": {
+        "heading": "std.member(arr, x)",
+        "heading_line": "1990",
+        "source": "std.member(arr, x)",
+        "source_line": "247"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "extrema_test.mbt",
+          "line": 50,
+          "test_declaration": "test \"member and contains short circuit with primitive and recursive equality\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "mergePatch",
+      "official_declarations": {
+        "heading": "std.mergePatch(target, patch)",
+        "heading_line": "3711",
+        "source": "std.mergePatch(target, patch)",
+        "source_line": "1531"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sets_test.mbt",
+          "line": 16,
+          "test_declaration": "test \"source standard library sets and merge patch\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "min",
+      "official_declarations": {
+        "inline": "std.min(a, b)",
+        "inline_line": "233",
+        "source": "std.min(a, b)",
+        "source_line": "876"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 29,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "minArray",
+      "official_declarations": {
+        "heading": "std.minArray(arr, keyF, onEmpty)",
+        "heading_line": "2723",
+        "source": "std.minArray(arr, keyF=id, onEmpty=error 'Expected at least one element in array. Got none')",
+        "source_line": "1732"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "extrema_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"array extrema use Go defaults named arguments and stable ties\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_length_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"function length includes source and builtin optional parameters\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "mod",
+      "official_declarations": {
+        "inline": "std.mod(a, b)",
+        "inline_line": "264",
+        "source": "std.mod(a, b)",
+        "source_line": "256"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "modulo",
+      "official_declarations": {
+        "specification": "std.modulo(a, b)",
+        "specification_line": "0"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "native",
+      "official_declarations": {
+        "specification": "std.native(x)",
+        "specification_line": "0"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "evaluator_import_ast_test.mbt",
+          "line": 83,
+          "test_declaration": "test \"nullable import AST returns valid programs without executing callbacks\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "evaluator_imports_test.mbt",
+          "line": 20,
+          "test_declaration": "test \"evaluator queries share source and AST caches without execution\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "evaluator_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"evaluator separates source cache and value cache invalidation\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "lazy_reentry_test.mbt",
+          "line": 58,
+          "test_declaration": "test \"finite lazy reentry executes callbacks and caches final results\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "multi_test.mbt",
+          "line": 75,
+          "test_declaration": "test \"multi preserves shared parameter and callback state\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "native_test.mbt",
+          "line": 12,
+          "test_declaration": "test \"upstream native JSON callback fixtures\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "output_test.mbt",
+          "line": 167,
+          "test_declaration": "test \"new output APIs preserve parameters, anonymous origins and callbacks\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "parameter_forwarding_test.mbt",
+          "line": 66,
+          "test_declaration": "test \"returned external calls execute each body and cache its result\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "parameters_test.mbt",
+          "line": 54,
+          "test_declaration": "test \"parameter code diagnostics imports thisFile and shared host callbacks\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "program_parameters_test.mbt",
+          "line": 3,
+          "test_declaration": "test \"parsed parameters share a thunk only within one execution\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "program_test.mbt",
+          "line": 129,
+          "test_declaration": "test \"program native functions traces and binary imports use each call configuration\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_length_test.mbt",
+          "line": 37,
+          "test_declaration": "test \"length keeps native functions and nonfunction contracts separate\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_review_test.mbt",
+          "line": 30,
+          "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectFields",
+      "official_declarations": {
+        "heading": "std.objectFields(o)",
+        "heading_line": "3137",
+        "source": "std.objectFields(o)",
+        "source_line": "1558"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectFieldsAll",
+      "official_declarations": {
+        "heading": "std.objectFieldsAll(o)",
+        "heading_line": "3247",
+        "source": "std.objectFieldsAll(o)",
+        "source_line": "1561"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 94,
+          "test_declaration": "test \"objectRemoveKey keeps hidden fields and rebinds self without mutating input\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "remove_test.mbt",
+          "line": 69,
+          "test_declaration": "test \"flat object merge keeps bindings visibility and self while dropping assertions\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectFieldsEx",
+      "official_declarations": {
+        "specification": "parameter names not specified by formal rule",
+        "specification_line": "0"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectHas",
+      "official_declarations": {
+        "heading": "std.objectHas(o, f)",
+        "heading_line": "3108",
+        "source": "std.objectHas(o, f)",
+        "source_line": "1564"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "aggregate_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"sum and avg are numeric eager left to right aggregates\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "extrema_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"array extrema use Go defaults named arguments and stable ties\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sequence_combine_test.mbt",
+          "line": 84,
+          "test_declaration": "test \"sequence combinators force results and validate empty input contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sequence_test.mbt",
+          "line": 76,
+          "test_declaration": "test \"sequence functions validate arguments and remain hidden\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sets_test.mbt",
+          "line": 37,
+          "test_declaration": "test \"source standard library preserves laziness and reflection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sort_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"sort supports defaults named keys stability and array ordering\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectHasAll",
+      "official_declarations": {
+        "heading": "std.objectHasAll(o, f)",
+        "heading_line": "3220",
+        "source": "std.objectHasAll(o, f)",
+        "source_line": "1567"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sequence_combine_test.mbt",
+          "line": 84,
+          "test_declaration": "test \"sequence combinators force results and validate empty input contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sequence_test.mbt",
+          "line": 76,
+          "test_declaration": "test \"sequence functions validate arguments and remain hidden\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sets_test.mbt",
+          "line": 37,
+          "test_declaration": "test \"source standard library preserves laziness and reflection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sort_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"sort supports defaults named keys stability and array ordering\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectHasEx",
+      "official_declarations": {
+        "specification": "parameter names not specified by formal rule",
+        "specification_line": "0"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectKeysValues",
+      "official_declarations": {
+        "heading": "std.objectKeysValues(o)",
+        "heading_line": "3192",
+        "source": "std.objectKeysValues(o)",
+        "source_line": "1576"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 16,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectKeysValuesAll",
+      "official_declarations": {
+        "heading": "std.objectKeysValuesAll(o)",
+        "heading_line": "3301",
+        "source": "std.objectKeysValuesAll(o)",
+        "source_line": "1579"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 19,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectRemoveKey",
+      "official_declarations": {
+        "heading": "std.objectRemoveKey(obj, key)",
+        "heading_line": "3328",
+        "source": "std.objectRemoveKey(obj, key)",
+        "source_line": "1788"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectValues",
+      "official_declarations": {
+        "heading": "std.objectValues(o)",
+        "heading_line": "3165",
+        "source": "std.objectValues(o)",
+        "source_line": "1570"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 13,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "objectValuesAll",
+      "official_declarations": {
+        "heading": "std.objectValuesAll(o)",
+        "heading_line": "3274",
+        "source": "std.objectValuesAll(o)",
+        "source_line": "1573"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "parseHex",
+      "official_declarations": {
+        "heading": "std.parseHex(str)",
+        "heading_line": "1239",
+        "source": "std.parseHex(str)",
+        "source_line": "109"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 22,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "parseInt",
+      "official_declarations": {
+        "heading": "std.parseInt(str)",
+        "heading_line": "1178",
+        "source": "std.parseInt(str)",
+        "source_line": "96"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 22,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "parseJson",
+      "official_declarations": {
+        "heading": "std.parseJson(str)",
+        "heading_line": "1268"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "json_yaml_diagnostic_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"JSON scanner diagnostics preserve context byte quoting and EOF rules\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_review_test.mbt",
+          "line": 8,
+          "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "parseOctal",
+      "official_declarations": {
+        "heading": "std.parseOctal(str)",
+        "heading_line": "1210",
+        "source": "std.parseOctal(str)",
+        "source_line": "104"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 22,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "parseYaml",
+      "official_declarations": {
+        "heading": "std.parseYaml(str)",
+        "heading_line": "1297"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "json_yaml_diagnostic_test.mbt",
+          "line": 38,
+          "test_declaration": "test \"YAML errors preserve parser scanner and directive semantics\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "parse_yaml_test.mbt",
+          "line": 7,
+          "test_declaration": "outside test declaration",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_review_test.mbt",
+          "line": 9,
+          "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "standard_native_diagnostics_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "pow",
+      "official_declarations": {
+        "inline": "std.pow(x, n)",
+        "inline_line": "234"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "spec_review_test.mbt",
+          "line": 7,
+          "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "std_math_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "primitiveEquals",
+      "official_declarations": {
+        "specification": "parameter names not specified by formal rule",
+        "specification_line": "0"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 59,
+          "test_declaration": "test \"equality source functions and object argument contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "prune",
+      "official_declarations": {
+        "heading": "std.prune(a)",
+        "heading_line": "187",
+        "source": "std.prune(a)",
+        "source_line": "1623"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "object_std_test.mbt",
+          "line": 29,
+          "test_declaration": "test \"object standard functions preserve hidden fields and lazy values\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "rad2deg",
+      "official_declarations": {
+        "inline": "std.rad2deg(x)",
+        "inline_line": "252",
+        "source": "std.rad2deg(x)",
+        "source_line": "268"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "range",
+      "official_declarations": {
+        "heading": "std.range(from, to)",
+        "heading_line": "2292",
+        "source": "std.range(from, to)",
+        "source_line": "195"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "aggregate_test.mbt",
+          "line": 12,
+          "test_declaration": "test \"sum and avg are numeric eager left to right aggregates\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "lint_type_test.mbt",
+          "line": 108,
+          "test_declaration": "test \"lint standard-library types follow the pinned analysis declarations\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "moonjsonnet_test.mbt",
+          "line": 90,
+          "test_declaration": "test \"resource limits\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "parameters_test.mbt",
+          "line": 264,
+          "test_declaration": "test \"parameter source evaluation and import budgets remain bounded\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sequence_combine_test.mbt",
+          "line": 44,
+          "test_declaration": "test \"foldr evaluates from right to left with element before accumulator\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sets_test.mbt",
+          "line": 69,
+          "test_declaration": "test \"source standard library errors and resource budget\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sort_test.mbt",
+          "line": 72,
+          "test_declaration": "test \"sort scales iteratively and respects the step budget\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "stdlib_contract_test.mbt",
+          "line": 60,
+          "test_declaration": "test \"foldl iterates without accumulating evaluator stack depth\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "remove",
+      "official_declarations": {
+        "heading": "std.remove(arr, elem)",
+        "heading_line": "2839",
+        "source": "std.remove(arr, elem)",
+        "source_line": "1779"
+      },
+      "reviewed_subset": {
+        "name": "remove",
+        "dimensions": {
+          "N": {
+            "test": "spec_remove_test.mbt",
+            "expectation": "Deleting a present element and the missing-element example preserve the original."
+          },
+          "L": {
+            "test": "spec_aggregate_test.mbt",
+            "expectation": "Length of deletion result does not force retained payload."
+          },
+          "B": {
+            "test": "spec_remove_test.mbt",
+            "expectation": "Missing element example leaves input/result unchanged."
+          }
+        },
+        "remaining": "Search/forcing/error and complete named-argument contracts are not adjudicated; legacy remove_test errors are not assumed normative."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "remove_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"remove and removeAt preserve lazy payloads and immutable inputs\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_aggregate_test.mbt",
+          "line": 44,
+          "test_declaration": "test \"P0 lazy boundaries and finite aggregate results remain valid\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_remove_test.mbt",
+          "line": 12,
+          "test_declaration": "test \"P0 immutable array deletion preserves originals and deferred aliases\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "removeAt",
+      "official_declarations": {
+        "heading": "std.removeAt(arr, idx)",
+        "heading_line": "2866",
+        "source": "std.removeAt(arr, at)",
+        "source_line": "1773"
+      },
+      "reviewed_subset": {
+        "name": "removeAt",
+        "dimensions": {
+          "N": {
+            "test": "spec_remove_test.mbt",
+            "expectation": "Positional deletion preserves original, aliases and earlier map/slice."
+          },
+          "L": {
+            "test": "spec_review_test.mbt",
+            "expectation": "Result shares cached payload once; removed/retained error payloads stay lazy for length/other indices."
+          },
+          "B": {
+            "test": "spec_remove_test.mbt",
+            "expectation": "Deleting sole element and chained deletion keep inputs immutable."
+          }
+        },
+        "remaining": "Named parameter idx versus source at/current i is unresolved. Invalid/fractional/out-of-range index behavior is not assumed from Go tests."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "program_parameters_test.mbt",
+          "line": 181,
+          "test_declaration": "test \"parsed parameter failure and container mutation do not escape an execution\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "program_test.mbt",
+          "line": 187,
+          "test_declaration": "test \"program object and array mutation cannot contaminate later evaluations\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "remove_test.mbt",
+          "line": 7,
+          "test_declaration": "test \"remove and removeAt preserve lazy payloads and immutable inputs\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_aggregate_test.mbt",
+          "line": 43,
+          "test_declaration": "test \"P0 lazy boundaries and finite aggregate results remain valid\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_remove_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"P0 immutable array deletion preserves originals and deferred aliases\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_review_test.mbt",
+          "line": 53,
+          "test_declaration": "test \"deletion shares cached payloads without forcing removed or retained errors\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "repeat",
+      "official_declarations": {
+        "heading": "std.repeat(what, count)",
+        "heading_line": "2319",
+        "source": "std.repeat(what, count)",
+        "source_line": "198"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "array_std_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "toml_yaml_test.mbt",
+          "line": 54,
+          "test_declaration": "test \"TOML YAML parameter errors and resource limits\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "resolvePath",
+      "official_declarations": {
+        "source": "std.resolvePath(f, r)",
+        "source_line": "1619"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 38,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "reverse",
+      "official_declarations": {
+        "heading": "std.reverse(arrs)",
+        "heading_line": "2547",
+        "source": "std.reverse(arr)",
+        "source_line": "1428"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sequence_test.mbt",
+          "line": 41,
+          "test_declaration": "test \"reverse preserves lazy elements and leaves its input unchanged\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sort_test.mbt",
+          "line": 72,
+          "test_declaration": "test \"sort scales iteratively and respects the step budget\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "round",
+      "official_declarations": {
+        "inline": "std.round(x)",
+        "inline_line": "254",
+        "source": "std.round(x)",
+        "source_line": "1760"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 26,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "rstripChars",
+      "official_declarations": {
+        "heading": "std.rstripChars(str, chars)",
+        "heading_line": "637",
+        "source": "std.rstripChars(str, chars)",
+        "source_line": "65"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "set",
+      "official_declarations": {
+        "heading": "std.set(arr, keyF=id)",
+        "heading_line": "2925",
+        "source": "std.set(arr, keyF=id)",
+        "source_line": "1478"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sets_test.mbt",
+          "line": 7,
+          "test_declaration": "test \"source standard library sets and merge patch\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "setDiff",
+      "official_declarations": {
+        "heading": "std.setDiff(a, b, keyF=id)",
+        "heading_line": "3014",
+        "source": "std.setDiff(a, b, keyF=id)",
+        "source_line": "1516"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sets_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"source standard library sets and merge patch\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "setInter",
+      "official_declarations": {
+        "heading": "std.setInter(a, b, keyF=id)",
+        "heading_line": "2952",
+        "source": "std.setInter(a, b, keyF=id)",
+        "source_line": "1503"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sets_test.mbt",
+          "line": 9,
+          "test_declaration": "test \"source standard library sets and merge patch\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "setMember",
+      "official_declarations": {
+        "heading": "std.setMember(x, arr, keyF=id)",
+        "heading_line": "3041",
+        "source": "std.setMember(x, arr, keyF=id)",
+        "source_line": "1481"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sets_test.mbt",
+          "line": 11,
+          "test_declaration": "test \"source standard library sets and merge patch\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "setUnion",
+      "official_declarations": {
+        "heading": "std.setUnion(a, b, keyF=id)",
+        "heading_line": "2979",
+        "source": "std.setUnion(a, b, keyF=id)",
+        "source_line": "1485"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sets_test.mbt",
+          "line": 8,
+          "test_declaration": "test \"source standard library sets and merge patch\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "sha1",
+      "official_declarations": {
+        "heading": "std.sha1(s)",
+        "heading_line": "3513",
+        "source": "std.sha1(str)",
+        "source_line": "1794"
+      },
+      "reviewed_subset": {
+        "name": "sha1",
+        "dimensions": {},
+        "reference_candidates": [
+          {
+            "file": "digest_test.mbt",
+            "line": 40,
+            "classification": "Manual dynamic-call reference; official docs mark Go-only and fixed C++ source is an error stub, so complete scope/signature adjudication is pending."
+          }
+        ],
+        "remaining": "Go-only official scope and source/doc parameter names remain unadjudicated; existing digest success is not a conformance waiver."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "digest_test.mbt",
+          "line": 40,
+          "classification": "Manual dynamic-call reference; official docs mark Go-only and fixed C++ source is an error stub, so complete scope/signature adjudication is pending."
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "sha256",
+      "official_declarations": {
+        "heading": "std.sha256(s)",
+        "heading_line": "3543",
+        "source": "std.sha256(str)",
+        "source_line": "1795"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sha256_test.mbt",
+          "line": 25,
+          "test_declaration": "test \"sha256 known answers and multi block padding\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "sha3",
+      "official_declarations": {
+        "heading": "std.sha3(s)",
+        "heading_line": "3603",
+        "source": "std.sha3(str)",
+        "source_line": "1797"
+      },
+      "reviewed_subset": {
+        "name": "sha3",
+        "dimensions": {},
+        "reference_candidates": [
+          {
+            "file": "digest_test.mbt",
+            "line": 49,
+            "classification": "Manual dynamic-call reference; official docs mark Go-only and fixed C++ source is an error stub, so complete scope/signature adjudication is pending."
+          }
+        ],
+        "remaining": "Go-only official scope and source/doc parameter names remain unadjudicated; existing digest success is not a conformance waiver."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "digest_test.mbt",
+          "line": 49,
+          "classification": "Manual dynamic-call reference; official docs mark Go-only and fixed C++ source is an error stub, so complete scope/signature adjudication is pending."
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "sha512",
+      "official_declarations": {
+        "heading": "std.sha512(s)",
+        "heading_line": "3573",
+        "source": "std.sha512(str)",
+        "source_line": "1796"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "digest_test.mbt",
+          "line": 31,
+          "test_declaration": "test \"MD5 SHA-1 SHA-512 SHA3-512 known answers\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "sign",
+      "official_declarations": {
+        "inline": "std.sign(n)",
+        "inline_line": "231",
+        "source": "std.sign(n)",
+        "source_line": "858"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 14,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "sin",
+      "official_declarations": {
+        "inline": "std.sin(x)",
+        "inline_line": "244"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "slice",
+      "official_declarations": {
+        "heading": "std.slice(indexable, index, end, step)",
+        "heading_line": "2351",
+        "source": "std.slice(indexable, index, end, step)",
+        "source_line": "205"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "numeric_test.mbt",
+          "line": 26,
+          "test_declaration": "test \"fractional slices retain lazy progression and validate demanded indices\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_index_test.mbt",
+          "line": 32,
+          "test_declaration": "test \"P0 slicing defers array indexing and keeps strings strict\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "sort",
+      "official_declarations": {
+        "heading": "std.sort(arr, keyF=id)",
+        "heading_line": "2574",
+        "source": "std.sort(arr, keyF=id)",
+        "source_line": "1433"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "arguments_test.mbt",
+          "line": 7,
+          "test_declaration": "test \"builtin and closure argument validation precedes forcing\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "sort_test.mbt",
+          "line": 4,
+          "test_declaration": "test \"sort supports defaults named keys stability and array ordering\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_length_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"function length includes source and builtin optional parameters\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "split",
+      "official_declarations": {
+        "heading": "std.split(str, c)",
+        "heading_line": "672",
+        "source": "std.split(str, c)",
+        "source_line": "114"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "standard_native_diagnostics_test.mbt",
+          "line": 38,
+          "test_declaration": "test \"source standard formatting and YAML retain laziness and explicit budgets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "splitLimit",
+      "official_declarations": {
+        "heading": "std.splitLimit(str, c, maxsplits)",
+        "heading_line": "708",
+        "source": "std.splitLimit(str, c, maxsplits)",
+        "source_line": "120"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 18,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "splitLimitR",
+      "official_declarations": {
+        "heading": "std.splitLimitR(str, c, maxsplits)",
+        "heading_line": "744",
+        "source": "std.splitLimitR(str, c, maxsplits)",
+        "source_line": "137"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 18,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "sqrt",
+      "official_declarations": {
+        "inline": "std.sqrt(x)",
+        "inline_line": "243"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "startsWith",
+      "official_declarations": {
+        "heading": "std.startsWith(a, b)",
+        "heading_line": "513",
+        "source": "std.startsWith(a, b)",
+        "source_line": "47"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "strReplace",
+      "official_declarations": {
+        "heading": "std.strReplace(str, from, to)",
+        "heading_line": "773",
+        "source": "std.strReplace(str, from, to)",
+        "source_line": "148"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "stringChars",
+      "official_declarations": {
+        "heading": "std.stringChars(str)",
+        "heading_line": "942",
+        "source": "std.stringChars(str)",
+        "source_line": "75"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "lint_type_test.mbt",
+          "line": 114,
+          "test_declaration": "test \"lint standard-library types follow the pinned analysis declarations\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "std_string_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "stripChars",
+      "official_declarations": {
+        "heading": "std.stripChars(str, chars)",
+        "heading_line": "567",
+        "source": "std.stripChars(str, chars)",
+        "source_line": "72"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "substr",
+      "official_declarations": {
+        "heading": "std.substr(str, from, len)",
+        "heading_line": "451",
+        "source": "std.substr(str, from, len)",
+        "source_line": "40"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "arguments_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"builtin and closure argument validation precedes forcing\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "moonjsonnet_test.mbt",
+          "line": 20,
+          "test_declaration": "test \"laziness recursion lexical scope defaults comprehensions\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "standard_native_diagnostics_test.mbt",
+          "line": 7,
+          "test_declaration": "test \"native error messages preserve types numeric precision and raw byte offsets\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "sum",
+      "official_declarations": {
+        "heading": "std.sum(arr)",
+        "heading_line": "2696",
+        "source": "std.sum(arr)",
+        "source_line": "1724"
+      },
+      "reviewed_subset": {
+        "name": "sum",
+        "dimensions": {
+          "N": {
+            "test": "spec_aggregate_test.mbt",
+            "expectation": "Empty sum, finite examples and cancellation without overflow."
+          },
+          "E": {
+            "test": "spec_aggregate_test.mbt",
+            "expectation": "Overflow is Runtime at the first invalid addition, before later operands or type inspection."
+          },
+          "L": {
+            "test": "spec_aggregate_test.mbt",
+            "expectation": "Unused binding, short circuit and hidden fields do not evaluate overflow."
+          },
+          "B": {
+            "test": "spec_aggregate_test.mbt",
+            "expectation": "Empty array and large finite/cancellation examples."
+          }
+        },
+        "remaining": "All element/argument types, signatures and evaluation orders are not fully adjudicated."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "aggregate_test.mbt",
+          "line": 6,
+          "test_declaration": "test \"sum and avg are numeric eager left to right aggregates\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "output_test.mbt",
+          "line": 11,
+          "test_declaration": "test \"text output uses Go layout, escaping and numeric representation\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_aggregate_test.mbt",
+          "line": 9,
+          "test_declaration": "test \"P0 aggregate overflow errors when the operation is evaluated\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_review_test.mbt",
+          "line": 19,
+          "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "standard_character_test.mbt",
+          "line": 11,
+          "test_declaration": "test \"character conversion retains truncation and replaces surrogates\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "std_math_test.mbt",
+          "line": 50,
+          "test_declaration": "test \"math argument and domain errors remain explicit\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "tan",
+      "official_declarations": {
+        "inline": "std.tan(x)",
+        "inline_line": "246"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "toString",
+      "official_declarations": {
+        "heading": "std.toString(a)",
+        "heading_line": "368",
+        "source": "std.toString(a)",
+        "source_line": "37"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "aggregate_test.mbt",
+          "line": 46,
+          "test_declaration": "test \"aggregate failure is diagnosed before downstream consumers\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "debugger_test.mbt",
+          "line": 159,
+          "test_declaration": "test \"Finish preserves object comprehension breakpoints and capture scopes\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "moonjsonnet_test.mbt",
+          "line": 105,
+          "test_declaration": "test \"regressions for standard string manifests static super and token names\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "render_test.mbt",
+          "line": 41,
+          "test_declaration": "test \"string coercion keeps its separate numeric representation\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "std_math_test.mbt",
+          "line": 30,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "trace",
+      "official_declarations": {
+        "heading": "std.trace(str, rest)",
+        "heading_line": "3751"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "anonymous_test.mbt",
+          "line": 7,
+          "test_declaration": "test \"anonymous snippets use diagnostic names and empty import origins\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "evaluator_import_ast_test.mbt",
+          "line": 83,
+          "test_declaration": "test \"nullable import AST returns valid programs without executing callbacks\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "evaluator_imports_test.mbt",
+          "line": 20,
+          "test_declaration": "test \"evaluator queries share source and AST caches without execution\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "evaluator_test.mbt",
+          "line": 55,
+          "test_declaration": "test \"evaluator retains closures lazy object fields and trace sink changes\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "multi_test.mbt",
+          "line": 75,
+          "test_declaration": "test \"multi preserves shared parameter and callback state\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "native_test.mbt",
+          "line": 88,
+          "test_declaration": "test \"native eager ordered manifestation lazy memoization and host errors\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "output_test.mbt",
+          "line": 68,
+          "test_declaration": "test \"stream documents share evaluation but have separate indentation\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "parameters_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"external code values use a clean environment and memoized thunks\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "program_test.mbt",
+          "line": 129,
+          "test_declaration": "test \"program native functions traces and binary imports use each call configuration\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "trim",
+      "official_declarations": {
+        "heading": "std.trim(str)",
+        "heading_line": "830",
+        "source": "std.trim(str)",
+        "source_line": "1799"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_string_test.mbt",
+          "line": 30,
+          "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "type",
+      "official_declarations": {
+        "heading": "std.type(x)",
+        "heading_line": "123"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "aggregate_test.mbt",
+          "line": 46,
+          "test_declaration": "test \"aggregate failure is diagnosed before downstream consumers\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "native_test.mbt",
+          "line": 57,
+          "test_declaration": "test \"native registration JSON conversion named arguments and higher order calls\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_aggregate_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"P0 aggregate overflow errors when the operation is evaluated\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_review_test.mbt",
+          "line": 7,
+          "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "uniq",
+      "official_declarations": {
+        "heading": "std.uniq(arr, keyF=id)",
+        "heading_line": "2605",
+        "source": "std.uniq(arr, keyF=id)",
+        "source_line": "1468"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "sets_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"source standard library sets and merge patch\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "xnor",
+      "official_declarations": {
+        "heading": "std.xnor(x, y)",
+        "heading_line": "3672",
+        "source": "std.xnor(x, y)",
+        "source_line": "1758"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 18,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    },
+    {
+      "name": "xor",
+      "official_declarations": {
+        "heading": "std.xor(x, y)",
+        "heading_line": "3645",
+        "source": "std.xor(x, y)",
+        "source_line": "1756"
+      },
+      "reviewed_subset": null,
+      "test_reference_candidates": [
+        {
+          "file": "std_math_test.mbt",
+          "line": 18,
+          "test_declaration": "test \"math and boolean standard functions use Go contracts\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        }
+      ],
+      "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
+    }
+  ],
+  "nonfunction_properties": [
+    "pi",
+    "thisFile"
+  ],
+  "source_internal_helpers": [
+    {
+      "name": "__compare",
+      "source_signature": "std.__compare(v1, v2)",
+      "source_line": 1693
+    },
+    {
+      "name": "__compare_array",
+      "source_signature": "std.__compare_array(arr1, arr2)",
+      "source_line": 1705
+    },
+    {
+      "name": "__array_less",
+      "source_signature": "std.__array_less(arr1, arr2)",
+      "source_line": 1719
+    },
+    {
+      "name": "__array_greater",
+      "source_signature": "std.__array_greater(arr1, arr2)",
+      "source_line": 1720
+    },
+    {
+      "name": "__array_less_or_equal",
+      "source_signature": "std.__array_less_or_equal(arr1, arr2)",
+      "source_line": 1721
+    },
+    {
+      "name": "__array_greater_or_equal",
+      "source_signature": "std.__array_greater_or_equal(arr1, arr2)",
+      "source_line": 1722
+    }
+  ],
+  "other_go_reflected_members": [
+    {
+      "name": "$flatMapArray",
+      "required": 2,
+      "type": "function"
+    },
+    {
+      "name": "$objectFlatMerge",
+      "required": 1,
+      "type": "function"
+    },
+    {
+      "name": "__array_greater",
+      "required": 2,
+      "type": "function"
+    },
+    {
+      "name": "__array_greater_or_equal",
+      "required": 2,
+      "type": "function"
+    },
+    {
+      "name": "__array_less",
+      "required": 2,
+      "type": "function"
+    },
+    {
+      "name": "__array_less_or_equal",
+      "required": 2,
+      "type": "function"
+    },
+    {
+      "name": "__compare",
+      "required": 2,
+      "type": "function"
+    },
+    {
+      "name": "__compare_array",
+      "required": 2,
+      "type": "function"
+    },
+    {
+      "name": "id",
+      "required": 1,
+      "type": "function"
+    }
+  ],
+  "specification_auxiliary_symbols": [
+    {
+      "name": "cmp",
+      "classification": "comparison relation with explicit TODO to introduce it; not a declared public callable"
+    }
+  ],
+  "behavioral_conformance_proven": false
+}
