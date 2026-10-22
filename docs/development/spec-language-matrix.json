@@ -2,8 +2,8 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "d66926c0fbcd8a54c6a53f6d41e70d83829d4206c8331bebff8784897dbf5154",
-  "tool_sha256": "38cbb9cea745103e6e99946044676d08683a6767fc9fe8fd9633e091dc288cc1",
+  "mapping_sha256": "16d4706b0536cf183dfbd39f6e6deb483b82d7f7cffb2c3197c0a45a9dbf8bd2",
+  "tool_sha256": "9362b9484211c4f1b421555f3f1f9e75b2adc1a355d90425a78aadec220f4b95",
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 42,
@@ -908,6 +908,50 @@
       "checks": "Both entry paths create successfully. A guarded derived call must first return 7 and record derived-ok; calling the original extracted function then rejects Runtime because its receiver still lacks n. A wrong derived value returns normally and fails the test, while an earlier failure lacks the required event. Exact diagnostic text is not an oracle.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
+    "SP1": {
+      "file": "spec_super_prefix_test.mbt",
+      "line": 82,
+      "test": "super functions retain their defining prefix with final derived self",
+      "assertions": [
+        "prefix_call(prefix_index(\"super\", \"f\"))",
+        "(\"saved\", prefix_index(\"c\", \"f\"))",
+        "prefix_call(prefix_index(\"holder\", \"f\"))",
+        "assert_eq(program.evaluate(), [",
+        "12, 113, 999, [3, 3], [4, 4], [3, 3], [3, 3], [4, 4],"
+      ],
+      "checks": "Source and independently handmade multilayer objects distinguish lexical prefix selection from final self. Upper super.f reaches a lower function whose own super remains below its defining layer; extracted/rehosted functions retain that prefix and receiver despite n/v overrides. The explicit scalar/array oracle is not derived from implementation output.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SP2": {
+      "file": "spec_super_prefix_test.mbt",
+      "line": 182,
+      "test": "super reaches hidden prior fields while self remains the final receiver",
+      "assertions": [
+        "hidden=[\"h\"]",
+        "(\"b\", prefix_extend(\"a\", [(\"read\", prefix_index(\"super\", \"h\"))]))",
+        "assert_eq(program.evaluate(), [1, 7, 99])"
+      ],
+      "checks": "Both entry paths access a hidden prior-layer h through super while its self.n resolves against the final receiver. A current h=99 cannot replace that prior definition. This is direct prefix access, not completion of visibility/reflection or separator algebra.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SP3": {
+      "file": "spec_super_prefix_test.mbt",
+      "line": 218,
+      "test": "super missing and hidden error fields fail only on actual function demand",
+      "assertions": [
+        "for explicit_error in [false, true]",
+        "for mode in [\"metadata\", \"unused\", \"forced\"]",
+        "Binary(\"==\", prefix_index(\"c\", \"x\"), prefix_ast(Literal(99)))",
+        "assert_eq(events, [])",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(d.location.file, \"super-prefix-entry\")",
+        "assert_eq(d.message, \"lower-super-marker\")",
+        "assert_eq(events, [\"body\"])",
+        "assert_eq(program.evaluate(native_functions=natives), expected)"
+      ],
+      "checks": "After warming the final receiver's x=99, metadata/unused-call paths retain zero body entries. Actual invocation of the extracted function enters once then rejects Runtime for a missing prefix x or a hidden prior error marker. Current/defining-layer x values 99/42 cannot repair the prefix, and the current-value guard prevents wrong routes from passing. These failures occur after successful object construction, not in addition.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "line": 2,
@@ -943,6 +987,7 @@
     "parser_diagnostic_test.mbt": "8274fdc918873dd15b13b510fb0356fc644d42e752cfe704ae394120aab92167",
     "spec_unary_static_test.mbt": "4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d",
     "spec_inherited_self_test.mbt": "0a387afc9ba8bc35ba54a7ada36f8c1ef9f27d5c88f40393cfea73a371b7f780",
+    "spec_super_prefix_test.mbt": "cd91fcc5d2c41b3a08a0ef669c36c255231b0d608ddf88085b6a4b9a6c95ef5e",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7"
   },
   "clauses": [
@@ -1834,25 +1879,32 @@
           "O2",
           "O6",
           "SR1",
-          "SR2"
+          "SR2",
+          "SP1",
+          "SP2"
         ],
         "static_error": [],
         "runtime_error": [
           "O3",
           "O5",
-          "SR3"
+          "SR3",
+          "SP3"
         ],
         "lazy": [
           "O5",
-          "SR2"
+          "SR2",
+          "SP3"
         ],
         "boundary": [
           "O4",
           "SR1",
-          "SR3"
+          "SR3",
+          "SP1",
+          "SP2",
+          "SP3"
         ]
       },
-      "remaining": "The bounded [plain-function receiver-retention group](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) is reviewed. General missing-field/key errors, multiple failing assertions, equality/assertion interactions and arbitrary field/closure shapes remain open.",
+      "remaining": "Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) and [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) are reviewed. General missing-field/key errors, multiple failing assertions, equality/assertion interactions and arbitrary field/closure shapes remain open.",
       "implementation": [
         "eval.mbt",
         "objects.mbt"
@@ -2142,7 +2194,9 @@
           "O2",
           "F6",
           "SR1",
-          "SR2"
+          "SR2",
+          "SP1",
+          "SP2"
         ],
         "static_error": [],
         "runtime_error": [
@@ -2151,15 +2205,19 @@
         "lazy": [
           "O5",
           "O6",
-          "SR2"
+          "SR2",
+          "SP3"
         ],
         "boundary": [
           "O6",
           "SR1",
-          "SR3"
+          "SR3",
+          "SP1",
+          "SP2",
+          "SP3"
         ]
       },
-      "remaining": "The bounded [plain-function receiver-retention group](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) is reviewed. Full inheritance algebra, additive/nested fields, super association, computed duplicate names and arbitrary field/closure shapes remain open; SR3 is a later-demand boundary, not an error of object addition.",
+      "remaining": "Bounded [plain-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) and [super-prefix/final-self access](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) are reviewed. Full inheritance/association algebra, additive/nested fields, computed duplicate names and arbitrary field/closure shapes remain open; SR3/SP3 are later-demand boundaries, not errors of object addition.",
       "implementation": [
         "operators.mbt",
         "objects.mbt",
@@ -3538,13 +3596,16 @@
         "runtime_error": [],
         "lazy": [
           "O6",
-          "O7"
+          "O7",
+          "SP3"
         ],
         "boundary": [
-          "O6"
+          "O6",
+          "SP2",
+          "SP3"
         ]
       },
-      "remaining": "Equality and every multi-layer/additive combination.",
+      "remaining": "Only direct hidden prior-field access/error demand in the bounded [super-prefix group](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) is added here. Equality and general multi-layer/separator/additive combinations remain open.",
       "implementation": [
         "objects.mbt",
         "manifest.mbt"
@@ -3567,7 +3628,8 @@
           "O2",
           "AP1",
           "AP2",
-          "SR1"
+          "SR1",
+          "SP1"
         ],
         "static_error": [
           "F5",
@@ -3578,14 +3640,17 @@
           "F2",
           "F3",
           "AP5",
-          "SR2"
+          "SR2",
+          "SP3"
         ],
         "boundary": [
           "SR1",
-          "SR3"
+          "SR3",
+          "SP1",
+          "SP3"
         ]
       },
-      "remaining": "The bounded [plain inherited-function receiver-retention group](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) is reviewed. Other binder/capture boundaries and the full self/super substitution algebra remain open.",
+      "remaining": "Bounded [plain inherited-function receiver retention](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md) and [extracted super-prefix retention](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) are reviewed. Other binder/capture boundaries and the full self/super substitution algebra remain open.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt",
