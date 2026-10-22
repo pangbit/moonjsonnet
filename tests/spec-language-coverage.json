@@ -3,6 +3,88 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "policy": "Manual assertion review only. References and matching names never establish passing behavior. An empty dimension is unreviewed. Executed outcomes live in the separate source-bound evidence report. Completed prose constructor transfers are relative to child judgments and counted separately from completed named rules.",
   "evidence": {
+    "NT0ROUND": {
+      "file": "number_literal_test.mbt",
+      "test": "numeric spellings and overflow survive parsing and AST round trips",
+      "assertions": [
+        "assert_eq(raw, \"1.20E+003\")",
+        "NumberLiteral(raw)",
+        "\"std.length([1e309])\""
+      ],
+      "checks": "Reused and freshly run: exact raw spelling/range, parser-exported AST round trip, admitted overflowing source, demanded Runtime and unused array/argument controls. The exported AST is not independent."
+    },
+    "NT0RAW": {
+      "file": "number_literal_test.mbt",
+      "test": "manually constructed numeric tokens validate lexical shape without conversion",
+      "assertions": [
+        "\"invalid AST numeric literal\"",
+        "NumberLiteral(\"1e99999\")",
+        "assert_eq(valid.evaluate(), 42)"
+      ],
+      "checks": "Reused and freshly run direct typed raw-token controls reject signed/whitespace/malformed/name payloads Static, while an unselected valid overflowing literal remains lazy."
+    },
+    "NT0TRIVIA": {
+      "file": "source_fidelity_wbtest.mbt",
+      "test": "lexical trivia retains exact source and token boundaries",
+      "assertions": [
+        "assert_eq(token.loc, previous)",
+        "assert_eq(restored.to_string(), source)",
+        "assert_eq(tokens.last().unwrap().text, \"<eof>\")"
+      ],
+      "checks": "Reused and freshly run private lexer controls reconstruct exact token/trivia text and contiguous byte ranges, including exponent spelling, comments and an unused overflow literal. This is not full encoding conformance."
+    },
+    "NT0DIAG": {
+      "file": "lexer_diagnostic_test.mbt",
+      "test": "number token boundaries and syntax failures retain byte locations",
+      "assertions": [
+        "(\"1.\", \"Expected token IDENTIFIER but got end of file\", 3)",
+        "(\"1e\", \"Did not expect: (IDENTIFIER, \\\"e\\\")\", 2)",
+        "\"Expected a comma before next array element\""
+      ],
+      "checks": "Fresh adjacent run retains malformed-source Syntax and UTF-8 byte locations. Four former eager number errors now follow independently derived token/parser paths; the old Go-labelled table is preserved in raw evidence. No fresh compatibility outcome is claimed."
+    },
+    "NT1": {
+      "file": "spec_number_tokens_test.mbt",
+      "test": "number tokens retain the longest legal prefix before dot and else",
+      "assertions": [
+        "sequence_failure(access, @moonjsonnet.Type, None)",
+        "number_token_text(\"if true then 1else 2\")",
+        "sequence_value(value, if selected { expected } else { 2 })"
+      ],
+      "checks": "Separate source and handmade Index/If trees distinguish valid number prefixes from dot and adjacent else. Unused numeric member access yields 42, forced access fails Type after admission; literal conditional results and token texts are independent. Original unchanged-interpreter run failed at this group; identical expectations pass after the scanner fix."
+    },
+    "NT2": {
+      "file": "spec_number_tokens_test.mbt",
+      "test": "number spelling signs and comments have independent token boundaries",
+      "assertions": [
+        "let source = \"[0,12.50E-1,-2,+3,1e+2+3]\"",
+        "sequence_value(value, [0, 1.25, -2, 3, 103])",
+        "sequence_value(commented, [3, 103])"
+      ],
+      "checks": "Independent typed Unary/Binary/NumberLiteral trees and explicit token vectors separate exponent signs, unary signs, following operators and comments; numeric answers are fixed exact values."
+    },
+    "NT3": {
+      "file": "spec_number_tokens_test.mbt",
+      "test": "malformed numeric source and handmade raw tokens reject before demand",
+      "assertions": [
+        "\"an unused malformed number was admitted\"",
+        "@moonjsonnet.Static",
+        "@moonjsonnet.Syntax",
+        "sequence_value(names, [41, 42])"
+      ],
+      "checks": "Nine unused malformed whole-source shapes reject Syntax; independently manufactured raw numeric payloads reject host-AST Static before demand. NaN/Infinity remain ordinary bindable identifiers, distinct from invalid raw numeric payloads."
+    },
+    "NT4": {
+      "file": "spec_number_tokens_test.mbt",
+      "test": "number token admission stays separate from demanded overflow",
+      "assertions": [
+        "(\"1.25e999999999999999999999999999\", None)",
+        "ignore(ordering_program(number, handmade))",
+        "sequence_value(ordering_unused(number), 42)",
+        "sequence_failure(number, @moonjsonnet.Runtime, None)"
+      ],
+      "checks": "Separate source and handmade NumberLiteral admission accepts long valid exponent spellings. Local/branch/array-shape controls stay lazy; required numeric and type demand reject overflow Runtime. Huge-exponent zero and underflow give 0, exponent-leading-zero finite control gives 125. No arithmetic-wide rounding or host-resource completion follows."
+    },
     "F1": {
       "file": "spec_language_function_test.mbt",
       "test": "language defaults distinguish definition caller and formal environments",
@@ -708,7 +790,7 @@
         "inspection": [
           {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"Unary(_, a) | Fail(a) => validate(a, names, in_object)","argument":"The Unary alternative checks its sole child with unchanged names/in_object, without introducing bindings, evaluating it or inspecting its runtime type."},
           {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"Unary(op, a) => Unary(op, visit(a))","argument":"Typed conversion preserves the symbol and operand; no child is omitted or selected by value."},
-          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"if op != \"+\" && op != \"-\" && op != \"!\" && op != \"~\" {","argument":"Host shape validation accepts exactly the four grammar symbols, with no operand numeric/Boolean predicate. Malformed operator metadata is outside the named well-formed judgment."}
+          {"file":"ast_validate.mbt","sha256":"e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59","anchor":"if op != \"+\" && op != \"-\" && op != \"!\" && op != \"~\" {","argument":"Host shape validation accepts exactly the four grammar symbols, with no operand numeric/Boolean predicate. Malformed operator metadata is outside the named well-formed judgment."}
         ],
         "evidence_sha256": {"spec_unary_static_test.mbt":"4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d","ast_test.mbt":"b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c","parser_diagnostic_test.mbt":"8274fdc918873dd15b13b510fb0356fc644d42e752cfe704ae394120aab92167"}
       }
@@ -731,7 +813,7 @@
         "inspection": [
           {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"Unary(_, a) | Fail(a) => validate(a, names, in_object)","argument":"The Fail alternative forwards its only child with identical names/in_object and adds no binding, type check or evaluation."},
           {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"Fail(a) => Fail(visit(a))","argument":"Typed AST conversion retains the error constructor and its sole operand; it does not evaluate or replace the child."},
-          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"_ => ()","argument":"There is no Fail-specific string/type/scope restriction; common host shape validation remains a separate boundary."}
+          {"file":"ast_validate.mbt","sha256":"e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59","anchor":"_ => ()","argument":"There is no Fail-specific string/type/scope restriction; common host shape validation remains a separate boundary."}
         ],
         "evidence_sha256": {"spec_error_static_test.mbt":"b931793ba7ad955b4a83f30600f6eeaca66c2ff0e99640004c059254866e9610","spec_language_forms_ast_test.mbt":"4d2bd9c0303a756cfc457fa4cff910f80e094447aaa1b86014b9d3849a90738d","spec_language_call_test.mbt":"a9a8489f31f3fce9d3266602fbad788e3ba63a50daa1b66f99cfb9f1ea13724a"}
       }
@@ -754,7 +836,7 @@
         "inspection": [
           {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"If(a, b, c) => {","argument":"The reviewed arm calls validate on a, b, c with the same names and in_object; it neither skips an unselected child nor mutates their environment."},
           {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"If(a, b, c) => If(visit(a), visit(b), visit(c))","argument":"Conversion preserves the ordered three children without selecting a runtime branch."},
-          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"_ => ()","argument":"No conditional-specific Boolean/type requirement is added during shape validation; common host metadata checks are excluded."}
+          {"file":"ast_validate.mbt","sha256":"e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59","anchor":"_ => ()","argument":"No conditional-specific Boolean/type requirement is added during shape validation; common host metadata checks are excluded."}
         ],
         "evidence_sha256": {"spec_conditional_static_test.mbt":"6f596f443401defc8c4865a5ac19084973c1bc27aeba11dd487e131462b4ea8e","spec_conditional_runtime_test.mbt":"ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf","spec_language_forms_ast_test.mbt":"4d2bd9c0303a756cfc457fa4cff910f80e094447aaa1b86014b9d3849a90738d","spec_language_call_test.mbt":"a9a8489f31f3fce9d3266602fbad788e3ba63a50daa1b66f99cfb9f1ea13724a"}
       }
@@ -827,7 +909,7 @@
         "inspection": [
           {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"| ImportFile(_, _)","argument":"The typed path/raw flag is ignored and the arm returns Unit without any name/context lookup or resolver call."},
           {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"ImportFile(p, s) => ImportFile(p, s)","argument":"The code-import typed leaf and mode are preserved, without reading target contents."},
-          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"_ => ()","argument":"No import-specific payload or scope restriction is added; common host shape checks are outside this judgment."}
+          {"file":"ast_validate.mbt","sha256":"e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59","anchor":"_ => ()","argument":"No import-specific payload or scope restriction is added; common host shape checks are outside this judgment."}
         ],
         "evidence_sha256": {"ast_test.mbt":"b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c","spec_import_scope_test.mbt":"a267fed917387b8edf62b4d1b72ed7764680cd14b919ced2af7f298847a9d2ed"}
       }
@@ -846,7 +928,7 @@
         "inspection": [
           {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"| ImportFile(_, _)","argument":"The match arm accepts the wildcard constructor directly, without names/context inspection or any resolver/evaluator call."},
           {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"ImportFile(p, s) => ImportFile(p, s)","argument":"The visitor preserves the typed string/raw-flag leaf without parsing target contents or adding variable children."},
-          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"_ => ()","argument":"Shape validation adds no ImportFile payload/scope constraint; shared metadata/shape checks are a separate boundary."}
+          {"file":"ast_validate.mbt","sha256":"e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59","anchor":"_ => ()","argument":"Shape validation adds no ImportFile payload/scope constraint; shared metadata/shape checks are a separate boundary."}
         ],
         "evidence_sha256": {"spec_importstr_static_test.mbt":"0b97cd9cac93bf34e84d075f45ac4a1691844d473bcd749df42d5321d3779f7d","ast_test.mbt":"b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c"}
       }
@@ -865,7 +947,7 @@
         "inspection": [
           {"file":"validate.mbt","sha256":"88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4","anchor":"| ImportBinary(_)","argument":"All typed paths are ignored by an unconditional Unit arm with no environment or resolver use."},
           {"file":"ast_convert.mbt","sha256":"bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed","anchor":"ImportBinary(p) => ImportBinary(p)","argument":"The typed binary leaf is preserved without parsing bytes or adding variable children."},
-          {"file":"ast_validate.mbt","sha256":"cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c","anchor":"_ => ()","argument":"No binary-import-specific payload/scope restriction is added; common host shape/resource checks stay separate."}
+          {"file":"ast_validate.mbt","sha256":"e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59","anchor":"_ => ()","argument":"No binary-import-specific payload/scope restriction is added; common host shape/resource checks stay separate."}
         ],
         "evidence_sha256": {"ast_test.mbt":"b1e07f395a1bfa3ad7e262be01d9ea16b0a5a670aea73583a682d479e7674b8c","spec_importbin_bytes_test.mbt":"86ef28d64434865b8ad76b553478546fcc876a7866c0095a43b1af420b3df46d"}
       }
@@ -893,7 +975,36 @@
   "clauses": [
     {"id": "LEX-ENCODING", "section": "lexing", "obligation": "UTF-8 source, whitespace, all comment forms and greedy tokens", "remaining": "Not manually mapped in this stage; retained lexer tests are candidates only.", "implementation": ["lexer.mbt"]},
     {"id": "LEX-NAMES", "section": "lexing", "obligation": "Identifier alphabet, reserved keywords and operator tokenization", "remaining": "Positive/negative/adjacent-token grid.", "implementation": ["lexer.mbt", "parser.mbt"]},
-    {"id": "LEX-NUMBERS", "section": "lexing", "obligation": "JSON number grammar without leading minus", "remaining": "Full grammar, greedy lexing and malformed/boundary grid.", "implementation": ["lexer_number.mbt"]},
+    {
+      "id": "LEX-NUMBERS",
+      "section": "lexing",
+      "obligation": "JSON number grammar without leading minus",
+      "remaining": "The [number-token record](SPEC-NUMBER-TOKENS-2026-10-22.md) fixes greedy valid-prefix handling and covers the bounded spelling/separator grid with independent typed trees. Source Syntax, host-AST Static and demanded numeric Runtime are separate evidence boundaries. Full token-language composition, every malformed suffix, encodings/resources and binary64 conversion/rounding are not completed. No named or prose completion record is added; A0/B0/N0/R0 remain unknown.",
+      "implementation": [
+        "lexer_number.mbt",
+        "lexer.mbt",
+        "ast_validate.mbt",
+        "eval.mbt"
+      ],
+      "normal": [
+        "NT0ROUND",
+        "NT1",
+        "NT2"
+      ],
+      "lazy": [
+        "NT1",
+        "NT4"
+      ],
+      "boundary": [
+        "NT0RAW",
+        "NT0TRIVIA",
+        "NT0DIAG",
+        "NT1",
+        "NT2",
+        "NT3",
+        "NT4"
+      ]
+    },
     {"id": "LEX-STRINGS", "section": "lexing", "obligation": "Quoted and verbatim strings, escapes and Unicode", "remaining": "All four quoted forms, malformed escapes, controls and surrogate ambiguity.", "implementation": ["lexer.mbt"]},
     {"id": "LEX-TEXT-BLOCK", "section": "lexing", "obligation": "Text-block indentation, blank lines and final chomp", "normal": ["CRLF", "CHOMP"], "boundary": ["CRLF", "CHOMP"], "remaining": "Full malformed indentation/whitespace-only-line matrix.", "implementation": ["lexer.mbt"]},
     {"id": "SYN-EXPR", "section": "abstract_syntax", "obligation": "Every expression alternative and optional/trailing syntax", "remaining": "No coverage inferred from AST variant registration or example names.", "implementation": ["parser.mbt"]},
@@ -1058,7 +1169,36 @@
     {"id": "DESUGAR-OPERATORS", "section": "desugaring", "obligation": "Percent, equality, in, unary plus and std binding", "remaining": "Independent equivalence under std shadowing and lazy/errors.", "implementation": ["eval.mbt", "operators.mbt"]},
     {"id": "DESUGAR-COMPREHENSIONS", "section": "desugaring", "obligation": "Array/object comprehension domains, order, filters and shadowing", "normal": ["C1", "C6", "CK2"], "static_error": ["O1", "R2", "A2"], "runtime_error": ["C4", "C5", "C7", "CK1", "CK2"], "lazy": ["C2", "C3", "C4", "C5", "A3", "CK1", "CK2"], "boundary": ["C2", "A3", "A4", "CK1", "CK2"], "remaining": "The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) reviews dependent iterator tuples, mixed null names, dynamic conflicts and delayed value capture. Full comprehension lowering and mechanical non-array domain extensions remain unadjudicated; existing empty/filter/type controls retain their own scopes. No unrelated key-error ordering is standardized.", "implementation": ["eval.mbt"]},
     {"id": "STATIC-TRAVERSAL", "section": "static_checking", "obligation": "Check unused defaults, bodies, branches and argument expressions", "static_error": ["F5", "S1", "O1", "R2", "A1", "A2", "AP6", "IF1", "IF2", "ES1", "US1", "AO3", "BS3"], "remaining": "Other unreviewed chk-* rules and full enclosing/host shape boundaries remain open; completed constructor judgments do not complete all child rules.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
-    {"id": "VALUE-FINITE", "section": "jsonnet_values", "obligation": "Finite binary64 values and immutable arrays/objects", "boundary": ["FINITE", "O2", "SQ0IMM", "SQ2"], "remaining": "The sequence batch adds two-order concat/alias immutability evidence, reusing the P0 deletion controls without fresh execution. Producer overflow, whole array/object immutability and value-domain judgments retain their separate P0/unreviewed scopes.", "implementation": ["runtime_types.mbt", "manifest.mbt"]},
+    {
+      "id": "VALUE-FINITE",
+      "section": "jsonnet_values",
+      "obligation": "Finite binary64 values and immutable arrays/objects",
+      "boundary": [
+        "FINITE",
+        "O2",
+        "SQ0IMM",
+        "SQ2",
+        "NT0RAW",
+        "NT4"
+      ],
+      "remaining": "NT4 and reused numeric controls add bounded literal producer overflow versus lexical/static admission, huge-exponent zero/underflow and unused local/branch/array-shape demand. This does not complete all numeric producers, IEEE754 rounding, whole array/object immutability or the value-domain judgments; existing sequence alias and P0 defensive-manifest evidence retain their separate scopes.",
+      "implementation": [
+        "runtime_types.mbt",
+        "manifest.mbt",
+        "eval.mbt"
+      ],
+      "normal": [
+        "NT4"
+      ],
+      "runtime_error": [
+        "NT0ROUND",
+        "NT4"
+      ],
+      "lazy": [
+        "NT0ROUND",
+        "NT4"
+      ]
+    },
     {"id": "VALUE-UNICODE", "section": "jsonnet_values", "obligation": "Codepoint strings, strict contents and Unicode comparison", "normal": ["IDX"], "runtime_error": ["IDX"], "remaining": "Whole string semantics, collation, normalization and surrogate ambiguity.", "implementation": ["eval.mbt", "sequence.mbt"]},
     {"id": "HIDDEN-INHERITANCE", "section": "hidden_inheritance", "obligation": "Inherited default, hidden and forced-visible fields", "normal": ["O6"], "lazy": ["O6", "O7", "SP3"], "boundary": ["O6", "SP2", "SP3"], "remaining": "Only direct hidden prior-field access/error demand in the bounded [super-prefix group](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) is added here. Equality and general multi-layer/separator/additive combinations remain open.", "implementation": ["objects.mbt", "manifest.mbt"]},
     {"id": "SUBSTITUTION", "section": "substitution", "obligation": "Capture avoidance and lexical closure/default binding", "normal": ["F1", "F6", "O2", "AP1", "AP2", "SR1", "SP1", "RT1", "RT2", "AS1", "AX1", "AL1", "AC2", "CK2", "IC1"], "static_error": ["F5", "O1", "RT4"], "lazy": ["F2", "F3", "AP5", "SR2", "SP3", "RT3", "AL2", "IC3"], "boundary": ["SR1", "SR3", "SP1", "SP3", "RT1", "RT2", "RT3", "AS2", "AX2", "AL1", "AL2", "AC2", "CK2", "IC1", "IC3"], "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) adds definition-context capture across code-import and lazy default/dependency boundaries, without completing general substitution. The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) adds iteration-tuple capture after construction, without completing general substitution. Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule.", "implementation": ["eval.mbt", "runtime_types.mbt", "objects.mbt", "imports.mbt"]},

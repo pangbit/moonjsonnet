@@ -44,47 +44,31 @@ fn quote_lex_char(c : Char?) -> String {
 }
 
 ///|
-fn number_end(
-  chars : Array[Char],
-  start : Int,
-  loc : Location,
-) -> Int raise Error {
+fn number_end(chars : Array[Char], start : Int) -> Int {
   let mut i = start + 1
   if chars[start] != '0' {
     while chars.get(i) is Some(c) && digit(c) {
       i += 1
     }
   }
-  let require_digit = fn(index : Int, context : String) raise Error {
-    if !(chars.get(index) is Some(c) && digit(c)) {
-      // Everything consumed inside a numeric token is ASCII.
-      raise problem(
-        Syntax,
-        { ..loc, column: loc.column + index - start, },
-        "Couldn't lex number, junk after " +
-        context +
-        ": " +
-        quote_lex_char(chars.get(index)),
-      )
-    }
-  }
-  if chars.get(i) == Some('.') {
+  // A suffix extends the token only if it forms a complete JSON number.
+  // Otherwise the next token starts here (e.g. the dot in 1.field).
+  if chars.get(i) == Some('.') && chars.get(i + 1) is Some(c) && digit(c) {
     i += 1
-    require_digit(i, "decimal point")
     while chars.get(i) is Some(c) && digit(c) {
       i += 1
     }
   }
   if chars.get(i) == Some('e') || chars.get(i) == Some('E') {
-    i += 1
-    if chars.get(i) == Some('+') || chars.get(i) == Some('-') {
-      i += 1
-      require_digit(i, "exponent sign")
-    } else {
-      require_digit(i, "'E'")
+    let mut exponent = i + 1
+    if chars.get(exponent) == Some('+') || chars.get(exponent) == Some('-') {
+      exponent += 1
     }
-    while chars.get(i) is Some(c) && digit(c) {
-      i += 1
+    if chars.get(exponent) is Some(c) && digit(c) {
+      i = exponent + 1
+      while chars.get(i) is Some(c) && digit(c) {
+        i += 1
+      }
     }
   }
   i

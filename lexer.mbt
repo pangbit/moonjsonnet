@@ -242,7 +242,7 @@ fn lex(
         leading: [],
       })
     } else if digit(c) {
-      i = number_end(chars, start, loc)
+      i = number_end(chars, start)
       out.push({
         text: "<number>",
         value: None,

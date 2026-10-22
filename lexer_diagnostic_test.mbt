@@ -1,13 +1,13 @@
 ///|
-test "number token boundaries and lexical junk locations match Go" {
+test "number token boundaries and syntax failures retain byte locations" {
   for
     (source, message, column) in [
       ("01", "Did not expect: (NUMBER, \"1\")", 2),
       ("1.2.3", "Expected token IDENTIFIER but got (NUMBER, \"3\")", 5),
-      ("1.", "Couldn't lex number, junk after decimal point: '\\ufffd'", 3),
-      ("1e", "Couldn't lex number, junk after 'E': '\\ufffd'", 3),
-      ("1e+中", "Couldn't lex number, junk after exponent sign: '\\u4e2d'", 4),
-      ("['中', 1e+]", "Couldn't lex number, junk after exponent sign: ']'", 12),
+      ("1.", "Expected token IDENTIFIER but got end of file", 3),
+      ("1e", "Did not expect: (IDENTIFIER, \"e\")", 2),
+      ("1e+中", "Could not lex the character '\\u4e2d'", 4),
+      ("['中', 1e+]", "Expected a comma before next array element", 10),
       ("/*中*/ ?", "Could not lex the character '?'", 9),
       ("😀", "Could not lex the character '\\U0001f600'", 1),
       ("@中", "Couldn't lex verbatim string, junk after '@': 20013", 1),

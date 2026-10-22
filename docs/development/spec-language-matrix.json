@@ -2,19 +2,117 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "0c4bd268e52728d36f42ef32ff2d130e98d7d14788095bb020da69dea1baf9cd",
-  "tool_sha256": "e66311b9d78175d1569c330cbaeee6c8c4dc71d675130f1277ae733da544353b",
+  "mapping_sha256": "43b3ef63310458bcc089b035c988a8debc7ac59b121f24586ba6d5897e4f4597",
+  "tool_sha256": "999b0945b340926a01fac50ccfbf809ef53dd949b4d2f68cae721ea5de6a1a05",
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 57,
+  "manually_reviewed_subset_rows": 58,
   "completed_rule_rows": 12,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
   "completed_evaluation_rule_rows": 6,
-  "unreviewed_rows": 24,
+  "unreviewed_rows": 23,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
+    "NT0ROUND": {
+      "file": "number_literal_test.mbt",
+      "line": 2,
+      "test": "numeric spellings and overflow survive parsing and AST round trips",
+      "assertions": [
+        "assert_eq(raw, \"1.20E+003\")",
+        "NumberLiteral(raw)",
+        "\"std.length([1e309])\""
+      ],
+      "checks": "Reused and freshly run: exact raw spelling/range, parser-exported AST round trip, admitted overflowing source, demanded Runtime and unused array/argument controls. The exported AST is not independent.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "NT0RAW": {
+      "file": "number_literal_test.mbt",
+      "line": 33,
+      "test": "manually constructed numeric tokens validate lexical shape without conversion",
+      "assertions": [
+        "\"invalid AST numeric literal\"",
+        "NumberLiteral(\"1e99999\")",
+        "assert_eq(valid.evaluate(), 42)"
+      ],
+      "checks": "Reused and freshly run direct typed raw-token controls reject signed/whitespace/malformed/name payloads Static, while an unselected valid overflowing literal remains lazy.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "NT0TRIVIA": {
+      "file": "source_fidelity_wbtest.mbt",
+      "line": 2,
+      "test": "lexical trivia retains exact source and token boundaries",
+      "assertions": [
+        "assert_eq(token.loc, previous)",
+        "assert_eq(restored.to_string(), source)",
+        "assert_eq(tokens.last().unwrap().text, \"<eof>\")"
+      ],
+      "checks": "Reused and freshly run private lexer controls reconstruct exact token/trivia text and contiguous byte ranges, including exponent spelling, comments and an unused overflow literal. This is not full encoding conformance.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "NT0DIAG": {
+      "file": "lexer_diagnostic_test.mbt",
+      "line": 2,
+      "test": "number token boundaries and syntax failures retain byte locations",
+      "assertions": [
+        "(\"1.\", \"Expected token IDENTIFIER but got end of file\", 3)",
+        "(\"1e\", \"Did not expect: (IDENTIFIER, \\\"e\\\")\", 2)",
+        "\"Expected a comma before next array element\""
+      ],
+      "checks": "Fresh adjacent run retains malformed-source Syntax and UTF-8 byte locations. Four former eager number errors now follow independently derived token/parser paths; the old Go-labelled table is preserved in raw evidence. No fresh compatibility outcome is claimed.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "NT1": {
+      "file": "spec_number_tokens_test.mbt",
+      "line": 23,
+      "test": "number tokens retain the longest legal prefix before dot and else",
+      "assertions": [
+        "sequence_failure(access, @moonjsonnet.Type, None)",
+        "number_token_text(\"if true then 1else 2\")",
+        "sequence_value(value, if selected { expected } else { 2 })"
+      ],
+      "checks": "Separate source and handmade Index/If trees distinguish valid number prefixes from dot and adjacent else. Unused numeric member access yields 42, forced access fails Type after admission; literal conditional results and token texts are independent. Original unchanged-interpreter run failed at this group; identical expectations pass after the scanner fix.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "NT2": {
+      "file": "spec_number_tokens_test.mbt",
+      "line": 63,
+      "test": "number spelling signs and comments have independent token boundaries",
+      "assertions": [
+        "let source = \"[0,12.50E-1,-2,+3,1e+2+3]\"",
+        "sequence_value(value, [0, 1.25, -2, 3, 103])",
+        "sequence_value(commented, [3, 103])"
+      ],
+      "checks": "Independent typed Unary/Binary/NumberLiteral trees and explicit token vectors separate exponent signs, unary signs, following operators and comments; numeric answers are fixed exact values.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "NT3": {
+      "file": "spec_number_tokens_test.mbt",
+      "line": 96,
+      "test": "malformed numeric source and handmade raw tokens reject before demand",
+      "assertions": [
+        "\"an unused malformed number was admitted\"",
+        "@moonjsonnet.Static",
+        "@moonjsonnet.Syntax",
+        "sequence_value(names, [41, 42])"
+      ],
+      "checks": "Nine unused malformed whole-source shapes reject Syntax; independently manufactured raw numeric payloads reject host-AST Static before demand. NaN/Infinity remain ordinary bindable identifiers, distinct from invalid raw numeric payloads.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "NT4": {
+      "file": "spec_number_tokens_test.mbt",
+      "line": 124,
+      "test": "number token admission stays separate from demanded overflow",
+      "assertions": [
+        "(\"1.25e999999999999999999999999999\", None)",
+        "ignore(ordering_program(number, handmade))",
+        "sequence_value(ordering_unused(number), 42)",
+        "sequence_failure(number, @moonjsonnet.Runtime, None)"
+      ],
+      "checks": "Separate source and handmade NumberLiteral admission accepts long valid exponent spellings. Local/branch/array-shape controls stay lazy; required numeric and type demand reject overflow Runtime. Huge-exponent zero and underflow give 0, exponent-leading-zero finite control gives 125. No arithmetic-wide rounding or host-resource completion follows.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "F1": {
       "file": "spec_language_function_test.mbt",
       "line": 5,
@@ -1528,6 +1626,10 @@
     }
   },
   "test_file_sha256": {
+    "number_literal_test.mbt": "64cfee9e4e5ad73bffcfa6c785e26a7f44496eb28d2ed12683aaabcf84f7d3b3",
+    "source_fidelity_wbtest.mbt": "15ab02366daf8fbbcc88abcf17fa46a0886eeaabe4e0aff52aefe854de61441d",
+    "lexer_diagnostic_test.mbt": "685eadc5726465791f271e9a029257899d481640895ba5b7e46d09de54c4bbdb",
+    "spec_number_tokens_test.mbt": "f2b0623824df00431f167bacc8cf04290ab91158827eb79c4d27c632693d576c",
     "spec_language_function_test.mbt": "ddf1840ccfcd89545ddb6e51fcead6404999484697dbd3ad8649ae7b29b0f39a",
     "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d",
     "spec_static_test.mbt": "2b56b8efa83348f0ab266b8f18d00d31cf2a5e0543920e7cfb1d2c0d66923491",
@@ -1889,7 +1991,7 @@
             },
             {
               "file": "ast_validate.mbt",
-              "sha256": "cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c",
+              "sha256": "e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59",
               "anchor": "_ => ()",
               "argument": "No conditional-specific Boolean/type requirement is added during shape validation; common host metadata checks are excluded."
             }
@@ -2009,7 +2111,7 @@
             },
             {
               "file": "ast_validate.mbt",
-              "sha256": "cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c",
+              "sha256": "e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59",
               "anchor": "if op != \"+\" && op != \"-\" && op != \"!\" && op != \"~\" {",
               "argument": "Host shape validation accepts exactly the four grammar symbols, with no operand numeric/Boolean predicate. Malformed operator metadata is outside the named well-formed judgment."
             }
@@ -2114,7 +2216,7 @@
             },
             {
               "file": "ast_validate.mbt",
-              "sha256": "cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c",
+              "sha256": "e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59",
               "anchor": "_ => ()",
               "argument": "No import-specific payload or scope restriction is added; common host shape checks are outside this judgment."
             }
@@ -2187,7 +2289,7 @@
             },
             {
               "file": "ast_validate.mbt",
-              "sha256": "cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c",
+              "sha256": "e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59",
               "anchor": "_ => ()",
               "argument": "Shape validation adds no ImportFile payload/scope constraint; shared metadata/shape checks are a separate boundary."
             }
@@ -2259,7 +2361,7 @@
             },
             {
               "file": "ast_validate.mbt",
-              "sha256": "cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c",
+              "sha256": "e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59",
               "anchor": "_ => ()",
               "argument": "No binary-import-specific payload/scope restriction is added; common host shape/resource checks stay separate."
             }
@@ -2344,7 +2446,7 @@
             },
             {
               "file": "ast_validate.mbt",
-              "sha256": "cae4abdfdb7e7de57139eb494cdead3a5b96cd82c0e1b3cf9ccb37ce28eb603c",
+              "sha256": "e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59",
               "anchor": "_ => ()",
               "argument": "There is no Fail-specific string/type/scope restriction; common host shape validation remains a separate boundary."
             }
@@ -4213,17 +4315,35 @@
       "kind": "prose-or-grammar-obligation",
       "section": "lexing",
       "source_line": 113,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "NT0ROUND",
+          "NT1",
+          "NT2"
+        ],
         "static_error": [],
         "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "lazy": [
+          "NT1",
+          "NT4"
+        ],
+        "boundary": [
+          "NT0RAW",
+          "NT0TRIVIA",
+          "NT0DIAG",
+          "NT1",
+          "NT2",
+          "NT3",
+          "NT4"
+        ]
       },
-      "remaining": "Full grammar, greedy lexing and malformed/boundary grid.",
+      "remaining": "The [number-token record](SPEC-NUMBER-TOKENS-2026-10-22.md) fixes greedy valid-prefix handling and covers the bounded spelling/separator grid with independent typed trees. Source Syntax, host-AST Static and demanded numeric Runtime are separate evidence boundaries. Full token-language composition, every malformed suffix, encodings/resources and binary64 conversion/rounding are not completed. No named or prose completion record is added; A0/B0/N0/R0 remain unknown.",
       "implementation": [
-        "lexer_number.mbt"
+        "lexer_number.mbt",
+        "lexer.mbt",
+        "ast_validate.mbt",
+        "eval.mbt"
       ],
       "obligation": [
         "JSON number grammar without leading minus"
@@ -4819,21 +4939,32 @@
       "source_line": 1776,
       "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "NT4"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
+        "runtime_error": [
+          "NT0ROUND",
+          "NT4"
+        ],
+        "lazy": [
+          "NT0ROUND",
+          "NT4"
+        ],
         "boundary": [
           "FINITE",
           "O2",
           "SQ0IMM",
-          "SQ2"
+          "SQ2",
+          "NT0RAW",
+          "NT4"
         ]
       },
-      "remaining": "The sequence batch adds two-order concat/alias immutability evidence, reusing the P0 deletion controls without fresh execution. Producer overflow, whole array/object immutability and value-domain judgments retain their separate P0/unreviewed scopes.",
+      "remaining": "NT4 and reused numeric controls add bounded literal producer overflow versus lexical/static admission, huge-exponent zero/underflow and unused local/branch/array-shape demand. This does not complete all numeric producers, IEEE754 rounding, whole array/object immutability or the value-domain judgments; existing sequence alias and P0 defensive-manifest evidence retain their separate scopes.",
       "implementation": [
         "runtime_types.mbt",
-        "manifest.mbt"
+        "manifest.mbt",
+        "eval.mbt"
       ],
       "obligation": [
         "Finite binary64 values and immutable arrays/objects"

@@ -55,9 +55,7 @@ fn check_ast_shape(e : Ast) -> Unit raise JsonnetError {
       let chars = raw.to_array()
       let valid = chars.get(0) is Some(c) &&
         digit(c) &&
-        (try number_end(chars, 0, e.loc) == chars.length() catch {
-          _ => false
-        })
+        number_end(chars, 0) == chars.length()
       if !valid {
         raise problem(Static, e.loc, "invalid AST numeric literal")
       }
