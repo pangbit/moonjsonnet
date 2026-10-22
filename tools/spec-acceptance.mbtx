@@ -52,7 +52,8 @@ async fn main {
     "examples/embedded/config/main.jsonnet", "examples/embedded/config/defaults.libsonnet",
     "spec_review_test.mbt", "spec_remove_test.mbt", "spec_aggregate_test.mbt",
     "spec_index_test.mbt", "spec_yaml_test.mbt", "spec_manifest_wbtest.mbt",
-    "spec_yaml_wbtest.mbt",
+    "spec_yaml_wbtest.mbt", "spec_length_test.mbt", "spec_static_test.mbt",
+    "spec_text_block_test.mbt", "spec_import_scope_test.mbt",
   ]
   let input_hashes : Map[String, Json] = Map([])
   for path in input_paths { input_hashes[path] = Json::string(sha256(path)) }
@@ -134,7 +135,7 @@ async fn main {
     "scope": "focused normative P0 CLI and three application scenarios; not full conformance or upstream parity",
     "passed": passed, "total": rows.length(), "failed": rows.length() - passed, "cases": rows,
     "selected_case_ids": selected,
-    "unresolved_outside_suite": ["removeAt parameter-name conflict", "function length nonconformance; candidate fix blocked by approval"],
+    "unresolved_outside_suite": ["removeAt parameter-name conflict", "CRLF text-block chomp boundary", "complete public-contract inventory and cross-platform acceptance"],
   }
   @fs.write_file(evidence + "/report.json", report.stringify(indent=2) + "\n")
   println("P0 CLI and application scenarios: \{passed}/\{rows.length()}; \{evidence}")
