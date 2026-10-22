@@ -1,10 +1,10 @@
 ///|
-test "function length counts required parameters without evaluating defaults" {
+test "function length counts declared parameters without evaluating defaults" {
   assert_eq(
     @moonjsonnet.evaluate(
       "[std.length(function()0), std.length(function(a,b)a), std.length(function(a,b=2)a), std.length(function(a=1,b)b), std.length(function(a=error 'unused')a), std.length(std.foldl)]",
     ),
-    @json.parse("[0,2,1,1,0,3]"),
+    @json.parse("[0,2,2,2,1,3]"),
   )
 }
 

@@ -19,7 +19,7 @@ test "array extrema use Go defaults named arguments and stable ties" {
       ("std.maxArray([],keyF=function(a,b)a,onEmpty=0)", "0"),
       (
         "[std.length(std.minArray),std.length(std.maxArray),std.objectHas(std,'minArray')]",
-        "[1,1,false]",
+        "[3,3,false]",
       ),
     ] {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))

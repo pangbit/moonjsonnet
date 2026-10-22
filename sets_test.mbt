@@ -35,7 +35,7 @@ test "source standard library preserves laziness and reflection" {
       ("std.setInter([],[error 'unused'])", "[]"),
       (
         "[std.objectHas(std,'set'),std.objectHasAll(std,'set'),std.length(std.set),std.length(std.setInter),std.length(std.mergePatch)]",
-        "[false,true,1,2,2]",
+        "[false,true,2,3,2]",
       ),
       ("local s=std { sort(arr,keyF=function(x)x):: [9,9] }; s.set([1])", "[9]"),
     ] {

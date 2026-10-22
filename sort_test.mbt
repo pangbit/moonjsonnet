@@ -12,7 +12,7 @@ test "sort supports defaults named keys stability and array ordering" {
     ("local a=[3,1,2]; [std.sort(a),a]", "[[1,2,3],[3,1,2]]"),
     (
       "[std.sort([]),std.length(std.sort),std.objectHas(std,'sort'),std.objectHasAll(std,'sort')]",
-      "[[],1,false,true]",
+      "[[],2,false,true]",
     ),
     ("std.length(std.sort([{}]))", "1"),
   ]

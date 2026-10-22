@@ -65,7 +65,7 @@ test "equality source functions and object argument contracts" {
       ),
       (
         "[std.length(std.get),std.length(std.prune),std.length(std.mapWithKey),std.length(std.objectHasEx),std.length(std.equals)]",
-        "[2,1,2,3,2]",
+        "[4,1,2,3,2]",
       ),
     ] {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))

@@ -474,20 +474,9 @@ fn Vm::builtin(
           Str(s) => s.iter().count().to_double()
           ArrayValue(a) => a.length().to_double()
           ObjectValue(id, top) => self.keys(id, top, false).length().to_double()
-          Closure(ps, _, _) =>
-            ps.iter().filter(p => p.default_value is None).count().to_double()
+          Closure(ps, _, _) => ps.length().to_double()
           Native(f) => f.params.length().to_double()
-          Builtin(n) =>
-            if n == "sort" ||
-              n == "minArray" ||
-              n == "maxArray" ||
-              n == "manifestYamlDoc" {
-              1
-            } else if n == "manifestJsonEx" {
-              2
-            } else {
-              builtin_params(n).length().to_double()
-            }
+          Builtin(n) => builtin_params(n).length().to_double()
           _ => raise problem(Type, loc, "Unexpected type " + value_type(x))
         },
       )

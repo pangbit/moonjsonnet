@@ -35,7 +35,7 @@ test "repeated formal names bind last positional and first default lazily" {
   for
     (source, expected) in [
       ("std.length(function(x,x) x)", 2),
-      ("std.length(function(x=1,x) x)", 1),
+      ("std.length(function(x=1,x) x)", 2),
       ("(function(x,x) x)(42)", 42),
       ("(function(x,x) x)(1,42)", 42),
       ("(function(x,x) x)(x=42)", 42),
