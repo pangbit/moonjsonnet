@@ -1,4 +1,5 @@
 import {
+  "pangbit/moonjsonnet",
   "pangbit/moonjsonnet/fs",
   "moonbitlang/core/json",
 } for "test"
