@@ -1,4 +1,10 @@
 [
+  {"id":"foldl-unused-empty-callback","axis":"P1-array-combinators","args":["-e","std.foldl(error 'unused callback',[],42)"],"value":42},
+  {"id":"foldr-unused-empty-callback","axis":"P1-array-combinators","args":["-e","std.foldr(error 'unused callback','',42)"],"value":42},
+  {"id":"foldl-unused-initial","axis":"P1-array-combinators","args":["-e","std.foldl(function(a,x)x,[1,2],error 'unused initial')"],"value":2},
+  {"id":"foldr-unused-initial","axis":"P1-array-combinators","args":["-e","std.foldr(function(x,a)x,[1,2],error 'unused initial')"],"value":1},
+  {"id":"flatMap-function-before-input","axis":"P1-array-combinators","args":["-e","std.flatMap(0,error 'input must stay unused')"],"error":"Unexpected type number, expected function"},
+  {"id":"array-construction-and-slice","axis":"P1-array-combinators","args":["-e","local a=std.makeArray(3,function(i)i*i); [std.slice(a,1,null,null),a,std.length(std.makeArray(2,function(i)error 'unused body'))]"],"value":[[1,4],[0,1,4],2]},
   {"id":"range-fractional-interval","axis":"P1-foundations","args":["-e","std.range(0.5,2.5)"],"value":[0.5,1.5,2.5]},
   {"id":"range-large-endpoints","axis":"P1-foundations","args":["-e","[std.range(2147483648,2147483650),std.range(1e308,1e308)]"],"value":[[2147483648,2147483649,2147483650],[1e308]]},
   {"id":"range-size-overflow","axis":"P1-foundations","args":["-e","std.type(std.range(-1e308,1e308))"],"error":"Overflow"},
