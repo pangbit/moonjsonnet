@@ -82,6 +82,16 @@ fn rule_review(row : Json) -> Json? {
 }
 
 ///|
+fn assertion_transfer_statements() -> Array[String] {
+  [
+    "desugar_{expr}(\\assert e ; e', b) = desugar_{expr}(\\assert e : \\texttt{\"Assertion failed\"} ; e', b)",
+    "desugar_{expr}(\\assert e : e' ; e'', b) = desugar_{expr}(\\if {e} {e''} {\\error{e'}}, b)",
+    "desugar_{assert}(\\assert e, binds) = desugar_{assert}(\\assert e : \\texttt{\"Assertion failed\"}, binds)",
+    "desugar_{assert}(\\assert e : e', binds) = \\assert{desugar_{expr}(\\local{binds}{\\if{e}{\\null}{\\error{e'}}}, \\true)}",
+  ]
+}
+
+///|
 fn dimension_text(row : Json, name : String) -> String {
   let ids = dimension(row, name).map(value => {
     match value {
@@ -261,10 +271,10 @@ async fn main {
     "All 70 named inference rules are enumerated, including specification builtins. The additional prose/grammar rows are an initial obligation inventory, not a claim that every prose/desugaring clause has been decomposed. ",
   )
   markdown.write_string(
-    "Populated cells identify manually examined assertions. Empty cells remain unreviewed. Explicit completed-rule reviews below concern only their named judgments; N/A cells have stated in-rule reasons, not missing passing tests. Runtime errors include host Type/Assertion categories after successful parsing. ",
+    "Populated cells identify manually examined assertions. Empty cells remain unreviewed. Completed named-rule reviews concern only their named judgments; completed prose constructor transfers are counted separately and assume their children. N/A cells have stated in-scope reasons, not missing passing tests. Runtime errors include host Type/Assertion categories after successful parsing. ",
   )
   markdown.write_string(
-    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md), [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md), [binary byte-substitution report](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md), [UTF-8 text-substitution report](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md), [conditional-rule report](SPEC-CONDITIONAL-EVIDENCE-2026-10-22.md), [static error report](SPEC-ERROR-STATIC-EVIDENCE-2026-10-22.md), [static unary report](SPEC-UNARY-STATIC-EVIDENCE-2026-10-22.md), [inherited-function receiver report](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix report](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md), [lexical-root report](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md), [assertion-self closure report](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md), [assertion-super report](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md), [assertion object-local report](SPEC-ASSERTION-LOCAL-EVIDENCE-2026-10-22.md) and [assertion conjunction/constructor report](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
+    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md), [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md), [binary byte-substitution report](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md), [UTF-8 text-substitution report](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md), [conditional-rule report](SPEC-CONDITIONAL-EVIDENCE-2026-10-22.md), [static error report](SPEC-ERROR-STATIC-EVIDENCE-2026-10-22.md), [static unary report](SPEC-UNARY-STATIC-EVIDENCE-2026-10-22.md), [inherited-function receiver report](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix report](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md), [lexical-root report](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md), [assertion-self closure report](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md), [assertion-super report](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md), [assertion object-local report](SPEC-ASSERTION-LOCAL-EVIDENCE-2026-10-22.md) [assertion conjunction/constructor report](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md) and [object-assertion adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
   )
   markdown.write_string(
     "Reproduce with `moon run --frozen tools/spec-language-matrix.mbtx REFERENCE_DIR EVIDENCE_DIR`; REFERENCE_DIR supplies pinned spec.html and language.md. This command validates assertion locations/hashes and regenerates this matrix; it never infers results or runs upstream tools.\n\n",
@@ -275,6 +285,7 @@ async fn main {
   let enriched : Array[Json] = []
   let mut reviewed = 0
   let completed : Array[(String, Json)] = []
+  let completed_constructors : Array[(String, Json)] = []
   let used : Map[String, Bool] = Map([])
   for item in rows {
     let id = text_field(item, "id")
@@ -282,7 +293,11 @@ async fn main {
     let ids = evidence_ids(row)
     let review = rule_review(row)
     let state = if review is Some(_) {
-      "completed-rule-review"
+      if text_field(item, "kind") == "prose-or-grammar-obligation" {
+        "completed-constructor-review"
+      } else {
+        "completed-rule-review"
+      }
     } else if ids.is_empty() {
       "unreviewed"
     } else {
@@ -300,7 +315,6 @@ async fn main {
     }
     let remaining = text_field(row, "remaining")
     if review is Some(record) {
-      assert_eq(field(item, "kind"), "named-rule")
       assert_eq(text_field(record, "rule"), id)
       assert_eq(text_field(record, "decision"), "complete")
       let form = if record is Object(fields) {
@@ -311,6 +325,16 @@ async fn main {
         }
       } else {
         fail("review record")
+      }
+      if form == "assertion-constructor-transfer" {
+        assert_eq(
+          id,
+          "DESUGAR-ASSERT",
+          msg="assertion constructor completion is restricted to DESUGAR-ASSERT",
+        )
+        assert_eq(field(item, "kind"), "prose-or-grammar-obligation")
+      } else {
+        assert_eq(field(item, "kind"), "named-rule")
       }
       if form == "premise-free" {
         assert_true(
@@ -442,6 +466,56 @@ async fn main {
             msg="unary static evidence gap: " + name,
           )
         }
+      } else if form == "assertion-constructor-transfer" {
+        let statements = assertion_transfer_statements()
+        assert_eq(
+          field(record, "fixed_statements"),
+          Json::array(statements.map(statement => Json::string(statement))),
+          msg="fixed assertion statements mismatch",
+        )
+        for statement in statements {
+          let head = statement.split(" = ").next().unwrap().to_owned() + " ="
+          let parts = spec.split(head).collect()
+          assert_eq(parts.length(), 2)
+          let actual = head + parts[1].split("\\]").next().unwrap().to_owned()
+          assert_eq(
+            normalized(actual),
+            statement,
+            msg="fixed assertion source mismatch",
+          )
+        }
+        assert_eq(
+          field(record, "premise_roles"),
+          Json::array(
+            [
+              "condition", "optional-message", "continuation", "object-local-bindings",
+              "assertion-pairs",
+            ].map(role => Json::string(role)),
+          ),
+        )
+        assert_true(
+          !text_field(record, "child_judgments_assumed").is_empty(),
+          msg="assertion constructor child assumptions required",
+        )
+        guard field(record, "excluded_obligations") is Array(excluded) else {
+          fail("assertion constructor exclusions required")
+        }
+        for
+          exclusion in [
+            "N0: Assertion-super rewriting in the object-inherit rule.", "R0: Finite self-index reentry derivation from the state-free object-index rule.",
+            "Whole conformance of child expression, binding, Boolean, error, indexing and inheritance judgments.",
+          ] {
+          assert_true(
+            excluded.contains(Json::string(exclusion)),
+            msg="assertion constructor must exclude " + exclusion,
+          )
+        }
+        for name in ["runtime_error", "lazy", "boundary"] {
+          assert_true(
+            !dimension(row, name).is_empty(),
+            msg="assertion constructor evidence gap: " + name,
+          )
+        }
       } else {
         fail("unsupported explicit review form")
       }
@@ -510,7 +584,11 @@ async fn main {
           msg="reviewed tests changed: " + path,
         )
       }
-      completed.push((id, record))
+      if form == "assertion-constructor-transfer" {
+        completed_constructors.push((id, record))
+      } else {
+        completed.push((id, record))
+      }
     } else {
       assert_true(
         !remaining.is_empty(),
@@ -557,7 +635,9 @@ async fn main {
       text_field(item, "section") +
       ")" +
       (if review is Some(_) {
-        if id.has_prefix("chk-") {
+        if text_field(item, "kind") == "prose-or-grammar-obligation" {
+          " **complete constructor transfer (relative)**"
+        } else if id.has_prefix("chk-") {
           " **complete static rule**"
         } else {
           " **complete evaluation rule**"
@@ -573,7 +653,11 @@ async fn main {
     markdown.write_string(
       " " +
       (if review is Some(_) {
-        "None within this named judgment; see explicit exclusions and child assumptions below."
+        if text_field(item, "kind") == "prose-or-grammar-obligation" {
+          "None within this constructor transfer relative to its children; normative child gaps and exclusions remain explicit below."
+        } else {
+          "None within this named judgment; see explicit exclusions and child assumptions below."
+        }
       } else {
         remaining
       }) +
@@ -598,6 +682,30 @@ async fn main {
         " " +
         text_field(record, "reasoning") +
         " [Criteria and exclusions](" +
+        report +
+        ").\n",
+      )
+    }
+  }
+  if !completed_constructors.is_empty() {
+    markdown.write_string(
+      "\n## Completed constructor-transfer reviews\n\nThese prose constructor decisions are separate from completed named inference rules. They assume the listed child judgments and exclude unresolved normative child rules. The tool pins exact fixed desugaring statements, inspected source/test hashes and mandatory exclusions; it does not infer semantic correctness, execution or whole-language acceptance.\n\n",
+    )
+    for (id, record) in completed_constructors {
+      let report = text_field(record, "review_report")
+        .strip_prefix("docs/development/")
+        .unwrap()
+        .to_owned()
+      markdown.write_string(
+        "- **" +
+        id +
+        "**: " +
+        text_field(record, "scope") +
+        " " +
+        text_field(record, "reasoning") +
+        " Assumed children: " +
+        text_field(record, "child_judgments_assumed") +
+        " [Review and unresolved normative children](" +
         report +
         ").\n",
       )
@@ -637,13 +745,17 @@ async fn main {
     "prose_grammar_rows": clauses.length(),
     "manually_reviewed_subset_rows": reviewed,
     "completed_rule_rows": completed.length(),
+    "completed_constructor_rows": completed_constructors.length(),
     "completed_static_rule_rows": completed
     .filter(pair => pair.0.has_prefix("chk-"))
     .length(),
     "completed_evaluation_rule_rows": completed
     .filter(pair => !pair.0.has_prefix("chk-"))
     .length(),
-    "unreviewed_rows": rows.length() - reviewed - completed.length(),
+    "unreviewed_rows": rows.length() -
+    reviewed -
+    completed.length() -
+    completed_constructors.length(),
     "complete_conformance": false,
     "execution_inferred": false,
     "evidence": locations,
@@ -680,6 +792,6 @@ async fn main {
     "\n",
   )
   println(
-    "Enumerated \{rule_lines.length()} named rules and \{clauses.length()} prose/grammar rows; \{completed.length()} completed named-rule reviews, \{reviewed} partial rows, \{rows.length() - reviewed - completed.length()} unreviewed rows. No execution or whole-language acceptance inferred.",
+    "Enumerated \{rule_lines.length()} named rules and \{clauses.length()} prose/grammar rows; \{completed.length()} completed named-rule reviews, \{completed_constructors.length()} completed constructor-transfer reviews relative to children, \{reviewed} partial rows, \{rows.length() - reviewed - completed.length() - completed_constructors.length()} unreviewed rows. No execution or whole-language acceptance inferred.",
   )
 }

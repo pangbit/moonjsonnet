@@ -1,7 +1,7 @@
 {
   "version": 1,
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
-  "policy": "Manual assertion review only. References and matching names never establish passing behavior. An empty dimension is unreviewed. Executed outcomes live in the separate source-bound evidence report.",
+  "policy": "Manual assertion review only. References and matching names never establish passing behavior. An empty dimension is unreviewed. Executed outcomes live in the separate source-bound evidence report. Completed prose constructor transfers are relative to child judgments and counted separately from completed named rules.",
   "evidence": {
     "F1": {
       "file": "spec_language_function_test.mbt",
@@ -740,11 +740,11 @@
     "object": {"normal": ["O1"], "lazy": ["O4"], "remaining": "Computed null/nonstring/duplicate names, all object local forms.", "implementation": ["eval.mbt"]},
     "object-comp": {"normal": ["C1", "C6", "A3"], "runtime_error": ["C4", "C7", "A4"], "lazy": ["C2", "C3", "C4", "C5"], "boundary": ["C2", "A3", "A4"], "remaining": "Exhaustive nested generators, all key scalar kinds and multiple failing key order; mechanical non-array domain extensions remain unadjudicated.", "implementation": ["eval.mbt", "objects.mbt"]},
     "array-index": {"normal": ["IDX"], "runtime_error": ["IDX"], "lazy": ["IDX"], "boundary": ["IDX"], "remaining": "Exhaustive numeric/operator combinations and all target/key type failures.", "implementation": ["eval.mbt"]},
-    "object-index": {"normal": ["O2", "O6", "SR1", "SR2", "SP1", "SP2", "RT1", "RT2", "AS1", "AX1", "AL1", "AC1", "AC2"], "runtime_error": ["O3", "O5", "SR3", "SP3", "RT3", "AS2", "AS3", "AX2", "AL2", "AC1"], "lazy": ["O5", "SR2", "SP3", "RT3", "AS1", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2"], "boundary": ["O4", "SR1", "SR3", "SP1", "SP2", "SP3", "RT1", "RT2", "RT3", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2"], "remaining": "Bounded [U2 conjunction/finite reentry and constructor review](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md) closes conjunction retention and operational finite reentry relative to self-field semantics. N0 and the state-free printed reentry model remain unadjudicated. General target/key/missing-field errors and equality/assertion interactions remain separate obligations; assertion check order is not standardized. Existing U1/self/root/prefix evidence retains its scope.", "implementation": ["eval.mbt", "objects.mbt"]},
+    "object-index": {"normal": ["O2", "O6", "SR1", "SR2", "SP1", "SP2", "RT1", "RT2", "AS1", "AX1", "AL1", "AC1", "AC2"], "runtime_error": ["O3", "O5", "SR3", "SP3", "RT3", "AS2", "AS3", "AX2", "AL2", "AC1"], "lazy": ["O5", "SR2", "SP3", "RT3", "AS1", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2"], "boundary": ["O4", "SR1", "SR3", "SP1", "SP2", "SP3", "RT1", "RT2", "RT3", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2"], "remaining": "The bounded assertion behavior components are reviewed. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves R0 the state-free in-progress/self-index model unresolved; N0 affects inherited assertion-super cases. General target/key/missing-field errors and equality interactions are separate obligations. No assertion execution order or whole child judgment is completed.", "implementation": ["eval.mbt", "objects.mbt"]},
     "apply": {"normal": ["F1", "F6", "AP1", "AP2"], "runtime_error": ["F4", "AP3", "AP4"], "lazy": ["F2", "F3", "F4", "AP3", "AP4", "AP5"], "boundary": ["F1", "F3", "AP2", "AP4"], "remaining": "Other non-function heads, exhaustive named/positional permutations, recursive closure forms and tailstrict forcing/order remain unreviewed.", "implementation": ["eval.mbt", "arguments.mbt"]},
     "local": {"normal": ["F1", "R1", "R4"], "lazy": ["F2", "R1", "R3"], "remaining": "All recursive group shapes and every desugared object/comprehension binding; the finite even/odd pair is a subset.", "implementation": ["eval.mbt", "runtime_types.mbt"]},
     "local-var": {"normal": ["F1", "R1"], "lazy": ["F3", "R3"], "remaining": "Capture avoidance across every binder and recursive expression.", "implementation": ["eval.mbt", "runtime_types.mbt"]},
-    "object-inherit": {"normal": ["O2", "F6", "SR1", "SR2", "SP1", "SP2", "RT1", "RT2", "AS1", "AX1", "AL1", "AC1", "AC2"], "runtime_error": ["O3"], "lazy": ["O5", "O6", "SR2", "SP3", "AS3", "AX2", "AL2", "AC1"], "boundary": ["O6", "SR1", "SR3", "SP1", "SP2", "SP3", "RT1", "RT2", "AS1", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2"], "remaining": "Bounded [U2 conjunction/finite reentry and constructor review](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md) closes the assertion-list retention component; N0 remains unresolved and AC failures occur on later field demand. Full inheritance/association algebra, additive/nested field shapes and computed duplicate names remain separate obligations. Existing U1/self/root/prefix evidence retains its scope.", "implementation": ["operators.mbt", "objects.mbt", "eval.mbt"]},
+    "object-inherit": {"normal": ["O2", "F6", "SR1", "SR2", "SP1", "SP2", "RT1", "RT2", "AS1", "AX1", "AL1", "AC1", "AC2"], "runtime_error": ["O3"], "lazy": ["O5", "O6", "SR2", "SP3", "AS3", "AX2", "AL2", "AC1"], "boundary": ["O6", "SR1", "SR3", "SP1", "SP2", "SP3", "RT1", "RT2", "AS1", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2"], "remaining": "Assertion-list retention/conjunction is reviewed; [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves N0 the omitted assertion-super transformation unresolved. Other inheritance/association, additive and computed-name obligations remain separate; later-demand failures are not errors of addition.", "implementation": ["operators.mbt", "objects.mbt", "eval.mbt"]},
     "length-array": {"normal": ["O4", "I2"], "lazy": ["O4", "I2"], "remaining": "Full length contract belongs to public-library matrix.", "implementation": ["stdlib.mbt"]},
     "type-null": {"normal": ["TYPE"], "remaining": "Outer demanded-error cases not assigned to this row.", "implementation": ["stdlib.mbt"]},
     "type-boolean": {"normal": ["TYPE"], "remaining": "Outer demanded-error cases not assigned to this row.", "implementation": ["stdlib.mbt"]},
@@ -769,7 +769,157 @@
     {"id": "SYN-PRECEDENCE", "section": "associativity_precedence", "obligation": "Every operator precedence and associativity relation", "remaining": "Pairwise expression grid and long-binding expression extents.", "implementation": ["parser.mbt"]},
     {"id": "CORE-IMPORT", "section": "core_syntax", "obligation": "Import substitutions, lazy loading and independent static checking of imported programs", "normal": ["I1", "I3", "IB1", "IB4", "IB5", "IU1", "IU4"], "static_error": ["I1", "I3", "IB3", "IR4"], "runtime_error": ["IB3", "IU2", "IU3"], "lazy": ["I2", "I3", "IB2", "IU3"], "boundary": ["IB1", "IB3", "IB4", "IB5", "IU1", "IU2", "IU3", "IU4"], "remaining": "Importbin byte-value substitution and bounded BOM-free importstr UTF-8 substitution are reviewed in their respective evidence reports. Initial-BOM interpretation and precise normative diagnostics remain unknown. This broader row still lacks complete canonical aliases, cycles, code-import scope/decoding, cross-mode/source/value/failure cache identity/lifetimes, host resolver policy and resources.", "implementation": ["imports.mbt", "evaluator_imports.mbt", "eval.mbt", "validate.mbt"]},
     {"id": "DESUGAR-ROOT", "section": "desugaring", "obligation": "Object root $, enclosing self/super and local scope", "normal": ["O1", "O2", "F6", "C6", "RT1", "RT2"], "static_error": ["O1", "RT4"], "lazy": ["RT3"], "boundary": ["RT1", "RT2", "RT3"], "remaining": "The bounded [named-field/factory lexical-root contract](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) is reviewed. Existing C6 is reused, not a new comprehension campaign. Full root/key/local/comprehension/default combinations and malformed contexts remain open; RT3 is a later lookup failure, not a desugaring error.", "implementation": ["validate.mbt", "objects.mbt", "eval.mbt", "ast_convert.mbt"]},
-    {"id": "DESUGAR-ASSERT", "section": "desugaring", "obligation": "Expression/object assertions and lazy failure messages", "normal": ["O3", "O5", "AS1", "AX1", "AR0", "AL1", "AC1", "AC2"], "runtime_error": ["O3", "O5", "AS2", "AS3", "AX2", "AR0", "IF4", "AL2", "AC1"], "lazy": ["O5", "AS1", "AS2", "AS3", "AX1", "AX2", "AR0", "AL1", "AL2", "AC1", "AC2"], "boundary": ["AS2", "AS3", "AX1", "AX2", "IF4", "AL1", "AL2", "AC1", "AC2"], "remaining": "The expression/object assertion constructor transfer review is complete relative to child judgments; see [U2 conjunction/finite reentry and constructor review](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md). U1 and the U2 behavioral endpoint are closed. N0 assertion-super rewriting and interpretation of in-progress self-index checking remain formal object-inherit/object-index questions, not discharged by tests. This prose row has no completed-constructor encoding in the current named-rule-only generator; no additional assertion behavioral microgroups are requested. Child validation/binding/Boolean/error-conversion judgments and broader object rules retain their own scopes.", "implementation": ["eval.mbt", "objects.mbt", "validate.mbt", "ast_convert.mbt", "runtime_types.mbt", "diagnostic_trace.mbt"]},
+    {
+      "id": "DESUGAR-ASSERT",
+      "section": "desugaring",
+      "obligation": "Expression/object assertions and lazy failure messages",
+      "normal": [
+        "O3",
+        "O5",
+        "AS1",
+        "AX1",
+        "AR0",
+        "AL1",
+        "AC1",
+        "AC2"
+      ],
+      "runtime_error": [
+        "O3",
+        "O5",
+        "AS2",
+        "AS3",
+        "AX2",
+        "AR0",
+        "IF4",
+        "AL2",
+        "AC1"
+      ],
+      "lazy": [
+        "O5",
+        "AS1",
+        "AS2",
+        "AS3",
+        "AX1",
+        "AX2",
+        "AR0",
+        "AL1",
+        "AL2",
+        "AC1",
+        "AC2"
+      ],
+      "boundary": [
+        "AS2",
+        "AS3",
+        "AX1",
+        "AX2",
+        "IF4",
+        "AL1",
+        "AL2",
+        "AC1",
+        "AC2"
+      ],
+      "remaining": "",
+      "implementation": [
+        "eval.mbt",
+        "objects.mbt",
+        "validate.mbt",
+        "ast_convert.mbt",
+        "runtime_types.mbt",
+        "diagnostic_trace.mbt"
+      ],
+      "rule_review": {
+        "rule": "DESUGAR-ASSERT",
+        "decision": "complete",
+        "review_form": "assertion-constructor-transfer",
+        "fixed_statements": [
+          "desugar_{expr}(\\assert e ; e', b) = desugar_{expr}(\\assert e : \\texttt{\"Assertion failed\"} ; e', b)",
+          "desugar_{expr}(\\assert e : e' ; e'', b) = desugar_{expr}(\\if {e} {e''} {\\error{e'}}, b)",
+          "desugar_{assert}(\\assert e, binds) = desugar_{assert}(\\assert e : \\texttt{\"Assertion failed\"}, binds)",
+          "desugar_{assert}(\\assert e : e', binds) = \\assert{desugar_{expr}(\\local{binds}{\\if{e}{\\null}{\\error{e'}}}, \\true)}"
+        ],
+        "premise_roles": [
+          "condition",
+          "optional-message",
+          "continuation",
+          "object-local-bindings",
+          "assertion-pairs"
+        ],
+        "child_judgments_assumed": "Child static/evaluation, local binding, Boolean conversion and error conversion judgments retain their own reviewed scopes. Indexing/inheritance demand semantics are assumed children, including unresolved N0 and R0; whole conformance of any child is not established by this transfer review.",
+        "scope": "Expression/object assertion constructor transfer and lazy optional messages, relative to the listed child judgments only.",
+        "reasoning": "All children and stored pairs are preserved; object bindings wrap both branches; a Boolean gate admits the continuation or null only after success, and evaluates the message/error only on false. Existing AR0/IF4 and AS/AL/AC controls plus constructor case analysis support this relative decision. No semantic tests are rerun in this closeout.",
+        "review_report": "docs/development/SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md",
+        "remaining_in_rule": [],
+        "not_applicable": {
+          "static_error": "These desugaring equations assume their child static judgments. Constructor delegation is inspected, but completion does not independently prove child rejection or all chk-* judgments."
+        },
+        "excluded_obligations": [
+          "N0: Assertion-super rewriting in the object-inherit rule.",
+          "R0: Finite self-index reentry derivation from the state-free object-index rule.",
+          "Whole conformance of child expression, binding, Boolean, error, indexing and inheritance judgments.",
+          "General grammar, equality, manifestation and public standard-library contracts.",
+          "Exact human diagnostic presentation and host resource, cache/session, trace, CLI or platform policies."
+        ],
+        "inspection": [
+          {
+            "file": "eval.mbt",
+            "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+            "anchor": "Assert(c, m, body) => {",
+            "argument": "The expression constructor checks its condition/message before assigning the continuation; failure cannot enter the continuation."
+          },
+          {
+            "file": "objects.mbt",
+            "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+            "anchor": "let condition = self.eval(cond, env)",
+            "argument": "The condition is evaluated before the shared Boolean gate; only false evaluates/coerces an optional message. This delegates child judgments and does not specify indexing reentry."
+          },
+          {
+            "file": "objects.mbt",
+            "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+            "anchor": "for index, (cond, msg) in obj.layers[i].assertions",
+            "argument": "Every stored pair is retained in the ordinary demand traversal; this source inspection is not a formal derivation of N0 or R0."
+          },
+          {
+            "file": "objects.mbt",
+            "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+            "anchor": "self.bind(obj.layers[layer].locals, env)",
+            "argument": "Layer locals are bound after installing current self and supplied to the assertion condition/message environment."
+          },
+          {
+            "file": "validate.mbt",
+            "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+            "anchor": "Assert(a, b, c) => {",
+            "argument": "Expression children and object assertion/local children are statically visited under their inherited scope; their individual validity remains assumed."
+          },
+          {
+            "file": "ast_convert.mbt",
+            "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+            "anchor": "Assert(a, b, c) => Assert(visit(a), optional(b), visit(c))",
+            "argument": "Expression child positions, optional messages, object locals and assertion-pair arrays are preserved."
+          },
+          {
+            "file": "runtime_types.mbt",
+            "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+            "anchor": "env.names[name] = self.store(Pending(expr, captured))",
+            "argument": "Local initializers capture their binding environment lazily; the same file provides the exhaustive Boolean child gate."
+          },
+          {
+            "file": "diagnostic_trace.mbt",
+            "sha256": "77acadcefa568a59944499ca5457811880a48b3d9fcbf6ac12a3a5eb3e3e57a4",
+            "anchor": "fn Env::trace_context(",
+            "argument": "The environment structure spread changes diagnostic context while preserving semantic bindings for the successful continuation."
+          }
+        ],
+        "evidence_sha256": {
+          "error_value_test.mbt": "93c73e09eefdbc9ad41e149b52d3b723f5a841309e675682aa50d1d26b29f579",
+          "spec_assertion_conjunction_test.mbt": "737b61a9ad4bb78a506f25be00c1c4533a75f2711390bae6023e79d388e380c9",
+          "spec_assertion_local_test.mbt": "4ec20f1a324e8655c194e1b9d4aa1553218cb45d2d279e3c255e3eeab555a155",
+          "spec_assertion_self_test.mbt": "eaf067af506d8151d87cfe8f8cbe2527580cabb6d5a8b73ea2a56a88072faaf6",
+          "spec_assertion_super_test.mbt": "d118e17f3fd36f4bcfaa5ebbd6ec4131cb8794c738a6826cac0ea7c23b24f884",
+          "spec_conditional_runtime_test.mbt": "ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf",
+          "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d"
+        }
+      }
+    },
     {"id": "DESUGAR-SLICE", "section": "desugaring", "obligation": "Missing bounds and slice lowering to fixed stdlib source", "normal": ["SLICE"], "runtime_error": ["SLICE"], "lazy": ["SLICE"], "remaining": "Full negative/null/step/domain matrix and retained cardinality ambiguity.", "implementation": ["eval.mbt", "slice.mbt"]},
     {"id": "DESUGAR-FIELDS", "section": "desugaring", "obligation": "Dot lookup, object extension, additive fields and methods", "normal": ["F6", "O2"], "remaining": "All additive forms and nested inheritance source transformations.", "implementation": ["parser.mbt", "objects.mbt"]},
     {"id": "DESUGAR-OPERATORS", "section": "desugaring", "obligation": "Percent, equality, in, unary plus and std binding", "remaining": "Independent equivalence under std shadowing and lazy/errors.", "implementation": ["eval.mbt", "operators.mbt"]},
@@ -778,7 +928,7 @@
     {"id": "VALUE-FINITE", "section": "jsonnet_values", "obligation": "Finite binary64 values and immutable arrays/objects", "boundary": ["FINITE", "O2"], "remaining": "Producer overflow and array immutability evidence lives in P0 matrix; not newly credited here.", "implementation": ["runtime_types.mbt", "manifest.mbt"]},
     {"id": "VALUE-UNICODE", "section": "jsonnet_values", "obligation": "Codepoint strings, strict contents and Unicode comparison", "normal": ["IDX"], "runtime_error": ["IDX"], "remaining": "Whole string semantics, collation, normalization and surrogate ambiguity.", "implementation": ["eval.mbt", "sequence.mbt"]},
     {"id": "HIDDEN-INHERITANCE", "section": "hidden_inheritance", "obligation": "Inherited default, hidden and forced-visible fields", "normal": ["O6"], "lazy": ["O6", "O7", "SP3"], "boundary": ["O6", "SP2", "SP3"], "remaining": "Only direct hidden prior-field access/error demand in the bounded [super-prefix group](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) is added here. Equality and general multi-layer/separator/additive combinations remain open.", "implementation": ["objects.mbt", "manifest.mbt"]},
-    {"id": "SUBSTITUTION", "section": "substitution", "obligation": "Capture avoidance and lexical closure/default binding", "normal": ["F1", "F6", "O2", "AP1", "AP2", "SR1", "SP1", "RT1", "RT2", "AS1", "AX1", "AL1", "AC2"], "static_error": ["F5", "O1", "RT4"], "lazy": ["F2", "F3", "AP5", "SR2", "SP3", "RT3", "AL2"], "boundary": ["SR1", "SR3", "SP1", "SP3", "RT1", "RT2", "RT3", "AS2", "AX2", "AL1", "AL2", "AC2"], "remaining": "Bounded [U2 conjunction/finite reentry and constructor review](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md) closes the U2 receiver/check-state component operationally, with U1 already closed. N0 and formal self-index reentry are not proved. Other binder/capture boundaries and the full self/super/root substitution algebra retain their existing scopes.", "implementation": ["eval.mbt", "runtime_types.mbt", "objects.mbt"]},
+    {"id": "SUBSTITUTION", "section": "substitution", "obligation": "Capture avoidance and lexical closure/default binding", "normal": ["F1", "F6", "O2", "AP1", "AP2", "SR1", "SP1", "RT1", "RT2", "AS1", "AX1", "AL1", "AC2"], "static_error": ["F5", "O1", "RT4"], "lazy": ["F2", "F3", "AP5", "SR2", "SP3", "RT3", "AL2"], "boundary": ["SR1", "SR3", "SP1", "SP3", "RT1", "RT2", "RT3", "AS2", "AX2", "AL1", "AL2", "AC2"], "remaining": "Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule.", "implementation": ["eval.mbt", "runtime_types.mbt", "objects.mbt"]},
     {"id": "EXEC-OPERATORS", "section": "execution", "obligation": "Arithmetic, bitwise, equality, coercion and other prose-defined operators", "remaining": "Independent normal/error/lazy/numeric grid; historical upstream agreement is insufficient.", "implementation": ["operators.mbt"]},
     {"id": "EXEC-BUILTINS", "section": "execution", "obligation": "Prose-defined mathematical builtins and host extVar/native", "remaining": "Separate public-library matrix and explicit host contracts; not complete from registration.", "implementation": ["stdlib.mbt", "native.mbt"]},
     {"id": "JSON-VALUES", "section": "json_values", "obligation": "Recursively force visible fields/elements, assertions, reject functions", "normal": ["O6"], "runtime_error": ["O4", "O7", "FINITE"], "lazy": ["O4", "O6", "O7"], "boundary": ["O4"], "remaining": "Every scalar/shape and recursion boundary; top-level function application is a separate host convention.", "implementation": ["manifest.mbt"]}

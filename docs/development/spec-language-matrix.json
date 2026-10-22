@@ -2,12 +2,13 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "7328a30b82e274989bcd13b96316c1d2a71abb4719edcdf7427a3e9f19de42eb",
-  "tool_sha256": "1322ea018865e122b847312931bfe09d4fa332b4dc187e152ffda79dce4a34fe",
+  "mapping_sha256": "ad739d296aa57fdbed6fa1b456c281d08b2b46061f2d880e6bf5251aa50d0063",
+  "tool_sha256": "0a7358cb85ea1233107b335b17c3806ec57738a4e8062ba103c74ef35b425cc6",
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 42,
+  "manually_reviewed_subset_rows": 41,
   "completed_rule_rows": 8,
+  "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
   "completed_evaluation_rule_rows": 2,
   "unreviewed_rows": 44,
@@ -2171,7 +2172,7 @@
           "AC2"
         ]
       },
-      "remaining": "Bounded [U2 conjunction/finite reentry and constructor review](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md) closes conjunction retention and operational finite reentry relative to self-field semantics. N0 and the state-free printed reentry model remain unadjudicated. General target/key/missing-field errors and equality/assertion interactions remain separate obligations; assertion check order is not standardized. Existing U1/self/root/prefix evidence retains its scope.",
+      "remaining": "The bounded assertion behavior components are reviewed. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves R0 the state-free in-progress/self-index model unresolved; N0 affects inherited assertion-super cases. General target/key/missing-field errors and equality interactions are separate obligations. No assertion execution order or whole child judgment is completed.",
       "implementation": [
         "eval.mbt",
         "objects.mbt"
@@ -2506,7 +2507,7 @@
           "AC2"
         ]
       },
-      "remaining": "Bounded [U2 conjunction/finite reentry and constructor review](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md) closes the assertion-list retention component; N0 remains unresolved and AC failures occur on later field demand. Full inheritance/association algebra, additive/nested field shapes and computed duplicate names remain separate obligations. Existing U1/self/root/prefix evidence retains its scope.",
+      "remaining": "Assertion-list retention/conjunction is reviewed; [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves N0 the omitted assertion-super transformation unresolved. Other inheritance/association, additive and computed-name obligations remain separate; later-demand failures are not errors of addition.",
       "implementation": [
         "operators.mbt",
         "objects.mbt",
@@ -3649,7 +3650,7 @@
       "kind": "prose-or-grammar-obligation",
       "section": "desugaring",
       "source_line": 1096,
-      "state": "manually-reviewed-subset",
+      "state": "completed-constructor-review",
       "dimensions": {
         "normal": [
           "O3",
@@ -3698,7 +3699,7 @@
           "AC2"
         ]
       },
-      "remaining": "The expression/object assertion constructor transfer review is complete relative to child judgments; see [U2 conjunction/finite reentry and constructor review](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md). U1 and the U2 behavioral endpoint are closed. N0 assertion-super rewriting and interpretation of in-progress self-index checking remain formal object-inherit/object-index questions, not discharged by tests. This prose row has no completed-constructor encoding in the current named-rule-only generator; no additional assertion behavioral microgroups are requested. Child validation/binding/Boolean/error-conversion judgments and broader object rules retain their own scopes.",
+      "remaining": "",
       "implementation": [
         "eval.mbt",
         "objects.mbt",
@@ -3710,7 +3711,100 @@
       "obligation": [
         "Expression/object assertions and lazy failure messages"
       ],
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "DESUGAR-ASSERT",
+          "decision": "complete",
+          "review_form": "assertion-constructor-transfer",
+          "fixed_statements": [
+            "desugar_{expr}(\\assert e ; e', b) = desugar_{expr}(\\assert e : \\texttt{\"Assertion failed\"} ; e', b)",
+            "desugar_{expr}(\\assert e : e' ; e'', b) = desugar_{expr}(\\if {e} {e''} {\\error{e'}}, b)",
+            "desugar_{assert}(\\assert e, binds) = desugar_{assert}(\\assert e : \\texttt{\"Assertion failed\"}, binds)",
+            "desugar_{assert}(\\assert e : e', binds) = \\assert{desugar_{expr}(\\local{binds}{\\if{e}{\\null}{\\error{e'}}}, \\true)}"
+          ],
+          "premise_roles": [
+            "condition",
+            "optional-message",
+            "continuation",
+            "object-local-bindings",
+            "assertion-pairs"
+          ],
+          "child_judgments_assumed": "Child static/evaluation, local binding, Boolean conversion and error conversion judgments retain their own reviewed scopes. Indexing/inheritance demand semantics are assumed children, including unresolved N0 and R0; whole conformance of any child is not established by this transfer review.",
+          "scope": "Expression/object assertion constructor transfer and lazy optional messages, relative to the listed child judgments only.",
+          "reasoning": "All children and stored pairs are preserved; object bindings wrap both branches; a Boolean gate admits the continuation or null only after success, and evaluates the message/error only on false. Existing AR0/IF4 and AS/AL/AC controls plus constructor case analysis support this relative decision. No semantic tests are rerun in this closeout.",
+          "review_report": "docs/development/SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "These desugaring equations assume their child static judgments. Constructor delegation is inspected, but completion does not independently prove child rejection or all chk-* judgments."
+          },
+          "excluded_obligations": [
+            "N0: Assertion-super rewriting in the object-inherit rule.",
+            "R0: Finite self-index reentry derivation from the state-free object-index rule.",
+            "Whole conformance of child expression, binding, Boolean, error, indexing and inheritance judgments.",
+            "General grammar, equality, manifestation and public standard-library contracts.",
+            "Exact human diagnostic presentation and host resource, cache/session, trace, CLI or platform policies."
+          ],
+          "inspection": [
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "Assert(c, m, body) => {",
+              "argument": "The expression constructor checks its condition/message before assigning the continuation; failure cannot enter the continuation."
+            },
+            {
+              "file": "objects.mbt",
+              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "anchor": "let condition = self.eval(cond, env)",
+              "argument": "The condition is evaluated before the shared Boolean gate; only false evaluates/coerces an optional message. This delegates child judgments and does not specify indexing reentry."
+            },
+            {
+              "file": "objects.mbt",
+              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "anchor": "for index, (cond, msg) in obj.layers[i].assertions",
+              "argument": "Every stored pair is retained in the ordinary demand traversal; this source inspection is not a formal derivation of N0 or R0."
+            },
+            {
+              "file": "objects.mbt",
+              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "anchor": "self.bind(obj.layers[layer].locals, env)",
+              "argument": "Layer locals are bound after installing current self and supplied to the assertion condition/message environment."
+            },
+            {
+              "file": "validate.mbt",
+              "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+              "anchor": "Assert(a, b, c) => {",
+              "argument": "Expression children and object assertion/local children are statically visited under their inherited scope; their individual validity remains assumed."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Assert(a, b, c) => Assert(visit(a), optional(b), visit(c))",
+              "argument": "Expression child positions, optional messages, object locals and assertion-pair arrays are preserved."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "env.names[name] = self.store(Pending(expr, captured))",
+              "argument": "Local initializers capture their binding environment lazily; the same file provides the exhaustive Boolean child gate."
+            },
+            {
+              "file": "diagnostic_trace.mbt",
+              "sha256": "77acadcefa568a59944499ca5457811880a48b3d9fcbf6ac12a3a5eb3e3e57a4",
+              "anchor": "fn Env::trace_context(",
+              "argument": "The environment structure spread changes diagnostic context while preserving semantic bindings for the successful continuation."
+            }
+          ],
+          "evidence_sha256": {
+            "error_value_test.mbt": "93c73e09eefdbc9ad41e149b52d3b723f5a841309e675682aa50d1d26b29f579",
+            "spec_assertion_conjunction_test.mbt": "737b61a9ad4bb78a506f25be00c1c4533a75f2711390bae6023e79d388e380c9",
+            "spec_assertion_local_test.mbt": "4ec20f1a324e8655c194e1b9d4aa1553218cb45d2d279e3c255e3eeab555a155",
+            "spec_assertion_self_test.mbt": "eaf067af506d8151d87cfe8f8cbe2527580cabb6d5a8b73ea2a56a88072faaf6",
+            "spec_assertion_super_test.mbt": "d118e17f3fd36f4bcfaa5ebbd6ec4131cb8794c738a6826cac0ea7c23b24f884",
+            "spec_conditional_runtime_test.mbt": "ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf",
+            "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d"
+          }
+        }
+      ]
     },
     {
       "id": "DESUGAR-SLICE",
@@ -4005,7 +4099,7 @@
           "AC2"
         ]
       },
-      "remaining": "Bounded [U2 conjunction/finite reentry and constructor review](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md) closes the U2 receiver/check-state component operationally, with U1 already closed. N0 and formal self-index reentry are not proved. Other binder/capture boundaries and the full self/super/root substitution algebra retain their existing scopes.",
+      "remaining": "Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt",

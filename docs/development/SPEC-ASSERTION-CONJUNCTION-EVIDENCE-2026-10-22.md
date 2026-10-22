@@ -1,5 +1,11 @@
 # Assertion conjunction and finite reentry: U2 closeout
 
+This report records the e16dafe behavioral batch. The subsequent
+[normative/matrix closeout](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md)
+records the relative DESUGAR-ASSERT constructor decision and separately blocks
+N0/R0 formal claims. The original execution identity and results below remain
+historical; they were not rerun for the metadata closeout.
+
 **Decision: U2's bounded behavioral endpoint is closed.** Both assertion
 lists, including multiple pairs within each operand, survive field override.
 The finite self-field dependency completes without losing later checks or
