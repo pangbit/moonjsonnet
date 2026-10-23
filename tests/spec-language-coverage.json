@@ -1084,6 +1084,92 @@
       "assertions": ["(\"getter\", root_ast(Func([], root_path(\"$\", [\"needed\"]))))", "root_program(source, tree, handmade)", "assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(d.location.file, \"root-scope-entry\")"],
       "checks": "A global getter with free $ rejects Static at Program creation through source and handmade AST even when its call site is inside an object with the required field. A caller object cannot retroactively supply the missing lexical root. No malformed-source Syntax or complete static-rule acceptance is claimed."
     },
+    "OAS1": {
+      "file": "spec_object_assertion_static_test.mbt",
+      "test": "object statics check every assertion condition before demand",
+      "test_id": "spec_object_assertion_static_test.mbt::object statics check every assertion condition before demand",
+      "assertions": [
+        "for bad_position in 0..<3",
+        "checks[bad_position] = (sequence_var(\"ostatic_missing\"), None)",
+        "ostatic_reject(ostatic_object([], checks))"
+      ],
+      "checks": "Each of three assertion condition positions independently contains one free name. Both source and directly handmade AST creation reject Static for the object itself, an unused-local wrapper and an unselected-branch wrapper. No rejected program is evaluated."
+    },
+    "OAS2": {
+      "file": "spec_object_assertion_static_test.mbt",
+      "test": "object statics check every message even when all conditions are true",
+      "test_id": "spec_object_assertion_static_test.mbt::object statics check every message even when all conditions are true",
+      "assertions": [
+        "let message = Some(reflect_string(\"not-demanded\"))",
+        "checks[bad_position] = (truth, Some(sequence_var(\"ostatic_missing\")))",
+        "ostatic_reject(ostatic_object([], checks))"
+      ],
+      "checks": "All three conditions are literal true, yet a free name in each never-selected failure-message position rejects Static during source and independent AST creation in all three wrappers. Runtime message laziness does not omit static checking."
+    },
+    "OAS3": {
+      "file": "spec_object_assertion_static_test.mbt",
+      "test": "object assertion statics check unused locals and distinguish field labels",
+      "test_id": "spec_object_assertion_static_test.mbt::object assertion statics check unused locals and distinguish field labels",
+      "assertions": [
+        "[(\"unused\", sequence_var(\"ostatic_missing\"))]",
+        "ostatic_object([], [(sequence_var(\"ostatic_field\"), None)], fields~)",
+        "ostatic_object([], [(truth, Some(sequence_var(\"ostatic_field\")))], fields~)"
+      ],
+      "checks": "An unused object-local initializer containing a free name rejects Static; a field label does not bind an unqualified name in an assertion condition or message. Both independent entries and all three wrappers reject each sole invalid site."
+    },
+    "OAS4": {
+      "file": "spec_object_assertion_static_test.mbt",
+      "test": "object assertion child binders do not escape to messages or other pairs",
+      "test_id": "spec_object_assertion_static_test.mbt::object assertion child binders do not escape to messages or other pairs",
+      "assertions": [
+        "let private_condition = sequence_local",
+        "[(private_condition, Some(leaked))]",
+        "[(private_condition, None), (leaked, None)]",
+        "[(truth, Some(private_message)), (truth, Some(leaked))]",
+        "ostatic_reject(ostatic_object([], checks))"
+      ],
+      "checks": "Condition-local names do not escape into their message or another assertion; message-local names do not bind later messages. Each isolated scope violation rejects Static in source and handmade AST through direct, unused and unselected contexts."
+    },
+    "OAS5": {
+      "file": "spec_object_assertion_static_test.mbt",
+      "test": "object key assertions cannot acquire new self super or object locals",
+      "test_id": "spec_object_assertion_static_test.mbt::object key assertions cannot acquire new self super or object locals",
+      "assertions": [
+        "for context in [\"self\", \"super\"]",
+        "ostatic_assert(access, None, name)",
+        "ostatic_assert(truth, Some(access), name)",
+        "Some(sequence_var(\"ostatic_key\"))",
+        "ostatic_reject("
+      ],
+      "checks": "Expression assertions in top-level computed keys cannot acquire the new object self/super permission, in either condition or message, and cannot borrow newly declared object locals. Both entries reject Static without object execution."
+    },
+    "OAS6": {
+      "file": "spec_object_assertion_static_test.mbt",
+      "test": "object assertion statics see later recursive locals and self super scope",
+      "test_id": "spec_object_assertion_static_test.mbt::object assertion statics see later recursive locals and self super scope",
+      "assertions": [
+        "(\"first\", sequence_var(\"later\"))",
+        "(\"later\", access)",
+        "Some(sequence_var(\"later\"))",
+        "ostatic_admit(object)",
+        "ostatic_admit(",
+        "\"+\""
+      ],
+      "checks": "Independent source and AST admit assertion conditions/messages under all recursive object-local names and self/super context. Source assertions precede the local declarations. Both a layer and its unused inheritance expression create successfully; unused wrappers return literal 42 without executing objects, assertions or inheritance."
+    },
+    "OAS7": {
+      "file": "spec_object_assertion_static_test.mbt",
+      "test": "object static admission defers assertion types errors and false results",
+      "test_id": "spec_object_assertion_static_test.mbt::object static admission defers assertion types errors and false results",
+      "assertions": [
+        "sequence_num(1)",
+        "ordering_error(\"condition-not-demanded\")",
+        "ordering_leaf(\"false\", Literal(false))",
+        "Some(ordering_error(\"message-not-demanded\"))",
+        "ostatic_admit("
+      ],
+      "checks": "Numeric, explicit-error and false object-assertion conditions with explicit-error messages are statically admissible. Both entries create and their unused wrappers return literal 42; no Boolean conversion, assertion execution, object manifestation or serialization result is asserted."
+    },
     "AS1": {
       "file": "spec_assertion_self_test.mbt",
       "test": "inherited assertion condition closures bind each compatible receiver self",
@@ -2994,7 +3080,14 @@
     },
     "chk-self": {"normal": ["F6", "O1", "O2"], "static_error": ["O1"], "remaining": "All enclosing expression forms and public-AST combinations.", "implementation": ["validate.mbt"]},
     "chk-super": {"normal": ["F6", "O2"], "remaining": "Top-level/standalone super and every syntactic context not newly reviewed.", "implementation": ["validate.mbt"]},
-    "chk-object": {"normal": ["O1"], "static_error": ["O1"], "remaining": "Literal duplicate names, object-local recursion and statics in every assertion/value position.", "implementation": ["validate.mbt"]},
+    "chk-object": {
+      "normal": ["O1", "OAS6", "OAS7"],
+      "static_error": ["O1", "OAS1", "OAS2", "OAS3", "OAS4", "OAS5"],
+      "lazy": ["OAS1", "OAS2", "OAS7"],
+      "boundary": ["OAS3", "OAS4", "OAS5", "OAS6", "OAS7"],
+      "remaining": "The [object-assertion static-scope record](SPEC-OBJECT-ASSERTION-STATIC-2026-10-23.md) adds seven executed source/handmade-AST groups for all listed assertion/message positions, unused locals and key-context boundaries. General duplicate-name, field/value child, binder/object/comprehension and host/source grammar obligations remain separate; no full constructor decision is declared. N0/R0 and manifestation/manifestJson distinctions are unchanged.",
+      "implementation": ["validate.mbt", "ast_convert.mbt", "ast_validate.mbt", "parser.mbt", "program.mbt"]
+    },
     "chk-object-comp": {"normal": ["C1", "C6"], "static_error": ["O1", "R2", "A2"], "remaining": "Exhaustive key/domain/local scope cross-product and malformed comprehensions; only listed source and handmade AST cases reviewed.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
     "chk-local": {"normal": ["R1", "R4", "A3"], "static_error": ["R2", "A1"], "remaining": "Every binder/initializer AST form, all mutually recursive structures and exhaustive object/comprehension nesting.", "implementation": ["validate.mbt", "ast_validate.mbt", "parser.mbt"]},
     "chk-apply": {"normal": ["F1", "AP1", "AP2"], "static_error": ["F5", "AP6"], "remaining": "Every argument expression form and exhaustive named/positional combinations across source and handmade AST paths.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
