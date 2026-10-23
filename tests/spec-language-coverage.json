@@ -1303,6 +1303,56 @@
       "assertions": ["let missing = ordering_leaf(\"boolean_missing\", Var(\"boolean_missing\"))", "for op in [\"&&\", \"||\"]", "for choice in [false, true]", "ordering_binary(missing, op, flag)", "ordering_binary(flag, op, missing)", "for subject in [value, ordering_unused(value)]", "assert_eq(d.kind, @moonjsonnet.Static)", "for source in [\"true \" + op, op + \" true\"]", "assert_eq(d.kind, @moonjsonnet.Syntax)"],
       "checks": "Unknown names in either operand reject Static at Program creation through source and independent handmade ASTs, under shortcut/longcut Boolean left values and unused wrappers. Missing operands are separate source-only Syntax controls, with no malformed typed-AST equivalence or complete grammar/static constructor claim."
     },
+    "IV1": {
+      "file": "spec_import_validation_test.mbt",
+      "test": "import validation rejects caller capture in an uninvoked function default",
+      "test_id": "spec_import_validation_test.mbt::import validation rejects caller capture in an uninvoked function default",
+      "assertions": [
+        "(\"caller_default\", sequence_num(99))",
+        "sequence_call(\"type\", [import_validation_file(\"bad-default\")])",
+        "\"memory/bad-default.libsonnet\"",
+        "assert_eq(requests.length(), 0)"
+      ],
+      "checks": "Both Program::parse and separately handmade Program::from_ast entries create without resolver activity. Observing the imported function type then rejects Static in memory/bad-default.libsonnet despite caller_default=99 and no function invocation. Module source parsing is shared by the Source.text import interface."
+    },
+    "IV2": {
+      "file": "spec_import_validation_test.mbt",
+      "test": "import validation checks a true assertion message before observing object type",
+      "test_id": "spec_import_validation_test.mbt::import validation checks a true assertion message before observing object type",
+      "assertions": [
+        "(\"caller_message\", reflect_string(\"caller\"))",
+        "sequence_call(\"type\", [import_validation_file(\"bad-message\")])",
+        "\"memory/bad-message.libsonnet\"",
+        "import_validation_static("
+      ],
+      "checks": "Both independent entry interfaces create without resolver activity. Merely observing an imported object type rejects its free assertion-message name Static in memory/bad-message.libsonnet despite a true predicate and caller_message binding. This is imported static isolation, not runtime assertion or manifestation demand."
+    },
+    "IV3": {
+      "file": "spec_import_validation_test.mbt",
+      "test": "import validation skips dormant and overridden dependencies but checks a forced default",
+      "test_id": "spec_import_validation_test.mbt::import validation skips dormant and overridden dependencies but checks a forced default",
+      "assertions": [
+        "for mode in [\"unused\", \"factory-type\", \"override\", \"force\"]",
+        "Some(\"config\")",
+        "\"memory/bad-message.libsonnet\"",
+        "requests.contains((\"memory/factory.libsonnet\", \"bad-message\"))",
+        "assert_eq(requests.length(), 0)",
+        "assert_eq(requests.length(), 2)"
+      ],
+      "checks": "Four fixed modes through both entry interfaces: unused import returns literal 42 without requests; factory type returns function without its dependency; named config override returns literal {limit:7} without the dependency; default demand rejects the nested module Static using its factory source origin. Unique request sets guard demand/origin, not universal callback counts, cache lifetime or order."
+    },
+    "IV4": {
+      "file": "spec_import_validation_test.mbt",
+      "test": "import validation preserves module policy and final receiver across a config override",
+      "test_id": "spec_import_validation_test.mbt::import validation preserves module policy and final receiver across a config override",
+      "assertions": [
+        "(\"policy\", sequence_num(99))",
+        "(\"base\", import_validation_file(\"config\"))",
+        "[1, 2, 1]",
+        "assert_true(requests.contains((\"ordering-entry\", \"config\")))"
+      ],
+      "checks": "Both independent entries obtain [1,2,1] from original/overridden/original imported config field reads. Module-local policy=42 remains isolated from caller policy=99, final self selects the overlay limit, and the hidden error is unselected. The assertion reads only lexical policy, with no self/super predicate, avoiding new N0/R0 or serialization claims."
+    },
     "IC1": {
       "file": "spec_import_closure_test.mbt",
       "test": "imported factory closures retain module locals self root and dependency origin",
@@ -4067,7 +4117,76 @@
         "PREC5"
       ]
     },
-    {"id": "CORE-IMPORT", "section": "core_syntax", "obligation": "Import substitutions, lazy loading and independent static checking of imported programs", "normal": ["I1", "I3", "IB1", "IB4", "IB5", "IU1", "IU4", "IC1"], "static_error": ["I1", "I3", "IB3", "IR4", "IC2", "IC3"], "runtime_error": ["IB3", "IU2", "IU3", "IC3"], "lazy": ["I2", "I3", "IB2", "IU3", "IC3"], "boundary": ["IB1", "IB3", "IB4", "IB5", "IU1", "IU2", "IU3", "IU4", "IC1", "IC2", "IC3"], "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) closes exported-factory lexical isolation and deferred nested-import/default boundaries, reusing I1-I3; no whole CORE-IMPORT or generic child judgment is completed. Importbin byte-value and bounded BOM-free importstr reviews retain their scopes. General code-import source/decoding forms, initial BOM, canonical aliases, cycles, cross-mode/source/value/failure cache identity/lifetimes, host resolver/I/O policy and resources remain unadjudicated; diagnostic details are host controls.", "implementation": ["imports.mbt", "evaluator_imports.mbt", "eval.mbt", "validate.mbt", "parser.mbt", "runtime_types.mbt", "objects.mbt", "ast_convert.mbt"]},
+    {
+      "id": "CORE-IMPORT",
+      "section": "core_syntax",
+      "obligation": "Import substitutions, lazy loading and independent static checking of imported programs",
+      "normal": [
+        "I1",
+        "I3",
+        "IB1",
+        "IB4",
+        "IB5",
+        "IU1",
+        "IU4",
+        "IC1",
+        "IV3",
+        "IV4"
+      ],
+      "static_error": [
+        "I1",
+        "I3",
+        "IB3",
+        "IR4",
+        "IC2",
+        "IC3",
+        "IV1",
+        "IV2",
+        "IV3"
+      ],
+      "runtime_error": [
+        "IB3",
+        "IU2",
+        "IU3",
+        "IC3"
+      ],
+      "lazy": [
+        "I2",
+        "I3",
+        "IB2",
+        "IU3",
+        "IC3",
+        "IV3"
+      ],
+      "boundary": [
+        "IB1",
+        "IB3",
+        "IB4",
+        "IB5",
+        "IU1",
+        "IU2",
+        "IU3",
+        "IU4",
+        "IC1",
+        "IC2",
+        "IC3",
+        "IV1",
+        "IV2",
+        "IV3",
+        "IV4"
+      ],
+      "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) closes exported-factory lexical isolation and deferred nested-import/default boundaries, reusing I1-I3; no whole CORE-IMPORT or generic child judgment is completed. Importbin byte-value and bounded BOM-free importstr reviews retain their scopes. General code-import source/decoding forms, initial BOM, canonical aliases, cycles, cross-mode/source/value/failure cache identity/lifetimes, host resolver/I/O policy and resources remain unadjudicated; diagnostic details are host controls. The [imported-configuration validation record](SPEC-IMPORT-VALIDATION-2026-10-23.md) closes exactly four dual-entry composition scenarios for isolated defaults/messages, dormant or overridden dependencies and a valid module-local policy with config overlay. No reusable-Evaluator cache, host filesystem/platform or whole CORE-IMPORT/child-rule completion is added; N0/R0/DF0 and manifestation/manifestJson distinctions remain unchanged.",
+      "implementation": [
+        "imports.mbt",
+        "evaluator_imports.mbt",
+        "eval.mbt",
+        "validate.mbt",
+        "parser.mbt",
+        "runtime_types.mbt",
+        "objects.mbt",
+        "ast_convert.mbt"
+      ]
+    },
     {"id": "DESUGAR-ROOT", "section": "desugaring", "obligation": "Object root $, enclosing self/super and local scope", "normal": ["O1", "O2", "F6", "C6", "RT1", "RT2"], "static_error": ["O1", "RT4"], "lazy": ["RT3"], "boundary": ["RT1", "RT2", "RT3"], "remaining": "The bounded [named-field/factory lexical-root contract](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md) is reviewed. Existing C6 is reused, not a new comprehension campaign. Full root/key/local/comprehension/default combinations and malformed contexts remain open; RT3 is a later lookup failure, not a desugaring error.", "implementation": ["validate.mbt", "objects.mbt", "eval.mbt", "ast_convert.mbt"]},
     {
       "id": "DESUGAR-ASSERT",
