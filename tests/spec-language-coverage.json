@@ -1413,6 +1413,63 @@
         "assert_eq(seen.length(), 0)"
       ],
       "checks": "Numbers, Strings, empty/poisoned Arrays and Objects, and closure/Builtin/Native Function heads reject Type without reading nested values or calling functions; ignored operations yield 42. Direct operand Runtime errors retain their isolated marker. Existing US2 supplies the null boundary. Both entry paths are independent; human diagnostics and callback ordering are not specified."
+    },
+    "QS0": {
+      "file": "string_literal_test.mbt",
+      "test": "string literals decode Go escapes and surrogate replacement",
+      "test_id": "string_literal_test.mbt::string literals decode Go escapes and surrogate replacement",
+      "assertions": [
+        "@moonjsonnet.evaluate(\n      \"['\\\\\\\"','\\\\\\'','\\\\\\\\','\\\\/','\\\\b','\\\\f','\\\\n','\\\\r','\\\\t']\",\n    ),\n    [\"\\\"\", \"'\", \"\\\\\", \"/\", \"\\b\", \"\\u000c\", \"\\n\", \"\\r\", \"\\t\"],"
+      ],
+      "checks": "Reused only the ordinary single-quote nine-escape source/expected table inside this historical Go-labelled case. Its bytes match the 5651ae9 full-suite input; no new execution is claimed. Other assertions, especially surrogate replacement/pairing, are excluded from this normative evidence."
+    },
+    "QS1": {
+      "file": "spec_quoted_strings_wbtest.mbt",
+      "test": "quoted tokens terminate independently while doubled verbatim quotes stay inside",
+      "test_id": "spec_quoted_strings_wbtest.mbt::quoted tokens terminate independently while doubled verbatim quotes stay inside",
+      "assertions": [
+        "(\"'a''b'\", [\"'a'\", \"'b'\"])",
+        "(\"@'a''b'\", [\"@'a''b'\"])",
+        "for retain in [false, true]",
+        "tokens.filter(t => t.text != \"<eof>\").map(t => t.raw), expected",
+        "assert_eq(restored, source)"
+      ],
+      "checks": "Independent literal raw token vectors distinguish ordinary adjacent literals from verbatim doubled delimiters. Escaped delimiters, trailing verbatim backslashes, protected comment/operator text, following operators/identifiers/comments and CRLF retain their boundaries in both trivia modes. Retained trivia reconstructs exact input. This scanner-only group does not prove canonical escape decoding."
+    },
+    "QS2": {
+      "file": "spec_quoted_strings_test.mbt",
+      "test": "ordinary quotes decode literal escape expectations and preserve line endings",
+      "test_id": "spec_quoted_strings_test.mbt::ordinary quotes decode literal escape expectations and preserve line endings",
+      "assertions": [
+        "quoted_value(\"\\\"\" + raw + \"\\\"\", expected)",
+        "(\"\\\\u0041F\", \"AF\")",
+        "quoted_value(quote + raw + quote, expected)",
+        "(\"a\\r\\nb\", \"a\\r\\nb\")"
+      ],
+      "checks": "Double-quoted nine-escape values complement the reused single-quote table. Both delimiters cover empty/opposite/escaped quotes, backslash parity, four-digit mixed-case non-surrogate hex edges, a following fifth hex character, exact Unicode and LF/CRLF contents. Literal expected Strings independently supply typed Literal ASTs; AST success checks canonical values, not lexing."
+    },
+    "QS3": {
+      "file": "spec_quoted_strings_test.mbt",
+      "test": "verbatim quotes preserve every payload character except doubled end quotes",
+      "test_id": "spec_quoted_strings_test.mbt::verbatim quotes preserve every payload character except doubled end quotes",
+      "assertions": [
+        "quoted_value(\"@\" + quote + raw + quote, raw)",
+        "(\"@'a''b'\", \"a'b\")",
+        "[\"x\", \"y'z\", \"n\\n\", \"\\\\n\"]"
+      ],
+      "checks": "Both verbatim forms preserve literal backslashes, invalid-looking escape text, Unicode, line endings and actual control characters. Only matching doubled end-quotes collapse; opposite quotes remain doubled. A mixed adjacent array with comments compares source to an independent canonical Literal/Arr tree. No surrogate decoding policy follows from literal backslash-u data."
+    },
+    "QS4": {
+      "file": "spec_quoted_strings_test.mbt",
+      "test": "quoted source rejects malformed spellings before demand while AST string data stays opaque",
+      "test_id": "spec_quoted_strings_test.mbt::quoted source rejects malformed spellings before demand while AST string data stays opaque",
+      "assertions": [
+        "quoted_syntax(source)",
+        "quoted_syntax(quote + raw + quote)",
+        "@moonjsonnet.Program::from_ast(tree).evaluate(limits=sequence_limits())",
+        "Some(\"quote-demand\")"
+      ],
+      "checks": "Source-only invalid closures/@ prefixes, unknown or truncated/nonhex escapes, line continuations and adjacent non-concatenating literals reject Syntax directly and in unused-local/unselected-branch wrappers. Independent AST Strings accept opaque escape-looking data. All four valid quote forms preserve Runtime error demand versus unused 42. The static_error column denotes source admission Syntax here, not a corresponding AST lexical error or completion of a chk judgment."
     }
   },
   "rules": {
@@ -3015,7 +3072,7 @@
         "NT4"
       ]
     },
-    {"id": "LEX-STRINGS", "section": "lexing", "obligation": "Quoted and verbatim strings, escapes and Unicode", "remaining": "All four quoted forms, malformed escapes, controls and surrogate ambiguity.", "implementation": ["lexer.mbt"]},
+    {"id": "LEX-STRINGS", "section": "lexing", "obligation": "Quoted and verbatim strings, escapes and Unicode", "remaining": "The [quoted-string record](SPEC-QUOTED-STRINGS-2026-10-23.md) covers the four quoted forms, specified simple/non-surrogate hex escapes, exact LF/CRLF, verbatim doubling/literal payloads, raw token boundaries and source-only Syntax before demand. AST controls validate canonical values only. Surrogate pairing/replacement, raw non-line controls in ordinary strings, invalid source encoding and complete unbounded scanner/grammar/resource contracts remain unadjudicated. Text blocks and malformed block-sentinel policy stay separate; no whole LEX-STRINGS completion is recorded.", "implementation": ["lexer.mbt", "string_literal.mbt", "token.mbt"], "normal": ["QS0", "QS1", "QS2", "QS3"], "static_error": ["QS4"], "runtime_error": ["QS4"], "lazy": ["QS4"], "boundary": ["QS1", "QS2", "QS3", "QS4"]},
     {"id": "LEX-TEXT-BLOCK", "section": "lexing", "obligation": "Text-block indentation, blank lines and final chomp", "normal": ["CRLF", "CHOMP"], "boundary": ["CRLF", "CHOMP"], "remaining": "Full malformed indentation/whitespace-only-line matrix.", "implementation": ["lexer.mbt"]},
     {"id": "SYN-EXPR", "section": "abstract_syntax", "obligation": "Every expression alternative and optional/trailing syntax", "remaining": "No coverage inferred from AST variant registration or example names.", "implementation": ["parser.mbt"]},
     {"id": "SYN-OBJECT", "section": "abstract_syntax", "obligation": "Object fields, locals, methods, assertions and comprehension grammar", "normal": ["F6", "O1"], "remaining": "Every separator, additive form, comma and malformed construction.", "implementation": ["parser.mbt"]},
