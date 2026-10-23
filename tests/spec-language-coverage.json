@@ -439,6 +439,84 @@
       ],
       "checks": "Separate source and handmade NumberLiteral admission accepts long valid exponent spellings. Local/branch/array-shape controls stay lazy; required numeric and type demand reject overflow Runtime. Huge-exponent zero and underflow give 0, exponent-leading-zero finite control gives 125. No arithmetic-wide rounding or host-resource completion follows."
     },
+    "FS1": {
+      "file": "spec_function_static_test.mbt",
+      "test": "function statics check each optional default before invocation",
+      "test_id": "spec_function_static_test.mbt::function statics check each optional default before invocation",
+      "assertions": [
+        "for bad_position in 0..<3",
+        "Some(sequence_var(\"fscope_missing\"))",
+        "fscope_reject(fscope_function(parameters, sequence_num(42)))"
+      ],
+      "checks": "Independent source and handmade AST put one free name in each of three optional-default positions after a required formal. Direct, unused-local and unselected-branch creation each rejects Static; the helper does not evaluate rejected programs."
+    },
+    "FS2": {
+      "file": "spec_function_static_test.mbt",
+      "test": "function statics check bodies independently of defaults or calls",
+      "test_id": "spec_function_static_test.mbt::function statics check bodies independently of defaults or calls",
+      "assertions": [
+        "fscope_reject(fscope_function([], sequence_var(\"fscope_missing\")))",
+        "(\"optional\", Some(sequence_num(42)))"
+      ],
+      "checks": "Independent source and handmade AST reject a free body name before invocation, both with zero formals and with valid required/optional defaults. The same Static outcome holds in direct, unused-local and unselected-branch contexts."
+    },
+    "FS3": {
+      "file": "spec_function_static_test.mbt",
+      "test": "function default child binders do not escape to sibling defaults or body",
+      "test_id": "spec_function_static_test.mbt::function default child binders do not escape to sibling defaults or body",
+      "assertions": [
+        "for child in [private_local, private_function]",
+        "(\"b\", Some(sequence_var(\"fscope_private\")))",
+        "fscope_function([(\"a\", Some(child))], sequence_var(\"fscope_private\"))"
+      ],
+      "checks": "A binding local to one default or a parameter of a nested default function cannot bind a sibling default or the outer body. Both independent entry paths reject each sole free-name site Static in all three wrappers."
+    },
+    "FS4": {
+      "file": "spec_function_static_test.mbt",
+      "test": "function statics extend defaults and body with all formals and outer names",
+      "test_id": "spec_function_static_test.mbt::function statics extend defaults and body with all formals and outer names",
+      "assertions": [
+        "fscope_admit(fscope_function([], sequence_num(42)))",
+        "(\"a\", Some(sequence_var(\"b\")))",
+        "fscope_function([(\"a\", Some(sequence_var(\"a\")))], sequence_var(\"a\"))",
+        "[(\"outer\", ordering_error(\"outer-not-demanded\"))]",
+        "fscope_function([(\"a\", None)], sequence_var(\"a\"))"
+      ],
+      "checks": "Both independent entry paths admit zero formals, references to required/later/self formals, mutually recursive defaults, outer lexical names and legal outer-name shadowing. Direct creation succeeds and unused wrappers return literal 42; recursive defaults are never called."
+    },
+    "FS5": {
+      "file": "spec_function_static_test.mbt",
+      "test": "function statics do not create object permission for defaults or body",
+      "test_id": "spec_function_static_test.mbt::function statics do not create object permission for defaults or body",
+      "assertions": [
+        "for name in [\"self\", \"super\"]",
+        "fscope_reject(function)",
+        "fscope_reject(reflect_object([(function, 1, sequence_num(42))]))"
+      ],
+      "checks": "Default and body checking grant no new object context: self.n and super.n reject Static at top level and inside a top-level object computed key, including unused-local and unselected-branch wrappers through source and handmade AST."
+    },
+    "FS6": {
+      "file": "spec_function_static_test.mbt",
+      "test": "function statics preserve existing object permission for defaults and body",
+      "test_id": "spec_function_static_test.mbt::function statics preserve existing object permission for defaults and body",
+      "assertions": [
+        "pair_inherited(function)",
+        "pair_field(function)",
+        "fscope_admit(value)"
+      ],
+      "checks": "Default and body checking retain existing object context: self.n in object values and super.n in inherited-object values admit through source and handmade AST. Unused wrappers return 42 without demanding fields or testing object-assertion algebra."
+    },
+    "FS7": {
+      "file": "spec_function_static_test.mbt",
+      "test": "function static admission neither evaluates nor typechecks its children",
+      "test_id": "spec_function_static_test.mbt::function static admission neither evaluates nor typechecks its children",
+      "assertions": [
+        "ordering_error(\"function-child-not-demanded\")",
+        "ordering_binary(sequence_num(1), \"-\", reflect_string(\"not-a-number\"))",
+        "fscope_admit(fscope_function([(\"a\", Some(child))], child))"
+      ],
+      "checks": "Explicit Runtime-error and wrong-numeric-type child expressions in both default and body are statically admissible. Creation succeeds and unused wrappers return 42 through independent source and AST paths; calling these functions is not asserted to succeed."
+    },
     "F1": {
       "file": "spec_language_function_test.mbt",
       "test": "language defaults distinguish definition caller and formal environments",
@@ -2921,7 +2999,14 @@
     "chk-local": {"normal": ["R1", "R4", "A3"], "static_error": ["R2", "A1"], "remaining": "Every binder/initializer AST form, all mutually recursive structures and exhaustive object/comprehension nesting.", "implementation": ["validate.mbt", "ast_validate.mbt", "parser.mbt"]},
     "chk-apply": {"normal": ["F1", "AP1", "AP2"], "static_error": ["F5", "AP6"], "remaining": "Every argument expression form and exhaustive named/positional combinations across source and handmade AST paths.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
     "chk-var": {"normal": ["F1"], "static_error": ["F5", "I1"], "remaining": "All binders and unused expression positions.", "implementation": ["validate.mbt"]},
-    "chk-function": {"normal": ["F1", "F6", "AP1", "AP2"], "static_error": ["F5", "S1"], "boundary": ["F1", "AP2"], "remaining": "Every default/body AST form; parameter metadata is a separate host contract.", "implementation": ["validate.mbt"]},
+    "chk-function": {
+      "normal": ["F1", "F6", "AP1", "AP2", "FS4", "FS6", "FS7"],
+      "static_error": ["F5", "S1", "FS1", "FS2", "FS3", "FS5"],
+      "lazy": ["FS1", "FS2", "FS7"],
+      "boundary": ["F1", "AP2", "FS4", "FS5", "FS6", "FS7"],
+      "remaining": "The [function-scope record](SPEC-FUNCTION-STATIC-2026-10-23.md) adds seven executed source/handmade-AST groups for default/body scope and object-context preservation. No constructor completion is declared; all child judgments, source grammar/desugaring and host parameter metadata retain their separate obligations.",
+      "implementation": ["validate.mbt", "ast_convert.mbt", "ast_validate.mbt", "parser.mbt", "program.mbt"]
+    },
     "chk-import": {
       "normal": ["IR0", "I1", "I2", "I3"], "lazy": ["I2", "I3"],
       "remaining": "", "implementation": ["validate.mbt", "ast_convert.mbt", "ast_validate.mbt"],
