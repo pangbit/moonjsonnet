@@ -1266,6 +1266,44 @@
       ],
       "checks": "Empty/hidden-only/nested assertion objects fail all three demanded conversion forms, but ignored whole calls stay lazy and a true assertion does not evaluate its message. The same empty assertion object follows the distinct source-defined manifestJson path and produces parseable empty JSON. A hidden free variable is rejected Static through source/from_ast even in an unused concat; no assertion inheritance/reentry contract is promoted.",
       "test_id": "spec_string_concat_test.mbt::implicit manifestation checks assertions while library JSON and statics keep separate boundaries"
+    },
+    "LN1": {
+      "file": "spec_lex_names_test.mbt",
+      "test": "ASCII identifier starts and continuations retain complete tokens and bindings",
+      "test_id": "spec_lex_names_test.mbt::ASCII identifier starts and continuations retain complete tokens and bindings",
+      "assertions": [
+        "let starts = \"_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\"",
+        "names_binding_value(names_character(character))",
+        "names_binding_value(\"a\" + names_character(character) + \"9\")",
+        "\"_name09\".repeat(64)"
+      ],
+      "checks": "The literal fixed-spec alphabets enumerate every permitted ASCII initial and continuation character in bound source programs. The called helper requires the exact six-token vector and 42 through source/independently manufactured Local/Var ASTs. Case changes and one long identifier remain intact. This is not a whole lexer/AST-name admission proof."
+    },
+    "LN2": {
+      "file": "spec_lex_names_test.mbt",
+      "test": "all fixed keywords are excluded from identifier slots but longer names remain identifiers",
+      "test_id": "spec_lex_names_test.mbt::all fixed keywords are excluded from identifier slots but longer names remain identifiers",
+      "assertions": [
+        "assert_eq(words.length(), 18)",
+        "\"local \" + word + \"=42;42\"",
+        "\"function(\" + word + \")42\"",
+        "names_syntax(source)",
+        "sequence_value(names_quoted_field(word), 42)"
+      ],
+      "checks": "Each of the fixed 18 words rejects source Syntax in four identifier grammar slots before unused-branch evaluation. Five prefix/suffix extensions per word remain complete tokens with source/handmade AST value 42; quoted keyword fields stay String data. No lexical rejection rule is imposed on arbitrary host AST name payloads."
+    },
+    "LN3": {
+      "file": "spec_lex_names_test.mbt",
+      "test": "identifier separators and invalid spellings preserve Syntax Static and Runtime boundaries",
+      "test_id": "spec_lex_names_test.mbt::identifier separators and invalid spellings preserve Syntax Static and Runtime boundaries",
+      "assertions": [
+        "\"local a/**/b=42;42\"",
+        "names_syntax(\"local \" + name + \"=42;42\")",
+        "number_token_text(source)",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "Some(\"name-value\")"
+      ],
+      "checks": "Unused source rejects representative numeric/separated/dollar/non-ASCII/control binder spellings and comment-split names Syntax. All three comment forms separate complete local/name tokens with literal vector and value controls. Valid unbound names reject Static through both entry paths; a bound if0 error remains unused-whole lazy and propagates only on demand. Static/Runtime are adjacent child controls mapped as boundaries, not lexical evaluation-rule completion."
     }
   },
   "rules": {
@@ -2051,7 +2089,29 @@
   },
   "clauses": [
     {"id": "LEX-ENCODING", "section": "lexing", "obligation": "UTF-8 source, whitespace, all comment forms and greedy tokens", "remaining": "Not manually mapped in this stage; retained lexer tests are candidates only.", "implementation": ["lexer.mbt"]},
-    {"id": "LEX-NAMES", "section": "lexing", "obligation": "Identifier alphabet, reserved keywords and operator tokenization", "remaining": "Positive/negative/adjacent-token grid.", "implementation": ["lexer.mbt", "parser.mbt"]},
+    {
+      "id": "LEX-NAMES",
+      "section": "lexing",
+      "obligation": "Identifier alphabet, reserved keywords and operator tokenization",
+      "remaining": "The [identifier record](SPEC-LEX-NAMES-2026-10-23.md) reviews the fixed ASCII alphabets, all 18 keyword exclusions in four source id slots, longer keyword-prefix names, quoted names and selected comment/name boundaries. Normal cases compare source with independently built ASTs; source Syntax and adjacent Static/Runtime remain separate. Full operator-token grammar/termination exceptions, all token compositions/encodings, all AST/static name constructors and resource-independent proofs remain unreviewed. No named/prose completion, Go/C++ acceptance or A0/B0/N0/R0/PE0 adjudication is inferred.",
+      "implementation": [
+        "lexer.mbt",
+        "parser.mbt"
+      ],
+      "normal": [
+        "LN1",
+        "LN2",
+        "LN3"
+      ],
+      "lazy": [
+        "LN3"
+      ],
+      "boundary": [
+        "LN1",
+        "LN2",
+        "LN3"
+      ]
+    },
     {
       "id": "LEX-NUMBERS",
       "section": "lexing",

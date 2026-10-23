@@ -2,18 +2,18 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "0e2e8a239a05c5e92ac749e7cf4b1378403836de10b67c3b76e5ac18bdc77a35",
-  "tool_sha256": "22c9a04ff0bd103d1b1db9e3bfb73da80f14d0f70a35bc9b59e54d666d347551",
+  "mapping_sha256": "cc67cc91cba6c16ed730dced9ededa1fd8fec4a2b05073e5c6366f60fa165c7c",
+  "tool_sha256": "5b9f869a3783e3492d7617d3377ff3e62817f7d9497aeb0e576e621a16dfd872",
   "mapping_schema_version": 2,
-  "global_test_ids": 152,
+  "global_test_ids": 155,
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 62,
+  "manually_reviewed_subset_rows": 63,
   "completed_rule_rows": 16,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
   "completed_evaluation_rule_rows": 10,
-  "unreviewed_rows": 15,
+  "unreviewed_rows": 14,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -2207,6 +2207,50 @@
       ],
       "checks": "Empty/hidden-only/nested assertion objects fail all three demanded conversion forms, but ignored whole calls stay lazy and a true assertion does not evaluate its message. The same empty assertion object follows the distinct source-defined manifestJson path and produces parseable empty JSON. A hidden free variable is rejected Static through source/from_ast even in an unused concat; no assertion inheritance/reentry contract is promoted.",
       "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "LN1": {
+      "file": "spec_lex_names_test.mbt",
+      "line": 71,
+      "test": "ASCII identifier starts and continuations retain complete tokens and bindings",
+      "test_id": "spec_lex_names_test.mbt::ASCII identifier starts and continuations retain complete tokens and bindings",
+      "assertions": [
+        "let starts = \"_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\"",
+        "names_binding_value(names_character(character))",
+        "names_binding_value(\"a\" + names_character(character) + \"9\")",
+        "\"_name09\".repeat(64)"
+      ],
+      "checks": "The literal fixed-spec alphabets enumerate every permitted ASCII initial and continuation character in bound source programs. The called helper requires the exact six-token vector and 42 through source/independently manufactured Local/Var ASTs. Case changes and one long identifier remain intact. This is not a whole lexer/AST-name admission proof.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "LN2": {
+      "file": "spec_lex_names_test.mbt",
+      "line": 86,
+      "test": "all fixed keywords are excluded from identifier slots but longer names remain identifiers",
+      "test_id": "spec_lex_names_test.mbt::all fixed keywords are excluded from identifier slots but longer names remain identifiers",
+      "assertions": [
+        "assert_eq(words.length(), 18)",
+        "\"local \" + word + \"=42;42\"",
+        "\"function(\" + word + \")42\"",
+        "names_syntax(source)",
+        "sequence_value(names_quoted_field(word), 42)"
+      ],
+      "checks": "Each of the fixed 18 words rejects source Syntax in four identifier grammar slots before unused-branch evaluation. Five prefix/suffix extensions per word remain complete tokens with source/handmade AST value 42; quoted keyword fields stay String data. No lexical rejection rule is imposed on arbitrary host AST name payloads.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "LN3": {
+      "file": "spec_lex_names_test.mbt",
+      "line": 111,
+      "test": "identifier separators and invalid spellings preserve Syntax Static and Runtime boundaries",
+      "test_id": "spec_lex_names_test.mbt::identifier separators and invalid spellings preserve Syntax Static and Runtime boundaries",
+      "assertions": [
+        "\"local a/**/b=42;42\"",
+        "names_syntax(\"local \" + name + \"=42;42\")",
+        "number_token_text(source)",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "Some(\"name-value\")"
+      ],
+      "checks": "Unused source rejects representative numeric/separated/dollar/non-ASCII/control binder spellings and comment-split names Syntax. All three comment forms separate complete local/name tokens with literal vector and value controls. Valid unbound names reject Static through both entry paths; a bound if0 error remains unused-whole lazy and propagates only on demand. Static/Runtime are adjacent child controls mapped as boundaries, not lexical evaluation-rule completion.",
+      "status": "manually reviewed assertion subset; execution is separate"
     }
   },
   "test_file_sha256": {
@@ -2262,7 +2306,8 @@
     "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
     "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7",
-    "spec_string_concat_test.mbt": "b563491ec478bbc3f11e53a69dc92926b99e49e81201eeddb93f27eab2814eb0"
+    "spec_string_concat_test.mbt": "b563491ec478bbc3f11e53a69dc92926b99e49e81201eeddb93f27eab2814eb0",
+    "spec_lex_names_test.mbt": "a6b14de4f4b444d7c4d861eda96e9534cb2e61450dc34b7e87dead6504029883"
   },
   "clauses": [
     {
@@ -5380,15 +5425,25 @@
       "kind": "prose-or-grammar-obligation",
       "section": "lexing",
       "source_line": 113,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "LN1",
+          "LN2",
+          "LN3"
+        ],
         "static_error": [],
         "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "lazy": [
+          "LN3"
+        ],
+        "boundary": [
+          "LN1",
+          "LN2",
+          "LN3"
+        ]
       },
-      "remaining": "Positive/negative/adjacent-token grid.",
+      "remaining": "The [identifier record](SPEC-LEX-NAMES-2026-10-23.md) reviews the fixed ASCII alphabets, all 18 keyword exclusions in four source id slots, longer keyword-prefix names, quoted names and selected comment/name boundaries. Normal cases compare source with independently built ASTs; source Syntax and adjacent Static/Runtime remain separate. Full operator-token grammar/termination exceptions, all token compositions/encodings, all AST/static name constructors and resource-independent proofs remain unreviewed. No named/prose completion, Go/C++ acceptance or A0/B0/N0/R0/PE0 adjudication is inferred.",
       "implementation": [
         "lexer.mbt",
         "parser.mbt"
