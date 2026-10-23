@@ -37,7 +37,7 @@ that no test exists anywhere.
 N/E/L/B in the table are normal/error/lazy/boundary dimensions. R means only the
 specific assertions reviewed against the fixed contract in
 [manual case mappings](../../tests/spec-public-coverage.json). U means that
-dimension remains unreviewed/unmapped. Fifty-seven functions currently have reviewed
+dimension remains unreviewed/unmapped. Sixty-two functions currently have reviewed
 subsets, including the ten independent [foundation reviews](SPEC-FOUNDATIONS-REVIEW.md)
 and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [object visibility/lookup functions](SPEC-OBJECT-CONTRACTS-REVIEW.md) and seven
@@ -51,7 +51,8 @@ and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [two shallow/deep flattening subsets](SPEC-FLATTEN-2026-10-23.md) and
 [deepJoin/lines String composition subsets](SPEC-COMPOSED-STRINGS-2026-10-23.md) and
 [three character stripping subsets](SPEC-STRIP-CHARS-2026-10-23.md) and
-[three split-family subsets](SPEC-SPLIT-LIMITS-2026-10-23.md);
+[three split-family subsets](SPEC-SPLIT-LIMITS-2026-10-23.md) and
+[two membership subsets](SPEC-MEMBERSHIP-2026-10-23.md);
 even these functions have unresolved or uncovered contracts. No whole
 function is accepted as fully conforming by this inventory. Earlier executed
 test counts remain tied to their respective stage sources, not to a new claim
@@ -68,6 +69,15 @@ five-pass/six-failure baseline. The scoped wide-limit and guard-demand correctio
 passed all eleven frozen groups plus three neighboring checks. Only the
 independent fixture's bounded obligations advance the public map; the
 unlimited-right/overlap documentation/source conflict remains unresolved.
+
+The [membership review](SPEC-MEMBERSHIP-2026-10-23.md) preserves its first
+five-pass/nine-failure baseline. The corrected member/contains demand and
+traversal passed all fourteen frozen groups, with separate neighboring checks.
+The old extrema assertions were run unchanged, retained as a raw failure, then
+migrated individually against the fixed definitions and passed separately.
+The earlier prose count of 57 was stale: the committed split-stage map already
+contained 60 distinct records. This batch adds only member and contains, giving
+62 reviewed subsets; correcting that count does not grant any other coverage.
 
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its

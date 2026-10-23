@@ -39,7 +39,7 @@ test "array extrema use Go defaults named arguments and stable ties" {
 }
 
 ///|
-test "member and contains short circuit with primitive and recursive equality" {
+test "member traverses matches while contains short circuits with recursive equality" {
   assert_eq(
     @moonjsonnet.evaluate("std['$flatMapArray'](function(x)[x,x],[1,2])"),
     @json.parse("[1,1,2,2]"),
@@ -48,24 +48,36 @@ test "member and contains short circuit with primitive and recursive equality" {
     (source, expected) in [
       (
         "[std.member([1,2],2),std.contains([1,2],3),std.member('你😀','😀'),std.member('','')]",
-        "[true,false,true,true]",
+        "[true,false,true,false]",
       ),
-      (
-        "[std.member([1,error 'unused'],1),std.contains([1,error 'unused'],1)]",
-        "[true,true]",
-      ),
+      ("std.contains([1,error 'unused'],1)", "true"),
       (
         "[std.member(arr=[{a:1,h::2}],x={a:1}),std.contains(arr=[{a:1}],elem={a:1})]",
         "[true,true]",
       ),
       ("std.contains([function()1,2],2)", "true"),
+      ("std.member([],error 'forced')", "false"),
+      ("std.contains([],error 'forced')", "false"),
     ] {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))
   }
+  // Preserve the original mixed input: count must expose member's tail error,
+  // while the separate contains control above retains its short circuit.
+  try
+    @moonjsonnet.evaluate(
+      "[std.member([1,error 'unused'],1),std.contains([1,error 'unused'],1)]",
+    )
+  catch {
+    @moonjsonnet.Error(d) => {
+      assert_eq(d.kind, @moonjsonnet.Runtime)
+      assert_eq(d.message, "unused")
+    }
+  } noraise {
+    _ => fail("member suppressed the required post-match error")
+  }
   for
     source in [
-      "std.member('abc',1)", "std.contains('abc','a')", "std.member([],error 'forced')",
-      "std.contains([],error 'forced')", "std.member([function()1],function()1)",
+      "std.member('abc',1)", "std.contains('abc','a')", "std.member([function()1],function()1)",
       "std.contains({},1)", "std['$flatMapArray'](function(x)[x],'a')",
     ] {
     try @moonjsonnet.evaluate(source) catch {

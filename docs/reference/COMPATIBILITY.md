@@ -176,7 +176,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `flattenDeepArray(value)` | Recursively flattens arrays, retaining null and all other non-array leaves; the fixed source also wraps scalar roots. Structure requires recursive leaf heads, while object fields and function bodies remain lazy. See the [scoped flatten review](../development/SPEC-FLATTEN-2026-10-23.md) |
 | `min`, `max`, `clamp` | Source numeric min/max and lazy clamp branches |
 | `sum(arr)`, `avg(arr)` | Numeric left-to-right aggregation; avg rejects an empty array; each addition rejects non-finite results |
-| `member(arr,x)`, `contains(arr,elem)` | Native short-circuit membership; member also accepts a string substring (including empty substring), contains requires an array |
+| `member(arr,x)`, `contains(arr,elem)` | Both validate the collection before the target and leave the target lazy for empty Arrays. Array member examines every equality predicate, including errors after a match; contains stops at its first match. String member follows findSubstr and returns false for an empty pattern. See the [scoped membership review](../development/SPEC-MEMBERSHIP-2026-10-23.md) |
 | `minArray(arr,keyF=function(x)x,onEmpty=error ...)`, `maxArray(...)` | Native stable extrema; force elements, compute each key once, preserve lazy fields, force explicitly supplied onEmpty even when nonempty |
 | `$flatMapArray(func,arr)` | Reflected Go helper; flatMap behavior restricted to array input |
 | `__compare`, `__compare_array`, `__array_less`, `__array_greater`, `__array_less_or_equal`, `__array_greater_or_equal` | Reflected upstream comparison helpers, including lexicographic nested arrays |

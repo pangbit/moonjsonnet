@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "0e7cb7890f972c0e1f9a1ff628e87eee4a7f6dd1",
-  "uncommitted_test_paths": "spec_split_limits_test.mbt",
+  "input_source_commit": "06a260ccf2c6d24190f394f9629490678d3c05c7",
+  "uncommitted_test_paths": "extrema_test.mbt\nspec_membership_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -30,7 +30,7 @@
     "evaluator_imports_wbtest.mbt": "525257976c3c721cd5a63a379523c651fb92948638919d29e8244f67a469d0fa",
     "evaluator_test.mbt": "4591b1c78be8ae7e848fa2625b92b154302a818a8afbc41b5c85fcc202d53fc0",
     "evaluator_wbtest.mbt": "8a904f5695e006a2c172e4e6e3452c5ac427c41fff062d8b5083bd51d08ad53f",
-    "extrema_test.mbt": "1096e365b4990978b897f833cd3193d7b12410bf4415309e9a71b5dd8cd9a9d0",
+    "extrema_test.mbt": "c630608264e95be353b127644dcc11e0cc52a6ceea2f355bc1afe39b3458d2ae",
     "format_power_test.mbt": "da72e8d480093ae4efe9cd82e08db27627a92afacd8f63d7225fa07191ffb977",
     "formatter_boundaries_test.mbt": "ee363b9c727f0ebbbf63da0646f58593d6f7032367a1f661bff06104bdedec1c",
     "formatter_context_test.mbt": "093edeaab7f8872dc285388b0a5b25914a4380f9f0a685d1b175154c65ea96d1",
@@ -115,6 +115,7 @@
     "spec_make_array_test.mbt": "2528ec26e9449cd6bc1a9acb2819258c79dca4d24d1916b3a263008a0c867554",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7",
     "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "spec_membership_test.mbt": "ff98fa18f761be4560885c2d02c55bf926ab5532c14f56b049d825ec692ae39e",
     "spec_merge_patch_test.mbt": "52953d3c31c78e8451c8fbce03c8be345bccecb770b24a7d7e9340ae948ccb90",
     "spec_negation_test.mbt": "92edd8ad7eaac31c60676c8c7f3882f440c78391edd58a16d47ee0942465e3ac",
     "spec_number_tokens_test.mbt": "f2b0623824df00431f167bacc8cf04290ab91158827eb79c4d27c632693d576c",
@@ -168,7 +169,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "73b8b2af148cf2b1cfe65c466e2d3a195377290331a22f742ea9a16707aa67dd",
+  "coverage_sha256": "1adca204b7c0b6f1f9cf67fc4d87c1cd1b03d421b6a90a9e268cd3b971c0c306",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -713,13 +714,57 @@
         "source": "std.contains(arr, elem)",
         "source_line": "1764"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "contains",
+        "signature_review": {
+          "parameters": [
+            "arr",
+            "elem"
+          ],
+          "defaults": {},
+          "test": "spec_membership_test.mbt",
+          "status": "Fixed documentation/source required names agree; reordered named successes and missing/extra/unknown/duplicate binding controls passed through source and independent handmade AST."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_membership_test.mbt",
+            "line": 15,
+            "test_declaration": "test \"membership preserves literal Array equality and required named arguments\" {",
+            "classification": "manual MC1-MC14 contains arms; independent expectations; executed source and handmade AST after preserved baseline failures"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_membership_test.mbt",
+            "expectation": "MC1: literal Array equality membership, absence, nested visible equality and positional/reordered named calls through source and handmade AST."
+          },
+          "E": {
+            "test": "spec_membership_test.mbt",
+            "expectation": "MC12/MC13/MC14: every tested invalid collection head including String rejects before target gates; required collection/target/pre-match errors and invalid bindings propagate."
+          },
+          "L": {
+            "test": "spec_membership_test.mbt",
+            "expectation": "MC6/MC7: empty Arrays leave target and payloads unforced. MC11: first match skips a gated error tail while sharing demanded collection, target and result values. MC14: unused calls lazy, free names Static."
+          },
+          "B": {
+            "test": "spec_membership_test.mbt",
+            "expectation": "MC1/MC6/MC7/MC11: empty Arrays, repeated/absent elements, unlike head types and hidden object payloads; no string-domain extension inferred."
+          }
+        },
+        "remaining": "Only the executed bounded MC groups are reviewed; no whole-function acceptance. Exhaustive nested equality/assertion demand, competing-error order among otherwise valid operands, resource equivalence, complete Unicode/raw encoding, public std rebinding and all existing disputes remain unreviewed. Go/C++ behavior is not an oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "extrema_test.mbt",
           "line": 50,
-          "test_declaration": "test \"member and contains short circuit with primitive and recursive equality\" {",
+          "test_declaration": "test \"member traverses matches while contains short circuits with recursive equality\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_membership_test.mbt",
+          "line": 15,
+          "test_declaration": "test \"membership preserves literal Array equality and required named arguments\" {",
+          "classification": "manual MC1-MC14 contains arms; independent expectations; executed source and handmade AST after preserved baseline failures"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -3621,13 +3666,57 @@
         "source": "std.member(arr, x)",
         "source_line": "247"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "member",
+        "signature_review": {
+          "parameters": [
+            "arr",
+            "x"
+          ],
+          "defaults": {},
+          "test": "spec_membership_test.mbt",
+          "status": "Fixed documentation/source required names agree; reordered named successes and missing/extra/unknown/duplicate binding controls passed through source and independent handmade AST."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_membership_test.mbt",
+            "line": 15,
+            "test_declaration": "test \"membership preserves literal Array equality and required named arguments\" {",
+            "classification": "manual MC1-MC14 member arms; independent expectations; executed source and handmade AST after preserved baseline failures"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_membership_test.mbt",
+            "expectation": "MC1/MC2: literal Array equality membership and nonempty String substring results through positional/reordered named source and handmade AST calls."
+          },
+          "E": {
+            "test": "spec_membership_test.mbt",
+            "expectation": "MC9/MC10/MC12/MC13/MC14: post-match member errors, invalid collection guards, isolated required input/target/pre-match errors and invalid bindings reject; explicit error markers retained."
+          },
+          "L": {
+            "test": "spec_membership_test.mbt",
+            "expectation": "MC4/MC5: empty Arrays leave target and payloads unforced. MC8: all Array entry gates run even after a match, with required values shared. MC9/MC10/MC14: unused calls stay lazy while free-name errors remain Static."
+          },
+          "B": {
+            "test": "spec_membership_test.mbt",
+            "expectation": "MC1-MC5/MC13: empty collections/patterns, NUL, supplementary Unicode and combining-versus-composed distinctions; an empty String still demands a valid String target."
+          }
+        },
+        "remaining": "Only the executed bounded MC groups are reviewed; no whole-function acceptance. Exhaustive nested equality/assertion demand, competing-error order among otherwise valid operands, resource equivalence, complete Unicode/raw encoding, public std rebinding and all existing disputes remain unreviewed. Go/C++ behavior is not an oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "extrema_test.mbt",
           "line": 50,
-          "test_declaration": "test \"member and contains short circuit with primitive and recursive equality\" {",
+          "test_declaration": "test \"member traverses matches while contains short circuits with recursive equality\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_membership_test.mbt",
+          "line": 15,
+          "test_declaration": "test \"membership preserves literal Array equality and required named arguments\" {",
+          "classification": "manual MC1-MC14 member arms; independent expectations; executed source and handmade AST after preserved baseline failures"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"

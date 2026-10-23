@@ -230,6 +230,15 @@ fn Vm::builtin(
       loc,
     )
   }
+  if name == "member" || name == "contains" {
+    let target = if name == "member" { ids["x"] } else { ids["elem"] }
+    return self.membership(
+      self.force(ids["arr"], loc),
+      target,
+      name == "contains",
+      loc,
+    )
+  }
   let values = if name == "join" {
     // The fixed source rejects arr before inspecting the separator.
     let arr = self.force(ids["arr"], loc)
@@ -341,21 +350,6 @@ fn Vm::builtin(
         loc,
       )
     }
-    "member" | "contains" =>
-      if name == "member" && x is Str(s) {
-        Bool(s.contains(text_value(values[1], loc)))
-      } else {
-        let items = array_value(x, loc)
-        let mut found = false
-        for t in items {
-          self.tick(loc)
-          if self.equal(self.force(t, loc), values[1], loc) {
-            found = true
-            break
-          }
-        }
-        Bool(found)
-      }
     "equals" => Bool(self.equal(x, values[1], loc))
     "objectRemoveKey" => {
       guard x is ObjectValue(id, top) else {
