@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "110e4036041ebb2956767bd04d02659bb8c9a8d7",
-  "uncommitted_test_paths": "spec_json_contracts_test.mbt\nstd_manifest_test.mbt",
+  "input_source_commit": "5d95a8539bb43637356edb3cee87bde64fa0e0ca",
+  "uncommitted_test_paths": "spec_merge_patch_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -111,6 +111,7 @@
     "spec_make_array_test.mbt": "2528ec26e9449cd6bc1a9acb2819258c79dca4d24d1916b3a263008a0c867554",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7",
     "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "spec_merge_patch_test.mbt": "52953d3c31c78e8451c8fbce03c8be345bccecb770b24a7d7e9340ae948ccb90",
     "spec_negation_test.mbt": "92edd8ad7eaac31c60676c8c7f3882f440c78391edd58a16d47ee0942465e3ac",
     "spec_number_tokens_test.mbt": "f2b0623824df00431f167bacc8cf04290ab91158827eb79c4d27c632693d576c",
     "spec_object_calls_test.mbt": "ccfa3809c50d5914725dbf7807fcfe6fea401cef806e3a3099e7398eb6767ed3",
@@ -160,7 +161,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "2ec704f15dd1ebdd28d7e3891db914c5bb05a6f40c818605b1ce040ed0ab6b5c",
+  "coverage_sha256": "07dd47d337a86f1622eb12c639dded1b6124990740fba60b776008ff3390f9bb",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -3160,13 +3161,63 @@
         "source": "std.mergePatch(target, patch)",
         "source_line": "1531"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "mergePatch",
+        "signature_review": {
+          "parameters": [
+            "target",
+            "patch"
+          ],
+          "defaults": {},
+          "test": "spec_merge_patch_test.mbt",
+          "status": "Fixed official names and RFC JSON domain; positional/named calls and missing/unknown binding refusal. Jsonnet demand and host diagnostic tags are separately scoped in the report."
+        },
+        "reference_candidates": [
+          {
+            "file": "sets_test.mbt",
+            "line": 2,
+            "test_declaration": "test \"source standard library sets and merge patch\" {",
+            "classification": "manually inspected preexisting source assertions: recursive deletion/replacement, nonobject target and visible-key projection; historical comparison is not the normative oracle or a current run"
+          },
+          {
+            "file": "spec_merge_patch_test.mbt",
+            "line": 21,
+            "test_declaration": "test \"mergePatch JSON data deletes recurses and replaces with literal results\" {",
+            "classification": "independent literal JSON/source and separately built typed AST assertions, MP1-MP4 public report groups; no new canonical language IDs"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_merge_patch_test.mbt",
+            "expectation": "MP1: fixed RFC 7396 JSON-data deletion, absent null removal, recursive object normalization, retained null and whole scalar/array replacement. Independent literal expected values and positional/named calls; existing sets source assertions are mapped in the report."
+          },
+          "E": {
+            "test": "spec_merge_patch_test.mbt",
+            "expectation": "MP4: isolated required target/patch heads, visible patch-member heads and selected retained/array payloads propagate errors. Fixed-source recursive tailstrict needs the present old member head. Undefined unused operands remain Static; missing/unknown bindings reject before provided native gates. No race order or Function JSON-domain conclusion."
+          },
+          "L": {
+            "test": "spec_merge_patch_test.mbt",
+            "expectation": "MP3/MP4: top-level nonobject replacement skips target; target normalization/key inspection/deletion/retention and visible projection skip unrelated payloads. Container-valued patch heads do not traverse elements. Failed whole calls stay unused through shared failure controls; nested recursive tailstrict is kept distinct."
+          },
+          "B": {
+            "test": "spec_merge_patch_test.mbt",
+            "expectation": "MP1-MP3: empty objects, null/scalar/nonobject targets, array units, nested deletion, Unicode names, hidden projection and original target/patch aliases before/after explicitly required reads. RFC data semantics do not impose text ordering or in-place mutation."
+          }
+        },
+        "remaining": "Bounded RFC JSON and fixed-source demand witnesses, not whole-function acceptance. All Function/domain, duplicate-key, malformed Unicode, general number/rounding, resource/diagnostic, every signature and self/super/assertion/hidden-inheritance combination remain unproved. No error race order, reference implementation exemption, language matrix decision or shift exclusion is changed."
+      },
       "test_reference_candidates": [
         {
           "file": "sets_test.mbt",
           "line": 16,
           "test_declaration": "test \"source standard library sets and merge patch\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_merge_patch_test.mbt",
+          "line": 21,
+          "test_declaration": "test \"mergePatch JSON data deletes recurses and replaces with literal results\" {",
+          "classification": "independent literal JSON/source and separately built typed AST assertions, MP1-MP4 public report groups; no new canonical language IDs"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"

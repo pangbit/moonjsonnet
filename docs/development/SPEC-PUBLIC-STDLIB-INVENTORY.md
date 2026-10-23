@@ -100,7 +100,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `maxArray` | D: `std.maxArray(arr, keyF, onEmpty)` | S: `std.maxArray(arr, keyF=id, onEmpty=error 'Expected at least one element in array. Got none')` | U/U/U/U | [extrema_test.mbt:5](../../extrema_test.mbt#L5); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [standard_native_diagnostics_test.mbt:13](../../standard_native_diagnostics_test.mbt#L13) |
 | `md5` | D: `std.md5(s)` | Native/not defined in std.jsonnet | U/U/U/U | [digest_test.mbt:38](../../digest_test.mbt#L38) |
 | `member` | D: `std.member(arr, x)` | S: `std.member(arr, x)` | U/U/U/U | [extrema_test.mbt:50](../../extrema_test.mbt#L50) |
-| `mergePatch` | D: `std.mergePatch(target, patch)` | S: `std.mergePatch(target, patch)` | U/U/U/U | [sets_test.mbt:16](../../sets_test.mbt#L16) |
+| `mergePatch` | D: `std.mergePatch(target, patch)` | S: `std.mergePatch(target, patch)` | R/R/R/R | [sets_test.mbt:16](../../sets_test.mbt#L16); [spec_merge_patch_test.mbt:21](../../spec_merge_patch_test.mbt#L21) |
 | `min` | I: `std.min(a, b)` | S: `std.min(a, b)` | R/R/R/R | [array_std_test.mbt:29](../../array_std_test.mbt#L29); [spec_foundation_calls_test.mbt:5](../../spec_foundation_calls_test.mbt#L5); [spec_foundation_numbers_test.mbt:25](../../spec_foundation_numbers_test.mbt#L25) |
 | `minArray` | D: `std.minArray(arr, keyF, onEmpty)` | S: `std.minArray(arr, keyF=id, onEmpty=error 'Expected at least one element in array. Got none')` | U/U/U/U | [extrema_test.mbt:5](../../extrema_test.mbt#L5); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23) |
 | `mod` | I: `std.mod(a, b)` | S: `std.mod(a, b)` | U/U/U/U | [std_math_test.mbt:6](../../std_math_test.mbt#L6) |
