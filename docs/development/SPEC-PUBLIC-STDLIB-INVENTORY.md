@@ -147,9 +147,9 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `sin` | I: `std.sin(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |
 | `slice` | D: `std.slice(indexable, index, end, step)` | S: `std.slice(indexable, index, end, step)` | R/R/R/R | [numeric_test.mbt:26](../../numeric_test.mbt#L26); [spec_array_slice_test.mbt:5](../../spec_array_slice_test.mbt#L5); [spec_index_test.mbt:32](../../spec_index_test.mbt#L32) |
 | `sort` | D: `std.sort(arr, keyF=id)` | S: `std.sort(arr, keyF=id)` | U/U/U/U | [arguments_test.mbt:7](../../arguments_test.mbt#L7); [sort_test.mbt:4](../../sort_test.mbt#L4); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23) |
-| `split` | D: `std.split(str, c)` | S: `std.split(str, c)` | U/U/U/U | [standard_native_diagnostics_test.mbt:36](../../standard_native_diagnostics_test.mbt#L36) |
-| `splitLimit` | D: `std.splitLimit(str, c, maxsplits)` | S: `std.splitLimit(str, c, maxsplits)` | U/U/U/U | [std_string_test.mbt:18](../../std_string_test.mbt#L18) |
-| `splitLimitR` | D: `std.splitLimitR(str, c, maxsplits)` | S: `std.splitLimitR(str, c, maxsplits)` | U/U/U/U | [std_string_test.mbt:18](../../std_string_test.mbt#L18) |
+| `split` | D: `std.split(str, c)` | S: `std.split(str, c)` | R/R/R/R | [standard_native_diagnostics_test.mbt:36](../../standard_native_diagnostics_test.mbt#L36); [spec_split_limits_test.mbt:23](../../spec_split_limits_test.mbt#L23) |
+| `splitLimit` | D: `std.splitLimit(str, c, maxsplits)` | S: `std.splitLimit(str, c, maxsplits)` | R/R/R/R | [std_string_test.mbt:18](../../std_string_test.mbt#L18); [spec_split_limits_test.mbt:23](../../spec_split_limits_test.mbt#L23) |
+| `splitLimitR` | D: `std.splitLimitR(str, c, maxsplits)` | S: `std.splitLimitR(str, c, maxsplits)` | R/R/R/R | [std_string_test.mbt:18](../../std_string_test.mbt#L18); [spec_split_limits_test.mbt:23](../../spec_split_limits_test.mbt#L23) |
 | `sqrt` | I: `std.sqrt(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:6](../../std_math_test.mbt#L6) |
 | `startsWith` | D: `std.startsWith(a, b)` | S: `std.startsWith(a, b)` | R/R/R/R | [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_sequence_test.mbt:75](../../spec_string_sequence_test.mbt#L75) |
 | `strReplace` | D: `std.strReplace(str, from, to)` | S: `std.strReplace(str, from, to)` | U/U/U/U | No direct test reference found |

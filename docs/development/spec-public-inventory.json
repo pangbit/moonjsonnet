@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "8f91f79c66524b124812efe498235b574d3089e3",
-  "uncommitted_test_paths": "spec_strip_chars_test.mbt\nstd_string_test.mbt",
+  "input_source_commit": "0e7cb7890f972c0e1f9a1ff628e87eee4a7f6dd1",
+  "uncommitted_test_paths": "spec_split_limits_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -138,6 +138,7 @@
     "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
     "spec_root_scope_test.mbt": "6f43b1017c33c74f6207911312193df725bf06d59d09d7464546a0a16cb461d5",
     "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+    "spec_split_limits_test.mbt": "c4df06a99535f812bff99a9a4c4ab44147e733543a60d7d7f9cc3c318a59d7a7",
     "spec_static_literals_test.mbt": "280662a08529ece56b43d47692065f7bf289b878a77dc2f8b87953d793f2677e",
     "spec_static_pairs_test.mbt": "21825d976ea91ebf6cb79dde93aa864116bbceab96d2f46d3690095fd8660325",
     "spec_static_test.mbt": "2b56b8efa83348f0ab266b8f18d00d31cf2a5e0543920e7cfb1d2c0d66923491",
@@ -167,7 +168,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "b46338816e0b534d87550cf8b2d5aec0e359641c13e2b1d23d67900a93bc3837",
+  "coverage_sha256": "73b8b2af148cf2b1cfe65c466e2d3a195377290331a22f742ea9a16707aa67dd",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -5917,13 +5918,87 @@
         "source": "std.split(str, c)",
         "source_line": "114"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "split",
+        "signature_review": {
+          "parameters": [
+            "str",
+            "c"
+          ],
+          "defaults": {},
+          "test": "spec_split_limits_test.mbt",
+          "status": "Fixed documentation/source required names agree; positional/reordered named and scoped binding controls passed through source and independent handmade AST."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 23,
+            "test_declaration": "test \"split contracts preserve directional nonoverlapping data and named parameters\" {",
+            "classification": "manual SP1 split arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 185,
+            "test_declaration": "test \"split input guards reject before separator and limit gates\" {",
+            "classification": "manual SP6 split arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 218,
+            "test_declaration": "test \"split separator guards reject wrong or empty heads before limit gates\" {",
+            "classification": "manual SP7 split arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 293,
+            "test_declaration": "test \"split contracts require valid argument heads before observing the result array\" {",
+            "classification": "manual SP9 split arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 348,
+            "test_declaration": "test \"split contracts share required inputs and preserve originals across result reads\" {",
+            "classification": "manual SP10 split arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 412,
+            "test_declaration": "test \"split contracts reject invalid bindings before gates and retain static free-name errors\" {",
+            "classification": "manual SP11 split arm; independent expectations; executed source and handmade AST"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP1: literal nonoverlapping delimiter results, preserved empty pieces and positional/reordered named calls; unlimited left-to-right splitting."
+          },
+          "E": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP6/SP7/SP9/SP11: wrong or empty required heads, isolated required errors and binding errors reject; source wrapper guard failures retain source assertions."
+          },
+          "L": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP6/SP7: failed guards skip successful later gates and rejected payloads. SP9-SP11: argument head errors prevent Array observation; values shared across repeated reads/calls; unused calls lazy, free names Static."
+          },
+          "B": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP1/SP10: empty/no-match/adjacent pieces, Unicode/NUL/combining distinctions and unchanged original Strings. No synthetic count limit on split."
+          }
+        },
+        "remaining": "Executed bounded subset after preserved unchanged-product failures and a scoped correction; no whole-function acceptance. SPL-R0 unlimited-right overlap documentation/source conflict, fractional and other-negative limits, return-element/resource demand, full Unicode/binding combinations, competing errors, std rebinding, raw encoding and all earlier disputes remain open. No Go/C++ output is an oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "standard_native_diagnostics_test.mbt",
           "line": 36,
           "test_declaration": "test \"source standard formatting and YAML retain laziness and explicit budgets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_split_limits_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"split contracts preserve directional nonoverlapping data and named parameters\" {",
+          "classification": "manual SP1 split arm; independent expectations; executed source and handmade AST"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -5936,13 +6011,106 @@
         "source": "std.splitLimit(str, c, maxsplits)",
         "source_line": "120"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "splitLimit",
+        "signature_review": {
+          "parameters": [
+            "str",
+            "c",
+            "maxsplits"
+          ],
+          "defaults": {},
+          "test": "spec_split_limits_test.mbt",
+          "status": "Fixed documentation/source required names agree; positional/reordered named and scoped binding controls passed through source and independent handmade AST."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 23,
+            "test_declaration": "test \"split contracts preserve directional nonoverlapping data and named parameters\" {",
+            "classification": "manual SP1 splitLimit arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 132,
+            "test_declaration": "test \"source splitLimit accepts finite integral limits beyond Int32\" {",
+            "classification": "manual SP2 splitLimit arm; independent expectations; executed source path"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 137,
+            "test_declaration": "test \"handmade splitLimit accepts finite integral limits beyond Int32\" {",
+            "classification": "manual SP3 splitLimit arm; independent expectations; executed independent handmade AST path"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 185,
+            "test_declaration": "test \"split input guards reject before separator and limit gates\" {",
+            "classification": "manual SP6 splitLimit arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 218,
+            "test_declaration": "test \"split separator guards reject wrong or empty heads before limit gates\" {",
+            "classification": "manual SP7 splitLimit arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 264,
+            "test_declaration": "test \"split limits reject nonnumber heads without forcing their payloads\" {",
+            "classification": "manual SP8 splitLimit arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 293,
+            "test_declaration": "test \"split contracts require valid argument heads before observing the result array\" {",
+            "classification": "manual SP9 splitLimit arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 348,
+            "test_declaration": "test \"split contracts share required inputs and preserve originals across result reads\" {",
+            "classification": "manual SP10 splitLimit arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 412,
+            "test_declaration": "test \"split contracts reject invalid bindings before gates and retain static free-name errors\" {",
+            "classification": "manual SP11 splitLimit arm; independent expectations; executed source and handmade AST"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP1: literal nonoverlapping delimiter results, preserved empty pieces and positional/reordered named calls; positive integral directional limits and unambiguous -1 cases."
+          },
+          "E": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP6/SP7/SP9/SP11: wrong or empty required heads, isolated required errors and binding errors reject; SP8: nonnumber maximum rejected without payload demand."
+          },
+          "L": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP6/SP7: failed guards skip successful later gates and rejected payloads. SP9-SP11: argument head errors prevent Array observation; values shared across repeated reads/calls; unused calls lazy, free names Static."
+          },
+          "B": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP1/SP10: empty/no-match/adjacent pieces, Unicode/NUL/combining distinctions and unchanged original Strings. SP2/SP3: finite integral maxima 2^31, 2^53 and 1e308 over short inputs without Int32 narrowing."
+          }
+        },
+        "remaining": "Executed bounded subset after preserved unchanged-product failures and a scoped correction; no whole-function acceptance. SPL-R0 unlimited-right overlap documentation/source conflict, fractional and other-negative limits, return-element/resource demand, full Unicode/binding combinations, competing errors, std rebinding, raw encoding and all earlier disputes remain open. No Go/C++ output is an oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "std_string_test.mbt",
           "line": 18,
           "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_split_limits_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"split contracts preserve directional nonoverlapping data and named parameters\" {",
+          "classification": "manual SP1 splitLimit arm; independent expectations; executed source and handmade AST"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -5955,13 +6123,106 @@
         "source": "std.splitLimitR(str, c, maxsplits)",
         "source_line": "137"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "splitLimitR",
+        "signature_review": {
+          "parameters": [
+            "str",
+            "c",
+            "maxsplits"
+          ],
+          "defaults": {},
+          "test": "spec_split_limits_test.mbt",
+          "status": "Fixed documentation/source required names agree; positional/reordered named and scoped binding controls passed through source and independent handmade AST."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 23,
+            "test_declaration": "test \"split contracts preserve directional nonoverlapping data and named parameters\" {",
+            "classification": "manual SP1 splitLimitR arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 142,
+            "test_declaration": "test \"source splitLimitR accepts finite integral limits beyond Int32\" {",
+            "classification": "manual SP4 splitLimitR arm; independent expectations; executed source path"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 147,
+            "test_declaration": "test \"handmade splitLimitR accepts finite integral limits beyond Int32\" {",
+            "classification": "manual SP5 splitLimitR arm; independent expectations; executed independent handmade AST path"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 185,
+            "test_declaration": "test \"split input guards reject before separator and limit gates\" {",
+            "classification": "manual SP6 splitLimitR arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 218,
+            "test_declaration": "test \"split separator guards reject wrong or empty heads before limit gates\" {",
+            "classification": "manual SP7 splitLimitR arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 264,
+            "test_declaration": "test \"split limits reject nonnumber heads without forcing their payloads\" {",
+            "classification": "manual SP8 splitLimitR arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 293,
+            "test_declaration": "test \"split contracts require valid argument heads before observing the result array\" {",
+            "classification": "manual SP9 splitLimitR arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 348,
+            "test_declaration": "test \"split contracts share required inputs and preserve originals across result reads\" {",
+            "classification": "manual SP10 splitLimitR arm; independent expectations; executed source and handmade AST"
+          },
+          {
+            "file": "spec_split_limits_test.mbt",
+            "line": 412,
+            "test_declaration": "test \"split contracts reject invalid bindings before gates and retain static free-name errors\" {",
+            "classification": "manual SP11 splitLimitR arm; independent expectations; executed source and handmade AST"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP1: literal nonoverlapping delimiter results, preserved empty pieces and positional/reordered named calls; positive integral directional limits and unambiguous -1 cases."
+          },
+          "E": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP6/SP7/SP9/SP11: wrong or empty required heads, isolated required errors and binding errors reject; SP8: nonnumber maximum rejected without payload demand."
+          },
+          "L": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP6/SP7: failed guards skip successful later gates and rejected payloads. SP9-SP11: argument head errors prevent Array observation; values shared across repeated reads/calls; unused calls lazy, free names Static."
+          },
+          "B": {
+            "test": "spec_split_limits_test.mbt",
+            "expectation": "SP1/SP10: empty/no-match/adjacent pieces, Unicode/NUL/combining distinctions and unchanged original Strings. SP4/SP5: finite integral maxima 2^31, 2^53 and 1e308 over short inputs without Int32 narrowing."
+          }
+        },
+        "remaining": "Executed bounded subset after preserved unchanged-product failures and a scoped correction; no whole-function acceptance. SPL-R0 unlimited-right overlap documentation/source conflict, fractional and other-negative limits, return-element/resource demand, full Unicode/binding combinations, competing errors, std rebinding, raw encoding and all earlier disputes remain open. No Go/C++ output is an oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "std_string_test.mbt",
           "line": 18,
           "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_split_limits_test.mbt",
+          "line": 23,
+          "test_declaration": "test \"split contracts preserve directional nonoverlapping data and named parameters\" {",
+          "classification": "manual SP1 splitLimitR arm; independent expectations; executed source and handmade AST"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"

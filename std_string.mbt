@@ -107,20 +107,10 @@ fn Vm::split_limit(
   self : Vm,
   s : String,
   separator : String,
-  maximum : Int,
+  maximum_thunk : Int,
   reverse : Bool,
   loc : Location,
 ) -> Value raise {
-  if maximum < -1 {
-    raise problem(
-      Runtime,
-      loc,
-      "std." +
-      (if reverse { "splitLimitR" } else { "splitLimit" }) +
-      " third parameter should be -1 or non-negative, got " +
-      maximum.to_string(),
-    )
-  }
   if separator.is_empty() {
     raise problem(
       Runtime,
@@ -130,9 +120,29 @@ fn Vm::split_limit(
       " second parameter should have length 1 or greater, got 0",
     )
   }
+  let maximum = number_value(self.force(maximum_thunk, loc), loc)
+  // Retain the existing rejection policy for unadjudicated fractional and
+  // negative limits, without narrowing valid nonnegative Number bounds.
+  if maximum != maximum.floor() || maximum < -2147483648.0 {
+    raise problem(
+      Runtime,
+      loc,
+      "Expected an integer, but got " + diagnostic_number(maximum),
+    )
+  }
+  if maximum < -1.0 {
+    raise problem(
+      Runtime,
+      loc,
+      "std." +
+      (if reverse { "splitLimitR" } else { "splitLimit" }) +
+      " third parameter should be -1 or non-negative, got " +
+      diagnostic_number(maximum),
+    )
+  }
   let parts : Array[Int] = []
   let mut rest = s[:]
-  while maximum == -1 || parts.length() < maximum {
+  while maximum == -1.0 || parts.length().to_double() < maximum {
     self.tick(loc)
     let found = if reverse {
       rest.rev_find(separator)

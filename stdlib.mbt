@@ -219,6 +219,17 @@ fn Vm::builtin(
       loc,
     )
   }
+  if name == "splitLimit" || name == "splitLimitR" {
+    let input = text_value(self.force(ids["str"], loc), loc)
+    let separator = text_value(self.force(ids["c"], loc), loc)
+    return self.split_limit(
+      input,
+      separator,
+      ids["maxsplits"],
+      name == "splitLimitR",
+      loc,
+    )
+  }
   let values = if name == "join" {
     // The fixed source rejects arr before inspecting the separator.
     let arr = self.force(ids["arr"], loc)
@@ -284,14 +295,6 @@ fn Vm::builtin(
     "trim" => Str(trim_space(text_value(x, loc)))
     "equalsIgnoreCase" =>
       Bool(equal_fold(text_value(x, loc), text_value(values[1], loc)))
-    "splitLimit" | "splitLimitR" =>
-      self.split_limit(
-        text_value(x, loc),
-        text_value(values[1], loc),
-        integer(values[2], loc),
-        name == "splitLimitR",
-        loc,
-      )
     "sqrt"
     | "hypot"
     | "sin"
