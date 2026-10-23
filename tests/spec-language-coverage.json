@@ -1693,6 +1693,68 @@
         "sequence_failure(value, kind, marker)"
       ],
       "checks": "Valid list sources independently match handwritten shapes even with a free missing name, then reject Static with the missing-name identity through both Program entries and unused wrappers. Separate fixed 42 controls keep error-valued array tails/defaults/supplied arguments/locals lazy. Actual demand propagates its isolated Runtime marker; a numeric callee is a separate demanded Type failure. These are bounded phase/demand controls, not whole function binding/default/evaluation or host diagnostic conformance."
+    },
+    "AD1": {
+      "file": "spec_additive_fields_test.mbt",
+      "test": "additive separator visibility and hidden prefix presence defer payload demand",
+      "test_id": "spec_additive_fields_test.mbt::additive separator visibility and hidden prefix presence defer payload demand",
+      "assertions": [
+        "(2, 1, false)",
+        "for spelling in [\"k\", \"\\\"k\\\"\", \"[\\\"k\\\"]\"]",
+        "for expanded in [false, true]",
+        "for mode in [\"unused\", \"names\", \"read\"]",
+        "_ => [13, 13]",
+        "counts.get(\"L\").unwrap_or(0)",
+        "counts.get(\"R\").unwrap_or(0)",
+        "assert_eq(counts.length(), if mode == \"read\" { 2 } else { 0 })"
+      ],
+      "checks": "Source and independent additive ASTs plus separately constructed ordinary If/in/super-index references cover the literal nine-separator visibility law with identifier/quoted/computed names. Hidden parent presence still contributes 10+3=13. Metadata and unused paths do not force either payload; repeated reads yield [13,13]. Fresh native gates record L/R once on successful reads and zero otherwise as bounded host demand/cache controls, not universal callback ordering, computed-key counts or a complete formal desugaring proof."
+    },
+    "AD2": {
+      "file": "spec_additive_fields_test.mbt",
+      "test": "additive defining prefixes retain final self across overrides and detached reads",
+      "test_id": "spec_additive_fields_test.mbt::additive defining prefixes retain final self across overrides and detached reads",
+      "assertions": [
+        "call(sequence_var(\"from_c\"))",
+        "call(access(sequence_var(\"holder\"), \"g\"))",
+        "sequence_value(value, [14, 119, 999, 16, 18, 16, 18, 16, 18, 1])",
+        "for empty_left in [false, true]",
+        "additive_k(\"k\", 1, reflect_bool(false), expanded)",
+        "[false, 99, false]"
+      ],
+      "checks": "Literal multilayer outcomes [14,119,999,16,18,16,18,16,18,1] separate each additive field defining prefix from final self through overrides, extracted functions and rehosting. Standalone and empty-left no-prefix Boolean fields remain false when a later layer supplies k=99, yielding [false,99,false]. Both original/reference forms and independent entries are checked; no whole inheritance/closure/substitution completion is inferred."
+    },
+    "AD3": {
+      "file": "spec_additive_fields_test.mbt",
+      "test": "nested additive names capture outer self and the outer defining super prefix",
+      "test_id": "spec_additive_fields_test.mbt::nested additive names capture outer self and the outer defining super prefix",
+      "assertions": [
+        "\"[self.key]\"",
+        "\"[super.key]\"",
+        "(\"captured_self_key\", outer_self_key)",
+        "(\"captured_super_key\", outer_super_key)",
+        "[14, 23, 30, \"inner-child\"]",
+        "[14, 20, 33, \"inner-child\"]",
+        "[\"key\", \"x\", \"y\", \"z\"]",
+        "[10, 20, 30]"
+      ],
+      "checks": "Nested computed self.key/super.key names retain outer final receiver and outer defining prefix despite an inner key field with different values. Independently written reference local key aliases model the fixed outer-key substitution. Source/handmade originals and references match literal middle/derived tuples, exact visible key set and unchanged original values. Public AST is semantic syntax, not Core export; DF0 still blocks literal full field-lowering composition."
+    },
+    "AD4": {
+      "file": "spec_additive_fields_test.mbt",
+      "test": "additive field errors null omission and missing parent function bodies keep demand boundaries",
+      "test_id": "spec_additive_fields_test.mbt::additive field errors null omission and missing parent function bodies keep demand boundaries",
+      "assertions": [
+        "Some(\"additive-left\")",
+        "Some(\"additive-right\")",
+        "sequence_value(sequence_call(\"objectFieldsAll\", [object]), [\"k\"])",
+        "sequence_failure(additive_select(object, \"k\"), kind, marker)",
+        "sequence_value(omitted, Json::object(Map([])))",
+        "Some(\"additive-key\")",
+        "Some(\"absent-function-body\")",
+        "pair_reject(object)"
+      ],
+      "checks": "All forms keep isolated parent/rhs/invalid-plus errors dormant through name queries and unused reads, then reject only on actual field demand. A key error is instead required by object creation; null keys omit error rhs. A no-parent Function rhs remains a lazy function head until invocation. Missing key/value names reject source and handmade admission in direct/unused/skipped contexts via the existing static helper. No competing-failure priority, assertion/reentry or complete child-domain claim is made."
     }
   },
   "rules": {
@@ -3887,7 +3949,7 @@
       }
     },
     {"id": "DESUGAR-SLICE", "section": "desugaring", "obligation": "Missing bounds and slice lowering to fixed stdlib source", "normal": ["SLICE"], "runtime_error": ["SLICE"], "lazy": ["SLICE"], "remaining": "Full negative/null/step/domain matrix and retained cardinality ambiguity.", "implementation": ["eval.mbt", "slice.mbt"]},
-    {"id": "DESUGAR-FIELDS", "section": "desugaring", "obligation": "Dot lookup, object extension, additive fields and methods", "normal": ["F6", "O2"], "remaining": "All additive forms and nested inheritance source transformations.", "implementation": ["parser.mbt", "objects.mbt"]},
+    {"id": "DESUGAR-FIELDS", "section": "desugaring", "obligation": "Dot lookup, object extension, additive fields and methods", "normal": ["F6", "O2", "AD1", "AD2", "AD3", "AD4", "EX0VIS", "SP1", "SP2"], "remaining": "The [additive-field record](SPEC-ADDITIVE-FIELDS-2026-10-23.md) reviews explicit guide-equivalent If/in/super-index witnesses for name forms, separator visibility, defining prefixes/final self, absent parents, outer-key capture and demand boundaries. DF0 records that the printed ordinary computed-field rule uses key e where its value input is e-prime, so literal whole-field composition is not proved or silently repaired. Full method/object-local/binder/name/substitution/plus-child domains and complete nested inheritance lowering remain open; existing N0/R0 and other unknowns are unchanged. Native successful-read counts are finite host controls, not a callback-order/computed-key-count theorem. DESUGAR-FIELDS remains partial with no whole formal Core or language completion claim.", "implementation": ["parser.mbt", "ast_convert.mbt", "eval.mbt", "objects.mbt", "operators.mbt", "validate.mbt"], "static_error": ["AD4", "PI2"], "runtime_error": ["AD4"], "lazy": ["AD1", "AD2", "AD4", "EX1", "SP3", "CK2"], "boundary": ["AD1", "AD2", "AD3", "AD4", "SP1", "SP2", "EX0VIS", "OR3", "PI2", "CK2"]},
     {"id": "DESUGAR-OPERATORS", "section": "desugaring", "obligation": "Percent, equality, in, unary plus and std binding", "remaining": "The [fixed operator record](SPEC-OPERATOR-REWRITES-2026-10-23.md) supplies independent finite witnesses for !=/==/%/in and in-super under private std binding, preserving lazy/error and lexical-prefix boundaries. Public ASTs retain semantic operators rather than exporting canonical Core; complete syntax-directed lowering and full child equality/mod/format/visibility/invocation domains are not proved. The in-super reference has a shared-prefix predicate inspection, not a public bare-super Call equivalence. Comparisons, logical operators and unary plus remain core constructors with scoped recursive-preservation evidence; full runtime domains, B0, the greater-than printed conflict, PE0/N0/R0 and all prior child-relative limits remain separate. Fresh native counts are bounded host controls, with no universal demand order or competing-error priority claim. The whole clause remains partial.", "implementation": ["parser.mbt", "ast_convert.mbt", "eval.mbt", "operators.mbt", "stdlib.mbt", "stdlib_layer.mbt", "objects.mbt", "imports.mbt"], "normal": ["OR1", "OR3", "PG1", "PG3", "EX1", "RS1", "BS1", "PREC1", "PREC2"], "static_error": ["PI1", "PI3", "BS3"], "runtime_error": ["OR2", "EX3"], "lazy": ["OR1", "OR2", "OR3", "BS1", "BS2", "PG3", "EX1"], "boundary": ["OR1", "OR2", "OR3", "PI3", "SP1", "PREC2", "NB1", "US1"]},
     {"id": "DESUGAR-COMPREHENSIONS", "section": "desugaring", "obligation": "Array/object comprehension domains, order, filters and shadowing", "normal": ["C1", "C6", "CK2"], "static_error": ["O1", "R2", "A2"], "runtime_error": ["C4", "C5", "C7", "CK1", "CK2"], "lazy": ["C2", "C3", "C4", "C5", "A3", "CK1", "CK2"], "boundary": ["C2", "A3", "A4", "CK1", "CK2"], "remaining": "The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) reviews dependent iterator tuples, mixed null names, dynamic conflicts and delayed value capture. Full comprehension lowering and mechanical non-array domain extensions remain unadjudicated; existing empty/filter/type controls retain their own scopes. No unrelated key-error ordering is standardized.", "implementation": ["eval.mbt"]},
     {"id": "STATIC-TRAVERSAL", "section": "static_checking", "obligation": "Check unused defaults, bodies, branches and argument expressions", "static_error": ["F5", "S1", "O1", "R2", "A1", "A2", "AP6", "IF1", "IF2", "ES1", "US1", "AO3", "BS3"], "remaining": "Other unreviewed chk-* rules and full enclosing/host shape boundaries remain open; completed constructor judgments do not complete all child rules.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
