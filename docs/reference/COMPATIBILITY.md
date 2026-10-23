@@ -192,7 +192,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `join(sep,arr)` | String/array separator with like-typed non-null entries; null is skipped but empty items count toward delimiters. Validates the outer array before demanding the separator; nested array payloads stay lazy. See the [scoped contract review](../development/SPEC-JOIN-2026-10-23.md) |
 | `split(str,c)` | Nonempty string delimiter; empty delimiter is `Runtime` |
 | `splitLimit(str,c,maxsplits)`, `splitLimitR(str,c,maxsplits)` | Split from left/right with nonempty delimiter; -1 means unlimited, otherwise nonnegative signed 32-bit integer limit |
-| `lstripChars(str,chars)`, `rstripChars(str,chars)`, `stripChars(str,chars)` | Eager arguments, Unicode character membership in a string or array; array membership short-circuits; empty input does not inspect the character set |
+| `lstripChars(str,chars)`, `rstripChars(str,chars)`, `stripChars(str,chars)` | Validates String input before demanding chars; empty input leaves chars lazy. Uses Unicode String-set membership or source-defined Array membership, inspecting every Array member even after a match while sharing element values. Supersedes the historical eager/short-circuit behavior; see the [scoped review](../development/SPEC-STRIP-CHARS-2026-10-23.md) |
 | `trim(str)` | Unicode 15 White_Space trimming; zero-width space and BOM are retained |
 | `isEmpty(str)` | String-only emptiness predicate |
 | `equalsIgnoreCase(str1,str2)` | Unicode 15 simple case folding from pinned Go data, including Kelvin sign, sigma variants and supplementary letters; does not expand ß to ss or apply locale rules |

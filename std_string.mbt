@@ -49,7 +49,7 @@ fn equal_fold(a : String, b : String) -> Bool {
 fn Vm::strip_characters(
   self : Vm,
   value : Value,
-  chars : Value,
+  chars_thunk : Int,
   name : String,
   loc : Location,
 ) -> Value raise {
@@ -60,18 +60,24 @@ fn Vm::strip_characters(
       "Unexpected type " + value_type(value) + ", expected string",
     )
   }
+  if s.is_empty() {
+    return Str(s)
+  }
+  let chars = self.force(chars_thunk, loc)
   let points = s.to_array()
   let includes = fn(c : Char) raise {
     self.tick(loc)
     match chars {
       Str(chars) => chars.contains_char(c)
       ArrayValue(items) => {
+        // Fixed member counts all matches; an early match cannot skip errors.
+        let mut found = false
         for item in items {
           if self.equal(self.force(item, loc), Str(c.to_string()), loc) {
-            return true
+            found = true
           }
         }
-        false
+        found
       }
       _ =>
         raise problem(

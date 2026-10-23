@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "f6fce6dbeb79a7a6bbdfc118ed86906853b35491",
-  "uncommitted_test_paths": "spec_composed_strings_test.mbt",
+  "input_source_commit": "8f91f79c66524b124812efe498235b574d3089e3",
+  "uncommitted_test_paths": "spec_strip_chars_test.mbt\nstd_string_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -146,6 +146,7 @@
     "spec_string_scalar_test.mbt": "422d8276072c90119c1840fb53f3586ef2458eb54476118e2129e7db106d7cf3",
     "spec_string_sequence_test.mbt": "d48c9b7bff19d5859281d46d80eac467be009fe4c81028ee7475a8ba8523e2c7",
     "spec_string_substr_test.mbt": "793ebb182eb3a8b7283cb475c4e705034035d151048648d248968588b1cf0b71",
+    "spec_strip_chars_test.mbt": "8b0571d5cfac33281dd2053b081f64ff4a76af9c4bb2aa14514be14c2884807b",
     "spec_super_prefix_test.mbt": "cd91fcc5d2c41b3a08a0ef669c36c255231b0d608ddf88085b6a4b9a6c95ef5e",
     "spec_text_block_test.mbt": "6172f19cc234f3dd909ee9ab1ab46000d4beaece199c366e37d59b6b1966c3a6",
     "spec_text_chomp_test.mbt": "72d6b50c1c56686e26978f01eba5ac54c59d1a0fe9643199797090660d70a1fa",
@@ -159,14 +160,14 @@
     "std_encoding_test.mbt": "671ee68b1e5657c821ac581967fa57507822c8f1fefd2a4256821f8145458886",
     "std_manifest_test.mbt": "5839dce0b2e12d84bb785151e907d59791059fcb0eb2c9d1c71e93bdfdc1e59f",
     "std_math_test.mbt": "91c779e2736c616f258aa1563537c05d1cd86ec9a21bdbca68456bd29a44b9cc",
-    "std_string_test.mbt": "8ca87b15de5659c03674f69f7052b35fe8ea5e426076c9322b058d180f1c1601",
+    "std_string_test.mbt": "3982634b3279fb364e48133d43eb6e684afa9af8f04acd428db1dc5306273805",
     "stdlib_contract_test.mbt": "e5c5e0b6cca5e562b83ad2dd2fc6ebc38846d9326332d95e46d37d4f01dc7ec4",
     "string_literal_test.mbt": "9b20b698e56ad17e2688d7bb88663587cdb9f1f09d2dddf787f9ebf24bb51e6f",
     "syntax_diagnostic_test.mbt": "32d3f2b3b7846d58000f605abd3dd145eab700ecc38a9a58ce756c8eeec3a846",
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "190342e800f5caafe40e03558cef23e681a94e5087dece55910c848610059870",
+  "coverage_sha256": "b46338816e0b534d87550cf8b2d5aec0e359641c13e2b1d23d67900a93bc3837",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -2700,13 +2701,111 @@
         "source": "std.lstripChars(str, chars)",
         "source_line": "59"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "lstripChars",
+        "signature_review": {
+          "parameters": [
+            "str",
+            "chars"
+          ],
+          "defaults": {},
+          "test": "spec_strip_chars_test.mbt",
+          "status": "Fixed documentation/source names agree; positional/reordered named calls and missing/extra/unknown/overlap binding checks passed in the scoped source/handmade fixture."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 5,
+            "test_declaration": "test \"strip functions remove directional character sets without altering interior Unicode data\" {",
+            "classification": "manual SC1 lstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 69,
+            "test_declaration": "test \"lstripChars returns an empty string without demanding characters\" {",
+            "classification": "manual SC2 lstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 84,
+            "test_declaration": "test \"strip empty results share the input head and never run a successful character gate\" {",
+            "classification": "manual SC5 lstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 126,
+            "test_declaration": "test \"strip functions propagate required string and character errors before result inspection\" {",
+            "classification": "manual SC6 lstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 165,
+            "test_declaration": "test \"strip functions reject invalid needed character heads without reading their payloads\" {",
+            "classification": "manual SC7 lstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 208,
+            "test_declaration": "test \"strip functions reject length-invalid input heads before the character gate\" {",
+            "classification": "manual SC8 lstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 241,
+            "test_declaration": "test \"strip functions preserve original strings and share required inputs across repeated reads\" {",
+            "classification": "manual SC9 lstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 322,
+            "test_declaration": "test \"strip functions reject invalid bindings before argument gates and retain static checks\" {",
+            "classification": "manual SC10 lstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 369,
+            "test_declaration": "test \"strip functions inspect all array character members and share their required values\" {",
+            "classification": "manual SC11 lstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 430,
+            "test_declaration": "test \"strip functions propagate later array character errors despite an earlier match\" {",
+            "classification": "manual SC12 lstripChars arm; executed source and independently handmade AST"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC1/SC11: literal directional String-set and source-defined String-member Array-set results; required str/chars with positional and reordered named calls."
+          },
+          "E": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC6/SC7/SC8/SC10/SC12: required String/chars and later Array-member errors; invalid needed heads; length-invalid primitive input; invalid bindings reject."
+          },
+          "L": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC2-SC5/SC7-SC12: empty input skips chars; failed primitive length skips chars; rejected payloads remain lazy; all needed Array members are demanded; argument and member values shared; unused calls lazy, free names static."
+          },
+          "B": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC1/SC9/SC11: empty/no-match/all-match, repeated/unordered set members, interior preservation, Unicode/NUL/combining distinctions; originals and aliases unchanged; empty Array set."
+          }
+        },
+        "remaining": "Executed bounded subset after the unchanged-product failures and scoped correction; original evidence preserved. No whole-function acceptance. Non-String structural str values, mixed Array equality, competing errors, direction-specific callback order, Object assertions/inheritance, std/root rebinding, explicit tailstrict, full binding/resource/encoding cases and all earlier unresolved disputes remain open."
+      },
       "test_reference_candidates": [
         {
           "file": "std_string_test.mbt",
           "line": 10,
           "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_strip_chars_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"strip functions remove directional character sets without altering interior Unicode data\" {",
+          "classification": "manual SC1 lstripChars arm; executed source and independently handmade AST"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -5339,13 +5438,111 @@
         "source": "std.rstripChars(str, chars)",
         "source_line": "65"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "rstripChars",
+        "signature_review": {
+          "parameters": [
+            "str",
+            "chars"
+          ],
+          "defaults": {},
+          "test": "spec_strip_chars_test.mbt",
+          "status": "Fixed documentation/source names agree; positional/reordered named calls and missing/extra/unknown/overlap binding checks passed in the scoped source/handmade fixture."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 5,
+            "test_declaration": "test \"strip functions remove directional character sets without altering interior Unicode data\" {",
+            "classification": "manual SC1 rstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 74,
+            "test_declaration": "test \"rstripChars returns an empty string without demanding characters\" {",
+            "classification": "manual SC3 rstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 84,
+            "test_declaration": "test \"strip empty results share the input head and never run a successful character gate\" {",
+            "classification": "manual SC5 rstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 126,
+            "test_declaration": "test \"strip functions propagate required string and character errors before result inspection\" {",
+            "classification": "manual SC6 rstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 165,
+            "test_declaration": "test \"strip functions reject invalid needed character heads without reading their payloads\" {",
+            "classification": "manual SC7 rstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 208,
+            "test_declaration": "test \"strip functions reject length-invalid input heads before the character gate\" {",
+            "classification": "manual SC8 rstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 241,
+            "test_declaration": "test \"strip functions preserve original strings and share required inputs across repeated reads\" {",
+            "classification": "manual SC9 rstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 322,
+            "test_declaration": "test \"strip functions reject invalid bindings before argument gates and retain static checks\" {",
+            "classification": "manual SC10 rstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 369,
+            "test_declaration": "test \"strip functions inspect all array character members and share their required values\" {",
+            "classification": "manual SC11 rstripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 430,
+            "test_declaration": "test \"strip functions propagate later array character errors despite an earlier match\" {",
+            "classification": "manual SC12 rstripChars arm; executed source and independently handmade AST"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC1/SC11: literal directional String-set and source-defined String-member Array-set results; required str/chars with positional and reordered named calls."
+          },
+          "E": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC6/SC7/SC8/SC10/SC12: required String/chars and later Array-member errors; invalid needed heads; length-invalid primitive input; invalid bindings reject."
+          },
+          "L": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC2-SC5/SC7-SC12: empty input skips chars; failed primitive length skips chars; rejected payloads remain lazy; all needed Array members are demanded; argument and member values shared; unused calls lazy, free names static."
+          },
+          "B": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC1/SC9/SC11: empty/no-match/all-match, repeated/unordered set members, interior preservation, Unicode/NUL/combining distinctions; originals and aliases unchanged; empty Array set."
+          }
+        },
+        "remaining": "Executed bounded subset after the unchanged-product failures and scoped correction; original evidence preserved. No whole-function acceptance. Non-String structural str values, mixed Array equality, competing errors, direction-specific callback order, Object assertions/inheritance, std/root rebinding, explicit tailstrict, full binding/resource/encoding cases and all earlier unresolved disputes remain open."
+      },
       "test_reference_candidates": [
         {
           "file": "std_string_test.mbt",
           "line": 10,
           "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_strip_chars_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"strip functions remove directional character sets without altering interior Unicode data\" {",
+          "classification": "manual SC1 rstripChars arm; executed source and independently handmade AST"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -5927,13 +6124,111 @@
         "source": "std.stripChars(str, chars)",
         "source_line": "72"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "stripChars",
+        "signature_review": {
+          "parameters": [
+            "str",
+            "chars"
+          ],
+          "defaults": {},
+          "test": "spec_strip_chars_test.mbt",
+          "status": "Fixed documentation/source names agree; positional/reordered named calls and missing/extra/unknown/overlap binding checks passed in the scoped source/handmade fixture."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 5,
+            "test_declaration": "test \"strip functions remove directional character sets without altering interior Unicode data\" {",
+            "classification": "manual SC1 stripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 79,
+            "test_declaration": "test \"stripChars returns an empty string without demanding characters\" {",
+            "classification": "manual SC4 stripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 84,
+            "test_declaration": "test \"strip empty results share the input head and never run a successful character gate\" {",
+            "classification": "manual SC5 stripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 126,
+            "test_declaration": "test \"strip functions propagate required string and character errors before result inspection\" {",
+            "classification": "manual SC6 stripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 165,
+            "test_declaration": "test \"strip functions reject invalid needed character heads without reading their payloads\" {",
+            "classification": "manual SC7 stripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 208,
+            "test_declaration": "test \"strip functions reject length-invalid input heads before the character gate\" {",
+            "classification": "manual SC8 stripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 241,
+            "test_declaration": "test \"strip functions preserve original strings and share required inputs across repeated reads\" {",
+            "classification": "manual SC9 stripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 322,
+            "test_declaration": "test \"strip functions reject invalid bindings before argument gates and retain static checks\" {",
+            "classification": "manual SC10 stripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 369,
+            "test_declaration": "test \"strip functions inspect all array character members and share their required values\" {",
+            "classification": "manual SC11 stripChars arm; executed source and independently handmade AST"
+          },
+          {
+            "file": "spec_strip_chars_test.mbt",
+            "line": 430,
+            "test_declaration": "test \"strip functions propagate later array character errors despite an earlier match\" {",
+            "classification": "manual SC12 stripChars arm; executed source and independently handmade AST"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC1/SC11: literal directional String-set and source-defined String-member Array-set results; required str/chars with positional and reordered named calls."
+          },
+          "E": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC6/SC7/SC8/SC10/SC12: required String/chars and later Array-member errors; invalid needed heads; length-invalid primitive input; invalid bindings reject."
+          },
+          "L": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC2-SC5/SC7-SC12: empty input skips chars; failed primitive length skips chars; rejected payloads remain lazy; all needed Array members are demanded; argument and member values shared; unused calls lazy, free names static."
+          },
+          "B": {
+            "test": "spec_strip_chars_test.mbt",
+            "expectation": "SC1/SC9/SC11: empty/no-match/all-match, repeated/unordered set members, interior preservation, Unicode/NUL/combining distinctions; originals and aliases unchanged; empty Array set."
+          }
+        },
+        "remaining": "Executed bounded subset after the unchanged-product failures and scoped correction; original evidence preserved. No whole-function acceptance. Non-String structural str values, mixed Array equality, competing errors, direction-specific callback order, Object assertions/inheritance, std/root rebinding, explicit tailstrict, full binding/resource/encoding cases and all earlier unresolved disputes remain open."
+      },
       "test_reference_candidates": [
         {
           "file": "std_string_test.mbt",
           "line": 10,
           "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_strip_chars_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"strip functions remove directional character sets without altering interior Unicode data\" {",
+          "classification": "manual SC1 stripChars arm; executed source and independently handmade AST"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"

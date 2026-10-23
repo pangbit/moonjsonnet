@@ -210,6 +210,15 @@ fn Vm::builtin(
       ),
     )
   }
+  if name == "lstripChars" || name == "rstripChars" || name == "stripChars" {
+    // The fixed source checks str length before demanding the character set.
+    return self.strip_characters(
+      self.force(ids["str"], loc),
+      ids["chars"],
+      name,
+      loc,
+    )
+  }
   let values = if name == "join" {
     // The fixed source rejects arr before inspecting the separator.
     let arr = self.force(ids["arr"], loc)
@@ -269,8 +278,6 @@ fn Vm::builtin(
     | "base64DecodeBytes"
     | "encodeUTF8"
     | "decodeUTF8" => self.encoding_builtin(name, x, loc)
-    "lstripChars" | "rstripChars" | "stripChars" =>
-      self.strip_characters(x, values[1], name, loc)
     "id" => x
     "parseInt" => parse_decimal(text_value(x, loc), loc)
     "isEmpty" => Bool(text_value(x, loc).is_empty())

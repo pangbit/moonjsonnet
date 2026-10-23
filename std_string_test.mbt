@@ -68,7 +68,7 @@ test "string argument and numeric parsing boundaries" {
       "std.trim(null)",
       "std.equalsIgnoreCase('a',1)",
       "std.id(error 'eager')",
-      "std.stripChars('',error 'eager')",
+      "std.stripChars('a',error 'eager')",
       "std.stripChars([], 'a')",
       "std.stripChars('a', null)",
     ] {

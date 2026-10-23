@@ -79,7 +79,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `log` | I: `std.log(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |
 | `log10` | I: `std.log10(x)` | S: `std.log10(x)` | U/U/U/U | [std_math_test.mbt:14](../../std_math_test.mbt#L14) |
 | `log2` | I: `std.log2(x)` | S: `std.log2(x)` | U/U/U/U | [std_math_test.mbt:14](../../std_math_test.mbt#L14) |
-| `lstripChars` | D: `std.lstripChars(str, chars)` | S: `std.lstripChars(str, chars)` | U/U/U/U | [std_string_test.mbt:10](../../std_string_test.mbt#L10) |
+| `lstripChars` | D: `std.lstripChars(str, chars)` | S: `std.lstripChars(str, chars)` | R/R/R/R | [std_string_test.mbt:10](../../std_string_test.mbt#L10); [spec_strip_chars_test.mbt:5](../../spec_strip_chars_test.mbt#L5) |
 | `makeArray` | D: `std.makeArray(sz, func)` | Native/not defined in std.jsonnet | R/R/R/R | [aggregate_test.mbt:29](../../aggregate_test.mbt#L29); [array_std_test.mbt:59](../../array_std_test.mbt#L59); [error_value_test.mbt:80](../../error_value_test.mbt#L80) |
 | `manifestIni` | D: `std.manifestIni(ini)` | S: `std.manifestIni(ini)` | U/U/U/U | [std_manifest_test.mbt:33](../../std_manifest_test.mbt#L33) |
 | `manifestJson` | D: `std.manifestJson(value)` | S: `std.manifestJson(value)` | R/R/R/R | [moonjsonnet_test.mbt:152](../../moonjsonnet_test.mbt#L152); [native_test.mbt:102](../../native_test.mbt#L102); [render_test.mbt:19](../../render_test.mbt#L19) |
@@ -133,7 +133,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `resolvePath` | Not listed | S: `std.resolvePath(f, r)` | U/U/U/U | [std_string_test.mbt:38](../../std_string_test.mbt#L38) |
 | `reverse` | D: `std.reverse(arrs)` | S: `std.reverse(arr)` | U/U/U/U | [sequence_test.mbt:40](../../sequence_test.mbt#L40); [sort_test.mbt:72](../../sort_test.mbt#L72) |
 | `round` | I: `std.round(x)` | S: `std.round(x)` | U/U/U/U | [std_math_test.mbt:26](../../std_math_test.mbt#L26) |
-| `rstripChars` | D: `std.rstripChars(str, chars)` | S: `std.rstripChars(str, chars)` | U/U/U/U | [std_string_test.mbt:10](../../std_string_test.mbt#L10) |
+| `rstripChars` | D: `std.rstripChars(str, chars)` | S: `std.rstripChars(str, chars)` | R/R/R/R | [std_string_test.mbt:10](../../std_string_test.mbt#L10); [spec_strip_chars_test.mbt:5](../../spec_strip_chars_test.mbt#L5) |
 | `set` | D: `std.set(arr, keyF=id)` | S: `std.set(arr, keyF=id)` | U/U/U/U | [sets_test.mbt:7](../../sets_test.mbt#L7) |
 | `setDiff` | D: `std.setDiff(a, b, keyF=id)` | S: `std.setDiff(a, b, keyF=id)` | U/U/U/U | [sets_test.mbt:10](../../sets_test.mbt#L10) |
 | `setInter` | D: `std.setInter(a, b, keyF=id)` | S: `std.setInter(a, b, keyF=id)` | U/U/U/U | [sets_test.mbt:9](../../sets_test.mbt#L9) |
@@ -154,7 +154,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `startsWith` | D: `std.startsWith(a, b)` | S: `std.startsWith(a, b)` | R/R/R/R | [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_sequence_test.mbt:75](../../spec_string_sequence_test.mbt#L75) |
 | `strReplace` | D: `std.strReplace(str, from, to)` | S: `std.strReplace(str, from, to)` | U/U/U/U | No direct test reference found |
 | `stringChars` | D: `std.stringChars(str)` | S: `std.stringChars(str)` | R/R/R/R | [lint_type_test.mbt:114](../../lint_type_test.mbt#L114); [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_sequence_test.mbt:5](../../spec_string_sequence_test.mbt#L5) |
-| `stripChars` | D: `std.stripChars(str, chars)` | S: `std.stripChars(str, chars)` | U/U/U/U | [std_string_test.mbt:10](../../std_string_test.mbt#L10) |
+| `stripChars` | D: `std.stripChars(str, chars)` | S: `std.stripChars(str, chars)` | R/R/R/R | [std_string_test.mbt:10](../../std_string_test.mbt#L10); [spec_strip_chars_test.mbt:5](../../spec_strip_chars_test.mbt#L5) |
 | `substr` | D: `std.substr(str, from, len)` | S: `std.substr(str, from, len)` | R/R/R/R | [arguments_test.mbt:5](../../arguments_test.mbt#L5); [moonjsonnet_test.mbt:20](../../moonjsonnet_test.mbt#L20); [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21) |
 | `sum` | D: `std.sum(arr)` | S: `std.sum(arr)` | R/R/R/R | [aggregate_test.mbt:6](../../aggregate_test.mbt#L6); [output_test.mbt:11](../../output_test.mbt#L11); [spec_aggregate_test.mbt:9](../../spec_aggregate_test.mbt#L9) |
 | `tan` | I: `std.tan(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |
