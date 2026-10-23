@@ -2,22 +2,15 @@
 fn Vm::extreme_value(
   self : Vm,
   input : Value,
-  key : Value?,
-  on_empty : Value?,
+  key_thunk : Int?,
+  on_empty : Int?,
   maximum : Bool,
   loc : Location,
 ) -> Value raise {
   let items = array_value(input, loc)
-  if key is Some(f) && value_type(f) != "function" {
-    raise problem(
-      Type,
-      loc,
-      "Unexpected type " + value_type(f) + ", expected function",
-    )
-  }
   if items.is_empty() {
     return match on_empty {
-      Some(v) => v
+      Some(t) => self.force(t, loc)
       None =>
         raise problem(
           Runtime,
@@ -26,7 +19,15 @@ fn Vm::extreme_value(
         )
     }
   }
-  // Go forces each element and computes its key once, even when keyF ignores it.
+  let key = key_thunk.map(t => self.force(t, loc))
+  if key is Some(f) && value_type(f) != "function" {
+    raise problem(
+      Type,
+      loc,
+      "Unexpected type " + value_type(f) + ", expected function",
+    )
+  }
+  // Only the selected empty/nonempty branch demands its optional argument.
   let mut selected = self.force(items[0], loc)
   let mut selected_key = match key {
     None => selected
@@ -34,9 +35,9 @@ fn Vm::extreme_value(
   }
   for i in 1..<items.length() {
     self.tick(loc)
-    let current = self.force(items[i], loc)
+    // An explicit key can leave an unselected element's payload unevaluated.
     let current_key = match key {
-      None => current
+      None => self.force(items[i], loc)
       Some(f) => self.call(f, [(None, items[i])], loc)
     }
     if boolean(
@@ -52,7 +53,7 @@ fn Vm::extreme_value(
         ),
         loc,
       ) {
-      selected = current
+      selected = self.force(items[i], loc)
       selected_key = current_key
     }
   }

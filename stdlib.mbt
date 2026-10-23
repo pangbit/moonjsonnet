@@ -169,13 +169,17 @@ fn Vm::builtin(
       raise problem(Runtime, loc, "std.\{name}: missing arr argument")
     }
     let input = self.force(arr, loc)
-    let key = ids.get("keyF").map(t => self.force(t, loc))
     if name == "sort" {
+      let key = ids.get("keyF").map(t => self.force(t, loc))
       return self.sort_values(input, key, loc)
     }
-    // Go forces an explicitly supplied onEmpty even for nonempty arrays.
-    let on_empty = ids.get("onEmpty").map(t => self.force(t, loc))
-    return self.extreme_value(input, key, on_empty, name == "maxArray", loc)
+    return self.extreme_value(
+      input,
+      ids.get("keyF"),
+      ids.get("onEmpty"),
+      name == "maxArray",
+      loc,
+    )
   }
   if name == "foldl" || name == "foldr" {
     return self.fold_sequence(

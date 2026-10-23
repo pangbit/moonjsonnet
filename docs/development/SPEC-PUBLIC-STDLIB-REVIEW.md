@@ -37,7 +37,7 @@ that no test exists anywhere.
 N/E/L/B in the table are normal/error/lazy/boundary dimensions. R means only the
 specific assertions reviewed against the fixed contract in
 [manual case mappings](../../tests/spec-public-coverage.json). U means that
-dimension remains unreviewed/unmapped. Sixty-two functions currently have reviewed
+dimension remains unreviewed/unmapped. Sixty-four functions currently have reviewed
 subsets, including the ten independent [foundation reviews](SPEC-FOUNDATIONS-REVIEW.md)
 and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [object visibility/lookup functions](SPEC-OBJECT-CONTRACTS-REVIEW.md) and seven
@@ -52,7 +52,8 @@ and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [deepJoin/lines String composition subsets](SPEC-COMPOSED-STRINGS-2026-10-23.md) and
 [three character stripping subsets](SPEC-STRIP-CHARS-2026-10-23.md) and
 [three split-family subsets](SPEC-SPLIT-LIMITS-2026-10-23.md) and
-[two membership subsets](SPEC-MEMBERSHIP-2026-10-23.md);
+[two membership subsets](SPEC-MEMBERSHIP-2026-10-23.md) and
+[two Array extrema demand subsets](SPEC-EXTREMA-DEMAND-2026-10-23.md);
 even these functions have unresolved or uncovered contracts. No whole
 function is accepted as fully conforming by this inventory. Earlier executed
 test counts remain tied to their respective stage sources, not to a new claim
@@ -78,6 +79,16 @@ migrated individually against the fixed definitions and passed separately.
 The earlier prose count of 57 was stale: the committed split-stage map already
 contained 60 distinct records. This batch adds only member and contains, giving
 62 reviewed subsets; correcting that count does not grant any other coverage.
+
+The [Array extrema demand review](SPEC-EXTREMA-DEMAND-2026-10-23.md) retains
+its three-pass/eleven-failure baseline. The scoped optional-argument and
+unselected-payload correction passed all fourteen unchanged groups, sort's four
+groups and arguments' one group. Two conflicting legacy extrema assertions
+were migrated individually after preserving the raw failure, and the two
+legacy groups then passed. This adds only minArray and maxArray: all 62 prior
+manual records are unchanged, yielding 64 reviewed subsets and zero whole
+function acceptances. Non-Array scope and singleton/comparator disputes remain
+unresolved.
 
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its

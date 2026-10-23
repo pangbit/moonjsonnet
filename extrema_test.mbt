@@ -1,5 +1,5 @@
 ///|
-test "array extrema use Go defaults named arguments and stable ties" {
+test "array extrema retain branch defaults named arguments and stable ties" {
   for
     (source, expected) in [
       ("[std.minArray([3,1,2]),std.maxArray([3,1,2])]", "[1,3]"),
@@ -17,6 +17,9 @@ test "array extrema use Go defaults named arguments and stable ties" {
       ),
       ("std.minArray([{}])", "{}"),
       ("std.maxArray([],keyF=function(a,b)a,onEmpty=0)", "0"),
+      // The fixed source selects only the empty/nonempty branch argument.
+      ("std.minArray([],keyF=1,onEmpty=2)", "2"),
+      ("std.minArray([1],onEmpty=error 'forced')", "1"),
       (
         "[std.length(std.minArray),std.length(std.maxArray),std.objectHas(std,'minArray')]",
         "[3,3,false]",
@@ -26,8 +29,7 @@ test "array extrema use Go defaults named arguments and stable ties" {
   }
   for
     source in [
-      "std.minArray([])", "std.maxArray([])", "std.minArray([],keyF=1,onEmpty=2)",
-      "std.maxArray('abc')", "std.minArray([1],onEmpty=error 'forced')", "std.maxArray([error 'forced'],function(x)0)",
+      "std.minArray([])", "std.maxArray([])", "std.maxArray('abc')", "std.maxArray([error 'forced'],function(x)0)",
       "std.minArray([1],function(a,b)a)", "std.maxArray([{},{}])", "std.minArray([1],unused=2)",
     ] {
     try @moonjsonnet.evaluate(source) catch {
