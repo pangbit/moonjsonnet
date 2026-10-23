@@ -2,18 +2,18 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "697b6f4adf377d53040dbd5282649dafb45e330b835eb2866eb10782edd1d20e",
-  "tool_sha256": "4708ea0d11713805f486e018e886acca562de3bde9819d1ab0d61f3c8cdd8699",
+  "mapping_sha256": "81c26d9ee0a4d74947a50c359cdb88c4a9f5366c7cd3a9c561b58cdf3ba37efc",
+  "tool_sha256": "f4a188a1252713bb6c7f2f8eb88ea8958d440c8f9425019d98a46b3b6b6af5ab",
   "mapping_schema_version": 2,
-  "global_test_ids": 161,
+  "global_test_ids": 163,
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 59,
-  "completed_rule_rows": 22,
+  "completed_rule_rows": 24,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
-  "completed_evaluation_rule_rows": 16,
-  "unreviewed_rows": 12,
+  "completed_evaluation_rule_rows": 18,
+  "unreviewed_rows": 10,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -2341,6 +2341,41 @@
       ],
       "checks": "All three operators reject direct Boolean/null/Object/Function and number/string mismatches Type through source/AST; nested object values/function bodies are not demanded. Greater-equal additionally rejects poisoned array/non-array heads before payloads and a reached Boolean element. Ignoring whole comparisons remains lazy. Error labels are embedding controls, not standard diagnostic text.",
       "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "NB1": {
+      "file": "spec_negation_test.mbt",
+      "line": 22,
+      "test": "logical negation flips both Booleans and demands only a used operand head",
+      "test_id": "spec_negation_test.mbt::logical negation flips both Booleans and demands only a used operand head",
+      "assertions": [
+        "[(true, false), (false, true)]",
+        "negation_expr(reflect_bool(operand))",
+        "let observed = negation_expr(boolean_observe(\"B\", reflect_bool(operand)))",
+        "Json::boolean(expected)",
+        "assert_true(seen.contains(\"B\"))",
+        "assert_eq(seen.length(), 0)"
+      ],
+      "checks": "Literal true/false and false/true result pairs through source and independent Unary ASTs. Boolean operands with observations remain unused in an ignored whole negation and become demanded for a used negation. Map membership records demand; its size is not a universal callback count or timing assertion.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "NB2": {
+      "file": "spec_negation_test.mbt",
+      "line": 58,
+      "test": "logical negation rejects non Boolean values without manifesting or calling them",
+      "test_id": "spec_negation_test.mbt::logical negation rejects non Boolean values without manifesting or calling them",
+      "assertions": [
+        "Func([], bad.tree)",
+        "ordering_array([bad])",
+        "reflect_object([(reflect_string(\"x\"), 1, bad)])",
+        "sequence_failure(negation_expr(value), @moonjsonnet.Type, None)",
+        "Some(\"negation-required\")",
+        "negation_std_field(\"length\")",
+        "sequence_call(\"native\", [reflect_string(\"observe\")])",
+        "@moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Type)",
+        "assert_eq(seen.length(), 0)"
+      ],
+      "checks": "Numbers, Strings, empty/poisoned Arrays and Objects, and closure/Builtin/Native Function heads reject Type without reading nested values or calling functions; ignored operations yield 42. Direct operand Runtime errors retain their isolated marker. Existing US2 supplies the null boundary. Both entry paths are independent; human diagnostics and callback ordering are not specified.",
+      "status": "manually reviewed assertion subset; execution is separate"
     }
   },
   "test_file_sha256": {
@@ -2400,7 +2435,8 @@
     "spec_lex_names_test.mbt": "a6b14de4f4b444d7c4d861eda96e9534cb2e61450dc34b7e87dead6504029883",
     "spec_operator_tokens_wbtest.mbt": "896ac6d32f1def656fe0085409c68bd5cc8abe804826358b68435903a368785a",
     "spec_operator_tokens_test.mbt": "2c4046d97f089d130b7b84d3f907e68707ac5b2ebc9bebe373b2b2f2f38c7d0d",
-    "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b"
+    "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b",
+    "spec_negation_test.mbt": "92edd8ad7eaac31c60676c8c7f3882f440c78391edd58a16d47ee0942465e3ac"
   },
   "clauses": [
     {
@@ -4934,36 +4970,194 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2586,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "NB1"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "NB2",
+          "US2"
+        ],
+        "lazy": [
+          "NB1",
+          "NB2",
+          "US2"
+        ],
+        "boundary": [
+          "NB1",
+          "NB2",
+          "US1",
+          "US3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "eval.mbt",
+        "runtime_types.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "not-true",
+          "decision": "complete",
+          "review_form": "boolean-negation-transfer",
+          "fixed_statement": "\\rule{not-true} { e ↓ \\true } { \\texttt{!} e ↓ \\false }",
+          "operator": "!",
+          "operand_domains": [
+            "Boolean"
+          ],
+          "operand_value": true,
+          "result": false,
+          "demand_policy": "operand-head-only",
+          "child_judgments_assumed": "The statically admitted operand evaluates to its specified Boolean head within resource bounds. Child producers, their static/grammar correctness and unrelated unary operators are separate judgments. Non-Boolean/error/lazy controls corroborate the local boundary without completing all children.",
+          "scope": "Complete not-true Boolean-result transfer relative to its admitted Boolean operand child, with strict head-only demand; no whole operand or language claim.",
+          "reasoning": "The Unary branch evaluates the same child in env, the exhaustive Boolean gate accepts only Bool, and complement returns the fixed opposite Boolean. Case analysis exhausts the two-element input domain. Source/independent AST controls confirm literal results, skipped/required operands and no nested payload or function demand on Type rejection. Existing US1-US3 retain static/null/Syntax adjunct evidence.",
+          "review_report": "docs/development/SPEC-NEGATION-2026-10-23.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This execution transfer assumes a statically admitted operand. Reused US1/US3 show separate scope/Syntax boundaries; they do not turn this record into whole static/grammar completion."
+          },
+          "excluded_obligations": [
+            "Whole operand/static/grammar judgments and other unary operators.",
+            "Object/array/function producers, inheritance/assertion and public native contracts.",
+            "A0/B0/N0/R0/PE0, greater-than print conflict, malformed block, encoding/rounding/resources and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "Unary(op, e) => {\n          let v = self.eval(e, env)",
+              "argument": "Unary obtains its operand head in the original environment before dispatch. Any child failure propagates; a skipped whole negation never enters this branch."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "\"!\" => Bool(!boolean(v, loc))",
+              "argument": "Both possible Boolean child results enter host Boolean complement and are wrapped as Bool. No numeric/string truthiness or operand payload traversal occurs in this arm."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn boolean(v : Value, loc : Location) -> Bool raise {",
+              "argument": "Exhaustive Value gating returns only Bool and raises Type for every other outer variant. Its diagnostic computes the value kind without manifesting payloads or calling functions."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Unary(op, a) => Unary(op, visit(a))",
+              "argument": "Independent typed AST conversion preserves the operator and child; complete child, grammar and static judgments remain separate."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_negation_test.mbt": "92edd8ad7eaac31c60676c8c7f3882f440c78391edd58a16d47ee0942465e3ac",
+            "spec_unary_static_test.mbt": "4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d",
+            "spec_boolean_shortcircuit_test.mbt": "730b05bfade40138c803a0223387fee8b11f92117fcc1996dda46cf8c71109ef",
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141"
+          }
+        }
+      ]
     },
     {
       "id": "not-false",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2596,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "NB1"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "NB2",
+          "US2"
+        ],
+        "lazy": [
+          "NB1",
+          "NB2",
+          "US2"
+        ],
+        "boundary": [
+          "NB1",
+          "NB2",
+          "US1",
+          "US3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "eval.mbt",
+        "runtime_types.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "not-false",
+          "decision": "complete",
+          "review_form": "boolean-negation-transfer",
+          "fixed_statement": "\\rule{not-false} { e ↓ \\false } { \\texttt{!} e ↓ \\true }",
+          "operator": "!",
+          "operand_domains": [
+            "Boolean"
+          ],
+          "operand_value": false,
+          "result": true,
+          "demand_policy": "operand-head-only",
+          "child_judgments_assumed": "The statically admitted operand evaluates to its specified Boolean head within resource bounds. Child producers, their static/grammar correctness and unrelated unary operators are separate judgments. Non-Boolean/error/lazy controls corroborate the local boundary without completing all children.",
+          "scope": "Complete not-false Boolean-result transfer relative to its admitted Boolean operand child, with strict head-only demand; no whole operand or language claim.",
+          "reasoning": "The Unary branch evaluates the same child in env, the exhaustive Boolean gate accepts only Bool, and complement returns the fixed opposite Boolean. Case analysis exhausts the two-element input domain. Source/independent AST controls confirm literal results, skipped/required operands and no nested payload or function demand on Type rejection. Existing US1-US3 retain static/null/Syntax adjunct evidence.",
+          "review_report": "docs/development/SPEC-NEGATION-2026-10-23.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This execution transfer assumes a statically admitted operand. Reused US1/US3 show separate scope/Syntax boundaries; they do not turn this record into whole static/grammar completion."
+          },
+          "excluded_obligations": [
+            "Whole operand/static/grammar judgments and other unary operators.",
+            "Object/array/function producers, inheritance/assertion and public native contracts.",
+            "A0/B0/N0/R0/PE0, greater-than print conflict, malformed block, encoding/rounding/resources and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "Unary(op, e) => {\n          let v = self.eval(e, env)",
+              "argument": "Unary obtains its operand head in the original environment before dispatch. Any child failure propagates; a skipped whole negation never enters this branch."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "\"!\" => Bool(!boolean(v, loc))",
+              "argument": "Both possible Boolean child results enter host Boolean complement and are wrapped as Bool. No numeric/string truthiness or operand payload traversal occurs in this arm."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn boolean(v : Value, loc : Location) -> Bool raise {",
+              "argument": "Exhaustive Value gating returns only Bool and raises Type for every other outer variant. Its diagnostic computes the value kind without manifesting payloads or calling functions."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Unary(op, a) => Unary(op, visit(a))",
+              "argument": "Independent typed AST conversion preserves the operator and child; complete child, grammar and static judgments remain separate."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_negation_test.mbt": "92edd8ad7eaac31c60676c8c7f3882f440c78391edd58a16d47ee0942465e3ac",
+            "spec_unary_static_test.mbt": "4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d",
+            "spec_boolean_shortcircuit_test.mbt": "730b05bfade40138c803a0223387fee8b11f92117fcc1996dda46cf8c71109ef",
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141"
+          }
+        }
+      ]
     },
     {
       "id": "primitiveEquals",

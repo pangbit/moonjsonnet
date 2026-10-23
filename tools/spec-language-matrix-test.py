@@ -6,6 +6,7 @@ Run from the repository root:
 After a positive-only failure, reuse verified negative results with the same
 arguments followed by --resume-positive. Existing attempts are retained.
 Use --case-prefix sign- for only the comparison-sign form controls.
+Use --case-prefix neg- for only the Boolean-negation form controls.
 Only tracked/staged inputs are mirrored; stage new test/report fixtures first. The
 negative checker runs sequentially in that mirror. Positive readback runs in
 the real repository and regenerates its matrix, whose Git identity is required.
@@ -162,6 +163,43 @@ def main():
         data = copy.deepcopy(original)
         sign_review(data)["inspection"][0]["sha256"] = "0" * 64
         add("sign-snapshot", data, "inspected implementation changed: operators.mbt")
+
+    if "not-true" in original["rules"]:
+        def negation_review(data):
+            return data["rules"]["not-true"]["rule_review"]
+
+        data = copy.deepcopy(original)
+        row = copy.deepcopy(data["rules"]["not-true"])
+        row["rule_review"]["rule"] = "boolean-and-shortcut"
+        data["rules"]["boolean-and-shortcut"] = row
+        add("neg-foreign-rule", data, "Boolean negation completion restricted to two reviewed rules")
+        data = copy.deepcopy(original)
+        negation_review(data)["fixed_statement"] += " UNREVIEWED"
+        add("neg-formula", data, "reviewed Boolean negation statement mismatch")
+        data = copy.deepcopy(original)
+        negation_review(data)["operator"] = "+"
+        add("neg-operator", data, "Boolean negation operator")
+        data = copy.deepcopy(original)
+        negation_review(data)["operand_domains"] = ["Number"]
+        add("neg-domain", data, "Boolean negation domain")
+        data = copy.deepcopy(original)
+        negation_review(data)["operand_value"] = False
+        add("neg-operand", data, "Boolean negation operand")
+        data = copy.deepcopy(original)
+        negation_review(data)["result"] = True
+        add("neg-result", data, "Boolean negation result")
+        data = copy.deepcopy(original)
+        negation_review(data)["demand_policy"] = "manifest"
+        add("neg-demand", data, "Boolean negation demand policy")
+        data = copy.deepcopy(original)
+        negation_review(data)["child_judgments_assumed"] = ""
+        add("neg-child", data, "Boolean negation child assumptions required")
+        data = copy.deepcopy(original)
+        negation_review(data)["excluded_obligations"] = [item for item in negation_review(data)["excluded_obligations"] if not item.startswith("Whole operand")]
+        add("neg-exclusion", data, "Boolean negation must exclude Whole operand")
+        data = copy.deepcopy(original)
+        negation_review(data)["inspection"][0]["sha256"] = "0" * 64
+        add("neg-snapshot", data, "inspected implementation changed: eval.mbt")
 
     cases = [case for case in cases if case[0].startswith(args.case_prefix)]
     assert cases, "no metadata cases match the selected prefix"
