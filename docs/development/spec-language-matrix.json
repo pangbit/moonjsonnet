@@ -2,10 +2,10 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "aced2ddd6acf5c6cdc260d5502fef708186bd67277ec663aa962b0fc058ff21d",
+  "mapping_sha256": "6ed2be9379ae77f45548380889fab546e4da57b965cf996a02dade9b52207f91",
   "tool_sha256": "da3657872b9348056bfcf5579eba583f1dc9fbd1f854be99bc59ce77ab94296f",
   "mapping_schema_version": 2,
-  "global_test_ids": 213,
+  "global_test_ids": 216,
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 63,
@@ -690,6 +690,50 @@
         "[1, 1]"
       ],
       "checks": "Original/derived method defaults select late self and the method layer's super independently.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "OC1": {
+      "file": "spec_object_construction_test.mbt",
+      "line": 43,
+      "test": "ordinary repeated null keys omit fields while all stored payloads stay lazy",
+      "test_id": "spec_object_construction_test.mbt::ordinary repeated null keys omit fields while all stored payloads stay lazy",
+      "assertions": [
+        "sequence_var(\"construction_null\")",
+        "[\"object\", [\"kept\"], 1]",
+        "source: \"if true then null else construction_missing\"",
+        "pair_reject("
+      ],
+      "checks": "Independent source and handmade AST admit two ordinary keys resolving to the same outer Null binding and retain only kept. Metadata is the explicit [object,[kept],1] without forcing omitted or stored Type-error payloads. A separate unselected conditional-key free name rejects Static before evaluation in direct, unused and unselected wrappers; no field-value desugaring result is asserted.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "OC2": {
+      "file": "spec_object_construction_test.mbt",
+      "line": 79,
+      "test": "ordinary dynamic duplicates fail construction before shape or early field demand",
+      "test_id": "spec_object_construction_test.mbt::ordinary dynamic duplicates fail construction before shape or early field demand",
+      "assertions": [
+        "let object = construction_duplicate()",
+        "sequence_call(\"type\", [object])",
+        "sequence_call(\"objectFieldsAll\", [object])",
+        "pair_expr(\"[]\", object, reflect_string(\"early\"))",
+        "sequence_failure(observer, @moonjsonnet.Runtime, None)"
+      ],
+      "checks": "Ordinary keys dynamically resolving to the same String reject Runtime on type/key-set/early-field observation through both independent entry paths. Creation succeeds and wholly unused observers return 42. The early and duplicate field bodies would instead reject Type, so premature body demand cannot satisfy the Runtime construction oracle. No callback/error-order or literal duplicate reexecution is claimed.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "OC3": {
+      "file": "spec_object_construction_test.mbt",
+      "line": 94,
+      "test": "right object overlays cannot repair a left construction failure",
+      "test_id": "spec_object_construction_test.mbt::right object overlays cannot repair a left construction failure",
+      "assertions": [
+        "ordering_error(\"invalid-left-body\")",
+        "(construction_duplicate(), @moonjsonnet.Runtime)",
+        "(wrong_key, @moonjsonnet.Type)",
+        "[\"object\", [\"same\"], 1]",
+        "sequence_failure("
+      ],
+      "checks": "A valid right overlay does not bypass a left dynamic-collision Runtime or Number-key Type failure. Both entries create and unused additions return 42; forced type observation rejects at construction. The Number-key body would fail Runtime, distinguishing wrong body demand. Separate valid same-name layers produce only [object,[same],1] metadata with both Type-error values unread; selected values, assertion inheritance and N0/R0/DF0 are not accepted.",
       "status": "manually reviewed assertion subset; execution is separate"
     },
     "O1": {
@@ -3144,6 +3188,7 @@
     "spec_number_tokens_test.mbt": "f2b0623824df00431f167bacc8cf04290ab91158827eb79c4d27c632693d576c",
     "spec_function_static_test.mbt": "4d7e433ff2b5b0851f33ab823abbafea31cc3c33c0e2499a1bee769bbcb4ccc3",
     "spec_language_function_test.mbt": "ddf1840ccfcd89545ddb6e51fcead6404999484697dbd3ad8649ae7b29b0f39a",
+    "spec_object_construction_test.mbt": "acfb04859691b752e3cca576ccd72d6a11519b12d3be648dd829cbd8100e7807",
     "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d",
     "spec_static_test.mbt": "2b56b8efa83348f0ab266b8f18d00d31cf2a5e0543920e7cfb1d2c0d66923491",
     "spec_import_scope_test.mbt": "a267fed917387b8edf62b4d1b72ed7764680cd14b919ced2af7f298847a9d2ed",
@@ -3368,7 +3413,8 @@
           "OAS2",
           "OAS3",
           "OAS4",
-          "OAS5"
+          "OAS5",
+          "OC1"
         ],
         "runtime_error": [],
         "lazy": [
@@ -3381,10 +3427,11 @@
           "OAS4",
           "OAS5",
           "OAS6",
-          "OAS7"
+          "OAS7",
+          "OC1"
         ]
       },
-      "remaining": "The [object-assertion static-scope record](SPEC-OBJECT-ASSERTION-STATIC-2026-10-23.md) adds seven executed source/handmade-AST groups for all listed assertion/message positions, unused locals and key-context boundaries. General duplicate-name, field/value child, binder/object/comprehension and host/source grammar obligations remain separate; no full constructor decision is declared. N0/R0 and manifestation/manifestJson distinctions are unchanged.",
+      "remaining": "The [object-assertion static-scope record](SPEC-OBJECT-ASSERTION-STATIC-2026-10-23.md) adds seven executed source/handmade-AST groups for all listed assertion/message positions, unused locals and key-context boundaries. General duplicate-name, field/value child, binder/object/comprehension and host/source grammar obligations remain separate; no full constructor decision is declared. N0/R0 and manifestation/manifestJson distinctions are unchanged. OC1 separately checks a free name in an unselected conditional-key branch before creation; no whole static constructor decision is added.",
       "implementation": [
         "validate.mbt",
         "ast_convert.mbt",
@@ -4419,18 +4466,33 @@
       "state": "manually-reviewed-subset",
       "dimensions": {
         "normal": [
-          "O1"
+          "O1",
+          "OC1",
+          "OC3"
         ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [
-          "O4"
+        "runtime_error": [
+          "OC2",
+          "OC3"
         ],
-        "boundary": []
+        "lazy": [
+          "O4",
+          "OC1",
+          "OC2",
+          "OC3"
+        ],
+        "boundary": [
+          "OC1",
+          "OC2",
+          "OC3"
+        ]
       },
-      "remaining": "Computed null/nonstring/duplicate names, all object local forms.",
+      "remaining": "The [ordinary-object construction record](SPEC-OBJECT-CONSTRUCTION-2026-10-23.md) adds three bounded source/handmade-AST groups for repeated Null omission, dynamic String collisions and mandatory left construction before overlay. General key/value/type/producer domains, all object-local shapes, resource behavior and literal whole-formula conformance remain open. The printed key-premise notation and DF0 field-value discrepancy are preserved; no selected-field-value or assertion/manifestation claim is added.",
       "implementation": [
-        "eval.mbt"
+        "eval.mbt",
+        "operators.mbt",
+        "validate.mbt",
+        "ast_convert.mbt"
       ],
       "obligation": null,
       "rule_review": null
@@ -4878,7 +4940,8 @@
           "AX1",
           "AL1",
           "AC1",
-          "AC2"
+          "AC2",
+          "OC3"
         ],
         "static_error": [],
         "runtime_error": [
@@ -4892,7 +4955,8 @@
           "AS3",
           "AX2",
           "AL2",
-          "AC1"
+          "AC1",
+          "OC3"
         ],
         "boundary": [
           "O6",
@@ -4911,10 +4975,11 @@
           "AL1",
           "AL2",
           "AC1",
-          "AC2"
+          "AC2",
+          "OC3"
         ]
       },
-      "remaining": "Assertion-list retention/conjunction is reviewed; [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves N0 the omitted assertion-super transformation unresolved. Other inheritance/association, additive and computed-name obligations remain separate; later-demand failures are not errors of addition.",
+      "remaining": "Assertion-list retention/conjunction is reviewed; [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves N0 the omitted assertion-super transformation unresolved. Other inheritance/association, additive and computed-name obligations remain separate; later-demand failures are not errors of addition. The [ordinary-object construction record](SPEC-OBJECT-CONSTRUCTION-2026-10-23.md) adds OC3 operand-construction preconditions and a same-name valid-layer metadata control. Its left-child failures are not intrinsic addition or later-field errors; selected values and all existing N0/R0/DF0 limitations stay separate.",
       "implementation": [
         "operators.mbt",
         "objects.mbt",
