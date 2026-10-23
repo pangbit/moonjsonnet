@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "d0f10e7412e5b1a378b078b1411ded1b35ce04d8",
-  "uncommitted_test_paths": "spec_join_test.mbt",
+  "input_source_commit": "584d99fce87a93eb5a28a5fd8f196bd3c3d2370a",
+  "uncommitted_test_paths": "spec_flatten_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -89,6 +89,7 @@
     "spec_error_static_test.mbt": "b931793ba7ad955b4a83f30600f6eeaca66c2ff0e99640004c059254866e9610",
     "spec_expression_lists_test.mbt": "a28036727517e12ab3e27243f613eafc56172aa764b0432192196cb1d1a793c0",
     "spec_filter_test.mbt": "448e73f9a5810e72eecad905c9cffed2446d6a4e5b7acd8ac03e7070d31362fc",
+    "spec_flatten_test.mbt": "032cbb5d0bb36e7b9b47da3e9eb7f2b4168efae399f1aa99d5628e134d63b2c5",
     "spec_foundation_arrays_test.mbt": "beb47db7cee9b2ebf3372954ae2c975810b9b61daa3f14448f847ea67b18a19f",
     "spec_foundation_calls_test.mbt": "7cdf4c0397458504515322c6b14893628f0ed3ba31a99ee75a7af2654f0a28c1",
     "spec_foundation_numbers_test.mbt": "1939b305dea9021bbb2e8e9065e60f5ba7400346a1defe0d05f1844377078920",
@@ -164,7 +165,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "3de9d16caf72d35b1f4d985abfcf4ca16477eace73f09bec8fe30434f7626d47",
+  "coverage_sha256": "b86da41053f01127e1f05d99cd785760e5d94003c1320c359ba0d7fbc9777b67",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -1378,13 +1379,86 @@
         "source": "std.flattenArrays(arrs)",
         "source_line": "889"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "flattenArrays",
+        "signature_review": {
+          "parameters": [
+            "arrs"
+          ],
+          "defaults": {},
+          "test": "spec_flatten_test.mbt",
+          "status": "Source arrs conflicts with documented arr; named success and alias policy remain unadjudicated. Positional required argument and unambiguous missing/extra/unknown bindings only are reviewed."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 4,
+            "test_declaration": "test \"flattenArrays concatenates exactly one level and retains all payload kinds\" {",
+            "classification": "manual independent source and typed AST FL1 shallow-data assertions"
+          },
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 66,
+            "test_declaration": "test \"flattenArrays rejects clear unsupported additions and demands every outer array head\" {",
+            "classification": "manual FL3 bounded domain and outer-head evidence"
+          },
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 115,
+            "test_declaration": "test \"flattenArrays defers retained payloads until selection or manifestation\" {",
+            "classification": "manual FL4 shallow payload demand"
+          },
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 187,
+            "test_declaration": "test \"flatten operations preserve original arrays and aliases under cold and warm reads\" {",
+            "classification": "manual FL6 shallow arm immutable data under read gates"
+          },
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 256,
+            "test_declaration": "test \"flatten operations share demanded source heads and retained leaves across repeated reads\" {",
+            "classification": "manual FL7 shallow arm shared source/leaf gates"
+          },
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 307,
+            "test_declaration": "test \"flatten operations reject unambiguous bad bindings before gates and preserve unused calls\" {",
+            "classification": "manual FL8 shallow arm binding and unused-call checks"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_flatten_test.mbt",
+            "expectation": "FL1: ordered exactly one-level Array-of-Arrays concatenation preserves arbitrary inner payloads, including null and nested arrays; literal independent outputs."
+          },
+          "E": {
+            "test": "spec_flatten_test.mbt",
+            "expectation": "FL3/FL8: unsupported primitive-root length and unambiguous Array addition pairs fail; required outer errors propagate; rejected bindings run no argument gates."
+          },
+          "L": {
+            "test": "spec_flatten_test.mbt",
+            "expectation": "FL3/FL4/FL7/FL8: all outer member heads required, payloads deferred until selection/manifestation, head-only inspection keeps Object/Array/Function contents lazy, shared thunks forced once, unused whole calls lazy."
+          },
+          "B": {
+            "test": "spec_flatten_test.mbt",
+            "expectation": "FL1/FL6: empty/singleton/empty-member arrays, Unicode/NUL payload data, nested originals and aliases unchanged under cold/warm reads and repeated flatten calls."
+          }
+        },
+        "remaining": "Bounded positional Array-of-Arrays and explicit error subset only; no whole-function acceptance. Documentation arr versus source arrs and String/Object/Function outer inputs or String members remain unresolved. A0, DF0/HP0, PE0, object assertions/inheritance/root/std rebinding, competing failures, encoding/resource extremes and prior exclusions unchanged; no Go/C++ output is a normative oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "array_std_test.mbt",
           "line": 11,
           "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_flatten_test.mbt",
+          "line": 4,
+          "test_declaration": "test \"flattenArrays concatenates exactly one level and retains all payload kinds\" {",
+          "classification": "manual independent source and typed AST FL1 shallow-data assertions"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -1397,13 +1471,80 @@
         "source": "std.flattenDeepArray(value)",
         "source_line": "892"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "flattenDeepArray",
+        "signature_review": {
+          "parameters": [
+            "value"
+          ],
+          "defaults": {},
+          "test": "spec_flatten_test.mbt",
+          "status": "One required documented/source value parameter; positional and named value succeed; missing/extra/unambiguously unknown bindings reject before gates. Complete binding combinations remain outside this subset."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 31,
+            "test_declaration": "test \"flattenDeepArray recursively preserves leaves including null and source defined scalar roots\" {",
+            "classification": "manual independent source and typed AST FL2 recursive data and source-defined root assertions"
+          },
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 149,
+            "test_declaration": "test \"flattenDeepArray demands recursive leaf heads but leaves object fields and function bodies lazy\" {",
+            "classification": "manual FL5 recursive structure versus atomic leaf payload demand"
+          },
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 187,
+            "test_declaration": "test \"flatten operations preserve original arrays and aliases under cold and warm reads\" {",
+            "classification": "manual FL6 deep arm immutable data under read gates"
+          },
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 256,
+            "test_declaration": "test \"flatten operations share demanded source heads and retained leaves across repeated reads\" {",
+            "classification": "manual FL7 deep arm shared source/leaf gates"
+          },
+          {
+            "file": "spec_flatten_test.mbt",
+            "line": 307,
+            "test_declaration": "test \"flatten operations reject unambiguous bad bindings before gates and preserve unused calls\" {",
+            "classification": "manual FL8 deep arm binding and unused-call checks"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_flatten_test.mbt",
+            "expectation": "FL2: recursively flatten Arrays in order; retain null/Boolean/Number/String/Object leaves and atomic Object fields; source-defined scalar-root singleton branches and named value calls use literal independent outputs."
+          },
+          "E": {
+            "test": "spec_flatten_test.mbt",
+            "expectation": "FL5/FL8: required recursive leaf errors propagate even for length or early selection; Object-field errors propagate upon manifestation. Rejected bindings run no gates. No invented non-Array-kind rejection."
+          },
+          "L": {
+            "test": "spec_flatten_test.mbt",
+            "expectation": "FL5/FL7/FL8: result structure requires all recursive leaf heads, while Object fields and Function defaults/bodies remain lazy; repeated original/result accesses share thunks once; unused whole calls lazy."
+          },
+          "B": {
+            "test": "spec_flatten_test.mbt",
+            "expectation": "FL2/FL6: nested empty arrays disappear, null remains, Unicode/NUL Strings remain atomic, scalar roots wrap once; nested originals and aliases unchanged under cold/warm reads and repeated calls."
+          }
+        },
+        "remaining": "Bounded recursive structure/leaf/demand subset only, not whole-function acceptance. Scalar roots are explicit source behavior, not inferred solely from Array-oriented prose. Function equality/PE0, object assertions/inheritance/root/std rebinding, competing failures, exhaustive binding/encoding/resource combinations, DF0/HP0, A0, BOM/surrogate/out-of-range and other prior exclusions remain unchanged; no reference-interpreter equality is an oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "array_std_test.mbt",
           "line": 14,
           "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_flatten_test.mbt",
+          "line": 31,
+          "test_declaration": "test \"flattenDeepArray recursively preserves leaves including null and source defined scalar roots\" {",
+          "classification": "manual independent source and typed AST FL2 recursive data and source-defined root assertions"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"

@@ -169,7 +169,9 @@ Only the following functions are supported. Arity/named-argument violations are
 | `sort(arr,keyF=function(x)x)` | Stable array sort; optional key function evaluated once per element; numeric, string or lexicographic array keys; preserves original element thunks and input order for equal keys |
 | `uniq`, `set`, `setUnion`, `setInter`, `setDiff`, `setMember` | Pinned upstream Jsonnet definitions, evaluated by the MoonBit runtime; optional key functions, lazy elements and left-hand representatives preserved |
 | `mergePatch(target,patch)` | Recursive JSON merge patch with null deletion, visible fields, lazy retained values and scalar replacement |
-| `all`, `any`, `filterMap`, `flattenArrays`, `flattenDeepArray`, `count`, `repeat`, `find`, `deepJoin` | Pinned source definitions; boolean short circuit, lazy retained values, nested flattening and Unicode strings |
+| `all`, `any`, `filterMap`, `count`, `repeat`, `find`, `deepJoin` | Pinned source definitions; boolean short circuit, lazy retained values and Unicode strings |
+| `flattenArrays(arrs)` | Concatenates one level of an array of arrays; requires outer member heads and keeps inner payloads lazy. Documentation names the parameter arr; named conformance remains unresolved. See the [scoped flatten review](../development/SPEC-FLATTEN-2026-10-23.md) |
+| `flattenDeepArray(value)` | Recursively flattens arrays, retaining null and all other non-array leaves; the fixed source also wraps scalar roots. Structure requires recursive leaf heads, while object fields and function bodies remain lazy. See the [scoped flatten review](../development/SPEC-FLATTEN-2026-10-23.md) |
 | `min`, `max`, `clamp` | Source numeric min/max and lazy clamp branches |
 | `sum(arr)`, `avg(arr)` | Numeric left-to-right aggregation; avg rejects an empty array; each addition rejects non-finite results |
 | `member(arr,x)`, `contains(arr,elem)` | Native short-circuit membership; member also accepts a string substring (including empty substring), contains requires an array |
