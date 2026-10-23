@@ -46,7 +46,7 @@ test "output functions validate arguments and visible values" {
   for
     source in [
       "std.manifestJsonEx(indent='',newline='')", "std.manifestJsonEx(value=1,newline='')",
-      "std.manifestJsonEx(1,null)", "std.manifestJsonEx(1,'',newline=[])", "std.manifestJsonEx(1,'',key_val_sep=error 'forced')",
+      "std.manifestJsonEx([1],null)", "std.manifestJsonEx([],'',newline=[])", "std.manifestJsonEx({x:1},'',key_val_sep=error 'forced')",
       "std.manifestJsonEx({assert false,x:1},'')", "std.manifestJsonMinified([function(x)x])",
       "std.manifestPython(function(x)x)", "std.manifestPythonVars([])", "std.manifestIni({main:{a:1}})",
       "std.manifestXmlJsonml([])", "std.manifestXmlJsonml(['p',1])",

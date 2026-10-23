@@ -1,6 +1,6 @@
 ///|
-// Traverse values directly: native Go manifests read visible fields, so an
-// object with no visible fields does not force assertions or hidden values.
+// Traverse visible fields. This is the stdlib String-rendering path; an object
+// with no visible fields does not index assertions or hidden values.
 fn Vm::manifest_json_ex(
   self : Vm,
   value : Value,
@@ -10,12 +10,12 @@ fn Vm::manifest_json_ex(
   limit : Int,
   loc : Location,
   path? : Array[String] = [],
+  style_thunks? : (Int, Int, Int)? = None,
 ) -> String raise {
   self.tick(loc)
   if depth >= self.limits.depth {
     raise problem(Limit, loc, "manifest depth limit exceeded")
   }
-  let (indent, newline, key_separator) = style
   let output = StringBuilder()
   let mut size = 0
   let write = fn(s : String) raise {
@@ -42,8 +42,13 @@ fn Vm::manifest_json_ex(
       )
     ArrayValue(items) => {
       write("[")
+      let newline = self.manifest_json_style(style, style_thunks, 1, loc)
       write(newline)
-      let next_indent = current_indent + indent
+      let next_indent = if items.is_empty() {
+        current_indent
+      } else {
+        current_indent + self.manifest_json_style(style, style_thunks, 0, loc)
+      }
       for i, item in items {
         if i > 0 {
           write(",")
@@ -59,6 +64,7 @@ fn Vm::manifest_json_ex(
             limit - size,
             loc,
             path=path + [i.to_string()],
+            style_thunks~,
           ),
         )
       }
@@ -68,16 +74,22 @@ fn Vm::manifest_json_ex(
     }
     ObjectValue(id, top) => {
       write("{")
+      let newline = self.manifest_json_style(style, style_thunks, 1, loc)
       write(newline)
-      let next_indent = current_indent + indent
-      for i, key in self.keys(id, top, false) {
+      let keys = self.keys(id, top, false)
+      let next_indent = if keys.is_empty() {
+        current_indent
+      } else {
+        current_indent + self.manifest_json_style(style, style_thunks, 0, loc)
+      }
+      for i, key in keys {
         if i > 0 {
           write(",")
           write(newline)
         }
         write(next_indent)
         write(manifest_json_quote(key))
-        write(key_separator)
+        write(self.manifest_json_style(style, style_thunks, 2, loc))
         write(
           self.manifest_json_ex(
             self.field(id, top, key, loc),
@@ -87,6 +99,7 @@ fn Vm::manifest_json_ex(
             limit - size,
             loc,
             path=path + [key],
+            style_thunks~,
           ),
         )
       }
@@ -96,6 +109,32 @@ fn Vm::manifest_json_ex(
     }
   }
   output.to_string()
+}
+
+///|
+fn Vm::manifest_json_style(
+  self : Vm,
+  style : (String, String, String),
+  pending : (Int, Int, Int)?,
+  slot : Int,
+  loc : Location,
+) -> String raise {
+  match pending {
+    Some(ids) => {
+      let id = match slot {
+        0 => ids.0
+        1 => ids.1
+        _ => ids.2
+      }
+      text_value(self.force(id, loc), loc)
+    }
+    None =>
+      match slot {
+        0 => style.0
+        1 => style.1
+        _ => style.2
+      }
+  }
 }
 
 ///|

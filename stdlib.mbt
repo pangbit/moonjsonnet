@@ -197,6 +197,19 @@ fn Vm::builtin(
     }
     return self.flat_map(func, self.force(ids["arr"], loc), loc)
   }
+  if name == "manifestJsonEx" {
+    return Str(
+      self.manifest_json_ex(
+        self.force(ids["value"], loc),
+        ("", "", ""),
+        "",
+        0,
+        self.limits.output_bytes,
+        loc,
+        style_thunks=Some((ids["indent"], ids["newline"], ids["key_val_sep"])),
+      ),
+    )
+  }
   let values = params.map(n => self.force(ids[n], loc))
   let x = values[0]
   match name {
@@ -244,21 +257,6 @@ fn Vm::builtin(
         self.remove_at(items, found, loc)
       }
     }
-    "manifestJsonEx" =>
-      Str(
-        self.manifest_json_ex(
-          x,
-          (
-            text_value(values[1], loc),
-            text_value(values[2], loc),
-            text_value(values[3], loc),
-          ),
-          "",
-          0,
-          self.limits.output_bytes,
-          loc,
-        ),
-      )
     "base64"
     | "base64Decode"
     | "base64DecodeBytes"
