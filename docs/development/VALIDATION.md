@@ -7,6 +7,13 @@ and their focused evidence. Frozen Go/C++ inputs and historical results below
 are preserved; their old acceptance exceptions do not waive the complete
 v0.21.0 conformance target or establish results for the changed implementation.
 
+The [2026-10-23 native package regression](SPEC-NATIVE-REGRESSION-2026-10-23.md)
+binds clean source commit `21ee8005fbca4779adb2e01d53000c65f325eb33`: debug and
+release each passed 672/672 with one worker and frozen dependencies. Its source,
+toolchain, input and binary fingerprints and raw log paths are recorded separately
+from the older results below. Standalone integrations and cross-platform/reference
+checks remain outside that run; overall specification conformance is incomplete.
+
 The [P1 stage](SPEC-P1-EVIDENCE-2026-10-22.md) rejects duplicate formal names
 statically under the fixed specification, including public Program AST input.
 Historical repeated-parameter success fixtures below remain unchanged and are
