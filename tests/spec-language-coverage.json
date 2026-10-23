@@ -1603,6 +1603,48 @@
         "assert_eq(reads, 1)"
       ],
       "checks": "A representative malformed-byte code import rejects under documented strict host policy, separately from valid-UTF8 Syntax/Static programs and an explicit Unicode Runtime marker. Unused headers return 42 with zero resolver calls; demand makes one request and retains the imported identity. Error tags/provenance are embedding checks. No fixed-language invalid-byte recovery or surrogate/BOM rule is adjudicated."
+    },
+    "OR1": {
+      "file": "spec_operator_rewrites_test.mbt",
+      "test": "rewritten operators retain private std and one demanded head per operand role",
+      "test_id": "spec_operator_rewrites_test.mbt::rewritten operators retain private std and one demanded head per operand role",
+      "assertions": [
+        "ordering_array([sequence_num(2), bad])",
+        "(\"%\", reflect_string(\"[%s]\"), reflect_string(\"ok\"), \"[ok]\")",
+        "(\"in\", reflect_string(\"missing\"), object, false)",
+        "rewrite_reference(op, left, right)",
+        "assert_eq(counts.get(\"L\").unwrap_or(0), if unused { 0 } else { 1 })",
+        "assert_eq(counts.get(\"R\").unwrap_or(0), if unused { 0 } else { 1 })"
+      ],
+      "checks": "Source and independent Binary ASTs plus separately handwritten reference Call/Unary forms use a captured real std alias under a user std error binding. Literal oracles cover unequal Array prefixes without tail demand, numeric/String percent dispatch, and hidden/missing membership. Fresh native head gates record each L/R once when demanded and none for an unused whole expression returning 42. These are bounded host observation controls, not a universal callback-count/order theorem or full lowering/stdlib proof."
+    },
+    "OR2": {
+      "file": "spec_operator_rewrites_test.mbt",
+      "test": "core logic keeps shortcuts while rewritten errors remain isolated under std shadowing",
+      "test_id": "spec_operator_rewrites_test.mbt::core logic keeps shortcuts while rewritten errors remain isolated under std shadowing",
+      "assertions": [
+        "(\"&&\", false, ordering_error(\"unused-right\"), false, false)",
+        "(\"||\", true, ordering_error(\"unused-right\"), true, false)",
+        "if !unused && needed { 1 } else { 0 }",
+        "for op in [\"==\", \"!=\", \"%\", \"in\"]",
+        "rewrite_reference(op, left, right)",
+        "@moonjsonnet.Runtime, Some(marker)"
+      ],
+      "checks": "Source and handmade core Boolean operators preserve four explicit Boolean shortcut/longcut outcomes and demanded/skipped head counts under std shadowing; no rewrite-to-If or demanded non-Boolean RHS oracle is invented. Each explicit rewritten operator and its independent reference form propagates an isolated left/right Runtime marker, while the unused whole expression stays lazy. Harmless partners avoid a competing-failure-order requirement; existing static obligations remain separately mapped."
+    },
+    "OR3": {
+      "file": "spec_operator_rewrites_test.mbt",
+      "test": "in super preserves hidden lexical prefix after extracting a function from a derived object",
+      "test_id": "spec_operator_rewrites_test.mbt::in super preserves hidden lexical prefix after extracting a function from a derived object",
+      "assertions": [
+        "ordering_leaf(\"super\", Var(\"super\"))",
+        "(reflect_string(\"query\"), 1, make_function([\"k\"], membership))",
+        "Json::array([true, true, false, false])",
+        "for name in [\"h\", \"a\", \"b\", \"c\"]",
+        "assert_eq(counts.get(name).unwrap_or(0), if unused { 0 } else { 1 })",
+        "assert_eq(counts.length(), if unused { 0 } else { 4 })"
+      ],
+      "checks": "Source and independent original in-super ASTs in an extracted middle-layer function yield literal [true,true,false,false] for hidden h/prior a/same-layer b/later c under std shadowing. Each keyed demand is counted once only when used; no hidden or overridden field value is forced. A separate inspection connects direct membership and objectHasEx(true) through has_field on the captured prefix. This is not a fabricated admissible public bare-super Core Call or completion of inheritance/static children."
     }
   },
   "rules": {
@@ -3798,7 +3840,7 @@
     },
     {"id": "DESUGAR-SLICE", "section": "desugaring", "obligation": "Missing bounds and slice lowering to fixed stdlib source", "normal": ["SLICE"], "runtime_error": ["SLICE"], "lazy": ["SLICE"], "remaining": "Full negative/null/step/domain matrix and retained cardinality ambiguity.", "implementation": ["eval.mbt", "slice.mbt"]},
     {"id": "DESUGAR-FIELDS", "section": "desugaring", "obligation": "Dot lookup, object extension, additive fields and methods", "normal": ["F6", "O2"], "remaining": "All additive forms and nested inheritance source transformations.", "implementation": ["parser.mbt", "objects.mbt"]},
-    {"id": "DESUGAR-OPERATORS", "section": "desugaring", "obligation": "Percent, equality, in, unary plus and std binding", "remaining": "Independent equivalence under std shadowing and lazy/errors.", "implementation": ["eval.mbt", "operators.mbt"]},
+    {"id": "DESUGAR-OPERATORS", "section": "desugaring", "obligation": "Percent, equality, in, unary plus and std binding", "remaining": "The [fixed operator record](SPEC-OPERATOR-REWRITES-2026-10-23.md) supplies independent finite witnesses for !=/==/%/in and in-super under private std binding, preserving lazy/error and lexical-prefix boundaries. Public ASTs retain semantic operators rather than exporting canonical Core; complete syntax-directed lowering and full child equality/mod/format/visibility/invocation domains are not proved. The in-super reference has a shared-prefix predicate inspection, not a public bare-super Call equivalence. Comparisons, logical operators and unary plus remain core constructors with scoped recursive-preservation evidence; full runtime domains, B0, the greater-than printed conflict, PE0/N0/R0 and all prior child-relative limits remain separate. Fresh native counts are bounded host controls, with no universal demand order or competing-error priority claim. The whole clause remains partial.", "implementation": ["parser.mbt", "ast_convert.mbt", "eval.mbt", "operators.mbt", "stdlib.mbt", "stdlib_layer.mbt", "objects.mbt", "imports.mbt"], "normal": ["OR1", "OR3", "PG1", "PG3", "EX1", "RS1", "BS1", "PREC1", "PREC2"], "static_error": ["PI1", "PI3", "BS3"], "runtime_error": ["OR2", "EX3"], "lazy": ["OR1", "OR2", "OR3", "BS1", "BS2", "PG3", "EX1"], "boundary": ["OR1", "OR2", "OR3", "PI3", "SP1", "PREC2", "NB1", "US1"]},
     {"id": "DESUGAR-COMPREHENSIONS", "section": "desugaring", "obligation": "Array/object comprehension domains, order, filters and shadowing", "normal": ["C1", "C6", "CK2"], "static_error": ["O1", "R2", "A2"], "runtime_error": ["C4", "C5", "C7", "CK1", "CK2"], "lazy": ["C2", "C3", "C4", "C5", "A3", "CK1", "CK2"], "boundary": ["C2", "A3", "A4", "CK1", "CK2"], "remaining": "The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) reviews dependent iterator tuples, mixed null names, dynamic conflicts and delayed value capture. Full comprehension lowering and mechanical non-array domain extensions remain unadjudicated; existing empty/filter/type controls retain their own scopes. No unrelated key-error ordering is standardized.", "implementation": ["eval.mbt"]},
     {"id": "STATIC-TRAVERSAL", "section": "static_checking", "obligation": "Check unused defaults, bodies, branches and argument expressions", "static_error": ["F5", "S1", "O1", "R2", "A1", "A2", "AP6", "IF1", "IF2", "ES1", "US1", "AO3", "BS3"], "remaining": "Other unreviewed chk-* rules and full enclosing/host shape boundaries remain open; completed constructor judgments do not complete all child rules.", "implementation": ["validate.mbt", "ast_validate.mbt"]},
     {

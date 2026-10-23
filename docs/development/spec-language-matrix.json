@@ -2,18 +2,18 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "3a823960199b8d97851e93debc88a455f0a92c804ab093a470dd9f6f9d3ca34d",
+  "mapping_sha256": "951a9bb6047017fc58d8286e9086f312fc9cc74790b7b33ce368fd0d8f437b9e",
   "tool_sha256": "da3657872b9348056bfcf5579eba583f1dc9fbd1f854be99bc59ce77ab94296f",
   "mapping_schema_version": 2,
-  "global_test_ids": 179,
+  "global_test_ids": 182,
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 60,
+  "manually_reviewed_subset_rows": 61,
   "completed_rule_rows": 28,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 9,
   "completed_evaluation_rule_rows": 19,
-  "unreviewed_rows": 5,
+  "unreviewed_rows": 4,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -2598,6 +2598,54 @@
       ],
       "checks": "A representative malformed-byte code import rejects under documented strict host policy, separately from valid-UTF8 Syntax/Static programs and an explicit Unicode Runtime marker. Unused headers return 42 with zero resolver calls; demand makes one request and retains the imported identity. Error tags/provenance are embedding checks. No fixed-language invalid-byte recovery or surrogate/BOM rule is adjudicated.",
       "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "OR1": {
+      "file": "spec_operator_rewrites_test.mbt",
+      "line": 78,
+      "test": "rewritten operators retain private std and one demanded head per operand role",
+      "test_id": "spec_operator_rewrites_test.mbt::rewritten operators retain private std and one demanded head per operand role",
+      "assertions": [
+        "ordering_array([sequence_num(2), bad])",
+        "(\"%\", reflect_string(\"[%s]\"), reflect_string(\"ok\"), \"[ok]\")",
+        "(\"in\", reflect_string(\"missing\"), object, false)",
+        "rewrite_reference(op, left, right)",
+        "assert_eq(counts.get(\"L\").unwrap_or(0), if unused { 0 } else { 1 })",
+        "assert_eq(counts.get(\"R\").unwrap_or(0), if unused { 0 } else { 1 })"
+      ],
+      "checks": "Source and independent Binary ASTs plus separately handwritten reference Call/Unary forms use a captured real std alias under a user std error binding. Literal oracles cover unequal Array prefixes without tail demand, numeric/String percent dispatch, and hidden/missing membership. Fresh native head gates record each L/R once when demanded and none for an unused whole expression returning 42. These are bounded host observation controls, not a universal callback-count/order theorem or full lowering/stdlib proof.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "OR2": {
+      "file": "spec_operator_rewrites_test.mbt",
+      "line": 140,
+      "test": "core logic keeps shortcuts while rewritten errors remain isolated under std shadowing",
+      "test_id": "spec_operator_rewrites_test.mbt::core logic keeps shortcuts while rewritten errors remain isolated under std shadowing",
+      "assertions": [
+        "(\"&&\", false, ordering_error(\"unused-right\"), false, false)",
+        "(\"||\", true, ordering_error(\"unused-right\"), true, false)",
+        "if !unused && needed { 1 } else { 0 }",
+        "for op in [\"==\", \"!=\", \"%\", \"in\"]",
+        "rewrite_reference(op, left, right)",
+        "@moonjsonnet.Runtime, Some(marker)"
+      ],
+      "checks": "Source and handmade core Boolean operators preserve four explicit Boolean shortcut/longcut outcomes and demanded/skipped head counts under std shadowing; no rewrite-to-If or demanded non-Boolean RHS oracle is invented. Each explicit rewritten operator and its independent reference form propagates an isolated left/right Runtime marker, while the unused whole expression stays lazy. Harmless partners avoid a competing-failure-order requirement; existing static obligations remain separately mapped.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "OR3": {
+      "file": "spec_operator_rewrites_test.mbt",
+      "line": 219,
+      "test": "in super preserves hidden lexical prefix after extracting a function from a derived object",
+      "test_id": "spec_operator_rewrites_test.mbt::in super preserves hidden lexical prefix after extracting a function from a derived object",
+      "assertions": [
+        "ordering_leaf(\"super\", Var(\"super\"))",
+        "(reflect_string(\"query\"), 1, make_function([\"k\"], membership))",
+        "Json::array([true, true, false, false])",
+        "for name in [\"h\", \"a\", \"b\", \"c\"]",
+        "assert_eq(counts.get(name).unwrap_or(0), if unused { 0 } else { 1 })",
+        "assert_eq(counts.length(), if unused { 0 } else { 4 })"
+      ],
+      "checks": "Source and independent original in-super ASTs in an extracted middle-layer function yield literal [true,true,false,false] for hidden h/prior a/same-layer b/later c under std shadowing. Each keyed demand is counted once only when used; no hidden or overridden field value is forced. A separate inspection connects direct membership and objectHasEx(true) through has_field on the captured prefix. This is not a fabricated admissible public bare-super Core Call or completion of inheritance/static children.",
+      "status": "manually reviewed assertion subset; execution is separate"
     }
   },
   "test_file_sha256": {
@@ -2665,7 +2713,8 @@
     "spec_static_pairs_test.mbt": "21825d976ea91ebf6cb79dde93aa864116bbceab96d2f46d3690095fd8660325",
     "spec_static_literals_test.mbt": "280662a08529ece56b43d47692065f7bf289b878a77dc2f8b87953d793f2677e",
     "spec_value_heads_test.mbt": "c333432caf47be1eb43ef9650c86309361f3dc5e6bcd80befc435cb2802a20fc",
-    "spec_encoding_entries_test.mbt": "2a4d39967638879a230a300ad345a7f52986a03ab739048e996d12f911dd4d4c"
+    "spec_encoding_entries_test.mbt": "2a4d39967638879a230a300ad345a7f52986a03ab739048e996d12f911dd4d4c",
+    "spec_operator_rewrites_test.mbt": "ea6f10a9e4ce289d228c21c0d0dc10d1efc9d8ee2f791e645e6523ee665b59e4"
   },
   "clauses": [
     {
@@ -7417,18 +7466,58 @@
       "kind": "prose-or-grammar-obligation",
       "section": "desugaring",
       "source_line": 1096,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "normal": [
+          "OR1",
+          "OR3",
+          "PG1",
+          "PG3",
+          "EX1",
+          "RS1",
+          "BS1",
+          "PREC1",
+          "PREC2"
+        ],
+        "static_error": [
+          "PI1",
+          "PI3",
+          "BS3"
+        ],
+        "runtime_error": [
+          "OR2",
+          "EX3"
+        ],
+        "lazy": [
+          "OR1",
+          "OR2",
+          "OR3",
+          "BS1",
+          "BS2",
+          "PG3",
+          "EX1"
+        ],
+        "boundary": [
+          "OR1",
+          "OR2",
+          "OR3",
+          "PI3",
+          "SP1",
+          "PREC2",
+          "NB1",
+          "US1"
+        ]
       },
-      "remaining": "Independent equivalence under std shadowing and lazy/errors.",
+      "remaining": "The [fixed operator record](SPEC-OPERATOR-REWRITES-2026-10-23.md) supplies independent finite witnesses for !=/==/%/in and in-super under private std binding, preserving lazy/error and lexical-prefix boundaries. Public ASTs retain semantic operators rather than exporting canonical Core; complete syntax-directed lowering and full child equality/mod/format/visibility/invocation domains are not proved. The in-super reference has a shared-prefix predicate inspection, not a public bare-super Call equivalence. Comparisons, logical operators and unary plus remain core constructors with scoped recursive-preservation evidence; full runtime domains, B0, the greater-than printed conflict, PE0/N0/R0 and all prior child-relative limits remain separate. Fresh native counts are bounded host controls, with no universal demand order or competing-error priority claim. The whole clause remains partial.",
       "implementation": [
+        "parser.mbt",
+        "ast_convert.mbt",
         "eval.mbt",
-        "operators.mbt"
+        "operators.mbt",
+        "stdlib.mbt",
+        "stdlib_layer.mbt",
+        "objects.mbt",
+        "imports.mbt"
       ],
       "obligation": [
         "Percent, equality, in, unary plus and std binding"
