@@ -5,12 +5,14 @@ Run from the repository root:
   python3 tools/spec-language-matrix-test.py REFERENCE_DIR NEW_EVIDENCE_DIR
 After a positive-only failure, reuse verified negative results with the same
 arguments followed by --resume-positive. Existing attempts are retained.
-Only tracked/staged inputs and the two new review files are mirrored. The
+Use --case-prefix sign- for only the comparison-sign form controls.
+Only tracked/staged inputs are mirrored; stage new test/report fixtures first. The
 negative checker runs sequentially in that mirror. Positive readback runs in
 the real repository and regenerates its matrix, whose Git identity is required.
 No Jsonnet programs or upstream tools execute.
 """
 
+import argparse
 import copy
 import hashlib
 import json
@@ -18,7 +20,6 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
-import sys
 import time
 
 
@@ -36,18 +37,21 @@ def sha(path):
 
 
 def main():
-    resume = len(sys.argv) == 4 and sys.argv[3] == "--resume-positive"
-    if len(sys.argv) != 3 and not resume:
-        raise SystemExit(__doc__)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("reference")
+    parser.add_argument("output")
+    parser.add_argument("--resume-positive", action="store_true")
+    parser.add_argument("--case-prefix", default="")
+    args = parser.parse_args()
+    resume = args.resume_positive
     root = Path.cwd().resolve()
-    reference = Path(sys.argv[1]).resolve()
-    output = Path(sys.argv[2]).resolve()
+    reference = Path(args.reference).resolve()
+    output = Path(args.output).resolve()
     output.mkdir(parents=True, exist_ok=resume)
     mapping_path = Path("tests/spec-language-coverage.json")
     original_text = (root / mapping_path).read_text()
     original = json.loads(original_text, object_pairs_hook=unique_object)
     tracked = set(subprocess.check_output(["git", "ls-files", "-z"], text=True).strip("\0").split("\0"))
-    allowed_new = {"spec_string_concat_test.mbt", "docs/development/SPEC-STRING-CONCAT-2026-10-22.md"}
     paths = {str(mapping_path), "tools/spec-language-matrix.mbtx"}
     paths.update(item["file"] for item in original["evidence"].values())
     for row in list(original["rules"].values()) + original["clauses"]:
@@ -62,7 +66,7 @@ def main():
     for path in sorted(paths):
         relative = Path(path)
         assert not relative.is_absolute() and ".." not in relative.parts, path
-        assert path in tracked or path in allowed_new, path
+        assert path in tracked, path
         source = (root / relative).resolve()
         assert root in source.parents, path
         if not resume:
@@ -122,6 +126,46 @@ def main():
     data["version"] = 1
     add("old-schema", data, "mapping schema v2 required")
 
+    if "greater-or-equal-true" in original["rules"]:
+        def sign_review(data):
+            return data["rules"]["greater-or-equal-true"]["rule_review"]
+
+        data = copy.deepcopy(original)
+        row = copy.deepcopy(data["rules"]["greater-or-equal-true"])
+        row["rule_review"]["rule"] = "greater-than-true"
+        data["rules"]["greater-than-true"] = row
+        add("sign-foreign-rule", data, "comparison-sign completion restricted to six reviewed rules")
+        data = copy.deepcopy(original)
+        sign_review(data)["fixed_statement"] += " UNREVIEWED"
+        add("sign-formula", data, "reviewed comparison-sign statement mismatch")
+        data = copy.deepcopy(original)
+        sign_review(data)["operator"] = ">"
+        add("sign-operator", data, "comparison-sign operator")
+        data = copy.deepcopy(original)
+        sign_review(data)["accepted_signs"] = [1]
+        add("sign-accepted-signs", data, "comparison-sign accepted signs")
+        data = copy.deepcopy(original)
+        sign_review(data)["result"] = False
+        add("sign-result", data, "comparison-sign result")
+        data = copy.deepcopy(original)
+        sign_review(data)["comparison_domain"] = [-1, 0, 1, 2]
+        add("sign-domain", data, "comparison-sign domain")
+        data = copy.deepcopy(original)
+        sign_review(data)["operand_roles"] = ["right", "left"]
+        add("sign-order", data, "comparison-sign operand order")
+        data = copy.deepcopy(original)
+        sign_review(data)["child_judgments_assumed"] = ""
+        add("sign-child", data, "comparison-sign child assumptions required")
+        data = copy.deepcopy(original)
+        sign_review(data)["excluded_obligations"] = [item for item in sign_review(data)["excluded_obligations"] if not item.startswith("Whole operand")]
+        add("sign-exclusion", data, "comparison-sign must exclude Whole operand")
+        data = copy.deepcopy(original)
+        sign_review(data)["inspection"][0]["sha256"] = "0" * 64
+        add("sign-snapshot", data, "inspected implementation changed: operators.mbt")
+
+    cases = [case for case in cases if case[0].startswith(args.case_prefix)]
+    assert cases, "no metadata cases match the selected prefix"
+
     env = os.environ.copy()
     env["RUST_LOG"] = "error"
     results = json.loads((output / "negative-results.json").read_text()) if resume else []
@@ -170,7 +214,7 @@ def main():
     assert all(item["test_id"] == item["file"] + "::" + item["test"] for item in matrix["evidence"].values())
     for path, digest in identities.items():
         assert sha(root / path) == digest, "real input changed: " + path
-    record = {"argv": argv, "cwd": str(root), "exit": proc.returncode, "seconds": round(time.monotonic() - started, 3), "log_sha256": sha(log), "negative_controls": len(results), "all_rejected_before_output": all(item["passed"] for item in results), "positive_bindings_verified": True, "global_test_ids": len(ids), "real_inputs_unchanged": True, "reused_negative_results": resume}
+    record = {"argv": argv, "cwd": str(root), "exit": proc.returncode, "seconds": round(time.monotonic() - started, 3), "log_sha256": sha(log), "negative_controls": len(results), "case_prefix": args.case_prefix, "all_rejected_before_output": all(item["passed"] for item in results), "positive_bindings_verified": True, "global_test_ids": len(ids), "real_inputs_unchanged": True, "reused_negative_results": resume}
     (output / "result.json").write_text(json.dumps(record, indent=2) + "\n")
     print(json.dumps(record), flush=True)
 

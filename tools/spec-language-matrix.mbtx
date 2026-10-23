@@ -403,7 +403,7 @@ async fn main {
     "Populated cells identify manually examined assertions. Empty cells remain unreviewed. Completed named-rule reviews concern only their named judgments; completed prose constructor transfers are counted separately and assume their children. N/A cells have stated in-scope reasons, not missing passing tests. Runtime errors include host Type/Assertion categories after successful parsing. ",
   )
   markdown.write_string(
-    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md), [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md), [binary byte-substitution report](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md), [UTF-8 text-substitution report](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md), [conditional-rule report](SPEC-CONDITIONAL-EVIDENCE-2026-10-22.md), [static error report](SPEC-ERROR-STATIC-EVIDENCE-2026-10-22.md), [static unary report](SPEC-UNARY-STATIC-EVIDENCE-2026-10-22.md), [inherited-function receiver report](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix report](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md), [lexical-root report](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md), [assertion-self closure report](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md), [assertion-super report](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md), [assertion object-local report](SPEC-ASSERTION-LOCAL-EVIDENCE-2026-10-22.md), [assertion conjunction/constructor report](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md), [object-assertion adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md), [object-comprehension key report](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md), [array-ordering report](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md), [Boolean operator report](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md), [imported closure report](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md), [combined sequence record](SPEC-SEQUENCE-STRUCTURE-2026-10-22.md), [number-token record](SPEC-NUMBER-TOKENS-2026-10-22.md), [precedence record](SPEC-PRECEDENCE-2026-10-22.md), [object reflection Ex record](SPEC-OBJECT-REFLECTION-EX-2026-10-22.md), [primitive equality record](SPEC-PRIMITIVE-EQUALS-2026-10-22.md), [makeArray/PE0 record](SPEC-MAKEARRAY-2026-10-22.md), [filter record](SPEC-FILTER-2026-10-22.md), [Object head/count record](SPEC-OBJECT-HEAD-2026-10-22.md), [string-concat record](SPEC-STRING-CONCAT-2026-10-22.md), [identifier record](SPEC-LEX-NAMES-2026-10-23.md) and [operator-token record](SPEC-OPERATOR-TOKENS-2026-10-23.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
+    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md), [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md), [binary byte-substitution report](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md), [UTF-8 text-substitution report](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md), [conditional-rule report](SPEC-CONDITIONAL-EVIDENCE-2026-10-22.md), [static error report](SPEC-ERROR-STATIC-EVIDENCE-2026-10-22.md), [static unary report](SPEC-UNARY-STATIC-EVIDENCE-2026-10-22.md), [inherited-function receiver report](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix report](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md), [lexical-root report](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md), [assertion-self closure report](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md), [assertion-super report](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md), [assertion object-local report](SPEC-ASSERTION-LOCAL-EVIDENCE-2026-10-22.md), [assertion conjunction/constructor report](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md), [object-assertion adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md), [object-comprehension key report](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md), [array-ordering report](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md), [Boolean operator report](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md), [imported closure report](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md), [combined sequence record](SPEC-SEQUENCE-STRUCTURE-2026-10-22.md), [number-token record](SPEC-NUMBER-TOKENS-2026-10-22.md), [precedence record](SPEC-PRECEDENCE-2026-10-22.md), [object reflection Ex record](SPEC-OBJECT-REFLECTION-EX-2026-10-22.md), [primitive equality record](SPEC-PRIMITIVE-EQUALS-2026-10-22.md), [makeArray/PE0 record](SPEC-MAKEARRAY-2026-10-22.md), [filter record](SPEC-FILTER-2026-10-22.md), [Object head/count record](SPEC-OBJECT-HEAD-2026-10-22.md), [string-concat record](SPEC-STRING-CONCAT-2026-10-22.md), [identifier record](SPEC-LEX-NAMES-2026-10-23.md), [operator-token record](SPEC-OPERATOR-TOKENS-2026-10-23.md) and [relational sign record](SPEC-RELATIONAL-SIGN-2026-10-23.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
   )
   markdown.write_string(
     "Reproduce with `moon run --frozen tools/spec-language-matrix.mbtx REFERENCE_DIR EVIDENCE_DIR`; REFERENCE_DIR supplies pinned spec.html/language.md and, for Object head/count reviews, stdlib.html. This command validates assertion locations/hashes and regenerates this matrix; it never infers results or runs upstream tools.\n\n",
@@ -572,6 +572,113 @@ async fn main {
           assert_true(
             !dimension(row, name).is_empty(),
             msg="Boolean shortcut evidence gap: " + name,
+          )
+        }
+      } else if form == "comparison-sign-transfer" {
+        let (statement, symbol, signs, result) : (String, String, Json, Json) = match
+          id {
+          "less-than-true" =>
+            (
+              "\\rule{less-than-true} { \\texttt{std.cmp}(e_L, e_R) ↓ -1 } { e_L &lt; e_R ↓ \\texttt{true} }",
+              "<",
+              Json::array([Json::number(-1)]),
+              Json::boolean(true),
+            )
+          "less-than-false" =>
+            (
+              "\\rule{less-than-false} { \\texttt{std.cmp}(e_L, e_R) ↓ r \\\\ r ∈ \\{0, 1\\} } { e_L &lt; e_R ↓ \\texttt{false} }",
+              "<",
+              Json::array([Json::number(0), Json::number(1)]),
+              Json::boolean(false),
+            )
+          "less-or-equal-true" =>
+            (
+              "\\rule{less-or-equal-true} { \\texttt{std.cmp}(e_L, e_R) ↓ r \\\\ r ∈ \\{-1, 0\\} } { e_L &lt;= e_R ↓ \\texttt{true} }",
+              "<=",
+              Json::array([Json::number(-1), Json::number(0)]),
+              Json::boolean(true),
+            )
+          "less-or-equal-false" =>
+            (
+              "\\rule{less-or-equal-false} { \\texttt{std.cmp}(e_L, e_R) ↓ 1 } { e_L &lt;= e_R ↓ \\texttt{false} }",
+              "<=",
+              Json::array([Json::number(1)]),
+              Json::boolean(false),
+            )
+          "greater-or-equal-true" =>
+            (
+              "\\rule{greater-or-equal-true} { \\texttt{std.cmp}(e_L, e_R) ↓ r \\\\ r ∈ \\{0, 1\\} } { e_L &gt;= e_R ↓ \\texttt{true} }",
+              ">=",
+              Json::array([Json::number(0), Json::number(1)]),
+              Json::boolean(true),
+            )
+          "greater-or-equal-false" =>
+            (
+              "\\rule{greater-or-equal-false} { \\texttt{std.cmp}(e_L, e_R) ↓ -1 } { e_L &gt;= e_R ↓ \\texttt{false} }",
+              ">=",
+              Json::array([Json::number(-1)]),
+              Json::boolean(false),
+            )
+          _ =>
+            fail("comparison-sign completion restricted to six reviewed rules")
+        }
+        let head = "\\rule{" + id + "} {"
+        let parts = spec.split(head).collect()
+        assert_eq(parts.length(), 2)
+        let actual = head + parts[1].split("\\]").next().unwrap().to_owned()
+        assert_eq(
+          normalized(actual),
+          statement,
+          msg="fixed comparison-sign source mismatch",
+        )
+        assert_eq(
+          text_field(record, "fixed_statement"),
+          statement,
+          msg="reviewed comparison-sign statement mismatch",
+        )
+        assert_eq(
+          text_field(record, "operator"),
+          symbol,
+          msg="comparison-sign operator",
+        )
+        assert_eq(
+          field(record, "comparison_domain"),
+          Json::array([Json::number(-1), Json::number(0), Json::number(1)]),
+          msg="comparison-sign domain",
+        )
+        assert_eq(
+          field(record, "accepted_signs"),
+          signs,
+          msg="comparison-sign accepted signs",
+        )
+        assert_eq(field(record, "result"), result, msg="comparison-sign result")
+        assert_eq(
+          field(record, "operand_roles"),
+          Json::array(["left", "right"]),
+          msg="comparison-sign operand order",
+        )
+        assert_true(
+          !text_field(record, "child_judgments_assumed").is_empty(),
+          msg="comparison-sign child assumptions required",
+        )
+        guard field(record, "excluded_obligations") is Array(excluded) else {
+          fail("comparison-sign exclusions required")
+        }
+        for
+          exclusion in [
+            "Whole operand, comparator, scalar/array and static judgments; arbitrary producers.",
+            "Public std.cmp registration, std rebinding, greater-than rules and other operators.",
+            "A0/B0/N0/R0/PE0, malformed block lexing, encoding/rounding/resources and Go-C++ acceptance.",
+          ] {
+          assert_true(
+            excluded.contains(Json::string(exclusion)),
+            msg="comparison-sign must exclude " + exclusion,
+          )
+        }
+        for name in ["runtime_error", "lazy", "boundary"] {
+          assert_true(
+            !dimension(row, name).is_empty(),
+            msg="comparison-sign evidence gap: " + name,
           )
         }
       } else if form == "sequence-length-transfer" {
@@ -1113,7 +1220,7 @@ async fn main {
   assert_eq(used.length(), evidence.length(), msg="orphan evidence mappings")
   if !completed.is_empty() {
     markdown.write_string(
-      "\n## Completed named-rule reviews\n\nThese are recorded manual decisions from constructor case analysis plus executed controls. The tool checks empty premises for premise-free judgments, or exact fixed statements and premise roles for the explicitly supported conditional, Boolean shortcut, sequence-length, object-reflection, object-head, chk-error and chk-unary transfer judgments. The sequence form is restricted to length-array/string, pins element/codepoint units, and excludes the array-concat formal index discrepancy A0. The Boolean form is restricted to the two explicit shortcut rules and excludes the longcut non-Boolean RHS domain B0. The reflection form is restricted to object-has-ex/fields-ex, pins Object/String/Boolean domains, exact name membership or sorted unique name output, excludes payload demand and retains N0/R0/A0/B0 boundaries. The object-head form is restricted to length-object/type-object, preserves the raw length delimiter blemish and explicit composition interpretation, checks the fixed public field-count source and completed dependencies, and excludes nested value/assertion demand and N0/R0. The unary record also pins the four-symbol grammar domain. It checks inspected implementation/test hashes and explicit scope; source/name matches do not prove semantic correctness. Transfer judgments assume their child judgments and do not complete other language rules or whole-language acceptance.\n\n",
+      "\n## Completed named-rule reviews\n\nThese are recorded manual decisions from constructor case analysis plus executed controls. The tool checks empty premises for premise-free judgments, or exact fixed statements and premise roles for the explicitly supported conditional, Boolean shortcut, sequence-length, object-reflection, object-head, chk-error and chk-unary transfer judgments. The sequence form is restricted to length-array/string, pins element/codepoint units, and excludes the array-concat formal index discrepancy A0. The Boolean form is restricted to the two explicit shortcut rules and excludes the longcut non-Boolean RHS domain B0. The reflection form is restricted to object-has-ex/fields-ex, pins Object/String/Boolean domains, exact name membership or sorted unique name output, excludes payload demand and retains N0/R0/A0/B0 boundaries. The object-head form is restricted to length-object/type-object, preserves the raw length delimiter blemish and explicit composition interpretation, checks the fixed public field-count source and completed dependencies, and excludes nested value/assertion demand and N0/R0. The comparison-sign form pins the six unambiguous <, <= and >= equations, ordered operands and admitted cmp signs -1/0/1; it excludes greater-than formulas and whole comparator child judgments. The unary record also pins the four-symbol grammar domain. It checks inspected implementation/test hashes and explicit scope; source/name matches do not prove semantic correctness. Transfer judgments assume their child judgments and do not complete other language rules or whole-language acceptance.\n\n",
     )
     for (id, record) in completed {
       let report = text_field(record, "review_report")

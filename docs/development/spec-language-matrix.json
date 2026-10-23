@@ -2,18 +2,18 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "996f2facd20c2673b1a5def5fa4ae5328c07f88c11591ce696bc468f0b9d672c",
-  "tool_sha256": "7216d0dc07c1522bd7f677fd71d47b6f12f4ca4a03e2007557bb7c35de553d2d",
+  "mapping_sha256": "697b6f4adf377d53040dbd5282649dafb45e330b835eb2866eb10782edd1d20e",
+  "tool_sha256": "4708ea0d11713805f486e018e886acca562de3bde9819d1ab0d61f3c8cdd8699",
   "mapping_schema_version": 2,
-  "global_test_ids": 158,
+  "global_test_ids": 161,
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 63,
-  "completed_rule_rows": 16,
+  "manually_reviewed_subset_rows": 59,
+  "completed_rule_rows": 22,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 6,
-  "completed_evaluation_rule_rows": 10,
-  "unreviewed_rows": 14,
+  "completed_evaluation_rule_rows": 16,
+  "unreviewed_rows": 12,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -2295,6 +2295,52 @@
       ],
       "checks": "Public source and independent ASTs agree on literal arithmetic/comparison, comment/unary and adjacent valid-block results; public vectors confirm token splits. Unknown grammatical operators and malformed sources reject Syntax even unused. Valid spellings instead expose deferred Type/Runtime and admission Static operand controls. No host AST lexical rejection or whole operator evaluation rule is inferred.",
       "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "RS1": {
+      "file": "spec_relational_sign_test.mbt",
+      "line": 21,
+      "test": "relational sign table covers direct finite numbers and codepoint strings",
+      "test_id": "spec_relational_sign_test.mbt::relational sign table covers direct finite numbers and codepoint strings",
+      "assertions": [
+        "Json::array([true, true, false])",
+        "Json::array([false, true, true])",
+        "Json::array([false, false, true])",
+        "relational_values(left, right, expected)",
+        "reflect_string(left), reflect_string(right)"
+      ],
+      "checks": "Literal (<,<=,>=) vectors through source and independent ASTs cover all three signs for direct finite Numbers, signed-zero equality and empty/prefix/Unicode-codepoint Strings. Composed/decomposed, astral/BMP and NUL-prefix values remain distinct as specified. No expected result is obtained from a host or interpreter comparator.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "RS2": {
+      "file": "spec_relational_sign_test.mbt",
+      "line": 50,
+      "test": "greater equal consumes array comparison signs with precise required demand",
+      "test_id": "spec_relational_sign_test.mbt::greater equal consumes array comparison signs with precise required demand",
+      "assertions": [
+        "ordering_binary(left, \">=\", right)",
+        "Json::boolean(expected)",
+        "ordering_array([ordering_array([two, bad]), bad])",
+        "\"relation-left-head\"",
+        "\"relation-right-head\"",
+        "Some(marker)"
+      ],
+      "checks": "New greater-equal consumers use empty/nonempty, nested first-difference and equal nested array signs with literal results. Error-valued unmatched/inner/outer tails stay unread; required operand heads and one reached element propagate their isolated Runtime marker. Ignored whole failures yield 42 through both entry paths. Old less/less-equal array groups are reused without rerunning.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "RS3": {
+      "file": "spec_relational_sign_test.mbt",
+      "line": 88,
+      "test": "relational domains reject unsupported heads without reading nested payloads",
+      "test_id": "spec_relational_sign_test.mbt::relational domains reject unsupported heads without reading nested payloads",
+      "assertions": [
+        "for op in [\"<\", \"<=\", \">=\"]",
+        "Func([], bad.tree)",
+        "ordering_binary(value, op, value)",
+        "let poisoned = ordering_array([bad])",
+        "@moonjsonnet.Type"
+      ],
+      "checks": "All three operators reject direct Boolean/null/Object/Function and number/string mismatches Type through source/AST; nested object values/function bodies are not demanded. Greater-equal additionally rejects poisoned array/non-array heads before payloads and a reached Boolean element. Ignoring whole comparisons remains lazy. Error labels are embedding controls, not standard diagnostic text.",
+      "status": "manually reviewed assertion subset; execution is separate"
     }
   },
   "test_file_sha256": {
@@ -2353,7 +2399,8 @@
     "spec_string_concat_test.mbt": "b563491ec478bbc3f11e53a69dc92926b99e49e81201eeddb93f27eab2814eb0",
     "spec_lex_names_test.mbt": "a6b14de4f4b444d7c4d861eda96e9534cb2e61450dc34b7e87dead6504029883",
     "spec_operator_tokens_wbtest.mbt": "896ac6d32f1def656fe0085409c68bd5cc8abe804826358b68435903a368785a",
-    "spec_operator_tokens_test.mbt": "2c4046d97f089d130b7b84d3f907e68707ac5b2ebc9bebe373b2b2f2f38c7d0d"
+    "spec_operator_tokens_test.mbt": "2c4046d97f089d130b7b84d3f907e68707ac5b2ebc9bebe373b2b2f2f38c7d0d",
+    "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b"
   },
   "clauses": [
     {
@@ -3758,62 +3805,219 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2360,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
           "AO1",
-          "AO2"
+          "AO2",
+          "RS1"
         ],
         "static_error": [],
         "runtime_error": [
-          "AO3"
+          "AO3",
+          "RS3"
         ],
         "lazy": [
           "AO1",
-          "AO2"
+          "AO2",
+          "RS3"
         ],
         "boundary": [
           "AO1",
-          "AO3"
+          "AO3",
+          "RS1",
+          "RS3"
         ]
       },
-      "remaining": "Only bounded array operands in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are reviewed. Direct number/string operands, other producers and whole child-comparator judgments remain unadjudicated; this is not a named-rule completion record.",
+      "remaining": "",
       "implementation": [
         "operators.mbt",
-        "eval.mbt"
+        "eval.mbt",
+        "ast_convert.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "less-than-true",
+          "decision": "complete",
+          "review_form": "comparison-sign-transfer",
+          "fixed_statement": "\\rule{less-than-true} { \\texttt{std.cmp}(e_L, e_R) ↓ -1 } { e_L &lt; e_R ↓ \\texttt{true} }",
+          "operator": "<",
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "accepted_signs": [
+            -1
+          ],
+          "result": true,
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "child_judgments_assumed": "The statically admitted operands and abstract std.cmp child have their specified result in {-1,0,1}, implemented by compare_values on the same ordered operand values. Child comparator/scalar/array correctness, producers and finite-number admission are assumed separately. std.cmp here is the rule relation, not a public API registration claim.",
+          "scope": "Complete less-than-true Boolean-result constructor relative to the admitted comparator child and its sign domain, with no whole-child or whole-language claim.",
+          "reasoning": "The dispatcher evaluates the same comparison child and applies \"<\" => c < 0. Exhausting the three admitted signs gives the literal fixed-rule partition; operand order and operator survive source/AST conversion. Reused/new normal, domain/error and lazy controls corroborate that constructor case analysis.",
+          "review_report": "docs/development/SPEC-RELATIONAL-SIGN-2026-10-23.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This evaluated-sign transfer assumes admitted operands. Existing AO3 static/unused controls remain adjacent child evidence; this record does not complete chk-binary, array or grammar judgments."
+          },
+          "excluded_obligations": [
+            "Whole operand, comparator, scalar/array and static judgments; arbitrary producers.",
+            "Public std.cmp registration, std rebinding, greater-than rules and other operators.",
+            "A0/B0/N0/R0/PE0, malformed block lexing, encoding/rounding/resources and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "\"<\" | \"<=\" | \">\" | \">=\" => {",
+              "argument": "Only the four comparison operators enter this branch. This record excludes the two ambiguous greater-than formulas."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "let c = self.compare_values(a, b, loc)",
+              "argument": "The original left/right values enter the comparator child in place. Its admitted result, not the entire child proof, is assumed."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "\"<\" => c < 0",
+              "argument": "On admitted child signs -1/0/1 this predicate yields exactly the fixed true/false sign partition. The default predicate is >= because the other three operators have explicit arms."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Binary(op, a, b) => Binary(op, visit(a), visit(b))",
+              "argument": "Conversion preserves the operator and ordered children; full child/grammar/static judgments remain separate."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b",
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141"
+          }
+        }
+      ]
     },
     {
       "id": "less-than-false",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2370,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
-          "AO1"
+          "AO1",
+          "RS1"
         ],
         "static_error": [],
         "runtime_error": [
-          "AO3"
+          "AO3",
+          "RS3"
         ],
         "lazy": [
-          "AO1"
+          "AO1",
+          "RS3"
         ],
         "boundary": [
           "AO1",
-          "AO3"
+          "AO3",
+          "RS1",
+          "RS3"
         ]
       },
-      "remaining": "Only bounded array operands in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are reviewed. Direct number/string operands, other producers and whole child-comparator judgments remain unadjudicated; this is not a named-rule completion record.",
+      "remaining": "",
       "implementation": [
         "operators.mbt",
-        "eval.mbt"
+        "eval.mbt",
+        "ast_convert.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "less-than-false",
+          "decision": "complete",
+          "review_form": "comparison-sign-transfer",
+          "fixed_statement": "\\rule{less-than-false} { \\texttt{std.cmp}(e_L, e_R) ↓ r \\\\ r ∈ \\{0, 1\\} } { e_L &lt; e_R ↓ \\texttt{false} }",
+          "operator": "<",
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "accepted_signs": [
+            0,
+            1
+          ],
+          "result": false,
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "child_judgments_assumed": "The statically admitted operands and abstract std.cmp child have their specified result in {-1,0,1}, implemented by compare_values on the same ordered operand values. Child comparator/scalar/array correctness, producers and finite-number admission are assumed separately. std.cmp here is the rule relation, not a public API registration claim.",
+          "scope": "Complete less-than-false Boolean-result constructor relative to the admitted comparator child and its sign domain, with no whole-child or whole-language claim.",
+          "reasoning": "The dispatcher evaluates the same comparison child and applies \"<\" => c < 0. Exhausting the three admitted signs gives the literal fixed-rule partition; operand order and operator survive source/AST conversion. Reused/new normal, domain/error and lazy controls corroborate that constructor case analysis.",
+          "review_report": "docs/development/SPEC-RELATIONAL-SIGN-2026-10-23.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This evaluated-sign transfer assumes admitted operands. Existing AO3 static/unused controls remain adjacent child evidence; this record does not complete chk-binary, array or grammar judgments."
+          },
+          "excluded_obligations": [
+            "Whole operand, comparator, scalar/array and static judgments; arbitrary producers.",
+            "Public std.cmp registration, std rebinding, greater-than rules and other operators.",
+            "A0/B0/N0/R0/PE0, malformed block lexing, encoding/rounding/resources and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "\"<\" | \"<=\" | \">\" | \">=\" => {",
+              "argument": "Only the four comparison operators enter this branch. This record excludes the two ambiguous greater-than formulas."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "let c = self.compare_values(a, b, loc)",
+              "argument": "The original left/right values enter the comparator child in place. Its admitted result, not the entire child proof, is assumed."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "\"<\" => c < 0",
+              "argument": "On admitted child signs -1/0/1 this predicate yields exactly the fixed true/false sign partition. The default predicate is >= because the other three operators have explicit arms."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Binary(op, a, b) => Binary(op, visit(a), visit(b))",
+              "argument": "Conversion preserves the operator and ordered children; full child/grammar/static judgments remain separate."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b",
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141"
+          }
+        }
+      ]
     },
     {
       "id": "greater-than-true",
@@ -3856,98 +4060,434 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2404,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
           "AO1",
-          "AO2"
+          "AO2",
+          "RS1"
         ],
         "static_error": [],
         "runtime_error": [
-          "AO3"
+          "AO3",
+          "RS3"
         ],
         "lazy": [
           "AO1",
-          "AO2"
+          "AO2",
+          "RS3"
         ],
         "boundary": [
           "AO1",
-          "AO3"
+          "AO3",
+          "RS1",
+          "RS3"
         ]
       },
-      "remaining": "Only bounded array operands in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are reviewed. Direct number/string operands, other producers and whole child-comparator judgments remain unadjudicated; this is not a named-rule completion record.",
+      "remaining": "",
       "implementation": [
         "operators.mbt",
-        "eval.mbt"
+        "eval.mbt",
+        "ast_convert.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "less-or-equal-true",
+          "decision": "complete",
+          "review_form": "comparison-sign-transfer",
+          "fixed_statement": "\\rule{less-or-equal-true} { \\texttt{std.cmp}(e_L, e_R) ↓ r \\\\ r ∈ \\{-1, 0\\} } { e_L &lt;= e_R ↓ \\texttt{true} }",
+          "operator": "<=",
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "accepted_signs": [
+            -1,
+            0
+          ],
+          "result": true,
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "child_judgments_assumed": "The statically admitted operands and abstract std.cmp child have their specified result in {-1,0,1}, implemented by compare_values on the same ordered operand values. Child comparator/scalar/array correctness, producers and finite-number admission are assumed separately. std.cmp here is the rule relation, not a public API registration claim.",
+          "scope": "Complete less-or-equal-true Boolean-result constructor relative to the admitted comparator child and its sign domain, with no whole-child or whole-language claim.",
+          "reasoning": "The dispatcher evaluates the same comparison child and applies \"<=\" => c <= 0. Exhausting the three admitted signs gives the literal fixed-rule partition; operand order and operator survive source/AST conversion. Reused/new normal, domain/error and lazy controls corroborate that constructor case analysis.",
+          "review_report": "docs/development/SPEC-RELATIONAL-SIGN-2026-10-23.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This evaluated-sign transfer assumes admitted operands. Existing AO3 static/unused controls remain adjacent child evidence; this record does not complete chk-binary, array or grammar judgments."
+          },
+          "excluded_obligations": [
+            "Whole operand, comparator, scalar/array and static judgments; arbitrary producers.",
+            "Public std.cmp registration, std rebinding, greater-than rules and other operators.",
+            "A0/B0/N0/R0/PE0, malformed block lexing, encoding/rounding/resources and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "\"<\" | \"<=\" | \">\" | \">=\" => {",
+              "argument": "Only the four comparison operators enter this branch. This record excludes the two ambiguous greater-than formulas."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "let c = self.compare_values(a, b, loc)",
+              "argument": "The original left/right values enter the comparator child in place. Its admitted result, not the entire child proof, is assumed."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "\"<=\" => c <= 0",
+              "argument": "On admitted child signs -1/0/1 this predicate yields exactly the fixed true/false sign partition. The default predicate is >= because the other three operators have explicit arms."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Binary(op, a, b) => Binary(op, visit(a), visit(b))",
+              "argument": "Conversion preserves the operator and ordered children; full child/grammar/static judgments remain separate."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b",
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141"
+          }
+        }
+      ]
     },
     {
       "id": "less-or-equal-false",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2416,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
-          "AO1"
+          "AO1",
+          "RS1"
         ],
         "static_error": [],
         "runtime_error": [
-          "AO3"
+          "AO3",
+          "RS3"
         ],
         "lazy": [
-          "AO1"
+          "AO1",
+          "RS3"
         ],
         "boundary": [
           "AO1",
-          "AO3"
+          "AO3",
+          "RS1",
+          "RS3"
         ]
       },
-      "remaining": "Only bounded array operands in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are reviewed. Direct number/string operands, other producers and whole child-comparator judgments remain unadjudicated; this is not a named-rule completion record.",
+      "remaining": "",
       "implementation": [
         "operators.mbt",
-        "eval.mbt"
+        "eval.mbt",
+        "ast_convert.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "less-or-equal-false",
+          "decision": "complete",
+          "review_form": "comparison-sign-transfer",
+          "fixed_statement": "\\rule{less-or-equal-false} { \\texttt{std.cmp}(e_L, e_R) ↓ 1 } { e_L &lt;= e_R ↓ \\texttt{false} }",
+          "operator": "<=",
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "accepted_signs": [
+            1
+          ],
+          "result": false,
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "child_judgments_assumed": "The statically admitted operands and abstract std.cmp child have their specified result in {-1,0,1}, implemented by compare_values on the same ordered operand values. Child comparator/scalar/array correctness, producers and finite-number admission are assumed separately. std.cmp here is the rule relation, not a public API registration claim.",
+          "scope": "Complete less-or-equal-false Boolean-result constructor relative to the admitted comparator child and its sign domain, with no whole-child or whole-language claim.",
+          "reasoning": "The dispatcher evaluates the same comparison child and applies \"<=\" => c <= 0. Exhausting the three admitted signs gives the literal fixed-rule partition; operand order and operator survive source/AST conversion. Reused/new normal, domain/error and lazy controls corroborate that constructor case analysis.",
+          "review_report": "docs/development/SPEC-RELATIONAL-SIGN-2026-10-23.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This evaluated-sign transfer assumes admitted operands. Existing AO3 static/unused controls remain adjacent child evidence; this record does not complete chk-binary, array or grammar judgments."
+          },
+          "excluded_obligations": [
+            "Whole operand, comparator, scalar/array and static judgments; arbitrary producers.",
+            "Public std.cmp registration, std rebinding, greater-than rules and other operators.",
+            "A0/B0/N0/R0/PE0, malformed block lexing, encoding/rounding/resources and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "\"<\" | \"<=\" | \">\" | \">=\" => {",
+              "argument": "Only the four comparison operators enter this branch. This record excludes the two ambiguous greater-than formulas."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "let c = self.compare_values(a, b, loc)",
+              "argument": "The original left/right values enter the comparator child in place. Its admitted result, not the entire child proof, is assumed."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "\"<=\" => c <= 0",
+              "argument": "On admitted child signs -1/0/1 this predicate yields exactly the fixed true/false sign partition. The default predicate is >= because the other three operators have explicit arms."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Binary(op, a, b) => Binary(op, visit(a), visit(b))",
+              "argument": "Conversion preserves the operator and ordered children; full child/grammar/static judgments remain separate."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b",
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141"
+          }
+        }
+      ]
     },
     {
       "id": "greater-or-equal-true",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2426,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "RS1",
+          "RS2"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "RS2",
+          "RS3"
+        ],
+        "lazy": [
+          "RS2",
+          "RS3"
+        ],
+        "boundary": [
+          "RS1",
+          "RS2",
+          "RS3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "operators.mbt",
+        "eval.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "greater-or-equal-true",
+          "decision": "complete",
+          "review_form": "comparison-sign-transfer",
+          "fixed_statement": "\\rule{greater-or-equal-true} { \\texttt{std.cmp}(e_L, e_R) ↓ r \\\\ r ∈ \\{0, 1\\} } { e_L &gt;= e_R ↓ \\texttt{true} }",
+          "operator": ">=",
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "accepted_signs": [
+            0,
+            1
+          ],
+          "result": true,
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "child_judgments_assumed": "The statically admitted operands and abstract std.cmp child have their specified result in {-1,0,1}, implemented by compare_values on the same ordered operand values. Child comparator/scalar/array correctness, producers and finite-number admission are assumed separately. std.cmp here is the rule relation, not a public API registration claim.",
+          "scope": "Complete greater-or-equal-true Boolean-result constructor relative to the admitted comparator child and its sign domain, with no whole-child or whole-language claim.",
+          "reasoning": "The dispatcher evaluates the same comparison child and applies _ => c >= 0. Exhausting the three admitted signs gives the literal fixed-rule partition; operand order and operator survive source/AST conversion. Reused/new normal, domain/error and lazy controls corroborate that constructor case analysis.",
+          "review_report": "docs/development/SPEC-RELATIONAL-SIGN-2026-10-23.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This evaluated-sign transfer assumes admitted operands. Existing AO3 static/unused controls remain adjacent child evidence; this record does not complete chk-binary, array or grammar judgments."
+          },
+          "excluded_obligations": [
+            "Whole operand, comparator, scalar/array and static judgments; arbitrary producers.",
+            "Public std.cmp registration, std rebinding, greater-than rules and other operators.",
+            "A0/B0/N0/R0/PE0, malformed block lexing, encoding/rounding/resources and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "\"<\" | \"<=\" | \">\" | \">=\" => {",
+              "argument": "Only the four comparison operators enter this branch. This record excludes the two ambiguous greater-than formulas."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "let c = self.compare_values(a, b, loc)",
+              "argument": "The original left/right values enter the comparator child in place. Its admitted result, not the entire child proof, is assumed."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "_ => c >= 0",
+              "argument": "On admitted child signs -1/0/1 this predicate yields exactly the fixed true/false sign partition. The default predicate is >= because the other three operators have explicit arms."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Binary(op, a, b) => Binary(op, visit(a), visit(b))",
+              "argument": "Conversion preserves the operator and ordered children; full child/grammar/static judgments remain separate."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b",
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141"
+          }
+        }
+      ]
     },
     {
       "id": "greater-or-equal-false",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2438,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
+        "normal": [
+          "RS1",
+          "RS2"
+        ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "runtime_error": [
+          "RS2",
+          "RS3"
+        ],
+        "lazy": [
+          "RS2",
+          "RS3"
+        ],
+        "boundary": [
+          "RS1",
+          "RS2",
+          "RS3"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "operators.mbt",
+        "eval.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "greater-or-equal-false",
+          "decision": "complete",
+          "review_form": "comparison-sign-transfer",
+          "fixed_statement": "\\rule{greater-or-equal-false} { \\texttt{std.cmp}(e_L, e_R) ↓ -1 } { e_L &gt;= e_R ↓ \\texttt{false} }",
+          "operator": ">=",
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "accepted_signs": [
+            -1
+          ],
+          "result": false,
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "child_judgments_assumed": "The statically admitted operands and abstract std.cmp child have their specified result in {-1,0,1}, implemented by compare_values on the same ordered operand values. Child comparator/scalar/array correctness, producers and finite-number admission are assumed separately. std.cmp here is the rule relation, not a public API registration claim.",
+          "scope": "Complete greater-or-equal-false Boolean-result constructor relative to the admitted comparator child and its sign domain, with no whole-child or whole-language claim.",
+          "reasoning": "The dispatcher evaluates the same comparison child and applies _ => c >= 0. Exhausting the three admitted signs gives the literal fixed-rule partition; operand order and operator survive source/AST conversion. Reused/new normal, domain/error and lazy controls corroborate that constructor case analysis.",
+          "review_report": "docs/development/SPEC-RELATIONAL-SIGN-2026-10-23.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "This evaluated-sign transfer assumes admitted operands. Existing AO3 static/unused controls remain adjacent child evidence; this record does not complete chk-binary, array or grammar judgments."
+          },
+          "excluded_obligations": [
+            "Whole operand, comparator, scalar/array and static judgments; arbitrary producers.",
+            "Public std.cmp registration, std rebinding, greater-than rules and other operators.",
+            "A0/B0/N0/R0/PE0, malformed block lexing, encoding/rounding/resources and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "\"<\" | \"<=\" | \">\" | \">=\" => {",
+              "argument": "Only the four comparison operators enter this branch. This record excludes the two ambiguous greater-than formulas."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "let c = self.compare_values(a, b, loc)",
+              "argument": "The original left/right values enter the comparator child in place. Its admitted result, not the entire child proof, is assumed."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "_ => c >= 0",
+              "argument": "On admitted child signs -1/0/1 this predicate yields exactly the fixed true/false sign partition. The default predicate is >= because the other three operators have explicit arms."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "f75c9e3fd45506a140711eaf21c09625dfa9879798ccc1ac40adc1f2983f55c3",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Binary(op, a, b) => Binary(op, visit(a), visit(b))",
+              "argument": "Conversion preserves the operator and ordered children; full child/grammar/static judgments remain separate."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b",
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141"
+          }
+        }
+      ]
     },
     {
       "id": "cmp-array-left-empty",
