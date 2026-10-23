@@ -2,10 +2,10 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "1f18d8b444f68a30f7dbd27c1913857f2badc44c3aad2906f5b5dd4f65b818ae",
+  "mapping_sha256": "67ebd746592604d6a50b9f48a8858937f35ef72b80ab05f3fbf7fe93be725f0c",
   "tool_sha256": "da3657872b9348056bfcf5579eba583f1dc9fbd1f854be99bc59ce77ab94296f",
   "mapping_schema_version": 2,
-  "global_test_ids": 192,
+  "global_test_ids": 195,
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 63,
@@ -2822,6 +2822,60 @@
       ],
       "checks": "Missing/extra/unknown/overlapping bindings reject Runtime with zero native argument gates through source/handmade Programs, and unused versions return 42. Error operands stay unforced in unselected branches, unambiguous Boolean shortcuts and hidden-field access. Unknown operand names reject Static through direct/unused/skipped source and AST admission. Native zero-count controls describe host binding behavior, not formal native semantics, universal order or a non-Boolean longcut verdict.",
       "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SH1": {
+      "file": "spec_bounded_shift_test.mbt",
+      "line": 9,
+      "test": "bounded shifts use exact integer counts modulo 64 without host narrowing",
+      "test_id": "spec_bounded_shift_test.mbt::bounded shifts use exact integer counts modulo 64 without host narrowing",
+      "assertions": [
+        "(\"63\", 63.0, 0.0, 0.0, 0.0)",
+        "\"4294967297\"",
+        "\"9007199254740994\"",
+        "\"9223372036854774784\"",
+        "ordering_binary(left_input, \"<<\", count)",
+        "Json::number(expected_left)",
+        "ordering_binary(right_input, \">>\", count)",
+        "Json::number(expected_right)"
+      ],
+      "checks": "Literal result vectors for << and >> cover exact integral counts -0/0, 1, 31/32, 61/62/63, wrap boundaries through 129 and large admitted counts up to 2^63-1024. Left values/results are nonnegative signed-64 with no discarded bits; right left-value is 2^62. Every output is exactly representable in binary64. Source and separately constructed canonical Literal ASTs match fixed arithmetic expectations, never host shifts/modulo or Go output. Fractional/out-of-range conversion, negative-left/sign-fill, sign-bit loss and general conversion-back rounding remain unreviewed.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SH2": {
+      "file": "spec_bounded_shift_test.mbt",
+      "line": 57,
+      "test": "negative integral shift counts reject before modulo can hide their sign",
+      "test_id": "spec_bounded_shift_test.mbt::negative integral shift counts reject before modulo can hide their sign",
+      "assertions": [
+        "(\"-64\", -64.0)",
+        "(\"-128\", -128.0)",
+        "\"-9223372036854775808\"",
+        "for op in [\"<<\", \">>\"]",
+        "for left in [sequence_num(0), sequence_num(3)]",
+        "shift_number(source, number)",
+        "@moonjsonnet.Runtime"
+      ],
+      "checks": "Both operators reject exact negative integer counts, including multiples of 64 and -2^63, with zero or three as left operand through source/handmade ASTs. Unused whole expressions return 42. Zero left and a zero normalized residue cannot bypass negative-count refusal. This does not establish negative-fraction conversion timing, source/host resource behavior or competing-error priority.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SH3": {
+      "file": "spec_bounded_shift_test.mbt",
+      "line": 82,
+      "test": "shift type and required operand errors remain separate from skipped execution and source syntax",
+      "test_id": "spec_bounded_shift_test.mbt::shift type and required operand errors remain separate from skipped execution and source syntax",
+      "assertions": [
+        "ordering_binary(wrong, op, sequence_num(1))",
+        "ordering_binary(sequence_num(0), op, wrong)",
+        "@moonjsonnet.Type",
+        "Some(\"shift-left-required\")",
+        "Some(\"shift-count-required\")",
+        "sequence_value(skipped, 42)",
+        "additive_select(hidden, \"ok\")",
+        "for malformed in [op + \"1\", \"1\" + op]",
+        "names_syntax(malformed)"
+      ],
+      "checks": "Both shift operand roles reject all six nonnumber heads Type without forcing container payloads or Function defaults/body. Isolated left/count Runtime markers are demanded, including a count error with zero left. Unselected branches, explicit Boolean shortcuts and hidden access remain lazy; malformed missing operands reject source Syntax under the existing helper, without a malformed typed-Binary equivalent. Tags are host API checks; existing PI1 static transfer is separately reused and no full grammar/operator judgment is completed.",
+      "status": "manually reviewed assertion subset; execution is separate"
     }
   },
   "test_file_sha256": {
@@ -2893,7 +2947,8 @@
     "spec_operator_rewrites_test.mbt": "ea6f10a9e4ce289d228c21c0d0dc10d1efc9d8ee2f791e645e6523ee665b59e4",
     "spec_expression_lists_test.mbt": "a28036727517e12ab3e27243f613eafc56172aa764b0432192196cb1d1a793c0",
     "spec_additive_fields_test.mbt": "831593d7e2afce69bf9a5dd8518ccb88c0f28648a35368d9316bea2c79284852",
-    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc"
+    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "spec_bounded_shift_test.mbt": "dff823b5287e3a7a6a502f04bbdc7a3afbd589fa5db019396f5df8e801df3d81"
   },
   "clauses": [
     {
@@ -8045,13 +8100,18 @@
           "AO2",
           "BS1",
           "SQ1",
-          "SQ2"
+          "SQ2",
+          "SH1"
         ],
-        "static_error": [],
+        "static_error": [
+          "PI1"
+        ],
         "runtime_error": [
           "AO3",
           "BS2",
-          "SQ4"
+          "SQ4",
+          "SH2",
+          "SH3"
         ],
         "lazy": [
           "AO1",
@@ -8060,7 +8120,9 @@
           "BS0",
           "BS1",
           "BS2",
-          "SQ1"
+          "SQ1",
+          "SH2",
+          "SH3"
         ],
         "boundary": [
           "AO1",
@@ -8069,10 +8131,15 @@
           "BS2",
           "SQ1",
           "SQ2",
-          "SQ4"
+          "SQ4",
+          "SH1",
+          "SH2",
+          "SH3",
+          "PI1",
+          "OT3"
         ]
       },
-      "remaining": "The combined sequence batch closes bounded append/alias behavior while A0 printed array-concat indexing stays unadjudicated; the two length named transfers assume their own children. The bounded array-ordering and [Boolean operator review](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md) keep their separate scopes. Only the two explicit Boolean shortcuts have named transfer decisions; longcut non-Boolean RHS domain B0 stays unknown. Arithmetic, bitwise, equality, coercion, other relational operators and whole scalar/producer judgments remain unadjudicated.",
+      "remaining": "The [bounded shift record](SPEC-BOUNDED-SHIFTS-2026-10-23.md) adds independent source/AST witnesses for exact integral signed-64 input conversion, nonnegative no-loss << / >> results, modulo-64 counts, negative integer refusal and demanded/type/lazy boundaries. Fractional and architecture-specific out-of-range conversion, negative-left/sign-fill, sign/discarded bits and general integer-to-binary64 rounding remain unreviewed; no legacy mixed Go vector supplies the oracle. Earlier sequence/array/Boolean subsets retain their scopes. Whole arithmetic/bitwise/equality/coercion/relational and producer/child domains remain open. EXEC-OPERATORS stays partial; A0/B0/N0/R0/PE0/DF0, the greater-than print conflict and all earlier limits are unchanged.",
       "implementation": [
         "operators.mbt",
         "eval.mbt",
