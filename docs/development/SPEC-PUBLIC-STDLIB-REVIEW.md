@@ -37,7 +37,7 @@ that no test exists anywhere.
 N/E/L/B in the table are normal/error/lazy/boundary dimensions. R means only the
 specific assertions reviewed against the fixed contract in
 [manual case mappings](../../tests/spec-public-coverage.json). U means that
-dimension remains unreviewed/unmapped. Forty-nine functions currently have reviewed
+dimension remains unreviewed/unmapped. Fifty-one functions currently have reviewed
 subsets, including the ten independent [foundation reviews](SPEC-FOUNDATIONS-REVIEW.md)
 and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [object visibility/lookup functions](SPEC-OBJECT-CONTRACTS-REVIEW.md) and seven
@@ -48,7 +48,8 @@ and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [three integer String parser subsets](SPEC-INTEGER-PARSERS-2026-10-23.md) and
 [a prune removal/demand subset](SPEC-PRUNE-2026-10-23.md) and
 [a join concatenation/demand subset](SPEC-JOIN-2026-10-23.md) and
-[two shallow/deep flattening subsets](SPEC-FLATTEN-2026-10-23.md);
+[two shallow/deep flattening subsets](SPEC-FLATTEN-2026-10-23.md) and
+[deepJoin/lines String composition subsets](SPEC-COMPOSED-STRINGS-2026-10-23.md);
 even these functions have unresolved or uncovered contracts. No whole
 function is accepted as fully conforming by this inventory. Earlier executed
 test counts remain tied to their respective stage sources, not to a new claim

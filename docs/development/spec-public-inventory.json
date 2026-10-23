@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "584d99fce87a93eb5a28a5fd8f196bd3c3d2370a",
-  "uncommitted_test_paths": "spec_flatten_test.mbt",
+  "input_source_commit": "f6fce6dbeb79a7a6bbdfc118ed86906853b35491",
+  "uncommitted_test_paths": "spec_composed_strings_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -83,6 +83,7 @@
     "spec_assertion_super_test.mbt": "d118e17f3fd36f4bcfaa5ebbd6ec4131cb8794c738a6826cac0ea7c23b24f884",
     "spec_boolean_shortcircuit_test.mbt": "730b05bfade40138c803a0223387fee8b11f92117fcc1996dda46cf8c71109ef",
     "spec_bounded_shift_test.mbt": "dff823b5287e3a7a6a502f04bbdc7a3afbd589fa5db019396f5df8e801df3d81",
+    "spec_composed_strings_test.mbt": "896627825a13c8760a163a97fe2f49a22155be78e3204c08acde6bdf3fce1ed0",
     "spec_conditional_runtime_test.mbt": "ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf",
     "spec_conditional_static_test.mbt": "6f596f443401defc8c4865a5ac19084973c1bc27aeba11dd487e131462b4ea8e",
     "spec_encoding_entries_test.mbt": "2a4d39967638879a230a300ad345a7f52986a03ab739048e996d12f911dd4d4c",
@@ -165,7 +166,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "b86da41053f01127e1f05d99cd785760e5d94003c1320c359ba0d7fbc9777b67",
+  "coverage_sha256": "190342e800f5caafe40e03558cef23e681a94e5087dece55910c848610059870",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -782,13 +783,86 @@
         "source": "std.deepJoin(arr)",
         "source_line": "330"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "deepJoin",
+        "signature_review": {
+          "parameters": [
+            "arr"
+          ],
+          "defaults": {},
+          "test": "spec_composed_strings_test.mbt",
+          "status": "Fixed documentation/source agree on required arr; positional/named success and missing/extra/unknown/overlap binding checks passed in the scoped source/handmade fixture."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 5,
+            "test_declaration": "test \"deepJoin and lines preserve ordered strings and their distinct null contracts\" {",
+            "classification": "manual CS1 deepJoin arm; independent source and AST; executed source and independent handmade AST"
+          },
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 86,
+            "test_declaration": "test \"deepJoin and lines reject wrong domains without demanding rejected payloads\" {",
+            "classification": "manual CS2 deepJoin arm; null rejection and zero payload gates; executed source and independent handmade AST"
+          },
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 117,
+            "test_declaration": "test \"deepJoin and lines demand complete string results even for length and early selection\" {",
+            "classification": "manual CS3 deepJoin arm; strict String demand; executed source and independent handmade AST"
+          },
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 154,
+            "test_declaration": "test \"deepJoin and lines preserve originals and aliases across cold and warm result reads\" {",
+            "classification": "manual CS4 deepJoin arm; nested originals and aliases; executed source and independent handmade AST"
+          },
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 223,
+            "test_declaration": "test \"deepJoin and lines share required input and string leaves while unused calls stay lazy\" {",
+            "classification": "manual CS5 deepJoin arm; shared head and String leaf; executed source and independent handmade AST"
+          },
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 284,
+            "test_declaration": "test \"deepJoin and lines reject bad bindings before gates without skipping static free names\" {",
+            "classification": "manual CS6 deepJoin arm; binding and unused-call controls; executed source and independent handmade AST"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_composed_strings_test.mbt",
+            "expectation": "CS1: String roots preserved; ordered recursive String/Array concatenation without delimiters; independent literal outputs and positional/named arr calls."
+          },
+          "E": {
+            "test": "spec_composed_strings_test.mbt",
+            "expectation": "CS2/CS3/CS6: all non-String/non-Array roots and recursive leaves including null reject; required isolated errors propagate through value/length/early selection; binding errors precede gates."
+          },
+          "L": {
+            "test": "spec_composed_strings_test.mbt",
+            "expectation": "CS2/CS3/CS5/CS6: strict complete String output; rejected Object/Function payload gates unused; source/leaf thunks shared once; unused calls lazy and free names still Static."
+          },
+          "B": {
+            "test": "spec_composed_strings_test.mbt",
+            "expectation": "CS1/CS4: empty String/Array and nested empties; Unicode/NUL/newline preservation; cold/warm originals and aliases unchanged with repeated output."
+          }
+        },
+        "remaining": "Bounded executed subset only, not whole-function acceptance. Error category/native counts belong to the embedding. A0/other print conflict, DF0/HP0, PE0, Object assertions/inheritance/root/std rebinding, competing errors, complete binding/resource/encoding/conversion and prior shift boundaries remain unresolved. No Go/C++ result is an oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "array_std_test.mbt",
           "line": 27,
           "test_declaration": "test \"array source functions preserve lazy values and short circuit\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_composed_strings_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"deepJoin and lines preserve ordered strings and their distinct null contracts\" {",
+          "classification": "manual CS1 deepJoin arm; independent source and AST; executed source and independent handmade AST"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -2485,8 +2559,82 @@
         "source": "std.lines(arr)",
         "source_line": "327"
       },
-      "reviewed_subset": null,
-      "test_reference_candidates": [],
+      "reviewed_subset": {
+        "name": "lines",
+        "signature_review": {
+          "parameters": [
+            "arr"
+          ],
+          "defaults": {},
+          "test": "spec_composed_strings_test.mbt",
+          "status": "Fixed documentation/source agree on required arr; positional/named success and missing/extra/unknown/overlap binding checks passed in the scoped source/handmade fixture."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 5,
+            "test_declaration": "test \"deepJoin and lines preserve ordered strings and their distinct null contracts\" {",
+            "classification": "manual CS1 lines arm; source-defined null skipping; executed source and independent handmade AST"
+          },
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 86,
+            "test_declaration": "test \"deepJoin and lines reject wrong domains without demanding rejected payloads\" {",
+            "classification": "manual CS2 lines arm; domain and zero payload gates; executed source and independent handmade AST"
+          },
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 117,
+            "test_declaration": "test \"deepJoin and lines demand complete string results even for length and early selection\" {",
+            "classification": "manual CS3 lines arm; strict String demand; executed source and independent handmade AST"
+          },
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 154,
+            "test_declaration": "test \"deepJoin and lines preserve originals and aliases across cold and warm result reads\" {",
+            "classification": "manual CS4 lines arm; sentinel must not mutate original; executed source and independent handmade AST"
+          },
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 223,
+            "test_declaration": "test \"deepJoin and lines share required input and string leaves while unused calls stay lazy\" {",
+            "classification": "manual CS5 lines arm; shared head and String leaf; executed source and independent handmade AST"
+          },
+          {
+            "file": "spec_composed_strings_test.mbt",
+            "line": 284,
+            "test_declaration": "test \"deepJoin and lines reject bad bindings before gates without skipping static free names\" {",
+            "classification": "manual CS6 lines arm; binding and unused-call controls; executed source and independent handmade AST"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_composed_strings_test.mbt",
+            "expectation": "CS1: ordered strings each followed by newline; fixed join skips outer null as a source-defined exception absent from public prose; literal independent outputs and named arr calls."
+          },
+          "E": {
+            "test": "spec_composed_strings_test.mbt",
+            "expectation": "CS2/CS3/CS6: non-Array root and non-String/non-null members reject without demanding Array/Object/Function payloads; isolated required errors propagate; invalid bindings precede gates."
+          },
+          "L": {
+            "test": "spec_composed_strings_test.mbt",
+            "expectation": "CS2/CS3/CS5/CS6: complete String demand for length/early selection; no rejected payload gates; shared input/String leaf thunks and unused-call laziness."
+          },
+          "B": {
+            "test": "spec_composed_strings_test.mbt",
+            "expectation": "CS1/CS4: empty/all-null inputs yield empty string, empty String still emits newline, existing Unicode/NUL/newlines preserved, originals/aliases unchanged without appended sentinel under cold/warm reads."
+          }
+        },
+        "remaining": "Bounded executed subset only, not whole-function acceptance. Source-defined null skipping is distinct from deepJoin's null rejection. Error category/native counts belong to the embedding. A0/other print conflict, DF0/HP0, PE0, Object assertions/inheritance/root/std rebinding, competing errors, complete binding/resource/encoding/conversion and prior shift boundaries remain unresolved. No Go/C++ result is an oracle."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "spec_composed_strings_test.mbt",
+          "line": 5,
+          "test_declaration": "test \"deepJoin and lines preserve ordered strings and their distinct null contracts\" {",
+          "classification": "manual CS1 lines arm; source-defined null skipping; executed source and independent handmade AST"
+        }
+      ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
     },
     {

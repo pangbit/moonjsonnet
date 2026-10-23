@@ -34,7 +34,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `cos` | I: `std.cos(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |
 | `count` | D: `std.count(arr, x)` | S: `std.count(arr, x)` | U/U/U/U | [array_std_test.mbt:22](../../array_std_test.mbt#L22) |
 | `decodeUTF8` | D: `std.decodeUTF8(arr)` | Native/not defined in std.jsonnet | U/U/U/U | [std_encoding_test.mbt:9](../../std_encoding_test.mbt#L9) |
-| `deepJoin` | D: `std.deepJoin(arr)` | S: `std.deepJoin(arr)` | U/U/U/U | [array_std_test.mbt:27](../../array_std_test.mbt#L27) |
+| `deepJoin` | D: `std.deepJoin(arr)` | S: `std.deepJoin(arr)` | R/R/R/R | [array_std_test.mbt:27](../../array_std_test.mbt#L27); [spec_composed_strings_test.mbt:5](../../spec_composed_strings_test.mbt#L5) |
 | `deg2rad` | I: `std.deg2rad(x)` | S: `std.deg2rad(x)` | U/U/U/U | [std_math_test.mbt:14](../../std_math_test.mbt#L14) |
 | `encodeUTF8` | D: `std.encodeUTF8(str)` | Native/not defined in std.jsonnet | U/U/U/U | [std_encoding_test.mbt:6](../../std_encoding_test.mbt#L6) |
 | `endsWith` | D: `std.endsWith(a, b)` | S: `std.endsWith(a, b)` | R/R/R/R | [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_sequence_test.mbt:75](../../spec_string_sequence_test.mbt#L75) |
@@ -75,7 +75,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `isString` | I: `std.isString(v)` | S: `std.isString(v)` | U/U/U/U | [standard_native_diagnostics_test.mbt:36](../../standard_native_diagnostics_test.mbt#L36) |
 | `join` | D: `std.join(sep, arr)` | S: `std.join(sep, arr)` | R/R/R/R | [spec_join_test.mbt:9](../../spec_join_test.mbt#L9) |
 | `length` | D: `std.length(x)` | Native/not defined in std.jsonnet | R/R/R/R | [aggregate_test.mbt:10](../../aggregate_test.mbt#L10); [arguments_test.mbt:4](../../arguments_test.mbt#L4); [array_std_test.mbt:25](../../array_std_test.mbt#L25) |
-| `lines` | D: `std.lines(arr)` | S: `std.lines(arr)` | U/U/U/U | No direct test reference found |
+| `lines` | D: `std.lines(arr)` | S: `std.lines(arr)` | R/R/R/R | [spec_composed_strings_test.mbt:5](../../spec_composed_strings_test.mbt#L5) |
 | `log` | I: `std.log(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |
 | `log10` | I: `std.log10(x)` | S: `std.log10(x)` | U/U/U/U | [std_math_test.mbt:14](../../std_math_test.mbt#L14) |
 | `log2` | I: `std.log2(x)` | S: `std.log2(x)` | U/U/U/U | [std_math_test.mbt:14](../../std_math_test.mbt#L14) |
