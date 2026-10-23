@@ -1304,6 +1304,44 @@
         "Some(\"name-value\")"
       ],
       "checks": "Unused source rejects representative numeric/separated/dollar/non-ASCII/control binder spellings and comment-split names Syntax. All three comment forms separate complete local/name tokens with literal vector and value controls. Valid unbound names reject Static through both entry paths; a bound if0 error remains unused-whole lazy and propagates only on demand. Static/Runtime are adjacent child controls mapped as boundaries, not lexical evaluation-rule completion."
+    },
+    "OT1": {
+      "file": "spec_operator_tokens_wbtest.mbt",
+      "test": "operator alphabet pairs and long runs obey greedy suffix constraints",
+      "test_id": "spec_operator_tokens_wbtest.mbt::operator alphabet pairs and long runs obey greedy suffix constraints",
+      "assertions": [
+        "let alphabet = \"!$:~+-&|^=<>*/%\"",
+        "let legal_ends = \":&|^=<>*/%\"",
+        "if pair != \"//\" && pair != \"/*\"",
+        "op_token_vector(left + right, [left, right])",
+        "(\"=+!$\", [\"=\", \"+\", \"!\", \"$\"])"
+      ],
+      "checks": "Raw lexer observations in both trivia modes match fixed-spec singleton/pair partitions, literal long runs and symbol/name/number adjacency vectors. Allowed final characters keep embedded unary/root symbols inside one token; forbidden repeated tails split. Comment-open pairs belong to OT2. Lexical operator legality is distinct from parser acceptance; no scanner snapshot supplies expectations."
+    },
+    "OT2": {
+      "file": "spec_operator_tokens_wbtest.mbt",
+      "test": "operator sentinels protect comments blocks and lexical failure boundaries",
+      "test_id": "spec_operator_tokens_wbtest.mbt::operator sentinels protect comments blocks and lexical failure boundaries",
+      "assertions": [
+        "(\"=/*ignored*/=\", [\"=\", \"=\"])",
+        "(\"/ /\", [\"/\", \"/\"])",
+        "block_value=Some(\"x\\n\")",
+        "op_lexical_error(source)"
+      ],
+      "checks": "Both trivia modes preserve complete comment/valid-block sentinels at operator boundaries under the documented priority inference. Comments separate operators and stop at the first terminator; spaced slash/bar fragments stay separate. Valid blocks retain raw spelling and String x-newline value. Missing/invalid recognized closures and non-token characters reject Syntax. No raw verdict is assigned to a block opener lacking its opening newline."
+    },
+    "OT3": {
+      "file": "spec_operator_tokens_test.mbt",
+      "test": "operator token splits feed source AST and admission boundaries independently",
+      "test_id": "spec_operator_tokens_test.mbt::operator token splits feed source AST and admission boundaries independently",
+      "assertions": [
+        "sequence_value({ source, tree, }, expected)",
+        "number_token_text(\"1++2\")",
+        "names_syntax(invalid)",
+        "Some(\"operator-demand\")",
+        "assert_eq(d.kind, @moonjsonnet.Static)"
+      ],
+      "checks": "Public source and independent ASTs agree on literal arithmetic/comparison, comment/unary and adjacent valid-block results; public vectors confirm token splits. Unknown grammatical operators and malformed sources reject Syntax even unused. Valid spellings instead expose deferred Type/Runtime and admission Static operand controls. No host AST lexical rejection or whole operator evaluation rule is inferred."
     }
   },
   "rules": {
@@ -2093,23 +2131,32 @@
       "id": "LEX-NAMES",
       "section": "lexing",
       "obligation": "Identifier alphabet, reserved keywords and operator tokenization",
-      "remaining": "The [identifier record](SPEC-LEX-NAMES-2026-10-23.md) reviews the fixed ASCII alphabets, all 18 keyword exclusions in four source id slots, longer keyword-prefix names, quoted names and selected comment/name boundaries. Normal cases compare source with independently built ASTs; source Syntax and adjacent Static/Runtime remain separate. Full operator-token grammar/termination exceptions, all token compositions/encodings, all AST/static name constructors and resource-independent proofs remain unreviewed. No named/prose completion, Go/C++ acceptance or A0/B0/N0/R0/PE0 adjudication is inferred.",
+      "remaining": "The [identifier record](SPEC-LEX-NAMES-2026-10-23.md) and [operator-token record](SPEC-OPERATOR-TOKENS-2026-10-23.md) cover their fixed ASCII/keyword and bounded raw-token/source-AST controls. Sentinel cases use the stated complete-opener priority inference, not a formal proof of arbitrary maximal matching or malformed-opener fallback. General unbounded token compositions, all encodings/coordinates/resources, malformed String/block opening forms and complete AST/static/evaluation judgments remain unproved. No named/prose completion or Go/C++ acceptance is inferred; A0/B0/N0/R0/PE0 and other standing unknowns are unchanged.",
       "implementation": [
         "lexer.mbt",
-        "parser.mbt"
+        "parser.mbt",
+        "token.mbt"
       ],
       "normal": [
         "LN1",
         "LN2",
-        "LN3"
+        "LN3",
+        "UP0",
+        "OT1",
+        "OT2",
+        "OT3"
       ],
       "lazy": [
-        "LN3"
+        "LN3",
+        "OT3"
       ],
       "boundary": [
         "LN1",
         "LN2",
-        "LN3"
+        "LN3",
+        "OT1",
+        "OT2",
+        "OT3"
       ]
     },
     {
