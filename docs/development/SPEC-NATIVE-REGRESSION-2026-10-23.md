@@ -294,3 +294,105 @@ No proposal content, upstream modification, push or release is included.
 The documentation-only delivery changes no tested product, fixture, interface,
 manifest or executable README bytes. Its metadata checks and final exact input/
 commit verification are retained under delivery/ in this evidence directory.
+
+## Local application delivery subset at f23210c
+
+On 2026-10-23, the existing application examples passed two API test groups and
+eleven independent CLI/embedded process cases at clean source commit
+`f23210c4774c157ea7f70a7ba9c4ed865c819134`, tree
+`05c5d7547539c00526fe3c6819df164222c6f1d9`. A Git archive and per-entry SHA-256
+manifest bound all 682 tracked regular files and literal symlinks. The working
+repository and temporary snapshot matched these inputs before and after execution.
+There was no product-source, fixture, expectation or controller correction.
+
+The external Python standard-library controller selected ten rows verbatim from
+[spec-acceptance.json](../../tests/spec-acceptance.json), plus the existing
+standalone embedded case from
+[spec-acceptance.mbtx](../../tools/spec-acceptance.mbtx). It did not execute the
+broad two-worker runner. The two API groups were the complete existing file
+[examples_test.mbt](../../examples/examples_test.mbt): `complete examples match
+fixed expected JSON` and `embedded config rejects invalid parameters and limits
+with source diagnostics`. These use the project API and local controlled imports;
+they do not install or consume a separate published package.
+
+Commands ran serially in the temporary source directory, with closed stdin and
+the existing Moon SDK. The release build and debug API test each had a 600-second
+limit; every application process had a 10-second limit. The controller's overall
+child-execution limit was 1500 seconds. Every spawned command received its own
+process group. Timeouts would kill only that invocation's group and preserve its
+raw outputs; no timeout occurred. Child environment values were frozen explicitly:
+the existing PATH, HOME and SDKROOT, `RUST_LOG=error`, `LANG=C`, `LC_ALL=C`, and
+TMPDIR/TMP/TEMP pointing inside this evidence directory.
+
+```sh
+moon build cmd/main examples/embedded --target native --release --frozen --deny-warn -j 1
+moon test examples/examples_test.mbt --target native --debug --frozen --deny-warn -j 1 --no-parallelize
+```
+
+The build exited 0 in 13.196 seconds; the API command exited 0 in 3.424 seconds
+and reported exactly `Total tests: 2, passed: 2, failed: 0.` The controller exited
+0 in 20.154 seconds including toolchain readback, hashing and process cases.
+All eleven process verdicts passed; six correctly returned a nonzero exit:
+
+| Existing case ID | Actual exit | Verified result |
+| --- | --- | --- |
+| environment-configurations | 0 | Entire committed development/production JSON |
+| environment-file-output | 0 | Entire expected JSON in the output file; empty stdout |
+| monitoring-panels | 0 | Entire committed monitoring panel JSON |
+| embedded-configuration | 0 | Expected checkout configuration with replicas=3 |
+| embedded-missing-parameter | 1 | Runtime diagnostic containing replicas and main.jsonnet |
+| embedded-invalid-type | 1 | Numeric-parameter assertion and main.jsonnet location |
+| embedded-invalid-value | 1 | Range assertion and main.jsonnet location |
+| embedded-import-escape | 1 | Import diagnostic rejecting escape from the configured root |
+| embedded-step-limit | 1 | Limit diagnostic; no stronger entry-location assumption |
+| preserve-output-on-overflow | 1 | Overflow diagnostic; existing output bytes unchanged |
+| embedded-library-executable | 0 | Expected first-line JSON and all three existing rejection diagnostics |
+
+Success cases required empty stderr; error cases required empty stdout and the
+existing diagnostic checks. JSON comparisons preserved types and full structure.
+Each output-file case had its own temporary directory, with the sentinel saved
+before execution and both actual and copied after-execution bytes retained.
+The overflow case preserved the exact sentinel bytes. No existing user output
+path was reused.
+
+Toolchain readback recorded Moon 0.1.20260920 (914d7da), moonc
+v0.10.14+7d59c7ec9, moonrun 0.1.20260920 and Apple clang
+21.0.0 (clang-2100.1.1.101), on macOS ARM64. The local evidence directory is
+`/tmp/moonjsonnet-local-c.t7e074qn`. The following hashes bind its retained inputs
+and outputs; temporary-file availability is not an archival guarantee.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| source-f23210c.tar | `485eedd9ac230194bd0346dc962b84d220d06e3b431fa709a1110fa50f5a4698` |
+| source-manifest.json | `7b531fa2ff58a5a2e7caa83a0804d76f396fad19c27c7b9bc8d32392765e5949` |
+| freeze.json | `ff0c710289ea06bd6f41b5951a7fde3362fef10eeb2be29d02586a0e530a7b02` |
+| selection.json | `95251c3061f27b88915f879dc1123b3c4b114a992e20248f24e7437db3eb69e1` |
+| controller.py | `dc0b223d43cac8406372744c488d6163a462ddedbc133abc1c68bcb4c5885f1b` |
+| tests/spec-acceptance.json | `bc8618dcdac3e2f7ef05b68addbdae2861183ff77ce4e6c7ca561a594b1d8257` |
+| examples/examples_test.mbt | `b2ee12422858882c7e661ba3e32ce333fd8724496fda344ae11ef3edd161a5ff` |
+| release cmd/main executable | `decadfb6ef3fe6c4279266170f077c1d5dae94739fd546b875fc33e914f7de99` |
+| release embedded executable | `3381baa7435b6c14505b914d8fdb80c8b37766be125256a51ea5e81b92deab8e` |
+| debug examples blackbox executable | `8119a4da3569aea0958bdb33203ce93da7d28ef88bbb63e8341704654892cd36` |
+| results/report.json | `4e4e5258a63fafd3f56e60ae868a8cf17a0ccb35244d11a04350cd3eb569fa35` |
+| results/artifacts.json | `93dc195a3a576ee9add7674355eb57e4bf7bce7f788206af042375f7623e56ef` |
+| results/receipt.json | `d0af94b71e417104d7a4d3d095fdb58a1059b50b9d23a5e8286b895fc72a978a` |
+| independent-verification.json | `e88a714b5c597a1767643ba8d0da83f763e67190e711ede1b7644b5ef7746302` |
+
+The freeze binds exact argv, environment, controller and existing tool-binary
+hashes. Every command has separate raw stdout/stderr and exit/timing metadata;
+the artifact manifest covers reports, output-file observations and binary copies.
+Independent readback rehashed the evidence, original 682 inputs and saved
+executables, and confirmed the controller plus fifteen direct child PIDs and all
+recorded process groups had exited. Receipt-pinned cleanup then verified the
+generated-file inventory and removed only this run's `source/_build` and `tmp`.
+All source inputs, raw logs, before/after output files, binary copies and receipts
+remain retained. No source checkout, user output or global cache was cleaned.
+
+This finite subset is not the complete 67-case application suite, independently
+installed package-consumer acceptance, a full package regression at f23210c,
+debug-and-release application acceptance in both modes, or Linux acceptance.
+The old full-suite 713/713 results remain bound to 84eb1f7. No Go/C++ execution,
+SSH, transfer, network tool, installation, container, ASan, push or release was
+performed. The run adds no normative-rule or public-function completion: all
+recorded disputes remain unresolved where previously unresolved, and overall
+specification conformance remains incomplete.

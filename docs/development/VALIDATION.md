@@ -15,6 +15,13 @@ input/binary fingerprints and raw logs for both stages. Standalone integrations
 and cross-platform/reference checks remain outside the current run; overall
 specification conformance is incomplete.
 
+The [f23210c application subset](SPEC-NATIVE-REGRESSION-2026-10-23.md#local-application-delivery-subset-at-f23210c)
+subsequently passed two debug API groups and eleven release CLI/embedded process
+cases from a verified 682-entry source archive. Its narrow controller preserves
+the existing fixture expectations and uses one worker, closed stdin and bounded
+commands. This is separate from the full package regression and does not establish
+all 67 application cases, an independent package consumer or Linux acceptance.
+
 The [P1 stage](SPEC-P1-EVIDENCE-2026-10-22.md) rejects duplicate formal names
 statically under the fixed specification, including public Program AST input.
 Historical repeated-parameter success fixtures below remain unchanged and are

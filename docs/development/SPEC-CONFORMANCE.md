@@ -44,6 +44,13 @@ corrections. The earlier 672/672 results remain bound separately to 21ee800.
 This refreshes local package regression evidence only; matrix coverage,
 unresolved contracts and remaining integration/platform requirements are unchanged.
 
+The [local application delivery subset at f23210c](SPEC-NATIVE-REGRESSION-2026-10-23.md#local-application-delivery-subset-at-f23210c)
+passed two existing API groups and eleven independent CLI/embedded process cases
+against one clean 682-entry source snapshot. This adds current macOS application
+evidence only: debug API tests and release executables. It does not establish the
+complete 67-case application suite, an independently installed package consumer,
+Linux acceptance or a full package regression at f23210c.
+
 ## P0 normative matrix
 
 This is a focused regression matrix, not the complete final conformance matrix.
