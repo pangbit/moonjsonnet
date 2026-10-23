@@ -8,6 +8,7 @@ arguments followed by --resume-positive. Existing attempts are retained.
 Use --case-prefix sign- for only the comparison-sign form controls.
 Use --case-prefix neg- for only the Boolean-negation form controls.
 Use --case-prefix pair- for only the static-pair transfer controls.
+Use --case-prefix value- for only the core-value transfer controls.
 Only tracked/staged inputs are mirrored; stage new test/report fixtures first. The
 negative checker runs sequentially in that mirror. Positive readback runs in
 the real repository and regenerates its matrix, whose Git identity is required.
@@ -217,6 +218,22 @@ def main():
         data = copy.deepcopy(original)
         data["rules"]["chk-binary"]["rule_review"]["child_judgments_assumed"] = ""
         add("pair-child", data, "transfer child assumptions required")
+
+    if "value" in original["rules"]:
+        data = copy.deepcopy(original)
+        row = copy.deepcopy(data["rules"]["value"])
+        row["rule_review"]["rule"] = "chk-lit"
+        data["rules"]["chk-lit"] = row
+        add("value-foreign-rule", data, "value head completion restricted to value")
+        data = copy.deepcopy(original)
+        data["rules"]["value"]["rule_review"]["fixed_statement"] += " union Object"
+        add("value-domain", data, "reviewed transfer statement mismatch")
+        data = copy.deepcopy(original)
+        data["rules"]["value"]["rule_review"]["premise_roles"] = ["forced-payload"]
+        add("value-role", data, "transfer premise roles")
+        data = copy.deepcopy(original)
+        data["rules"]["value"]["rule_review"]["child_judgments_assumed"] = ""
+        add("value-child", data, "transfer child assumptions required")
 
     cases = [case for case in cases if case[0].startswith(args.case_prefix)]
     assert cases, "no metadata cases match the selected prefix"
