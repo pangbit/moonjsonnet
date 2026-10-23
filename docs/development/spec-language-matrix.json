@@ -2,18 +2,18 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "951a9bb6047017fc58d8286e9086f312fc9cc74790b7b33ce368fd0d8f437b9e",
+  "mapping_sha256": "81276e1214806ef87be31ba15c1ea4a47e61836716f7b2e36aa80cf52ebb8633",
   "tool_sha256": "da3657872b9348056bfcf5579eba583f1dc9fbd1f854be99bc59ce77ab94296f",
   "mapping_schema_version": 2,
-  "global_test_ids": 182,
+  "global_test_ids": 185,
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 61,
+  "manually_reviewed_subset_rows": 62,
   "completed_rule_rows": 28,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 9,
   "completed_evaluation_rule_rows": 19,
-  "unreviewed_rows": 4,
+  "unreviewed_rows": 3,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -2646,6 +2646,60 @@
       ],
       "checks": "Source and independent original in-super ASTs in an extracted middle-layer function yield literal [true,true,false,false] for hidden h/prior a/same-layer b/later c under std shadowing. Each keyed demand is counted once only when used; no hidden or overridden field value is forced. A separate inspection connects direct membership and objectHasEx(true) through has_field on the captured prefix. This is not a fabricated admissible public bare-super Core Call or completion of inheritance/static children.",
       "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "EL1": {
+      "file": "spec_expression_lists_test.mbt",
+      "line": 95,
+      "test": "expression lists retain empty trailing comma and adjacent delimiter shapes",
+      "test_id": "spec_expression_lists_test.mbt::expression lists retain empty trailing comma and adjacent delimiter shapes",
+      "assertions": [
+        "[\"[1]\", \"[1,]\", \"[1/**/,// trailing\\n]\"]",
+        "[\"function(a=1,b,)b\"]",
+        "[\"f(b=2,a=1,)\"]",
+        "[\"f([1,2,],)\"]",
+        "[\"local f(a,b=2,)=a+b;f(1,b=2,)\"]",
+        "list_syntax_shape(value)",
+        "sequence_value(ordering_unused(list_scope(value)), 42)"
+      ],
+      "checks": "Explicit source spellings cover empty/single/multiple Array, parameter and argument lists, optional nonempty trailing commas, interleaved required/default formals, legal named/positional forms, comments, adjacent nested delimiters and local function binds. SyntaxDocument semantic shapes are compared with independently handwritten ordered ASTs, retaining names/defaults/strictness. Both separate Program entry paths statically admit in an unused bounded context and return 42 without demanding error-valued f. AST admission/execution does not itself prove source grammar, whole expression alternatives or child judgments.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "EL2": {
+      "file": "spec_expression_lists_test.mbt",
+      "line": 161,
+      "test": "malformed expression lists reject before any lazy branch can hide them",
+      "test_id": "spec_expression_lists_test.mbt::malformed expression lists reject before any lazy branch can hide them",
+      "assertions": [
+        "\"local x=1,;42\"",
+        "\"f(1)2\"",
+        "\"local unused=(\" + source + \");42\"",
+        "\"if false then (\" + source + \") else 42\"",
+        "@moonjsonnet.SyntaxDocument::parse(wrapped, filename=\"expression-lists\")",
+        "@moonjsonnet.Program::parse(wrapped, filename=\"expression-lists\")",
+        "assert_eq(d.kind, @moonjsonnet.Syntax, msg=wrapped)"
+      ],
+      "checks": "A fixed malformed-source inventory rejects Syntax in both SyntaxDocument and Program creation, directly and under unused-local/unselected-branch wrappers. It distinguishes optional trailing commas from missing items, separators, expressions, bodies and matching closures, plus local bind minimum/no-trailing-comma and EOF adjacency constraints. No malformed typed-AST equivalent or complete parser-language/diagnostic/resource proof is asserted.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "EL3": {
+      "file": "spec_expression_lists_test.mbt",
+      "line": 201,
+      "test": "valid expression list syntax keeps static rejection separate from deferred demand",
+      "test_id": "spec_expression_lists_test.mbt::valid expression list syntax keeps static rejection separate from deferred demand",
+      "assertions": [
+        "source: \"function(a=missing,)42\"",
+        "for expression in [list_scope(value), ordering_unused(list_scope(value))]",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(d.message, \"Unknown variable: missing\")",
+        "source: \"[42,error 'list-unread',][0]\"",
+        "sequence_value(ordering_unused(value), 42)",
+        "Some(\"list-default\")",
+        "Some(\"list-supplied\")",
+        "\"42(1,)\"",
+        "sequence_failure(value, kind, marker)"
+      ],
+      "checks": "Valid list sources independently match handwritten shapes even with a free missing name, then reject Static with the missing-name identity through both Program entries and unused wrappers. Separate fixed 42 controls keep error-valued array tails/defaults/supplied arguments/locals lazy. Actual demand propagates its isolated Runtime marker; a numeric callee is a separate demanded Type failure. These are bounded phase/demand controls, not whole function binding/default/evaluation or host diagnostic conformance.",
+      "status": "manually reviewed assertion subset; execution is separate"
     }
   },
   "test_file_sha256": {
@@ -2714,7 +2768,8 @@
     "spec_static_literals_test.mbt": "280662a08529ece56b43d47692065f7bf289b878a77dc2f8b87953d793f2677e",
     "spec_value_heads_test.mbt": "c333432caf47be1eb43ef9650c86309361f3dc5e6bcd80befc435cb2802a20fc",
     "spec_encoding_entries_test.mbt": "2a4d39967638879a230a300ad345a7f52986a03ab739048e996d12f911dd4d4c",
-    "spec_operator_rewrites_test.mbt": "ea6f10a9e4ce289d228c21c0d0dc10d1efc9d8ee2f791e645e6523ee665b59e4"
+    "spec_operator_rewrites_test.mbt": "ea6f10a9e4ce289d228c21c0d0dc10d1efc9d8ee2f791e645e6523ee665b59e4",
+    "spec_expression_lists_test.mbt": "a28036727517e12ab3e27243f613eafc56172aa764b0432192196cb1d1a793c0"
   },
   "clauses": [
     {
@@ -7022,17 +7077,57 @@
       "kind": "prose-or-grammar-obligation",
       "section": "abstract_syntax",
       "source_line": 246,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "normal": [
+          "EL1",
+          "PREC1",
+          "PREC2",
+          "PREC3",
+          "PREC4",
+          "LN2",
+          "OT3",
+          "AP1",
+          "F1"
+        ],
+        "static_error": [
+          "EL3",
+          "AP6",
+          "F5",
+          "IF1"
+        ],
+        "runtime_error": [
+          "EL3",
+          "AP3",
+          "AP4",
+          "PREC5"
+        ],
+        "lazy": [
+          "EL1",
+          "EL2",
+          "EL3",
+          "PREC5",
+          "AP5",
+          "IF1"
+        ],
+        "boundary": [
+          "EL1",
+          "EL2",
+          "EL3",
+          "LN3",
+          "OT1",
+          "OT2",
+          "PREC3",
+          "AP7"
+        ]
       },
-      "remaining": "No coverage inferred from AST variant registration or example names.",
+      "remaining": "The [expression-list record](SPEC-EXPRESSION-LISTS-2026-10-23.md) covers explicit Array/parameter/argument/local list productions, optional commas, nested delimiter/comment/EOF boundaries and malformed unused source rejection. Valid source shapes are compared with independent trees; AST execution is separate corroboration, not a syntax proof. Existing precedence/token/call evidence retains its own scope. Every expression alternative, all named/positional ordering and duplicate-identity diagnostics, child/default/binding judgments, tailstrict, object/member/brace-application, comprehension/slice grammar, unparenthesized import extent and unbounded source/resource/Unicode domains are not completed. The whole SYN-EXPR row remains partial; all prior unresolved items remain unchanged.",
       "implementation": [
-        "parser.mbt"
+        "parser.mbt",
+        "lexer.mbt",
+        "syntax_document.mbt",
+        "ast_convert.mbt",
+        "validate.mbt"
       ],
       "obligation": [
         "Every expression alternative and optional/trailing syntax"

@@ -1645,6 +1645,54 @@
         "assert_eq(counts.length(), if unused { 0 } else { 4 })"
       ],
       "checks": "Source and independent original in-super ASTs in an extracted middle-layer function yield literal [true,true,false,false] for hidden h/prior a/same-layer b/later c under std shadowing. Each keyed demand is counted once only when used; no hidden or overridden field value is forced. A separate inspection connects direct membership and objectHasEx(true) through has_field on the captured prefix. This is not a fabricated admissible public bare-super Core Call or completion of inheritance/static children."
+    },
+    "EL1": {
+      "file": "spec_expression_lists_test.mbt",
+      "test": "expression lists retain empty trailing comma and adjacent delimiter shapes",
+      "test_id": "spec_expression_lists_test.mbt::expression lists retain empty trailing comma and adjacent delimiter shapes",
+      "assertions": [
+        "[\"[1]\", \"[1,]\", \"[1/**/,// trailing\\n]\"]",
+        "[\"function(a=1,b,)b\"]",
+        "[\"f(b=2,a=1,)\"]",
+        "[\"f([1,2,],)\"]",
+        "[\"local f(a,b=2,)=a+b;f(1,b=2,)\"]",
+        "list_syntax_shape(value)",
+        "sequence_value(ordering_unused(list_scope(value)), 42)"
+      ],
+      "checks": "Explicit source spellings cover empty/single/multiple Array, parameter and argument lists, optional nonempty trailing commas, interleaved required/default formals, legal named/positional forms, comments, adjacent nested delimiters and local function binds. SyntaxDocument semantic shapes are compared with independently handwritten ordered ASTs, retaining names/defaults/strictness. Both separate Program entry paths statically admit in an unused bounded context and return 42 without demanding error-valued f. AST admission/execution does not itself prove source grammar, whole expression alternatives or child judgments."
+    },
+    "EL2": {
+      "file": "spec_expression_lists_test.mbt",
+      "test": "malformed expression lists reject before any lazy branch can hide them",
+      "test_id": "spec_expression_lists_test.mbt::malformed expression lists reject before any lazy branch can hide them",
+      "assertions": [
+        "\"local x=1,;42\"",
+        "\"f(1)2\"",
+        "\"local unused=(\" + source + \");42\"",
+        "\"if false then (\" + source + \") else 42\"",
+        "@moonjsonnet.SyntaxDocument::parse(wrapped, filename=\"expression-lists\")",
+        "@moonjsonnet.Program::parse(wrapped, filename=\"expression-lists\")",
+        "assert_eq(d.kind, @moonjsonnet.Syntax, msg=wrapped)"
+      ],
+      "checks": "A fixed malformed-source inventory rejects Syntax in both SyntaxDocument and Program creation, directly and under unused-local/unselected-branch wrappers. It distinguishes optional trailing commas from missing items, separators, expressions, bodies and matching closures, plus local bind minimum/no-trailing-comma and EOF adjacency constraints. No malformed typed-AST equivalent or complete parser-language/diagnostic/resource proof is asserted."
+    },
+    "EL3": {
+      "file": "spec_expression_lists_test.mbt",
+      "test": "valid expression list syntax keeps static rejection separate from deferred demand",
+      "test_id": "spec_expression_lists_test.mbt::valid expression list syntax keeps static rejection separate from deferred demand",
+      "assertions": [
+        "source: \"function(a=missing,)42\"",
+        "for expression in [list_scope(value), ordering_unused(list_scope(value))]",
+        "assert_eq(d.kind, @moonjsonnet.Static)",
+        "assert_eq(d.message, \"Unknown variable: missing\")",
+        "source: \"[42,error 'list-unread',][0]\"",
+        "sequence_value(ordering_unused(value), 42)",
+        "Some(\"list-default\")",
+        "Some(\"list-supplied\")",
+        "\"42(1,)\"",
+        "sequence_failure(value, kind, marker)"
+      ],
+      "checks": "Valid list sources independently match handwritten shapes even with a free missing name, then reject Static with the missing-name identity through both Program entries and unused wrappers. Separate fixed 42 controls keep error-valued array tails/defaults/supplied arguments/locals lazy. Actual demand propagates its isolated Runtime marker; a numeric callee is a separate demanded Type failure. These are bounded phase/demand controls, not whole function binding/default/evaluation or host diagnostic conformance."
     }
   },
   "rules": {
@@ -3646,7 +3694,7 @@
     },
     {"id": "LEX-STRINGS", "section": "lexing", "obligation": "Quoted and verbatim strings, escapes and Unicode", "remaining": "The [quoted-string record](SPEC-QUOTED-STRINGS-2026-10-23.md) covers the four quoted forms, specified simple/non-surrogate hex escapes, exact LF/CRLF, verbatim doubling/literal payloads, raw token boundaries and source-only Syntax before demand. AST controls validate canonical values only. Surrogate pairing/replacement, raw non-line controls in ordinary strings, invalid source encoding and complete unbounded scanner/grammar/resource contracts remain unadjudicated. Text blocks and malformed block-sentinel policy stay separate; no whole LEX-STRINGS completion is recorded.", "implementation": ["lexer.mbt", "string_literal.mbt", "token.mbt"], "normal": ["QS0", "QS1", "QS2", "QS3"], "static_error": ["QS4"], "runtime_error": ["QS4"], "lazy": ["QS4"], "boundary": ["QS1", "QS2", "QS3", "QS4"]},
     {"id": "LEX-TEXT-BLOCK", "section": "lexing", "obligation": "Text-block indentation, blank lines and final chomp", "normal": ["CRLF", "CHOMP"], "boundary": ["CRLF", "CHOMP"], "remaining": "Full malformed indentation/whitespace-only-line matrix.", "implementation": ["lexer.mbt"]},
-    {"id": "SYN-EXPR", "section": "abstract_syntax", "obligation": "Every expression alternative and optional/trailing syntax", "remaining": "No coverage inferred from AST variant registration or example names.", "implementation": ["parser.mbt"]},
+    {"id": "SYN-EXPR", "section": "abstract_syntax", "obligation": "Every expression alternative and optional/trailing syntax", "remaining": "The [expression-list record](SPEC-EXPRESSION-LISTS-2026-10-23.md) covers explicit Array/parameter/argument/local list productions, optional commas, nested delimiter/comment/EOF boundaries and malformed unused source rejection. Valid source shapes are compared with independent trees; AST execution is separate corroboration, not a syntax proof. Existing precedence/token/call evidence retains its own scope. Every expression alternative, all named/positional ordering and duplicate-identity diagnostics, child/default/binding judgments, tailstrict, object/member/brace-application, comprehension/slice grammar, unparenthesized import extent and unbounded source/resource/Unicode domains are not completed. The whole SYN-EXPR row remains partial; all prior unresolved items remain unchanged.", "implementation": ["parser.mbt", "lexer.mbt", "syntax_document.mbt", "ast_convert.mbt", "validate.mbt"], "normal": ["EL1", "PREC1", "PREC2", "PREC3", "PREC4", "LN2", "OT3", "AP1", "F1"], "static_error": ["EL3", "AP6", "F5", "IF1"], "runtime_error": ["EL3", "AP3", "AP4", "PREC5"], "lazy": ["EL1", "EL2", "EL3", "PREC5", "AP5", "IF1"], "boundary": ["EL1", "EL2", "EL3", "LN3", "OT1", "OT2", "PREC3", "AP7"]},
     {"id": "SYN-OBJECT", "section": "abstract_syntax", "obligation": "Object fields, locals, methods, assertions and comprehension grammar", "normal": ["F6", "O1"], "remaining": "Every separator, additive form, comma and malformed construction.", "implementation": ["parser.mbt"]},
     {"id": "SYN-CALL", "section": "abstract_syntax", "obligation": "Positional arguments before named arguments and parameter grammar", "normal": ["F1", "AP1"], "boundary": ["AP7"], "remaining": "Malformed ordering/trailing-comma grid and positional-after-named fine diagnostic classification; AP7 is source Syntax evidence, not a handmade AST Static result.", "implementation": ["parser.mbt", "ast_validate.mbt"]},
     {
