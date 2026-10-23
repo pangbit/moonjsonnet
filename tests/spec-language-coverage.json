@@ -1566,6 +1566,43 @@
         "assert_true(d.message != \"value-function-body\")"
       ],
       "checks": "Source and independent ASTs leave Function default/body observations absent at head demand, preserve defining x=7 for supplied p=3 (10) or default p=x (14), and defer isolated default/body errors until application. A Function inside an Array rejects JSON manifestation without its body marker. Initial root-output fixture failed because the documented API calls a top-level Function once; original failure retained, only this group rerun after the container correction with unchanged normative assertions."
+    },
+    "EN1": {
+      "file": "spec_encoding_entries_test.mbt",
+      "test": "direct String source preserves canonical Unicode without claiming byte validation",
+      "test_id": "spec_encoding_entries_test.mbt::direct String source preserves canonical Unicode without claiming byte validation",
+      "assertions": [
+        "ordering_leaf(source, Literal(Json::string(encoding_entry_text())))",
+        "Json::string(encoding_entry_text())"
+      ],
+      "checks": "The library receives an already constructed String. Manually written Unicode source and independent canonical Literal AST retain scalar boundaries, composed/decomposed text, interior U+FEFF and valid U+FFFD. This tests String-source/value consistency, not original byte validation, leading BOM policy, malformed host Strings or CLI decoding."
+    },
+    "EN2": {
+      "file": "spec_encoding_entries_test.mbt",
+      "test": "binary code imports decode valid UTF8 independently of their source or AST headers",
+      "test_id": "spec_encoding_entries_test.mbt::binary code imports decode valid UTF8 independently of their source or AST headers",
+      "assertions": [
+        "assert_eq(requests.length(), 0)",
+        "assert_eq(evaluator.evaluate(program), Json::string(encoding_entry_text()))",
+        "assert_eq(requests, [(\"ordering-entry\", \"code\")])"
+      ],
+      "checks": "Configured reusable Evaluator binary imports decode an independently declared BOM-free UTF8 byte program to the literal expected String through parsed/handmade ImportFile headers. Creation makes zero requests; demand records the exact origin/path. The imported byte text is actually decoded/parsed in both modes; the hand-built header is not an imported AST or proof of other importer APIs."
+    },
+    "EN3": {
+      "file": "spec_encoding_entries_test.mbt",
+      "test": "code import host decoding errors remain distinct from source phases and stay lazy",
+      "test_id": "spec_encoding_entries_test.mbt::code import host decoding errors remain distinct from source phases and stay lazy",
+      "assertions": [
+        "@moonjsonnet.Import, None",
+        "@moonjsonnet.Syntax, None",
+        "@moonjsonnet.Static, None",
+        "Some(\"入口错误\")",
+        "assert_eq(reads, 0)",
+        "assert_eq(d.kind, kind)",
+        "assert_eq(d.location.file, \"encoding-code\")",
+        "assert_eq(reads, 1)"
+      ],
+      "checks": "A representative malformed-byte code import rejects under documented strict host policy, separately from valid-UTF8 Syntax/Static programs and an explicit Unicode Runtime marker. Unused headers return 42 with zero resolver calls; demand makes one request and retains the imported identity. Error tags/provenance are embedding checks. No fixed-language invalid-byte recovery or surrogate/BOM rule is adjudicated."
     }
   },
   "rules": {
@@ -3502,7 +3539,7 @@
     }
   },
   "clauses": [
-    {"id": "LEX-ENCODING", "section": "lexing", "obligation": "UTF-8 source, whitespace, all comment forms and greedy tokens", "remaining": "Not manually mapped in this stage; retained lexer tests are candidates only.", "implementation": ["lexer.mbt"]},
+    {"id": "LEX-ENCODING", "section": "lexing", "obligation": "UTF-8 source, whitespace, all comment forms and greedy tokens", "remaining": "The [source-entry record](SPEC-ENCODING-ENTRIES-2026-10-23.md) separates valid library String input, reusable Evaluator binary code imports, supplemental CLI file/stdin/import receipts, and reused importstr/importbin data contracts. Strict malformed-byte rejection is documented host policy, not a fixed-spec recovery/diagnostic verdict. Initial BOM policy, malformed host String/surrogate representation, complete invalid-encoding treatment, other importer/formatter/parameter modes and universal whitespace/comment/greedy-token/decoder/resource behavior remain unreviewed. CLI checks are not counted as schema-v2 Moon case identities; no whole-clause completion follows.", "implementation": ["program.mbt", "lexer.mbt", "evaluator_imports.mbt", "imports.mbt", "fs/host.mbt", "cmd/main/main.mbt", "cmd/main/io.mbt"], "normal": ["EN1", "EN2", "IU1", "LN3", "OT2"], "static_error": ["EN3"], "runtime_error": ["EN3", "IU2"], "lazy": ["EN3", "IU3", "IB2"], "boundary": ["EN1", "EN2", "EN3", "IU1", "IU2", "IB1"]},
     {
       "id": "LEX-NAMES",
       "section": "lexing",
