@@ -52,6 +52,100 @@ fn normalized(text : String) -> String {
 }
 
 ///|
+fn mapping_space(source : String, start : Int) -> Int {
+  let mut pos = start
+  while pos < source.length() {
+    match source.code_unit_at(pos) {
+      32 | 9 | 10 | 13 => pos += 1
+      _ => break
+    }
+  }
+  pos
+}
+
+///|
+fn mapping_string_end(source : String, start : Int) -> Int raise {
+  let mut pos = start + 1
+  while pos < source.length() {
+    match source.code_unit_at(pos) {
+      34 => return pos + 1
+      92 => pos += 2
+      _ => pos += 1
+    }
+  }
+  fail("unterminated mapping string")
+}
+
+///|
+// Run after syntax parsing, but before using the parsed Map: core/json drops
+// earlier duplicate members. Decode raw keys so escaped spellings also collide.
+fn mapping_value_end(source : String, start : Int, path : String) -> Int raise {
+  let mut pos = mapping_space(source, start)
+  match source.code_unit_at(pos) {
+    123 => {
+      let seen : Map[String, Bool] = Map([])
+      pos = mapping_space(source, pos + 1)
+      if source.code_unit_at(pos) == 125 {
+        return pos + 1
+      }
+      while pos < source.length() {
+        let end = mapping_string_end(source, pos)
+        guard @json.parse(source[pos:end]) is String(key) else {
+          fail("mapping object key must be String")
+        }
+        assert_true(
+          !seen.contains(key),
+          msg="duplicate mapping key: " + path + "." + key,
+        )
+        seen[key] = true
+        pos = mapping_space(source, end)
+        assert_eq(source.code_unit_at(pos), 58)
+        pos = mapping_space(
+          source,
+          mapping_value_end(source, pos + 1, path + "." + key),
+        )
+        if source.code_unit_at(pos) == 125 {
+          return pos + 1
+        }
+        assert_eq(source.code_unit_at(pos), 44)
+        pos = mapping_space(source, pos + 1)
+      }
+      fail("unterminated mapping object")
+    }
+    91 => {
+      pos = mapping_space(source, pos + 1)
+      if source.code_unit_at(pos) == 93 {
+        return pos + 1
+      }
+      let mut index = 0
+      while pos < source.length() {
+        pos = mapping_space(
+          source,
+          mapping_value_end(source, pos, path + "[" + index.to_string() + "]"),
+        )
+        if source.code_unit_at(pos) == 93 {
+          return pos + 1
+        }
+        assert_eq(source.code_unit_at(pos), 44)
+        pos = mapping_space(source, pos + 1)
+        index += 1
+      }
+      fail("unterminated mapping array")
+    }
+    34 => mapping_string_end(source, pos)
+    _ => {
+      while pos < source.length() {
+        match source.code_unit_at(pos) {
+          32 | 9 | 10 | 13 | 44 | 93 | 125 => break
+          _ => pos += 1
+        }
+      }
+      pos
+    }
+  }
+}
+
+///|
 fn dimension(row : Json, name : String) -> Array[Json] {
   guard row is Object(fields) else { abort("coverage row") }
   match fields.get(name) {
@@ -129,7 +223,18 @@ async fn main {
   assert_eq(sha256(reference + "/language.md"), language_hash)
   let spec = @fs.read_file(reference + "/spec.html").text()
   let mapping_path = "tests/spec-language-coverage.json"
-  let mapping = @json.parse(@fs.read_file(mapping_path).text())
+  let mapping_source = @fs.read_file(mapping_path).text()
+  let mapping = @json.parse(mapping_source)
+  assert_eq(
+    mapping_space(mapping_source, mapping_value_end(mapping_source, 0, "$")),
+    mapping_source.length(),
+    msg="mapping JSON scan incomplete",
+  )
+  assert_eq(
+    field(mapping, "version"),
+    Json::number(2),
+    msg="mapping schema v2 required",
+  )
   assert_eq(text_field(mapping, "spec_commit"), pinned)
   guard field(mapping, "evidence") is Object(evidence) else {
     fail("evidence table")
@@ -142,11 +247,34 @@ async fn main {
   }
   let test_hashes : Map[String, Json] = Map([])
   let locations : Map[String, Json] = Map([])
+  let test_ids : Map[String, String] = Map([])
   for id, item in evidence {
     let path = text_field(item, "file")
+    let case_name = text_field(item, "test")
+    guard item is Object(properties) &&
+      properties.get("test_id") is Some(String(test_id)) &&
+      !test_id.is_empty() else {
+      fail("global test ID required: " + id)
+    }
+    for part in path.split("/") {
+      assert_true(
+        !part.is_empty() && part != "." && part != "..",
+        msg="canonical relative test path required: " + id,
+      )
+    }
+    assert_eq(
+      test_id,
+      path + "::" + case_name,
+      msg="evidence test ID/file/case mismatch: " + id,
+    )
+    assert_true(
+      !test_ids.contains(test_id),
+      msg="duplicate global test ID: " + test_id,
+    )
+    test_ids[test_id] = id
     let source = @fs.read_file(path).text()
     test_hashes[path] = Json::string(sha256(path))
-    let declaration = "test \"" + text_field(item, "test") + "\" {"
+    let declaration = "test \"" + case_name + "\" {"
     let fragments = source.split(declaration).collect()
     assert_eq(fragments.length(), 2, msg="unique test declaration for " + id)
     let block = normalized(
@@ -174,7 +302,8 @@ async fn main {
     locations[id] = {
       "file": path,
       "line": line,
-      "test": text_field(item, "test"),
+      "test": case_name,
+      "test_id": test_id,
       "assertions": assertions,
       "checks": text_field(item, "checks"),
       "status": "manually reviewed assertion subset; execution is separate",
@@ -274,7 +403,7 @@ async fn main {
     "Populated cells identify manually examined assertions. Empty cells remain unreviewed. Completed named-rule reviews concern only their named judgments; completed prose constructor transfers are counted separately and assume their children. N/A cells have stated in-scope reasons, not missing passing tests. Runtime errors include host Type/Assertion categories after successful parsing. ",
   )
   markdown.write_string(
-    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md), [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md), [binary byte-substitution report](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md), [UTF-8 text-substitution report](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md), [conditional-rule report](SPEC-CONDITIONAL-EVIDENCE-2026-10-22.md), [static error report](SPEC-ERROR-STATIC-EVIDENCE-2026-10-22.md), [static unary report](SPEC-UNARY-STATIC-EVIDENCE-2026-10-22.md), [inherited-function receiver report](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix report](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md), [lexical-root report](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md), [assertion-self closure report](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md), [assertion-super report](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md), [assertion object-local report](SPEC-ASSERTION-LOCAL-EVIDENCE-2026-10-22.md), [assertion conjunction/constructor report](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md), [object-assertion adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md), [object-comprehension key report](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md), [array-ordering report](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md), [Boolean operator report](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md), [imported closure report](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md), [combined sequence record](SPEC-SEQUENCE-STRUCTURE-2026-10-22.md), [number-token record](SPEC-NUMBER-TOKENS-2026-10-22.md), [precedence record](SPEC-PRECEDENCE-2026-10-22.md), [object reflection Ex record](SPEC-OBJECT-REFLECTION-EX-2026-10-22.md), [primitive equality record](SPEC-PRIMITIVE-EQUALS-2026-10-22.md), [makeArray/PE0 record](SPEC-MAKEARRAY-2026-10-22.md), [filter record](SPEC-FILTER-2026-10-22.md) and [Object head/count record](SPEC-OBJECT-HEAD-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
+    "Independent outcomes are in [the initial language report](SPEC-LANGUAGE-EVIDENCE-2026-10-22.md), [recursive binding/comprehension report](SPEC-LANGUAGE-FORMS-EVIDENCE-2026-10-22.md), [application entry-path report](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md), [static importstr report](SPEC-IMPORTSTR-STATIC-EVIDENCE-2026-10-22.md), [binary byte-substitution report](SPEC-IMPORTBIN-BYTES-EVIDENCE-2026-10-22.md), [UTF-8 text-substitution report](SPEC-IMPORTSTR-UTF8-EVIDENCE-2026-10-22.md), [conditional-rule report](SPEC-CONDITIONAL-EVIDENCE-2026-10-22.md), [static error report](SPEC-ERROR-STATIC-EVIDENCE-2026-10-22.md), [static unary report](SPEC-UNARY-STATIC-EVIDENCE-2026-10-22.md), [inherited-function receiver report](SPEC-INHERITED-SELF-EVIDENCE-2026-10-22.md), [super-prefix report](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md), [lexical-root report](SPEC-ROOT-SCOPE-EVIDENCE-2026-10-22.md), [assertion-self closure report](SPEC-ASSERTION-SELF-EVIDENCE-2026-10-22.md), [assertion-super report](SPEC-ASSERTION-SUPER-EVIDENCE-2026-10-22.md), [assertion object-local report](SPEC-ASSERTION-LOCAL-EVIDENCE-2026-10-22.md), [assertion conjunction/constructor report](SPEC-ASSERTION-CONJUNCTION-EVIDENCE-2026-10-22.md), [object-assertion adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md), [object-comprehension key report](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md), [array-ordering report](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md), [Boolean operator report](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md), [imported closure report](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md), [combined sequence record](SPEC-SEQUENCE-STRUCTURE-2026-10-22.md), [number-token record](SPEC-NUMBER-TOKENS-2026-10-22.md), [precedence record](SPEC-PRECEDENCE-2026-10-22.md), [object reflection Ex record](SPEC-OBJECT-REFLECTION-EX-2026-10-22.md), [primitive equality record](SPEC-PRIMITIVE-EQUALS-2026-10-22.md), [makeArray/PE0 record](SPEC-MAKEARRAY-2026-10-22.md), [filter record](SPEC-FILTER-2026-10-22.md), [Object head/count record](SPEC-OBJECT-HEAD-2026-10-22.md) and [string-concat record](SPEC-STRING-CONCAT-2026-10-22.md); [Go/C++ comparison](SPEC-LANGUAGE-COMPARISON-2026-10-22.md) is separate. Whole-language conformance remains incomplete.\n\n",
   )
   markdown.write_string(
     "Reproduce with `moon run --frozen tools/spec-language-matrix.mbtx REFERENCE_DIR EVIDENCE_DIR`; REFERENCE_DIR supplies pinned spec.html/language.md and, for Object head/count reviews, stdlib.html. This command validates assertion locations/hashes and regenerates this matrix; it never infers results or runs upstream tools.\n\n",
@@ -1029,7 +1158,7 @@ async fn main {
     }
   }
   markdown.write_string(
-    "\n## Assertion evidence\n\nEach description records what was checked in the assertion body; a declaration name or a textual anchor alone proves no semantic result. Shared evidence is counted once, regardless of how many clauses cite it. Implementation paths and individual dimensions are retained in [the machine-readable matrix](spec-language-matrix.json).\n\n",
+    "\n## Assertion evidence\n\nMapping schema v2 rejects duplicate keys in every JSON object and requires globally unique canonical file::case test IDs. Each anchor must occur inside its selected named case. Each description records what was checked in the assertion body; a declaration name or a textual anchor alone proves no semantic result. Shared evidence is counted once, regardless of how many clauses cite it. Implementation paths and individual dimensions are retained in [the machine-readable matrix](spec-language-matrix.json).\n\n",
   )
   markdown.write_string(
     "| ID | Exact test block | Reviewed assertion meaning |\n| --- | --- | --- |\n",
@@ -1058,6 +1187,8 @@ async fn main {
     "language_reference_sha256": language_hash,
     "mapping_sha256": sha256(mapping_path),
     "tool_sha256": sha256("tools/spec-language-matrix.mbtx"),
+    "mapping_schema_version": 2,
+    "global_test_ids": test_ids.length(),
     "named_rules": rule_lines.length(),
     "prose_grammar_rows": clauses.length(),
     "manually_reviewed_subset_rows": reviewed,

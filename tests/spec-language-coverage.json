@@ -1,11 +1,12 @@
 {
-  "version": 1,
+  "version": 2,
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "policy": "Manual assertion review only. References and matching names never establish passing behavior. An empty dimension is unreviewed. Executed outcomes live in the separate source-bound evidence report. Completed prose constructor transfers are relative to child judgments and counted separately from completed named rules.",
   "evidence": {
     "OH1": {
       "file": "spec_object_head_test.mbt",
       "test": "object length and type consume visible key sets without reading values",
+      "test_id": "spec_object_head_test.mbt::object length and type consume visible key sets without reading values",
       "assertions": [
         "[0, \"object\", 0, 0]",
         "object_head_summary(reflect_object([(key(\"h\"), 2, bad)]))",
@@ -18,6 +19,7 @@
     "OH2": {
       "file": "spec_object_head_test.mbt",
       "test": "object summaries require construction and preserve static and overload boundaries",
+      "test_id": "spec_object_head_test.mbt::object summaries require construction and preserve static and overload boundaries",
       "assertions": [
         "Some(\"head-required\")",
         "Some(\"key-required\")",
@@ -29,6 +31,7 @@
     "FL0SEL": {
       "file": "spec_foundation_arrays_test.mbt",
       "test": "foundation filter selects original elements with unchanged input",
+      "test_id": "spec_foundation_arrays_test.mbt::foundation filter selects original elements with unchanged input",
       "assertions": [
         "[[2, 4], [1, 2, 3, 4], [], [{ \"x\": 1 }]]"
       ],
@@ -37,6 +40,7 @@
     "FL0LAZY": {
       "file": "spec_foundation_arrays_test.mbt",
       "test": "foundation filter evaluates predicates without forcing unused payloads",
+      "test_id": "spec_foundation_arrays_test.mbt::foundation filter evaluates predicates without forcing unused payloads",
       "assertions": [
         "[[], 1, 7]",
         "assert_eq(predicates, 2)"
@@ -46,6 +50,7 @@
     "FL1": {
       "file": "spec_filter_test.mbt",
       "test": "filter Boolean masks retain original order duplicates and unchanged input",
+      "test_id": "spec_filter_test.mbt::filter Boolean masks retain original order duplicates and unchanged input",
       "assertions": [
         "([true, false, true], [20, 20])",
         "([true, true, false], [20, 10])",
@@ -57,6 +62,7 @@
     "FL2": {
       "file": "spec_filter_test.mbt",
       "test": "filter classifies members without reading excluded or retained payloads",
+      "test_id": "spec_filter_test.mbt::filter classifies members without reading excluded or retained payloads",
       "assertions": [
         "sequence_value(filter_call(no, input), [])",
         "[3, 7, 7, 3]",
@@ -68,6 +74,7 @@
     "FL3": {
       "file": "spec_filter_test.mbt",
       "test": "filter validates empty heads and invokes predicates only when needed",
+      "test_id": "spec_filter_test.mbt::filter validates empty heads and invokes predicates only when needed",
       "assertions": [
         "Some(\"function-head\")",
         "Some(\"array-head\")",
@@ -80,6 +87,7 @@
     "MA0BUILD": {
       "file": "spec_array_build_test.mbt",
       "test": "array makeArray uses integer indices named arguments and callback defaults",
+      "test_id": "spec_array_build_test.mbt::array makeArray uses integer indices named arguments and callback defaults",
       "assertions": [
         "[[0, 1, 4], [], [], [0, 1], \"function\"]"
       ],
@@ -88,6 +96,7 @@
     "MA0LAZY": {
       "file": "spec_array_build_test.mbt",
       "test": "array makeArray defers callback bodies and initializes in demand order once",
+      "test_id": "spec_array_build_test.mbt::array makeArray defers callback bodies and initializes in demand order once",
       "assertions": [
         "[3, 21]",
         "assert_eq(Json::array(seen), [2, 0])"
@@ -97,6 +106,7 @@
     "MA1": {
       "file": "spec_make_array_test.mbt",
       "test": "makeArray produces exact nonnegative cardinalities and positional indices",
+      "test_id": "spec_make_array_test.mbt::makeArray produces exact nonnegative cardinalities and positional indices",
       "assertions": [
         "sequence_value(make_array(sequence_num(0), func), [])",
         "sequence_value(make_array(sequence_num(1), func), [5])",
@@ -108,6 +118,7 @@
     "MA2": {
       "file": "spec_make_array_test.mbt",
       "test": "makeArray rejects invalid cardinalities instead of clamping negative sizes",
+      "test_id": "spec_make_array_test.mbt::makeArray rejects invalid cardinalities instead of clamping negative sizes",
       "assertions": [
         "[sequence_num(-1), sequence_num(-2), token_number(\"1.5\")]",
         "sequence_failure(make_array(size, func), @moonjsonnet.Runtime, None)",
@@ -118,6 +129,7 @@
     "MA3": {
       "file": "spec_make_array_test.mbt",
       "test": "makeArray demands both argument heads even at zero but never unused bodies",
+      "test_id": "spec_make_array_test.mbt::makeArray demands both argument heads even at zero but never unused bodies",
       "assertions": [
         "Some(\"function-head\")",
         "Some(\"size-head\")",
@@ -129,6 +141,7 @@
     "MA4": {
       "file": "spec_make_array_test.mbt",
       "test": "makeArray delays selected callback applications and arity errors",
+      "test_id": "spec_make_array_test.mbt::makeArray delays selected callback applications and arity errors",
       "assertions": [
         "[3, 21, 21]",
         "Some(\"other-element\")",
@@ -141,6 +154,7 @@
     "PG1": {
       "file": "spec_primitive_equals_test.mbt",
       "test": "primitive equality scalar truth table does not coerce distinct types",
+      "test_id": "spec_primitive_equals_test.mbt::primitive equality scalar truth table does not coerce distinct types",
       "assertions": [
         "let expected = [",
         "sequence_value(value, Json::boolean(expected[i][j]))",
@@ -151,6 +165,7 @@
     "PG2": {
       "file": "spec_primitive_equals_test.mbt",
       "test": "primitive equality preserves finite signed zero and exact string values",
+      "test_id": "spec_primitive_equals_test.mbt::primitive equality preserves finite signed zero and exact string values",
       "assertions": [
         "(zero, negative_zero, true)",
         "(negative_zero, zero, true)",
@@ -164,6 +179,7 @@
     "PG3": {
       "file": "spec_primitive_equals_test.mbt",
       "test": "primitive equality disjoint value classes require no recursive payloads",
+      "test_id": "spec_primitive_equals_test.mbt::primitive equality disjoint value classes require no recursive payloads",
       "assertions": [
         "if i != j {",
         "sequence_value(value, false)",
@@ -176,6 +192,7 @@
     "PG4": {
       "file": "spec_primitive_equals_test.mbt",
       "test": "primitive equality requires both operand heads and rejects nonfinite producers",
+      "test_id": "spec_primitive_equals_test.mbt::primitive equality requires both operand heads and rejects nonfinite producers",
       "assertions": [
         "ordering_error(\"left-required\")",
         "ordering_error(\"right-required\")",
@@ -188,6 +205,7 @@
     "EX0VIS": {
       "file": "spec_object_reflection_test.mbt",
       "test": "object visibility inheritance follows all nine fixed separator combinations",
+      "test_id": "spec_object_reflection_test.mbt::object visibility inheritance follows all nine fixed separator combinations",
       "assertions": [
         "(\":\", \":\", true)",
         "(\"::\", \":\", false)",
@@ -199,6 +217,7 @@
     "EX0SORT": {
       "file": "spec_object_reflection_test.mbt",
       "test": "object fields sort unique inherited names by Unicode codepoint without values",
+      "test_id": "spec_object_reflection_test.mbt::object fields sort unique inherited names by Unicode codepoint without values",
       "assertions": [
         "std.objectFields(o),std.objectFieldsAll(o)",
         "error 'override'",
@@ -209,6 +228,7 @@
     "EX0ASSERT": {
       "file": "spec_object_reflection_test.mbt",
       "test": "object reflection and missing lookup do not execute assertions or fields",
+      "test_id": "spec_object_reflection_test.mbt::object reflection and missing lookup do not execute assertions or fields",
       "assertions": [
         "assert_eq((checks, reads), (0, 0))",
         "[true, true, [\"a\"], [\"a\", \"h\"], 1, 99]"
@@ -218,6 +238,7 @@
     "EX0TYPE": {
       "file": "spec_object_reflection_test.mbt",
       "test": "object contracts report unambiguous object and field-name type errors",
+      "test_id": "spec_object_reflection_test.mbt::object contracts report unambiguous object and field-name type errors",
       "assertions": [
         "@moonjsonnet.Type",
         "[\"null\", \"true\", \"1\", \"'object'\", \"[]\", \"function()0\"]",
@@ -228,6 +249,7 @@
     "EX1": {
       "file": "spec_object_ex_test.mbt",
       "test": "object Ex queries preserve inherited key sets without reading payloads",
+      "test_id": "spec_object_ex_test.mbt::object Ex queries preserve inherited key sets without reading payloads",
       "assertions": [
         "reflect_observe(empty, [\"missing\"])",
         "[\"h\", \"n\", \"new\"]",
@@ -239,6 +261,7 @@
     "EX2": {
       "file": "spec_object_ex_test.mbt",
       "test": "object Ex exact Unicode names sort uniquely without normalization",
+      "test_id": "spec_object_ex_test.mbt::object Ex exact Unicode names sort uniquely without normalization",
       "assertions": [
         "[\"\", \"\\u0000\", \"e\\u0301\", \"é\", \"\\ue000\", \"😀\"]",
         "[false, false, false, false]"
@@ -248,6 +271,7 @@
     "EX3": {
       "file": "spec_object_ex_test.mbt",
       "test": "object Ex queries require heads names and flags but retain lazy values",
+      "test_id": "spec_object_ex_test.mbt::object Ex queries require heads names and flags but retain lazy values",
       "assertions": [
         "sequence_failure(failed, @moonjsonnet.Type, None)",
         "ordering_error(\"required-object\")",
@@ -258,9 +282,10 @@
       ],
       "checks": "Direct Ex source/independent ASTs reject representative invalid object/name/flag domains Type, propagate isolated object-head/name/flag/computed-name Runtime markers even for empty/missing queries, and keep unused whole calls lazy. Statically unknown hidden children reject before evaluation; this is a separate adjacent child/host boundary, not the named evaluation judgment."
     },
-    "SP1": {
+    "PREC1": {
       "file": "spec_precedence_test.mbt",
       "test": "precedence table orders every binary pair with left association",
+      "test_id": "spec_precedence_test.mbt::precedence table orders every binary pair with left association",
       "assertions": [
         "if left_level <= right_level",
         "prec_b(right, prec_b(left, a, b), c)",
@@ -269,9 +294,10 @@
       ],
       "checks": "The literal fixed-spec tier list determines all 19x19 source groupings; every same-tier symbol pair associates left. Explicit right parentheses cover every binary symbol plus two mixed-tier overrides. Source syntax projection is compared with independent typed trees, then both statically admit inside an unused bounded environment; no mixed-type runtime result is inferred."
     },
-    "SP2": {
+    "PREC2": {
       "file": "spec_precedence_test.mbt",
       "test": "precedence keeps unary operands above all binary tiers",
+      "test_id": "spec_precedence_test.mbt::precedence keeps unary operands above all binary tiers",
       "assertions": [
         "prec_b(binary, prec_u(unary, a), b)",
         "prec_b(binary, a, prec_u(unary, b))",
@@ -280,9 +306,10 @@
       ],
       "checks": "All four unary symbols are checked against every binary symbol on both sides, against each nested prefix, and with an explicitly expanded parenthesized operand. Constructor/symbol/ordered-child shapes remain distinct; unused source and handmade entries yield 42 without forcing intentionally ill-typed operator combinations."
     },
-    "SP3": {
+    "PREC3": {
       "file": "spec_precedence_test.mbt",
       "test": "precedence chains calls indexing and dot access before unary and binary",
+      "test_id": "spec_precedence_test.mbt::precedence chains calls indexing and dot access before unary and binary",
       "assertions": [
         "let suffixes = [\"(b)\", \"[b]\", \".field\"]",
         "prec_postfix(prec_postfix(a, first), second)",
@@ -292,9 +319,10 @@
       ],
       "checks": "All call/index/dot postfix pairs nest left; each binds above every unary and binary tier. Two slice controls preserve postfix extent. Independent tree comparison and unused admission never demand the numeric placeholder as a function/object/array or resolve external resources."
     },
-    "SP4": {
+    "PREC4": {
       "file": "spec_precedence_test.mbt",
       "test": "precedence long expression bodies retain their maximal right extent",
+      "test_id": "spec_precedence_test.mbt::precedence long expression bodies retain their maximal right extent",
       "assertions": [
         "prec_check(\"local x=a; x+b\", local_tree)",
         "\"a * local x=b; x+c\"",
@@ -305,9 +333,10 @@
       ],
       "checks": "Independent Local/Func/Assert/Fail/If trees establish right extent, delimiter children and nested-if else ownership, with a parenthesized If boundary. Only explicitly parenthesized imports are included and stay unused/unresolved. Unparenthesized import/string maximal extent and braced object application are excluded from adjudication."
     },
-    "SP5": {
+    "PREC5": {
       "file": "spec_precedence_test.mbt",
       "test": "precedence grouped values errors and lazy branches have fixed outcomes",
+      "test_id": "spec_precedence_test.mbt::precedence grouped values errors and lazy branches have fixed outcomes",
       "assertions": [
         "\"32/4/2\"",
         "\"1<<1+2\"",
@@ -323,6 +352,7 @@
     "NT0ROUND": {
       "file": "number_literal_test.mbt",
       "test": "numeric spellings and overflow survive parsing and AST round trips",
+      "test_id": "number_literal_test.mbt::numeric spellings and overflow survive parsing and AST round trips",
       "assertions": [
         "assert_eq(raw, \"1.20E+003\")",
         "NumberLiteral(raw)",
@@ -333,6 +363,7 @@
     "NT0RAW": {
       "file": "number_literal_test.mbt",
       "test": "manually constructed numeric tokens validate lexical shape without conversion",
+      "test_id": "number_literal_test.mbt::manually constructed numeric tokens validate lexical shape without conversion",
       "assertions": [
         "\"invalid AST numeric literal\"",
         "NumberLiteral(\"1e99999\")",
@@ -343,6 +374,7 @@
     "NT0TRIVIA": {
       "file": "source_fidelity_wbtest.mbt",
       "test": "lexical trivia retains exact source and token boundaries",
+      "test_id": "source_fidelity_wbtest.mbt::lexical trivia retains exact source and token boundaries",
       "assertions": [
         "assert_eq(token.loc, previous)",
         "assert_eq(restored.to_string(), source)",
@@ -353,6 +385,7 @@
     "NT0DIAG": {
       "file": "lexer_diagnostic_test.mbt",
       "test": "number token boundaries and syntax failures retain byte locations",
+      "test_id": "lexer_diagnostic_test.mbt::number token boundaries and syntax failures retain byte locations",
       "assertions": [
         "(\"1.\", \"Expected token IDENTIFIER but got end of file\", 3)",
         "(\"1e\", \"Did not expect: (IDENTIFIER, \\\"e\\\")\", 2)",
@@ -363,6 +396,7 @@
     "NT1": {
       "file": "spec_number_tokens_test.mbt",
       "test": "number tokens retain the longest legal prefix before dot and else",
+      "test_id": "spec_number_tokens_test.mbt::number tokens retain the longest legal prefix before dot and else",
       "assertions": [
         "sequence_failure(access, @moonjsonnet.Type, None)",
         "number_token_text(\"if true then 1else 2\")",
@@ -373,6 +407,7 @@
     "NT2": {
       "file": "spec_number_tokens_test.mbt",
       "test": "number spelling signs and comments have independent token boundaries",
+      "test_id": "spec_number_tokens_test.mbt::number spelling signs and comments have independent token boundaries",
       "assertions": [
         "let source = \"[0,12.50E-1,-2,+3,1e+2+3]\"",
         "sequence_value(value, [0, 1.25, -2, 3, 103])",
@@ -383,6 +418,7 @@
     "NT3": {
       "file": "spec_number_tokens_test.mbt",
       "test": "malformed numeric source and handmade raw tokens reject before demand",
+      "test_id": "spec_number_tokens_test.mbt::malformed numeric source and handmade raw tokens reject before demand",
       "assertions": [
         "\"an unused malformed number was admitted\"",
         "@moonjsonnet.Static",
@@ -394,6 +430,7 @@
     "NT4": {
       "file": "spec_number_tokens_test.mbt",
       "test": "number token admission stays separate from demanded overflow",
+      "test_id": "spec_number_tokens_test.mbt::number token admission stays separate from demanded overflow",
       "assertions": [
         "(\"1.25e999999999999999999999999999\", None)",
         "ignore(ordering_program(number, handmade))",
@@ -405,668 +442,830 @@
     "F1": {
       "file": "spec_language_function_test.mbt",
       "test": "language defaults distinguish definition caller and formal environments",
+      "test_id": "spec_language_function_test.mbt::language defaults distinguish definition caller and formal environments",
       "assertions": ["[[10, 10], [99, 99]]", "[[7, 7], [9, 9], [3, 7], [4, 5], [2, 6]]", "[[1, 4, 5], [2, 5, 7], [1, 3, 9]]"],
       "checks": "Exact JSON distinguishes definition/caller scope, forward defaults, positional/reordered names and interleaved required/optional formals."
     },
     "F2": {
       "file": "spec_language_function_test.mbt",
       "test": "language explicit arguments override lazy defaults and ignore recursive defaults",
+      "test_id": "spec_language_function_test.mbt::language explicit arguments override lazy defaults and ignore recursive defaults",
       "assertions": ["(function(a=a)42)()", "assert_eq(@moonjsonnet.evaluate(source), 42)"],
       "checks": "Six explicit sources return 42 without demanding recursive or error-valued arguments/defaults."
     },
     "F3": {
       "file": "spec_language_function_test.mbt",
       "test": "language defaults cache once per call and share dependent parameters",
+      "test_id": "spec_language_function_test.mbt::language defaults cache once per call and share dependent parameters",
       "assertions": ["[[1, 1, 1], [2, 2, 2]]", "assert_eq(calls, 2)"],
       "checks": "Native counter is two after two demanded calls and remains two after two unused defaults."
     },
     "F4": {
       "file": "spec_language_function_test.mbt",
       "test": "language invalid binding executes no argument default or body callbacks",
+      "test_id": "spec_language_function_test.mbt::language invalid binding executes no argument default or body callbacks",
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(calls, 0)"],
       "checks": "Four parse-valid missing/unknown/duplicate-positional-named/extra calls fail at evaluation with no native argument/default/body execution."
     },
     "F5": {
       "file": "spec_language_function_test.mbt",
       "test": "language statics traverse unused defaults bodies and named arguments",
+      "test_id": "spec_language_function_test.mbt::language statics traverse unused defaults bodies and named arguments",
       "assertions": ["@moonjsonnet.Program::parse(source", "assert_eq(d.kind, @moonjsonnet.Static)"],
       "checks": "Six invalid unused or overridden defaults/bodies/call sites are rejected during parse, without evaluation."
     },
     "F6": {
       "file": "spec_language_function_test.mbt",
       "test": "language method defaults retain late self and lexical super",
+      "test_id": "spec_language_function_test.mbt::language method defaults retain late self and lexical super",
       "assertions": ["[1, 2, 1]", "[1, 1]"],
       "checks": "Original/derived method defaults select late self and the method layer's super independently."
     },
     "O1": {
       "file": "spec_language_object_test.mbt",
       "test": "language object keys exclude new self locals and comprehension self",
+      "test_id": "spec_language_object_test.mbt::language object keys exclude new self locals and comprehension self",
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Static)", "{ \"x\": \"inner\", \"key\": \"inner\" }"],
       "checks": "Six parse-only key-scope rejections plus one exact JSON control separate outer key self from inner value self."
     },
     "O2": {
       "file": "spec_language_object_test.mbt",
       "test": "language inherited fields separate late self super root and original objects",
+      "test_id": "spec_language_object_test.mbt::language inherited fields separate late self super root and original objects",
       "assertions": ["[1, 2, 2, 1]", "{ \"x\": 2, \"r\": 3, \"s\": 2 }"],
       "checks": "Exact arrays distinguish final self, super-field self, immutable originals, root $ and nested self."
     },
     "O3": {
       "file": "spec_language_object_test.mbt",
       "test": "language inherited assertions use final self for access and manifestation",
+      "test_id": "spec_language_object_test.mbt::language inherited assertions use final self for access and manifestation",
       "assertions": ["{ \"x\": 2 }", "assert_eq(d.kind, @moonjsonnet.Assertion)"],
       "checks": "One repaired-base success and four assertion errors on derived/visible/hidden access or manifestation."
     },
     "O4": {
       "file": "spec_language_object_test.mbt",
       "test": "language manifestation checks assertion only objects recursively",
+      "test_id": "spec_language_object_test.mbt::language manifestation checks assertion only objects recursively",
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Assertion)", "[\"object\", 1, {}, 42]"],
       "checks": "Four recursive assertion-only manifestation errors and exact lazy shape/hidden/ignored-argument controls."
     },
     "O5": {
       "file": "spec_language_object_test.mbt",
       "test": "language assertions cache checks and do not force messages or failed fields",
+      "test_id": "spec_language_object_test.mbt::language assertions cache checks and do not force messages or failed fields",
       "assertions": ["[1, 2, 1]", "assert_eq((checks, payloads), (1, 0))", "assert_eq(d.kind, @moonjsonnet.Assertion)"],
       "checks": "Repeated fields check once, true assertion message runs zero times, false assertion blocks selected native payload."
     },
     "O6": {
       "file": "spec_language_object_test.mbt",
       "test": "language visibility inheritance controls JSON output and direct access",
+      "test_id": "spec_language_object_test.mbt::language visibility inheritance controls JSON output and direct access",
       "assertions": ["assert_eq(@moonjsonnet.evaluate(source), [Json::object(fields), 2])", "{hidden::error 'unused'}+{hidden:function()0}"],
       "checks": "All nine separator pairs compare manifested object and direct selected value; hidden overridden function is omitted."
     },
     "O7": {
       "file": "spec_language_object_test.mbt",
       "test": "language JSON conversion rejects demanded nested functions and errors",
+      "test_id": "spec_language_object_test.mbt::language JSON conversion rejects demanded nested functions and errors",
       "assertions": ["assert_eq(d.kind, kind)", "assert_eq(@moonjsonnet.evaluate(\"[{a::function()error 'body'}]\"), [{}])"],
       "checks": "Four function manifestations are Type errors, three demanded error expressions are Runtime errors, hidden function body stays uncalled."
     },
     "S1": {
       "file": "spec_static_test.mbt",
       "test": "duplicate formal parameters fail statically before any invocation",
+      "test_id": "spec_static_test.mbt::duplicate formal parameters fail statically before any invocation",
       "assertions": ["@moonjsonnet.Program::parse(source", "assert_eq(d.kind, @moonjsonnet.Static)"],
       "checks": "Seven duplicate declaration forms, including unused functions, reject at Program creation."
     },
     "I1": {
       "file": "spec_import_scope_test.mbt",
       "test": "imported free variables cannot capture caller locals",
+      "test_id": "spec_import_scope_test.mbt::imported free variables cannot capture caller locals",
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(reads, 1)"],
       "checks": "Parse resolves nothing; forced imported free x rejects in dependency file after exactly one resolver read."
     },
     "I2": {
       "file": "spec_import_scope_test.mbt",
       "test": "unused imports never resolve even when the target would fail parsing",
+      "test_id": "spec_import_scope_test.mbt::unused imports never resolve even when the target would fail parsing",
       "assertions": ["assert_eq(reads, 0)", "assert_eq(program.evaluate(resolver~), Json::number(expected.to_double()))"],
       "checks": "Six unused local/branch/argument/default/hidden/array imports execute zero resolver calls."
     },
     "I3": {
       "file": "spec_import_scope_test.mbt",
       "test": "import syntax and statics are checked only when the import is forced",
+      "test_id": "spec_import_scope_test.mbt::import syntax and statics are checked only when the import is forced",
       "assertions": ["assert_eq(d.kind, kind)", "assert_eq(reads, 1)", "assert_eq(d.location.file, \"dep.libsonnet\")"],
       "checks": "Same parsed entry skips invalid dependency then separately observes Syntax/Static errors only after demand, with dependency location and entry context."
     },
     "IDX": {
       "file": "spec_index_test.mbt",
       "test": "P0 indices require integers before conversion for arrays and Unicode strings",
+      "test_id": "spec_index_test.mbt::P0 indices require integers before conversion for arrays and Unicode strings",
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_true(d.message != \"element must stay lazy\")", "[10,20,10,\\\"😀\\\"]"],
       "checks": "Ten fractional/huge/empty/out-of-bounds errors and integral/Unicode controls, with invalid index preceding lazy payload."
     },
     "SLICE": {
       "file": "spec_index_test.mbt",
       "test": "P0 slicing defers array indexing and keeps strings strict",
+      "test_id": "spec_index_test.mbt::P0 slicing defers array indexing and keeps strings strict",
       "assertions": ["assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))", "assert_eq(d.kind, @moonjsonnet.Runtime)"],
       "checks": "Six expected slice results and three forced-index failures distinguish lazy array slices and strict string slices."
     },
     "TYPE": {
       "file": "spec_foundation_types_test.mbt",
       "test": "foundation type returns every documented tag",
+      "test_id": "spec_foundation_types_test.mbt::foundation type returns every documented tag",
       "assertions": ["[\"null\", \"boolean\", \"number\", \"string\", \"array\", \"object\", \"function\"]"],
       "checks": "One array compares all seven explicit type tags."
     },
     "TYPELAZY": {
       "file": "spec_foundation_types_test.mbt",
       "test": "foundation type and isNumber inspect no nested payload assertion or function",
+      "test_id": "spec_foundation_types_test.mbt::foundation type and isNumber inspect no nested payload assertion or function",
       "assertions": ["[\"array\", \"object\", \"function\", false, false, false]", "callback: _ => fail(\"type reflection called native function\")"],
       "checks": "Outer type inspection avoids error payloads/assertions/defaults/body and cannot invoke registered native function."
     },
     "CRLF": {
       "file": "spec_text_block_test.mbt",
       "test": "text blocks preserve interior and consecutive CRLF blank lines",
+      "test_id": "spec_text_block_test.mbt::text blocks preserve interior and consecutive CRLF blank lines",
       "assertions": ["assert_eq(@utf8.encode(text), expected)"],
       "checks": "Byte assertions retain interior/consecutive CRLF blank lines; no inference about all string lexing."
     },
     "CHOMP": {
       "file": "spec_text_chomp_test.mbt",
       "test": "text-block chomp removes the complete final CRLF",
+      "test_id": "spec_text_chomp_test.mbt::text-block chomp removes the complete final CRLF",
       "assertions": ["assert_eq(@utf8.encode(text), b\"x\")"],
       "checks": "Final CRLF chomp is checked as exact UTF-8 bytes, not a visually equivalent string."
     },
     "R1": {
       "file": "spec_language_forms_test.mbt",
       "test": "recursive local groups bind forward references and mutually recursive functions",
+      "test_id": "spec_language_forms_test.mbt::recursive local groups bind forward references and mutually recursive functions",
       "assertions": ["local a=b,b=42;a", "[true, true, false]", "local a=error 'unused',b=b; 42"],
       "checks": "forms_value asserts exact JSON through parsed source and exported AST: forward/mutual recursion, shadowing and unused divergent/error bindings."
     },
     "R2": {
       "file": "spec_language_forms_test.mbt",
       "test": "duplicate local groups and sibling scope fail statically before unused execution",
+      "test_id": "spec_language_forms_test.mbt::duplicate local groups and sibling scope fail statically before unused execution",
       "assertions": ["@moonjsonnet.Program::parse(source", "assert_eq(d.kind, @moonjsonnet.Static)", "for v in []"],
       "checks": "Eleven source cases reject at creation: duplicate local groups/functions/object locals/empty comprehension locals, duplicate literal fields, inaccessible sibling/later/outside variables."
     },
     "R3": {
       "file": "spec_language_forms_test.mbt",
       "test": "recursive local aliases share one demanded initializer and skip unused ones",
+      "test_id": "spec_language_forms_test.mbt::recursive local aliases share one demanded initializer and skip unused ones",
       "assertions": ["[1, 1, 1, 1]", "assert_eq(calls, 1)"],
       "checks": "Four alias demands share one native local initializer; the unused local callback is not executed."
     },
     "R4": {
       "file": "spec_language_forms_test.mbt",
       "test": "recursive object local aliases rebind final self and keep lexical super",
+      "test_id": "spec_language_forms_test.mbt::recursive object local aliases rebind final self and keep lexical super",
       "assertions": ["local a=b,local b=self.base+super.base", "[4, 5, 4]"],
       "checks": "Parsed source and exported AST distinguish original/derived/original results for forward object-local aliases using final self and lexical super."
     },
     "C1": {
       "file": "spec_language_forms_test.mbt",
       "test": "comprehension domains shadow sequentially and preserve Cartesian order",
+      "test_id": "spec_language_forms_test.mbt::comprehension domains shadow sequentially and preserve Cartesian order",
       "assertions": ["[1, 1], [1, 11], [2, 2], [2, 12],", "[11, 12]", "local x=['a','b']; {[x]:x for x in x}"],
       "checks": "forms_value checks exact Cartesian order, enclosing-domain scope and repeated generator shadowing through both entry paths."
     },
     "C2": {
       "file": "spec_language_forms_test.mbt",
       "test": "comprehensions skip excluded domains and keep generated payloads lazy",
+      "test_id": "spec_language_forms_test.mbt::comprehensions skip excluded domains and keep generated payloads lazy",
       "assertions": ["if false for y in error 'domain'", "{[null]:error 'body' for x in [1,2]}", "unused iterator"],
       "checks": "Seven exact-value cases via forms_value cover skipped domains, lazy array bodies, selected elements, empty/null keys and an unneeded error-valued iterator."
     },
     "C3": {
       "file": "spec_language_forms_test.mbt",
       "test": "comprehension shape constructs keys before forcing cached selected bodies",
+      "test_id": "spec_language_forms_test.mbt::comprehension shape constructs keys before forcing cached selected bodies",
       "assertions": ["[2, \"object\", 1, 1]", "assert_eq((keys, bodies), (2, 1))"],
       "checks": "Shape constructs two keys; repeated selected field body executes once, other/null-key bodies execute zero times."
     },
     "C4": {
       "file": "spec_language_forms_test.mbt",
       "test": "duplicate and invalid comprehension keys fail before any body callbacks",
+      "test_id": "spec_language_forms_test.mbt::duplicate and invalid comprehension keys fail before any body callbacks",
       "assertions": ["assert_eq(d.kind, kind)", "assert_eq((keys, bodies), (expected_keys, 0))"],
       "checks": "Both parsed source and exported AST create successfully, then duplicate/nonstring key construction fails as Runtime/Type; counters prove 2/1 key calls and zero bodies."
     },
     "C5": {
       "file": "spec_language_forms_test.mbt",
       "test": "nonboolean comprehension filters reject before later native domains",
+      "test_id": "spec_language_forms_test.mbt::nonboolean comprehension filters reject before later native domains",
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Type)", "assert_eq(domains, 0)"],
       "checks": "Array/object invalid filters reject at evaluation through both entry paths, before any later native domain execution."
     },
     "C6": {
       "file": "spec_language_forms_test.mbt",
       "test": "comprehension fields inherit self super locals and root without freezing originals",
+      "test_id": "spec_language_forms_test.mbt::comprehension fields inherit self super locals and root without freezing originals",
       "assertions": ["[\"20a\", \"30a\", \"20a\"]", "[{ \"a\": \"a\" }, { \"b\": \"b\" }]"],
       "checks": "forms_value checks original/derived comprehension locals using self/super and enclosing-self keys with root $ through parsed source and exported AST."
     },
     "C7": {
       "file": "spec_language_forms_test.mbt",
       "test": "comprehension key and filter errors remain runtime after valid parsing",
+      "test_id": "spec_language_forms_test.mbt::comprehension key and filter errors remain runtime after valid parsing",
       "assertions": ["message=\"key\"", "message=\"body\"", "forms_runtime(source, @moonjsonnet.Type)"],
       "checks": "forms_runtime creates each parsed/AST Program before asserting Runtime/Type and source file; exact key/body error markers distinguish demand sites. Controls skip invalid later numeric domains."
     },
     "A1": {
       "file": "spec_language_forms_ast_test.mbt",
       "test": "handmade AST duplicate local groups reject ordinary and empty comprehension scopes",
+      "test_id": "spec_language_forms_ast_test.mbt::handmade AST duplicate local groups reject ordinary and empty comprehension scopes",
       "assertions": ["@moonjsonnet.Program::from_ast(forms_ast(kind))", "assert_eq(d.kind, @moonjsonnet.Static)"],
       "checks": "Four hand-built local/object/empty-comprehension/unused-branch ASTs reject duplicate groups at creation, without parser participation."
     },
     "A2": {
       "file": "spec_language_forms_ast_test.mbt",
       "test": "handmade AST comprehension key and domain scope reject inaccessible bindings",
+      "test_id": "spec_language_forms_ast_test.mbt::handmade AST comprehension key and domain scope reject inaccessible bindings",
       "assertions": ["@moonjsonnet.Program::from_ast(forms_ast(kind))", "assert_eq(d.kind, @moonjsonnet.Static)"],
       "checks": "Three hand-built ASTs reject a new object local in key scope and later-loop variables in earlier array/object domains."
     },
     "A3": {
       "file": "spec_language_forms_ast_test.mbt",
       "test": "handmade AST recursive locals and null comprehension keys stay lazy",
+      "test_id": "spec_language_forms_ast_test.mbt::handmade AST recursive locals and null comprehension keys stay lazy",
       "assertions": ["assert_eq(@moonjsonnet.Program::from_ast(forward).evaluate(), 42)", "assert_eq(@moonjsonnet.Program::from_ast(no_field).evaluate(), {})"],
       "checks": "Hand-built forward local group yields 42; repeated null comprehension keys suppress the error body and yield an empty object."
     },
     "A4": {
       "file": "spec_language_forms_ast_test.mbt",
       "test": "handmade AST dynamic duplicate keys are runtime and literal duplicates static",
+      "test_id": "spec_language_forms_ast_test.mbt::handmade AST dynamic duplicate keys are runtime and literal duplicates static",
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(d.kind, @moonjsonnet.Static)"],
       "checks": "Hand-built comprehension creates successfully then rejects duplicate runtime keys; literal duplicate object fields reject before Program creation."
     },
     "AP1": {
       "file": "spec_language_call_test.mbt",
       "test": "handmade calls bind default closures in formal and caller scopes",
+      "test_id": "spec_language_call_test.mbt::handmade calls bind default closures in formal and caller scopes",
       "assertions": ["@moonjsonnet.Program::from_ast(tree).evaluate()", "[10, 20, 99]"],
       "checks": "A handmade local/function/call tree and its independently written source yield exact values distinguishing closure defaults, supplied positional values and caller-captured named closures."
     },
     "AP2": {
       "file": "spec_language_call_test.mbt",
       "test": "handmade mutually recursive function defaults capture the same formal environment",
+      "test_id": "spec_language_call_test.mbt::handmade mutually recursive function defaults capture the same formal environment",
       "assertions": ["@moonjsonnet.Program::from_ast(tree).evaluate()", "[42, 7]"],
       "checks": "Handmade and source f/g default closures recurse finitely through the call's formal environment, selecting default or supplied x rather than outer x=100."
     },
     "AP3": {
       "file": "spec_language_call_test.mbt",
       "test": "handmade application rejects invalid bindings before any native demand",
+      "test_id": "spec_language_call_test.mbt::handmade application rejects invalid bindings before any native demand",
       "assertions": ["@moonjsonnet.Program::from_ast", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(calls, 0)"],
       "checks": "Four handmade ASTs create Programs then reject missing/unknown/overlapping/extra bindings with zero supplied/default/body callbacks; ordinary source variants remain existing controls."
     },
     "AP4": {
       "file": "spec_language_call_test.mbt",
       "test": "callee errors and nonfunctions precede argument callbacks in source and handmade AST",
+      "test_id": "spec_language_call_test.mbt::callee errors and nonfunctions precede argument callbacks in source and handmade AST",
       "assertions": ["assert_eq(d.kind, kind)", "assert_eq(d.message, \"callee\")", "assert_eq(events, expected_events)"],
       "checks": "Source and handmade calls distinguish numeric/object Type from a demanded callee Runtime marker, require exactly one native head call when present and zero argument calls."
     },
     "AP5": {
       "file": "spec_language_call_test.mbt",
       "test": "unselected invalid calls skip callee and argument construction demands",
+      "test_id": "spec_language_call_test.mbt::unselected invalid calls skip callee and argument construction demands",
       "assertions": ["assert_eq(entry.evaluate(native_functions=Map([(\"tick\", tick)])), 42)", "assert_eq(calls, 0)"],
       "checks": "Unused invalid source/handmade calls produce 42 without evaluating either native head or argument."
     },
     "AP6": {
       "file": "spec_language_call_test.mbt",
       "test": "handmade duplicate names and undefined supplied expressions reject before application",
+      "test_id": "spec_language_call_test.mbt::handmade duplicate names and undefined supplied expressions reject before application",
       "assertions": ["@moonjsonnet.Program::from_ast(unused)", "@moonjsonnet.Program::parse(source)", "assert_eq(d.kind, @moonjsonnet.Static)"],
       "checks": "Callable-target duplicate named arguments and undefined expressions reject Static in unselected source and handmade AST calls before any runtime binding."
     },
     "AP7": {
       "file": "spec_language_call_test.mbt",
       "test": "malformed call and default expressions reject as source syntax errors",
+      "test_id": "spec_language_call_test.mbt::malformed call and default expressions reject as source syntax errors",
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Syntax)", "assert_eq(d.location.file, \"call-source\")"],
       "checks": "Three malformed source texts reject Syntax at Program creation; no equivalent malformed-text handmade AST or Static result is claimed."
     },
     "IR0": {
       "file": "ast_test.mbt",
       "test": "semantic AST round trip covers expression forms and source identities",
+      "test_id": "ast_test.mbt::semantic AST round trip covers expression forms and source identities",
       "assertions": ["@moonjsonnet.Program::parse(source", "@moonjsonnet.Program::from_ast(original.ast().clone())", "code:import 'code'", "text:importstr 'text'", "bytes:importbin 'raw'"],
       "checks": "Existing source and exported-AST creation accepts an object containing import, importstr and importbin. Only creation acceptance is reused for the adjacent premise-free judgments; source/copy equality is not a new value oracle or new execution group."
     },
     "IR1": {
       "file": "spec_importstr_static_test.mbt",
       "test": "chk importstr accepts opaque canonical strings in source and handmade AST",
+      "test_id": "spec_importstr_static_test.mbt::chk importstr accepts opaque canonical strings in source and handmade AST",
       "assertions": ["assert_true(parsed.ast().kind is ImportFile(p, true) && p == path)", "assert_true(synthetic.ast().kind is ImportFile(p, true) && p == path)"],
       "checks": "Source and handmade typed leaves accept exact empty, keyword-like, NUL and Unicode/newline string payloads without target data."
     },
     "IR2": {
       "file": "spec_importstr_static_test.mbt",
       "test": "chk importstr ignores surrounding static names and object context",
+      "test_id": "spec_importstr_static_test.mbt::chk importstr ignores surrounding static names and object context",
       "assertions": ["ignore(@moonjsonnet.Program::parse(source))", "assert_eq(program.ast().loc.file, \"virtual-entry\")"],
       "checks": "Creation succeeds in shadowed-std/local/function/object/key/unselected source contexts and handmade local/function/object/branch contexts; no resolver is supplied."
     },
     "IR3": {
       "file": "spec_importstr_static_test.mbt",
       "test": "importstr static acceptance does not resolve targets or parse opaque data",
+      "test_id": "spec_importstr_static_test.mbt::importstr static acceptance does not resolve targets or parse opaque data",
       "assertions": ["assert_eq(requests.length(), 0)", "assert_eq(program.evaluate(resolver~), Json::string(data))", "assert_eq(requests, [(\"virtual-entry\", \"opaque\")])"],
       "checks": "Already decoded self-made Source.text data stays opaque: creation resolves none, source/handmade demand returns invalid-code text, unused controls resolve none. This text-resolver case does not test malformed-byte decoding or close loading/cache rules."
     },
     "IR4": {
       "file": "spec_importstr_static_test.mbt",
       "test": "importstr does not waive grammar or surrounding static rejection",
+      "test_id": "spec_importstr_static_test.mbt::importstr does not waive grammar or surrounding static rejection",
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Syntax)", "assert_eq(d.kind, @moonjsonnet.Static)"],
       "checks": "Nonliteral/computed source operands reject Syntax; undefined sibling expressions reject Static through source and handmade AST. These are outside-rule boundary controls."
     },
     "IB1": {
       "file": "spec_importbin_bytes_test.mbt",
       "test": "importbin substitutes every unsigned byte in source and handmade AST",
+      "test_id": "spec_importbin_bytes_test.mbt::importbin substitutes every unsigned byte in source and handmade AST",
       "assertions": ["let permutation = [ for i in 0..<256 => (i * 73 + 19) % 256 ]", "Json::array(permutation.map(n => Json::number(n.to_double())))", "assert_true(program.ast().kind is ImportBinary(path) && path == \"data\")", "assert_eq(program.evaluate(binary_resolver~), expected)", "assert_eq(requests, [(\"virtual-entry\", \"data\")])"],
       "checks": "Source and handmade AST independently match exact arrays for all 256 byte values in nonmonotone order, empty/repeated/high-bit/NUL/malformed-UTF8 and code-looking data. Creation makes zero requests; each forced leaf makes one virtual request."
     },
     "IB2": {
       "file": "spec_importbin_bytes_test.mbt",
       "test": "unused importbin source and handmade expressions make zero requests",
+      "test_id": "spec_importbin_bytes_test.mbt::unused importbin source and handmade expressions make zero requests",
       "assertions": ["assert_eq( @moonjsonnet.Program::parse(source).evaluate(binary_resolver~), 42, )", "assert_eq(program.evaluate(binary_resolver~), 42)", "assert_eq(requests.length(), 0)"],
       "checks": "Five unused source contexts and handmade local/branch contexts return 42 with zero virtual binary requests; any callback demand would fail. This does not certify every enclosing lazy construct."
     },
     "IB3": {
       "file": "spec_importbin_bytes_test.mbt",
       "test": "importbin separates creation errors from demanded resolver failures",
+      "test_id": "spec_importbin_bytes_test.mbt::importbin separates creation errors from demanded resolver failures",
       "assertions": ["assert_eq(d.kind, @moonjsonnet.Syntax)", "assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(d.kind, @moonjsonnet.Import)", "assert_eq(d.location.file, \"virtual-entry\")", "assert_true(d.message.contains(\"virtual unavailable\"))", "assert_eq(reads, 1)"],
       "checks": "Three nonliteral source operands fail Syntax, undefined siblings fail Static through source and handmade AST, and successfully created demanded leaves report public Import only during evaluation for disabled/failing virtual resolvers. No CLI exit status is inferred."
     },
     "IB4": {
       "file": "spec_importbin_bytes_test.mbt",
       "test": "handmade repeated importbin demands share one request and exact bytes",
+      "test_id": "spec_importbin_bytes_test.mbt::handmade repeated importbin demands share one request and exact bytes",
       "assertions": ["assert_eq(result, [[0, 255, 128, 0], [0, 255, 128, 0]])", "assert_eq(requests, [(\"virtual-entry\", \"data\")])"],
       "checks": "Two handmade imports of the identical request return the same explicit byte arrays with one callback; a second callback would return different data. Alias, cross-mode and failure-cache contracts remain open."
     },
     "IB5": {
       "file": "language_test.mbt",
       "test": "binary import is byte preserving and memoized by canonical identity",
+      "test_id": "language_test.mbt::binary import is byte preserving and memoized by canonical identity",
       "assertions": ["assert_eq(reads, 1)", "assert_eq(result.stringify(), \"[[0,255,254,128],[0,255,254,128]]\")"],
       "checks": "Existing source case observes exact unsigned-byte arrays and one callback for the same path used twice. Despite its historical title, it does not exercise distinct aliases or prove canonical-identity caching. Reused, not a new test group."
     },
     "IU1": {
       "file": "spec_importstr_utf8_test.mbt",
       "test": "importstr decodes explicit UTF8 scalar boundaries in source and handmade AST",
+      "test_id": "spec_importstr_utf8_test.mbt::importstr decodes explicit UTF8 scalar boundaries in source and handmade AST",
       "assertions": ["evaluator.set_importer(binary_resolver=(from, path) =>", "assert_eq(actual, Json::string(expected))", "assert_eq(requests, [(\"virtual-utf8-entry\", \"data\")])"],
       "checks": "Nine raw-byte/text vectors independently match exact Unicode through source and handmade AST: empty, NUL/CRLF, 1-4 byte scalar boundaries, combining forms, interior U+FEFF, valid U+FFFD and opaque code/escape text. Uses the reusable evaluator binary importer; initial-BOM treatment is excluded and unknown."
     },
     "IU2": {
       "file": "spec_importstr_utf8_test.mbt",
       "test": "importstr rejects malformed UTF8 bytes only on source and handmade demand",
+      "test_id": "spec_importstr_utf8_test.mbt::importstr rejects malformed UTF8 bytes only on source and handmade demand",
       "assertions": ["try evaluator.evaluate(program) catch", "fail(\"malformed UTF8 became a successful string import\")", "assert_eq(d.kind, @moonjsonnet.Import)", "assert_eq(d.location.file, \"virtual-utf8-data\")", "d.context.iter().any(loc => loc.file == \"virtual-utf8-entry\")", "assert_eq(reads, 1)"],
       "checks": "Eighteen malformed byte vectors reject after source/handmade creation, including overlong, truncated, bad-continuation, encoded-surrogate and out-of-range cases. Import category/source/context are separately classified host observations; the fixed specification does not prescribe that diagnostic format."
     },
     "IU3": {
       "file": "spec_importstr_utf8_test.mbt",
       "test": "importstr unused invalid data stays lazy and retained bytes still reject",
+      "test_id": "spec_importstr_utf8_test.mbt::importstr unused invalid data stays lazy and retained bytes still reject",
       "assertions": ["assert_eq(evaluator.evaluate(unused[i]), 42)", "assert_eq(requests.length(), 0)", "assert_eq(d.kind, @moonjsonnet.Import)", "fail(\"retained malformed bytes became a successful string\")", "assert_eq(requests, [(\"virtual-utf8-entry\", \"data\")])"],
       "checks": "Source and handmade unselected branches return 42 with zero requests; two demands per evaluator both reject while one identical request's bytes are retained. This host observation does not complete general failure-cache identity/lifetime rules."
     },
     "IU4": {
       "file": "spec_importstr_utf8_test.mbt",
       "test": "importstr repeated source and handmade requests return exact Unicode text",
+      "test_id": "spec_importstr_utf8_test.mbt::importstr repeated source and handmade requests return exact Unicode text",
       "assertions": ["assert_eq(result, [\"é😀\\u0000\", \"é😀\\u0000\"])", "assert_eq(requests, [(\"virtual-utf8-entry\", \"data\")])"],
       "checks": "Repeated identical source and handmade importstr requests each produce the explicit two-element Unicode/NUL array with one callback. Distinct aliases and cross-mode caches are not exercised."
     },
     "IF1": {
       "file": "spec_conditional_static_test.mbt",
       "test": "conditional validates condition then and else scopes even when unused",
+      "test_id": "spec_conditional_static_test.mbt::conditional validates condition then and else scopes even when unused",
       "assertions": ["children[role] = conditional_ast(Var(\"missing\"))", "conditional_static(sources[role], tree)", "conditional_local(\"unused\", tree, conditional_ast(Literal(42)))", "assert_eq(program.evaluate(), true)", "assert_eq(d.kind, @moonjsonnet.Syntax)"],
       "checks": "Reviewed/pinned conditional_static helper requires Static and the entry identity independently for source parse and handmade AST creation. All three child roles reject alone and in unused wrappers; valid Gamma binds every role. Three malformed source forms separately reject Syntax; no malformed-text AST claim."
     },
     "IF2": {
       "file": "spec_conditional_static_test.mbt",
       "test": "conditional preserves object context and isolates sibling local scopes",
+      "test_id": "spec_conditional_static_test.mbt::conditional preserves object context and isolates sibling local scopes",
       "assertions": ["conditional_static(source, tree)", "conditional_static( sources[role], conditional_ast(If(children[0], children[1], children[2])), )", "Json::number(7)", "Json::number(9)", "assert_eq(program.evaluate(), 7)"],
       "checks": "Source/handmade sibling-local leaks and self/super in each out-of-object role reject via the reviewed helper. Inherited self/super cases yield 7/9 for true/false, and a condition-local shadow preserves outer x=7 in the chosen branch. These verify conditional context transfer, not full object/binder algebra."
     },
     "IF3": {
       "file": "spec_conditional_runtime_test.mbt",
       "test": "conditional rejects every nonboolean condition before either branch",
+      "test_id": "spec_conditional_runtime_test.mbt::conditional rejects every nonboolean condition before either branch",
       "assertions": ["conditional_ast(Func([], latent))", "try program.evaluate(native_functions=natives) catch", "assert_eq(d.kind, @moonjsonnet.Type)", "assert_eq(events, [])"],
       "checks": "All six non-Boolean outer value kinds create Programs through source/handmade AST then reject at runtime with zero branch or nested payload callbacks. Public Type is an embedding category; the normative condition is Boolean-only evaluation."
     },
     "IF4": {
       "file": "spec_conditional_runtime_test.mbt",
       "test": "conditional demands condition then selected branch and preserves failures",
+      "test_id": "spec_conditional_runtime_test.mbt::conditional demands condition then selected branch and preserves failures",
       "assertions": ["for choice in [true, false]", "for failure in [\"none\", \"condition\", selected]", "assert_eq( events, if failure == \"condition\" { [\"condition\"] } else { [\"condition\", selected] }, )", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_true(d.message.contains(\"conditional marker \" + failure))", "assert_eq(program.evaluate(native_functions=natives), 42)", "assert_eq(events, [])"],
       "checks": "Both source/handmade choices record condition then only the selected child, or only condition when it fails. Exact 7/9 values and Runtime markers separate success and required-child failure. An entirely unused conditional invokes no callbacks. Marker/category checks are host phase controls, not specified diagnostic wording."
     },
     "IF5": {
       "file": "spec_conditional_runtime_test.mbt",
       "test": "conditional transfers all value kinds without manifesting a selected closure",
+      "test_id": "spec_conditional_runtime_test.mbt::conditional transfers all value kinds without manifesting a selected closure",
       "assertions": ["assert_eq(program.evaluate(native_functions=natives), expected)", "assert_eq(calls, 0)", "assert_eq(program.evaluate(native_functions=natives), 42)", "assert_eq(events, [\"body\"])"],
       "checks": "Both choices and both entry paths retain exact null/Boolean/number/Unicode-string/array/object values, with zero unselected calls. A selected closure is applied afterward, returns 42 and invokes its body exactly once; no eager manifestation or unused-branch demand is accepted."
     },
     "ES1": {
       "file": "spec_error_static_test.mbt",
       "test": "error delegates operand scope even in unused expressions",
+      "test_id": "spec_error_static_test.mbt::error delegates operand scope even in unused expressions",
       "assertions": ["error_static_ast(Fail(error_static_ast(Var(\"missing\"))))", "\"local unused=error missing;42\"", "\"if false then error missing else 42\"", "for name in [\"self\", \"super\"]", "error_static_program(source, tree, handmade)", "assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(d.location.file, \"error-static-entry\")", "\"local unused=error 42;42\"", "assert_eq(program.evaluate(), 42)"],
       "checks": "Both independent entry paths reject missing names in demanded, unused-local and unselected-branch errors, and self/super operands outside objects. Valid outer Gamma, numeric operands and self/super object contexts create successfully and yield outer 42. The reviewed helper chooses parse or from_ast without exporting a source AST."
     },
     "ES2": {
       "file": "spec_error_static_test.mbt",
       "test": "error operand callbacks stay lazy until runtime demand",
+      "test_id": "spec_error_static_test.mbt::error operand callbacks stay lazy until runtime demand",
       "assertions": ["error_static_ast(Fail(operand))", "let program = error_static_program(source, tree, handmade)", "assert_eq(calls, 0)", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(d.message, \"operand marker\")", "assert_eq(program.evaluate(native_functions=natives), 42)", "assert_eq(calls, if demanded { 1 } else { 0 })"],
       "checks": "Source and handmade Programs create without invoking the operand callback. Unused-local and unselected-branch evaluation returns 42 with zero callbacks; demanded error calls the same string operand once and raises Runtime with its independent marker. These are phase/demand boundaries, not completion of error conversion or diagnostics."
     },
     "US0": {
       "file": "ast_test.mbt",
       "test": "AST construction validates names scopes operators and shapes",
+      "test_id": "ast_test.mbt::AST construction validates names scopes operators and shapes",
       "assertions": ["Unary(\"bad\", one)", "assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(d.location, loc)"],
       "checks": "Reused handmade invalid-operator case rejects Static at AST Program creation with its explicit location. It is a host shape boundary outside the well-formed four-symbol chk-unary domain, not source Syntax or runtime Type evidence."
     },
     "UP0": {
       "file": "parser_diagnostic_test.mbt",
       "test": "operator boundaries retain unary suffixes comments and field visibility",
+      "test_id": "parser_diagnostic_test.mbt::operator boundaries retain unary suffixes comments and field visibility",
       "assertions": ["\"[1+-2,1- -2,!!true,~-1,1+/*comment*/2,1+//comment\\n2]\"", "[-1, 3, true, 0, 3, 3]"],
       "checks": "Reused independent finite source result covers prefix minus, logical-not and bitwise-not combinations. Creation/normal controls do not establish complete unary evaluation or every symbol's valid-value semantics."
     },
     "US1": {
       "file": "spec_unary_static_test.mbt",
       "test": "unary delegates unchanged operand scope for all four symbols",
+      "test_id": "spec_unary_static_test.mbt::unary delegates unchanged operand scope for all four symbols",
       "assertions": ["for op in [\"-\", \"+\", \"!\", \"~\"]", "unary_static_ast(Unary(op, unary_static_ast(Var(\"missing\"))))", "for name in [\"self\", \"super\"]", "unary_static_program(source, tree, handmade)", "assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(d.location.file, \"unary-static-entry\")", "\"local n=0;local unused=\" + op + \" n;42\"", "assert_eq(program.evaluate(), 42)"],
       "checks": "All four symbols and both independent entry paths reject missing operands directly and under unused-local/unselected-branch wrappers, plus self/super outside objects. Bound numeric n and own/inherited object contexts accept while unused and yield outer 42; ! over numeric n is statically valid without imposing its later Boolean requirement."
     },
     "US2": {
       "file": "spec_unary_static_test.mbt",
       "test": "unary operand callbacks stay lazy before demanded type rejection",
+      "test_id": "spec_unary_static_test.mbt::unary operand callbacks stay lazy before demanded type rejection",
       "assertions": ["unary_static_ast(Unary(op, operand))", "let program = unary_static_program(source, tree, handmade)", "assert_eq(calls, 0)", "assert_eq(d.kind, @moonjsonnet.Type)", "assert_eq(program.evaluate(native_functions=natives), 42)", "assert_eq(calls, if demanded { 1 } else { 0 })"],
       "checks": "For all four symbols and both entry paths, valid Programs create with zero operand calls. Unused locals and unselected branches return 42 without calls; demanded null operands run once then raise host Type. These are static/runtime demand boundaries, not completion of the unary evaluation rules."
     },
     "US3": {
       "file": "spec_unary_static_test.mbt",
       "test": "unary missing source operands reject syntax before program creation",
+      "test_id": "spec_unary_static_test.mbt::unary missing source operands reject syntax before program creation",
       "assertions": ["for source in [\"-\", \"+\", \"!\", \"~\"]", "assert_eq(d.kind, @moonjsonnet.Syntax)", "assert_eq(d.location.file, \"unary-static-entry\")"],
       "checks": "Four bare legal unary prefixes reject source Syntax before a Program exists. Typed Unary nodes require a child, so no absent-child handmade-AST or Static counterpart is asserted."
     },
     "SR1": {
       "file": "spec_inherited_self_test.mbt",
       "test": "inherited detached functions retain distinct warmed receivers after rehosting",
+      "test_id": "spec_inherited_self_test.mbt::inherited detached functions retain distinct warmed receivers after rehosting",
       "assertions": ["receiver_extend(\"base\", 2)", "receiver_extend(\"base\", 3)", "receiver_extend(\"left\", 4)", "receiver_call(receiver_var(\"before\"))", "receiver_call(receiver_index(receiver_var(\"holder\"), \"g\"))", "assert_eq(program.evaluate(), [1, 2, 3, 2, 1, 4, 3, 1, 2])"],
       "checks": "Independent source/handmade programs first force the base function, then interleave original/sibling/descendant closures. The explicit array distinguishes receiver n=1/2/3/4; an extracted n=2 function stored in holder with n=99 still returns 2. This is the bounded plain-function receiver-retention group, not complete object or closure algebra."
     },
     "SR2": {
       "file": "spec_inherited_self_test.mbt",
       "test": "retrieving inherited closures defers their bodies until detached invocation",
+      "test_id": "spec_inherited_self_test.mbt::retrieving inherited closures defers their bodies until detached invocation",
       "assertions": ["(\"saved\", receiver_index(receiver_var(\"derived\"), \"f\"))", "let program = receiver_program(source, tree, handmade)", "assert_eq(events, [])", "let expected : Json = if demanded { 7 } else { [\"function\", \"function\"] }", "assert_eq(program.evaluate(native_functions=natives), expected)", "assert_eq(events, if demanded { [Json::number(7)] } else { [] })"],
       "checks": "Both entry paths create Programs without callbacks. Original/derived function retrieval stays lazy even though the original lacks n; metadata inspection produces two function tags with zero body calls. Invoking the derived saved closure yields 7 with callback argument 7 once. No general native memoization or failure-cache policy is inferred."
     },
     "SR3": {
       "file": "spec_inherited_self_test.mbt",
       "test": "a healthy derived receiver does not repair the original detached closure",
+      "test_id": "spec_inherited_self_test.mbt::a healthy derived receiver does not repair the original detached closure",
       "assertions": ["(\"original\", receiver_index(receiver_var(\"base\"), \"f\"))", "receiver_native(\"checked\", [])", "receiver_call(receiver_var(\"original\"))", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(d.location.file, \"inherited-self-entry\")", "assert_eq(events, [\"derived-ok\"])"],
       "checks": "Both entry paths create successfully. A guarded derived call must first return 7 and record derived-ok; calling the original extracted function then rejects Runtime because its receiver still lacks n. A wrong derived value returns normally and fails the test, while an earlier failure lacks the required event. Exact diagnostic text is not an oracle."
     },
     "SP1": {
       "file": "spec_super_prefix_test.mbt",
       "test": "super functions retain their defining prefix with final derived self",
+      "test_id": "spec_super_prefix_test.mbt::super functions retain their defining prefix with final derived self",
       "assertions": ["prefix_call(prefix_index(\"super\", \"f\"))", "(\"saved\", prefix_index(\"c\", \"f\"))", "prefix_call(prefix_index(\"holder\", \"f\"))", "assert_eq(program.evaluate(), [", "12, 113, 999, [3, 3], [4, 4], [3, 3], [3, 3], [4, 4],"],
       "checks": "Source and independently handmade multilayer objects distinguish lexical prefix selection from final self. Upper super.f reaches a lower function whose own super remains below its defining layer; extracted/rehosted functions retain that prefix and receiver despite n/v overrides. The explicit scalar/array oracle is not derived from implementation output."
     },
     "SP2": {
       "file": "spec_super_prefix_test.mbt",
       "test": "super reaches hidden prior fields while self remains the final receiver",
+      "test_id": "spec_super_prefix_test.mbt::super reaches hidden prior fields while self remains the final receiver",
       "assertions": ["hidden=[\"h\"]", "(\"b\", prefix_extend(\"a\", [(\"read\", prefix_index(\"super\", \"h\"))]))", "assert_eq(program.evaluate(), [1, 7, 99])"],
       "checks": "Both entry paths access a hidden prior-layer h through super while its self.n resolves against the final receiver. A current h=99 cannot replace that prior definition. This is direct prefix access, not completion of visibility/reflection or separator algebra."
     },
     "SP3": {
       "file": "spec_super_prefix_test.mbt",
       "test": "super missing and hidden error fields fail only on actual function demand",
+      "test_id": "spec_super_prefix_test.mbt::super missing and hidden error fields fail only on actual function demand",
       "assertions": ["for explicit_error in [false, true]", "for mode in [\"metadata\", \"unused\", \"forced\"]", "Binary(\"==\", prefix_index(\"c\", \"x\"), prefix_ast(Literal(99)))", "assert_eq(events, [])", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(d.location.file, \"super-prefix-entry\")", "assert_eq(d.message, \"lower-super-marker\")", "assert_eq(events, [\"body\"])", "assert_eq(program.evaluate(native_functions=natives), expected)"],
       "checks": "After warming the final receiver's x=99, metadata/unused-call paths retain zero body entries. Actual invocation of the extracted function enters once then rejects Runtime for a missing prefix x or a hidden prior error marker. Current/defining-layer x values 99/42 cannot repair the prefix, and the current-value guard prevents wrong routes from passing. These failures occur after successful object construction, not in addition."
     },
     "RT1": {
       "file": "spec_root_scope_test.mbt",
       "test": "nested root and self remain distinct after inheritance extraction and rehosting",
+      "test_id": "spec_root_scope_test.mbt::nested root and self remain distinct after inheritance extraction and rehosting",
       "assertions": ["root_factory_object(10, 1)", "(\"localRoot\", root_path(\"$\", [\"tag\"]))", "root_call(root_var(\"saved\"))", "root_call(root_path(\"holder\", [\"f\"]))", "[10, 1], [20, 1], [10, 2], [20, 3], 3, [20, 3], [20, 3], [10, 1],"],
       "checks": "Independent source/handmade programs distinguish nested self from lexical root under outer and inner extension. Inherited functions retain roots 10/20; a standalone right-hand localRoot field introduces root self=3 in the same composite inner object. Extracted/rehosted functions retain root 20 and inner self 3, not holder 999; the original remains [10,1]."
     },
     "RT2": {
       "file": "spec_root_scope_test.mbt",
       "test": "object factories keep their definition root context instead of the caller root",
+      "test_id": "spec_root_scope_test.mbt::object factories keep their definition root context instead of the caller root",
       "assertions": ["root_factory_object(30, 4)", "root_factory_object(40, 5)", "root_call(root_var(\"savedMaker\"))", "[30, 4], [10, 5], [30, 4], [20, 5], [30, 4], [10, 5],"],
       "checks": "The outside-defined factory creates its own root 30 despite object callers. The inside-root factory's returned object tag 40 does not replace its lexical outer root 10/20. Saved factory and extracted result functions retain the separately specified contexts through both entry paths; no dynamic caller-root rule is inferred."
     },
     "RT3": {
       "file": "spec_root_scope_test.mbt",
       "test": "root lookup errors remain deferred and cannot borrow a nested self field",
+      "test_id": "spec_root_scope_test.mbt::root lookup errors remain deferred and cannot borrow a nested self field",
       "assertions": ["for explicit_error in [false, true]", "for mode in [\"metadata\", \"unused\", \"forced\"]", "root_path(\"root\", [\"inner\", \"needed\"])", "assert_eq(events, [])", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(d.location.file, \"root-scope-entry\")", "assert_eq(d.message, \"root-marker\")", "assert_eq(events, [\"body\"])", "assert_eq(program.evaluate(native_functions=natives), expected)"],
       "checks": "Both entry paths create successfully and first verify inner needed=99. Metadata/unused-call paths retain zero body events. Actual detached demand enters once then rejects Runtime for a missing or explicitly erroneous root field, rather than borrowing inner self. These are later-demand/embedding boundaries, not failures of desugaring."
     },
     "RT4": {
       "file": "spec_root_scope_test.mbt",
       "test": "an object caller cannot supply a missing lexical root to an outside function",
+      "test_id": "spec_root_scope_test.mbt::an object caller cannot supply a missing lexical root to an outside function",
       "assertions": ["(\"getter\", root_ast(Func([], root_path(\"$\", [\"needed\"]))))", "root_program(source, tree, handmade)", "assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(d.location.file, \"root-scope-entry\")"],
       "checks": "A global getter with free $ rejects Static at Program creation through source and handmade AST even when its call site is inside an object with the required field. A caller object cannot retroactively supply the missing lexical root. No malformed-source Syntax or complete static-rule acceptance is claimed."
     },
     "AS1": {
       "file": "spec_assertion_self_test.mbt",
       "test": "inherited assertion condition closures bind each compatible receiver self",
+      "test_id": "spec_assertion_self_test.mbt::inherited assertion condition closures bind each compatible receiver self",
       "assertions": ["assertion_self_source(3, \"compatible\")", "for handmade in [false, true]", "program.evaluate(native_functions=assertion_self_natives(events)), 3,", "[\"condition\", 2, 2, \"original\"]", "[\"payload\", 2, \"original\"]", "[\"condition\", 3, 3, \"compatible\"]", "[\"payload\", 3, \"compatible\"]"],
       "checks": "After original.value==2 has checked the original receiver, a compatible derived receiver returns 3. Condition-function native observations use current n/required/label in each receiver, inherited payloads use that same self, and no message runs. Source and independently handmade AST share explicit literal expectations."
     },
     "AS2": {
       "file": "spec_assertion_self_test.mbt",
       "test": "a checked original cannot authorize derived assertion or message closures",
+      "test_id": "spec_assertion_self_test.mbt::a checked original cannot authorize derived assertion or message closures",
       "assertions": ["assertion_self_source(2, \"bad\")", "assert_eq(d.kind, @moonjsonnet.Assertion)", "assert_eq(d.location.file, \"assertion-self-entry\")", "assert_eq(d.message, \"assertion-self-marker\")", "[\"condition\", 2, 2, \"original\"]", "[\"payload\", 2, \"original\"]", "[\"condition\", 3, 2, \"bad\"]", "[\"message\", 3, 2, \"bad\"]"],
       "checks": "A successful original check does not authorize a derived receiver with n=3/required=2. Its inherited condition and failing message functions observe derived self, reject Assertion with the independent marker and suppress the derived payload. This is a demanded-field failure after object construction, not an addition error."
     },
     "AS3": {
       "file": "spec_assertion_self_test.mbt",
       "test": "inherited assertion condition errors wait for field demand and bypass messages",
+      "test_id": "spec_assertion_self_test.mbt::inherited assertion condition errors wait for field demand and bypass messages",
       "assertions": ["for mode in [\"metadata\", \"unused\", \"forced\"]", "condition_error=true", "assert_eq(events, [])", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(d.location.file, \"assertion-self-entry\")", "assert_eq(d.message, \"condition-self-marker\")", "assert_eq(events, [[\"condition\", 3, 2, \"bad\"]])", "program.evaluate(native_functions=assertion_self_natives(events)), expected,"],
       "checks": "Both entry paths construct/type-inspect the derived object without entering its inherited assertion closure; metadata and unused-field paths yield object/42 with zero events. Only actual field demand enters condition(3,2,bad), propagates its explicit Runtime marker and bypasses message/payload. No top-level or std.manifestJson behavior is adjudicated."
     },
     "AX1": {
       "file": "spec_assertion_super_test.mbt",
       "test": "inherited assertions extract lower functions with separate super prefixes",
+      "test_id": "spec_assertion_super_test.mbt::inherited assertions extract lower functions with separate super prefixes",
       "assertions": ["assertion_super_source(\"error\", 4)", "assertion_self_index(\"d\", \"value\")", "for handmade in [false, true]", "program.evaluate(native_functions=assertion_super_natives(events)), 4,", "assert_eq(events, [[\"condition\", 1, 4], [\"payload\", 4]])"],
       "checks": "A C-layer assertion extracts B.probe and invokes it through a closure in final D. Its observed pair is A.n=1/D.n=4, and value 4 follows; C/D replacement functions cannot replace the assertion prefix or B function prefix. The erroneous lower message stays unforced. Layer-model behavioral evidence only: the fixed printed inheritance equation does not explicitly spell out assertion-prefix rewriting."
     },
     "AX2": {
       "file": "spec_assertion_super_test.mbt",
       "test": "assertion message super errors stay lazy and cannot borrow newer fields",
+      "test_id": "spec_assertion_super_test.mbt::assertion message super errors stay lazy and cannot borrow newer fields",
       "assertions": ["for problem in [\"missing\", \"error\"]", "for mode in [\"metadata\", \"unused\", \"forced\"]", "assert_eq(events, [])", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(d.location.file, \"assertion-self-entry\")", "assert_eq(d.message, \"assertion-super-marker\")", "assert_eq(events, [[\"condition\", 1, 4], [\"message\", 1, 4]])", "program.evaluate(native_functions=assertion_super_natives(events)), expected,"],
       "checks": "After explicit D type inspection, metadata/unused-field paths yield object/42 with zero events. Actual demand makes the assertion false, extracts B.message from C super and enters it with its own A prefix/final D self. Missing/explicitly erroneous A.problem then raises Runtime without payload, despite B/C/D repair strings; the explicit marker survives. This is message failure, not condition failure or an addition error. The formal assertion-prefix transformation remains unadjudicated."
     },
     "AR0": {
       "file": "error_value_test.mbt",
       "test": "error values and assertion messages use bounded Jsonnet string conversion",
+      "test_id": "error_value_test.mbt::error values and assertion messages use bounded Jsonnet string conversion",
       "assertions": ["for prefix in [\"error \", \"assert false:\", \"{assert false:\"]", "assert_eq(d.message, expected)", "fail(\"error value should fail\")", "assert true:error 'unused';42", "{assert true:error 'unused',a:42}", "(\"assert false;42\", \"Assertion failed\")", "(\"{assert false,a:42}\", \"Object assertion failed.\")"],
       "checks": "Reused existing explicit default-message failures and true-condition error-message laziness for expression/object assertions, plus finite scalar/aggregate message conversion controls. The fixed spec does not standardize human error presentation, so exact rendering/default text is an embedding check. This is manual reuse, not a new execution or completion of arbitrary error conversion."
     },
     "AL1": {
       "file": "spec_assertion_local_test.mbt",
       "test": "assertion object locals retain receiver and nested capture after inheritance",
+      "test_id": "spec_assertion_local_test.mbt::assertion object locals retain receiver and nested capture after inheritance",
       "assertions": ["assertion_local_source()", "for handmade in [false, true]", "[[2, 30, 10], [3, 30, 20]]", "[\"condition\", [2, 30, 10]]", "[\"payload\", [2, 30, 10]]", "[\"condition\", [3, 30, 20]]", "[\"payload\", [3, 30, 20]]"],
       "checks": "Object-local receiver/helper shadow outer same-name bindings in the assertion. Original and inherited nested receivers yield explicit [2,30,10]/[3,30,20] pairs: captured receiver, helper-object self and lexical root remain distinct. The same local helper supplies the selected payload while message and unused error-valued local remain unforced. Both source and independently handmade AST are checked; prior self/root judgments are reused, not repeated as a new general campaign."
     },
     "AL2": {
       "file": "spec_assertion_local_test.mbt",
       "test": "assertion local messages and initializer errors wait for actual field demand",
+      "test_id": "spec_assertion_local_test.mbt::assertion local messages and initializer errors wait for actual field demand",
       "assertions": ["for local_error in [false, true]", "for mode in [\"metadata\", \"unused\", \"forced\"]", "assert_eq(events, [])", "if local_error { @moonjsonnet.Runtime } else { @moonjsonnet.Assertion }", "assert_eq(d.location.file, \"assertion-self-entry\")", "\"object-local-init-marker\"", "\"object-local-message-marker\"", "[[\"local-init\"]]", "[[\"condition\", [3, 30, 20]], [\"message\", [3, 30, 20]]]", "assert_eq(events, expected_events)", "program.evaluate(native_functions=assertion_local_natives(events)), expected,"],
       "checks": "Explicit type inspection constructs the inherited nested receiver without forcing object locals; metadata/unused modes return object/42 with no events. Actual false-condition demand uses the object-local helper in both condition and message, then raises Assertion without payload. A demanded error-valued local initializer instead records only local-init and raises Runtime with its own marker, before condition/message/payload. Each object has one assertion; U2 and the super rewrite gap N0 are not adjudicated."
     },
     "AC1": {
       "file": "spec_assertion_conjunction_test.mbt",
       "test": "both operand assertion lists survive overrides without imposing check order",
+      "test_id": "spec_assertion_conjunction_test.mbt::both operand assertion lists survive overrides without imposing check order",
       "assertions": ["[\"L0\"], [\"L1\"], [\"R0\"], [\"R1\"], [\"L0\", \"R1\"]", "[\"metadata\", \"unused\", \"forced\"]", "limits=conjunction_limits()", "[\"L0@0\", \"L1@0\", \"R0@0\", \"R1@0\"]", "assert_true(seen.contains(id))", "assert_eq(seen.length(), 4)", "assert_eq(messages.length(), 0)", "assert_eq(d.kind, @moonjsonnet.Assertion)", "assert_true(bad.contains(d.message))", "assert_true(messages.contains(d.message))", "assert_eq(payloads.val, 0)"],
       "checks": "Two assertions in each operand survive a same-name value override. All-true evaluation yields 42 and the deduplicated four-ID set; four unique-false cases each block payload. The two-false case accepts either false ID, without requiring a first failure or callbacks for checks bypassed by failure. Explicit type/unused modes perform no assertion/message/payload work. Independent source/AST use a bounded 5000-step budget. This is conjunction/retention, not execution-order or universal callback-count acceptance."
     },
     "AC2": {
       "file": "spec_assertion_conjunction_test.mbt",
       "test": "finite assertion reentry retains all checks and rebinds a checked original",
+      "test_id": "spec_assertion_conjunction_test.mbt::finite assertion reentry retains all checks and rebinds a checked original",
       "assertions": ["if left.value==3 then merged.value else null", "error_message=true", "limits=conjunction_limits(), ), 12,", "[\"L0@3\", \"L1@3\", \"L0@12\", \"L1@12\", \"R0@12\", \"R1@12\"]", "assert_true(seen.contains(key))", "assert_eq(seen.length(), 6)", "assert_eq(messages.length(), 0)"],
       "checks": "A length-three acyclic field graph is checked under original seed/goal 1/3 and merged 10/12, with both operands retaining two predicates. Actual original success precedes result 12; unordered ID/context membership proves the in-progress return did not lose remaining checks and the merged receiver did not reuse original check/scope state. Error-valued messages stay lazy. Every evaluation has explicit step/depth/stack bounds. This is operational evidence relative to existing self-field semantics, not a finite formal derivation from the state-free printed object-index rule."
     },
     "CK1": {
       "file": "spec_object_comp_keys_test.mbt",
       "test": "dynamic tuple key collisions fail construction before any selected value",
+      "test_id": "spec_object_comp_keys_test.mbt::dynamic tuple key collisions fail construction before any selected value",
       "assertions": ["for mode in [\"unused\", \"shape\", \"field\"]", "comp_keys_source(true)", "comp_keys_tree(true, body)", "limits=comp_keys_limits()", "assert_eq(keys.length(), 0)", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(d.location.file, \"forms-ast\")", "assert_eq(keys.get(\"1:1\"), Some(Json::string(\"first\")))", "assert_eq(keys.get(\"2:2\"), Some(Json::string(\"first\")))", "assert_eq(bodies.length(), 0)"],
       "checks": "Different tuples (1,1)/(2,2) dynamically produce the same first name across dependent generators that shadow outer x/y. Program creation and an unused field binding stay lazy; structural demand and direct first-field demand reject Runtime during construction before any value body. The two collision tuples are required but unrelated key order/count after failure is not prescribed. Source and independent handmade AST use bounded evaluations."
     },
     "CK2": {
       "file": "spec_object_comp_keys_test.mbt",
       "test": "mixed null keys retain lazy values and each iteration definition context",
+      "test_id": "spec_object_comp_keys_test.mbt::mixed null keys retain lazy values and each iteration definition context",
       "assertions": ["for mode in [\"shape\", \"first\", \"second\"]", "comp_keys_source(false)", "[\"object\", 2]", "[1, 1]", "assert_eq(d.kind, @moonjsonnet.Runtime)", "assert_eq(d.message, \"retained-body-marker\")", "assert_true(bodies.contains(\"2:2\"))", "assert_true(bodies.contains(\"1:1\"))", "assert_eq(keys.length(), 4)", "assert_eq(keys.get(\"1:0\"), Some(Json::null()))", "assert_eq(keys.get(\"2:0\"), Some(Json::null()))", "assert_eq(keys.get(\"2:2\"), Some(Json::string(\"second\")))", "assert_true(ready.val)"],
       "checks": "Repeated dynamic null names are filtered while first/second names survive. Metadata gives object/2 with no bodies; first yields [1,1] while the second error stays lazy; second demand raises its fixed Runtime marker with body tuple (2,2). Outer x=99/y=88 cannot replace iterator captures from for y in [0,x]. A sticky observer verifies all successful key tuples preceded any body entry. Maps compare membership, not universal callback counts or key order."
     },
     "AO1": {
       "file": "spec_array_ordering_test.mbt",
       "test": "array ordering covers empty prefix and recursive first difference cases",
+      "test_id": "spec_array_ordering_test.mbt::array ordering covers empty prefix and recursive first difference cases",
       "assertions": ["(empty, empty, false, true)", "(empty, ordering_array([right_tail]), true, true)", "(ordering_array([left_tail]), empty, false, false)", "(ordering_array([one]), ordering_array([one, right_tail]), true, true)", "(ordering_array([one, left_tail]), ordering_array([one]), false, false)", "ordering_array([ordering_array([one, left_tail]), left_tail])", "ordering_array([ordering_array([one]), two, left_tail])", "ordering_leaf(\"'\\\\uE000'\", Literal(\"\"))", "for (op, expected) in [(\"<\", less), (\"<=\", less_equal)]", "ordering_program(value, handmade).evaluate(limits=ordering_limits())", "Json::boolean(expected)"],
       "checks": "Explicit (<,<=) pairs distinguish all five finite array-comparison branches: empty/empty, one empty, equal prefix, unequal first values and recursive nested prefixes. Error-valued unmatched, inner and outer tails stay lazy. Ordinary numeric children and the U+E000/U+1F600 codepoint boundary are controls, not whole scalar-rule decisions. Source and separately constructed typed ASTs share literal fixtures but no parser export or computed comparison oracle."
     },
     "AO2": {
       "file": "spec_array_ordering_test.mbt",
       "test": "array ordering observes only the necessary nested common prefix",
+      "test_id": "spec_array_ordering_test.mbt::array ordering observes only the necessary nested common prefix",
       "assertions": ["ordering_visit(\"LN1\", 4)", "ordering_visit(\"RN1\", 5)", "for op in [\"<\", \"<=\"]", "for unused in [false, true]", "if unused { Json::number(42) } else { Json::boolean(true) }", "assert_eq(seen.length(), 0)", "for id in [\"L0\", \"R0\", \"LN0\", \"RN0\", \"LN1\", \"RN1\"]", "assert_true(seen.contains(id))", "assert_eq(seen.length(), 6)", "assert_true(!seen.contains(\"LT\") && !seen.contains(\"RT\"))"],
       "checks": "Only the necessary common prefix and nested deciding pair are observed through source and independent handmade ASTs. Distinct outer LT/RT callbacks are absent; an unused comparison records nothing and returns 42. ID maps compare membership, not left/right callback order or universal invocation counts. Every evaluation is explicitly bounded."
     },
     "AO3": {
       "file": "spec_array_ordering_test.mbt",
       "test": "array ordering separates demanded runtime failures from unused static errors",
+      "test_id": "spec_array_ordering_test.mbt::array ordering separates demanded runtime failures from unused static errors",
       "assertions": ["ordering_error(\"required-left\")", "ordering_error(\"required-right\")", "ordering_error(\"nested-required\")", "ordering_error(\"outer-left\")", "ordering_error(\"outer-right\")", "ordering_array([one, ordering_leaf(\"true\", Literal(true))])", "(ordering_array([one]), ordering_array([text]), @moonjsonnet.Type, None)", "(ordering_array([text]), ordering_array([one]), @moonjsonnet.Type, None)", "ordering_program(ordering_unused(value), handmade).evaluate(", "assert_eq(d.kind, kind)", "assert_eq(d.message, text)", "let missing = ordering_leaf(\"ordering_missing\", Var(\"ordering_missing\"))", "(ordering_array([one, missing]), ordering_array([two]))", "(empty, ordering_array([missing]))", "for subject in [value, ordering_unused(value)]", "assert_eq(d.kind, @moonjsonnet.Static)"],
       "checks": "Required outer/prefix/nested explicit errors propagate their literal Runtime markers; noncomparable boolean/null elements, mixed number/string or number/array elements and non-array partners reject Type. All parse-valid failures remain lazy in unused bindings. Unknown names in either skipped array tail or either binary operand instead reject Static during source/handmade-AST Program creation, even under unused locals. No arbitrary ordering among competing failures is imposed."
     },
     "BS0": {
       "file": "spec_foundation_calls_test.mbt",
       "test": "foundation unselected calls keep invalid computations lazy",
+      "test_id": "spec_foundation_calls_test.mbt::foundation unselected calls keep invalid computations lazy",
       "assertions": ["\" else 42,true || \"", "\",false && \"", "[42, true, false, 42, 42]"],
       "checks": "Reused pre-existing source controls skip invalid/erroneous public-library calls behind true || and false &&. This mapping reviews only the shortcut meaning; it adds no fresh execution, no independent handmade AST claim and no new public-library completion."
     },
     "BS1": {
       "file": "spec_boolean_shortcircuit_test.mbt",
       "test": "Boolean operators transfer the full truth table and required lexical operands",
+      "test_id": "spec_boolean_shortcircuit_test.mbt::Boolean operators transfer the full truth table and required lexical operands",
       "assertions": ["(false, false, false, false)", "(false, true, false, true)", "(true, false, false, true)", "(true, true, true, true)", "(\"&&\", and_value, left)", "(\"||\", or_value, !left)", "boolean_pair(left, op, right)", "for unused in [false, true]", "if unused { Json::number(42) } else { Json::boolean(expected) }", "assert_true(seen.contains(\"L\"))", "assert_eq(seen.contains(\"R\"), need_right)", "assert_eq(seen.length(), if need_right { 2 } else { 1 })"],
       "checks": "All four Boolean input pairs for both operators use source and independent handmade ASTs with local x/y operands. Literal expected outputs distinguish shortcut and Boolean longcut transfer. Observer-ID membership requires the left and only the needed right; an unused whole operation returns 42 with no IDs. Maps collapse repetitions rather than standardizing callback count/order."
     },
     "BS2": {
       "file": "spec_boolean_shortcircuit_test.mbt",
       "test": "Boolean left type gates and shortcuts preserve dormant right shapes and errors",
+      "test_id": "spec_boolean_shortcircuit_test.mbt::Boolean left type gates and shortcuts preserve dormant right shapes and errors",
       "assertions": ["ordering_leaf(\"null\", Literal(null))", "ordering_leaf(\"0\", Literal(0))", "ordering_leaf(\"''\", Literal(\"\"))", "ordering_array([payload])", "Func([], payload.tree)", "(\"&&\", false, true)", "(\"||\", true, false)", "ordering_binary(nonboolean, op, rhs)", "@moonjsonnet.Type", "Json::boolean(shortcut)", "ordering_error(\"left-required\")", "Some(\"left-required\")", "ordering_error(\"right-required\")", "Some(\"right-required\")"],
       "checks": "Six non-Boolean left kinds reject Type without right or nested-payload callbacks; unused whole operations return 42. The same six right kinds remain unforced behind the explicit shortcuts. Left errors and required explicit right errors propagate their fixed Runtime markers. Forced non-Boolean RHS is deliberately absent because B0 is unadjudicated, not passing."
     },
     "BS3": {
       "file": "spec_boolean_shortcircuit_test.mbt",
       "test": "Boolean statics visit both operands even under shortcuts and unused bindings",
+      "test_id": "spec_boolean_shortcircuit_test.mbt::Boolean statics visit both operands even under shortcuts and unused bindings",
       "assertions": ["let missing = ordering_leaf(\"boolean_missing\", Var(\"boolean_missing\"))", "for op in [\"&&\", \"||\"]", "for choice in [false, true]", "ordering_binary(missing, op, flag)", "ordering_binary(flag, op, missing)", "for subject in [value, ordering_unused(value)]", "assert_eq(d.kind, @moonjsonnet.Static)", "for source in [\"true \" + op, op + \" true\"]", "assert_eq(d.kind, @moonjsonnet.Syntax)"],
       "checks": "Unknown names in either operand reject Static at Program creation through source and independent handmade ASTs, under shortcut/longcut Boolean left values and unused wrappers. Missing operands are separate source-only Syntax controls, with no malformed typed-AST equivalence or complete grammar/static constructor claim."
     },
     "IC1": {
       "file": "spec_import_closure_test.mbt",
       "test": "imported factory closures retain module locals self root and dependency origin",
+      "test_id": "spec_import_closure_test.mbt::imported factory closures retain module locals self root and dependency origin",
       "assertions": ["[10, 2, 12, 3, 12, 11]", "[10, 900, 910, 700, 12, 11]", "[10, 700, 710, 3, 12, 11]", "root_local(", "root_var(\"x\")", "root_path(\"self\", [\"x\"])", "root_path(\"$\", [\"x\"])", "limits=import_closure_limits()", "assert_true(requests.contains((\"root-scope-entry\", \"module\")))", "assert_true(requests.contains((\"closure-module.libsonnet\", \"dep\")))", "assert_eq(requests.length(), 2)"],
       "checks": "Independent source-entry and handmade-entry ASTs extract a factory and call its returned closure under colliding caller locals and object/root contexts. Module local x=10, default dependency 2/3, nested self=12 and root=11 remain lexical. Explicit caller x/self/root arguments are still passed normally. Imported modules are fixed Source.text on both entry paths, not claimed independent module ASTs. Resolver-ID membership is a synthetic host-protocol control, not general path/cache policy."
     },
     "IC2": {
       "file": "spec_import_closure_test.mbt",
       "test": "imported unused function bodies cannot capture caller namespaces",
+      "test_id": "spec_import_closure_test.mbt::imported unused function bodies cannot capture caller namespaces",
       "assertions": ["[777, 100, 99, 100]", "for body in [\"caller\", \"self.x\", \"super.x\", \"$.x\"]", "\"function()\" + body", "import_closure_type(root_ast(ImportFile(\"module\", false)))", "assert_eq(d.kind, @moonjsonnet.Static)", "assert_eq(d.location.file, \"closure-module.libsonnet\")", "assert_eq(requests.length(), 1)"],
       "checks": "A positive caller-context control establishes valid local/self/super/root values. Merely inspecting the imported function type then rejects Static in its own module for each free namespace, even though the invalid function body would not execute. Entry Program creation succeeds first. Both entry adapters are independent; module source parsing is shared by the import API."
     },
     "IC3": {
       "file": "spec_import_closure_test.mbt",
       "test": "imported closure defaults defer nested dependency compile and runtime failures",
+      "test_id": "spec_import_closure_test.mbt::imported closure defaults defer nested dependency compile and runtime failures",
       "assertions": ["(\"function(\", @moonjsonnet.Syntax)", "(\"local unused=function() x;{a:2,b:3}\", @moonjsonnet.Static)", "(\"{a:error 'dep-default-required',b:3}\", @moonjsonnet.Runtime)", "for mode in [\"factory-type\", \"closure-type\", \"override\", \"force\"]", "assert_eq(d.kind, kind)", "assert_eq(d.location.file, \"closure-dep.libsonnet\")", "assert_eq(d.message, \"dep-default-required\")", "Json::array([10, 5, 15, 7, 12, 11])", "Json::string(\"function\")", "assert_true(!requests.contains((\"closure-module.libsonnet\", \"dep\")))", "assert_eq(requests.length(), 1)", "assert_eq(requests.length(), 2)"],
       "checks": "Factory/returned-closure type and explicit seed/arg overrides avoid loading the nested dependency despite its Syntax/Static/Runtime failure. Default demand loads it from the defining module context and exposes its own phase/marker. A free x in an unused dependency function cannot capture the intermediate module local either. Request maps collapse repeated IDs and claim no cache lifetime/callback count/order policy."
     },
     "SQ0IMM": {
       "file": "spec_remove_test.mbt",
       "test": "P0 immutable array deletion preserves originals and deferred aliases",
+      "test_id": "spec_remove_test.mbt::P0 immutable array deletion preserves originals and deferred aliases",
       "assertions": ["[b,a]", "[std.removeAt(b,0),b,a]", "assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))"],
       "checks": "Reused deletion/original/map/slice/chained alias controls establish prior array immutability scope; no fresh execution and no claim that these old cases already test concat."
     },
     "SQ0LEN": {
       "file": "spec_length_test.mbt",
       "test": "length keeps native functions and nonfunction contracts separate",
+      "test_id": "spec_length_test.mbt::length keeps native functions and nonfunction contracts separate",
       "assertions": ["[2, 1, 2, 1]", "@moonjsonnet.Type"],
       "checks": "Reused source array-element laziness and two-codepoint String length controls, with adjacent rejected primitive kinds. Native/function/object portions retain their earlier public-contract scope and are not new full-library acceptance or fresh execution."
     },
     "SQ0UNI": {
       "file": "spec_review_test.mbt",
       "test": "Unicode codepoint and slice boundaries retain exact error timing",
+      "test_id": "spec_review_test.mbt::Unicode codepoint and slice boundaries retain exact error timing",
       "assertions": ["[4, \"😀\", \"e\", \"́\", 0, \"😀́\"]"],
       "checks": "Reused existing String length four across an astral, combining mark and NUL. Only its explicit length/codepoint assertion is credited; slice tests in the same group do not become additional length or concat judgments. No rerun."
     },
     "SQ1": {
       "file": "spec_sequence_structure_test.mbt",
       "test": "sequence concatenation preserves all elements and lazy seam payloads",
+      "test_id": "spec_sequence_structure_test.mbt::sequence concatenation preserves all elements and lazy seam payloads",
       "assertions": ["(empty, empty, [])", "(empty, left, [10, 20])", "(left, empty, [10, 20])", "(left, right, [10, 20, 30, 40])", "sequence_value(sequence_call(\"length\", [empty]), 0)", "[\"array\", 4, 10, 30]", "index(0), index(2)"],
       "checks": "Independent source and handmade ASTs preserve empty-side identity and every appended element, including input position zero. Array type/length and offsets zero/two avoid erroneous seam payloads one/three. The behavior oracle is fixed prose/official flattenArrays; printed index mismatch A0 is not silently closed."
     },
     "SQ2": {
       "file": "spec_sequence_structure_test.mbt",
       "test": "sequence aliases survive deletion before and after warm concatenation",
+      "test_id": "spec_sequence_structure_test.mbt::sequence aliases survive deletion before and after warm concatenation",
       "assertions": ["for removals_first in [false, true]", "removed_len(\"left\", 0)", "removed_len(\"right\", 1)", "(len(\"joined\"), 4)", "(len(\"alias\"), 4)", "(len(\"twice\"), 6)", "(len(\"mapped\"), 4)", "removed_len(\"joined\", 1)", "sequence_gate(checks, result)", "[10, 20, 30, 40, 10, 20]"],
       "checks": "Nested-if structural gates force warm concat/alias/chained concat/deferred map before input/result deletions, and also reverse input deletion versus construction order. Literal vectors preserve both input aliases, warm aliases, cold concat and deferred map. This distinguishes in-place concat, mutation of sources/results and poisoned delayed views without relying on final array manifestation order."
     },
     "SQ3": {
       "file": "spec_sequence_structure_test.mbt",
       "test": "sequence length counts String codepoints and requires the evaluated child",
+      "test_id": "spec_sequence_structure_test.mbt::sequence length counts String codepoints and requires the evaluated child",
       "assertions": ["(\"''\", \"\", 0)", "(\"'😀'\", \"😀\", 1)", "Json::number(size.to_double())", "sequence_failure(failed, @moonjsonnet.Runtime, Some(\"string-required\"))", "sequence_value(ordering_unused(sequence_call(\"length\", [text])), 42)"],
       "checks": "Separate source literals and direct typed String values count empty/astral/decomposed-combining cases as zero/one/three codepoints, then four after Z. A required String-producing error propagates its fixed marker while an unused whole call remains lazy. This does not assert lazy String contents, source-encoding completeness or grapheme normalization."
     },
     "SQ4": {
       "file": "spec_sequence_structure_test.mbt",
       "test": "sequence boundaries separate required heads selected payloads and statics",
+      "test_id": "spec_sequence_structure_test.mbt::sequence boundaries separate required heads selected payloads and statics",
       "assertions": ["(ordering_error(\"left-head\"), empty, \"left-head\")", "(empty, ordering_error(\"right-head\"), \"right-head\")", "[(1, \"left-payload\"), (3, \"right-payload\")]", "sequence_failure(value, @moonjsonnet.Type, None)", "ordering_leaf(\"seq_missing\", Var(\"seq_missing\"))", "assert_eq(d.kind, @moonjsonnet.Static)", "@moonjsonnet.Program::parse(\"[1]+\")", "assert_eq(d.kind, @moonjsonnet.Syntax)"],
       "checks": "Both concat heads are required even beside empty arrays, but only the selected seam failure is forced; unused whole failures stay lazy. Numeric/array mismatches and length(number) reject Type. A statically invalid unselected tail is rejected under length or first-index demand through source/handmade AST; missing operand Syntax is a separate source-only control."
     },
     "FINITE": {
       "file": "spec_manifest_wbtest.mbt",
       "test": "P0 JSON manifestation rejects nonfinite internal values defensively",
+      "test_id": "spec_manifest_wbtest.mbt::P0 JSON manifestation rejects nonfinite internal values defensively",
       "assertions": ["assert_eq(d.kind, Runtime)", "for number in [1.0 / 0.0, -1.0 / 0.0, 0.0 / 0.0]"],
       "checks": "Direct internal +/-Inf/NaN fail both structured and string JSON output paths."
+    },
+    "SC1": {
+      "file": "spec_string_concat_test.mbt",
+      "test": "string concatenation preserves String contents rather than JSON quoting",
+      "assertions": [
+        "(\"left:\", raw, \"left:\" + raw)",
+        "(raw, \":right\", raw + \":right\")",
+        "sequence_call(\"toString\", [reflect_string(raw)])",
+        "sequence_call(\"manifestJson\", [reflect_string(\"A\")])"
+      ],
+      "checks": "Both source and handmade AST preserve empty sides, left/right order, astral/combining/NUL/newline/quote/backslash String contents and String toString identity. The separate manifestJson String result retains JSON quotes; no general formatter spelling is inferred.",
+      "test_id": "spec_string_concat_test.mbt::string concatenation preserves String contents rather than JSON quoting"
+    },
+    "SC2": {
+      "file": "spec_string_concat_test.mbt",
+      "test": "non String concatenation manifests JSON and omits hidden inherited payloads",
+      "assertions": [
+        "(reflect_bool(false), Json::boolean(false))",
+        "concat_json_sides(value, expected)",
+        "ordering_error(\"hidden-value\")",
+        "ordering_error(\"overridden-value\")",
+        "{ \"x\": 7, \"h\": 9 }"
+      ],
+      "checks": "Both concat directions and explicit toString produce a String without CR/LF whose host-parsed JSON equals independently fixed scalar/array/object values. Hidden errors/functions and overridden errors are not demanded; an inherited forced-visible field is included. No whitespace, key-order or decimal spelling requirement is imposed.",
+      "test_id": "spec_string_concat_test.mbt::non String concatenation manifests JSON and omits hidden inherited payloads"
+    },
+    "SC3": {
+      "file": "spec_string_concat_test.mbt",
+      "test": "string conversion is strict at its demanded boundary and rejects functions or overflow",
+      "assertions": [
+        "(nested_error, @moonjsonnet.Runtime, Some(\"visible-payload\"))",
+        "(function, @moonjsonnet.Type, None)",
+        "(ordering_array([function]), @moonjsonnet.Type, None)",
+        "(ordering_binary(large, \"*\", large), @moonjsonnet.Runtime, None)",
+        "sequence_failure(sequence_call(\"type\", [conversion]), kind, marker)"
+      ],
+      "checks": "Source/AST type-only demand of both concat directions and explicit toString still requires the operand head and nested visible payload, rejects root/nested functions without calling their body, and preserves finite-overflow rejection. The shared failure helper independently verifies that each unused whole conversion yields 42; diagnostic kinds/isolated markers are embedding controls, not failure ordering.",
+      "test_id": "spec_string_concat_test.mbt::string conversion is strict at its demanded boundary and rejects functions or overflow"
+    },
+    "SC4": {
+      "file": "spec_string_concat_test.mbt",
+      "test": "implicit manifestation checks assertions while library JSON and statics keep separate boundaries",
+      "assertions": [
+        "let empty_bad = concat_assert_object([], reflect_bool(false), None)",
+        "for value in [empty_bad, hidden_bad, ordering_array([empty_bad])]",
+        "single_line=false",
+        "Some(ordering_error(\"unused-assert-message\"))",
+        "assert_eq(d.kind, @moonjsonnet.Static)"
+      ],
+      "checks": "Empty/hidden-only/nested assertion objects fail all three demanded conversion forms, but ignored whole calls stay lazy and a true assertion does not evaluate its message. The same empty assertion object follows the distinct source-defined manifestJson path and produces parseable empty JSON. A hidden free variable is rejected Static through source/from_ast even in an unused concat; no assertion inheritance/reentry contract is promoted.",
+      "test_id": "spec_string_concat_test.mbt::implicit manifestation checks assertions while library JSON and statics keep separate boundaries"
     }
   },
   "rules": {
@@ -1813,7 +2012,42 @@
     "type-array": {"normal": ["TYPE"], "lazy": ["TYPELAZY"], "remaining": "All array-producing expressions and invalid outer errors.", "implementation": ["stdlib.mbt"]},
     "manifest-value": {"normal": ["F1"], "runtime_error": ["FINITE"], "boundary": ["FINITE"], "remaining": "Exact preservation of every scalar kind/Unicode sequence and finite extreme.", "implementation": ["manifest.mbt"]},
     "manifest-object": {"normal": ["O2", "O6"], "runtime_error": ["O3", "O4", "O7"], "lazy": ["O4", "O6", "O7"], "boundary": ["O4", "O6"], "remaining": "Cycles, field-order independence, all nested hidden/visible errors and std.manifestJson distinctions.", "implementation": ["manifest.mbt", "objects.mbt"]},
-    "manifest-array": {"normal": ["F1", "O2"], "runtime_error": ["O4", "O7"], "lazy": ["O7"], "boundary": ["O4"], "remaining": "Cycles, every nested shape and resource-independent evaluation boundaries.", "implementation": ["manifest.mbt"]}
+    "manifest-array": {"normal": ["F1", "O2"], "runtime_error": ["O4", "O7"], "lazy": ["O7"], "boundary": ["O4"], "remaining": "Cycles, every nested shape and resource-independent evaluation boundaries.", "implementation": ["manifest.mbt"]},
+    "string-concat": {
+      "normal": [
+        "SC1",
+        "SC2",
+        "SC4"
+      ],
+      "static_error": [
+        "SC4"
+      ],
+      "runtime_error": [
+        "SC3",
+        "SC4"
+      ],
+      "lazy": [
+        "SC2",
+        "SC3",
+        "SC4"
+      ],
+      "boundary": [
+        "SC1",
+        "SC2",
+        "SC3",
+        "SC4"
+      ],
+      "remaining": "Only the frozen String/JSON conversion and strict-demand controls are reviewed. Complete tostring numeric/encoding domains, all value producers and mutually recursive manifestation/assertion child judgments remain unproved; N0/R0 remain unresolved. No exact whitespace/key-order/decimal spelling or competing-failure order is required here. Library manifestJson stays a separate source-defined path, and no Go/C++ acceptance is inferred.",
+      "implementation": [
+        "eval.mbt",
+        "operators.mbt",
+        "manifest.mbt",
+        "render.mbt",
+        "stdlib.mbt",
+        "manifest_json.mbt",
+        "ast_convert.mbt"
+      ]
+    }
   },
   "clauses": [
     {"id": "LEX-ENCODING", "section": "lexing", "obligation": "UTF-8 source, whitespace, all comment forms and greedy tokens", "remaining": "Not manually mapped in this stage; retained lexer tests are candidates only.", "implementation": ["lexer.mbt"]},
@@ -1862,31 +2096,31 @@
         "parser.mbt"
       ],
       "normal": [
-        "SP1",
-        "SP2",
-        "SP3",
-        "SP4",
-        "SP5"
+        "PREC1",
+        "PREC2",
+        "PREC3",
+        "PREC4",
+        "PREC5"
       ],
       "static_error": [
-        "SP5"
+        "PREC5"
       ],
       "runtime_error": [
-        "SP5"
+        "PREC5"
       ],
       "lazy": [
-        "SP1",
-        "SP2",
-        "SP3",
-        "SP4",
-        "SP5"
+        "PREC1",
+        "PREC2",
+        "PREC3",
+        "PREC4",
+        "PREC5"
       ],
       "boundary": [
-        "SP1",
-        "SP2",
-        "SP3",
-        "SP4",
-        "SP5"
+        "PREC1",
+        "PREC2",
+        "PREC3",
+        "PREC4",
+        "PREC5"
       ]
     },
     {"id": "CORE-IMPORT", "section": "core_syntax", "obligation": "Import substitutions, lazy loading and independent static checking of imported programs", "normal": ["I1", "I3", "IB1", "IB4", "IB5", "IU1", "IU4", "IC1"], "static_error": ["I1", "I3", "IB3", "IR4", "IC2", "IC3"], "runtime_error": ["IB3", "IU2", "IU3", "IC3"], "lazy": ["I2", "I3", "IB2", "IU3", "IC3"], "boundary": ["IB1", "IB3", "IB4", "IB5", "IU1", "IU2", "IU3", "IU4", "IC1", "IC2", "IC3"], "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) closes exported-factory lexical isolation and deferred nested-import/default boundaries, reusing I1-I3; no whole CORE-IMPORT or generic child judgment is completed. Importbin byte-value and bounded BOM-free importstr reviews retain their scopes. General code-import source/decoding forms, initial BOM, canonical aliases, cycles, cross-mode/source/value/failure cache identity/lifetimes, host resolver/I/O policy and resources remain unadjudicated; diagnostic details are host controls.", "implementation": ["imports.mbt", "evaluator_imports.mbt", "eval.mbt", "validate.mbt", "parser.mbt", "runtime_types.mbt", "objects.mbt", "ast_convert.mbt"]},

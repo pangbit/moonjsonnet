@@ -1,0 +1,179 @@
+#!/usr/bin/env python3
+"""Bounded metadata-only regression controls; uses Python's standard library.
+
+Run from the repository root:
+  python3 tools/spec-language-matrix-test.py REFERENCE_DIR NEW_EVIDENCE_DIR
+After a positive-only failure, reuse verified negative results with the same
+arguments followed by --resume-positive. Existing attempts are retained.
+Only tracked/staged inputs and the two new review files are mirrored. The
+negative checker runs sequentially in that mirror. Positive readback runs in
+the real repository and regenerates its matrix, whose Git identity is required.
+No Jsonnet programs or upstream tools execute.
+"""
+
+import copy
+import hashlib
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import time
+
+
+def unique_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON key: " + key)
+        result[key] = value
+    return result
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def main():
+    resume = len(sys.argv) == 4 and sys.argv[3] == "--resume-positive"
+    if len(sys.argv) != 3 and not resume:
+        raise SystemExit(__doc__)
+    root = Path.cwd().resolve()
+    reference = Path(sys.argv[1]).resolve()
+    output = Path(sys.argv[2]).resolve()
+    output.mkdir(parents=True, exist_ok=resume)
+    mapping_path = Path("tests/spec-language-coverage.json")
+    original_text = (root / mapping_path).read_text()
+    original = json.loads(original_text, object_pairs_hook=unique_object)
+    tracked = set(subprocess.check_output(["git", "ls-files", "-z"], text=True).strip("\0").split("\0"))
+    allowed_new = {"spec_string_concat_test.mbt", "docs/development/SPEC-STRING-CONCAT-2026-10-22.md"}
+    paths = {str(mapping_path), "tools/spec-language-matrix.mbtx"}
+    paths.update(item["file"] for item in original["evidence"].values())
+    for row in list(original["rules"].values()) + original["clauses"]:
+        paths.update(row["implementation"])
+        if "rule_review" in row:
+            review = row["rule_review"]
+            paths.add(review["review_report"])
+            paths.update(item["file"] for item in review["inspection"])
+            paths.update(review["evidence_sha256"])
+    mirror = output / "mirror"
+    identities = {}
+    for path in sorted(paths):
+        relative = Path(path)
+        assert not relative.is_absolute() and ".." not in relative.parts, path
+        assert path in tracked or path in allowed_new, path
+        source = (root / relative).resolve()
+        assert root in source.parents, path
+        if not resume:
+            target = mirror / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(source, target)
+        identities[path] = sha(source)
+    if resume:
+        assert identities == json.loads((output / "inputs.json").read_text()), "inputs changed; a new run is required"
+    else:
+        (output / "inputs.json").write_text(json.dumps(identities, indent=2) + "\n")
+    dump = lambda data: json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+    cases = []
+
+    def add(name, data, marker, changed_source=None):
+        cases.append((name, dump(data) if isinstance(data, dict) else data, marker, changed_source))
+
+    def insert_member(text, member):
+        return text[:1] + member + "," + text[1:]
+
+    prefix = '  "evidence": {'
+    assert original_text.count(prefix) == 1
+    super_case = json.dumps(original["evidence"]["SP1"], ensure_ascii=False)
+    add("duplicate-evidence-key", original_text.replace(prefix, prefix + '"SP1":' + super_case + ",", 1), "duplicate mapping key: $.evidence.SP1")
+    add("duplicate-top-key", insert_member(original_text, '"version":2'), "duplicate mapping key: $.version")
+    add("duplicate-nested-key", insert_member(original_text, '"validator_fixture":{"n":0,"n":1}'), "duplicate mapping key: $.validator_fixture.n")
+    add("escaped-duplicate-key", original_text.replace(prefix, prefix + '"SP\\u0031":' + super_case + ",", 1), "duplicate mapping key: $.evidence.SP1")
+    add("duplicate-key-in-array", insert_member(original_text, '"validator_fixture":[{"n":0,"n":1}]'), "duplicate mapping key: $.validator_fixture[0].n")
+    data = copy.deepcopy(original)
+    del data["evidence"]["SC2"]["test_id"]
+    add("missing-global-test-id", data, "global test ID required: SC2")
+    data = copy.deepcopy(original)
+    data["evidence"]["PREC1"] = copy.deepcopy(data["evidence"]["SP1"])
+    add("duplicate-global-test-id", data, "duplicate global test ID:")
+    data = copy.deepcopy(original)
+    data["evidence"]["SC2"]["file"] = data["evidence"]["SP1"]["file"]
+    add("wrong-file", data, "evidence test ID/file/case mismatch: SC2")
+    data = copy.deepcopy(original)
+    data["evidence"]["SC2"]["test"] = data["evidence"]["SC1"]["test"]
+    add("wrong-case", data, "evidence test ID/file/case mismatch: SC2")
+    data = copy.deepcopy(original)
+    data["evidence"]["SC2"]["assertions"] = ["assert_eq(@json.parse(text), expected)"]
+    add("helper-anchor", data, "assertion anchor changed: SC2")
+    data = copy.deepcopy(original)
+    data["evidence"]["SC2"]["assertions"] = ["(ordering_array([function]), @moonjsonnet.Type, None)"]
+    add("other-case-anchor", data, "assertion anchor changed: SC2")
+    test_path = Path(original["evidence"]["SC1"]["file"])
+    test_source = (root / test_path).read_text()
+    repeated = test_source + '\n///|\ntest "' + original["evidence"]["SC1"]["test"] + '" {\n}\n'
+    add("duplicate-case-declaration", original, "unique test declaration for SC1", (test_path, repeated))
+    data = copy.deepcopy(original)
+    item = data["evidence"]["SC2"]
+    item["file"] = "./" + item["file"]
+    item["test_id"] = item["file"] + "::" + item["test"]
+    add("noncanonical-file", data, "canonical relative test path required: SC2")
+    data = copy.deepcopy(original)
+    data["version"] = 1
+    add("old-schema", data, "mapping schema v2 required")
+
+    env = os.environ.copy()
+    env["RUST_LOG"] = "error"
+    results = json.loads((output / "negative-results.json").read_text()) if resume else []
+    if resume:
+        assert [item["case"] for item in results] == [item[0] for item in cases]
+        assert all(item["passed"] and item["no_output"] for item in results)
+    generated = [mirror / "docs/development/SPEC-LANGUAGE-MATRIX.md", mirror / "docs/development/spec-language-matrix.json"]
+    for name, text, marker, source_change in ([] if resume else cases):
+        (mirror / mapping_path).write_text(text)
+        if source_change:
+            (mirror / source_change[0]).write_text(source_change[1])
+        destination = output / name
+        assert not destination.exists() and not any(path.exists() for path in generated)
+        argv = ["nice", "-n", "10", "moon", "run", "--frozen", "-j", "1", "tools/spec-language-matrix.mbtx", str(reference), str(destination)]
+        started = time.monotonic()
+        proc = subprocess.run(argv, cwd=mirror, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=60)
+        log = output / (name + ".log")
+        log.write_text(proc.stdout)
+        no_output = not destination.exists() and not any(path.exists() for path in generated)
+        passed = proc.returncode != 0 and marker in proc.stdout and no_output
+        record = {"case": name, "argv": argv, "exit": proc.returncode, "expected_marker": marker, "marker_found": marker in proc.stdout, "no_output": no_output, "passed": passed, "seconds": round(time.monotonic() - started, 3), "log_sha256": sha(log)}
+        results.append(record)
+        (output / "negative-results.json").write_text(json.dumps(results, indent=2) + "\n")
+        if source_change:
+            (mirror / source_change[0]).write_text(test_source)
+        print(json.dumps({"case": name, "exit": proc.returncode, "passed": passed}), flush=True)
+        if not passed:
+            raise AssertionError("wrong rejection path: " + name + "\n" + proc.stdout[-3500:])
+
+    (mirror / mapping_path).write_text(original_text)
+    destination = output / ("positive-recovered" if resume else "positive")
+    assert not destination.exists(), "inspect previous positive outcome before retry"
+    argv = ["nice", "-n", "10", "moon", "run", "--frozen", "-j", "1", "tools/spec-language-matrix.mbtx", str(reference), str(destination)]
+    started = time.monotonic()
+    proc = subprocess.run(argv, cwd=root, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=60)
+    log = output / ("positive-recovered.log" if resume else "positive.log")
+    log.write_text(proc.stdout)
+    assert proc.returncode == 0, proc.stdout[-3500:]
+    matrix = json.loads((destination / "matrix.json").read_text(), object_pairs_hook=unique_object)
+    for index in range(1, 6):
+        assert matrix["evidence"]["PREC" + str(index)]["file"] == "spec_precedence_test.mbt"
+    for index in range(1, 4):
+        assert matrix["evidence"]["SP" + str(index)]["file"] == "spec_super_prefix_test.mbt"
+    ids = [item["test_id"] for item in matrix["evidence"].values()]
+    assert len(ids) == len(set(ids)) == matrix["global_test_ids"]
+    assert all(item["test_id"] == item["file"] + "::" + item["test"] for item in matrix["evidence"].values())
+    for path, digest in identities.items():
+        assert sha(root / path) == digest, "real input changed: " + path
+    record = {"argv": argv, "cwd": str(root), "exit": proc.returncode, "seconds": round(time.monotonic() - started, 3), "log_sha256": sha(log), "negative_controls": len(results), "all_rejected_before_output": all(item["passed"] for item in results), "positive_bindings_verified": True, "global_test_ids": len(ids), "real_inputs_unchanged": True, "reused_negative_results": resume}
+    (output / "result.json").write_text(json.dumps(record, indent=2) + "\n")
+    print(json.dumps(record), flush=True)
+
+
+if __name__ == "__main__":
+    main()
