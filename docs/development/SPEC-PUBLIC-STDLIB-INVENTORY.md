@@ -26,7 +26,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `base64` | D: `std.base64(input)` | S: `std.base64(input)` | U/U/U/U | [std_encoding_test.mbt:16](../../std_encoding_test.mbt#L16) |
 | `base64Decode` | D: `std.base64Decode(str)` | S: `std.base64Decode(str)` | U/U/U/U | [std_encoding_test.mbt:20](../../std_encoding_test.mbt#L20) |
 | `base64DecodeBytes` | D: `std.base64DecodeBytes(str)` | S: `std.base64DecodeBytes(str)` | U/U/U/U | [lint_type_test.mbt:111](../../lint_type_test.mbt#L111); [standard_native_diagnostics_test.mbt:8](../../standard_native_diagnostics_test.mbt#L8); [std_encoding_test.mbt:20](../../std_encoding_test.mbt#L20) |
-| `ceil` | I: `std.ceil(x)` | Native/not defined in std.jsonnet | U/U/U/U | No direct test reference found |
+| `ceil` | I: `std.ceil(x)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_math_rounding_test.mbt:35](../../spec_math_rounding_test.mbt#L35) |
 | `char` | D: `std.char(n)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_scalar_test.mbt:5](../../spec_string_scalar_test.mbt#L5); [standard_character_test.mbt:5](../../standard_character_test.mbt#L5) |
 | `clamp` | D: `std.clamp(x, minVal, maxVal)` | S: `std.clamp(x, minVal, maxVal)` | U/U/U/U | [array_std_test.mbt:29](../../array_std_test.mbt#L29) |
 | `codepoint` | D: `std.codepoint(str)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_review_test.mbt:71](../../spec_review_test.mbt#L71); [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_scalar_test.mbt:5](../../spec_string_scalar_test.mbt#L5) |
@@ -56,7 +56,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `flatMap` | D: `std.flatMap(func, arr)` | S: `std.flatMap(func, arr)` | R/R/R/R | [sequence_combine_test.mbt:4](../../sequence_combine_test.mbt#L4); [spec_array_flatmap_test.mbt:5](../../spec_array_flatmap_test.mbt#L5); [spec_array_slice_test.mbt:62](../../spec_array_slice_test.mbt#L62) |
 | `flattenArrays` | D: `std.flattenArrays(arr)` | S: `std.flattenArrays(arrs)` | U/U/U/U | [array_std_test.mbt:11](../../array_std_test.mbt#L11) |
 | `flattenDeepArray` | D: `std.flattenDeepArray(value)` | S: `std.flattenDeepArray(value)` | U/U/U/U | [array_std_test.mbt:14](../../array_std_test.mbt#L14) |
-| `floor` | I: `std.floor(x)` | Native/not defined in std.jsonnet | U/U/U/U | No direct test reference found |
+| `floor` | I: `std.floor(x)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_math_rounding_test.mbt:35](../../spec_math_rounding_test.mbt#L35) |
 | `foldl` | D: `std.foldl(func, arr, init)` | S: `std.foldl(func, arr, init)` | R/R/R/R | [moonjsonnet_test.mbt:118](../../moonjsonnet_test.mbt#L118); [spec_array_fold_test.mbt:5](../../spec_array_fold_test.mbt#L5); [spec_array_slice_test.mbt:61](../../spec_array_slice_test.mbt#L61) |
 | `foldr` | D: `std.foldr(func, arr, init)` | S: `std.foldr(func, arr, init)` | R/R/R/R | [sequence_combine_test.mbt:35](../../sequence_combine_test.mbt#L35); [spec_array_fold_test.mbt:5](../../spec_array_fold_test.mbt#L5); [spec_array_slice_test.mbt:61](../../spec_array_slice_test.mbt#L61) |
 | `format` | D: `std.format(str, vals)` | S: `std.format(str, vals)` | U/U/U/U | [standard_native_diagnostics_test.mbt:41](../../standard_native_diagnostics_test.mbt#L41) |
@@ -94,7 +94,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `manifestYamlStream` | D: `std.manifestYamlStream(value, indent_array_in_object=false, c_document_end=false, quote_keys=true)` | S: `std.manifestYamlStream(value, indent_array_in_object=false, c_document_end=true, quote_keys=true)` | U/R/U/U | [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [spec_yaml_test.mbt:10](../../spec_yaml_test.mbt#L10); [toml_yaml_test.mbt:32](../../toml_yaml_test.mbt#L32) |
 | `mantissa` | I: `std.mantissa(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:30](../../std_math_test.mbt#L30) |
 | `map` | D: `std.map(func, arr)` | S: `std.map(func, arr)` | R/R/R/R | [error_value_test.mbt:80](../../error_value_test.mbt#L80); [moonjsonnet_test.mbt:18](../../moonjsonnet_test.mbt#L18); [native_test.mbt:56](../../native_test.mbt#L56) |
-| `mapWithIndex` | D: `std.mapWithIndex(func, arr)` | S: `std.mapWithIndex(func, arr)` | U/U/U/U | [sequence_test.mbt:23](../../sequence_test.mbt#L23) |
+| `mapWithIndex` | D: `std.mapWithIndex(func, arr)` | S: `std.mapWithIndex(func, arr)` | U/U/U/U | [sequence_test.mbt:22](../../sequence_test.mbt#L22) |
 | `mapWithKey` | D: `std.mapWithKey(func, obj)` | S: `std.mapWithKey(func, obj)` | U/U/U/U | [object_std_test.mbt:25](../../object_std_test.mbt#L25) |
 | `max` | I: `std.max(a, b)` | S: `std.max(a, b)` | R/R/R/R | [array_std_test.mbt:29](../../array_std_test.mbt#L29); [spec_foundation_calls_test.mbt:5](../../spec_foundation_calls_test.mbt#L5); [spec_foundation_numbers_test.mbt:35](../../spec_foundation_numbers_test.mbt#L35) |
 | `maxArray` | D: `std.maxArray(arr, keyF, onEmpty)` | S: `std.maxArray(arr, keyF=id, onEmpty=error 'Expected at least one element in array. Got none')` | U/U/U/U | [extrema_test.mbt:5](../../extrema_test.mbt#L5); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [standard_native_diagnostics_test.mbt:13](../../standard_native_diagnostics_test.mbt#L13) |
@@ -119,11 +119,11 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `objectValuesAll` | D: `std.objectValuesAll(o)` | S: `std.objectValuesAll(o)` | U/U/U/U | [object_std_test.mbt:14](../../object_std_test.mbt#L14) |
 | `parseHex` | D: `std.parseHex(str)` | S: `std.parseHex(str)` | U/U/U/U | [std_string_test.mbt:22](../../std_string_test.mbt#L22) |
 | `parseInt` | D: `std.parseInt(str)` | S: `std.parseInt(str)` | U/U/U/U | [std_string_test.mbt:22](../../std_string_test.mbt#L22) |
-| `parseJson` | D: `std.parseJson(str)` | Native/not defined in std.jsonnet | U/U/U/U | [json_yaml_diagnostic_test.mbt:14](../../json_yaml_diagnostic_test.mbt#L14); [spec_review_test.mbt:8](../../spec_review_test.mbt#L8) |
+| `parseJson` | D: `std.parseJson(str)` | Native/not defined in std.jsonnet | U/U/U/U | [json_yaml_diagnostic_test.mbt:14](../../json_yaml_diagnostic_test.mbt#L14); [spec_review_test.mbt:8](../../spec_review_test.mbt#L8); [spec_string_concat_test.mbt:19](../../spec_string_concat_test.mbt#L19) |
 | `parseOctal` | D: `std.parseOctal(str)` | S: `std.parseOctal(str)` | U/U/U/U | [std_string_test.mbt:22](../../std_string_test.mbt#L22) |
 | `parseYaml` | D: `std.parseYaml(str)` | Native/not defined in std.jsonnet | U/U/U/U | [json_yaml_diagnostic_test.mbt:38](../../json_yaml_diagnostic_test.mbt#L38); [parse_yaml_test.mbt:7](../../parse_yaml_test.mbt#L7); [spec_review_test.mbt:9](../../spec_review_test.mbt#L9) |
 | `pow` | I: `std.pow(x, n)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_foundation_calls_test.mbt:6](../../spec_foundation_calls_test.mbt#L6); [spec_foundation_numbers_test.mbt:45](../../spec_foundation_numbers_test.mbt#L45); [spec_review_test.mbt:7](../../spec_review_test.mbt#L7) |
-| `primitiveEquals` | Not listed | F: `parameter names not specified by formal rule` | U/U/U/U | [object_std_test.mbt:59](../../object_std_test.mbt#L59) |
+| `primitiveEquals` | Not listed | F: `parameter names not specified by formal rule` | U/U/U/U | [object_std_test.mbt:59](../../object_std_test.mbt#L59); [spec_primitive_equals_test.mbt:170](../../spec_primitive_equals_test.mbt#L170) |
 | `prune` | D: `std.prune(a)` | S: `std.prune(a)` | U/U/U/U | [object_std_test.mbt:29](../../object_std_test.mbt#L29) |
 | `rad2deg` | I: `std.rad2deg(x)` | S: `std.rad2deg(x)` | U/U/U/U | [std_math_test.mbt:14](../../std_math_test.mbt#L14) |
 | `range` | D: `std.range(from, to)` | S: `std.range(from, to)` | R/R/R/R | [aggregate_test.mbt:12](../../aggregate_test.mbt#L12); [lint_type_test.mbt:108](../../lint_type_test.mbt#L108); [moonjsonnet_test.mbt:90](../../moonjsonnet_test.mbt#L90) |
@@ -131,7 +131,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `removeAt` | D: `std.removeAt(arr, idx)` | S: `std.removeAt(arr, at)` | R/U/R/R | [program_parameters_test.mbt:181](../../program_parameters_test.mbt#L181); [program_test.mbt:187](../../program_test.mbt#L187); [remove_test.mbt:7](../../remove_test.mbt#L7) |
 | `repeat` | D: `std.repeat(what, count)` | S: `std.repeat(what, count)` | U/U/U/U | [array_std_test.mbt:23](../../array_std_test.mbt#L23); [toml_yaml_test.mbt:54](../../toml_yaml_test.mbt#L54) |
 | `resolvePath` | Not listed | S: `std.resolvePath(f, r)` | U/U/U/U | [std_string_test.mbt:38](../../std_string_test.mbt#L38) |
-| `reverse` | D: `std.reverse(arrs)` | S: `std.reverse(arr)` | U/U/U/U | [sequence_test.mbt:41](../../sequence_test.mbt#L41); [sort_test.mbt:72](../../sort_test.mbt#L72) |
+| `reverse` | D: `std.reverse(arrs)` | S: `std.reverse(arr)` | U/U/U/U | [sequence_test.mbt:40](../../sequence_test.mbt#L40); [sort_test.mbt:72](../../sort_test.mbt#L72) |
 | `round` | I: `std.round(x)` | S: `std.round(x)` | U/U/U/U | [std_math_test.mbt:26](../../std_math_test.mbt#L26) |
 | `rstripChars` | D: `std.rstripChars(str, chars)` | S: `std.rstripChars(str, chars)` | U/U/U/U | [std_string_test.mbt:10](../../std_string_test.mbt#L10) |
 | `set` | D: `std.set(arr, keyF=id)` | S: `std.set(arr, keyF=id)` | U/U/U/U | [sets_test.mbt:7](../../sets_test.mbt#L7) |

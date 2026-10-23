@@ -2,18 +2,18 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "8efe361cbc45b03235378495cb0ec51605ca12cc4a1230b6dc36adf0a88748f7",
+  "mapping_sha256": "1f18d8b444f68a30f7dbd27c1913857f2badc44c3aad2906f5b5dd4f65b818ae",
   "tool_sha256": "da3657872b9348056bfcf5579eba583f1dc9fbd1f854be99bc59ce77ab94296f",
   "mapping_schema_version": 2,
-  "global_test_ids": 189,
+  "global_test_ids": 192,
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 62,
+  "manually_reviewed_subset_rows": 63,
   "completed_rule_rows": 28,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 9,
   "completed_evaluation_rule_rows": 19,
-  "unreviewed_rows": 3,
+  "unreviewed_rows": 2,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -2770,6 +2770,58 @@
       ],
       "checks": "All forms keep isolated parent/rhs/invalid-plus errors dormant through name queries and unused reads, then reject only on actual field demand. A key error is instead required by object creation; null keys omit error rhs. A no-parent Function rhs remains a lazy function head until invocation. Missing key/value names reject source and handmade admission in direct/unused/skipped contexts via the existing static helper. No competing-failure priority, assertion/reentry or complete child-domain claim is made.",
       "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "MR1": {
+      "file": "spec_math_rounding_test.mbt",
+      "line": 35,
+      "test": "floor and ceil use exact finite mathematical bounds without integer narrowing",
+      "test_id": "spec_math_rounding_test.mbt::floor and ceil use exact finite mathematical bounds without integer narrowing",
+      "assertions": [
+        "(\"5e-324\", 5.0e-324, 0.0, 1.0)",
+        "\"4503599627370495.5\"",
+        "\"9007199254740994\"",
+        "\"1.7976931348623157e308\"",
+        "[(\"floor\", floor_result), (\"ceil\", ceil_result)]",
+        "for named in [false, true]",
+        "Json::number(expected)"
+      ],
+      "checks": "A literal standard-math table covers finite fractions/integers, numerical signed-zero equality, nonzero subnormals, adjacent values around one, the half below 2^52, 2^53-scale integers and finite maxima. Source and independently made canonical finite Literal AST operands yield declared floor/ceil values through positional and named-x calls. No host floor/ceil, interpreter or Go output computes the oracle; zero sign bits, general decimal conversion/rounding and whole-function/domain proofs are excluded.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "MR2": {
+      "file": "spec_math_rounding_test.mbt",
+      "line": 92,
+      "test": "floor and ceil reject nonnumber heads and preserve required child errors",
+      "test_id": "spec_math_rounding_test.mbt::floor and ceil reject nonnumber heads and preserve required child errors",
+      "assertions": [
+        "reflect_string(\"1.25\")",
+        "ordering_array([unread])",
+        "value_head_function(ordering_error(\"rounding-unread-default\"), unread)",
+        "@moonjsonnet.Type",
+        "Some(\"rounding-required\")",
+        "rounding_apply(name, [(None, overflow)])"
+      ],
+      "checks": "Both mathematical functions reject all six nonnumber outer kinds Type through independent source/AST positional/named calls while Array/Object payloads and Function defaults/body remain unread. An isolated required operand marker propagates Runtime; a previously reviewed overflow-producing pow child cannot become a successful value under rounding. Unused whole calls return 42. Tags are host API checks; no nonfinite successful value or complete producer/host-admission policy is introduced.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "MR3": {
+      "file": "spec_math_rounding_test.mbt",
+      "line": 130,
+      "test": "rounding call bindings and unselected operands retain admission and lazy boundaries",
+      "test_id": "spec_math_rounding_test.mbt::rounding call bindings and unselected operands retain admission and lazy boundaries",
+      "assertions": [
+        "[(Some(\"unknown\"), left)]",
+        "[(None, left), (Some(\"x\"), right)]",
+        "for unused in [false, true]",
+        "assert_eq(d.kind, @moonjsonnet.Runtime)",
+        "assert_eq(counts.length(), 0)",
+        "sequence_value(ordering_binary(reflect_bool(false), \"&&\", required), false)",
+        "sequence_value(additive_select(hidden, \"ok\"), 42)",
+        "rounding_apply(name, [(None, sequence_var(\"rounding_missing\"))])",
+        "pair_reject("
+      ],
+      "checks": "Missing/extra/unknown/overlapping bindings reject Runtime with zero native argument gates through source/handmade Programs, and unused versions return 42. Error operands stay unforced in unselected branches, unambiguous Boolean shortcuts and hidden-field access. Unknown operand names reject Static through direct/unused/skipped source and AST admission. Native zero-count controls describe host binding behavior, not formal native semantics, universal order or a non-Boolean longcut verdict.",
+      "status": "manually reviewed assertion subset; execution is separate"
     }
   },
   "test_file_sha256": {
@@ -2840,7 +2892,8 @@
     "spec_encoding_entries_test.mbt": "2a4d39967638879a230a300ad345a7f52986a03ab739048e996d12f911dd4d4c",
     "spec_operator_rewrites_test.mbt": "ea6f10a9e4ce289d228c21c0d0dc10d1efc9d8ee2f791e645e6523ee665b59e4",
     "spec_expression_lists_test.mbt": "a28036727517e12ab3e27243f613eafc56172aa764b0432192196cb1d1a793c0",
-    "spec_additive_fields_test.mbt": "831593d7e2afce69bf9a5dd8518ccb88c0f28648a35368d9316bea2c79284852"
+    "spec_additive_fields_test.mbt": "831593d7e2afce69bf9a5dd8518ccb88c0f28648a35368d9316bea2c79284852",
+    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc"
   },
   "clauses": [
     {
@@ -8035,17 +8088,40 @@
       "kind": "prose-or-grammar-obligation",
       "section": "execution",
       "source_line": 2124,
-      "state": "unreviewed",
+      "state": "manually-reviewed-subset",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "normal": [
+          "MR1"
+        ],
+        "static_error": [
+          "MR3",
+          "F5"
+        ],
+        "runtime_error": [
+          "MR2",
+          "MR3"
+        ],
+        "lazy": [
+          "MR2",
+          "MR3",
+          "AP5",
+          "NT4"
+        ],
+        "boundary": [
+          "MR1",
+          "MR2",
+          "MR3",
+          "PG2",
+          "FINITE",
+          "NT4",
+          "AP3"
+        ]
       },
-      "remaining": "Separate public-library matrix and explicit host contracts; not complete from registration.",
+      "remaining": "The [finite rounding record](SPEC-MATH-ROUNDING-2026-10-23.md) supplies independent floor/ceil witnesses for admitted finite numeric boundaries, positional/named x, nonnumber refusal and required versus dormant operands. Binding tags/native zero-count controls are host API evidence, not standard-math or std.native semantic completion. The [public inventory](SPEC-PUBLIC-STDLIB-INVENTORY.md) retains separately reviewed subsets with no whole-function acceptance. All other mathematical/Unicode/host extVar/native domains, arbitrary source conversion/rounding, zero sign/format and complete function/child contracts remain unproved. EXEC-BUILTINS stays partial; greater-than print conflicts, A0/B0/N0/R0/PE0/DF0 and prior unknowns remain unchanged.",
       "implementation": [
         "stdlib.mbt",
+        "runtime_types.mbt",
+        "eval.mbt",
         "native.mbt"
       ],
       "obligation": [
