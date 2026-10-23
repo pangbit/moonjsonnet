@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "5d95a8539bb43637356edb3cee87bde64fa0e0ca",
-  "uncommitted_test_paths": "spec_merge_patch_test.mbt",
+  "input_source_commit": "fd4aa2c3966076b357cc8e75cd3be223595b9137",
+  "uncommitted_test_paths": "spec_integer_parsers_test.mbt\nstd_string_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -100,6 +100,7 @@
     "spec_importstr_utf8_test.mbt": "e59bf7fd40462e618b5894504d1893bda4d46dd634e457b573b35cfd1cb2b8e8",
     "spec_index_test.mbt": "8082f3d1253b242b9e6b4fd6f1397275fe1f5732c8ae62f922fc2c32963b2b67",
     "spec_inherited_self_test.mbt": "0a387afc9ba8bc35ba54a7ada36f8c1ef9f27d5c88f40393cfea73a371b7f780",
+    "spec_integer_parsers_test.mbt": "69bbab1aa131e4d3a4b43c8cdde5d8ece0c74bf05637743ee9b26a6d490c34f1",
     "spec_json_contracts_test.mbt": "4b6cf2af9358e616bab60e695a65ac7e47e454d83a722a493ae9a325826ac8d0",
     "spec_language_call_test.mbt": "a9a8489f31f3fce9d3266602fbad788e3ba63a50daa1b66f99cfb9f1ea13724a",
     "spec_language_forms_ast_test.mbt": "4d2bd9c0303a756cfc457fa4cff910f80e094447aaa1b86014b9d3849a90738d",
@@ -154,14 +155,14 @@
     "std_encoding_test.mbt": "671ee68b1e5657c821ac581967fa57507822c8f1fefd2a4256821f8145458886",
     "std_manifest_test.mbt": "5839dce0b2e12d84bb785151e907d59791059fcb0eb2c9d1c71e93bdfdc1e59f",
     "std_math_test.mbt": "91c779e2736c616f258aa1563537c05d1cd86ec9a21bdbca68456bd29a44b9cc",
-    "std_string_test.mbt": "19cc7ae9d34b85633d218673c20df4859627e212e5422d7e7263dc8548b6bf45",
+    "std_string_test.mbt": "8ca87b15de5659c03674f69f7052b35fe8ea5e426076c9322b058d180f1c1601",
     "stdlib_contract_test.mbt": "e5c5e0b6cca5e562b83ad2dd2fc6ebc38846d9326332d95e46d37d4f01dc7ec4",
     "string_literal_test.mbt": "9b20b698e56ad17e2688d7bb88663587cdb9f1f09d2dddf787f9ebf24bb51e6f",
     "syntax_diagnostic_test.mbt": "32d3f2b3b7846d58000f605abd3dd145eab700ecc38a9a58ce756c8eeec3a846",
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "07dd47d337a86f1622eb12c639dded1b6124990740fba60b776008ff3390f9bb",
+  "coverage_sha256": "3039065aedb891db0b9a26332f4d04b66eeabd1b16ef4238b6b63d069193f90a",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -4111,13 +4112,68 @@
         "source": "std.parseHex(str)",
         "source_line": "109"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "parseHex",
+        "signature_review": {
+          "parameters": [
+            "str"
+          ],
+          "defaults": {},
+          "test": "spec_integer_parsers_test.mbt",
+          "status": "Fixed public one-required-String signature; positional/named successes and missing/unknown binding controls. Error categories are embedding checks, not exact public diagnostics."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 38,
+            "test_declaration": "test \"integer parsers preserve exact digits case named inputs and radix powers\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 89,
+            "test_declaration": "test \"integer parsers reject clear malformed data and wrong heads without payload demand\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 140,
+            "test_declaration": "test \"integer parsers reject actual overflow before inspection and retain lazy static binding boundaries\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP1: independently derived exact numeric values, leading zeroes and positional/named str calls. Decimal minus/numeric zero, octal digits and hex upper/lower/mixed case are separate contracts. Clear prior source assertions are reused in the report."
+          },
+          "E": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP6/IP7: empty/sign-only/clear invalid digit data and wrong outer kinds reject without payload demand; required input failures propagate. Missing/unknown bindings reject before native argument gates; unselected free operands remain Static. HP0 punctuation aliases are excluded."
+          },
+          "L": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP6/IP7: unused invalid/overflowing whole calls remain lazy; domain rejection does not traverse container/function payloads. Required actual arithmetic overflow fails before std.type returns a Number head."
+          },
+          "B": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP1/IP7: leading zeroes and selected exact numeric/radix powers beyond host Int64; actual finite production versus unused overflow. Numeric zero equality does not prove its sign bit, text rendering or general rounding."
+          }
+        },
+        "remaining": "Bounded clear-domain contract only, not whole-function acceptance. HP0 U+003A-U+003F hex punctuation source/documentation discrepancy, malformed host Strings/surrogates, all decimal accumulation rounding, zero-sign rendering, resource/diagnostic and every argument combination remain unproved. Source-number lexical policies, language matrix unknowns and shift exclusions are unchanged. Go fixture outcomes are not the normative oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "std_string_test.mbt",
           "line": 22,
           "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_integer_parsers_test.mbt",
+          "line": 38,
+          "test_declaration": "test \"integer parsers preserve exact digits case named inputs and radix powers\" {",
+          "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -4130,13 +4186,92 @@
         "source": "std.parseInt(str)",
         "source_line": "96"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "parseInt",
+        "signature_review": {
+          "parameters": [
+            "str"
+          ],
+          "defaults": {},
+          "test": "spec_integer_parsers_test.mbt",
+          "status": "Fixed public one-required-String signature; positional/named successes and missing/unknown binding controls. Error categories are embedding checks, not exact public diagnostics."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 38,
+            "test_declaration": "test \"integer parsers preserve exact digits case named inputs and radix powers\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 69,
+            "test_declaration": "test \"source parseInt rejects a plus according to the fixed definition\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 74,
+            "test_declaration": "test \"handmade parseInt rejects a plus according to the fixed definition\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 79,
+            "test_declaration": "test \"source parseInt accepts exact finite decimal values beyond Int64\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 84,
+            "test_declaration": "test \"handmade parseInt accepts exact finite decimal values beyond Int64\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 89,
+            "test_declaration": "test \"integer parsers reject clear malformed data and wrong heads without payload demand\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 140,
+            "test_declaration": "test \"integer parsers reject actual overflow before inspection and retain lazy static binding boundaries\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP1: independently derived exact numeric values, leading zeroes and positional/named str calls. Decimal minus/numeric zero, octal digits and hex upper/lower/mixed case are separate contracts. Clear prior source assertions are reused in the report."
+          },
+          "E": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP6/IP7: empty/sign-only/clear invalid digit data and wrong outer kinds reject without payload demand; required input failures propagate. Missing/unknown bindings reject before native argument gates; unselected free operands remain Static. HP0 punctuation aliases are excluded. IP2/IP3 independently require plus-12 refusal from the fixed helper."
+          },
+          "L": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP6/IP7: unused invalid/overflowing whole calls remain lazy; domain rejection does not traverse container/function payloads. Required actual arithmetic overflow fails before std.type returns a Number head."
+          },
+          "B": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP1/IP7: leading zeroes and selected exact numeric/radix powers beyond host Int64; actual finite production versus unused overflow. Numeric zero equality does not prove its sign bit, text rendering or general rounding. IP4/IP5 independently require exact positive/negative 10^20 without Int64 narrowing."
+          }
+        },
+        "remaining": "Bounded clear-domain contract only, not whole-function acceptance. HP0 U+003A-U+003F hex punctuation source/documentation discrepancy, malformed host Strings/surrogates, all decimal accumulation rounding, zero-sign rendering, resource/diagnostic and every argument combination remain unproved. Source-number lexical policies, language matrix unknowns and shift exclusions are unchanged. Go fixture outcomes are not the normative oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "std_string_test.mbt",
           "line": 22,
           "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_integer_parsers_test.mbt",
+          "line": 38,
+          "test_declaration": "test \"integer parsers preserve exact digits case named inputs and radix powers\" {",
+          "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -4221,13 +4356,68 @@
         "source": "std.parseOctal(str)",
         "source_line": "104"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "parseOctal",
+        "signature_review": {
+          "parameters": [
+            "str"
+          ],
+          "defaults": {},
+          "test": "spec_integer_parsers_test.mbt",
+          "status": "Fixed public one-required-String signature; positional/named successes and missing/unknown binding controls. Error categories are embedding checks, not exact public diagnostics."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 38,
+            "test_declaration": "test \"integer parsers preserve exact digits case named inputs and radix powers\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 89,
+            "test_declaration": "test \"integer parsers reject clear malformed data and wrong heads without payload demand\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_integer_parsers_test.mbt",
+            "line": 140,
+            "test_declaration": "test \"integer parsers reject actual overflow before inspection and retain lazy static binding boundaries\" {",
+            "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP1: independently derived exact numeric values, leading zeroes and positional/named str calls. Decimal minus/numeric zero, octal digits and hex upper/lower/mixed case are separate contracts. Clear prior source assertions are reused in the report."
+          },
+          "E": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP6/IP7: empty/sign-only/clear invalid digit data and wrong outer kinds reject without payload demand; required input failures propagate. Missing/unknown bindings reject before native argument gates; unselected free operands remain Static. HP0 punctuation aliases are excluded."
+          },
+          "L": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP6/IP7: unused invalid/overflowing whole calls remain lazy; domain rejection does not traverse container/function payloads. Required actual arithmetic overflow fails before std.type returns a Number head."
+          },
+          "B": {
+            "test": "spec_integer_parsers_test.mbt",
+            "expectation": "IP1/IP7: leading zeroes and selected exact numeric/radix powers beyond host Int64; actual finite production versus unused overflow. Numeric zero equality does not prove its sign bit, text rendering or general rounding."
+          }
+        },
+        "remaining": "Bounded clear-domain contract only, not whole-function acceptance. HP0 U+003A-U+003F hex punctuation source/documentation discrepancy, malformed host Strings/surrogates, all decimal accumulation rounding, zero-sign rendering, resource/diagnostic and every argument combination remain unproved. Source-number lexical policies, language matrix unknowns and shift exclusions are unchanged. Go fixture outcomes are not the normative oracle."
+      },
       "test_reference_candidates": [
         {
           "file": "std_string_test.mbt",
           "line": 22,
           "test_declaration": "test \"string functions preserve Unicode and native Go contracts\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_integer_parsers_test.mbt",
+          "line": 38,
+          "test_declaration": "test \"integer parsers preserve exact digits case named inputs and radix powers\" {",
+          "classification": "manually reviewed independent source and typed AST assertions; IP labels are report groups, not canonical language IDs or whole-function acceptance"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"

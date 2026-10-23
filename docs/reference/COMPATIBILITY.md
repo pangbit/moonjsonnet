@@ -194,8 +194,8 @@ Only the following functions are supported. Arity/named-argument violations are
 | `equalsIgnoreCase(str1,str2)` | Unicode 15 simple case folding from pinned Go data, including Kelvin sign, sigma variants and supplementary letters; does not expand ß to ss or apply locale rules |
 | `asciiLower(str)`, `asciiUpper(str)`, `stringChars(str)` | Pinned source definitions; ASCII-only case conversion and Unicode code-point array |
 | `findSubstr(pat,str)` | All overlapping code-point offsets; empty pattern or string gives an empty array |
-| `parseInt(str)` | Optional +/-, ASCII decimal digits, signed Int64 range before conversion to double; rejects whitespace, prefixes and underscores |
-| `parseHex(str)`, `parseOctal(str)` | Pinned source digit accumulation; no sign or radix prefix; differs from parseInt's Int64 bound |
+| `parseInt(str)` | Fixed official optional minus and ASCII decimal digits; separate finite Number multiply/add accumulation without an Int64 bound; plus, whitespace, prefixes and underscores reject. This supersedes the historical Go-oriented native range/sign behavior; see the [scoped review](../development/SPEC-INTEGER-PARSERS-2026-10-23.md) |
+| `parseHex(str)`, `parseOctal(str)` | Pinned source Number digit accumulation without a host Int64 bound; no sign or radix prefix. The review leaves the hex helper's punctuation-alias discrepancy (HP0) unresolved |
 | `escapeStringJson(str_)`, `escapeStringPython(str)`, `escapeStringBash(str_)`, `escapeStringDollars(str_)`, `escapeStringXML(str_)` | String coercion and context-specific escaping, including C0/C1 JSON controls |
 | `resolvePath(f,r)` | Pinned lexical directory joining; does not normalize .. or treat r as an absolute replacement |
 | `id(x)` | Eager identity; nested array/object values remain lazy |

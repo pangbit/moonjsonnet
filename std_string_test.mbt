@@ -19,8 +19,8 @@ test "string functions preserve Unicode and native Go contracts" {
         "[[\"a\",\"b::c\"],[\"a::b\",\"c\"],[\"a\",\"\"],[\"a,b\"]]",
       ),
       (
-        "[std.parseInt('+12'),std.parseInt('-9223372036854775808'),std.parseInt('9223372036854775807'),std.parseHex('Ff'),std.parseOctal('010') ]",
-        "[12,-9223372036854775808,9223372036854775808,255,8]",
+        "[std.parseInt('-12'),std.parseInt('-100000000000000000000'),std.parseInt('100000000000000000000'),std.parseHex('Ff'),std.parseOctal('010') ]",
+        "[-12,-100000000000000000000,100000000000000000000,255,8]",
       ),
       (
         "[std.equalsIgnoreCase('KelvinK','kELVINk'),std.equalsIgnoreCase('Σσς','ςΣσ'),std.equalsIgnoreCase('ß','ss'),std.equalsIgnoreCase('İ','i'),std.equalsIgnoreCase('ı','I'),std.equalsIgnoreCase('ß','ẞ')]",
@@ -47,13 +47,30 @@ test "string functions preserve Unicode and native Go contracts" {
 test "string argument and numeric parsing boundaries" {
   for
     source in [
-      "std.parseInt('')", "std.parseInt('+')", "std.parseInt('-')", "std.parseInt('1_0')",
-      "std.parseInt(' 1')", "std.parseInt('1 ')", "std.parseInt('0x10')", "std.parseInt('１２')",
-      "std.parseInt('9223372036854775808')", "std.parseInt('-9223372036854775809')",
-      "std.parseInt(1)", "std.parseHex('0x10')", "std.parseOctal('8')", "std.parseHex('-1')",
-      "std.splitLimit('a,b',',',0.5)", "std.splitLimitR('a,b',',',-2)", "std.splitLimit('a','',1)",
-      "std.isEmpty([])", "std.trim(null)", "std.equalsIgnoreCase('a',1)", "std.id(error 'eager')",
-      "std.stripChars('',error 'eager')", "std.stripChars([], 'a')", "std.stripChars('a', null)",
+      "std.parseInt('')",
+      "std.parseInt('+')",
+      "std.parseInt('-')",
+      "std.parseInt('1_0')",
+      "std.parseInt(' 1')",
+      "std.parseInt('1 ')",
+      "std.parseInt('0x10')",
+      "std.parseInt('１２')",
+      "std.parseInt('1" + "0".repeat(310) + "')",
+      "std.parseInt('-1" + "0".repeat(310) + "')",
+      "std.parseInt(1)",
+      "std.parseHex('0x10')",
+      "std.parseOctal('8')",
+      "std.parseHex('-1')",
+      "std.splitLimit('a,b',',',0.5)",
+      "std.splitLimitR('a,b',',',-2)",
+      "std.splitLimit('a','',1)",
+      "std.isEmpty([])",
+      "std.trim(null)",
+      "std.equalsIgnoreCase('a',1)",
+      "std.id(error 'eager')",
+      "std.stripChars('',error 'eager')",
+      "std.stripChars([], 'a')",
+      "std.stripChars('a', null)",
     ] {
     try @moonjsonnet.evaluate(source) catch {
       @moonjsonnet.Error(d) => assert_true(d.kind != @moonjsonnet.Unsupported)

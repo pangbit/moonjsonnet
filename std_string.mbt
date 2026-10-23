@@ -1,32 +1,23 @@
 ///|
-// Go strconv.ParseInt with explicit base 10: optional sign, ASCII digits only,
-// signed 64-bit range. Accumulate negatively so MinInt64 stays representable.
+// Fixed parseInt/parse_nat: optional minus and ASCII digits, accumulated using
+// separate finite Number multiplication and addition without Int64 narrowing.
 fn parse_decimal(s : String, loc : Location) -> Value raise {
   let chars = s.to_array()
-  let signed = !chars.is_empty() && (chars[0] == '-' || chars[0] == '+')
-  let start = if signed { 1 } else { 0 }
+  let negative = !chars.is_empty() && chars[0] == '-'
+  let start = if negative { 1 } else { 0 }
   if chars.length() == start {
     raise problem(Runtime, loc, s + " is not a base 10 integer")
   }
-  let negative = signed && chars[0] == '-'
-  let bound = if negative {
-    -9223372036854775807L - 1L
-  } else {
-    -9223372036854775807L
-  }
-  let mut value = 0L
+  let mut value = 0.0
   for i in start..<chars.length() {
     let digit = chars[i].to_int() - 48
-    if digit < 0 || digit > 9 || value < bound / 10L {
+    if digit < 0 || digit > 9 {
       raise problem(Runtime, loc, s + " is not a base 10 integer")
     }
-    value *= 10L
-    if value < bound + digit.to_int64() {
-      raise problem(Runtime, loc, s + " is not a base 10 integer")
-    }
-    value -= digit.to_int64()
+    let product = number_value(finite(10.0 * value, loc), loc)
+    value = number_value(finite(product + digit.to_double(), loc), loc)
   }
-  Num((if negative { value } else { -value }).to_double())
+  finite(if negative { -value } else { value }, loc)
 }
 
 ///|
