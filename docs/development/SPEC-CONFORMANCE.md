@@ -37,11 +37,12 @@ permissions and resource limits do not reduce language or public-library scope.
 Historical raw upstream results and failure classifications remain preserved.
 The original application and any personal details must not be added to commits.
 
-The [2026-10-23 native package regression](SPEC-NATIVE-REGRESSION-2026-10-23.md)
-records debug and release each passing 672/672 at clean source commit
-`21ee8005fbca4779adb2e01d53000c65f325eb33`, after the strip/split fixes. This
-refreshes local package regression evidence only; matrix coverage, unresolved
-contracts and the remaining integration/platform requirements are unchanged.
+The [2026-10-23 native package regression](SPEC-NATIVE-REGRESSION-2026-10-23.md#later-complete-regression-at-84eb1f7)
+records debug and release each passing 713/713 at clean source commit
+`84eb1f71d1f408b1aa0bd11526a83b31f51b58d0`, after membership and extrema
+corrections. The earlier 672/672 results remain bound separately to 21ee800.
+This refreshes local package regression evidence only; matrix coverage,
+unresolved contracts and remaining integration/platform requirements are unchanged.
 
 ## P0 normative matrix
 

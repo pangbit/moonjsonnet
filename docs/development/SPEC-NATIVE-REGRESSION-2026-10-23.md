@@ -1,4 +1,7 @@
-# Native package regression after the strip and split fixes
+# Native package regression records
+
+The latest complete local run is [84eb1f7](#later-complete-regression-at-84eb1f7).
+The earlier strip/split entry remains bound to its original source and counts.
 
 ## Source and result boundary
 
@@ -154,3 +157,140 @@ metadata/format checks, not additional semantic runs. Their command receipts,
 the documentation validation receipt and the final commit/input verification
 are stored under `delivery/` in the evidence root. Product, fixture, interface
 and executable README bytes remain those tested above.
+
+
+## Later complete regression at 84eb1f7
+
+The membership and two extrema corrections are now covered by a new complete
+local package run on 2026-10-23. Both modes bind source commit
+`84eb1f71d1f408b1aa0bd11526a83b31f51b58d0`, tree
+`a381e8a7d7b42e0c6b605c746fa7f497469af649`. Each command started and ended with
+a clean worktree and the same SHA-256 hashes for all 674 tracked files. This
+entry preserves the older 21ee800 results above; it does not reuse their 672
+count or relabel their binaries as current.
+
+| Mode | Actual result | Exit | Elapsed seconds | UTC start / finish |
+| --- | --- | --- | --- | --- |
+| Native debug | 713 total, 713 passed, 0 failed | 0 | 114.195 | 15:32:59.351986 / 15:34:53.546992 |
+| Native release | 713 total, 713 passed, 0 failed | 0 | 160.993 | 15:35:01.378953 / 15:37:42.372292 |
+
+Both raw stdout files contain exactly the following 42-byte summary, including
+the final newline; both stderr files are empty:
+
+```text
+Total tests: 713, passed: 713, failed: 0.
+```
+
+No failure, timeout, retry, expectation migration, snapshot update or test
+exclusion occurred. Debug and release ran sequentially in separate owned
+process groups. Each entire command, including compilation/linking/execution,
+had a 600-second limit, closed stdin, RUST_LOG=error, one worker and sequential
+tests. All command groups and wrappers exited before returning the test slot.
+The exact commands are the two unchanged reproduction commands above, with
+explicit `--debug` and `--release`; installed help was checked again locally.
+
+### Current enumeration and offline scope
+
+The fresh source inventory contains 690 explicit MoonBit tests, 16 executable
+source-documentation blocks and seven README tests. Before execution, current
+debug metadata agreed per file; the old release metadata still totaled 672 and
+was explicitly classified as stale. After each run, that mode's metadata
+independently totals 713 and identifies twelve nonempty test executables. The
+actual passing results come from the raw command summaries, not this inventory.
+
+| Package | Explicit tests | Documentation tests | Total |
+| --- | --- | --- | --- |
+| Root library | 656 | 22 | 678 |
+| cmd/jsonnetfmt | 4 | 0 | 4 |
+| cmd/main | 11 | 0 | 11 |
+| examples | 2 | 0 | 2 |
+| fs | 4 | 1 | 5 |
+| internal/number | 4 | 0 | 4 |
+| internal/posix | 4 | 0 | 4 |
+| internal/yaml | 5 | 0 | 5 |
+| Total | 690 | 23 | 713 |
+
+The 41 added declarations since the earlier whole-suite source are fourteen
+membership groups, fourteen extrema demand groups and thirteen extrema comparison
+groups. Existing declaration counts are retained. Their independent requirements,
+original failures and scoped migrations remain in the
+[membership report](SPEC-MEMBERSHIP-2026-10-23.md),
+[extrema demand report](SPEC-EXTREMA-DEMAND-2026-10-23.md) and
+[comparison continuation](SPEC-EXTREMA-COMPARISON-2026-10-23.md).
+
+All twenty package manifests remain eligible; no file/package/index/name filter
+was used. The 34 module/package configuration, executable README, C and fs/POSIX
+files relevant to the earlier offline audit are byte-identical to that audited
+source. Inspection of subsequent implementation/tests found no new network or
+external-process calls. Frozen dependencies use the existing local toolchain;
+there was no dependency synchronization, toolchain installation or network action.
+File-host fixtures remain randomized under _build and existing artifacts are
+preserved. The invalid-limit stdin tests return in their C guard before reading;
+stdin is also closed for both full commands. No test exclusion was necessary.
+
+### Current identity and raw evidence
+
+Host remains macOS 27.0.1 (26A434), Darwin ARM64. Installed versions are moon and
+moonrun 0.1.20260920 (914d7da), moonc v0.10.14+7d59c7ec9, with rr_moon_mod and
+rr_moon_pkg enabled. The checked current implementation/fixture and installed
+binary hashes are:
+
+| Input | SHA-256 |
+| --- | --- |
+| stdlib.mbt | `4c83dbc6cae5344ac264d08cd8df7601137b2d04f4c4d97f8977dd9c67ad6511` |
+| std_membership.mbt | `680ffdeaf633166f7af73d21d8a8d5ed0c38ab9b36ec83b8757eae721b18d9b9` |
+| extrema.mbt | `65d1f63c91bf5336761df94f5f3359c3a26667b7dce9f6955f921043cbad1459` |
+| extrema_test.mbt | `39699c2d91e740208035c14f3436bb5cb56a18ce261963e823fe773e0d1fc98b` |
+| spec_membership_test.mbt | `ff98fa18f761be4560885c2d02c55bf926ab5532c14f56b049d825ec692ae39e` |
+| spec_extrema_demand_test.mbt | `f3cc7628a5726e919328565b11436712e03eee749bf8568cc2d9a9726e61817e` |
+| spec_extrema_comparison_test.mbt | `437eee0449cee8057af030fbddd791ba4b952a5e853c9f82102c728a9a619e16` |
+| moon binary | `a0cd1c0014f2ca17089542939ac4ad3c983452c5952ca6140af0fcef258e1967` |
+| moonc binary | `8a49fb209d896b8ce72322883aa53a2395a1bdd88d35423ebfd841fc66b8f127` |
+| moonrun binary | `5e67ecba6138384ffca6548005d73580751ea6bc57f02113859010b09f1730e1` |
+
+The local evidence root is `/tmp/moonjsonnet-native-84eb1f7.ql24n51t`.
+Paths in the next table are relative to it:
+
+| Evidence | SHA-256 |
+| --- | --- |
+| tracked-inputs.sha256 | `c91f74a6fc10a45c4c39fdd66a3411e0662d44e03a7a0c7e4646c597ae8ff603` |
+| test-inventory.json | `d29ffda0cc612669bf705815caef7ad635cc932c473b5c21e3f7904a0036590d` |
+| plan.json | `9659a0bdee9760faf655d38d612c7777aa8aad3cd860c7206bac57c5a3677bd3` |
+| toolchain.txt | `10d48f2767e8de05ca6a6e7a022458bcd450ad4f40dc8473106b54444098ae44` |
+| moon-test-help.txt | `9d1220361b9b2e7082d9995d1123725f6c33dd0974c475c99c3f05b532ad129f` |
+| debug/run.json | `b172cc3600c567e99a76f39fd961450fc088fb040b9b51d7970eedf9c6b4da02` |
+| release/run.json | `122c1cc062273291863993a5e1d526d8cf43f7892200290250ec1af7969aa6d5` |
+| debug/test-binaries.sha256 | `25832d6feef1c2cdc084afa3b4f9c7ff4a65a1bad74f32ff282ae76c362bcf4d` |
+| release/test-binaries.sha256 | `78f66f342ad7b5efce1fb36b0fa59ce756dc97399c688125ce860dd2b07232b4` |
+| debug/test-metadata.json | `618487397fb728bdb989162e82e592caee78b2d16ad1f96dfdcf10b65f0cf7c4` |
+| release/test-metadata.json | `199cdaeca9fa96af5c7e9c8fdce30ad44ee1b8a5aff8f645edf8b78e0a89508c` |
+
+The raw outputs remain separate as debug/stdout.log, debug/stderr.log,
+release/stdout.log and release/stderr.log. Each stdout SHA-256 is
+`c5a08bbaeddeb78f1d9ba782c56fd1b9ec35290e7a0a328c79311b894351f6e8`;
+each empty stderr SHA-256 is
+`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`.
+The receipts bind argv, environment, source/tree, UTC and monotonic timing,
+exit/timeout, process groups, raw hashes and clean pre/post input checks.
+The per-mode binary manifests select only the twelve executables backed by
+nonempty current test metadata, excluding empty drivers and unrelated caches.
+
+### Scope still not established by these passes
+
+Standalone .mbtx scripts remain outside package-wide execution, including five
+differential-validator tests. Separate CLI/API process integrations, archive
+consumer, fixed Go/C++ or upstream-language comparisons, Linux, remote, container,
+ASan and standalone release build/publication remain NOTRUN for this source.
+Direct library/example and CLI-helper unit tests do not establish those scopes.
+
+This whole-suite regression adds no public-function acceptance or language-rule
+completion. Public coverage remains 64 reviewed subsets, zero whole-function
+acceptances; overall conformance is incomplete. Non-Array extrema admission,
+exact callback counts, independent error order, the greater-than formal-rule
+conflict and all other recorded normative disputes retain their prior status.
+Temporary logs are local evidence, not an archival availability guarantee.
+No proposal content, upstream modification, push or release is included.
+
+The documentation-only delivery changes no tested product, fixture, interface,
+manifest or executable README bytes. Its metadata checks and final exact input/
+commit verification are retained under delivery/ in this evidence directory.
