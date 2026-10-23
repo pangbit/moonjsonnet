@@ -15,7 +15,6 @@ test "array extrema retain branch defaults named arguments and stable ties" {
         "std.maxArray([{k:1,bad:error 'unused'},{k:2,bad:error 'unused'}],function(x)x.k).k",
         "2",
       ),
-      ("std.minArray([{}])", "{}"),
       ("std.maxArray([],keyF=function(a,b)a,onEmpty=0)", "0"),
       // The fixed source selects only the empty/nonempty branch argument.
       ("std.minArray([],keyF=1,onEmpty=2)", "2"),
@@ -30,7 +29,8 @@ test "array extrema retain branch defaults named arguments and stable ties" {
   for
     source in [
       "std.minArray([])", "std.maxArray([])", "std.maxArray('abc')", "std.maxArray([error 'forced'],function(x)0)",
-      "std.minArray([1],function(a,b)a)", "std.maxArray([{},{}])", "std.minArray([1],unused=2)",
+      "std.minArray([1],function(a,b)a)", "std.minArray([{}])", "std.maxArray([{},{}])",
+      "std.minArray([1],unused=2)",
     ] {
     try @moonjsonnet.evaluate(source) catch {
       @moonjsonnet.Error(d) => assert_true(d.kind != @moonjsonnet.Unsupported)

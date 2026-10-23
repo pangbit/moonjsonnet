@@ -90,6 +90,17 @@ manual records are unchanged, yielding 64 reviewed subsets and zero whole
 function acceptances. Non-Array scope and singleton/comparator disputes remain
 unresolved.
 
+The [extrema comparison continuation](SPEC-EXTREMA-COMPARISON-2026-10-23.md)
+retains its one-pass/twelve-failure baseline. It resolves bounded singleton-key
+rejection, initial self-comparison demand and condition-before-selection cases
+from the earlier open comparator area. The corrected helper passed all thirteen
+new groups and the fourteen previous demand groups; one legacy singleton Object
+success assertion was migrated after preserving the old group's raw failure,
+and both legacy groups then passed. Only the two existing extrema map records
+are extended. The total remains 64 reviewed subsets and zero whole-function
+acceptances; non-Array admission, exact callback counts, independent error order
+and the greater-than formal-rule conflict remain unresolved.
+
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its
 source-header assumptions were reviewed against those exact bytes. It records

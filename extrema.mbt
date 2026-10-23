@@ -27,12 +27,14 @@ fn Vm::extreme_value(
       "Unexpected type " + value_type(f) + ", expected function",
     )
   }
-  // Only the selected empty/nonempty branch demands its optional argument.
-  let mut selected = self.force(items[0], loc)
   let mut selected_key = match key {
-    None => selected
+    None => self.force(items[0], loc)
     Some(f) => self.call(f, [(None, items[0])], loc)
   }
+  // The source fold starts at zero, so even a singleton key is compared.
+  // Its condition must succeed before demanding the selected item.
+  ignore(self.compare_values(selected_key, selected_key, loc))
+  let mut selected = self.force(items[0], loc)
   for i in 1..<items.length() {
     self.tick(loc)
     // An explicit key can leave an unselected element's payload unevaluated.

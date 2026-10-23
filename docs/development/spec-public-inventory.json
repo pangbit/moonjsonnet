@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "946f62853b417cb3e3583b6e920fdab5907f7159",
-  "uncommitted_test_paths": "extrema_test.mbt\nspec_extrema_demand_test.mbt",
+  "input_source_commit": "37facf2939fb11aa96bb22264eba9694d9e6c167",
+  "uncommitted_test_paths": "extrema_test.mbt\nspec_extrema_comparison_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -30,7 +30,7 @@
     "evaluator_imports_wbtest.mbt": "525257976c3c721cd5a63a379523c651fb92948638919d29e8244f67a469d0fa",
     "evaluator_test.mbt": "4591b1c78be8ae7e848fa2625b92b154302a818a8afbc41b5c85fcc202d53fc0",
     "evaluator_wbtest.mbt": "8a904f5695e006a2c172e4e6e3452c5ac427c41fff062d8b5083bd51d08ad53f",
-    "extrema_test.mbt": "7913d371e8fa8ba7a460cf0f8f16c7aaed804ae6c2f14864237630b9b5a7551b",
+    "extrema_test.mbt": "39699c2d91e740208035c14f3436bb5cb56a18ce261963e823fe773e0d1fc98b",
     "format_power_test.mbt": "da72e8d480093ae4efe9cd82e08db27627a92afacd8f63d7225fa07191ffb977",
     "formatter_boundaries_test.mbt": "ee363b9c727f0ebbbf63da0646f58593d6f7032367a1f661bff06104bdedec1c",
     "formatter_context_test.mbt": "093edeaab7f8872dc285388b0a5b25914a4380f9f0a685d1b175154c65ea96d1",
@@ -89,6 +89,7 @@
     "spec_encoding_entries_test.mbt": "2a4d39967638879a230a300ad345a7f52986a03ab739048e996d12f911dd4d4c",
     "spec_error_static_test.mbt": "b931793ba7ad955b4a83f30600f6eeaca66c2ff0e99640004c059254866e9610",
     "spec_expression_lists_test.mbt": "a28036727517e12ab3e27243f613eafc56172aa764b0432192196cb1d1a793c0",
+    "spec_extrema_comparison_test.mbt": "437eee0449cee8057af030fbddd791ba4b952a5e853c9f82102c728a9a619e16",
     "spec_extrema_demand_test.mbt": "f3cc7628a5726e919328565b11436712e03eee749bf8568cc2d9a9726e61817e",
     "spec_filter_test.mbt": "448e73f9a5810e72eecad905c9cffed2446d6a4e5b7acd8ac03e7070d31362fc",
     "spec_flatten_test.mbt": "032cbb5d0bb36e7b9b47da3e9eb7f2b4168efae399f1aa99d5628e134d63b2c5",
@@ -170,7 +171,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "05b745264656bce59c80821cf1bca3fe061337578bcb8d652c214ab311a5e692",
+  "coverage_sha256": "988b25017b3fe2bca8824dda7861899e6bebbea7e6824fbbd5b9a42bd09d8ef9",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -2370,7 +2371,7 @@
         },
         {
           "file": "extrema_test.mbt",
-          "line": 24,
+          "line": 23,
           "test_declaration": "test \"array extrema retain branch defaults named arguments and stable ties\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -3630,27 +3631,45 @@
             "line": 23,
             "test_declaration": "test \"Array extrema retain literal numeric Unicode and stable-key selections\" {",
             "classification": "manual EX1-EX14 maxArray arms; independent frozen expectations, executed after preserved baseline failures"
+          },
+          {
+            "file": "spec_extrema_comparison_test.mbt",
+            "line": 69,
+            "test_declaration": "test \"source maxArray compares singleton values and explicit keys\" {",
+            "classification": "manual EC1-EC13 maxArray arms; preserved 1-pass/12-failure baseline, unchanged semantic criteria after formatter-only layout/trailing commas; corrected source and handmade AST passed"
           }
         ],
         "dimensions": {
           "N": {
             "test": "spec_extrema_demand_test.mbt",
-            "expectation": "EX1: literal Number/String/Array-key extrema, projected objects, positional/named/default identity calls and stable first ties through source and handmade AST."
+            "expectation": "EX1: literal Number/String/Array-key extrema, projected objects, positional/named/default identity calls and stable first ties through source and handmade AST. EC13 adds comparable singleton keys and constant-key selection of lazy noncomparable payload heads.",
+            "additional_tests": [
+              "spec_extrema_comparison_test.mbt"
+            ]
           },
           "E": {
             "test": "spec_extrema_demand_test.mbt",
-            "expectation": "EX13/EX14: isolated required input, chosen fallback, key expression/body and selected-result markers propagate; empty omitted fallback, needed wrong-arity key and invalid bindings reject; unused free names remain Static."
+            "expectation": "EX13/EX14: isolated required input, chosen fallback, key expression/body and selected-result markers propagate; empty omitted fallback, needed wrong-arity key and invalid bindings reject; unused free names remain Static. EC1-EC8 require singleton/initial key comparison rejection and isolated required key-prefix errors; EC9-EC12 preserve failing key condition before candidate selection.",
+            "additional_tests": [
+              "spec_extrema_comparison_test.mbt"
+            ]
           },
           "L": {
             "test": "spec_extrema_demand_test.mbt",
-            "expectation": "EX2-EX12: nonempty Arrays skip onEmpty, empty Arrays skip keyF, constant keys skip a discarded tail payload, selected heads share values, and unused calls leave gates untouched."
+            "expectation": "EX2-EX12: nonempty Arrays skip onEmpty, empty Arrays skip keyF, constant keys skip a discarded tail payload, selected heads share values, and unused calls leave gates untouched. EC5-EC12 require initial equal-key prefixes and skip selected-payload gates when the key condition fails; unused calls remain lazy. No exact keyF call count is imposed.",
+            "additional_tests": [
+              "spec_extrema_comparison_test.mbt"
+            ]
           },
           "B": {
             "test": "spec_extrema_demand_test.mbt",
-            "expectation": "EX1-EX12: empty/singleton numeric Arrays, stable ties, Unicode/NUL/combining String keys, nested comparable Array keys, lazy Array/Object/Function fallback payloads and unused invalid key heads."
+            "expectation": "EX1-EX12: empty/singleton numeric Arrays, stable ties, Unicode/NUL/combining String keys, nested comparable Array keys, lazy Array/Object/Function fallback payloads and unused invalid key heads. EC1-EC13 add Boolean/Null/Object/Function and nested noncomparable singleton key rejection, initial self-comparison of partial Array keys, and comparable singleton controls.",
+            "additional_tests": [
+              "spec_extrema_comparison_test.mbt"
+            ]
           }
         },
-        "remaining": "Only bounded EX groups reviewed; no whole-function acceptance. EXT-A0 non-Array source/documentation scope, EXT-C0 singleton noncomparable values/initial self-comparison/full key domains/exact callback counts, and EXT-E0 competing errors/raw encoding/full Unicode/resource/std rebinding remain open. No Go/C++ output is an oracle."
+        "remaining": "Bounded EX and EC groups reviewed; no whole-function acceptance. EC closes only tested singleton key rejection, initial comparison prefix demand and condition-before-selection obligations. EXT-A0 non-Array public admission, EXT-C3 exact callback counts/cache policy, EXT-E2 independent errors/native order, full key/Unicode/resource/raw-encoding domains, public std rebinding and the greater-than formal-rule conflict remain open. No Go/C++ output is an oracle."
       },
       "test_reference_candidates": [
         {
@@ -3676,6 +3695,12 @@
           "line": 23,
           "test_declaration": "test \"Array extrema retain literal numeric Unicode and stable-key selections\" {",
           "classification": "manual EX1-EX14 maxArray arms; independent frozen expectations, executed after preserved baseline failures"
+        },
+        {
+          "file": "spec_extrema_comparison_test.mbt",
+          "line": 69,
+          "test_declaration": "test \"source maxArray compares singleton values and explicit keys\" {",
+          "classification": "manual EC1-EC13 maxArray arms; preserved 1-pass/12-failure baseline, unchanged semantic criteria after formatter-only layout/trailing commas; corrected source and handmade AST passed"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -3929,27 +3954,45 @@
             "line": 23,
             "test_declaration": "test \"Array extrema retain literal numeric Unicode and stable-key selections\" {",
             "classification": "manual EX1-EX14 minArray arms; independent frozen expectations, executed after preserved baseline failures"
+          },
+          {
+            "file": "spec_extrema_comparison_test.mbt",
+            "line": 59,
+            "test_declaration": "test \"source minArray compares singleton values and explicit keys\" {",
+            "classification": "manual EC1-EC13 minArray arms; preserved 1-pass/12-failure baseline, unchanged semantic criteria after formatter-only layout/trailing commas; corrected source and handmade AST passed"
           }
         ],
         "dimensions": {
           "N": {
             "test": "spec_extrema_demand_test.mbt",
-            "expectation": "EX1: literal Number/String/Array-key extrema, projected objects, positional/named/default identity calls and stable first ties through source and handmade AST."
+            "expectation": "EX1: literal Number/String/Array-key extrema, projected objects, positional/named/default identity calls and stable first ties through source and handmade AST. EC13 adds comparable singleton keys and constant-key selection of lazy noncomparable payload heads.",
+            "additional_tests": [
+              "spec_extrema_comparison_test.mbt"
+            ]
           },
           "E": {
             "test": "spec_extrema_demand_test.mbt",
-            "expectation": "EX13/EX14: isolated required input, chosen fallback, key expression/body and selected-result markers propagate; empty omitted fallback, needed wrong-arity key and invalid bindings reject; unused free names remain Static."
+            "expectation": "EX13/EX14: isolated required input, chosen fallback, key expression/body and selected-result markers propagate; empty omitted fallback, needed wrong-arity key and invalid bindings reject; unused free names remain Static. EC1-EC8 require singleton/initial key comparison rejection and isolated required key-prefix errors; EC9-EC12 preserve failing key condition before candidate selection.",
+            "additional_tests": [
+              "spec_extrema_comparison_test.mbt"
+            ]
           },
           "L": {
             "test": "spec_extrema_demand_test.mbt",
-            "expectation": "EX2-EX12: nonempty Arrays skip onEmpty, empty Arrays skip keyF, constant keys skip a discarded tail payload, selected heads share values, and unused calls leave gates untouched."
+            "expectation": "EX2-EX12: nonempty Arrays skip onEmpty, empty Arrays skip keyF, constant keys skip a discarded tail payload, selected heads share values, and unused calls leave gates untouched. EC5-EC12 require initial equal-key prefixes and skip selected-payload gates when the key condition fails; unused calls remain lazy. No exact keyF call count is imposed.",
+            "additional_tests": [
+              "spec_extrema_comparison_test.mbt"
+            ]
           },
           "B": {
             "test": "spec_extrema_demand_test.mbt",
-            "expectation": "EX1-EX12: empty/singleton numeric Arrays, stable ties, Unicode/NUL/combining String keys, nested comparable Array keys, lazy Array/Object/Function fallback payloads and unused invalid key heads."
+            "expectation": "EX1-EX12: empty/singleton numeric Arrays, stable ties, Unicode/NUL/combining String keys, nested comparable Array keys, lazy Array/Object/Function fallback payloads and unused invalid key heads. EC1-EC13 add Boolean/Null/Object/Function and nested noncomparable singleton key rejection, initial self-comparison of partial Array keys, and comparable singleton controls.",
+            "additional_tests": [
+              "spec_extrema_comparison_test.mbt"
+            ]
           }
         },
-        "remaining": "Only bounded EX groups reviewed; no whole-function acceptance. EXT-A0 non-Array source/documentation scope, EXT-C0 singleton noncomparable values/initial self-comparison/full key domains/exact callback counts, and EXT-E0 competing errors/raw encoding/full Unicode/resource/std rebinding remain open. No Go/C++ output is an oracle."
+        "remaining": "Bounded EX and EC groups reviewed; no whole-function acceptance. EC closes only tested singleton key rejection, initial comparison prefix demand and condition-before-selection obligations. EXT-A0 non-Array public admission, EXT-C3 exact callback counts/cache policy, EXT-E2 independent errors/native order, full key/Unicode/resource/raw-encoding domains, public std rebinding and the greater-than formal-rule conflict remain open. No Go/C++ output is an oracle."
       },
       "test_reference_candidates": [
         {
@@ -3969,6 +4012,12 @@
           "line": 23,
           "test_declaration": "test \"Array extrema retain literal numeric Unicode and stable-key selections\" {",
           "classification": "manual EX1-EX14 minArray arms; independent frozen expectations, executed after preserved baseline failures"
+        },
+        {
+          "file": "spec_extrema_comparison_test.mbt",
+          "line": 59,
+          "test_declaration": "test \"source minArray compares singleton values and explicit keys\" {",
+          "classification": "manual EC1-EC13 minArray arms; preserved 1-pass/12-failure baseline, unchanged semantic criteria after formatter-only layout/trailing commas; corrected source and handmade AST passed"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -4481,7 +4530,7 @@
         },
         {
           "file": "extrema_test.mbt",
-          "line": 24,
+          "line": 23,
           "test_declaration": "test \"array extrema retain branch defaults named arguments and stable ties\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
