@@ -73,7 +73,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `isObject` | I: `std.isObject(v)` | S: `std.isObject(v)` | U/U/U/U | No direct test reference found |
 | `isOdd` | I: `std.isOdd(x)` | S: `std.isOdd(x)` | U/U/U/U | [std_math_test.mbt:22](../../std_math_test.mbt#L22) |
 | `isString` | I: `std.isString(v)` | S: `std.isString(v)` | U/U/U/U | [standard_native_diagnostics_test.mbt:36](../../standard_native_diagnostics_test.mbt#L36) |
-| `join` | D: `std.join(sep, arr)` | S: `std.join(sep, arr)` | U/U/U/U | No direct test reference found |
+| `join` | D: `std.join(sep, arr)` | S: `std.join(sep, arr)` | R/R/R/R | [spec_join_test.mbt:9](../../spec_join_test.mbt#L9) |
 | `length` | D: `std.length(x)` | Native/not defined in std.jsonnet | R/R/R/R | [aggregate_test.mbt:10](../../aggregate_test.mbt#L10); [arguments_test.mbt:4](../../arguments_test.mbt#L4); [array_std_test.mbt:25](../../array_std_test.mbt#L25) |
 | `lines` | D: `std.lines(arr)` | S: `std.lines(arr)` | U/U/U/U | No direct test reference found |
 | `log` | I: `std.log(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |

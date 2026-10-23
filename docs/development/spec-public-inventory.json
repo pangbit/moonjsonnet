@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "8c1a3c2fb3c7758b12dcc5bcbbb85a2d668beeed",
-  "uncommitted_test_paths": "spec_prune_test.mbt",
+  "input_source_commit": "d0f10e7412e5b1a378b078b1411ded1b35ce04d8",
+  "uncommitted_test_paths": "spec_join_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -101,6 +101,7 @@
     "spec_index_test.mbt": "8082f3d1253b242b9e6b4fd6f1397275fe1f5732c8ae62f922fc2c32963b2b67",
     "spec_inherited_self_test.mbt": "0a387afc9ba8bc35ba54a7ada36f8c1ef9f27d5c88f40393cfea73a371b7f780",
     "spec_integer_parsers_test.mbt": "69bbab1aa131e4d3a4b43c8cdde5d8ece0c74bf05637743ee9b26a6d490c34f1",
+    "spec_join_test.mbt": "8d0c9fb960c30b0077d2c0b78bc9dce9b451e4ee5848a1b8d5af0f6a11464134",
     "spec_json_contracts_test.mbt": "4b6cf2af9358e616bab60e695a65ac7e47e454d83a722a493ae9a325826ac8d0",
     "spec_language_call_test.mbt": "a9a8489f31f3fce9d3266602fbad788e3ba63a50daa1b66f99cfb9f1ea13724a",
     "spec_language_forms_ast_test.mbt": "4d2bd9c0303a756cfc457fa4cff910f80e094447aaa1b86014b9d3849a90738d",
@@ -163,7 +164,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "2df965c05b8d9f30b1ff569e16e72a53a8eeb454d7e6a5d95af2aca639d2ef2e",
+  "coverage_sha256": "3de9d16caf72d35b1f4d985abfcf4ca16477eace73f09bec8fe30434f7626d47",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -1954,8 +1955,95 @@
         "source": "std.join(sep, arr)",
         "source_line": "306"
       },
-      "reviewed_subset": null,
-      "test_reference_candidates": [],
+      "reviewed_subset": {
+        "name": "join",
+        "signature_review": {
+          "parameters": [
+            "sep",
+            "arr"
+          ],
+          "defaults": {},
+          "test": "spec_join_test.mbt",
+          "status": "Fixed documentation/source required sep and arr; positional/reversed named successes, missing/unknown/extra/overlap binding refusal. Host error tags and native gates remain distinct from normative value obligations."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_join_test.mbt",
+            "line": 9,
+            "test_declaration": "test \"join preserves ordered string and array data while skipping only null items\" {",
+            "classification": "manual source and independent typed AST assertions; JN1-JN8 are public report groups, not canonical language IDs or whole-function acceptance"
+          },
+          {
+            "file": "spec_join_test.mbt",
+            "line": 84,
+            "test_declaration": "test \"join array heads defer separator and member payloads until selected or manifested\" {",
+            "classification": "manual JN2 payload-demand evidence"
+          },
+          {
+            "file": "spec_join_test.mbt",
+            "line": 138,
+            "test_declaration": "test \"join rejects wrong outer and element kinds without traversing their payloads\" {",
+            "classification": "manual JN3 domain evidence; Type is the embedding category"
+          },
+          {
+            "file": "spec_join_test.mbt",
+            "line": 175,
+            "test_declaration": "test \"join propagates required outer heads even when only an early result is selected\" {",
+            "classification": "manual JN4 isolated error-demand and unused-call evidence"
+          },
+          {
+            "file": "spec_join_test.mbt",
+            "line": 258,
+            "test_declaration": "test \"source join validates the outer array before demanding the separator\" {",
+            "classification": "manual JN5 source arr-first guard regression with a successful separator gate"
+          },
+          {
+            "file": "spec_join_test.mbt",
+            "line": 263,
+            "test_declaration": "test \"handmade join validates the outer array before demanding the separator\" {",
+            "classification": "manual JN6 independent AST arr-first guard regression with a successful separator gate"
+          },
+          {
+            "file": "spec_join_test.mbt",
+            "line": 268,
+            "test_declaration": "test \"join preserves separator input members and aliases across cold and warm reads\" {",
+            "classification": "manual JN7 immutable input/alias evidence under explicit read gates"
+          },
+          {
+            "file": "spec_join_test.mbt",
+            "line": 338,
+            "test_declaration": "test \"join refuses invalid bindings before argument gates and retains unused calls\" {",
+            "classification": "manual JN8 signature and unused-call evidence"
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_join_test.mbt",
+            "expectation": "JN1: literal ordered String/Array concatenations, source-defined null skipping, one-level flattening and positional/reversed named calls. Expected data are independent of product and Go/C++ output."
+          },
+          "E": {
+            "test": "spec_join_test.mbt",
+            "expectation": "JN3-JN6/JN8: wrong outer/member kinds and required isolated heads/payloads fail; array rejection precedes demand of a successful separator gate. Binding failures precede gates and unused free names remain Static."
+          },
+          "L": {
+            "test": "spec_join_test.mbt",
+            "expectation": "JN2/JN4-JN6/JN8: Array payloads and unused whole calls stay lazy; required outer heads all checked before returning even an early selected result; arr rejection does not require sep. Function payload heads do not call defaults/body."
+          },
+          "B": {
+            "test": "spec_join_test.mbt",
+            "expectation": "JN1/JN2/JN7: empty/all-null/singleton inputs, empty items counting toward delimiters, Unicode/NUL String data, lazy separator seams and original separator/member/outer aliases under cold/warm read gates."
+          }
+        },
+        "remaining": "Bounded data/domain/demand subset only, not whole-function acceptance. Function equality/PE0, object assertions and inheritance/root/std rebinding, exhaustive host encoding/rounding/resource and diagnostic combinations, competing failures and every argument combination remain unproved. DF0/HP0, BOM/surrogate/out-of-range conversion decisions, language print conflicts and shift exclusions are unchanged. No Go/C++ equality is a normative oracle."
+      },
+      "test_reference_candidates": [
+        {
+          "file": "spec_join_test.mbt",
+          "line": 9,
+          "test_declaration": "test \"join preserves ordered string and array data while skipping only null items\" {",
+          "classification": "manual source and independent typed AST assertions; JN1-JN8 are public report groups, not canonical language IDs or whole-function acceptance"
+        }
+      ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
     },
     {

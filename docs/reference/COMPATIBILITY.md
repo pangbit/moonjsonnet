@@ -185,7 +185,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `foldl(func,arr,init)` | Iterative left fold over array/string; empty input returns init without using func, the first callback may ignore init, and each intermediate result head is forced; elements and nested fields remain lazy |
 | `foldr(func,arr,init)` | Iterative right fold over array/string; callback receives element then accumulator, with the same empty/initial/intermediate forcing rules as `foldl` |
 | `range(from,to)` | Source-defined inclusive unit steps; finite endpoints are not narrowed, including fractional bounds with integral length; generated size remains subject to host limits |
-| `join(sep,arr)` | String/array separator with like-typed entries; skips null entries |
+| `join(sep,arr)` | String/array separator with like-typed non-null entries; null is skipped but empty items count toward delimiters. Validates the outer array before demanding the separator; nested array payloads stay lazy. See the [scoped contract review](../development/SPEC-JOIN-2026-10-23.md) |
 | `split(str,c)` | Nonempty string delimiter; empty delimiter is `Runtime` |
 | `splitLimit(str,c,maxsplits)`, `splitLimitR(str,c,maxsplits)` | Split from left/right with nonempty delimiter; -1 means unlimited, otherwise nonnegative signed 32-bit integer limit |
 | `lstripChars(str,chars)`, `rstripChars(str,chars)`, `stripChars(str,chars)` | Eager arguments, Unicode character membership in a string or array; array membership short-circuits; empty input does not inspect the character set |

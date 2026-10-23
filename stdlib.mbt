@@ -210,7 +210,14 @@ fn Vm::builtin(
       ),
     )
   }
-  let values = params.map(n => self.force(ids[n], loc))
+  let values = if name == "join" {
+    // The fixed source rejects arr before inspecting the separator.
+    let arr = self.force(ids["arr"], loc)
+    ignore(array_value(arr, loc))
+    [self.force(ids["sep"], loc), arr]
+  } else {
+    params.map(n => self.force(ids[n], loc))
+  }
   let x = values[0]
   match name {
     "native" =>
