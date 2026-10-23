@@ -7,6 +7,7 @@ After a positive-only failure, reuse verified negative results with the same
 arguments followed by --resume-positive. Existing attempts are retained.
 Use --case-prefix sign- for only the comparison-sign form controls.
 Use --case-prefix neg- for only the Boolean-negation form controls.
+Use --case-prefix pair- for only the static-pair transfer controls.
 Only tracked/staged inputs are mirrored; stage new test/report fixtures first. The
 negative checker runs sequentially in that mirror. Positive readback runs in
 the real repository and regenerates its matrix, whose Git identity is required.
@@ -200,6 +201,22 @@ def main():
         data = copy.deepcopy(original)
         negation_review(data)["inspection"][0]["sha256"] = "0" * 64
         add("neg-snapshot", data, "inspected implementation changed: eval.mbt")
+
+    if "chk-array-index" in original["rules"]:
+        data = copy.deepcopy(original)
+        row = copy.deepcopy(data["rules"]["chk-array-index"])
+        row["rule_review"]["rule"] = "chk-lit"
+        data["rules"]["chk-lit"] = row
+        add("pair-foreign-rule", data, "static pair completion restricted to index and binary")
+        data = copy.deepcopy(original)
+        data["rules"]["chk-array-index"]["rule_review"]["fixed_statement"] += " UNREVIEWED"
+        add("pair-formula", data, "reviewed transfer statement mismatch")
+        data = copy.deepcopy(original)
+        data["rules"]["chk-array-index"]["rule_review"]["premise_roles"] = ["index", "target"]
+        add("pair-roles", data, "transfer premise roles")
+        data = copy.deepcopy(original)
+        data["rules"]["chk-binary"]["rule_review"]["child_judgments_assumed"] = ""
+        add("pair-child", data, "transfer child assumptions required")
 
     cases = [case for case in cases if case[0].startswith(args.case_prefix)]
     assert cases, "no metadata cases match the selected prefix"

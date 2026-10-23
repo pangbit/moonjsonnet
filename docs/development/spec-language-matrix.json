@@ -2,18 +2,18 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "166742189c83736c073de465661910a98eb800c9454ddf1af5d2f9e178249bbb",
-  "tool_sha256": "f4a188a1252713bb6c7f2f8eb88ea8958d440c8f9425019d98a46b3b6b6af5ab",
+  "mapping_sha256": "1f5431fd3b6407564bd735b35f1f6b41a37b1c7b69fb05b634c4f5ef250cd852",
+  "tool_sha256": "a3c0cb28330c40e4a44c880442243bd8865ac8cce29adf2610c0ae5563bdcf21",
   "mapping_schema_version": 2,
-  "global_test_ids": 168,
+  "global_test_ids": 172,
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 60,
-  "completed_rule_rows": 24,
+  "manually_reviewed_subset_rows": 59,
+  "completed_rule_rows": 26,
   "completed_constructor_rows": 1,
-  "completed_static_rule_rows": 6,
+  "completed_static_rule_rows": 8,
   "completed_evaluation_rule_rows": 18,
-  "unreviewed_rows": 9,
+  "unreviewed_rows": 8,
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
@@ -2443,6 +2443,60 @@
       ],
       "checks": "Source-only invalid closures/@ prefixes, unknown or truncated/nonhex escapes, line continuations and adjacent non-concatenating literals reject Syntax directly and in unused-local/unselected-branch wrappers. Independent AST Strings accept opaque escape-looking data. All four valid quote forms preserve Runtime error demand versus unused 42. The static_error column denotes source admission Syntax here, not a corresponding AST lexical error or completion of a chk judgment.",
       "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "PI1": {
+      "file": "spec_static_pairs_test.mbt",
+      "line": 66,
+      "test": "paired static children preserve enclosing names without sibling binding leaks",
+      "test_id": "spec_static_pairs_test.mbt::paired static children preserve enclosing names without sibling binding leaks",
+      "assertions": [
+        "pair_expr(op, missing, zero)",
+        "pair_expr(op, zero, missing)",
+        "pair_expr(op, private_child, sequence_var(\"pair_private\"))",
+        "sequence_value(scoped, 42)"
+      ],
+      "checks": "Index and all 19 binary symbols check both child positions directly and beneath unused-local/unselected-branch wrappers through source/independent AST. A Local name private to either child does not escape to its sibling. Bound enclosing names keep error-valued bindings unevaluated and unused results equal literal 42.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "PI2": {
+      "file": "spec_static_pairs_test.mbt",
+      "line": 92,
+      "test": "paired static children retain object permissions without granting them to field keys",
+      "test_id": "spec_static_pairs_test.mbt::paired static children retain object permissions without granting them to field keys",
+      "assertions": [
+        "for name in [\"self\", \"super\", \"$\"]",
+        "pair_reject(reflect_object([(value, 1, sequence_num(42))]))",
+        "sequence_value(ordering_unused(object), 42)"
+      ],
+      "checks": "In either child, self/super/root accesses reject Static in the outer context and in an object dynamic key that has only that context. Appropriate own/inherited field contexts admit them while the whole object remains unused. This checks context transfer, not field existence or whole object/root/inheritance semantics.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "PI3": {
+      "file": "spec_static_pairs_test.mbt",
+      "line": 115,
+      "test": "super pair special cases require permission and still check the key scope",
+      "test_id": "spec_static_pairs_test.mbt::super pair special cases require permission and still check the key scope",
+      "assertions": [
+        "for op in [\"[]\", \"in\"]",
+        "pair_reject(pair_inherited(operation(sequence_var(\"missing_super_key\"))))",
+        "sequence_value(ordering_unused(pair_inherited(bound)), 42)"
+      ],
+      "checks": "The direct super target for Index and in-super Binary require object permission, reject a free key in unused inherited fields and accept a key bound in the original field Gamma. These controls validate the dedicated checker arm without forcing an inherited lookup or completing child super judgments.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "PI4": {
+      "file": "spec_static_pairs_test.mbt",
+      "line": 136,
+      "test": "static pair admission imposes no runtime index or binary type requirement",
+      "test_id": "spec_static_pairs_test.mbt::static pair admission imposes no runtime index or binary type requirement",
+      "assertions": [
+        "let program = ordering_program(value, handmade)",
+        "assert_true(d.message != \"pair-element-demand\")",
+        "Some(\"pair-element-demand\")",
+        "sequence_value(ordering_unused(mixed), 42)"
+      ],
+      "checks": "Fractional/out-of-range Index Programs create through both entries, remain unused with result 42, then reject Runtime before a poisoned element. Valid zero indexing reaches exactly the element marker. All 19 binary symbols and Index admit unused heterogeneous operands. Dynamic operator domains and full integer/range semantics are not completed.",
+      "status": "manually reviewed assertion subset; execution is separate"
     }
   },
   "test_file_sha256": {
@@ -2506,7 +2560,8 @@
     "spec_negation_test.mbt": "92edd8ad7eaac31c60676c8c7f3882f440c78391edd58a16d47ee0942465e3ac",
     "string_literal_test.mbt": "9b20b698e56ad17e2688d7bb88663587cdb9f1f09d2dddf787f9ebf24bb51e6f",
     "spec_quoted_strings_wbtest.mbt": "963072925337f5645724f43dfaad763df8ecc207a9d8ce566682ffbb5a508ad6",
-    "spec_quoted_strings_test.mbt": "44842e6027a39427b42b57bcc5d23d0992defac26a041f6684c599300c9327e6"
+    "spec_quoted_strings_test.mbt": "44842e6027a39427b42b57bcc5d23d0992defac26a041f6684c599300c9327e6",
+    "spec_static_pairs_test.mbt": "21825d976ea91ebf6cb79dde93aa864116bbceab96d2f46d3690095fd8660325"
   },
   "clauses": [
     {
@@ -2659,18 +2714,107 @@
       "kind": "named-rule",
       "section": "static_checking",
       "source_line": 1622,
-      "state": "unreviewed",
+      "state": "completed-rule-review",
       "dimensions": {
-        "normal": [],
-        "static_error": [],
+        "normal": [
+          "IDX",
+          "PI1",
+          "PI2",
+          "PI3",
+          "PI4",
+          "PREC1"
+        ],
+        "static_error": [
+          "PI1",
+          "PI2",
+          "PI3"
+        ],
         "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "lazy": [
+          "PI1",
+          "PI2",
+          "PI3",
+          "PI4"
+        ],
+        "boundary": [
+          "IDX",
+          "PI3",
+          "PI4"
+        ]
       },
-      "remaining": "No manually reviewed assertions assigned. Normal, static/runtime errors, lazy and boundary obligations remain unreviewed.",
-      "implementation": [],
+      "remaining": "",
+      "implementation": [
+        "validate.mbt",
+        "ast_validate.mbt",
+        "ast_convert.mbt"
+      ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "chk-array-index",
+          "decision": "complete",
+          "review_form": "pair-static-transfer",
+          "fixed_statement": "\\rule{chk-array-index} { Γ ⊢ e \\\\ Γ ⊢ e' } { Γ ⊢ e[e'] }",
+          "premise_roles": [
+            "target",
+            "index"
+          ],
+          "child_judgments_assumed": "Each child implements its own static judgment in the supplied Gamma/object context. The direct super cases use the separate super-in-Gamma premise. Only well-formed Index and the fixed 19 Binary symbols are admitted here; no child, binder/object or runtime evaluation judgment is inferred complete.",
+          "scope": "Complete chk-array-index static constructor transfer relative to both child judgments in unchanged Gamma/object permission; no runtime type, integer or range premise.",
+          "reasoning": "The shared validator visits both children with identical names/in_object and adds no binding or evaluation/type check. Its super-specific shapes require object permission and still check the key child in the same context. Conversion preserves roles; host shape checks admit the specified constructors. Source/independent AST failures, sibling isolation, object-context and unused/demanded controls support this structural case analysis.",
+          "review_report": "docs/development/SPEC-STATIC-PAIRS-2026-10-23.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "runtime_error": "The named static judgment has no evaluation, target/key-type, integer or range premise. PI4/IDX supply adjacent runtime boundaries in the boundary column only."
+          },
+          "excluded_obligations": [
+            "Whole operand, binder, object and static child judgments.",
+            "All indexing/binary execution, runtime type/integer/range checks and short-circuit domains.",
+            "Complete grammar/desugaring, malformed host metadata, diagnostics and resources.",
+            "A0/B0/N0/R0/PE0, greater-than print conflict, encoding/surrogate and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "validate.mbt",
+              "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+              "anchor": "Index(a, b) | Binary(_, a, b) => {\n      validate(a, names, in_object)\n      validate(b, names, in_object)\n    }",
+              "argument": "Both normal constructors check every child with identical names/object permission, introduce no binding, inspect no runtime value and impose no type/integer/range premise."
+            },
+            {
+              "file": "validate.mbt",
+              "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+              "anchor": "Index({ kind: Var(\"super\"), .. }, b)\n    | Binary(\"in\", b, { kind: Var(\"super\"), .. }) => {",
+              "argument": "The two super shapes first require in_object, representing super in Gamma, then validate the key b in unchanged names/in_object. No key, parent-field lookup or value producer is evaluated."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Index(a, b) => Index(visit(a), visit(b))",
+              "argument": "The typed reader recursively preserves target and index. The export arm has the same structural order; no parser export supplies test expectations."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Binary(op, a, b) => Binary(op, visit(a), visit(b))",
+              "argument": "Typed conversion preserves the symbol and both ordered children, without choosing a branch from their values."
+            },
+            {
+              "file": "ast_validate.mbt",
+              "sha256": "e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59",
+              "anchor": "Binary(op, _, _) =>\n      if precedence(op) == 0 {",
+              "argument": "Host shape checking gates invalid operator metadata independently; all 19 source symbols are in the admitted well-formed Binary domain. Index adds no runtime-value predicate here; child shape judgments remain separate."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_index_test.mbt": "8082f3d1253b242b9e6b4fd6f1397275fe1f5732c8ae62f922fc2c32963b2b67",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
+            "spec_precedence_test.mbt": "77c48b9b7cc730acd6bb1044319768ea6afb4c82214c5a03a75ba529dfe0456a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_static_pairs_test.mbt": "21825d976ea91ebf6cb79dde93aa864116bbceab96d2f46d3690095fd8660325"
+          }
+        }
+      ]
     },
     {
       "id": "chk-apply",
@@ -2848,29 +2992,112 @@
       "kind": "named-rule",
       "section": "static_checking",
       "source_line": 1675,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
           "AO1",
-          "BS1"
+          "BS1",
+          "PI1",
+          "PI2",
+          "PI3",
+          "PI4",
+          "PREC1"
         ],
         "static_error": [
           "AO3",
           "BS3",
-          "SQ4"
+          "SQ4",
+          "PI1",
+          "PI2",
+          "PI3"
         ],
         "runtime_error": [],
-        "lazy": [],
-        "boundary": []
+        "lazy": [
+          "PI1",
+          "PI2",
+          "PI3",
+          "PI4"
+        ],
+        "boundary": [
+          "IDX",
+          "PI3",
+          "PI4"
+        ]
       },
-      "remaining": "The combined sequence batch adds invalid unforced concat-tail controls to the existing reviewed subsets. No general all-child static constructor or admission judgment is completed.",
+      "remaining": "",
       "implementation": [
         "validate.mbt",
         "ast_validate.mbt",
         "ast_convert.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "chk-binary",
+          "decision": "complete",
+          "review_form": "pair-static-transfer",
+          "fixed_statement": "\\rule{chk-binary} { Γ ⊢ e_L, e_R } { Γ ⊢ \\binary{e_L}{sym}{e_R} }",
+          "premise_roles": [
+            "left",
+            "right"
+          ],
+          "child_judgments_assumed": "Each child implements its own static judgment in the supplied Gamma/object context. The direct super cases use the separate super-in-Gamma premise. Only well-formed Index and the fixed 19 Binary symbols are admitted here; no child, binder/object or runtime evaluation judgment is inferred complete.",
+          "scope": "Complete chk-binary static constructor transfer relative to both child judgments in unchanged Gamma/object permission; no runtime type, integer or range premise.",
+          "reasoning": "The shared validator visits both children with identical names/in_object and adds no binding or evaluation/type check. Its super-specific shapes require object permission and still check the key child in the same context. Conversion preserves roles; host shape checks admit the specified constructors. Source/independent AST failures, sibling isolation, object-context and unused/demanded controls support this structural case analysis.",
+          "review_report": "docs/development/SPEC-STATIC-PAIRS-2026-10-23.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "runtime_error": "The named static judgment has no evaluation, target/key-type, integer or range premise. PI4/IDX supply adjacent runtime boundaries in the boundary column only."
+          },
+          "excluded_obligations": [
+            "Whole operand, binder, object and static child judgments.",
+            "All indexing/binary execution, runtime type/integer/range checks and short-circuit domains.",
+            "Complete grammar/desugaring, malformed host metadata, diagnostics and resources.",
+            "A0/B0/N0/R0/PE0, greater-than print conflict, encoding/surrogate and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "validate.mbt",
+              "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+              "anchor": "Index(a, b) | Binary(_, a, b) => {\n      validate(a, names, in_object)\n      validate(b, names, in_object)\n    }",
+              "argument": "Both normal constructors check every child with identical names/object permission, introduce no binding, inspect no runtime value and impose no type/integer/range premise."
+            },
+            {
+              "file": "validate.mbt",
+              "sha256": "88fec7025eb865c2f5c4563ae7647d3269850673959018985e7b7af1892c7cb4",
+              "anchor": "Index({ kind: Var(\"super\"), .. }, b)\n    | Binary(\"in\", b, { kind: Var(\"super\"), .. }) => {",
+              "argument": "The two super shapes first require in_object, representing super in Gamma, then validate the key b in unchanged names/in_object. No key, parent-field lookup or value producer is evaluated."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Index(a, b) => Index(visit(a), visit(b))",
+              "argument": "The typed reader recursively preserves target and index. The export arm has the same structural order; no parser export supplies test expectations."
+            },
+            {
+              "file": "ast_convert.mbt",
+              "sha256": "bd3fbff39ccdfc2d177d41435d7a33e96014ae206697c902be69ec2b11d5beed",
+              "anchor": "Binary(op, a, b) => Binary(op, visit(a), visit(b))",
+              "argument": "Typed conversion preserves the symbol and both ordered children, without choosing a branch from their values."
+            },
+            {
+              "file": "ast_validate.mbt",
+              "sha256": "e7413a4021b056253e179c2cb2b5d73c7a41c0b64573cc11533fa82555e38a59",
+              "anchor": "Binary(op, _, _) =>\n      if precedence(op) == 0 {",
+              "argument": "Host shape checking gates invalid operator metadata independently; all 19 source symbols are in the admitted well-formed Binary domain. Index adds no runtime-value predicate here; child shape judgments remain separate."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_boolean_shortcircuit_test.mbt": "730b05bfade40138c803a0223387fee8b11f92117fcc1996dda46cf8c71109ef",
+            "spec_index_test.mbt": "8082f3d1253b242b9e6b4fd6f1397275fe1f5732c8ae62f922fc2c32963b2b67",
+            "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
+            "spec_precedence_test.mbt": "77c48b9b7cc730acd6bb1044319768ea6afb4c82214c5a03a75ba529dfe0456a",
+            "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+            "spec_static_pairs_test.mbt": "21825d976ea91ebf6cb79dde93aa864116bbceab96d2f46d3690095fd8660325"
+          }
+        }
+      ]
     },
     {
       "id": "chk-unary",

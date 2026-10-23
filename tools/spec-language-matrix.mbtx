@@ -471,10 +471,25 @@ async fn main {
           spec.split("\n").collect()[rule_lines[id]].trim() == "} {",
           msg="completion requires a premise-free static rule",
         )
-      } else if form == "conditional-transfer" {
-        // Only the explicitly reviewed conditional forms may use this record.
+      } else if form == "conditional-transfer" || form == "pair-static-transfer" {
+        // The existing statement/role checks also serve these two static pairs.
         // A source match is provenance validation, not a semantic proof.
+        if form == "pair-static-transfer" {
+          assert_true(
+            ["chk-array-index", "chk-binary"].contains(id),
+            msg="static pair completion restricted to index and binary",
+          )
+        } else {
+          assert_true(
+            ["chk-if", "if-true", "if-false"].contains(id),
+            msg="conditional completion is restricted to reviewed forms",
+          )
+        }
         let statement = match id {
+          "chk-array-index" =>
+            "\\rule{chk-array-index} { Γ ⊢ e \\\\ Γ ⊢ e' } { Γ ⊢ e[e'] }"
+          "chk-binary" =>
+            "\\rule{chk-binary} { Γ ⊢ e_L, e_R } { Γ ⊢ \\binary{e_L}{sym}{e_R} }"
           "chk-if" =>
             "\\rule{chk-if} { Γ ⊢ e_1, e_2, e_3 } { Γ ⊢ \\if{e_1}{e_2}{e_3} }"
           "if-true" =>
@@ -490,14 +505,16 @@ async fn main {
         assert_eq(
           normalized(actual),
           statement,
-          msg="fixed conditional source mismatch",
+          msg="fixed transfer source mismatch",
         )
         assert_eq(
           text_field(record, "fixed_statement"),
           statement,
-          msg="reviewed conditional statement mismatch",
+          msg="reviewed transfer statement mismatch",
         )
         let roles : Json = match id {
+          "chk-array-index" => ["target", "index"]
+          "chk-binary" => ["left", "right"]
           "chk-if" => ["condition", "then", "else"]
           "if-true" => ["condition-true", "then-value"]
           _ => ["condition-false", "else-value"]
@@ -505,10 +522,15 @@ async fn main {
         assert_eq(
           field(record, "premise_roles"),
           roles,
-          msg="conditional premise roles",
+          msg="transfer premise roles",
         )
-        assert_true(!text_field(record, "child_judgments_assumed").is_empty())
-        let required = if id == "chk-if" {
+        assert_true(
+          !text_field(record, "child_judgments_assumed").is_empty(),
+          msg="transfer child assumptions required",
+        )
+        let required = if form == "pair-static-transfer" {
+          ["static_error", "lazy", "boundary"]
+        } else if id == "chk-if" {
           ["static_error", "boundary"]
         } else {
           ["runtime_error", "lazy", "boundary"]
@@ -516,7 +538,7 @@ async fn main {
         for name in required {
           assert_true(
             !dimension(row, name).is_empty(),
-            msg="conditional evidence gap: " + name,
+            msg="transfer evidence gap: " + name,
           )
         }
       } else if form == "boolean-shortcut-transfer" {
@@ -1172,7 +1194,7 @@ async fn main {
         assert_true(
           reasons.contains("static_error") && reasons.contains("runtime_error"),
         )
-      } else if id == "chk-if" || id == "chk-error" || id == "chk-unary" {
+      } else if id.has_prefix("chk-") {
         assert_true(
           reasons.contains("runtime_error") && !reasons.contains("static_error"),
         )
@@ -1300,7 +1322,7 @@ async fn main {
   assert_eq(used.length(), evidence.length(), msg="orphan evidence mappings")
   if !completed.is_empty() {
     markdown.write_string(
-      "\n## Completed named-rule reviews\n\nThese are recorded manual decisions from constructor case analysis plus executed controls. The tool checks empty premises for premise-free judgments, or exact fixed statements and premise roles for the explicitly supported conditional, Boolean shortcut, sequence-length, object-reflection, object-head, chk-error and chk-unary transfer judgments. The sequence form is restricted to length-array/string, pins element/codepoint units, and excludes the array-concat formal index discrepancy A0. The Boolean form is restricted to the two explicit shortcut rules and excludes the longcut non-Boolean RHS domain B0. The reflection form is restricted to object-has-ex/fields-ex, pins Object/String/Boolean domains, exact name membership or sorted unique name output, excludes payload demand and retains N0/R0/A0/B0 boundaries. The object-head form is restricted to length-object/type-object, preserves the raw length delimiter blemish and explicit composition interpretation, checks the fixed public field-count source and completed dependencies, and excludes nested value/assertion demand and N0/R0. The comparison-sign form pins the six unambiguous <, <= and >= equations, ordered operands and admitted cmp signs -1/0/1; it excludes greater-than formulas and whole comparator child judgments. The Boolean-negation form pins only not-true/not-false, their strict Boolean operand and opposite result, ! and operand-head-only demand; it assumes the operand child and excludes other unary and whole static/grammar judgments. The unary record also pins the four-symbol grammar domain. It checks inspected implementation/test hashes and explicit scope; source/name matches do not prove semantic correctness. Transfer judgments assume their child judgments and do not complete other language rules or whole-language acceptance.\n\n",
+      "\n## Completed named-rule reviews\n\nThese are recorded manual decisions from constructor case analysis plus executed controls. The tool checks empty premises for premise-free judgments, or exact fixed statements and premise roles for the explicitly supported conditional, Boolean shortcut, sequence-length, object-reflection, object-head, chk-error and chk-unary transfer judgments. The sequence form is restricted to length-array/string, pins element/codepoint units, and excludes the array-concat formal index discrepancy A0. The Boolean form is restricted to the two explicit shortcut rules and excludes the longcut non-Boolean RHS domain B0. The reflection form is restricted to object-has-ex/fields-ex, pins Object/String/Boolean domains, exact name membership or sorted unique name output, excludes payload demand and retains N0/R0/A0/B0 boundaries. The object-head form is restricted to length-object/type-object, preserves the raw length delimiter blemish and explicit composition interpretation, checks the fixed public field-count source and completed dependencies, and excludes nested value/assertion demand and N0/R0. The comparison-sign form pins the six unambiguous <, <= and >= equations, ordered operands and admitted cmp signs -1/0/1; it excludes greater-than formulas and whole comparator child judgments. The Boolean-negation form pins only not-true/not-false, their strict Boolean operand and opposite result, ! and operand-head-only demand; it assumes the operand child and excludes other unary and whole static/grammar judgments. The static-pair whitelist reuses the fixed-statement/premise-role checks only for chk-array-index and chk-binary, preserving target/index or left/right roles and assuming the unchanged-Gamma child judgments; runtime type/integer/range and operator evaluation obligations remain separate. The unary record also pins the four-symbol grammar domain. It checks inspected implementation/test hashes and explicit scope; source/name matches do not prove semantic correctness. Transfer judgments assume their child judgments and do not complete other language rules or whole-language acceptance.\n\n",
     )
     for (id, record) in completed {
       let report = text_field(record, "review_report")
