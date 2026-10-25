@@ -752,3 +752,136 @@ installation, snapshot update or push occurred. The removeAt idx/at signature
 conflict, current-i compatibility status and shared language disputes remain
 unchanged. Overall conformance stays incomplete; 66 public subsets and zero
 whole-function acceptances are not promoted by this regression.
+
+
+## macOS native debug regression for 3397975 and one foldl oracle migration
+
+The shared foldl/sum/avg source routing at product commit
+`3397975c966e4c3a48748a5136776dd2b950d8d0` was exercised with the full unfiltered
+local native debug suite. All 699 tracked entries initially matched the frozen
+committed input manifest. Installed moon/moonc/moonrun/clang binary hashes equal
+the preceding audited 9150705 run; versions remain moon/moonrun 0.1.20260920
+(914d7da) and moonc v0.10.14+7d59c7ec9 on macOS ARM64. No product, configuration,
+interface or snapshot was changed during this validation.
+
+Both invocations use the same unfiltered command, closed stdin and one worker:
+
+```sh
+RUST_LOG=error LANG=C LC_ALL=C moon test --target native --debug --frozen --deny-warn -j 1 --no-parallelize </dev/null
+```
+
+### Preserved first failure and exact adjudication
+
+At pristine 3397975, raw output ends with:
+
+```text
+Total tests: 802, passed: 801, failed: 1.
+```
+
+Exit was 2, stderr empty, wall time 129.962 seconds. The only failing declaration
+was stdlib_contract_test's foldl-demand group, whose obsolete input expected a
+Type error from `std.foldl(function(a,b)b,{},0)`. Its actual raw failure reports
+unexpected success and does not print the returned value. The old assertion
+stops that loop; its later callback-arity entry was NOTRUN there.
+
+The fixed [foldl definition](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L823-L830)
+checks index 0 against length({}) 0 and returns the original running/init 0, without
+calling func or indexing. This is also independently frozen by ASA7 in the
+[admission review](SPEC-AGGREGATE-ADMISSION-2026-10-25.md). The same exact input
+moved from the error loop to the existing literal success list with expectation 0.
+No input, test declaration or case was deleted; the only semantic test-file
+change is this individually evidenced oracle migration. It is not a snapshot
+update or product fix. All first-run outputs and the original file are retained.
+No language evidence snapshot binds this file, so no rule completion or evidence
+hash adjustment is needed for this migration.
+
+### Continuation within the original fixed window
+
+The sole window began **2026-10-25 at 10:28:18.543503 UTC** with the unchanged
+**10:38:18.543503 UTC** deadline. Its first command ended at 10:30:28.505474 UTC.
+The continuation began at 10:33:36.439563 UTC after the exact oracle patch was
+formatted and its new 699-entry input manifest frozen. The controller measures
+elapsed time from the original start, not a new 600-second clock, and reserves
+the final 10 seconds for process-group termination if needed.
+
+The continuation's exact stdout is:
+
+```text
+Total tests: 802, passed: 802, failed: 0.
+```
+
+Exit was 0, stderr empty, timeout false. Command duration was **107.656 seconds**;
+completion at 10:35:24.098454 UTC used **425.555 seconds of the original window**,
+including the first run and intervening diagnosis/migration. No budget was reset.
+The migrated positive assertion and the previously unexecuted error-loop suffix
+ran successfully. No additional product/test repair or further test run followed.
+
+All 699 entries were stable within each invocation. Between invocations only
+stdlib_contract_test.mbt changed, with SHA-256
+`cd46518ed733d44120ea83265ea7eecbfca23c250295f17a9ce22eb06f902330`.
+The passing evidence is therefore product 3397975 plus this explicit test migration,
+not a claim that the untouched original commit had zero failures.
+
+### Actual scope, phases and exit receipts
+
+Current metadata enumerates 802 tests over 12 nonempty drivers: 779 explicit tests,
+16 source documentation blocks and 7 README tests. There are no skip/ignore
+attributes or file/package/index/name filters. Skipped 0 follows from the complete
+metadata total equalling raw actual output. Unit regression includes conditional
+compatibility checks; it does not make 802 specification judgments.
+
+| Package | Metadata total |
+| --- | --- |
+| Root library | 767 |
+| cmd/jsonnetfmt | 4 |
+| cmd/main | 11 |
+| examples | 2 |
+| fs | 5 |
+| internal/number | 4 |
+| internal/posix | 4 |
+| internal/yaml | 5 |
+| Total | 802 |
+
+This covers actual foldl consumers, all sum/avg overflow/additive/admission and
+lazy cases, unchanged Array/Unicode String integer-index checks, parser/flatten/
+uniq/set and existing immutable/diagnostic neighbors. The source routing did not
+relax ordinary indexing. The independent CLI/application process campaign and
+tools/*.mbtx integration scripts remain outside this package-test invocation.
+
+Own-process samples in the first run observed moonc at original-window 2.070s
+and an actual test driver at 22.349s. Continuation samples observed moonc at
+window 320.048s and a test driver at 324.107s. These are sampled phase boundaries,
+not exclusive compiler/test durations. Each command was fully joined; both
+process groups 50567 and 50932 were independently confirmed absent afterward.
+The heavy slot was released before documentation-only metadata/commit work.
+
+### Evidence and remaining scope
+
+Raw original and continuation output, both stable 699-entry snapshots, old/new
+oracle files, unchanged toolchain hashes, current 12-driver binary/metadata hashes,
+phase samples and independent exit checks are under
+`/tmp/moonjsonnet-native-debug-3397975.iz96e67p`. Temp paths are not an archival
+availability guarantee. Relevant bindings are:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Initial committed inputs | `2c17f1d798c0ff964cb64c63c2fc96bb8a738da0a60bea826ab3b819fa52d31c` |
+| Initial plan | `16e54bf10121ac956e4352010028398a334528642f10b6957446d5ffa819fedd` |
+| Preserved failing run | `dd2146260b53e3d0a0e308af2c9a0ca711d4ffb7a307ba5176ced8d89d3bce3a` |
+| Preserved failing stdout | `d15ad5f0a344e9b2845fe3ce4523a7fbc1526ab80c7182cee00c90b8439e8791` |
+| Frozen continuation inputs | `504cce162ab935489e75af47cc1ebb3cc86400f2177f486d96c42b56f1cd38de` |
+| Stable continuation inputs after run | `504cce162ab935489e75af47cc1ebb3cc86400f2177f486d96c42b56f1cd38de` |
+| Continuation same-deadline plan | `23fa82e8d820122d9cdf8c647e00d912ac3b16604adf06226ef5d5b417a82066` |
+| Continuation result | `635361e0b5f71257bcc84586d978bb2a9c67494a7ee56ecba6ffd3f5e177a411` |
+| Passing stdout | `d8686d7728eb7793d4a07ed4efb93b723fb0990fe486eadfbeb57559e7091a46` |
+| Passing empty stderr | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
+| Toolchain versions/binary hashes | `b3c8893b7a9a22ebb549d3c18ee2836c42ca29ecc125b895c47cae8b4cff936b` |
+| Independent metadata/binaries/exit verification | `81ebf549b4342d9431222b3c52e9bdc29f641fdbefbeffa00a60b15ab8e9a5db` |
+
+This is local native debug package regression with a documented legacy oracle
+migration. Release, Linux/SSH, standalone API/CLI delivery and Go/C++ were NOTRUN.
+The prior Linux evidence remains tied to 228cb25 and is not migrated. No feature,
+new semantic domain, product repair, reference snapshot update, environment
+installation, upstream/proposal change or push occurred. Shared normative disputes
+and incomplete overall conformance remain; no public whole-function completion
+is promoted by 802 unit passes.

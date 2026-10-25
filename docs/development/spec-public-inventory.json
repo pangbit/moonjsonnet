@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "bf1609a3537687ed4c98e96e613770be0de0719d",
-  "uncommitted_test_paths": "aggregate_test.mbt\nspec_aggregate_admission_test.mbt\nspec_review_test.mbt",
+  "input_source_commit": "3397975c966e4c3a48748a5136776dd2b950d8d0",
+  "uncommitted_test_paths": "stdlib_contract_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "965028fe74da63f52ee9c5a43e7d19d4464f915a01fb3dcb7359311c48d2d7b8",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -180,7 +180,7 @@
     "std_manifest_test.mbt": "5839dce0b2e12d84bb785151e907d59791059fcb0eb2c9d1c71e93bdfdc1e59f",
     "std_math_test.mbt": "91c779e2736c616f258aa1563537c05d1cd86ec9a21bdbca68456bd29a44b9cc",
     "std_string_test.mbt": "3982634b3279fb364e48133d43eb6e684afa9af8f04acd428db1dc5306273805",
-    "stdlib_contract_test.mbt": "e5c5e0b6cca5e562b83ad2dd2fc6ebc38846d9326332d95e46d37d4f01dc7ec4",
+    "stdlib_contract_test.mbt": "cd46518ed733d44120ea83265ea7eecbfca23c250295f17a9ce22eb06f902330",
     "string_literal_test.mbt": "9b20b698e56ad17e2688d7bb88663587cdb9f1f09d2dddf787f9ebf24bb51e6f",
     "syntax_diagnostic_test.mbt": "32d3f2b3b7846d58000f605abd3dd145eab700ecc38a9a58ce756c8eeec3a846",
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",

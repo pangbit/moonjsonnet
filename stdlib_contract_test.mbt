@@ -21,6 +21,7 @@ test "foldl is left associative and preserves lazy elements and fields" {
     ("std.foldl(function(a,b=9)a+b,[1,2],0)", "3"),
     ("std.foldl(function(a,b)a+b,[],5)", "5"),
     ("std.foldl(function(a,b)a+b,'',5)", "5"),
+    ("std.foldl(function(a,b)b,{},0)", "0"),
     ("std.foldl(error 'unused function',[],7)", "7"),
     ("std.foldl(function(a,b)b,[1,2],error 'unused initial')", "2"),
   ]
@@ -40,7 +41,6 @@ test "foldl demands its sequence and every intermediate result" {
       @moonjsonnet.Runtime,
     ),
     ("std.foldl(1,[1],0)", @moonjsonnet.Type),
-    ("std.foldl(function(a,b)b,{},0)", @moonjsonnet.Type),
     ("std.foldl(function(a)a,[1],0)", @moonjsonnet.Runtime),
   ]
   for (source, kind) in cases {
