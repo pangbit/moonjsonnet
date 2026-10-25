@@ -178,3 +178,101 @@ The project documentation checker validates the final linked report and maps;
 its exact raw receipt and the final local commit binding remain alongside the
 external evidence. No additional semantic run is needed after metadata-only
 updates because all18 validated runtime/test hashes are unchanged.
+
+## Bounded shared-call follow-up frozen at 6569b9f
+
+The production delta is one Builtin dispatch argument in Vm.call, the private
+builtin strict parameter and its YAML-only read, and deferred YAML rendering
+options. Neither Closure strict trampoline/call_env/default binding nor Native
+dispatch, source selection, source bodies or higher-order ordinary calls changed.
+Source-selected foldl, sum/avg, objectRemoveKey, remove and removeAt remain
+Closures. The removeAt adapter's inner ordinary call does not discard an outer
+strict call: the outer Closure has already demanded its own bound heads.
+sum/avg add no unused optional parameter and already have admission/reduction
+evidence, so they do not need a duplicate new strict family.
+
+Ordinary call expectations derive from fixed
+[apply/local rules](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2231-L2265)
+and [function/parameter prose](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/language.html.md#L138-L196):
+arguments/default expressions remain lazy, named/positional binding selects the
+body's formal environment, and an ordinary inner call remains ordinary.
+The fixed language page explicitly leaves
+[tailstrict semantics TODO](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/language.html.md#L654-L667);
+the formal apply grammar/rule has no strict variant. Strict head forcing below
+is therefore an existing project regression profile, independently distinguished
+from ordinary normative evidence. This does not certify all Builtin strict modes,
+callback count/order, diagnostic winner order or complete application semantics.
+
+The finite [six-group fixture](../../spec_shared_call_mode_test.mbt) uses literal
+values/isolated errors and independently handmade Call trees, reusing only neutral
+builders. Freeze these criteria before running; a missing test is not a defect.
+
+| Group | Expectation and boundary |
+| --- | --- |
+| SC1 | Ordinary literal/aliased Closures with positional, reordered named, omitted and overridden defaults return7 without unused supplied/default errors. |
+| SC2 | Strict regression demands an isolated supplied/default error head but not nested Array/Object/Function payloads; overriding a failing default succeeds. |
+| SC3 | Empty foldl/remove/objectRemoveKey/removeAt keep unused arguments lazy normally; explicit strict Closure calls and aliases demand the isolated head. removeAt is positional, leaving idx/at/i unresolved. |
+| SC4 | Outer strict calls do not make foldl/map/sort callbacks strict; unused callback defaults and unused element heads stay dormant. Native sort's Vm.call Closure callback is included. |
+| SC5 | A strict zero-argument wrapper does not spread strict into an ordinary Doc body. An outer strict forwarding Closure demands its own heads; explicit strict source Stream likewise demands an unused option, while ordinary Stream returns the literal explicit-false-ending result. No default conflict is reopened. |
+| SC6 | Ordinary and strict bad bindings reject before supplied/default/body errors for Closure, migrated source functions and Doc. No exact competing-diagnostic order is imposed. |
+
+Reuse the current-byte language/arguments/stack controls from the preceding29/29
+receipt without rerunning them. Run the six new groups with existing application,
+function/default and YAML strict controls only, native/debug/frozen/deny-warn/j1/
+no-parallelize, DEVNULL stdin,300-second per-command limits. No product change
+unless an actual failure proves a scoped defect; no full suite, release, remote,
+CLI/API, reference interpreter or general dispatch framework. Both evidence maps
+and their whole-contract counts remain unchanged; any inventory refresh merely
+records the new test file. Append actual results after the frozen criteria.
+
+
+### Shared-call actual result and closure
+
+No product defect was found. All inspected production files remain byte-identical
+to6569b9f. The first check exited255 for two fixture-only issues: a conditional
+String suffix needed parentheses, and local alias was a reserved future keyword
+under deny-warn. Semantic tests were NOTRUN for that candidate. Only those syntax/
+local-name details and formatter layout changed; literal outcomes and handmade
+Call modes stayed frozen. Corrected check passes.
+
+The six new groups and13 existing application/function groups plus the prior
+one-group YAML strict control pass20/20 (failed0,exit0,8.647549917 seconds).
+Both source and handmade paths complete. This is a mixed normative-ordinary and
+explicitly scoped strict-regression result, not20 complete language rules. The
+current-byte language/arguments/stack evidence from the earlier29/29 was reused
+without rerunning it. info then fmt pass with no public mbti change; all17
+validated source/test hashes retain their tested bytes.
+
+The shared influence of this production delta is closed for the listed direct
+paths: ordinary calls remain lazy, supplied/named/default binding is unchanged,
+source-selected Closure calls retain explicit strict mode, and ordinary inner/
+higher-order calls do not inherit their caller's strict flag. No product fix,
+legacy oracle migration, snapshot update, language mapping or public manual
+record change was needed. Whole application acceptance and unreviewed Builtin
+strict behaviors are not inferred from this bounded review. The fixed normative
+TODO is recorded rather than replaced by a Go/C++ result.
+
+Evidence directory: `/tmp/moonjsonnet-shared-call.m4xpvo4f`. The original and
+syntax-corrected fixture plus correction record are retained separately. The
+corrected frozen test SHA256 is
+`dbbfe455c182196d6c27a40424114ff964ee59781ecfe2f63900d16a4696ed02`;
+the20/20 stdout SHA256 is
+`d1a37b738e822c0721c7d89ab13954d581721ee65228d7693d1e8d1294bc4beb`.
+The plan binds702 existing tracked inputs at6569b9f; shared-impact-review.json
+records the inspected routes and reused evidence. Commands use DEVNULL stdin,
+single worker and bounded time; raw exits and absent-group receipts are kept.
+The generated public inventory adds the new test-file digest and refreshes
+source/dirty-test provenance; all existing semantic records and its Markdown
+remain equal. All66 manual public records and225 language evidence/acceptance
+fields stay equal.
+
+The next full local regression must validate the actual delta since3da8ab8:
+eval Builtin strict forwarding, stdlib's YAML-only option/strict branch, recursive
+manifest_yaml option demand, the exact scalar-option legacy migration and the
+new YAML/shared-call tests. It should exercise ordinary source-route consumers,
+callback/default binding, error/finite/output limits and current YAML/Stream
+paths together; it must freshly enumerate the suite, not inherit802/802 or20/20.
+There is no additional production delta in this follow-up. No full, release,
+remote/Linux, independent CLI/API or reference execution occurred. Stream default
+and assertion N0/R0 qualifications remain unchanged, with overall conformance
+still incomplete. This follow-up ends here rather than expanding call semantics.
