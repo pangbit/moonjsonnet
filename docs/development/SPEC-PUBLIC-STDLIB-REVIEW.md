@@ -112,6 +112,13 @@ records remain unchanged, yielding 65 reviewed subsets and zero whole-function
 acceptances. Non-Array scope, arbitrary key/comparison domains and independent
 error priority remain outside this review.
 
+The [sort contract continuation](SPEC-SORT-DEMAND-2026-10-25.md#frozen-continuation-sort-public-contract-review)
+maps all thirty legacy assertions individually, retaining the non-Array String
+error and unused incompatible-key admission as unresolved. Six independent
+groups passed on unchanged dbf322d product, with a preserved initial pass before
+key-call class enrichment. Only the existing sort record advances; the count
+remains 65 reviewed subsets and zero whole-function acceptances.
+
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its
 source-header assumptions were reviewed against those exact bytes. It records

@@ -231,3 +231,196 @@ keeps Linux debug 734/734, later release 734/734 and CLI 11/11 tied to 228cb25
 and their separate windows. No earlier full-suite result is promoted to this
 source. Whole-function and whole-language conformance remain incomplete; all
 listed disputes and uncovered domains remain open.
+
+## Frozen continuation: sort public-contract review
+
+Base dbf322dabb8aa250003a9cf00b429946b8243bb5. Fixed Google Jsonnet
+bbb38f1020be1f5aed560928fb839b2c448cefb4; the four saved reference hashes are
+checked in plan.json. No reference interpreter supplies an expected result.
+The prior eight SD groups and their baseline/fix remain unchanged.
+
+Authority: D = explicit fixed public description/signature; F = explicit
+language/specification rule; S = result derived from fixed std.jsonnet;
+H = this embedding's finite host observation; U = unresolved or not proved.
+D says sort(arr,keyF=id) and comparison using <=, with a one-argument key.
+S at 1433-1466 defines length<=1 identity, stable quick partitions through30,
+then a left-biased merge. F supplies lazy function arguments, unique named
+arguments (chk-apply), Number/String/Array comparison and lexicographic prefixes.
+Function purity is explicit in language.md 140-174. Spec.html 2854-2857 leaves
+custom native function semantics undescribed. Therefore host counter traces
+can locate demand but do not select a universal keyF callback algorithm/count.
+
+| Contract area | Authority and existing evidence | Frozen addition / limit |
+| --- | --- | --- |
+| arr/keyF names, default identity, function arity | D/S plus SD1/2/5/8 and sort default/named group | SC1: source/handmade default/explicit identity, reversed named order, closed key capture, used/unused optional key defaults, Static duplicate named rejection including unused call. |
+| Zero/singleton identity and skip boundaries | S/F plus SD1-SD4/SD6-SD8, all passed at dbf322d | Existing tests unchanged; no redundant rerun unless product changes. |
+| Number/String/recursive Array key ordering | D/F plus SD5 and old normal group | SC2: exact +/-2^53 and dyadic halves, Unicode BMP/supplementary seam, NUL/prefix/combining sequences and recursive Array length ties. No computed sort oracle. |
+| Necessary comparison prefixes | F/S plus old lazy-keys group | SC3: shorter key and nested shorter key skip poisoned tails; [] versus [true] is legal when no Boolean child comparison is required; selecting a returned poison still fails. |
+| Incompatible compared keys and primitive input errors | F/S plus SD6 and old Type group | SC3: demanded Null/Boolean/Object/Function/nested invalid keys and mixed key types reject without reading invalid-key payloads; Null/Bool/Number input length fails. Strings/Objects/Functions as input remain U. |
+| Array/key/callback/comparison error demand | F/S plus SD6/SD7 | SC4: four isolated errors in separate programs; Array error skips key; key/body/comparison errors precede unrelated payload demand. No competing-error order is chosen. |
+| Permutation/stability/equal keys/finite width boundaries | S plus SD5, old constant-key group | SC5: independent grouping/index oracle at n2/3/7/8/9/29/30/31/32/33/63/64/65; negative/positive zero ties. No host/product sorting oracle. |
+| Original payload kinds, immutability and sharing | F/S/H plus SD3/4/7 and old immutability group | SC6: constant keys retain every payload head kind without nested/body demand; result and original element sharing verified by finite gates. These gate counts are H, not universal key callback counts. |
+| General callback multiplicity/order, independent competing errors | U: source algorithm versus pure/native semantics | No blanket exemption and no count-driven rewrite. Pure demanded failures and zero-callback base branch are tested; general native traces remain unadjudicated. |
+| Input/non-callable domain extensions and public std rebinding | U: docs Array/one-argument callable versus source reductions | Retain prior open policy and original non-Array reference tests, no pass credit or guessed implementation change. |
+| Arbitrary producers, numeric encoding, limits/diagnostics/manifestation | U beyond finite admitted heads | Existing project resource smoke is separate; no universal resource/diagnostic/Unicode/host acceptance is inferred. |
+
+This fixed continuation has six groups, each through source and independently
+constructed typed AST. Stable expected indices are derived by group membership
+and original index; expected values and isolated markers are literal. It stops
+after check, six-group native debug execution and required metadata/info/format
+checks, or after an evidenced minimal correction plus affected neighbors.
+A failed loop's remaining branches are NOTRUN until an actual complete pass.
+Every check/test command is closed-stdin, single-worker, frozen/deny-warn,
+no-parallelize for tests, at most300 seconds. No full suite, SSH, Go/C++, network,
+new tooling or installation. Any new implementation finding must be established
+by the frozen baseline first. If all pass, product code is left unchanged.
+Whole-function/public-language acceptance remains false while U rows remain.
+
+### Admission enrichment frozen before the second run
+
+Case-by-case review after the first 6/6 pass found missing key-call class
+boundaries. SC1 gained one insertion only: six non-Function heads when a key
+application is required, plus zero-formal and two-required-formal functions.
+No old line or expectation changed; the six test declarations are identical.
+The initial file, plan and raw 6/6 receipt remain preserved alongside the
+separately frozen enriched file/plan. This is additional coverage, not a changed
+oracle selected from a failure. Both versions ran on unchanged dbf322d product
+bytes. No implementation defect was established by either passing run.
+
+### Existing legacy assertions, individually classified
+
+N, L and E refer respectively to the normal, lazy-key and error-case arrays in
+[sort_test.mbt](../../sort_test.mbt), in their committed order; P refers to its
+three scaling/resource assertions. R below means the particular contract is
+reviewed against the fixed clauses and independent SD/SC controls; it is not
+whole-function acceptance. U gives no normative pass credit. The existing
+four groups were last executed in the preceding correction batch; they were
+not rerun here because their test and product bytes are unchanged.
+
+| Case | Existing assertion | Review and independent cross-check |
+| --- | --- | --- |
+| N1 | sort([3,-1,2,2]) -> [-1,2,2,3] | R: Number order, SD5/SC2 |
+| N2 | `named arr=['😀','你','a'] -> ['a','你','😀']` | R: names/Unicode, SD1/2/5 and SC1/2 |
+| N3 | [[1,2],[],[1],[0]] -> [[],[0],[1],[1,2]] | R: lexicographic prefixes, SC2/3 |
+| N4 | keyed objects with ids a,b,c -> b,a,c | R: source-derived stable ties, SD5/SC5 |
+| N5 | keyF=function(x)-x -> descending Numbers | R: explicit key behavior, SC1 |
+| N6 | [sort(a),a] retains original [3,1,2] | R: immutability, SD5/SC6 and private-copy inspection |
+| N7 | [sort([]),length(sort),objectHas(std,'sort'),objectHasAll(std,'sort')] -> [[],2,false,true] | Empty/arity R via SD1/2 and SC1; std's hidden-field reflection is a separate cross-feature control, not full namespace acceptance |
+| N8 | length(sort([{}])) -> 1 | R: singleton payload head unread, SD3/4 |
+| L1 | length(sort([error,error],constant0)) -> 2 | R: irrelevant payloads remain lazy, SD7/SC6 |
+| L2 | keyed objects select good .v without unrelated error field | R: key/payload separation, SD5/SC4/6 |
+| L3 | key [-x,error] selects value 2 | R: unequal prefix skips suffix, SC3 |
+| L4 | sort([],function(x,y)error) -> [] | S reduction retained; unused incompatible key's public admission remains U |
+| L5 | key function(x,y=0)x+y sorts [2,1] | R: one supplied argument plus lazy default, SC1 |
+| E1 | sort('abc') -> Type | U: docs Array domain versus source String expansion. Existing error is not a normative oracle |
+| E2 | sort([2,1],null) -> Type | R: needed key head must be callable, SD6/SC1 |
+| E3 | sort([true,false]) -> Type | R: demanded Boolean keys unsupported, SC3 |
+| E4 | sort([1,'a']) -> Type | R: mismatching key types, SC3 |
+| E5 | sort([{},{}]) -> Type | R: demanded Object key unsupported, SC3 |
+| E6 | key returns null -> Type | R: demanded Null key unsupported, SC3 |
+| E7 | length(sort([1,error])) -> Runtime | R: required identity payload, SD6 |
+| E8 | length(sort([1,2],function(x)error)) -> Runtime | R: required key body, SD6/SC4 |
+| E9 | sort([1,2],function(x,y)x) -> Runtime | R: missing required key argument, enriched SC1 |
+| E10 | sort() -> Runtime | R: missing arr, SD8 |
+| E11 | sort(keyF=function(x)x) -> Runtime | R: missing arr, SD8 |
+| E12 | sort(xs=[]) -> Runtime | R: unknown name, SD8 |
+| E13 | sort([],arr=[]) -> Runtime | R: positional/named overlap, SD8 |
+| E14 | sort([],function(x)x,0) -> Runtime | R: excess positional argument, SD8 |
+| P1 | sort(reverse(range(1,2000))) == range(1,2000) | Secondary project regression using product range/reverse/equality; SC2/5 supply independent order/permutation oracles |
+| P2 | constant-key range(1,100) retains original order | Secondary source-property regression; SC5 supplies independent grouping/index expectations |
+| P3 | steps=1000 gives Limit for 100 items | H: local resource protection, not a standardized Jsonnet step count |
+
+### Algorithm audit and remaining decisions
+
+The fixed source's <=1 guard and stable partitions/left-biased merge define the
+reviewed Array result. Successful Boolean comparison predicates avoid the
+separate nonboolean filter-result dispute. Its formal filter relation selects
+original input indices; the reviewed source derivation preserves their order.
+The native loop caches one key head per input item and stable-merges runs.
+Inspection shows each output slot receives an original thunk once, the input
+Array is never mutated, and the left run wins equal keys. Inductively, merging
+ordered runs preserves their multiset and stable key order, assuming the child
+comparison relation is defined and coherent. Recursive key comparison stops at
+the first unequal common-prefix member or the shorter length. SC2/3/5 exercise
+those assumptions and boundaries; they do not complete every child producer,
+raw numeric/string encoding or the existing greater-than formula dispute.
+
+The native and fixed-source algorithms are deliberately recorded separately.
+For two successful items, ordinary direct expansion has one shared pivot call
+and a separate rest-item call in each partition; the native map computes one
+key per item. This is a static application-structure difference, not a newly
+executed Go/C++ trace or proof that effectful key callbacks are equivalent.
+The fixed language requires pure functions; the specification explicitly leaves
+custom native semantics undescribed. Exact effectful-native multiplicity/order
+cannot be uniquely accepted from these clauses. It remains unadjudicated rather
+than being silently waived or used to rewrite the cache. Isolated required key
+and comparison errors still must propagate, as SD6/SC3/4 verify. Competing-error
+message priority is not selected by matching interpreter outputs; the formal
+error model is stuck execution and does not standardize error presentation.
+
+Non-Array input remains a concrete scope decision. The literal source returns
+length0/1 Strings/Objects/Functions unchanged when length is defined, while the
+native helper requires Array; longer Strings can mechanically reach character
+sorting. Public documentation only promises an Array argument. Those source
+reductions and the old String rejection cannot both be promoted to a uniquely
+settled total public contract. Null/Boolean/Number failures are independently
+covered because source length cannot admit them. Unused invalid key types/arity
+have the analogous documented-domain versus source-guard issue. Neither policy
+is changed by this batch. Generic public-std rebinding, arbitrary producer and
+host/resource/manifestation compositions also retain their separate gaps.
+
+### Actual continuation results and binding
+
+The first six groups passed, then the enriched six groups passed in full.
+All 684 base entries matched dbf322d before, between and immediately after
+the two check/test pairs, before the planned documentation/map updates.
+Both frozen versions, plans and raw receipts remain at
+`/tmp/moonjsonnet-sort-contract.psw4ohdu`. Each command used closed stdin,
+--target native --frozen --deny-warn -j 1, debug and --no-parallelize for tests,
+with a 300-second hard limit. Every owned process group exited.
+
+| Stage | Exit | Actual result | Seconds |
+| --- | --- | --- | --- |
+| baseline-check | 0 | Native check passed | 0.510 |
+| baseline-test | 0 | 6/6 passed | 6.451 |
+| enriched-check | 0 | Native check passed | 0.270 |
+| enriched-test | 0 | 6/6 passed | 6.587 |
+
+| Frozen artifact | SHA-256 |
+| --- | --- |
+| Initial six-group test | 6d16551900c126a1819acb43fe1a0fcf2b8f969ab38b711df282e8283d10a71d |
+| Enriched six-group test | b43ad430cbcf40fe8fb2fb97bca29821832e97f5a099c1ad47ad5ac658795ade |
+| Initial plan | 2c85ded74a650fab3572514d75fe0d02dabee447809905c9ba7bd106f13ec572 |
+| Enriched plan | 1b907cafcc37e3752a991c310b60ec0cb8a14f3dd267cf177c09a5bb8c0a077a |
+
+Both test stdout streams report Total tests:6, passed:6, failed:0 and have SHA-256
+`98566e3b0f8ddd392230312d4a93343c59922153eac8fd89fe88ef3a5e9815cd`;
+the separate test-input hashes above identify the added assertions. Test stderr
+is empty. This is six distinct groups with a preserved earlier version, not
+twelve newly distinct groups. The preceding eight SD groups and eight neighbors
+remain source-bound historical runs, not re-executed counts here. Product,
+public interfaces, old tests and all Go/C++ snapshots are unchanged.
+
+The sort map alone is extended; all 64 other manual records stay equal. There
+are still 65 reviewed public subsets, zero whole-function acceptances and no
+new language-rule completion. Full package/release/CLI/Linux/reference campaigns
+were NOTRUN. The earlier 228cb25 platform results cannot validate new source
+merely because these finite sort checks pass. No new SSH or push was performed.
+
+### Final metadata checks
+
+The existing public-inventory generator was reused unchanged after staging the
+new test so its scanner includes the enriched test hash. Only sort's existing
+manual record changed. No implementation inspection hashes or language matrix
+needed rebinding: product and existing test bytes are unchanged. Required
+interface/format checks also passed with no .mbti change. The installed info
+subcommand rejected -j before doing any work (exit2); the supported original
+info command was then used successfully. This tooling correction is preserved
+separately and is not a semantic test failure.
+
+| Stage | Exit | Seconds |
+| --- | --- | --- |
+| final-info | 2 | 0.025 |
+| final-info-supported | 0 | 0.331 |
+| final-format | 0 | 0.024 |
+| public-inventory | 0 | 1.643 |

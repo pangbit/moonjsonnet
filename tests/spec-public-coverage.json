@@ -74,7 +74,10 @@
         "keyF": "identity (id)"
       },
       "test": "spec_sort_demand_test.mbt",
-      "status": "Array-only branch review; positional/reordered named calls, omitted/default keys and binding/static controls passed. The official zero/singleton branch does not evaluate keyF."
+      "status": "Array-only branch review; positional/reordered named calls, omitted/default keys and binding/static controls passed. The official zero/singleton branch does not evaluate keyF. SC1 extends the one-supplied-argument callable profile: default/explicit identity, closed capture, used/unused optional key defaults, Static duplicate named rejection, all six required non-Function heads and zero-/two-required-formal call rejection.",
+      "additional_tests": [
+        "spec_sort_contract_test.mbt"
+      ]
     },
     "reference_candidates": [
       {
@@ -82,26 +85,44 @@
         "line": 71,
         "test_declaration": "test \"source sort empty and singleton Arrays never demand an unused key expression\" {",
         "classification": "manual SD1-SD8 independent source/handmade-AST criteria; original2-pass/6-failure baseline retained"
+      },
+      {
+        "file": "spec_sort_contract_test.mbt",
+        "line": 41,
+        "test_declaration": "test \"sort contract admits its documented signature defaults closures and static unique names\" {",
+        "classification": "manual SC1-SC6 contract continuation; six independent groups passed before and after a preserved append-only SC1 admission enrichment; product bytes unchanged from dbf322d"
       }
     ],
     "dimensions": {
       "N": {
         "test": "spec_sort_demand_test.mbt",
-        "expectation": "SD1/SD2/SD5: zero/singleton identity, literal numeric/Unicode ordering, equal-key stability, unchanged original Array and finite lengths2/30/31 through independent entries."
+        "expectation": "SD1/SD2/SD5: zero/singleton identity, literal numeric/Unicode ordering, equal-key stability, unchanged original Array and finite lengths2/30/31 through independent entries. SC1/SC2/SC5 add captured/default keys, exact dyadic and 2^53 values, Unicode BMP/supplementary order and recursive Array keys, plus independently grouped stable permutation indices.",
+        "additional_tests": [
+          "spec_sort_contract_test.mbt"
+        ]
       },
       "E": {
         "test": "spec_sort_demand_test.mbt",
-        "expectation": "SD6/SD8: isolated required Array/key/element errors, selected singleton payload demand, required callable/comparison rejection, invalid bindings before native argument gates and Static rejection of unused missing names."
+        "expectation": "SD6/SD8: isolated required Array/key/element errors, selected singleton payload demand, required callable/comparison rejection, invalid bindings before native argument gates and Static rejection of unused missing names. SC1/SC3/SC4 add complete required non-Function key-head classes, zero-/two-required-formal rejection, duplicate-named Static rejection, demanded incompatible key prefixes and four isolated producer/key/body/comparison errors. Non-Array extensions and competing error priority remain open.",
+        "additional_tests": [
+          "spec_sort_contract_test.mbt"
+        ]
       },
       "L": {
         "test": "spec_sort_demand_test.mbt",
-        "expectation": "SD1-SD4/SD7: complete admitted zero/singleton Array branch returns original thunks without evaluating keyF, callback body or elements. A selected result demands only its element. Constant-key multi-element metadata leaves payloads unread; no universal callback count/order claim."
+        "expectation": "SD1-SD4/SD7: complete admitted zero/singleton Array branch returns original thunks without evaluating keyF, callback body or elements. A selected result demands only its element. Constant-key multi-element metadata leaves payloads unread; no universal callback count/order claim. SC3/SC4/SC6 add shorter/nested Array key prefixes that skip poisoned or noncomparable children, required comparison errors before unrelated payload demand, mixed payload heads and finite original/result thunk-sharing gates. No universal native key callback count/order is asserted.",
+        "additional_tests": [
+          "spec_sort_contract_test.mbt"
+        ]
       },
       "B": {
         "test": "spec_sort_demand_test.mbt",
-        "expectation": "SD1-SD8: empty/singleton poison heads, Array/Object/Function payloads, omitted/error-valued keys, source threshold30/31, equal keys, supplementary/NUL/combining Strings, unused malformed bindings and named argument order."
+        "expectation": "SD1-SD8: empty/singleton poison heads, Array/Object/Function payloads, omitted/error-valued keys, source threshold30/31, equal keys, supplementary/NUL/combining Strings, unused malformed bindings and named argument order. SC1/SC2/SC5/SC6 add optional key parameters, exact +/-2^53 and +/-0 ties, Unicode scalar/prefix seams, all payload head kinds and independent stability controls at sizes2/3/7/8/9/29/30/31/32/33/63/64/65.",
+        "additional_tests": [
+          "spec_sort_contract_test.mbt"
+        ]
       }
     },
-    "remaining": "Complete zero/singleton Array identity branch relative to its admitted Array head, with bounded nondegenerate controls; not whole-function acceptance. Non-Array source extensions, arbitrary key/comparison/producer domains, native/source algorithm callback multiplicity, competing independent error order, all host/resource/encoding combinations and public std rebinding remain unproved. No Go/C++ output chooses the oracle; A0/B0/N0/R0/PE0/DF0/HP0 and greater-than print conflicts are unchanged. Invalid unused key type/arity admission remains separate from the documented single-argument callable domain; the legacy migration records literal fixed-source reductions without accepting that whole public error policy."
+    "remaining": "Array branch and six-group continuation audited with independent finite expectations; no whole-function acceptance. Docs Array/one-supplied-argument key domain versus source non-Array/unused-invalid-key reductions remains unresolved; existing sort(String) Type is a candidate, not normative pass evidence. Source quick partitions versus native cached stable merges have different syntactic key-application structures; exact effectful-native traces and independent error priority are not uniquely fixed by the saved pure-language/error/native clauses. No Go/C++ run resolves them. General producer, raw encoding, resource, manifestation and public-std contexts are not fully proved. A0/B0/N0/R0/PE0/DF0/HP0 and the greater-than print conflict remain unchanged."
   }
 ]
