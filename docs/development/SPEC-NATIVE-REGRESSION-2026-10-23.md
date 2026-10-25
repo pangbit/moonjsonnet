@@ -563,3 +563,93 @@ remains bound to 84eb1f7. All A0/B0/N0/R0/PE0/DF0/HP0 and other recorded unknown
 retain their separate status. Overall specification conformance remains
 incomplete. Temporary evidence locations are not an archival availability
 guarantee. No private proposal, upstream modification, push or release is included.
+
+## macOS native debug regression at 4b1be8a
+
+The accumulated sort admission, demand and inherited-source receiver changes
+were exercised together at source commit
+`4b1be8ae6001c00cbb5a3dc58265cb02f1dbe333`. All 686 tracked input entries
+matched the frozen manifest before execution and after the test command. The
+worktree was clean throughout execution; no product source, expected value,
+snapshot, test selection or package configuration was changed.
+
+The unfiltered native debug command was:
+
+```sh
+RUST_LOG=error LANG=C LC_ALL=C moon test --target native --debug --frozen --deny-warn -j 1 --no-parallelize </dev/null
+```
+
+The exact raw stdout, with a final newline, is:
+
+```text
+Total tests: 758, passed: 758, failed: 0.
+```
+
+Exit was 0 and stderr was empty. The current metadata independently enumerates
+758 tests over 12 nonempty test drivers: 735 explicit tests, 16 source documentation
+blocks and seven README tests. No file, package, index or name was filtered, and
+there are no skip/ignore attributes in the tracked tests or current metadata.
+The actual total equals the full inventory; no skip or exclusion was introduced.
+Standalone tools/*.mbtx integration scripts are a separate unexecuted scope.
+
+| Package | Current debug metadata total |
+| --- | --- |
+| Root library | 723 |
+| cmd/jsonnetfmt | 4 |
+| cmd/main | 11 |
+| examples | 2 |
+| fs | 5 |
+| internal/number | 4 |
+| internal/posix | 4 |
+| internal/yaml | 5 |
+| Total | 758 |
+
+### Bounded window and actual phases
+
+The original 600-second window began 2026-10-25 at 06:58:50.076935 UTC, with an
+unchanged 07:08:50.076935 UTC deadline. Its initial controller encountered a
+sandbox PermissionError in auxiliary process observation, exited 124 after
+0.005 seconds and confirmed its owned command group absent. Its empty output
+contains no test summary and is not a product failure or passing-test claim.
+That original receipt remains intact. Formal approval then allowed the same
+frozen local command and read-only owned-process observation within the same
+absolute deadline; the budget was not reset.
+
+The approved command started 07:00:01.234407 UTC and finished 07:01:56.901543 UTC:
+**115.667 seconds** observed wall time. The complete original window used
+**186.824 seconds**, including controller recovery and exit checks. The raw
+controller elapsed fields use the original-window clock; the command duration
+above is derived from its separate UTC start and finish.
+
+Two-second owned-process sampling first observed moonc at 07:00:03.269935 UTC,
+then the examples test driver at 07:00:23.562935 UTC and the root library driver
+at 07:00:25.619935 UTC. These show compilation followed by actual test execution;
+they are sampled boundaries, not exact exclusive compiler/test durations. Both
+the initial and approved command groups were independently absent after exit.
+The slot was released before documentation work; no product command was retried
+after the 758/758 result.
+
+### Input and raw evidence binding
+
+Raw outputs, unmodified first-controller failure, approval-continuation receipt,
+current test metadata/binary hashes, phase observations and verified counts are
+under `/tmp/moonjsonnet-native-debug-4b1be8a.aui96a_c`. Temporary evidence paths
+are not an archival availability guarantee. Host/toolchain remain macOS ARM64,
+moon and moonrun `0.1.20260920` (`914d7da`), moonc `v0.10.14+7d59c7ec9`.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| inputs-before.json (686 tracked entries) | `9a0b96c8d2c48f0a1424f4a8f20e8a98ff041c25a963cc2e94634f3e5bb8c6f2` |
+| plan.json | `abc5618173649c8c85189613047760ac4e764ee2a0adeced6f1b6a59a26c0f55` |
+| First controller run.json | `6d488d3c235cb0245759e103e28bec5c624f4257ad40495113c8f1040f8e1782` |
+| Approved formal-continuation/run.json | `d48a93924b14d0d00358d94f7708fe6f230708ea60bfbe869e888931a05eb721` |
+| Approved raw stdout | `35896ab519fe3ca38bfff7c1b8f9e42a4a01647df048b7b257fd4bf1f4ef7958` |
+| Approved raw stderr (empty) | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
+
+This is a current-source macOS native debug package regression. Release,
+standalone API/CLI delivery scenarios, Linux and Go/C++ were NOTRUN in this
+round. The separate 228cb25 Linux results are not evidence for these new product
+bytes. No new specification domain or feature, comparison erratum, snapshot
+migration, SSH, push or release was introduced. Existing red-case evidence,
+N0/R0/DF0 and other language disputes remain intact. Overall conformance stays
+incomplete; 65 public subsets and zero whole-function acceptances are unchanged.
