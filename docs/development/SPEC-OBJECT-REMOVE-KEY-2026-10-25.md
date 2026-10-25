@@ -188,3 +188,128 @@ reference hashes and the new record without changing any of the65 prior manual
 records. The language coverage map stayed byte-identical; no language matrix
 regeneration or semantic rerun was needed. Source/test hashes above stayed
 unchanged through generation and formatting.
+
+## Public contract boundary matrix at4488a71
+
+This is one bounded completion of this function's evidence, not a new stdlib
+campaign. The original eight groups, original2-pass/6-failure run, four legacy
+migrations and fixed source version above remain unchanged. No implementation
+change or new defect is assumed. Exactly two consolidated groups, ORK9/ORK10,
+will close the direct evidence gaps identified below; no automatic expansion
+or whole-suite rerun follows them.
+
+The source has exactly two required parameters obj,key and no defaults. The
+[fixed function-parameter description](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/language.html.md#L177-L197)
+allows positional/named arguments with positional ones first. For two required
+parameters this gives four valid forms: two positional, obj/key names in either
+order, or positional obj plus named key. Named uniqueness is separately required
+by [chk-apply](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L1633-L1641).
+The [apply named-membership premise](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2231-L2249)
+excludes unknown parameter names. These rules, the fixed header and existing
+host error categories supply independent binding expectations; no diagnostic
+text, duplicate-error winner or native callback count is standardized.
+
+| Public contract component | Existing executed coverage | Direct gap and final criterion |
+| --- | --- | --- |
+| Names/defaults/valid calls | ORK1 positional and reordered names; ORK8 missing/extra calls | ORK9 observes function arity2, all four valid forms, missing named parameters, unknown labels and Static duplicate named arguments. Neither parameter has a default. |
+| Object and key domains | ORK8 covers all six non-Object heads plus isolated input/computed-key failures; ORK5/ORK6 cover key demand and all disjoint key kinds | No new String-only key error is required: the fixed predicate performs equality with String k. Same-type nonscalar PE0 is not used. |
+| Missing and empty keys | ORK3 removes empty String; ORK5 covers empty/hidden-only iteration and skipped key errors | ORK10 supplies absent String keys on nonempty objects. Remaining visible data is preserved; hidden fields are still not projected. |
+| Visibility | ORK3 normal/hidden/forced-visible input; existing Ex child review covers inherited separators | ORK10 composes all nine inherited separator pairs and proves result fields are ordinary colon fields, so an earlier hidden field can keep them hidden. |
+| Assertions | ORK7 flat false retained-read failure, metadata laziness and false-assertion empty projection | ORK10 adds flat true with an unused error message, non-Boolean condition rejection and isolated condition error propagation. Values are harmless, avoiding competing-error priority. |
+| self/super and closures | ORK1/ORK2 retain original final self, defining super and extracted closure under output overlays | Already directly covered. No stable public std hook/rebinding extension is added. |
+| Value/key laziness | ORK4/ORK5/ORK6 skip removed/hidden/unread retained payloads, empty filter key, nonstring nested values and unused calls | Already directly covered; no exact callback multiplicity or independent-error ordering obligation is invented. |
+| Unicode identity | ORK3 empty, composed/decomposed and astral keys | ORK10 adds NUL and a versus a-NUL prefix separation. Raw text decoding and invalid host representations belong to producer rules, not a new removal encoding policy. |
+| Immutability and aliases | ORK2/ORK3 preserve source values/keys and warmed aliases across result overlays | ORK10 adds cold and warmed reads with an absent key; later result a=99 does not rewrite retained original self or closure value2. Pointer identity/allocation/sharing strategy is not promised. |
+
+ORK9 literal successful result is {keep:7}; signature is [function,2]. Invalid
+named bindings reject without fixing human messages; duplicate named inputs
+reject Static even when the whole operation is unused. ORK10 visibility metadata
+is [[x],true,[x]] when shown and [[],false,[x]] otherwise. Its output-visibility
+control is [[],true,7,[x],7]. NUL deletion uses literal ordered key sets and
+retained values10/20/30. Cold/warm alias results are [2,2,2,2,2,2,99]. Flat true
+assertion yields {keep:7}; one invalid numeric condition rejects Type and an
+isolated condition error propagates condition-required. Every new input has
+separately built source and handmade public ASTs; no observed result or parser
+export supplies an expected answer.
+
+### What is open, and what is not an additional promise
+
+For canonical invocation this function-specific behavior is fixed by the exact
+embedded source body. There is no independent body ambiguity, String-only key
+precondition, pointer-identity promise, general native trace contract, diagnostic
+text or winner among independent failures. Timing, complexity, exact allocation
+and unbounded success beyond configured host resource limits are not specified
+by this public entry. General call grammar and malformed public AST policies
+remain shared language/API obligations, not another private removal framework.
+
+The conditional boundary is genuine: input obj[k] uses the common object-index
+judgment. Objects with inherited assertion-super or in-progress/self-indexing
+assertions therefore retain the existing N0/R0 child questions. This function
+does not rewrite assertions; probing more removal variants cannot settle those
+formal clauses. The ordinary-field DF0, A0/B0, PE0 and relational print disputes
+keep their global status, but are not independently exercised by this body's
+String/disjoint-type key predicate and object-comprehension projection. They
+must not be listed as newly discovered function-specific failures or waived.
+
+The target is to close the above direct gaps relative to these existing child
+judgments. This does not grant an unconditional whole-function or whole-language
+certificate, and does not leave an indefinite queue of unspecified details.
+Tests remain local directed native debug, frozen/deny-warn/j1/no-parallelize,
+closed stdin, with a300-second per-command ceiling. No new source repair,
+reference interpreter, full suite, release, standalone API/CLI delivery, SSH,
+Linux, installation, private proposal or push is included.
+
+<!-- This boundary matrix and the new literal criteria precede execution. -->
+
+### Boundary execution and stopping decision
+
+The native check passed first time (exit0,0.518s). The unchanged frozen file then
+reported **10 total,10 passed,0 failed,exit0** in8.738 seconds; stderr was empty.
+The original eight groups stayed byte-identical as a prefix, and the two new
+consolidated groups passed on their first execution. No source implementation,
+legacy assertion, oracle, expectation or snapshot was changed. No new defect
+was found, so no speculative product correction or further test batch followed.
+
+The completed direct matrix covers the listed public contract relative to its
+shared child judgments. Missing String keys and inherited visibility were real
+evidence gaps; they are now executed rather than assumed from the old map's
+word missing-key. The original flat false cases and new true/error/type controls
+separate assertion forwarding from the unresolved inherited-super/reentry model.
+The latter remains N0/R0 in the language matrix, not a new function requirement.
+The body never compares same-type nonscalar keys or concatenates arrays, and
+its filter condition is a Boolean comparison, so PE0/A0/B0/relational print
+issues are not independently blocking this specific predicate/projection.
+Ordinary input construction and global DF0 retain their own judgment scope.
+
+All valid two-parameter call forms have finite coverage; there are no defaults.
+Key values outside String are defined nonmatches, not missing Type errors.
+Result identity is value behavior under immutable aliases and overlays; no
+pointer identity, allocation strategy, general native callback schedule, runtime
+complexity or independently competing-error winner is promised. These are not
+pending tests or exemptions from a stated contract. No function-specific gap
+remains after this bounded continuation; unconditional formal certification for
+all supplied object-index children still requires the common N0/R0 decision.
+
+Required native info then fmt also passed (exit0,0.183s and0.040s). No .mbti or
+validated product/test byte changed. The language map and all65 other public
+manual records are unchanged. This function remains one reviewed subset: the
+total is66 and no unconditional whole-function acceptance is inferred.
+
+Raw command argv/environment, closed-stdin/300s bounds, stdout/stderr, elapsed
+and owned-process exit receipts are under
+`/tmp/moonjsonnet-object-remove-key-boundary.u0sucnht`. This temp location is not
+an archival availability guarantee. The principal hashes are:
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Frozen boundary criteria | `482ac9918d3981df962648e0daacac605301b42def7ccfab095c2db611d2db27` |
+| Frozen ten-case file | `d7edc64d45fa915d283f94658ad836595a14b98dda8660ae279654dca6eedb1e` |
+| Original eight-case prefix | `6e5bf45dc9411a8dc196a060353c2676a9b37952bcac608d6591e6a7d89f89cc` |
+| Actual directed stdout | `fe181a16b4ba8108dc0e0792dd5f56a8655414d9a3c5ee8b77129291e78080eb` |
+
+The previous2-pass/6-failure record and four precise legacy migrations remain in
+the unchanged earlier sections. Earlier11/11 plus29/29 evidence remains bound
+to4488a71; those neighbors were not repeated. Full suite, release, standalone
+API/CLI delivery, Go/C++, Linux and SSH were NOTRUN. The758 historical full count
+is not attached to this continuation. No push, upstream change, proposal import
+or further specification domain was included. This contract branch now stops.

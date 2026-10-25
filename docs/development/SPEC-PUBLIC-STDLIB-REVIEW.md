@@ -147,6 +147,15 @@ prior manual records remain unchanged, making66 reviewed subsets and zero
 whole-function acceptances. This does not alter the general assertion/equality
 text disputes or reuse older whole-suite/Linux evidence for new product bytes.
 
+The same function's [explicit boundary matrix](SPEC-OBJECT-REMOVE-KEY-2026-10-25.md#public-contract-boundary-matrix-at4488a71)
+now closes the direct gaps with10/10 directed cases and no product change.
+Required names/no defaults, complete valid call forms, absent keys, inherited
+visibility, ordinary output flags, NUL identity, cold/warm aliases and flat
+assertion forwarding have scoped evidence. Only common N0/R0 input-index child
+questions remain conditional; unspecified traces/storage/diagnostic winners are
+not pending requirements. The count stays66 subsets and zero unconditional
+whole-function acceptances; no new public function or general rule is added.
+
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its
 source-header assumptions were reviewed against those exact bytes. It records

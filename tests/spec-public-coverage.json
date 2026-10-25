@@ -145,7 +145,7 @@
       ],
       "defaults": {},
       "test": "spec_object_remove_key_test.mbt",
-      "status": "Fixed public/source obj,key names agree. Positional/reordered named controls and required/extra binding errors execute through source and independent public ASTs; no String-only key guard is invented."
+      "status": "Fixed obj,key are two required public/source parameters with no defaults. ORK9 executes all four valid positional/named/mixed forms, named missing/unknown-label refusal and Static duplicate-named admission. This asserts fixed-version usability, not future name stability or diagnostic priority."
     },
     "reference_candidates": [
       {
@@ -195,26 +195,38 @@
         "line": 258,
         "test_declaration": "test \"objectRemoveKey requires object construction and valid bindings while retaining static checks\" {",
         "classification": "manual ORK8 source-defined independent frozen literal expectations; executed after preserved unchanged-product baseline"
+      },
+      {
+        "file": "spec_object_remove_key_test.mbt",
+        "line": 322,
+        "test_declaration": "test \"objectRemoveKey binds its two required public names across all valid call forms\" {",
+        "classification": "manual ORK9 consolidated public-contract boundary; independent literal source/handmade-AST expectations frozen before first10/10 execution; no product fix"
+      },
+      {
+        "file": "spec_object_remove_key_test.mbt",
+        "line": 382,
+        "test_declaration": "test \"objectRemoveKey closes absent keys visibility NUL aliases and flat assertion boundaries\" {",
+        "classification": "manual ORK10 consolidated public-contract boundary; independent literal source/handmade-AST expectations frozen before first10/10 execution; no product fix"
       }
     ],
     "dimensions": {
       "N": {
         "test": "spec_object_remove_key_test.mbt",
-        "expectation": "ORK1-ORK3: obj[k] retains original final self/super and closure capture after deletion and output overlay; visible fields are projected with exact String-key removal, ordinary/forced-visible values and original aliases intact."
+        "expectation": "ORK1-ORK3: obj[k] retains original final self/super and closure capture after deletion and output overlay; visible fields are projected with exact String-key removal, ordinary/forced-visible values and original aliases intact. ORK9/ORK10 complete valid call forms and add absent String-key preservation, all nine inherited visibility combinations and ordinary output-field visibility."
       },
       "E": {
         "test": "spec_object_remove_key_test.mbt",
-        "expectation": "ORK4/ORK5/ORK7/ORK8: selected retained field, required nonempty filter key, isolated object head/computed key and original flat false assertion fail on demand. Non-Object inputs reject; required/extra binding errors and statically free unused arguments remain distinct."
+        "expectation": "ORK4/ORK5/ORK7/ORK8: selected retained field, required nonempty filter key, isolated object head/computed key and original flat false assertion fail on demand. Non-Object inputs reject; required/extra binding errors and statically free unused arguments remain distinct. ORK9 adds explicit missing named/unknown-label Runtime and duplicate-named Static controls; ORK10 forwards harmless-field flat assertion Type/isolated condition errors. Exact text and independent diagnostic winners are not promised."
       },
       "L": {
         "test": "spec_object_remove_key_test.mbt",
-        "expectation": "ORK4/ORK5/ORK7: shape/reflection skips all value payloads; an unused call skips argument evaluation; empty/hidden-only inputs skip an error key. Original flat assertions run only when a retained original field is read, and removing the final visible field skips them."
+        "expectation": "ORK4/ORK5/ORK7: shape/reflection skips all value payloads; an unused call skips argument evaluation; empty/hidden-only inputs skip an error key. Original flat assertions run only when a retained original field is read, and removing the final visible field skips them. ORK10 adds a flat true assertion with an unused error message and all nine payload-free visibility controls; no native callback-count theorem."
       },
       "B": {
         "test": "spec_object_remove_key_test.mbt",
-        "expectation": "ORK1-ORK8: positional/named obj,key, empty/hidden-only/missing key, empty/composed/decomposed/astral String names, all six disjoint nonstring key heads with dormant payloads, ordinary/inherited/closure sources and later overlays. No same-type nonscalar equality or inherited assertion-super oracle."
+        "expectation": "ORK1-ORK8: positional/named obj,key, empty/hidden-only/missing key, empty/composed/decomposed/astral String names, all six disjoint nonstring key heads with dormant payloads, ordinary/inherited/closure sources and later overlays. No same-type nonscalar equality or inherited assertion-super oracle. ORK10 adds NUL/prefix-distinct keys and cold/warm missing-key aliases under later overlays; pointer identity and storage allocation are not public requirements."
       }
     },
-    "remaining": "Eight bounded canonical source-projection groups are reviewed after a 2-pass/6-failure baseline and routing the public function to its exact embedded fixed definition. No whole-function acceptance or new general language completion. Producer/index/visibility/substitution/equality child judgments retain their existing matrix scope; A0/B0/N0/R0/PE0/DF0 are not silently adjudicated. Native callback trace and independent diagnostic choice are not new requirements. Four legacy expectations were individually migrated with original raw outcomes preserved; Go/C++ fixtures are unchanged and no reference output is an oracle."
+    "remaining": "The explicit canonical public-contract boundary matrix is closed relative to existing input/object-index/visibility/closure child judgments: original ORK1-ORK8 and consolidated ORK9/ORK10 all pass, with the source body unchanged since4488a71. No additional independent function-specific ambiguity or implementation defect is identified, and no indefinite extra boundary campaign remains. Unconditional acceptance for inputs using inherited assertion-super or in-progress/self-indexing still depends on the common N0/R0 adjudication; this function transparently reads obj[k] and does not rewrite assertions. A0/B0/PE0/DF0 and the comparison print conflict retain global scopes, not invented new removal-specific tests or exemptions. Diagnostic wording, independent-error winner, exact native trace, pointer/allocation identity and timing are not specified promises. No unconditional whole-function/language certificate is claimed; prior failures and all four migrations remain intact; no Go/C++ output is an oracle."
   }
 ]
