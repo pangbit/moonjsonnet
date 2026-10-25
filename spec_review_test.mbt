@@ -104,10 +104,7 @@ test "YAML propagates runtime type assertion errors and leaves evaluator usable"
         "std.manifestYamlDoc({a:[{b:[error 'first']}],z:error 'later'})",
         @moonjsonnet.Runtime,
       ),
-      (
-        "std.manifestYamlDoc({a:[std.sum('not-array')],z:error 'later'})",
-        @moonjsonnet.Type,
-      ),
+      ("std.manifestYamlDoc({a:[std.sum(null)],z:0})", @moonjsonnet.Type),
       (
         "std.manifestYamlDoc({a:{assert false,b:1},z:error 'later'})",
         @moonjsonnet.Assertion,
@@ -124,6 +121,22 @@ test "YAML propagates runtime type assertion errors and leaves evaluator usable"
     }
     assert_eq(evaluator.evaluate(@moonjsonnet.Program::parse("42")), 42)
   }
+  // String summation is valid. The original input now has only its z error.
+  try
+    evaluator.evaluate(
+      @moonjsonnet.Program::parse(
+        "std.manifestYamlDoc({a:[std.sum('not-array')],z:error 'later'})",
+      ),
+    )
+  catch {
+    @moonjsonnet.Error(d) => {
+      assert_eq(d.kind, @moonjsonnet.Runtime)
+      assert_eq(d.message, "later")
+    }
+  } noraise {
+    _ => fail("expected the original later field error after valid String sum")
+  }
+  assert_eq(evaluator.evaluate(@moonjsonnet.Program::parse("42")), 42)
   assert_eq(
     evaluator.evaluate(
       @moonjsonnet.Program::parse(

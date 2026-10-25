@@ -256,3 +256,25 @@ public-child obligations stay open. Sixteen disjoint old language inspections
 only rebind their full-file hash with a preserved span/anchor proof; all 225
 evidence/completion fields otherwise stay equal. No old full-suite or Linux
 count is applied to the changed product.
+
+
+## Sum/avg admission closeout at bf1609a
+
+The [full admission/source review](SPEC-AGGREGATE-ADMISSION-2026-10-25.md)
+closes the earlier String rejection and avg guard-order gap. Public descriptions
+add no contrary type guard; exact source sum/avg/foldl are selected with three
+routing lines and no helper/operator body changes. The actual seven-group
+baseline passed 3/7, and the final grouped regression passes 52/52 including prior
+finite arithmetic and audited parser/flatten/uniq/set consumers. Two exact old
+inputs and failures remain preserved; no reference snapshots changed.
+
+Function-specific signature, all input-head kinds, initial/length/Unicode,
+reduction/quotient, finite/error/coercion and lazy boundaries now have one closed
+source-body map relative to their ordinary language children. Shared assertion/
+cycle/producer disputes remain at global rows; this is not a normative exemption
+or a reason to keep reopening arbitrary details. Foldr remains native/separate.
+Only sum/avg/foldl behavior records and foldr's scope note change: other 62 records
+are equal, 66 reviewed subsets and zero unqualified whole-function accepts.
+All 225 language evidence objects and completion conditions stay equal; only the
+unchanged SQ0UNI declaration's full-file hash rebinds after its unrelated YAML
+fixture migration, with exact-prefix proof. Prior 25/789 are not inherited.

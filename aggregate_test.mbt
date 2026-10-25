@@ -11,13 +11,14 @@ test "sum and avg preserve left to right addition and finite numeric results" {
       ),
       ("std.sum(std.range(1,1000))", "500500"),
       ("std.sum([1,'2'])", "\"12\""),
+      ("std.sum('123')", "\"0123\""),
     ] {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))
   }
   for
     source in [
-      "std.avg([])", "std.sum('123')", "std.avg({})", "std.sum([true])", "std.avg([null])",
-      "std.sum([1,error 'forced'])", "std.sum()", "std.avg(xs=[1])",
+      "std.avg([])", "std.avg({})", "std.sum([true])", "std.avg([null])", "std.sum([1,error 'forced'])",
+      "std.sum()", "std.avg(xs=[1])",
     ] {
     try @moonjsonnet.evaluate(source) catch {
       @moonjsonnet.Error(d) => assert_true(d.kind != @moonjsonnet.Unsupported)

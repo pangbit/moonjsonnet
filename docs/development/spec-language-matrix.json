@@ -2,7 +2,7 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "2fcdce79a3551e9ab4acdae13f59f5a3672243027249718e9d9e8a626dc00397",
+  "mapping_sha256": "d42a71d5a750955712238bf655cc75270bad3aace9b3a7ae49d6f0e6130295fc",
   "tool_sha256": "da3657872b9348056bfcf5579eba583f1dc9fbd1f854be99bc59ce77ab94296f",
   "mapping_schema_version": 2,
   "global_test_ids": 225,
@@ -3340,7 +3340,7 @@
     "spec_import_closure_test.mbt": "e8136fdc0bb06add93a8589d9409b3b579aaa653077d0700fe4fcf244c02da58",
     "spec_remove_test.mbt": "94b514e9ba69c2b5ad55f8c8e020ec7ab44ceac495150b9cd7020cbdea37c75c",
     "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
-    "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
+    "spec_review_test.mbt": "ecc217d08be90e157fd7a856f5da2833cf9ee36ff6c7934f6dd855291aabeb18",
     "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
     "spec_manifest_wbtest.mbt": "efca143dad93275761ad4ab60a9dfd45116fdec7c809e4fd35001fc9235c81f7",
     "spec_string_concat_test.mbt": "b563491ec478bbc3f11e53a69dc92926b99e49e81201eeddb93f27eab2814eb0",
@@ -6869,7 +6869,7 @@
           "evidence_sha256": {
             "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
             "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
-            "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
+            "spec_review_test.mbt": "ecc217d08be90e157fd7a856f5da2833cf9ee36ff6c7934f6dd855291aabeb18",
             "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30"
           }
         }

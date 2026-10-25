@@ -20,50 +20,64 @@
   "dimensions": {
     "N": {
       "test": "spec_aggregate_test.mbt",
-      "expectation": "Existing finite/empty numeric cases plus AGF1/AGF4: an Array reduction uses actual left-associative + from zero, admits String transitions with literal Unicode/primitive results, and preserves largest finite/subnormal values.",
+      "expectation": "Existing finite/empty numeric cases plus AGF1/AGF4: an Array reduction uses actual left-associative + from zero, admits String transitions with literal Unicode/primitive results, and preserves largest finite/subnormal values. ASA2/4: String empty/digit-looking/Unicode/NUL input follows actual zero-seeded character reduction; zero-visible-field Objects and zero-parameter Functions return Number0.",
       "additional_tests": [
-        "spec_aggregate_addition_test.mbt"
+        "spec_aggregate_addition_test.mbt",
+        "spec_aggregate_admission_test.mbt"
       ]
     },
     "E": {
       "test": "spec_aggregate_test.mbt",
-      "expectation": "Numeric-prefix additions fail at the actual overflowing operation before a String transition or type consumer. AGF3/AGF6 require later elements and String coercion payloads; invalid Number-plus-container still fails Type without nested demand.",
+      "expectation": "Numeric-prefix additions fail at the actual overflowing operation before a String transition or type consumer. AGF3/AGF6 require later elements and String coercion payloads; invalid Number-plus-container still fails Type without nested demand. ASA5/6: Null/Bool/Number fail length, required input errors propagate, and nonempty Objects/Functions require numeric indexing and fail Type without reading fields/defaults/bodies.",
       "additional_tests": [
-        "spec_aggregate_addition_test.mbt"
+        "spec_aggregate_addition_test.mbt",
+        "spec_aggregate_admission_test.mbt"
       ]
     },
     "L": {
       "test": "spec_aggregate_test.mbt",
-      "expectation": "Existing unused/Boolean/hidden overflow controls remain; AGF5 skips the new String reduction when unused or explicitly short circuited, and forces its isolated marker when needed.",
+      "expectation": "Existing unused/Boolean/hidden overflow controls remain; AGF5 skips the new String reduction when unused or explicitly short circuited, and forces its isolated marker when needed. ASA4/6 and the source foldl controls preserve hidden-only/empty bodies and whole-call laziness.",
       "additional_tests": [
-        "spec_aggregate_addition_test.mbt"
+        "spec_aggregate_addition_test.mbt",
+        "spec_aggregate_admission_test.mbt"
       ]
     },
     "B": {
       "test": "spec_aggregate_test.mbt",
       "expectation": "Empty numeric sum0 remains unchanged. AGF2 separates overflowing numeric prefixes from nonarithmetic String concatenation; AGF4 permits finite underflow rounding instead of treating zero as nonfinite.",
       "additional_tests": [
-        "spec_aggregate_addition_test.mbt"
+        "spec_aggregate_addition_test.mbt",
+        "spec_aggregate_admission_test.mbt"
       ]
     }
   },
-  "remaining": "This batch closes finite-operation and actual additive-stage evidence for Array inputs only, not the entire public function. The unchanged Array-only entry guard still rejects std.sum('123'), while the fixed sum/foldl String path would produce String0123; that known admission difference remains open, not a normative exception or passing error assertion. Current aggregate_test keeps that legacy error only as compatibility coverage. Full signature/producer/equality/assertion/resource and other nonarray domains remain separate. No whole-function acceptance or old789 full-suite inheritance; see SPEC-AGGREGATE-ADDITION-2026-10-25.md."
+  "remaining": "The named sum(String) mismatch is fixed by selecting exact embedded sum and required foldl. The function-specific signature, zero seed, all head-kind admission, additive-stage/finite/error/coercion and lazy/alias boundaries are mapped in SPEC-AGGREGATE-ADMISSION-2026-10-25.md; no further observed function-specific implementation gap remains in this batch. This is a closed source-body review relative to its length/index/apply/addition/manifest children, not unqualified whole-function acceptance: shared assertion/cyclic/producers and normative child disputes keep their own existing scopes. No new callback trace, allocation identity, diagnostic-winner or asymptotic resource promise is required. The former String rejection remains historical red/migration evidence, not a current exclusion.",
+  "signature_review": {
+    "parameters": [
+      "arr"
+    ],
+    "defaults": {},
+    "test": "spec_aggregate_admission_test.mbt",
+    "status": "ASA1: one required arr, reflection length1, positional/named/local alias and missing/extra/unknown/duplicate binding without supplied value demand. No public documentation/source signature conflict."
+  }
 },
   {
   "name": "avg",
   "dimensions": {
     "N": {
       "test": "spec_aggregate_test.mbt",
-      "expectation": "Existing finite mean2 and AGF4 largest-finite/minimum-subnormal singleton means and correctly rounded subnormal-to-zero result.",
+      "expectation": "Existing finite mean2 and AGF4 largest-finite/minimum-subnormal singleton means and correctly rounded subnormal-to-zero result. ASA1 verifies public arr and aliases across direct source dispatch.",
       "additional_tests": [
-        "spec_aggregate_addition_test.mbt"
+        "spec_aggregate_addition_test.mbt",
+        "spec_aggregate_admission_test.mbt"
       ]
     },
     "E": {
       "test": "spec_aggregate_test.mbt",
-      "expectation": "The completed additive reduction precedes quotient type checks: AGF3 propagates a required later Runtime marker after a legal String transition. Numeric prefixes still reject overflow before consumers/cancellation. A completed String accumulator fails division Type.",
+      "expectation": "The completed additive reduction precedes quotient type checks: AGF3 propagates a required later Runtime marker after a legal String transition. Numeric prefixes still reject overflow before consumers/cancellation. A completed String accumulator fails division Type. ASA3/4/5: empty String/Object/Function length triggers the fixed empty error; nonempty String completes summation then quotient Type, and nonempty Object/Function requires invalid numeric indexing. ASA6 rejects Null/Bool/Number length and propagates isolated input markers.",
       "additional_tests": [
-        "spec_aggregate_addition_test.mbt"
+        "spec_aggregate_addition_test.mbt",
+        "spec_aggregate_admission_test.mbt"
       ]
     },
     "L": {
@@ -72,18 +86,28 @@
       "expectation": "Existing unselected average stays lazy; AGF5 independently covers unused, hidden and both explicit Boolean shortcuts around the new mandatory String-reduction error.",
       "additional_tests": [
         "spec_aggregate_addition_test.mbt",
-        "spec_aggregate_test.mbt"
+        "spec_aggregate_test.mbt",
+        "spec_aggregate_admission_test.mbt"
       ]
     },
     "B": {
       "test": "spec_aggregate_test.mbt",
       "expectation": "Empty Array rejects before division, existing cancellation/overflow controls remain, AGF2/AGF4 distinguish actual numeric operations from String reduction and legal finite underflow.",
       "additional_tests": [
-        "spec_aggregate_addition_test.mbt"
+        "spec_aggregate_addition_test.mbt",
+        "spec_aggregate_admission_test.mbt"
       ]
     }
   },
-  "remaining": "Only the Array reduction/quotient/finite and associated lazy/output responsibility is adjudicated here. Nonarray source admission and empty-length guard order, including String/Object/Function cases, are not accepted by the unchanged native Array guard and remain open. Full public binding/producer/static/resource and assertion-bearing coercion children are not completed. No independent competing-error winner, callback trace or output-limit promise is invented; source-mandated reduction-before-division is the specific ordering tested. Whole-function acceptance stays0."
+  "remaining": "Exact embedded avg/sum/foldl now implement the empty-length guard, full admitted reduction and final finite-checked quotient. Array and all nonarray head categories, one required arr/default-free binding, Unicode, unused paths and scalar/quotient/index/coercion errors have a complete responsibility map relative to ordinary language children. The formerly open nonarray guard/order difference is closed; no new function-specific implementation defect remains observed. Shared producer/assertion/cycle and normative child questions are retained at their global rows, not invented as callback-count/error-text requirements. No unqualified whole-function acceptance or old25/789 evidence is inferred.",
+  "signature_review": {
+    "parameters": [
+      "arr"
+    ],
+    "defaults": {},
+    "test": "spec_aggregate_admission_test.mbt",
+    "status": "ASA1: one required arr, reflection length1, positional/named/local alias and missing/extra/unknown/duplicate binding without supplied value demand. No public documentation/source signature conflict."
+  }
 },
   {
   "name": "remove",
@@ -224,8 +248,79 @@
   {"name":"map","signature_review":{"parameters":["func","arr"],"defaults":{},"test":"spec_foundation_calls_test.mbt","status":"Required-only source/documentation signature; reordered named call succeeds."},"dimensions":{"N":{"test":"spec_foundation_arrays_test.mbt","expectation":"Array or Unicode-string input yields an array of callback values; numeric/string results and unchanged array input."},"E":{"test":"spec_foundation_arrays_test.mbt","expectation":"Non-function/non-sequence and demanded callback/application errors fail."},"L":{"test":"spec_foundation_arrays_test.mbt","expectation":"Length avoids callback/payload execution for array/string inputs, unselected payloads stay lazy, repeated result callback executes once."},"B":{"test":"spec_foundation_arrays_test.mbt","expectation":"Empty array/string, supplementary Unicode codepoints and error payload selection."}},"remaining":"Initial flatMap-like string expectations were corrected from fixed source; original false failures retained. Complete callback declaration/default/limit/error-order matrix remains unadjudicated."},
   {"name":"filter","signature_review":{"parameters":["func","arr"],"defaults":{},"test":"spec_foundation_calls_test.mbt","status":"Required-only documented signature; reordered named call succeeds."},"dimensions":{"N":{"test":"spec_foundation_arrays_test.mbt","expectation":"True/false predicates select original elements while preserving input."},"E":{"test":"spec_foundation_arrays_test.mbt","expectation":"Non-array/non-function and demanded callback/application errors fail."},"L":{"test":"spec_foundation_arrays_test.mbt","expectation":"Predicates run but unused retained/excluded payloads stay lazy; native counter executes once per predicate."},"B":{"test":"spec_foundation_arrays_test.mbt","expectation":"Empty input, all-false, all-true with error payload, and lazy object fields."}},"remaining":"Nonboolean predicate results remain unresolved after cross-checking the fixed formal relation, prose and Boolean-only conditional rule; observations have no passing status. Complete callback-declaration/default and resource-bound matrix remains pending."},
   {"name":"makeArray","signature_review":{"parameters":["sz","func"],"defaults":{},"test":"spec_array_slice_test.mbt","status":"Both public parameters required; missing/extra/unknown names reject only demanded calls. Named calls also exercised in spec_array_build_test."},"dimensions":{"N":{"test":"spec_array_build_test.mbt","expectation":"Integral sizes construct indexed callbacks, named calls work and supplied indices override callback defaults."},"E":{"test":"spec_array_build_test.mbt","expectation":"Nonnumeric size and nonfunction initializer heads reject even at zero; demanded initializer error propagates."},"L":{"test":"spec_array_build_test.mbt","expectation":"Construction/length avoid callback bodies, selected indices initialize in demand order and repeated access reuses a cached thunk."},"B":{"test":"spec_array_build_test.mbt","expectation":"Zero/negative zero and function-valued elements without body execution. Allocation-limit check is separate host-policy protection, not a numeric-domain adjudication."}},"remaining":"Negative/fractional cardinalities, callback declaration-count wording, very large sizes and complete error-order/limit contracts remain unadjudicated; observation fixture carries no normative expected output."},
-  {"name":"foldl","signature_review":{"parameters":["func","arr","init"],"defaults":{},"test":"spec_array_slice_test.mbt","status":"All three parameters required with no defaults; common binding tests plus reordered named calls in spec_array_fold_test."},"dimensions":{"N":{"test":"spec_array_fold_test.mbt","expectation":"Left association and array/Unicode-string traversal, callback defaults overridden, source/init arrays unchanged."},"E":{"test":"spec_array_fold_test.mbt","expectation":"Demanded invalid callback/primitive sequence/init and every intermediate callback error fail."},"L":{"test":"spec_array_fold_test.mbt","expectation":"Empty array/string never uses func; first callback may ignore init, but each new accumulator head is strict and nested payloads/unused elements stay lazy. Native counters verify unused init and callback order."},"B":{"test":"spec_array_fold_test.mbt","expectation":"Empty sequences, non-associative examples, lazy object assertions and shared source/init values."}},"remaining":"Source mechanics on empty objects/functions versus advertised sequence domain remain unresolved. Exhaustive error order, resource bounds, callback declaration and diagnostic text are outside this subset."},
-  {"name":"foldr","signature_review":{"parameters":["func","arr","init"],"defaults":{},"test":"spec_array_slice_test.mbt","status":"All three parameters required with no defaults; common binding tests plus reordered named calls in spec_array_fold_test."},"dimensions":{"N":{"test":"spec_array_fold_test.mbt","expectation":"Right association, element-before-accumulator arguments and right-to-left Unicode/array traversal; input/init arrays unchanged."},"E":{"test":"spec_array_fold_test.mbt","expectation":"Demanded invalid callback/primitive sequence/init and intermediate callback errors fail."},"L":{"test":"spec_array_fold_test.mbt","expectation":"Empty sequence avoids func; first callback can ignore init; new result heads remain strict with lazy nested payloads. Native counters verify unused init and right-to-left callback visits."},"B":{"test":"spec_array_fold_test.mbt","expectation":"Empty array/string, non-associative order, unused error elements and nested error payloads."}},"remaining":"Empty object/function source mechanics and complete error-order/resource/declaration contracts remain unadjudicated, as for foldl."},
+  {
+  "name": "foldl",
+  "signature_review": {
+    "parameters": [
+      "func",
+      "arr",
+      "init"
+    ],
+    "defaults": {},
+    "test": "spec_array_slice_test.mbt",
+    "status": "All three parameters required with no defaults; common binding tests plus reordered named calls in spec_array_fold_test."
+  },
+  "dimensions": {
+    "N": {
+      "test": "spec_array_fold_test.mbt",
+      "expectation": "Left association and array/Unicode-string traversal, callback defaults overridden, source/init arrays unchanged. ASA2/7 extends exact source length/index admission to Object/Function shapes and independently observes Unicode codepoint traversal.",
+      "additional_tests": [
+        "spec_aggregate_admission_test.mbt"
+      ]
+    },
+    "E": {
+      "test": "spec_array_fold_test.mbt",
+      "expectation": "Demanded invalid callback/primitive sequence/init and every intermediate callback error fail. Returned init errors on empty lengths propagate without using func. Needed nonempty indexing remains callback-dependent, not an eager input guard.",
+      "additional_tests": [
+        "spec_aggregate_admission_test.mbt"
+      ]
+    },
+    "L": {
+      "test": "spec_array_fold_test.mbt",
+      "expectation": "Empty array/string never uses func; first callback may ignore init, but each new accumulator head is strict and nested payloads/unused elements stay lazy. Native counters verify unused init and callback order. Empty Objects/Functions skip func too; nonempty callbacks may ignore erroneous numeric-indexed elements and only count length. Existing native callback counts remain compatibility controls.",
+      "additional_tests": [
+        "spec_aggregate_admission_test.mbt"
+      ]
+    },
+    "B": {
+      "test": "spec_array_fold_test.mbt",
+      "expectation": "Empty sequences, non-associative examples, lazy object assertions and shared source/init values."
+    }
+  },
+  "remaining": "The previously open Object/Function source mechanics are now independently fixed by exact source foldl selection, required for complete sum admission. All six fixed direct callers were audited: parse_nat, flattenArrays, uniq and sum are selected source consumers with current targeted regressions; minArray/maxArray remain native and unchanged. Signature/ordinary fold mechanics are relative to language callback/length/index children; this does not complete every external callback, assertion/cycle or global rule. Foldr retains its separate unchanged native admission gap and is not silently fixed by this work."
+},
+  {
+  "name": "foldr",
+  "signature_review": {
+    "parameters": [
+      "func",
+      "arr",
+      "init"
+    ],
+    "defaults": {},
+    "test": "spec_array_slice_test.mbt",
+    "status": "All three parameters required with no defaults; common binding tests plus reordered named calls in spec_array_fold_test."
+  },
+  "dimensions": {
+    "N": {
+      "test": "spec_array_fold_test.mbt",
+      "expectation": "Right association, element-before-accumulator arguments and right-to-left Unicode/array traversal; input/init arrays unchanged."
+    },
+    "E": {
+      "test": "spec_array_fold_test.mbt",
+      "expectation": "Demanded invalid callback/primitive sequence/init and intermediate callback errors fail."
+    },
+    "L": {
+      "test": "spec_array_fold_test.mbt",
+      "expectation": "Empty sequence avoids func; first callback can ignore init; new result heads remain strict with lazy nested payloads. Native counters verify unused init and right-to-left callback visits."
+    },
+    "B": {
+      "test": "spec_array_fold_test.mbt",
+      "expectation": "Empty array/string, non-associative order, unused error elements and nested error payloads."
+    }
+  },
+  "remaining": "Still the unchanged native right-fold path: empty Object/Function source mechanics and complete error/order/resource/declaration child scopes remain open here. The new source foldl selection needed by sum/avg does not apply to foldr or count as its acceptance. Existing foldr values/laziness/callback controls run only as neighboring regression evidence."
+},
   {"name":"flatMap","signature_review":{"parameters":["func","arr"],"defaults":{},"test":"spec_array_slice_test.mbt","status":"Both parameters required; common invalid binding/lazy-call tests and reordered named call in spec_array_flatmap_test."},"dimensions":{"N":{"test":"spec_array_flatmap_test.mbt","expectation":"Array results flatten, string results concatenate by Unicode codepoints, empty results omit elements and original input remains unchanged."},"E":{"test":"spec_array_flatmap_test.mbt","expectation":"Bad sequence/function, numeric callback return and wrong callback application fail; function validation precedes demanding arr."},"L":{"test":"spec_array_flatmap_test.mbt","expectation":"Empty input avoids body, flattening demands every callback head in order but keeps returned payloads lazy and unused original elements unforced. Native counter proves bad func does not read arr."},"B":{"test":"spec_array_flatmap_test.mbt","expectation":"Empty array/string, supplementary Unicode, all-empty output and lazy error payloads."}},"remaining":"Null string-callback results and string array-callback results conflict with or exceed documented return-kind constraints; no policy is inferred from legacy tests. Complete diagnostic/limit/default-callback combinations remain pending."},
   {"name":"slice","signature_review":{"parameters":["indexable","index","end","step"],"defaults":{},"test":"spec_array_slice_test.mbt","status":"All four arguments required; explicit null chooses bound/step defaults, omission is a binding failure."},"dimensions":{"N":{"test":"spec_array_slice_test.mbt","expectation":"Named calls, explicit null defaults, positive steps, negative/large bounds and Unicode-string selection preserve input."},"E":{"test":"spec_array_slice_test.mbt","expectation":"Zero/negative/nonnumber step and invalid bounds/indexable fail even for empty input; demanded end error propagates."},"L":{"test":"spec_array_slice_test.mbt","expectation":"Selected array payload thunks stay shared/cached, length does not execute them, and unused overflowing index progression is never computed."},"B":{"test":"spec_array_slice_test.mbt","expectation":"Clamped huge bounds, empty selected range and a finite first index with enormous positive step. Existing P0 fractional-index/timing assertions remain separate regression protection."}},"remaining":"Complete bound/step/error-order/resource and Unicode-combination matrix is not accepted by these examples; reused P0 fractional-array/string timing earns no new batch coverage."},
   {"name":"objectHas","signature_review":{"parameters":["o","f"],"defaults":{},"test":"spec_object_calls_test.mbt","status":"Both parameters required; named calls are in spec_object_reflection_test; rejected arguments and unused calls remain lazy."},"dimensions":{"N":{"test":"spec_object_reflection_test.mbt","expectation":"Present/null/empty-string names are present, missing/hidden fields false, and inherited visibility follows the fixed nine-case table."},"E":{"test":"spec_object_reflection_test.mbt","expectation":"All nonobject object-argument kinds and nonstring field-name kinds raise Type; construction-name errors propagate."},"L":{"test":"spec_object_reflection_test.mbt","expectation":"Membership does not evaluate field bodies or object assertions, verified with native counters returning false from the forbidden assertion callback."},"B":{"test":"spec_object_reflection_test.mbt","expectation":"Null values versus omitted null keys, empty field name and all inherited visibility combinations."}},"remaining":"Complete resource/outer-error/argument-error precedence and arbitrary inheritance/assertion combinations remain unadjudicated; no full-function acceptance inferred."},

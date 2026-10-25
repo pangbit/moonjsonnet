@@ -5,6 +5,9 @@ fn source_standard_function(name : String) -> Bool {
   match name {
     "map"
     | "mapWithIndex"
+    | "foldl"
+    | "sum"
+    | "avg"
     | "range"
     | "substr"
     | "assertEqual"

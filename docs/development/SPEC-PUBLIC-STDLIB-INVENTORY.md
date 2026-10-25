@@ -80,7 +80,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `log10` | I: `std.log10(x)` | S: `std.log10(x)` | U/U/U/U | [std_math_test.mbt:14](../../std_math_test.mbt#L14) |
 | `log2` | I: `std.log2(x)` | S: `std.log2(x)` | U/U/U/U | [std_math_test.mbt:14](../../std_math_test.mbt#L14) |
 | `lstripChars` | D: `std.lstripChars(str, chars)` | S: `std.lstripChars(str, chars)` | R/R/R/R | [std_string_test.mbt:10](../../std_string_test.mbt#L10); [spec_strip_chars_test.mbt:5](../../spec_strip_chars_test.mbt#L5) |
-| `makeArray` | D: `std.makeArray(sz, func)` | Native/not defined in std.jsonnet | R/R/R/R | [aggregate_test.mbt:30](../../aggregate_test.mbt#L30); [array_std_test.mbt:59](../../array_std_test.mbt#L59); [error_value_test.mbt:80](../../error_value_test.mbt#L80) |
+| `makeArray` | D: `std.makeArray(sz, func)` | Native/not defined in std.jsonnet | R/R/R/R | [aggregate_test.mbt:31](../../aggregate_test.mbt#L31); [array_std_test.mbt:59](../../array_std_test.mbt#L59); [error_value_test.mbt:80](../../error_value_test.mbt#L80) |
 | `manifestIni` | D: `std.manifestIni(ini)` | S: `std.manifestIni(ini)` | U/U/U/U | [std_manifest_test.mbt:33](../../std_manifest_test.mbt#L33) |
 | `manifestJson` | D: `std.manifestJson(value)` | S: `std.manifestJson(value)` | R/R/R/R | [moonjsonnet_test.mbt:152](../../moonjsonnet_test.mbt#L152); [native_test.mbt:102](../../native_test.mbt#L102); [render_test.mbt:19](../../render_test.mbt#L19) |
 | `manifestJsonEx` | D: `std.manifestJsonEx(value, indent, newline, key_val_sep)` | S: `std.manifestJsonEx(value, indent, newline='\n', key_val_sep=': ')` | R/R/R/R | [arguments_test.mbt:6](../../arguments_test.mbt#L6); [spec_length_test.mbt:23](../../spec_length_test.mbt#L23); [standard_native_diagnostics_test.mbt:15](../../standard_native_diagnostics_test.mbt#L15) |
@@ -158,10 +158,10 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `substr` | D: `std.substr(str, from, len)` | S: `std.substr(str, from, len)` | R/R/R/R | [arguments_test.mbt:5](../../arguments_test.mbt#L5); [moonjsonnet_test.mbt:20](../../moonjsonnet_test.mbt#L20); [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21) |
 | `sum` | D: `std.sum(arr)` | S: `std.sum(arr)` | R/R/R/R | [aggregate_test.mbt:6](../../aggregate_test.mbt#L6); [output_test.mbt:11](../../output_test.mbt#L11); [spec_aggregate_test.mbt:9](../../spec_aggregate_test.mbt#L9) |
 | `tan` | I: `std.tan(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |
-| `toString` | D: `std.toString(a)` | S: `std.toString(a)` | U/U/U/U | [aggregate_test.mbt:47](../../aggregate_test.mbt#L47); [debugger_test.mbt:159](../../debugger_test.mbt#L159); [moonjsonnet_test.mbt:105](../../moonjsonnet_test.mbt#L105) |
+| `toString` | D: `std.toString(a)` | S: `std.toString(a)` | U/U/U/U | [aggregate_test.mbt:48](../../aggregate_test.mbt#L48); [debugger_test.mbt:159](../../debugger_test.mbt#L159); [moonjsonnet_test.mbt:105](../../moonjsonnet_test.mbt#L105) |
 | `trace` | D: `std.trace(str, rest)` | Native/not defined in std.jsonnet | U/U/U/U | [anonymous_test.mbt:7](../../anonymous_test.mbt#L7); [evaluator_import_ast_test.mbt:83](../../evaluator_import_ast_test.mbt#L83); [evaluator_imports_test.mbt:20](../../evaluator_imports_test.mbt#L20) |
 | `trim` | D: `std.trim(str)` | S: `std.trim(str)` | U/U/U/U | [std_string_test.mbt:30](../../std_string_test.mbt#L30) |
-| `type` | D: `std.type(x)` | Native/not defined in std.jsonnet | R/R/R/R | [aggregate_test.mbt:47](../../aggregate_test.mbt#L47); [native_test.mbt:57](../../native_test.mbt#L57); [spec_aggregate_test.mbt:10](../../spec_aggregate_test.mbt#L10) |
+| `type` | D: `std.type(x)` | Native/not defined in std.jsonnet | R/R/R/R | [aggregate_test.mbt:48](../../aggregate_test.mbt#L48); [native_test.mbt:57](../../native_test.mbt#L57); [spec_aggregate_test.mbt:10](../../spec_aggregate_test.mbt#L10) |
 | `uniq` | D: `std.uniq(arr, keyF=id)` | S: `std.uniq(arr, keyF=id)` | U/U/U/U | [sets_test.mbt:5](../../sets_test.mbt#L5) |
 | `xnor` | D: `std.xnor(x, y)` | S: `std.xnor(x, y)` | U/U/U/U | [std_math_test.mbt:18](../../std_math_test.mbt#L18) |
 | `xor` | D: `std.xor(x, y)` | S: `std.xor(x, y)` | U/U/U/U | [std_math_test.mbt:18](../../std_math_test.mbt#L18) |

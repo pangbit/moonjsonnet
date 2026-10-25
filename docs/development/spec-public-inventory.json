@@ -5,10 +5,10 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "79adcb4b933cc9f99e50eeb8b25b535f38a91111",
-  "uncommitted_test_paths": "aggregate_test.mbt\nspec_aggregate_addition_test.mbt",
+  "input_source_commit": "bf1609a3537687ed4c98e96e613770be0de0719d",
+  "uncommitted_test_paths": "aggregate_test.mbt\nspec_aggregate_admission_test.mbt\nspec_review_test.mbt",
   "test_input_sha256": {
-    "aggregate_test.mbt": "23ad46af91404e5e66c27318974b103606474cc48dd84c74942decb67a348c48",
+    "aggregate_test.mbt": "965028fe74da63f52ee9c5a43e7d19d4464f915a01fb3dcb7359311c48d2d7b8",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
     "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336",
     "array_std_test.mbt": "a1e5f588530cb2efabb9b4f9f85644869a76996288479c53f583cca8c36e74cc",
@@ -72,6 +72,7 @@
     "source_range_test.mbt": "6816cf11eb3a70e8ce82cd1f2eaffa711ceee6cf8fca2b20efbbebbe94383790",
     "spec_additive_fields_test.mbt": "831593d7e2afce69bf9a5dd8518ccb88c0f28648a35368d9316bea2c79284852",
     "spec_aggregate_addition_test.mbt": "276af27941d7c9ad584ba367d6dac7ad0cfcf2e876a7c6224479a762d67a2af8",
+    "spec_aggregate_admission_test.mbt": "b412a349acf33ea69164cc1c03d3d77badfa28980d5ec906172d9ab93e3a02e5",
     "spec_aggregate_test.mbt": "088cf53438c579b18f06469afce3bf3bd52f9fc7da19c3239bba61e60f792adc",
     "spec_array_build_test.mbt": "fcc4c68261358372994b4c2c48b4b734412531bafbafe503b97a1361a088b0c1",
     "spec_array_flatmap_test.mbt": "e391589a1f16e5e4debfbcae10459513bbed788d780d5f6a4d8b67eb68889ec7",
@@ -149,7 +150,7 @@
     "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b",
     "spec_remove_search_test.mbt": "117993dc2907e848f233510aec0c70f8a38d9953b751ace40f4278543b9f7ae8",
     "spec_remove_test.mbt": "94b514e9ba69c2b5ad55f8c8e020ec7ab44ceac495150b9cd7020cbdea37c75c",
-    "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
+    "spec_review_test.mbt": "ecc217d08be90e157fd7a856f5da2833cf9ee36ff6c7934f6dd855291aabeb18",
     "spec_root_scope_test.mbt": "6f43b1017c33c74f6207911312193df725bf06d59d09d7464546a0a16cb461d5",
     "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
     "spec_sort_admission_test.mbt": "0715e8fd135475a4a2e6dff7615d402e8f30fc84656b6c106efd1716b461984d",
@@ -185,7 +186,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "d39c560d9ffbbbd85d44e40128395869000db491020684cc43aac2f504f26792",
+  "coverage_sha256": "3f5f5d6881d7524e36af70766e3b1cf9a13f90fe8e74b223314a1b218f09536b",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -412,16 +413,18 @@
         "dimensions": {
           "N": {
             "test": "spec_aggregate_test.mbt",
-            "expectation": "Existing finite mean2 and AGF4 largest-finite/minimum-subnormal singleton means and correctly rounded subnormal-to-zero result.",
+            "expectation": "Existing finite mean2 and AGF4 largest-finite/minimum-subnormal singleton means and correctly rounded subnormal-to-zero result. ASA1 verifies public arr and aliases across direct source dispatch.",
             "additional_tests": [
-              "spec_aggregate_addition_test.mbt"
+              "spec_aggregate_addition_test.mbt",
+              "spec_aggregate_admission_test.mbt"
             ]
           },
           "E": {
             "test": "spec_aggregate_test.mbt",
-            "expectation": "The completed additive reduction precedes quotient type checks: AGF3 propagates a required later Runtime marker after a legal String transition. Numeric prefixes still reject overflow before consumers/cancellation. A completed String accumulator fails division Type.",
+            "expectation": "The completed additive reduction precedes quotient type checks: AGF3 propagates a required later Runtime marker after a legal String transition. Numeric prefixes still reject overflow before consumers/cancellation. A completed String accumulator fails division Type. ASA3/4/5: empty String/Object/Function length triggers the fixed empty error; nonempty String completes summation then quotient Type, and nonempty Object/Function requires invalid numeric indexing. ASA6 rejects Null/Bool/Number length and propagates isolated input markers.",
             "additional_tests": [
-              "spec_aggregate_addition_test.mbt"
+              "spec_aggregate_addition_test.mbt",
+              "spec_aggregate_admission_test.mbt"
             ]
           },
           "L": {
@@ -430,18 +433,28 @@
             "expectation": "Existing unselected average stays lazy; AGF5 independently covers unused, hidden and both explicit Boolean shortcuts around the new mandatory String-reduction error.",
             "additional_tests": [
               "spec_aggregate_addition_test.mbt",
-              "spec_aggregate_test.mbt"
+              "spec_aggregate_test.mbt",
+              "spec_aggregate_admission_test.mbt"
             ]
           },
           "B": {
             "test": "spec_aggregate_test.mbt",
             "expectation": "Empty Array rejects before division, existing cancellation/overflow controls remain, AGF2/AGF4 distinguish actual numeric operations from String reduction and legal finite underflow.",
             "additional_tests": [
-              "spec_aggregate_addition_test.mbt"
+              "spec_aggregate_addition_test.mbt",
+              "spec_aggregate_admission_test.mbt"
             ]
           }
         },
-        "remaining": "Only the Array reduction/quotient/finite and associated lazy/output responsibility is adjudicated here. Nonarray source admission and empty-length guard order, including String/Object/Function cases, are not accepted by the unchanged native Array guard and remain open. Full public binding/producer/static/resource and assertion-bearing coercion children are not completed. No independent competing-error winner, callback trace or output-limit promise is invented; source-mandated reduction-before-division is the specific ordering tested. Whole-function acceptance stays0."
+        "remaining": "Exact embedded avg/sum/foldl now implement the empty-length guard, full admitted reduction and final finite-checked quotient. Array and all nonarray head categories, one required arr/default-free binding, Unicode, unused paths and scalar/quotient/index/coercion errors have a complete responsibility map relative to ordinary language children. The formerly open nonarray guard/order difference is closed; no new function-specific implementation defect remains observed. Shared producer/assertion/cycle and normative child questions are retained at their global rows, not invented as callback-count/error-text requirements. No unqualified whole-function acceptance or old25/789 evidence is inferred.",
+        "signature_review": {
+          "parameters": [
+            "arr"
+          ],
+          "defaults": {},
+          "test": "spec_aggregate_admission_test.mbt",
+          "status": "ASA1: one required arr, reflection length1, positional/named/local alias and missing/extra/unknown/duplicate binding without supplied value demand. No public documentation/source signature conflict."
+        }
       },
       "test_reference_candidates": [
         {
@@ -1782,22 +1795,31 @@
         "dimensions": {
           "N": {
             "test": "spec_array_fold_test.mbt",
-            "expectation": "Left association and array/Unicode-string traversal, callback defaults overridden, source/init arrays unchanged."
+            "expectation": "Left association and array/Unicode-string traversal, callback defaults overridden, source/init arrays unchanged. ASA2/7 extends exact source length/index admission to Object/Function shapes and independently observes Unicode codepoint traversal.",
+            "additional_tests": [
+              "spec_aggregate_admission_test.mbt"
+            ]
           },
           "E": {
             "test": "spec_array_fold_test.mbt",
-            "expectation": "Demanded invalid callback/primitive sequence/init and every intermediate callback error fail."
+            "expectation": "Demanded invalid callback/primitive sequence/init and every intermediate callback error fail. Returned init errors on empty lengths propagate without using func. Needed nonempty indexing remains callback-dependent, not an eager input guard.",
+            "additional_tests": [
+              "spec_aggregate_admission_test.mbt"
+            ]
           },
           "L": {
             "test": "spec_array_fold_test.mbt",
-            "expectation": "Empty array/string never uses func; first callback may ignore init, but each new accumulator head is strict and nested payloads/unused elements stay lazy. Native counters verify unused init and callback order."
+            "expectation": "Empty array/string never uses func; first callback may ignore init, but each new accumulator head is strict and nested payloads/unused elements stay lazy. Native counters verify unused init and callback order. Empty Objects/Functions skip func too; nonempty callbacks may ignore erroneous numeric-indexed elements and only count length. Existing native callback counts remain compatibility controls.",
+            "additional_tests": [
+              "spec_aggregate_admission_test.mbt"
+            ]
           },
           "B": {
             "test": "spec_array_fold_test.mbt",
             "expectation": "Empty sequences, non-associative examples, lazy object assertions and shared source/init values."
           }
         },
-        "remaining": "Source mechanics on empty objects/functions versus advertised sequence domain remain unresolved. Exhaustive error order, resource bounds, callback declaration and diagnostic text are outside this subset."
+        "remaining": "The previously open Object/Function source mechanics are now independently fixed by exact source foldl selection, required for complete sum admission. All six fixed direct callers were audited: parse_nat, flattenArrays, uniq and sum are selected source consumers with current targeted regressions; minArray/maxArray remain native and unchanged. Signature/ordinary fold mechanics are relative to language callback/length/index children; this does not complete every external callback, assertion/cycle or global rule. Foldr retains its separate unchanged native admission gap and is not silently fixed by this work."
       },
       "test_reference_candidates": [
         {
@@ -1865,7 +1887,7 @@
             "expectation": "Empty array/string, non-associative order, unused error elements and nested error payloads."
           }
         },
-        "remaining": "Empty object/function source mechanics and complete error-order/resource/declaration contracts remain unadjudicated, as for foldl."
+        "remaining": "Still the unchanged native right-fold path: empty Object/Function source mechanics and complete error/order/resource/declaration child scopes remain open here. The new source foldl selection needed by sum/avg does not apply to foldr or count as its acceptance. Existing foldr values/laziness/callback controls run only as neighboring regression evidence."
       },
       "test_reference_candidates": [
         {
@@ -2931,7 +2953,7 @@
       "test_reference_candidates": [
         {
           "file": "aggregate_test.mbt",
-          "line": 30,
+          "line": 31,
           "test_declaration": "test \"sum and avg preserve left to right addition and finite numeric results\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -7125,34 +7147,46 @@
         "dimensions": {
           "N": {
             "test": "spec_aggregate_test.mbt",
-            "expectation": "Existing finite/empty numeric cases plus AGF1/AGF4: an Array reduction uses actual left-associative + from zero, admits String transitions with literal Unicode/primitive results, and preserves largest finite/subnormal values.",
+            "expectation": "Existing finite/empty numeric cases plus AGF1/AGF4: an Array reduction uses actual left-associative + from zero, admits String transitions with literal Unicode/primitive results, and preserves largest finite/subnormal values. ASA2/4: String empty/digit-looking/Unicode/NUL input follows actual zero-seeded character reduction; zero-visible-field Objects and zero-parameter Functions return Number0.",
             "additional_tests": [
-              "spec_aggregate_addition_test.mbt"
+              "spec_aggregate_addition_test.mbt",
+              "spec_aggregate_admission_test.mbt"
             ]
           },
           "E": {
             "test": "spec_aggregate_test.mbt",
-            "expectation": "Numeric-prefix additions fail at the actual overflowing operation before a String transition or type consumer. AGF3/AGF6 require later elements and String coercion payloads; invalid Number-plus-container still fails Type without nested demand.",
+            "expectation": "Numeric-prefix additions fail at the actual overflowing operation before a String transition or type consumer. AGF3/AGF6 require later elements and String coercion payloads; invalid Number-plus-container still fails Type without nested demand. ASA5/6: Null/Bool/Number fail length, required input errors propagate, and nonempty Objects/Functions require numeric indexing and fail Type without reading fields/defaults/bodies.",
             "additional_tests": [
-              "spec_aggregate_addition_test.mbt"
+              "spec_aggregate_addition_test.mbt",
+              "spec_aggregate_admission_test.mbt"
             ]
           },
           "L": {
             "test": "spec_aggregate_test.mbt",
-            "expectation": "Existing unused/Boolean/hidden overflow controls remain; AGF5 skips the new String reduction when unused or explicitly short circuited, and forces its isolated marker when needed.",
+            "expectation": "Existing unused/Boolean/hidden overflow controls remain; AGF5 skips the new String reduction when unused or explicitly short circuited, and forces its isolated marker when needed. ASA4/6 and the source foldl controls preserve hidden-only/empty bodies and whole-call laziness.",
             "additional_tests": [
-              "spec_aggregate_addition_test.mbt"
+              "spec_aggregate_addition_test.mbt",
+              "spec_aggregate_admission_test.mbt"
             ]
           },
           "B": {
             "test": "spec_aggregate_test.mbt",
             "expectation": "Empty numeric sum0 remains unchanged. AGF2 separates overflowing numeric prefixes from nonarithmetic String concatenation; AGF4 permits finite underflow rounding instead of treating zero as nonfinite.",
             "additional_tests": [
-              "spec_aggregate_addition_test.mbt"
+              "spec_aggregate_addition_test.mbt",
+              "spec_aggregate_admission_test.mbt"
             ]
           }
         },
-        "remaining": "This batch closes finite-operation and actual additive-stage evidence for Array inputs only, not the entire public function. The unchanged Array-only entry guard still rejects std.sum('123'), while the fixed sum/foldl String path would produce String0123; that known admission difference remains open, not a normative exception or passing error assertion. Current aggregate_test keeps that legacy error only as compatibility coverage. Full signature/producer/equality/assertion/resource and other nonarray domains remain separate. No whole-function acceptance or old789 full-suite inheritance; see SPEC-AGGREGATE-ADDITION-2026-10-25.md."
+        "remaining": "The named sum(String) mismatch is fixed by selecting exact embedded sum and required foldl. The function-specific signature, zero seed, all head-kind admission, additive-stage/finite/error/coercion and lazy/alias boundaries are mapped in SPEC-AGGREGATE-ADMISSION-2026-10-25.md; no further observed function-specific implementation gap remains in this batch. This is a closed source-body review relative to its length/index/apply/addition/manifest children, not unqualified whole-function acceptance: shared assertion/cyclic/producers and normative child disputes keep their own existing scopes. No new callback trace, allocation identity, diagnostic-winner or asymptotic resource promise is required. The former String rejection remains historical red/migration evidence, not a current exclusion.",
+        "signature_review": {
+          "parameters": [
+            "arr"
+          ],
+          "defaults": {},
+          "test": "spec_aggregate_admission_test.mbt",
+          "status": "ASA1: one required arr, reflection length1, positional/named/local alias and missing/extra/unknown/duplicate binding without supplied value demand. No public documentation/source signature conflict."
+        }
       },
       "test_reference_candidates": [
         {
@@ -7229,7 +7263,7 @@
       "test_reference_candidates": [
         {
           "file": "aggregate_test.mbt",
-          "line": 47,
+          "line": 48,
           "test_declaration": "test \"aggregate failure is diagnosed before downstream consumers\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -7383,7 +7417,7 @@
       "test_reference_candidates": [
         {
           "file": "aggregate_test.mbt",
-          "line": 47,
+          "line": 48,
           "test_declaration": "test \"aggregate failure is diagnosed before downstream consumers\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
