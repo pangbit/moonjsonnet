@@ -3,6 +3,63 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "policy": "Manual assertion review only. References and matching names never establish passing behavior. An empty dimension is unreviewed. Executed outcomes live in the separate source-bound evidence report. Completed prose constructor transfers are relative to child judgments and counted separately from completed named rules.",
   "evidence": {
+    "APATH1": {
+      "file": "spec_object_assertion_paths_test.mbt",
+      "test": "agreed assertion paths leave conditions dormant under reflection and unused values",
+      "test_id": "spec_object_assertion_paths_test.mbt::agreed assertion paths leave conditions dormant under reflection and unused values",
+      "assertions": [
+        "sequence_value(\n      ordering_array([\n        sequence_call(\"type\", [input]),\n        sequence_call(\"length\", [input]),\n        sequence_call(\"objectFields\", [input]),\n        sequence_call(\"objectFieldsAll\", [input]),\n        sequence_call(\"length\", [ordering_array([input])]),\n        ordering_unused(additive_select(input, \"v\")),\n        reflect_object([(reflect_string(\"nested\"), 2, input)]),\n      ]),\n      [\"object\", 1, [\"v\"], [\"h\", \"v\"], 1, 42, Json::object(Map([]))],\n    )"
+      ],
+      "checks": "Independent source/handmade objects with false/error/non-Boolean conditions remain dormant under type/length/visible-all key reflection, unused selections, array head length and hidden nesting. Exact literal metadata and error-valued fields distinguish head observation from field/manifest demand."
+    },
+    "APATH2": {
+      "file": "spec_object_assertion_paths_test.mbt",
+      "test": "agreed core manifestation checks empty hidden nested and inherited assertions",
+      "test_id": "spec_object_assertion_paths_test.mbt::agreed core manifestation checks empty hidden nested and inherited assertions",
+      "assertions": [
+        "sequence_failure(input, @moonjsonnet.Assertion, None)",
+        "sequence_value(\n    assertion_paths_object([], reflect_bool(true), None),\n    Json::object(Map([])),\n  )"
+      ],
+      "checks": "Constant assertion conditions independently establish empty/hidden/visible core manifestation, nested object/array demand and both operand assertion-list retention after inheritance/overlay. No self-dependent assertion condition, assertion-super rewrite or first-error order is assumed."
+    },
+    "APATH3": {
+      "file": "spec_object_assertion_paths_test.mbt",
+      "test": "agreed field assertion gates preserve messages and constant condition inheritance",
+      "test_id": "spec_object_assertion_paths_test.mbt::agreed field assertion gates preserve messages and constant condition inheritance",
+      "assertions": [
+        "sequence_value(additive_select(valid, \"v\"), 7)",
+        "sequence_failure(\n      additive_select(invalid, \"v\"),\n      @moonjsonnet.Assertion,\n      None,\n    )",
+        "sequence_failure(additive_select(input, \"v\"), kind, marker)",
+        "sequence_value(\n    additive_select(\n      ordering_binary(\n        assertion_paths_object(\n          [(\"x\", 1, reflect_bool(true))],\n          reflect_bool(true),\n          None,\n        ),\n        \"+\",\n        assertion_paths_object(\n          [(\"x\", 1, additive_select(sequence_var(\"super\"), \"x\"))],\n          reflect_bool(true),\n          None,\n        ),\n      ),\n      \"x\",\n    ),\n    true,\n  )",
+        "sequence_value(\n    additive_select(\n      ordering_binary(\n        assertion_paths_object(\n          [\n            (\"x\", 1, sequence_num(1)),\n            (\"y\", 1, additive_select(sequence_var(\"self\"), \"x\")),\n          ],\n          reflect_bool(true),\n          None,\n        ),\n        \"+\",\n        assertion_paths_object(\n          [(\"x\", 1, sequence_num(2))],\n          reflect_bool(true),\n          None,\n        ),\n      ),\n      \"y\",\n    ),\n    2,\n  )"
+      ],
+      "checks": "Flat condition/message gates and visible/hidden selection preserve isolated required errors and unused cyclic messages. Ordinary self fields and one common super field under constant true assertions have finite source-defined results; right-only-field/N0 and self-condition/R0 profiles are not evidence here."
+    },
+    "APATH4": {
+      "file": "spec_object_assertion_paths_test.mbt",
+      "test": "agreed JSON library traversal differs from recursive core manifestation",
+      "test_id": "spec_object_assertion_paths_test.mbt::agreed JSON library traversal differs from recursive core manifestation",
+      "assertions": [
+        "sequence_value(assertion_paths_compact(input), \"{}\")",
+        "sequence_value(sequence_call(\"manifestJson\", [input]), \"{\\n\\n}\")",
+        "sequence_value(\n    assertion_paths_compact(\n      reflect_object([(reflect_string(\"outer\"), 1, empty)]),\n    ),\n    \"{\\\"outer\\\":{}}\",\n  )",
+        "sequence_value(assertion_paths_compact(ordering_array([empty])), \"[{}]\")",
+        "sequence_failure(\n    assertion_paths_compact(visible),\n    @moonjsonnet.Assertion,\n    None,\n  )",
+        "sequence_failure(\n    sequence_call(\"manifestJson\", [visible]),\n    @moonjsonnet.Assertion,\n    None,\n  )"
+      ],
+      "checks": "Core manifestation and fixed library String traversal remain distinct. Empty/hidden false objects render with explicit compact/default String literals, nested empty false objects are not indexed by the library, while visible fields require their assertions. No universal core/library equivalence is claimed."
+    },
+    "APATH5": {
+      "file": "spec_object_assertion_paths_test.mbt",
+      "test": "agreed genuine cycles reject only when their field or condition is required",
+      "test_id": "spec_object_assertion_paths_test.mbt::agreed genuine cycles reject only when their field or condition is required",
+      "assertions": [
+        "assertion_paths_no_value(additive_select(cyclic_field, \"loop\"))",
+        "sequence_value(assertion_paths_compact(hidden_condition), \"{}\")",
+        "assert_eq(\n      ordering_program(acyclic, handmade).evaluate(limits=conjunction_limits()),\n      1,\n    )"
+      ],
+      "checks": "Demanded genuine field/local-condition cycles cannot yield finite JSON under bounded Runtime/Limit rejection; Unsupported and admission failures are not accepted. Hidden values and empty library traversals skip cyclic demand, and an acyclic self-field control succeeds under the same limits. This is not the finite-data self-assertion R0 question or a universal cycle-detector policy."
+    },
     "SMC1": {
       "file": "spec_language_object_test.mbt",
       "test": "language standard function aliases preserve lexical binding when forwarded or shadowed",
@@ -3313,18 +3370,9 @@
       }
     },
     "object": {
-      "normal": [
-        "O1",
-        "OC1",
-        "OC3"
-      ],
-      "lazy": [
-        "O4",
-        "OC1",
-        "OC2",
-        "OC3"
-      ],
-      "remaining": "The [ordinary-object construction record](SPEC-OBJECT-CONSTRUCTION-2026-10-23.md) adds three bounded source/handmade-AST groups for repeated Null omission, dynamic String collisions and mandatory left construction before overlay. General key/value/type/producer domains, all object-local shapes, resource behavior and literal whole-formula conformance remain open. The printed key-premise notation and DF0 field-value discrepancy are preserved; no selected-field-value or assertion/manifestation claim is added.",
+      "normal": ["O1", "OC1", "OC3", "APATH1"],
+      "lazy": ["O4", "OC1", "OC2", "OC3", "APATH1"],
+      "remaining": "The [ordinary-object construction record](SPEC-OBJECT-CONSTRUCTION-2026-10-23.md) adds three bounded source/handmade-AST groups for repeated Null omission, dynamic String collisions and mandatory left construction before overlay. General key/value/type/producer domains, all object-local shapes, resource behavior and literal whole-formula conformance remain open. The printed key-premise notation and DF0 field-value discrepancy are preserved; no selected-field-value or assertion/manifestation claim is added. APATH1 adds admitted-object head observations with false/error/non-Boolean assertion conditions left dormant; assertions still do not execute at object construction. Later index/manifest errors are mapped to their own judgments.",
       "implementation": [
         "eval.mbt",
         "operators.mbt",
@@ -3335,23 +3383,17 @@
         "OC2",
         "OC3"
       ],
-      "boundary": [
-        "OC1",
-        "OC2",
-        "OC3"
-      ]
+      "boundary": ["OC1", "OC2", "OC3", "APATH1"]
     },
     "object-comp": {"normal": ["C1", "C6", "A3", "CK2"], "runtime_error": ["C4", "C7", "A4", "CK1", "CK2"], "lazy": ["C2", "C3", "C4", "C5", "A3", "CK1", "CK2"], "boundary": ["C2", "A3", "A4", "CK1", "CK2"], "remaining": "The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) is reviewed complete. Existing C2/C3/C4/A3/A4 are reused without new execution. No whole core-rule constructor decision or general filter/nesting/domain-desugaring acceptance is recorded; other invalid-key shapes remain credited only where existing controls apply. The rule does not prescribe which independent key error is first, so an arbitrary first-error order is not a missing acceptance requirement.", "implementation": ["eval.mbt", "objects.mbt"]},
     "array-index": {"normal": ["IDX"], "runtime_error": ["IDX"], "lazy": ["IDX"], "boundary": ["IDX"], "remaining": "Exhaustive numeric/operator combinations and all target/key type failures.", "implementation": ["eval.mbt"]},
-    "object-index": {"normal": ["O2", "O6", "SR1", "SR2", "SP1", "SP2", "RT1", "RT2", "AS1", "AX1", "AL1", "AC1", "AC2", "SMC2", "SMC3"], "runtime_error": ["O3", "O5", "SR3", "SP3", "RT3", "AS2", "AS3", "AX2", "AL2", "AC1"], "lazy": ["O5", "SR2", "SP3", "RT3", "AS1", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2"], "boundary": ["O4", "SR1", "SR3", "SP1", "SP2", "SP3", "RT1", "RT2", "RT3", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2", "SMC2", "SMC3"], "remaining": "The bounded assertion behavior components are reviewed. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves R0 the state-free in-progress/self-index model unresolved; N0 affects inherited assertion-super cases. General target/key/missing-field errors and equality interactions are separate obligations. No assertion execution order or whole child judgment is completed. SMC2/SMC3 add assertion-free inherited/super source-method reads in their final object. In-progress indexing and general assertions remain unproved.", "implementation": ["eval.mbt", "objects.mbt"]},
+    "object-index": {"normal": ["O2", "O6", "SR1", "SR2", "SP1", "SP2", "RT1", "RT2", "AS1", "AX1", "AL1", "AC1", "AC2", "SMC2", "SMC3", "APATH3"], "runtime_error": ["O3", "O5", "SR3", "SP3", "RT3", "AS2", "AS3", "AX2", "AL2", "AC1", "APATH3", "APATH2"], "lazy": ["O5", "SR2", "SP3", "RT3", "AS1", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2", "APATH1"], "boundary": ["O4", "SR1", "SR3", "SP1", "SP2", "SP3", "RT1", "RT2", "RT3", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2", "SMC2", "SMC3", "APATH3", "APATH5"], "remaining": "The bounded assertion behavior components are reviewed. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves R0 the state-free in-progress/self-index model unresolved; N0 affects inherited assertion-super cases. General target/key/missing-field errors and equality interactions are separate obligations. No assertion execution order or whole child judgment is completed. SMC2/SMC3 add assertion-free inherited/super source-method reads in their final object. In-progress indexing and general assertions remain unproved. The [shared assertion-domain review](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md#complete-shared-assertion-domain-review-atf3871b8) adds agreed APATH gates and bounded genuine-cycle controls only. N0 includes an explicit guide/formal conflict for a new right field as well as the missing assertion-prefix transfer; R0 has no finite state-free self-check derivation. The two conditional profile cases are excluded from normative evidence, not new passes or failures.", "implementation": ["eval.mbt", "objects.mbt"]},
     "apply": {"normal": ["F1", "F6", "AP1", "AP2", "SMC1", "SMC3"], "runtime_error": ["F4", "AP3", "AP4"], "lazy": ["F2", "F3", "F4", "AP3", "AP4", "AP5", "SMC1", "SMC3"], "boundary": ["F1", "F3", "AP2", "AP4", "SMC1", "SMC3"], "remaining": "Other non-function heads, exhaustive named/positional permutations, recursive closure forms and tailstrict forcing/order remain unreviewed. SMC1/SMC3 distinguish canonical/derived closure capture from caller std shadowing and function forwarding; no universal receiver-binding theorem is claimed.", "implementation": ["eval.mbt", "arguments.mbt"]},
     "local": {"normal": ["F1", "R1", "R4"], "lazy": ["F2", "R1", "R3"], "remaining": "All recursive group shapes and every desugared object/comprehension binding; the finite even/odd pair is a subset.", "implementation": ["eval.mbt", "runtime_types.mbt"]},
     "local-var": {"normal": ["F1", "R1", "SMC1", "SMC3"], "lazy": ["F3", "R3", "SMC1", "SMC3"], "remaining": "Capture avoidance across every binder and recursive expression. SMC1/SMC3 add bounded lexical std capture with unused caller poison, without completing general binder substitution.", "implementation": ["eval.mbt", "runtime_types.mbt"]},
     "object-inherit": {
-      "normal": ["O2", "F6", "SR1", "SR2", "SP1", "SP2", "RT1", "RT2", "AS1", "AX1", "AL1", "AC1", "AC2", "OC3", "SMC2", "SMC3", "SMC4"],
-      "runtime_error": [
-        "O3"
-      ],
+      "normal": ["O2", "F6", "SR1", "SR2", "SP1", "SP2", "RT1", "RT2", "AS1", "AX1", "AL1", "AC1", "AC2", "OC3", "SMC2", "SMC3", "SMC4", "APATH2", "APATH3"],
+      "runtime_error": ["O3"],
       "lazy": [
         "O5",
         "O6",
@@ -3363,8 +3405,8 @@
         "AC1",
         "OC3"
       ],
-      "boundary": ["O6", "SR1", "SR3", "SP1", "SP2", "SP3", "RT1", "RT2", "AS1", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2", "OC3", "SMC2", "SMC3", "SMC4"],
-      "remaining": "Assertion-list retention/conjunction is reviewed; [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves N0 the omitted assertion-super transformation unresolved. Other inheritance/association, additive and computed-name obligations remain separate; later-demand failures are not errors of addition. The [ordinary-object construction record](SPEC-OBJECT-CONSTRUCTION-2026-10-23.md) adds OC3 operand-construction preconditions and a same-name valid-layer metadata control. Its left-child failures are not intrinsic addition or later-field errors; selected values and all existing N0/R0/DF0 limitations stay separate. SMC2/SMC3 add final-self binding of inherited source-library fields; SMC4 adds private-library composition. This creates no stable sort hook API or whole-inheritance claim; N0/R0/DF0 remain separate.",
+      "boundary": ["O6", "SR1", "SR3", "SP1", "SP2", "SP3", "RT1", "RT2", "AS1", "AS2", "AS3", "AX1", "AX2", "AL1", "AL2", "AC1", "AC2", "OC3", "SMC2", "SMC3", "SMC4", "APATH2", "APATH3"],
+      "remaining": "Assertion-list retention/conjunction is reviewed; [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves N0 the omitted assertion-super transformation unresolved. Other inheritance/association, additive and computed-name obligations remain separate; later-demand failures are not errors of addition. The [ordinary-object construction record](SPEC-OBJECT-CONSTRUCTION-2026-10-23.md) adds OC3 operand-construction preconditions and a same-name valid-layer metadata control. Its left-child failures are not intrinsic addition or later-field errors; selected values and all existing N0/R0/DF0 limitations stay separate. SMC2/SMC3 add final-self binding of inherited source-library fields; SMC4 adds private-library composition. This creates no stable sort hook API or whole-inheritance claim; N0/R0/DF0 remain separate. APATH2/3 add constant-assertion retention with empty/hidden operands, final-self fields and one overlapping super field. The shared N0 review isolates raw right-only-field prefix omission against the guide, plus missing assertion prefix; neither conditional profile supplies a theorem. R0 and general inheritance remain partial. Later index/manifest failures are not credited as intrinsic addition errors.",
       "implementation": [
         "operators.mbt",
         "objects.mbt",
@@ -3468,8 +3510,8 @@
     "type-function": {"normal": ["TYPE"], "lazy": ["TYPELAZY"], "remaining": "Every native/builtin/closure signature form.", "implementation": ["stdlib.mbt"]},
     "type-array": {"normal": ["TYPE"], "lazy": ["TYPELAZY"], "remaining": "All array-producing expressions and invalid outer errors.", "implementation": ["stdlib.mbt"]},
     "manifest-value": {"normal": ["F1"], "runtime_error": ["FINITE"], "boundary": ["FINITE"], "remaining": "Exact preservation of every scalar kind/Unicode sequence and finite extreme.", "implementation": ["manifest.mbt"]},
-    "manifest-object": {"normal": ["O2", "O6"], "runtime_error": ["O3", "O4", "O7"], "lazy": ["O4", "O6", "O7"], "boundary": ["O4", "O6"], "remaining": "Cycles, field-order independence, all nested hidden/visible errors and std.manifestJson distinctions.", "implementation": ["manifest.mbt", "objects.mbt"]},
-    "manifest-array": {"normal": ["F1", "O2"], "runtime_error": ["O4", "O7"], "lazy": ["O7"], "boundary": ["O4"], "remaining": "Cycles, every nested shape and resource-independent evaluation boundaries.", "implementation": ["manifest.mbt"]},
+    "manifest-object": {"normal": ["O2", "O6", "APATH2", "APATH5"], "runtime_error": ["O3", "O4", "O7", "APATH2"], "lazy": ["O4", "O6", "O7", "APATH2", "APATH5"], "boundary": ["O4", "O6", "APATH2", "APATH4", "APATH5"], "remaining": "Cycles, field-order independence, all nested hidden/visible errors and std.manifestJson distinctions. APATH2/4/5 now distinguish core checks on assertion-only/hidden-only/nested objects from fixed JSON-library visible-field traversal, and bound genuine required cycles without a detector/category promise. Common N0/R0 cases stay unresolved under the literal finite rules; profile results are not normative evidence. Remaining child domains and whole manifestation are not completed; no independent-error order or cache lifetime is specified.", "implementation": ["manifest.mbt", "objects.mbt"]},
+    "manifest-array": {"normal": ["F1", "O2"], "runtime_error": ["O4", "O7", "APATH2"], "lazy": ["O7"], "boundary": ["O4"], "remaining": "Cycles, every nested shape and resource-independent evaluation boundaries. APATH2 adds an independently built array containing an assertion-only object whose required core manifestation fails. APATH4 library String rendering of an empty inner object is a distinct operation, not a core-manifest-array success or new cycle theorem.", "implementation": ["manifest.mbt"]},
     "string-concat": {
       "normal": [
         "SC1",
@@ -4532,7 +4574,7 @@
     },
     {"id": "VALUE-UNICODE", "section": "jsonnet_values", "obligation": "Codepoint strings, strict contents and Unicode comparison", "normal": ["IDX"], "runtime_error": ["IDX"], "remaining": "Whole string semantics, collation, normalization and surrogate ambiguity.", "implementation": ["eval.mbt", "sequence.mbt"]},
     {"id": "HIDDEN-INHERITANCE", "section": "hidden_inheritance", "obligation": "Inherited default, hidden and forced-visible fields", "normal": ["O6"], "lazy": ["O6", "O7", "SP3"], "boundary": ["O6", "SP2", "SP3"], "remaining": "Only direct hidden prior-field access/error demand in the bounded [super-prefix group](SPEC-SUPER-PREFIX-EVIDENCE-2026-10-22.md) is added here. Equality and general multi-layer/separator/additive combinations remain open.", "implementation": ["objects.mbt", "manifest.mbt"]},
-    {"id": "SUBSTITUTION", "section": "substitution", "obligation": "Capture avoidance and lexical closure/default binding", "normal": ["F1", "F6", "O2", "AP1", "AP2", "SR1", "SP1", "RT1", "RT2", "AS1", "AX1", "AL1", "AC2", "CK2", "IC1", "SMC1", "SMC2", "SMC3"], "static_error": ["F5", "O1", "RT4"], "lazy": ["F2", "F3", "AP5", "SR2", "SP3", "RT3", "AL2", "IC3", "SMC1", "SMC3"], "boundary": ["SR1", "SR3", "SP1", "SP3", "RT1", "RT2", "RT3", "AS2", "AX2", "AL1", "AL2", "AC2", "CK2", "IC1", "IC3", "SMC1", "SMC2", "SMC3"], "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) adds definition-context capture across code-import and lazy default/dependency boundaries, without completing general substitution. The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) adds iteration-tuple capture after construction, without completing general substitution. Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule. SMC1-SMC3 add finite canonical/derived source-method capture and final-self controls; arbitrary substitution and N0/R0 remain separate.", "implementation": ["eval.mbt", "runtime_types.mbt", "objects.mbt", "imports.mbt"]},
+    {"id": "SUBSTITUTION", "section": "substitution", "obligation": "Capture avoidance and lexical closure/default binding", "normal": ["F1", "F6", "O2", "AP1", "AP2", "SR1", "SP1", "RT1", "RT2", "AS1", "AX1", "AL1", "AC2", "CK2", "IC1", "SMC1", "SMC2", "SMC3"], "static_error": ["F5", "O1", "RT4"], "lazy": ["F2", "F3", "AP5", "SR2", "SP3", "RT3", "AL2", "IC3", "SMC1", "SMC3"], "boundary": ["SR1", "SR3", "SP1", "SP3", "RT1", "RT2", "RT3", "AS2", "AX2", "AL1", "AL2", "AC2", "CK2", "IC1", "IC3", "SMC1", "SMC2", "SMC3"], "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) adds definition-context capture across code-import and lazy default/dependency boundaries, without completing general substitution. The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) adds iteration-tuple capture after construction, without completing general substitution. Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule. SMC1-SMC3 add finite canonical/derived source-method capture and final-self controls; arbitrary substitution and N0/R0 remain separate. The shared assertion-domain decision now records the explicit new-right-field guide/formal prefix conflict separately from the assertion-prefix gap and R0 checking-state cycle. No right-only/assertion-super or active-state conditional profile is promoted to a substitution theorem; conflict branches stop pending an authoritative correction/profile.", "implementation": ["eval.mbt", "runtime_types.mbt", "objects.mbt", "imports.mbt"]},
     {"id": "EXEC-OPERATORS", "section": "execution", "obligation": "Arithmetic, bitwise, equality, coercion and other prose-defined operators", "remaining": "The [bounded shift record](SPEC-BOUNDED-SHIFTS-2026-10-23.md) adds independent source/AST witnesses for exact integral signed-64 input conversion, nonnegative no-loss << / >> results, modulo-64 counts, negative integer refusal and demanded/type/lazy boundaries. Fractional and architecture-specific out-of-range conversion, negative-left/sign-fill, sign/discarded bits and general integer-to-binary64 rounding remain unreviewed; no legacy mixed Go vector supplies the oracle. Earlier sequence/array/Boolean subsets retain their scopes. Whole arithmetic/bitwise/equality/coercion/relational and producer/child domains remain open. EXEC-OPERATORS stays partial; A0/B0/N0/R0/PE0/DF0, the greater-than print conflict and all earlier limits are unchanged. The raw greater-than conclusions conflict with less-than transfers under the same cmp sign. The proposed > erratum is not adopted; the existing relational-sign review and source-method boundary note retain this global conflict without a new runtime oracle or sort-specific requirement.", "implementation": ["operators.mbt", "eval.mbt", "runtime_types.mbt"], "normal": ["AO1", "AO2", "BS1", "SQ1", "SQ2", "SH1"], "runtime_error": ["AO3", "BS2", "SQ4", "SH2", "SH3"], "lazy": ["AO1", "AO2", "AO3", "BS0", "BS1", "BS2", "SQ1", "SH2", "SH3"], "boundary": ["AO1", "AO3", "BS1", "BS2", "SQ1", "SQ2", "SQ4", "SH1", "SH2", "SH3", "PI1", "OT3"], "static_error": ["PI1"]},
     {"id": "EXEC-BUILTINS", "section": "execution", "obligation": "Prose-defined mathematical builtins and host extVar/native", "remaining": "The [finite rounding record](SPEC-MATH-ROUNDING-2026-10-23.md) supplies independent floor/ceil witnesses for admitted finite numeric boundaries, positional/named x, nonnumber refusal and required versus dormant operands. Binding tags/native zero-count controls are host API evidence, not standard-math or std.native semantic completion. The [public inventory](SPEC-PUBLIC-STDLIB-INVENTORY.md) retains separately reviewed subsets with no whole-function acceptance. All other mathematical/Unicode/host extVar/native domains, arbitrary source conversion/rounding, zero sign/format and complete function/child contracts remain unproved. EXEC-BUILTINS stays partial; greater-than print conflicts, A0/B0/N0/R0/PE0/DF0 and prior unknowns remain unchanged.", "implementation": ["stdlib.mbt", "runtime_types.mbt", "eval.mbt", "native.mbt"], "normal": ["MR1"], "static_error": ["MR3", "F5"], "runtime_error": ["MR2", "MR3"], "lazy": ["MR2", "MR3", "AP5", "NT4"], "boundary": ["MR1", "MR2", "MR3", "PG2", "FINITE", "NT4", "AP3"]},
     {"id": "JSON-VALUES", "section": "json_values", "obligation": "Recursively force visible fields/elements, assertions, reject functions", "normal": ["O6"], "runtime_error": ["O4", "O7", "FINITE"], "lazy": ["O4", "O6", "O7"], "boundary": ["O4"], "remaining": "Every scalar/shape and recursion boundary; top-level function application is a separate host convention.", "implementation": ["manifest.mbt"]}

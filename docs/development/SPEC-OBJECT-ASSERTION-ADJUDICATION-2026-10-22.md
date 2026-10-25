@@ -210,3 +210,207 @@ obligation. This is a recommendation only; no comprehension work is started.
 Standard/default and one local worker are retained. No interpreter edits,
 new behavior cases, semantic reruns, full suite, installation, remote execution,
 external issue publication, private-document reading, push or tag is included.
+
+## Complete shared assertion-domain review atf3871b8
+
+This is one current review of the shared rule domain, not another per-function
+exception. The earlier N0/R0 analysis, constructor scope, old test evidence and
+historical counts above remain intact. Fixed inputs are still Google Jsonnet
+bbb38f1020be1f5aed560928fb839b2c448cefb4; all four reference hashes were checked
+again. Base f3871b8 has688 clean tracked entries. New expected outcomes and the
+classification below precede execution; no Go/C++ behavior supplies an oracle.
+
+### Where the fixed materials agree
+
+| Rule domain | Fixed authority and consequence |
+| --- | --- |
+| Assertion construction and message demand | spec1213-1219 and1351-1363 lower expression/object assertions to a conditional/error. A true condition skips the message; a false one requires it. Construction retains assertions as unevaluated expressions, spec1786-1796. |
+| Object inheritance | spec2293-2333 retains both operands' assertion lists. Constant predicates need no disputed self/super transformation. Override of a field cannot erase those predicates. No first-failure order is stated. |
+| Field access | spec2215-2228 requires the object's assertions for a selected visible or hidden field. This is not the same as type, length or Ex key reflection. |
+| Core manifestation | spec2877-2883 and2974-2988 require assertions even with zero visible fields, then recursively manifest visible fields/array elements. Hidden field values stay unused. |
+| JSON-library rendering | fixed std.jsonnet1048-1100 defines String rendering through visible field iteration and actual v[k] reads. An assertion-only/hidden-only object is not indexed. Compact style gives {}; default manifestJson gives the exact String {newline newline}. This differs from core manifestation without contradicting it. |
+| Genuine cyclic demand | Finite execution/JSON derivations cannot discharge a repeated cyclic field/local premise with no base. A configured Runtime/Limit rejection is a bounded host observation, not a specified loop detector or error text. Skipped cyclic fields/messages/conditions remain lazy when their path does not demand them. |
+
+Primary links:
+[assert lowering](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L1213-L1219),
+[object assertion lowering](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L1351-L1363),
+[index](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2215-L2228),
+[inheritance](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2293-L2333),
+[core manifestation](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2974-L2988),
+[JSON library body](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1048-L1100).
+
+### N0: one explicit prefix conflict and the assertion-specific missing clause
+
+The ordinary-field control sharpens the earlier assertion-only finding.
+Assume the two operand values below have already been constructed, so this
+argument does not choose an interpretation of general field desugaring DF0.
+
+```text
+left  = {x:true}
+right = {v:super.x}
+term  = (left + right).v
+```
+
+The [layered field promise](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/language.html.md#L348-L372)
+gives true: v belongs to the right layer and its super.x finds left.x. The
+printed object-inherit rule only places the e_s prefix replacement in the
+shared-name right-field clause (2316-2318). It retains the right-only field
+expression e-prime-R unchanged in2323-2324. object-index then substitutes {}
+for its remaining super. The selected body needs {}.x, which has no field
+lookup derivation. Thus the literal finite rule profile cannot deliver true.
+The field-name sets are disjoint, avoiding the unrelated multi-common-field
+printing issue. These two promises cannot both be the same execution judgment:
+
+| Minimal control | Layered guide | Literal finite inheritance/index rules |
+| --- | --- | --- |
+| ({x:true}+{v:super.x}).v | true | No successful lookup derivation |
+| ({x:true}+{x:super.x}).x | true | Prefix rewrite exists for the shared field; no N0 dependence |
+
+The assertion-specific symbolic witness is:
+
+```text
+({ok:true}+{assert super.ok,v:1}).v
+```
+
+Printed assertion-list union2321-2322 writes no prefix replacement, and index
+replaces the remaining super by {}. It cannot yield1 under the same finite
+reading. A layer-prefix extension yields1. For assertions themselves, unlike
+the ordinary-field control, the guide explicitly leaves detailed scope
+unfinished at655-667. This is a missing assertion-specific transfer, not an
+invented explicit guide theorem about assertions. The fixed library supplies
+no keyword-substitution rule to fill it. The ordinary-field control establishes
+an actual formal/guide conflict in the shared inheritance fragment; it must
+not be mislabeled as only a lack of runtime samples.
+
+### R0: acyclic data still repeats the checking premise
+
+```text
+local o={assert self.ok,ok:true,v:1}; o.v
+```
+
+With the printed desugaring, lookup of v first requires a conditional whose
+condition is o.ok. Deriving o.ok requires that same assertion conditional,
+which requires o.ok again as a proper subderivation. No minimal finite proof
+height exists. The data field ok:true is not itself cyclic; this is a checking
+premise cycle. The value grammar has no active/already-checked state. Merely
+changing premise order or memoizing in an implementation does not add a paper
+rule. The guide's unfinished self/assert/recursion scope and ordinary library
+expressions do not specify coinduction, active-assertion exclusion or a new
+checking-state judgment.
+
+The literal finite profile therefore has no successful value derivation. A
+separately declared active-check extension yields1, while still refusing a
+real ok:self.ok field cycle. Both cannot supply one unconditional expected
+answer. This is a definition/model gap, not evidence that the fixed guide
+explicitly mandates that particular extension or callback/cache policy.
+
+### Frozen probe matrix and separate verdict classes
+
+The new [independent path file](../../spec_object_assertion_paths_test.mbt)
+contains five agreed groups at indices0-4 and two profile-only groups at5-6.
+Source and public ASTs are independently built using neutral constructors;
+all expected values and explicit error markers are literal. No parser export
+or observed interpreter result creates an expectation. Each group has source
+and handmade entries. The two profile groups have a declared conditional
+oracle only; normative acceptance is null, and they must not enter passing
+N0/R0 language evidence or whole-rule counts.
+
+| ID/class | Frozen required result or declared profile |
+| --- | --- |
+| APATH1 agreed | False/error/non-Boolean conditions stay unused under type/length/key reflection, an unused selection, an array head count and hidden nesting. Literal metadata is [object,1,[v],[h,v],1,42,{}]. |
+| APATH2 agreed | False assertions fail core manifestation for empty/hidden/visible/nested objects and arrays. True empty/hidden objects yield {}. Both inherited constant assertion lists survive even without fields and after adding a selected harmless field. |
+| APATH3 agreed | Visible/hidden reads require flat assertions. True checks skip a cyclic message; false checks fail, needed condition/message errors propagate, and a non-Boolean condition rejects. One shared super field and inherited self fields with constant assertions have independent true/2 results; no assertion-specific prefix or self-condition reentry is involved. |
+| APATH4 agreed | Compact rendering returns {} for assertion-only/hidden-only false objects, {outer:{}}/[{}] for nested empty false objects; default manifestJson returns the exact String with two newlines. A visible indexed field instead requires the false assertion and rejects. These are not universal top-level manifestation paths. |
+| APATH5 agreed | Hidden cyclic field values are not manifested. Actual selected field/local-condition cycles produce no finite JSON value under bounded Runtime/Limit handling. Type/unused/empty library traversals skip them where applicable. Acyclic self-field access under identical limits returns1. |
+| N0-P profile only | Current layered-prefix interpretation returns true for the new right field and1 for the assertion-super witness. The raw finite-paper alternatives above remain recorded, not marked failed implementation tests. |
+| R0-P profile only | Current active-check interpretation returns1 for the minimal self predicate and compatible inherited receiver; a false final predicate rejects. It still refuses a genuine self-field cycle. These do not prove a finite state-free derivation. |
+
+Runtime/Type/Assertion labels here are existing embedding phase controls;
+only the appropriate no-value/success contract and supplied isolated marker
+are inferred from the clauses. The cycle helper excludes Unsupported and
+parse/static failures; it permits Runtime or configured Limit without claiming
+which detector, timing or message the normative language requires. All ordinary
+fields used to distinguish error paths are harmless unless their non-demand is
+itself the required successful observation. No independently competing error
+winner, assertion iteration order, callback count or cache lifetime is asserted.
+
+### Authority and stopping boundary
+
+No replacement rule is silently adopted. A correction/authoritative profile
+must specify right-only-field and right-assertion defining prefixes/final self,
+and whether self-dependent checks use finite rejection, checking state or an
+explicit recursive interpretation. If active-check exclusion is selected it
+must still retain remaining assertions and actual field-cycle demand; it need
+not standardize memoization or native traces. The current implementation's
+layer_scope/check_assertions explain its conditional behavior, not the missing
+normative selection. No Go/C++ result supplies that selection.
+
+Inspect [objects.mbt](../../objects.mbt), [core manifest](../../manifest.mbt)
+and [library traversal](../../manifest_json.mbt) against the agreed path table.
+First run a native check and the five agreed probes. Only an agreed failure
+justifies a product fix. Then run the two separately named profile probes to
+record current source/AST compatibility, never to certify N0/R0. Freeze all
+inputs and keep original failures if any. Each command is local native debug,
+frozen/deny-warn/j1/no-parallelize as applicable, closed stdin and bounded300s.
+No full suite, new SSH/remote window, Go/C++, standalone delivery campaign,
+installation, upstream edit, private proposal or push is included. After this
+one domain review, stop the conflict branches rather than probing per function.
+
+<!-- This domain decision and all criteria precede execution. -->
+
+### Current executions, evidence classes and final decision
+
+The native check passed first time, exit0 in0.511s. With product bytes unchanged,
+the five agreed groups at indices0-4 passed **5/5,exit0,7.733s**. The two explicitly
+conditional profile groups at indices5-6 passed **2/2,exit0,0.202s** in a separate
+command. They confirm source/handmade compatibility with the declared current
+layer-prefix/active-check interpretation; their normative acceptance is null.
+They are not combined into seven normative passes or N0/R0 rule completion.
+Both raw stderr files are empty. There was no failure, expected-value change,
+fixture type repair, snapshot update or interpreter correction in this review.
+
+The agreed probes establish the promised route differences on this source:
+core manifestation checks empty/hidden/nested objects and inherited constant
+assertions; field access checks harmless visible/hidden payloads; reflection
+and unused values defer checks. The fixed library's no-visible-field String
+walk does not index the input, even when nested, but a visible read does require
+its assertions. Genuine demanded field/local-condition cycles do not return a
+finite value, while hidden/unused paths and true-condition messages remain lazy.
+No result was inferred from all paths merely having an object input.
+
+The ordinary new-right-field N0 control follows the guide in this implementation,
+while the raw printed result cannot establish the same true. The assertion-super
+and finite-data self-predicate controls follow the declared extension; neither
+adds the missing paper transformation/state. No uncontroversial implementation
+defect was reproduced, so changing objects.mbt to pick a paper/guide alternative
+would be unjustified. The explicit prefix conflict and missing assertion/reentry
+clauses are the remaining normative obstacles, not an unexecuted microtest list.
+All three conflict branches stop here pending a correction or explicit source
+interpretation from the specification authority. No upstream issue was posted.
+
+The current matrix adds only APATH1-APATH5. All220 older canonical evidence
+objects and all prior completion records stay unchanged; the two profile-only
+names have no assertion-evidence IDs. No later-demand failure is mapped as a new
+intrinsic object-addition error. The DESUGAR-ASSERT constructor transfer remains
+relative to children with N0/R0 exclusions. No new rule or language acceptance
+is claimed. Public function records remain66 subsets/zero whole functions.
+
+Required native info and fmt passed, exit0 in0.329s and0.048s. The frozen
+seven-case file is unchanged; all inspected product files and public interfaces
+stay unchanged. No prior AS/AX/AL/AC or historical full-suite result was rerun or
+promoted to the current source. Raw inputs, exact commands/environment/closed
+stdin/300s bounds, outputs, elapsed and owned-group exit receipts remain at
+`/tmp/moonjsonnet-assertion-domain.paaex37n`. Temporary paths are not an archival
+availability guarantee.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Frozen domain criteria | `f7db54ea5c932dfd1b9817b0b31a0a22d7115f3a0c71e985d333afd5ce85b7e7` |
+| Frozen seven-case file | `a6cb41c025eb6e7120f6f70a6681efe0f8095f4bfbea754fe64a6350ef96ebc3` |
+| Agreed-only stdout | `30a04d9fb9b3e8b0c88d173d0654b97191bd61de5cd6b067b91b74f25115ca4a` |
+| Conditional-profile-only stdout | `ddd0722f90fd133207ca9e423fc1faa05c3608f3be5c5eb4fdbea4259682b120` |
+
+No new SSH/remote window, full suite, release, standalone API/CLI delivery,
+reference interpreter, installation, private proposal or push was used. Old
+failure evidence is intact. The758 historical count is not current acceptance,
+and no conditional profile result overrides an unadjudicated source clause.

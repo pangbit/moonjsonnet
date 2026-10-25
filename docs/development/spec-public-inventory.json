@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "4488a7156826497151c8727f9d41e5a301c63b32",
-  "uncommitted_test_paths": "spec_object_remove_key_test.mbt",
+  "input_source_commit": "f3871b8bc8a8b9e0e0332d6766d50824960df3ca",
+  "uncommitted_test_paths": "spec_object_assertion_paths_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -123,6 +123,7 @@
     "spec_merge_patch_test.mbt": "52953d3c31c78e8451c8fbce03c8be345bccecb770b24a7d7e9340ae948ccb90",
     "spec_negation_test.mbt": "92edd8ad7eaac31c60676c8c7f3882f440c78391edd58a16d47ee0942465e3ac",
     "spec_number_tokens_test.mbt": "f2b0623824df00431f167bacc8cf04290ab91158827eb79c4d27c632693d576c",
+    "spec_object_assertion_paths_test.mbt": "a6cb41c025eb6e7120f6f70a6681efe0f8095f4bfbea754fe64a6350ef96ebc3",
     "spec_object_assertion_static_test.mbt": "fc52475ec9825b9a8ae40a667e2d8201821fdce246685a374ad33a8666da0d83",
     "spec_object_calls_test.mbt": "ccfa3809c50d5914725dbf7807fcfe6fea401cef806e3a3099e7398eb6767ed3",
     "spec_object_comp_keys_test.mbt": "cce9e374299a7688c84fd62133d52d5047a59985d92e4f8260c2a8648dfe27de",
