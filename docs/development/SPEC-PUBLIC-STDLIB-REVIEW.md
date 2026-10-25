@@ -238,3 +238,21 @@ unchanged. Only remove/removeAt public records change: other64 records and all22
 language evidence remain equal,66 reviewed subsets and zero whole-function accepts.
 Shared producer/equality/assertion children and the name conflict remain scoped;
 no fresh full-suite, platform or reference-execution acceptance follows.
+
+
+## Array sum/avg actual-operation continuation at 79adcb4
+
+The [finite aggregation review](SPEC-AGGREGATE-ADDITION-2026-10-25.md) confirms
+existing per-operation finite guards were already correct; it does not invent a
+new nonfinite leak. Six independent groups expose a different actual reduction
+error: mandatory Number conversion rejects legal String + and can hide required
+later errors before avg division or String coercion. Baseline 1/6 and the original
+postrepair legacy failure are preserved. Only the sum/avg case now reuses existing
++ and / operations; final 25/25 groups include old finite/empty/lazy/fold and
+JSON/YAML defensive controls. One exact old input moved from error to String 12.
+Only these two public records change; other 64 are equal, 66 subsets/zero whole
+functions remain. The known nonarray sum String rejection and other admission/
+public-child obligations stay open. Sixteen disjoint old language inspections
+only rebind their full-file hash with a preserved span/anchor proof; all 225
+evidence/completion fields otherwise stay equal. No old full-suite or Linux
+count is applied to the changed product.

@@ -15,8 +15,76 @@
   {"name":"flattenDeepArray","signature_review":{"parameters":["value"],"defaults":{},"test":"spec_flatten_test.mbt","status":"One required documented/source value parameter; positional and named value succeed; missing/extra/unambiguously unknown bindings reject before gates. Complete binding combinations remain outside this subset."},"reference_candidates":[{"file":"spec_flatten_test.mbt","line":31,"test_declaration":"test \"flattenDeepArray recursively preserves leaves including null and source defined scalar roots\" {","classification":"manual independent source and typed AST FL2 recursive data and source-defined root assertions"},{"file":"spec_flatten_test.mbt","line":149,"test_declaration":"test \"flattenDeepArray demands recursive leaf heads but leaves object fields and function bodies lazy\" {","classification":"manual FL5 recursive structure versus atomic leaf payload demand"},{"file":"spec_flatten_test.mbt","line":187,"test_declaration":"test \"flatten operations preserve original arrays and aliases under cold and warm reads\" {","classification":"manual FL6 deep arm immutable data under read gates"},{"file":"spec_flatten_test.mbt","line":256,"test_declaration":"test \"flatten operations share demanded source heads and retained leaves across repeated reads\" {","classification":"manual FL7 deep arm shared source/leaf gates"},{"file":"spec_flatten_test.mbt","line":307,"test_declaration":"test \"flatten operations reject unambiguous bad bindings before gates and preserve unused calls\" {","classification":"manual FL8 deep arm binding and unused-call checks"}],"dimensions":{"N":{"test":"spec_flatten_test.mbt","expectation":"FL2: recursively flatten Arrays in order; retain null/Boolean/Number/String/Object leaves and atomic Object fields; source-defined scalar-root singleton branches and named value calls use literal independent outputs."},"E":{"test":"spec_flatten_test.mbt","expectation":"FL5/FL8: required recursive leaf errors propagate even for length or early selection; Object-field errors propagate upon manifestation. Rejected bindings run no gates. No invented non-Array-kind rejection."},"L":{"test":"spec_flatten_test.mbt","expectation":"FL5/FL7/FL8: result structure requires all recursive leaf heads, while Object fields and Function defaults/bodies remain lazy; repeated original/result accesses share thunks once; unused whole calls lazy."},"B":{"test":"spec_flatten_test.mbt","expectation":"FL2/FL6: nested empty arrays disappear, null remains, Unicode/NUL Strings remain atomic, scalar roots wrap once; nested originals and aliases unchanged under cold/warm reads and repeated calls."}},"remaining":"Bounded recursive structure/leaf/demand subset only, not whole-function acceptance. Scalar roots are explicit source behavior, not inferred solely from Array-oriented prose. Function equality/PE0, object assertions/inheritance/root/std rebinding, competing failures, exhaustive binding/encoding/resource combinations, DF0/HP0, A0, BOM/surrogate/out-of-range and other prior exclusions remain unchanged; no reference-interpreter equality is an oracle."},
   {"name":"join","signature_review":{"parameters":["sep","arr"],"defaults":{},"test":"spec_join_test.mbt","status":"Fixed documentation/source required sep and arr; positional/reversed named successes, missing/unknown/extra/overlap binding refusal. Host error tags and native gates remain distinct from normative value obligations."},"reference_candidates":[{"file":"spec_join_test.mbt","line":9,"test_declaration":"test \"join preserves ordered string and array data while skipping only null items\" {","classification":"manual source and independent typed AST assertions; JN1-JN8 are public report groups, not canonical language IDs or whole-function acceptance"},{"file":"spec_join_test.mbt","line":84,"test_declaration":"test \"join array heads defer separator and member payloads until selected or manifested\" {","classification":"manual JN2 payload-demand evidence"},{"file":"spec_join_test.mbt","line":138,"test_declaration":"test \"join rejects wrong outer and element kinds without traversing their payloads\" {","classification":"manual JN3 domain evidence; Type is the embedding category"},{"file":"spec_join_test.mbt","line":175,"test_declaration":"test \"join propagates required outer heads even when only an early result is selected\" {","classification":"manual JN4 isolated error-demand and unused-call evidence"},{"file":"spec_join_test.mbt","line":258,"test_declaration":"test \"source join validates the outer array before demanding the separator\" {","classification":"manual JN5 source arr-first guard regression with a successful separator gate"},{"file":"spec_join_test.mbt","line":263,"test_declaration":"test \"handmade join validates the outer array before demanding the separator\" {","classification":"manual JN6 independent AST arr-first guard regression with a successful separator gate"},{"file":"spec_join_test.mbt","line":268,"test_declaration":"test \"join preserves separator input members and aliases across cold and warm reads\" {","classification":"manual JN7 immutable input/alias evidence under explicit read gates"},{"file":"spec_join_test.mbt","line":338,"test_declaration":"test \"join refuses invalid bindings before argument gates and retains unused calls\" {","classification":"manual JN8 signature and unused-call evidence"}],"dimensions":{"N":{"test":"spec_join_test.mbt","expectation":"JN1: literal ordered String/Array concatenations, source-defined null skipping, one-level flattening and positional/reversed named calls. Expected data are independent of product and Go/C++ output."},"E":{"test":"spec_join_test.mbt","expectation":"JN3-JN6/JN8: wrong outer/member kinds and required isolated heads/payloads fail; array rejection precedes demand of a successful separator gate. Binding failures precede gates and unused free names remain Static."},"L":{"test":"spec_join_test.mbt","expectation":"JN2/JN4-JN6/JN8: Array payloads and unused whole calls stay lazy; required outer heads all checked before returning even an early selected result; arr rejection does not require sep. Function payload heads do not call defaults/body."},"B":{"test":"spec_join_test.mbt","expectation":"JN1/JN2/JN7: empty/all-null/singleton inputs, empty items counting toward delimiters, Unicode/NUL String data, lazy separator seams and original separator/member/outer aliases under cold/warm read gates."}},"remaining":"Bounded data/domain/demand subset only, not whole-function acceptance. Function equality/PE0, object assertions and inheritance/root/std rebinding, exhaustive host encoding/rounding/resource and diagnostic combinations, competing failures and every argument combination remain unproved. DF0/HP0, BOM/surrogate/out-of-range conversion decisions, language print conflicts and shift exclusions are unchanged. No Go/C++ equality is a normative oracle."},
   {"name":"length","dimensions":{"N":{"test":"spec_length_test.mbt","expectation":"All declared function parameters and Unicode/array/visible-object lengths in the asserted examples."},"E":{"test":"spec_length_test.mbt","expectation":"null/boolean/number inputs raise Type."},"L":{"test":"spec_length_test.mbt","expectation":"Reflection does not force defaults, body, array payloads, hidden fields or native callback."},"B":{"test":"spec_length_test.mbt","expectation":"Zero parameters, optional parameters and supplementary Unicode example."}},"remaining":"Complete signature/arity/error-order and every container/visibility combination remain unreviewed."},
-  {"name":"sum","dimensions":{"N":{"test":"spec_aggregate_test.mbt","expectation":"Empty sum, finite examples and cancellation without overflow."},"E":{"test":"spec_aggregate_test.mbt","expectation":"Overflow is Runtime at the first invalid addition, before later operands or type inspection."},"L":{"test":"spec_aggregate_test.mbt","expectation":"Unused binding, short circuit and hidden fields do not evaluate overflow."},"B":{"test":"spec_aggregate_test.mbt","expectation":"Empty array and large finite/cancellation examples."}},"remaining":"All element/argument types, signatures and evaluation orders are not fully adjudicated."},
-  {"name":"avg","dimensions":{"N":{"test":"spec_aggregate_test.mbt","expectation":"Finite average of [1,2,3] is 2."},"E":{"test":"spec_aggregate_test.mbt","expectation":"Intermediate sum overflow fails before division/cancellation or consumers."},"L":{"test":"tests/spec-acceptance.json","case":"short-circuit-or","expectation":"The average on the unselected right side of true || remains unforced."},"B":{"test":"spec_aggregate_test.mbt","expectation":"Large finite operands that overflow the intermediate sum are rejected."}},"remaining":"Empty/type/signature/error-order coverage outside these reviewed tests remains unadjudicated."},
+  {
+  "name": "sum",
+  "dimensions": {
+    "N": {
+      "test": "spec_aggregate_test.mbt",
+      "expectation": "Existing finite/empty numeric cases plus AGF1/AGF4: an Array reduction uses actual left-associative + from zero, admits String transitions with literal Unicode/primitive results, and preserves largest finite/subnormal values.",
+      "additional_tests": [
+        "spec_aggregate_addition_test.mbt"
+      ]
+    },
+    "E": {
+      "test": "spec_aggregate_test.mbt",
+      "expectation": "Numeric-prefix additions fail at the actual overflowing operation before a String transition or type consumer. AGF3/AGF6 require later elements and String coercion payloads; invalid Number-plus-container still fails Type without nested demand.",
+      "additional_tests": [
+        "spec_aggregate_addition_test.mbt"
+      ]
+    },
+    "L": {
+      "test": "spec_aggregate_test.mbt",
+      "expectation": "Existing unused/Boolean/hidden overflow controls remain; AGF5 skips the new String reduction when unused or explicitly short circuited, and forces its isolated marker when needed.",
+      "additional_tests": [
+        "spec_aggregate_addition_test.mbt"
+      ]
+    },
+    "B": {
+      "test": "spec_aggregate_test.mbt",
+      "expectation": "Empty numeric sum0 remains unchanged. AGF2 separates overflowing numeric prefixes from nonarithmetic String concatenation; AGF4 permits finite underflow rounding instead of treating zero as nonfinite.",
+      "additional_tests": [
+        "spec_aggregate_addition_test.mbt"
+      ]
+    }
+  },
+  "remaining": "This batch closes finite-operation and actual additive-stage evidence for Array inputs only, not the entire public function. The unchanged Array-only entry guard still rejects std.sum('123'), while the fixed sum/foldl String path would produce String0123; that known admission difference remains open, not a normative exception or passing error assertion. Current aggregate_test keeps that legacy error only as compatibility coverage. Full signature/producer/equality/assertion/resource and other nonarray domains remain separate. No whole-function acceptance or old789 full-suite inheritance; see SPEC-AGGREGATE-ADDITION-2026-10-25.md."
+},
+  {
+  "name": "avg",
+  "dimensions": {
+    "N": {
+      "test": "spec_aggregate_test.mbt",
+      "expectation": "Existing finite mean2 and AGF4 largest-finite/minimum-subnormal singleton means and correctly rounded subnormal-to-zero result.",
+      "additional_tests": [
+        "spec_aggregate_addition_test.mbt"
+      ]
+    },
+    "E": {
+      "test": "spec_aggregate_test.mbt",
+      "expectation": "The completed additive reduction precedes quotient type checks: AGF3 propagates a required later Runtime marker after a legal String transition. Numeric prefixes still reject overflow before consumers/cancellation. A completed String accumulator fails division Type.",
+      "additional_tests": [
+        "spec_aggregate_addition_test.mbt"
+      ]
+    },
+    "L": {
+      "test": "tests/spec-acceptance.json",
+      "case": "short-circuit-or",
+      "expectation": "Existing unselected average stays lazy; AGF5 independently covers unused, hidden and both explicit Boolean shortcuts around the new mandatory String-reduction error.",
+      "additional_tests": [
+        "spec_aggregate_addition_test.mbt",
+        "spec_aggregate_test.mbt"
+      ]
+    },
+    "B": {
+      "test": "spec_aggregate_test.mbt",
+      "expectation": "Empty Array rejects before division, existing cancellation/overflow controls remain, AGF2/AGF4 distinguish actual numeric operations from String reduction and legal finite underflow.",
+      "additional_tests": [
+        "spec_aggregate_addition_test.mbt"
+      ]
+    }
+  },
+  "remaining": "Only the Array reduction/quotient/finite and associated lazy/output responsibility is adjudicated here. Nonarray source admission and empty-length guard order, including String/Object/Function cases, are not accepted by the unchanged native Array guard and remain open. Full public binding/producer/static/resource and assertion-bearing coercion children are not completed. No independent competing-error winner, callback trace or output-limit promise is invented; source-mandated reduction-before-division is the specific ordering tested. Whole-function acceptance stays0."
+},
   {
   "name": "remove",
   "dimensions": {

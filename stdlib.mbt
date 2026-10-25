@@ -338,20 +338,18 @@ fn Vm::builtin(
           "Cannot calculate average of an empty array.",
         )
       }
-      let mut sum = 0.0
+      // The fixed sum fold uses ordinary +, including String coercion. Keep
+      // each new accumulator strict, with numeric finite checks in binary().
+      let mut sum : Value = Num(0.0)
       for t in items {
         self.tick(loc)
-        let next = number_value(self.force(t, loc), loc)
-        sum = number_value(finite(sum + next, loc), loc)
+        sum = self.binary("+", sum, self.force(t, loc), loc)
       }
-      finite(
-        if name == "avg" {
-          sum / items.length().to_double()
-        } else {
-          sum
-        },
-        loc,
-      )
+      if name == "avg" {
+        self.binary("/", sum, Num(items.length().to_double()), loc)
+      } else {
+        sum
+      }
     }
     "equals" => Bool(self.equal(x, values[1], loc))
     "objectRemoveKey" => {

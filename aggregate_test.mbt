@@ -1,5 +1,5 @@
 ///|
-test "sum and avg are numeric eager left to right aggregates" {
+test "sum and avg preserve left to right addition and finite numeric results" {
   for
     (source, expected) in [
       (
@@ -10,13 +10,14 @@ test "sum and avg are numeric eager left to right aggregates" {
         "[std.length(std.sum),std.length(std.avg),std.objectHas(std,'sum')]", "[1,1,false]",
       ),
       ("std.sum(std.range(1,1000))", "500500"),
+      ("std.sum([1,'2'])", "\"12\""),
     ] {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))
   }
   for
     source in [
-      "std.avg([])", "std.sum('123')", "std.avg({})", "std.sum([1,'2'])", "std.sum([true])",
-      "std.avg([null])", "std.sum([1,error 'forced'])", "std.sum()", "std.avg(xs=[1])",
+      "std.avg([])", "std.sum('123')", "std.avg({})", "std.sum([true])", "std.avg([null])",
+      "std.sum([1,error 'forced'])", "std.sum()", "std.avg(xs=[1])",
     ] {
     try @moonjsonnet.evaluate(source) catch {
       @moonjsonnet.Error(d) => assert_true(d.kind != @moonjsonnet.Unsupported)
