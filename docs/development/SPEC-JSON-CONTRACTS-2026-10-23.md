@@ -169,3 +169,155 @@ or push ran; the historical 539/539 full run remains bound only to 5651ae9.
 Raw frozen criteria, first failure, after-fix results, scope/mapping audits,
 generated inventories, final staged hashes and documentation/commit receipts
 are retained in `/tmp/moonjsonnet-json-contracts.zk9x_k_t`.
+
+## parseJson input-domain continuation frozen at 727a59d
+
+Base727a59dd9695009113a554b1d623dd071950ede0 is clean with706 inputs.
+Reuse JC1/JC2/JC4 normal roots, str binding/type errors, required markers and
+whole-call laziness. The relevant parseJson dispatcher, from_json/native_result,
+diagnostic scanner and six-group JSON test bytes equal the0d06ded816/816 snapshot;
+only the unrelated YAML wrapper changed since that full run. Do not rerun old
+controls merely to refresh counts before finding a new gap.
+
+The fixed public parseJson paragraph1267-1290 parses JSON String data without
+YAML's best-effort/container-root restriction. The fixed JSON value grammar and
+finite Number requirement apply. JSON Number tokens do not have YAML's untagged
+String fallback;1e309 must not become a successful Jsonnet Number anywhere in
+the parsed tree. Ordinary Jsonnet field expressions remain lazy, but input JSON
+is data, not a collection of unevaluated Jsonnet field expressions.
+
+Static inspection finds complete input consumption in the installed core parser:
+parse_value, four-character JSON whitespace skipping, then an explicit EOF
+check. Error data is translated only after that parser rejects. All JSON root
+classes pass through from_json; no collection-only guard applies. The suspected
+gap is instead conversion: from_json recursively converts Arrays but stores
+Object members as Literal JSON. An overflow member might therefore be delayed
+past type/length or an unrelated selected field. Freeze the minimal candidate
+`std.type(std.parseJson('{"x":1e309}'))` as Runtime before modifying product code.
+The local core parser/source hashes are retained externally; they explain the
+path but do not supply normative expected results.
+
+The [five new groups](../../spec_parse_json_input_test.mbt) supply literal
+expectations through source and independently handmade Call trees:
+
+| ID | Independent gap or control |
+| --- | --- |
+| PJI1 | Every primitive/Array/Object root allows JSON whitespace, but rejects a second value, nonwhitespace suffix or comment. No valid prefix can stand in for the complete input. |
+| PJI2 | The eight standard JSON escapes, nonsurrogate Unicode escapes, three canonical well-formed supplementary pairs, literal astral data and escaped keys produce exact Strings/values. Interior U+FEFF is data. Empty/reserved-word keys retain literal data bindings. |
+| PJI3 | Incomplete/nonhex escapes, non-JSON escape letters and raw controls in String keys/values reject as data errors before type(). These are JSON data rules, not Jsonnet source quoting rules. |
+| PJI4 | Parsed unique-key Object/Array members must all be finite before type(), length() or an unrelated field succeeds; ordinary unused whole calls still skip parsing. Finite large values and quoted numeric text remain valid. |
+| PJI5 | Ordinary Jsonnet Object fields remain unforced by type or other field reads. Existing caller/resource bounds are controls: actual40-level JSON nesting rejects at depth32;40 bracket characters inside a String do not count as nesting. |
+
+PJI2's canonical paired JSON data escapes do not adjudicate ill-paired/unpaired
+surrogates, arbitrary malformed host UTF16, replacement recovery or Jsonnet
+source escape policy. The older
+[quoted-source review](SPEC-QUOTED-STRINGS-2026-10-23.md) keeps those source-side
+limits; [encoding/import reviews](SPEC-IMPORTSTR-UTF8-REVIEW.md#explicit-unknown-and-exclusions)
+keep the distinct initial-BOM question. No initial JSON-data BOM verdict is
+borrowed from imports or inferred from installed parser acceptance. No new BOM
+or lone-surrogate profile is run. Duplicate JSON keys, general numeric rounding,
+diagnostic winner order and complete unbounded parser/resource proofs stay open.
+
+First run the five frozen groups against unchanged code. If the finite-data
+gap is real, prefer a parseJson-only eager data conversion using the unchanged
+bounded native_result helper with the current VM depth as its base. Keep generic
+from_json, user Object expression laziness, host callbacks, YAML admission and
+the installed parser unchanged. Do not default the conversion depth to zero and
+weaken caller-relative limits. This avoids a general dispatch/value refactor.
+
+After a demonstrated repair, rerun the same five groups and necessary existing
+JSON input/diagnostic/finite/type/reflection neighbors once, keeping all oracles.
+Use native/debug/frozen/deny-warn/j1/no-parallelize, DEVNULL and300-second bounds.
+If stdlib changes, preserve all old inspection anchors with an exact edit-span
+proof before hash maintenance; no language completion follows. Only the existing
+parseJson public record may extend; the other66 remain equal and the count stays67.
+No full suite, release, SSH/Linux, CLI/API campaign, Go/C++, dependency change,
+upstream edit, private application document or push is authorized here.
+
+
+### Current baseline and scoped repair
+
+The initial fixture check exited255 because the MoonBit expected-number literal
+1e308 needs the spelling1.0e308. Only that host-language spelling and formatter
+layout changed; input JSON1e308 and its expected finite numeric value did not.
+Semantic tests were NOTRUN for that candidate. The corrected five-group fixture
+was frozen before any product edit. Its first native result was4 passed/1 failed,
+exit2,8.730338417 seconds. PJI4 accepted the minimal Object overflow unexpectedly;
+later variants in that group were NOTRUN after the first failure. The other four
+groups passed; no defect was manufactured in already-correct EOF/escape paths.
+
+The first candidate reused native_result as the constructor, with caller-relative
+depth. It fixed the finite member demand but failed PJI2, which had passed before
+the edit:26 total,25 passed,1 failed, exit2,14.032675917 seconds. The raw error is
+opaque JsonnetError, not a printed per-key vector. Static diagnosis is precise:
+native_result binds each field through Var(name), while layer_scope overwrites
+self/super/$ with receiver bindings. These names are legal JSON String keys.
+The candidate source/input/logs remain intact. No oracle or legal key was removed
+to make this route pass.
+
+The final change keeps from_json unchanged and adds a private parseJson-only
+read-only finite/depth visitor before the original conversion. It checks actual
+Number values throughout the parsed tree, beginning at current VM depth, without
+constructing new field environments or touching Jsonnet thunks. Arrays/Objects
+are data here; ordinary language Object expressions keep their previous lazy
+field rules. Parser/depth scanning, diagnostics, SDK, native_result and YAML
+behavior stay byte-identical. Removing only this call/comment and visitor block
+reconstructs the entire previous stdlib exactly. This is not a global object or
+shared-native conversion change. No old test or reference snapshot changes.
+
+The adjacent native_result name-binding collision remains a separately recorded
+implementation risk for its existing native/YAML entry points. This task did
+not independently execute those endpoints with reserved keys or repair that
+shared helper, so it does not count new passing/failing conformance cases there.
+The observed rejected parseJson candidate and source diagnosis should guide a
+separate bounded follow-up, rather than widening this input-function repair.
+
+### Current directed result and exact evidence map
+
+The unchanged corrected five-group oracle and required neighbors pass26/26,
+failed0, exit0,14.003159917 seconds. The seven files are the new input fixture,
+existing six-group JSON contracts, four-group P0 review, two-group JSON/YAML
+diagnostics, four-group sequence structure, three-group Object Ex and two-group
+Object head controls. This final run justifies affected checks after the product
+change; pre-repair existing evidence was reused without a gratuitous repeat.
+Every old test file remains byte-identical. No legacy migration was needed.
+
+Input contract map now links signature/default/binding and wrong-head/unused
+paths to JC1/JC2/JC4 plus the unchanged common binder; complete value consumption
+to the installed EOF check and PJI1; canonical String/Unicode data to JC1/PJI2/
+PJI3; all parsed finite members to PJI4 and the new read-only visitor; ordinary
+field/resource boundaries to PJI5. This closes that bounded responsibility
+relative to its underlying grammar/Number/String children, not an unbounded
+parser proof or every public function. Valid canonical JSON data pairs are
+separate from raw source quoting and lone-surrogate recovery. No initial BOM
+profile, duplicate-key decision or stronger Unicode recovery promise is added.
+
+info then fmt pass, no public mbti changes and all11 final source/test inputs
+retain their tested SHA256 bytes.16 old stdlib inspection anchors are unchanged
+and outside both insertions; only their full-file hashes rebind. All225 language
+evidence/completion fields otherwise equal the preceding map. Only parseJson's
+existing public record extends; other66 equal,67 public subsets/zero whole
+function acceptances remain. Counts28 named/1 relative constructor/63 partial/
+2 unreviewed are not promoted by this source-hash maintenance.
+
+Local evidence: `/tmp/moonjsonnet-parse-json.95je6oxq`. The original/corrected
+fixture, baseline, rejected candidate, final inputs, exact source reconstruction
+and inspection-span proof remain separate. Commands retain argv, DEVNULL,
+300-second bounds, C locale/RUST_LOG=error, raw output hashes and absent groups.
+
+| Artifact | SHA256 |
+| --- | --- |
+| frozen/spec_parse_json_input_test.mbt | `2a2789f3a380bf427aa4a39ab24f86f71ef5bd1b34ad5db0cc5a2b760ebbaef6` |
+| frozen/spec_parse_json_input_syntax_corrected_test.mbt | `b5670db7d32b7eaab017aa043a6b590053824cb9354a2af184239c358faf65fc` |
+| baseline/stdout | `a8c04b395a932b7121db23f79f6b48892e20407c7c154945dec7cfe24278e14b` |
+| first-repair-stdlib.mbt | `e065e7395739d8704a689849d69a231c05c2b1cf22d65b9193e865eaa7988d8e` |
+| final-directed/stdout | `973dbdc45d682ba354c3af785e54f2b9229ec5b1a4df79464defabb29929a7a1` |
+| final-corrected/stdout | `87401a4cbc4cddeb67eab1b97b48b8137260b9ed0411d731c7cb3ac2d95c7193` |
+| validated-inputs.json | `f0756525ebe9bf0de5b6358ac01385d9b32ffc131279cf6fcd7a3f4bdac7e42e` |
+| inspection-rebinding.json | `28483e5de3dbd359390366d8774cdce9dd6b4fa5d48abe6597ae4556462fc184` |
+
+No current full suite, release, SSH/Linux, independent CLI/API or Go/C++ run
+occurs here. Old816/816 and Linux228cb25 counts are not inherited by these new
+product bytes. No dependency, upstream, private proposal or push operation was
+performed. Overall specification conformance remains incomplete; this bounded
+JSON-input responsibility ends after evidence/commit closeout.

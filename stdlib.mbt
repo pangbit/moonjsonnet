@@ -771,6 +771,8 @@ fn Vm::builtin(
             "failed to parse JSON: " + self.json_syntax_error(s, loc),
           )
       }
+      // Parsed data must be finite before any caller observes its shape.
+      self.check_json_finite(j, self.depth, loc)
       self.from_json(j, loc)
     }
     "manifestJson" =>
@@ -821,6 +823,31 @@ fn check_json_depth(s : String, limit : Int, loc : Location) -> Unit raise {
     } else if c == ']' || c == '}' {
       depth -= 1
     }
+  }
+}
+
+///|
+fn Vm::check_json_finite(
+  self : Vm,
+  value : Json,
+  depth : Int,
+  loc : Location,
+) -> Unit raise {
+  if depth >= self.limits.depth {
+    raise problem(Limit, loc, "JSON value depth limit exceeded")
+  }
+  self.tick(loc)
+  match value {
+    Number(n, ..) => ignore(finite(n, loc))
+    Array(items) =>
+      for item in items {
+        self.check_json_finite(item, depth + 1, loc)
+      }
+    Object(fields) =>
+      for _, item in fields {
+        self.check_json_finite(item, depth + 1, loc)
+      }
+    _ => ()
   }
 }
 

@@ -317,3 +317,19 @@ profile groups. Only parseYaml is newly mapped; all66 previous public records
 and225 language evidence fields remain byte-identical, giving67 public subsets
 and zero whole-function acceptances. The new source does not inherit816/816,
 release or Linux results. Best-effort is not a full YAML standards promise.
+
+
+## parseJson complete-input and finite-data continuation at 727a59d
+
+The [input-domain continuation](SPEC-JSON-CONTRACTS-2026-10-23.md#parsejson-input-domain-continuation-frozen-at-727a59d)
+reuses existing JC1/JC2/JC4 evidence and adds five scoped EOF/escape/finite/key/
+resource groups. The baseline passed4/5: an Object's nonfinite Number was deferred
+past type(). The final parseJson-only read-only tree validation fixes that gap
+while retaining the original data construction, scalar roots and generic field
+laziness. A rejected constructor-reuse candidate's25/26 failure remains recorded;
+its arbitrary-key collision is not hidden by changing a test. Final26/26 passes
+without legacy/oracle migrations. Only this existing public record extends:
+other66 stay equal,67 subsets and zero whole-function accepts. Sixteen disjoint
+stdlib inspection hashes are maintained, with all225 language evidence/decisions
+otherwise equal. BOM/lone-surrogate/duplicate-key and broader resource/numeric
+questions remain separate; prior full/Linux counts are not inherited.

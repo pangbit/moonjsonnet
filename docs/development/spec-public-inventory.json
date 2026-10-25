@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "bbe0bc37864b8eee327329e2ced308f3a1f2f275",
-  "uncommitted_test_paths": "json_yaml_diagnostic_test.mbt\nparse_yaml_test.mbt\nspec_parse_yaml_contract_test.mbt\nspec_parse_yaml_profile_test.mbt",
+  "input_source_commit": "727a59dd9695009113a554b1d623dd071950ede0",
+  "uncommitted_test_paths": "spec_parse_json_input_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "965028fe74da63f52ee9c5a43e7d19d4464f915a01fb3dcb7359311c48d2d7b8",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -142,6 +142,7 @@
     "spec_operator_rewrites_test.mbt": "ea6f10a9e4ce289d228c21c0d0dc10d1efc9d8ee2f791e645e6523ee665b59e4",
     "spec_operator_tokens_test.mbt": "2c4046d97f089d130b7b84d3f907e68707ac5b2ebc9bebe373b2b2f2f38c7d0d",
     "spec_operator_tokens_wbtest.mbt": "896ac6d32f1def656fe0085409c68bd5cc8abe804826358b68435903a368785a",
+    "spec_parse_json_input_test.mbt": "b5670db7d32b7eaab017aa043a6b590053824cb9354a2af184239c358faf65fc",
     "spec_parse_yaml_contract_test.mbt": "ed1bfcd735a4f2599d0242af78715710bc9ece628d1e725df1896bf7d67eaeb2",
     "spec_parse_yaml_profile_test.mbt": "39137883964d32308c402e2898127e8020ef3a7beb3edade0f3fdcf6f3edb3f9",
     "spec_precedence_test.mbt": "77c48b9b7cc730acd6bb1044319768ea6afb4c82214c5a03a75ba529dfe0456a",
@@ -191,7 +192,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "dbe9bdeba00c198d264f5a7037ca4bae9dbe43ef0f6fd4bc3f7babbf681e9587"
   },
-  "coverage_sha256": "8c97c84e91d5bff00e6c67d0a8b5f7527ca47e68abc469920a1cef20e0019da3",
+  "coverage_sha256": "34dc426c9dc47d226ff1534d8583695ad33898b30c9404f7875cbecaafa37f0e",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -5193,7 +5194,7 @@
           ],
           "defaults": {},
           "test": "spec_json_contracts_test.mbt",
-          "status": "Fixed documentation/source names; positional/named successes and missing/unknown refusal checked. Ex requires value/indent and supplies the two source defaults. Binding diagnostic tags/counters are host checks."
+          "status": "One required str and no defaults; existing positional/named and missing/unknown controls retained, with the unchanged common binder. No YAML root restriction or unrelated output options apply."
         },
         "reference_candidates": [
           {
@@ -5201,27 +5202,45 @@
             "line": 95,
             "test_declaration": "test \"parseJson converts independent JSON fixtures through source and handmade calls\" {",
             "classification": "manual dynamic-call reference; JC labels are public-report groups, not invented language-matrix IDs or automatic whole-function acceptance"
+          },
+          {
+            "file": "spec_parse_json_input_test.mbt",
+            "line": 10,
+            "test_declaration": "test \"parseJson consumes one complete JSON value for every root family\" {",
+            "classification": "PJI1-PJI5 independent literal source/handmade input, EOF/escape/finite/resource controls; preserved4pass1fail baseline and rejected25pass1fail constructor candidate, final26/26 without oracle migration."
           }
         ],
         "dimensions": {
           "N": {
             "test": "spec_json_contracts_test.mbt",
-            "expectation": "JC1: literal scalar/empty/nested JSON String data and standard Unicode escapes through positional/named str and independent Call ASTs."
+            "additional_tests": [
+              "spec_parse_json_input_test.mbt"
+            ],
+            "expectation": "JC1 plus PJI1/PJI2: all JSON primitive/Array/Object roots, bounded nested data, standard escapes, canonical well-formed Unicode pairs, literal astral data, interior U+FEFF and arbitrary String keys retain literal outcomes through source/handmade calls. JSON scalar roots remain legal."
           },
           "E": {
-            "test": "spec_json_contracts_test.mbt",
-            "expectation": "JC2/JC4: malformed JSON data, wrong outer kinds, required input errors and scalar nonfinite production fail; missing/unknown bindings reject before argument native gates."
+            "test": "spec_parse_json_input_test.mbt",
+            "additional_tests": [
+              "spec_json_contracts_test.mbt"
+            ],
+            "expectation": "PJI1/PJI3/PJI4 plus JC2/JC4 reject nonwhitespace suffix/second values/comments, invalid JSON String escapes/controls, malformed/wrong-head data and required input errors. Every actual parsed unique-key tree Number is finite before type/length/unrelated field success. Binding rejects before supplied gates; exact error wording/order is not normative."
           },
           "L": {
-            "test": "spec_json_contracts_test.mbt",
-            "expectation": "JC2: unused whole parse calls do not validate malformed data or force invalid/error operands; rejected nonstring heads do not read container/function payloads."
+            "test": "spec_parse_json_input_test.mbt",
+            "additional_tests": [
+              "spec_json_contracts_test.mbt"
+            ],
+            "expectation": "JC2/PJI4/PJI5: unused whole parse calls stay lazy and wrong outer heads skip payloads. Strict validation traverses already parsed JSON data only; generic Jsonnet field expressions remain lazy and the original result/key construction is retained."
           },
           "B": {
-            "test": "spec_json_contracts_test.mbt",
-            "expectation": "JC1/JC2: empty/scalar roots, nested arrays/objects, NUL/newline/astral String data and no successful scalar overflow. Full parsing/rounding/surrogate/duplicate-key policy is not inferred."
+            "test": "spec_parse_json_input_test.mbt",
+            "additional_tests": [
+              "spec_json_contracts_test.mbt"
+            ],
+            "expectation": "All root families and JSON whitespace/EOF, empty containers, exact Unicode/escape/reserved-key data and nested positive/negative overflow are mapped. PJI5 distinguishes quoted brackets from actual nesting under a controlled host depth bound; no universal rounding/resource threshold is inferred."
           }
         },
-        "remaining": "Reviewed public input/output subset, not whole-function conformance. Duplicate JSON keys, malformed host String/surrogate policy, general decimal/escape/rendering and resource combinations, unused invalid option value types, exact error presentation, all argument combinations and broader assertion behavior remain unproved. The paper conflicts and shift exclusions stay unchanged."
+        "remaining": "Input responsibility reviewed at SPEC-JSON-CONTRACTS-2026-10-23.md#parsejson-input-domain-continuation-frozen-at-727a59d. Initial BOM, lone/ill-paired surrogate and malformed host-text recovery, duplicate keys, general numeric rounding and unbounded grammar/resource proofs remain separately unadjudicated. Canonical paired JSON-data witnesses do not settle Jsonnet source quoting. No whole-function acceptance, exact diagnostic winner or native callback-order promise. Existing native_result reserved-key risk is documented separately; this repair leaves that helper and its other entry points unchanged."
       },
       "test_reference_candidates": [
         {
@@ -5247,6 +5266,12 @@
           "line": 95,
           "test_declaration": "test \"parseJson converts independent JSON fixtures through source and handmade calls\" {",
           "classification": "manual dynamic-call reference; JC labels are public-report groups, not invented language-matrix IDs or automatic whole-function acceptance"
+        },
+        {
+          "file": "spec_parse_json_input_test.mbt",
+          "line": 10,
+          "test_declaration": "test \"parseJson consumes one complete JSON value for every root family\" {",
+          "classification": "PJI1-PJI5 independent literal source/handmade input, EOF/escape/finite/resource controls; preserved4pass1fail baseline and rejected25pass1fail constructor candidate, final26/26 without oracle migration."
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
