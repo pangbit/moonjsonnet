@@ -41,7 +41,6 @@ test "P0 lazy boundaries and finite aggregate results remain valid" {
       ("{bad::std.sum([1e308,1e308]),good:1}", "{\"good\":1}"),
       ("if false then [10,20][0.5] else 42", "42"),
       ("std.length(std.removeAt([error 'unused',2],1))", "1"),
-      ("std.length(std.remove([1,error 'unused'],1))", "1"),
       (
         "[std.sum([]),std.sum([1,2,3]),std.avg([1,2,3]),std.sum([1e308,-1e308])]",
         "[0,6,2,0]",
@@ -53,4 +52,10 @@ test "P0 lazy boundaries and finite aggregate results remain valid" {
     ] {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))
   }
+  // The complete find search requires this retained head before returning.
+  let required = array_contract_error(
+    "std.length(std.remove([1,error 'unused'],1))",
+  )
+  assert_eq(required.kind, @moonjsonnet.Runtime)
+  assert_eq(required.message, "unused")
 }

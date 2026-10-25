@@ -5,7 +5,6 @@ test "remove and removeAt preserve lazy payloads and immutable inputs" {
       ("std.remove([1,2,1,3],1)", "[2,1,3]"),
       ("std.remove([{a:1,h::2},{a:2}],{a:1})", "[{\"a\":2}]"),
       ("std.removeAt([error 'unused',2],0)", "[2]"),
-      ("std.length(std.remove([1,error 'unused'],1))", "1"),
       (
         "local a=[1,2,3]; local m=std.map(function(x)x,a); [std.length(m),std.removeAt(a,0),m]",
         "[3,[2,3],[1,2,3]]",
@@ -34,13 +33,19 @@ test "remove and removeAt preserve lazy payloads and immutable inputs" {
     ] {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))
   }
+  // Fixed remove first computes all find indices; only removeAt is a lazy copy.
+  let required = array_contract_error(
+    "std.length(std.remove([1,error 'unused'],1))",
+  )
+  assert_eq(required.kind, @moonjsonnet.Runtime)
+  assert_eq(required.message, "unused")
 }
 
 ///|
 test "remove validates inputs without native bounds failures" {
   for
     source in [
-      "std.remove([],error 'forced')", "std.remove([error 'forced'],0)", "std.remove([function()0],function()0)",
+      "std.remove([error 'forced'],0)", "std.remove([function()0],function()0)",
       "std.remove('abc','a')", "std.removeAt([1],-1)", "std.removeAt([1],1)", "std.removeAt([],0)",
       "std.removeAt([1],0.5)", "std.removeAt([1],'0')",
     ] {
@@ -50,6 +55,10 @@ test "remove validates inputs without native bounds failures" {
       _ => fail("expected remove error: " + source)
     }
   }
+  assert_eq(
+    @moonjsonnet.evaluate("std.remove([],error 'forced')"),
+    Json::array([]),
+  )
 }
 
 ///|

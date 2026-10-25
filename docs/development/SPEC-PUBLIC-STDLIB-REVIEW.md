@@ -156,6 +156,17 @@ questions remain conditional; unspecified traces/storage/diagnostic winners are
 not pending requirements. The count stays66 subsets and zero unconditional
 whole-function acceptances; no new public function or general rule is added.
 
+The [remove search-demand correction](SPEC-REMOVE-SEARCH-2026-10-25.md)
+changes one existing reviewed subset. The frozen baseline passed1/3 and exposed
+both an eagerly forced empty-search target and illegal length1 after a required
+tail error. Routing to the exact embedded definition restores full find demand;
+17 selected regression groups pass after three individually justified old-input
+migrations. The old L inference about an erroneous retained head is superseded,
+while removeAt's distinct lazy-copy controls remain. All65 other public records
+stay unchanged:66 reviewed subsets and zero whole-function acceptances remain.
+B0's strict RHS sample is compatibility-only, not a normative pass or a reason
+to change the Boolean evaluator.
+
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its
 source-header assumptions were reviewed against those exact bytes. It records

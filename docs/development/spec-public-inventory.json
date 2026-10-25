@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "f3871b8bc8a8b9e0e0332d6766d50824960df3ca",
-  "uncommitted_test_paths": "spec_object_assertion_paths_test.mbt",
+  "input_source_commit": "a03af756d74e97cbf84ca1c5dd8fbf4a2775fb68",
+  "uncommitted_test_paths": "remove_test.mbt\nspec_aggregate_test.mbt\nspec_boolean_rhs_profile_test.mbt\nspec_remove_search_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -61,7 +61,7 @@
     "program_parameters_test.mbt": "c6491f7f73ec8dafcd0ab97bfb10606c251b6ba1722cbbca2a492a622a39b91e",
     "program_test.mbt": "7932f143daf41eae2d477be035bf0ff059b23094c7e1786cec01ad750ff43be6",
     "raw_ast_test.mbt": "9009981d5a1e56a1e1fdd33f43c937b0f4638f4393e35e61c847fd64b6a5b4e5",
-    "remove_test.mbt": "69f6fb8769d683a9567f0b60d52f24a5df54dd2ba2aa92ce6be9efb39fec6888",
+    "remove_test.mbt": "1a9f970ccda698c569594f5611d62a2076f5fdac1795323f7c2ac20ec8fe7b31",
     "render_test.mbt": "de5bec68aa7a01e91b9c4033e04a822752f562f69a560c4e197fe9de63c451e3",
     "sequence_combine_test.mbt": "cbc22e5934cd48df0244d772fab35ad3ceb93135b7d6c59c5fc742d22f64ccb7",
     "sequence_test.mbt": "4e357359c56a1416c2e5f4d015f5faeae699822b64cd4376ca88d54080efb99b",
@@ -71,7 +71,7 @@
     "source_fidelity_wbtest.mbt": "15ab02366daf8fbbcc88abcf17fa46a0886eeaabe4e0aff52aefe854de61441d",
     "source_range_test.mbt": "6816cf11eb3a70e8ce82cd1f2eaffa711ceee6cf8fca2b20efbbebbe94383790",
     "spec_additive_fields_test.mbt": "831593d7e2afce69bf9a5dd8518ccb88c0f28648a35368d9316bea2c79284852",
-    "spec_aggregate_test.mbt": "ba202765fb4669f805d00b087666df00be4ff3f128bd2f98bc8451bdd9b8f50c",
+    "spec_aggregate_test.mbt": "088cf53438c579b18f06469afce3bf3bd52f9fc7da19c3239bba61e60f792adc",
     "spec_array_build_test.mbt": "fcc4c68261358372994b4c2c48b4b734412531bafbafe503b97a1361a088b0c1",
     "spec_array_flatmap_test.mbt": "e391589a1f16e5e4debfbcae10459513bbed788d780d5f6a4d8b67eb68889ec7",
     "spec_array_fold_test.mbt": "6e714f7ba7d79f7a62317948069eb1e9b9ab65cb56053f1e945b75b720168c49",
@@ -81,6 +81,7 @@
     "spec_assertion_local_test.mbt": "4ec20f1a324e8655c194e1b9d4aa1553218cb45d2d279e3c255e3eeab555a155",
     "spec_assertion_self_test.mbt": "eaf067af506d8151d87cfe8f8cbe2527580cabb6d5a8b73ea2a56a88072faaf6",
     "spec_assertion_super_test.mbt": "d118e17f3fd36f4bcfaa5ebbd6ec4131cb8794c738a6826cac0ea7c23b24f884",
+    "spec_boolean_rhs_profile_test.mbt": "c499566dac0ba4a7dd9ee6c5623b572022aabf180c20cf92c26b9904effa6378",
     "spec_boolean_shortcircuit_test.mbt": "730b05bfade40138c803a0223387fee8b11f92117fcc1996dda46cf8c71109ef",
     "spec_bounded_shift_test.mbt": "dff823b5287e3a7a6a502f04bbdc7a3afbd589fa5db019396f5df8e801df3d81",
     "spec_composed_strings_test.mbt": "896627825a13c8760a163a97fe2f49a22155be78e3204c08acde6bdf3fce1ed0",
@@ -143,6 +144,7 @@
     "spec_quoted_strings_test.mbt": "44842e6027a39427b42b57bcc5d23d0992defac26a041f6684c599300c9327e6",
     "spec_quoted_strings_wbtest.mbt": "963072925337f5645724f43dfaad763df8ecc207a9d8ce566682ffbb5a508ad6",
     "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b",
+    "spec_remove_search_test.mbt": "117993dc2907e848f233510aec0c70f8a38d9953b751ace40f4278543b9f7ae8",
     "spec_remove_test.mbt": "94b514e9ba69c2b5ad55f8c8e020ec7ab44ceac495150b9cd7020cbdea37c75c",
     "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
     "spec_root_scope_test.mbt": "6f43b1017c33c74f6207911312193df725bf06d59d09d7464546a0a16cb461d5",
@@ -180,7 +182,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "503abb40edc30e3b839329231df3c967cada9cefad7296e7def18dc704316e95",
+  "coverage_sha256": "cbecf4fae4ff9f770e94775316fe8bf70a79e287a71df3557ec585efe75396d6",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -1330,7 +1332,7 @@
       "test_reference_candidates": [
         {
           "file": "remove_test.mbt",
-          "line": 17,
+          "line": 16,
           "test_declaration": "test \"remove and removeAt preserve lazy payloads and immutable inputs\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -2446,7 +2448,7 @@
         },
         {
           "file": "remove_test.mbt",
-          "line": 8,
+          "line": 9,
           "test_declaration": "test \"remove and removeAt preserve lazy payloads and immutable inputs\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -3345,7 +3347,7 @@
       "test_reference_candidates": [
         {
           "file": "spec_aggregate_test.mbt",
-          "line": 49,
+          "line": 48,
           "test_declaration": "test \"P0 lazy boundaries and finite aggregate results remain valid\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -3493,7 +3495,7 @@
         },
         {
           "file": "remove_test.mbt",
-          "line": 10,
+          "line": 9,
           "test_declaration": "test \"remove and removeAt preserve lazy payloads and immutable inputs\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -4461,7 +4463,7 @@
         },
         {
           "file": "remove_test.mbt",
-          "line": 69,
+          "line": 78,
           "test_declaration": "test \"flat object merge keeps bindings visibility and self while dropping assertions\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -5597,19 +5599,55 @@
         "name": "remove",
         "dimensions": {
           "N": {
-            "test": "spec_remove_test.mbt",
-            "expectation": "Deleting a present element and the missing-element example preserve the original."
+            "test": "spec_remove_search_test.mbt",
+            "expectation": "RSD1/RSD3: empty/original alias, first-occurrence deletion, duplicate matching values, absent elements and positional/reordered named calls have literal unchanged-array/result expectations. Existing spec_remove immutability controls remain source-bound supporting evidence.",
+            "additional_tests": [
+              "spec_remove_test.mbt"
+            ]
+          },
+          "E": {
+            "test": "spec_remove_search_test.mbt",
+            "expectation": "RSD2/RSD3: an isolated required comparison head before or after an earlier match, required elem on a nonempty array and input-head errors propagate supplied Runtime markers before a result head. Both length/type observations require complete find. No same-type function-equality or competing-error oracle."
           },
           "L": {
-            "test": "spec_aggregate_test.mbt",
-            "expectation": "Length of deletion result does not force retained payload."
+            "test": "spec_remove_search_test.mbt",
+            "expectation": "RSD1-RSD3: an empty search skips elem; nonempty search compares every element head even after its first match. Retained nested Array/Object payloads remain lazy when disjoint types decide equality. Whole unused calls and explicit if/Boolean shortcut wrappers skip errors; this supersedes the old retained-error-head length1 claim, which was not source-correct."
           },
           "B": {
-            "test": "spec_remove_test.mbt",
-            "expectation": "Missing element example leaves input/result unchanged."
+            "test": "spec_remove_search_test.mbt",
+            "expectation": "Empty/single/multiple matches, early/duplicate match plus a later required error, no match, primitive target versus lazy nested containers, unchanged originals and Bool/if control-flow integration. Source invokes first valid removeAt index positionally, without adjudicating its named-index conflict."
           }
         },
-        "remaining": "Search/forcing/error and complete named-argument contracts are not adjudicated; legacy remove_test errors are not assumed normative."
+        "remaining": "The reviewed source-defined remove search contract now requires the full find result, fixing premature target forcing and native first-match early exit. The old L claim that length skipped an erroneous retained head is explicitly superseded with three preserved input/expectation migrations; removeAt lazy copying remains separate. No whole-function acceptance: complete parameter/error/producer and equality child domains retain their scopes, including PE0 where applicable; diagnostic wording, independent error winner, exact native traces and resource complexity are not added requirements. B0 is separately unadjudicated and not used as this search oracle. No Go/C++ output or old full-suite count validates the new bytes.",
+        "signature_review": {
+          "parameters": [
+            "arr",
+            "elem"
+          ],
+          "defaults": {},
+          "test": "spec_remove_search_test.mbt",
+          "status": "Fixed public/source arr,elem names agree and are required. Independent positional/reordered named calls execute; complete mixed/invalid-binding domain remains a shared obligation. Source calls removeAt positionally, so its idx/at/i name dispute is not silently resolved."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_remove_search_test.mbt",
+            "line": 43,
+            "test_declaration": "test \"remove empty arrays skip target evaluation through positional and named calls\" {",
+            "classification": "RSD1 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
+          },
+          {
+            "file": "spec_remove_search_test.mbt",
+            "line": 65,
+            "test_declaration": "test \"remove completes every find comparison before returning a result head\" {",
+            "classification": "RSD2 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
+          },
+          {
+            "file": "spec_remove_search_test.mbt",
+            "line": 89,
+            "test_declaration": "test \"remove preserves first deletion values aliases nested laziness and control flow gates\" {",
+            "classification": "RSD3 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
+          }
+        ]
       },
       "test_reference_candidates": [
         {
@@ -5620,7 +5658,7 @@
         },
         {
           "file": "spec_aggregate_test.mbt",
-          "line": 44,
+          "line": 57,
           "test_declaration": "test \"P0 lazy boundaries and finite aggregate results remain valid\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -5629,6 +5667,12 @@
           "line": 12,
           "test_declaration": "test \"P0 immutable array deletion preserves originals and deferred aliases\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_remove_search_test.mbt",
+          "line": 43,
+          "test_declaration": "test \"remove empty arrays skip target evaluation through positional and named calls\" {",
+          "classification": "RSD1 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"

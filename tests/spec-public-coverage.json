@@ -17,7 +17,60 @@
   {"name":"length","dimensions":{"N":{"test":"spec_length_test.mbt","expectation":"All declared function parameters and Unicode/array/visible-object lengths in the asserted examples."},"E":{"test":"spec_length_test.mbt","expectation":"null/boolean/number inputs raise Type."},"L":{"test":"spec_length_test.mbt","expectation":"Reflection does not force defaults, body, array payloads, hidden fields or native callback."},"B":{"test":"spec_length_test.mbt","expectation":"Zero parameters, optional parameters and supplementary Unicode example."}},"remaining":"Complete signature/arity/error-order and every container/visibility combination remain unreviewed."},
   {"name":"sum","dimensions":{"N":{"test":"spec_aggregate_test.mbt","expectation":"Empty sum, finite examples and cancellation without overflow."},"E":{"test":"spec_aggregate_test.mbt","expectation":"Overflow is Runtime at the first invalid addition, before later operands or type inspection."},"L":{"test":"spec_aggregate_test.mbt","expectation":"Unused binding, short circuit and hidden fields do not evaluate overflow."},"B":{"test":"spec_aggregate_test.mbt","expectation":"Empty array and large finite/cancellation examples."}},"remaining":"All element/argument types, signatures and evaluation orders are not fully adjudicated."},
   {"name":"avg","dimensions":{"N":{"test":"spec_aggregate_test.mbt","expectation":"Finite average of [1,2,3] is 2."},"E":{"test":"spec_aggregate_test.mbt","expectation":"Intermediate sum overflow fails before division/cancellation or consumers."},"L":{"test":"tests/spec-acceptance.json","case":"short-circuit-or","expectation":"The average on the unselected right side of true || remains unforced."},"B":{"test":"spec_aggregate_test.mbt","expectation":"Large finite operands that overflow the intermediate sum are rejected."}},"remaining":"Empty/type/signature/error-order coverage outside these reviewed tests remains unadjudicated."},
-  {"name":"remove","dimensions":{"N":{"test":"spec_remove_test.mbt","expectation":"Deleting a present element and the missing-element example preserve the original."},"L":{"test":"spec_aggregate_test.mbt","expectation":"Length of deletion result does not force retained payload."},"B":{"test":"spec_remove_test.mbt","expectation":"Missing element example leaves input/result unchanged."}},"remaining":"Search/forcing/error and complete named-argument contracts are not adjudicated; legacy remove_test errors are not assumed normative."},
+  {
+    "name": "remove",
+    "dimensions": {
+      "N": {
+        "test": "spec_remove_search_test.mbt",
+        "expectation": "RSD1/RSD3: empty/original alias, first-occurrence deletion, duplicate matching values, absent elements and positional/reordered named calls have literal unchanged-array/result expectations. Existing spec_remove immutability controls remain source-bound supporting evidence.",
+        "additional_tests": [
+          "spec_remove_test.mbt"
+        ]
+      },
+      "E": {
+        "test": "spec_remove_search_test.mbt",
+        "expectation": "RSD2/RSD3: an isolated required comparison head before or after an earlier match, required elem on a nonempty array and input-head errors propagate supplied Runtime markers before a result head. Both length/type observations require complete find. No same-type function-equality or competing-error oracle."
+      },
+      "L": {
+        "test": "spec_remove_search_test.mbt",
+        "expectation": "RSD1-RSD3: an empty search skips elem; nonempty search compares every element head even after its first match. Retained nested Array/Object payloads remain lazy when disjoint types decide equality. Whole unused calls and explicit if/Boolean shortcut wrappers skip errors; this supersedes the old retained-error-head length1 claim, which was not source-correct."
+      },
+      "B": {
+        "test": "spec_remove_search_test.mbt",
+        "expectation": "Empty/single/multiple matches, early/duplicate match plus a later required error, no match, primitive target versus lazy nested containers, unchanged originals and Bool/if control-flow integration. Source invokes first valid removeAt index positionally, without adjudicating its named-index conflict."
+      }
+    },
+    "remaining": "The reviewed source-defined remove search contract now requires the full find result, fixing premature target forcing and native first-match early exit. The old L claim that length skipped an erroneous retained head is explicitly superseded with three preserved input/expectation migrations; removeAt lazy copying remains separate. No whole-function acceptance: complete parameter/error/producer and equality child domains retain their scopes, including PE0 where applicable; diagnostic wording, independent error winner, exact native traces and resource complexity are not added requirements. B0 is separately unadjudicated and not used as this search oracle. No Go/C++ output or old full-suite count validates the new bytes.",
+    "signature_review": {
+      "parameters": [
+        "arr",
+        "elem"
+      ],
+      "defaults": {},
+      "test": "spec_remove_search_test.mbt",
+      "status": "Fixed public/source arr,elem names agree and are required. Independent positional/reordered named calls execute; complete mixed/invalid-binding domain remains a shared obligation. Source calls removeAt positionally, so its idx/at/i name dispute is not silently resolved."
+    },
+    "reference_candidates": [
+      {
+        "file": "spec_remove_search_test.mbt",
+        "line": 43,
+        "test_declaration": "test \"remove empty arrays skip target evaluation through positional and named calls\" {",
+        "classification": "RSD1 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
+      },
+      {
+        "file": "spec_remove_search_test.mbt",
+        "line": 65,
+        "test_declaration": "test \"remove completes every find comparison before returning a result head\" {",
+        "classification": "RSD2 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
+      },
+      {
+        "file": "spec_remove_search_test.mbt",
+        "line": 89,
+        "test_declaration": "test \"remove preserves first deletion values aliases nested laziness and control flow gates\" {",
+        "classification": "RSD3 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
+      }
+    ]
+  },
   {"name":"removeAt","dimensions":{"N":{"test":"spec_remove_test.mbt","expectation":"Positional deletion preserves original, aliases and earlier map/slice."},"L":{"test":"spec_review_test.mbt","expectation":"Result shares cached payload once; removed/retained error payloads stay lazy for length/other indices."},"B":{"test":"spec_remove_test.mbt","expectation":"Deleting sole element and chained deletion keep inputs immutable."}},"remaining":"Named parameter idx versus source at/current i is unresolved. Invalid/fractional/out-of-range index behavior is not assumed from Go tests."},
   {"name":"manifestYamlDoc","dimensions":{"E":{"test":"spec_yaml_test.mbt","expectation":"Root/nested functions and nested runtime errors fail instead of returning partial YAML."},"L":{"test":"spec_aggregate_test.mbt","expectation":"Unused manifestation and hidden fields remain unforced."}},"remaining":"All formatting/options/normal-result/numeric/layout boundaries are not adjudicated by this error/lazy subset."},
   {"name":"manifestYamlStream","dimensions":{"E":{"test":"spec_yaml_test.mbt","expectation":"Errors and functions in any demanded document fail the stream call."}},"remaining":"Official documentation c_document_end=false conflicts with source default true; normal/default/options/lazy/boundary behavior remains unresolved or unmapped."},

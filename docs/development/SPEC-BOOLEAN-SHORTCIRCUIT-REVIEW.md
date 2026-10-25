@@ -81,3 +81,24 @@ All fixtures are finite and assertion-free, bounded by steps=5000, depth=48
 and stack=64. Use one reduced-priority worker with frozen local dependencies;
 no full suite, remote/browser/CLI run, installation, push, tag, private/imported
 file or network I/O is included.
+
+## Current B0 closeout at a03af75
+
+The [current control/search review](SPEC-REMOVE-SEARCH-2026-10-25.md#b0-closeout-and-pivot)
+rechecks the same fixed longcut domain. Boolean b in desugaring-helper signatures
+is a local parameter, not an execution-rule metavariable declaration. The guide
+fixes if's condition domain and the explicit shortcuts; neither resolves forced
+non-Boolean RHS transfer. A separate frozen strict-extension profile is only
+compatibility evidence with normative acceptance null. Existing BS/IF groups
+will provide fresh decisive-path regression; no new Boolean rule completion or
+implementation change follows. This B0 branch is closed for further experiments
+pending a source clarification. Work proceeds to remove's independently defined
+full-search/empty-target demand rather than waiting for that clarification.
+
+Current execution: the unchanged BS/IF files passed 8/8 before the independent
+remove baseline and all eight also passed within the final 17 regression groups.
+The strict RHS profile passed 1/1 separately before and after the source repair;
+its normative acceptance remains null. No Boolean implementation or completion
+record changed. The original raw search result 1 instead of the required tail
+error and its source-defined repair are in the linked report. B0 remains a
+source-domain question; further same-fragment experiments stop here.

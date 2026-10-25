@@ -2,7 +2,7 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "b3f5d12cca48ee1a6a536da0a2814d39c4e7c800614e2eb3084cdbac1d8545cf",
+  "mapping_sha256": "a5f3916cfa8f117d73c1543d8de5a064ed555a2e4a6aa272fdebee15d18c5645",
   "tool_sha256": "da3657872b9348056bfcf5579eba583f1dc9fbd1f854be99bc59ce77ab94296f",
   "mapping_schema_version": 2,
   "global_test_ids": 225,
@@ -6214,7 +6214,7 @@
           "BS2"
         ]
       },
-      "remaining": "The [Boolean operator review](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md) verifies Boolean right-result transfer and required explicit errors. B0 remains unknown: the printed e_R ↓ b has no explicit Boolean domain premise, and the fixed language/library sources do not settle forced non-Boolean RHS rejection versus transfer. No implementation/Go/C++ output resolves it and no forced non-Boolean RHS probe is counted passing. The general child judgments and static constructor remain separate.",
+      "remaining": "The [Boolean operator review](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md) verifies Boolean right-result transfer and required explicit errors. B0 remains unknown: the printed e_R ↓ b has no explicit Boolean domain premise, and the fixed language/library sources do not settle forced non-Boolean RHS rejection versus transfer. No implementation/Go/C++ output resolves it and no forced non-Boolean RHS probe is counted passing. The general child judgments and static constructor remain separate. The current [control/search closeout](SPEC-REMOVE-SEARCH-2026-10-25.md#b0-closeout-and-pivot) records a strict-extension non-Boolean RHS profile with normative acceptance null and revalidates existing BS/IF paths. No global b domain or Boolean implementation change is inferred. Independent-error diagnostic winner is not a promise. This B0 conflict/applicability branch stops; the separate remove search demand is determined by its fixed source.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt"
@@ -6335,7 +6335,7 @@
           "BS2"
         ]
       },
-      "remaining": "The [Boolean operator review](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md) verifies Boolean right-result transfer and required explicit errors. B0 remains unknown: the printed e_R ↓ b has no explicit Boolean domain premise, and the fixed language/library sources do not settle forced non-Boolean RHS rejection versus transfer. No implementation/Go/C++ output resolves it and no forced non-Boolean RHS probe is counted passing. The general child judgments and static constructor remain separate.",
+      "remaining": "The [Boolean operator review](SPEC-BOOLEAN-SHORTCIRCUIT-EVIDENCE-2026-10-22.md) verifies Boolean right-result transfer and required explicit errors. B0 remains unknown: the printed e_R ↓ b has no explicit Boolean domain premise, and the fixed language/library sources do not settle forced non-Boolean RHS rejection versus transfer. No implementation/Go/C++ output resolves it and no forced non-Boolean RHS probe is counted passing. The general child judgments and static constructor remain separate. The current [control/search closeout](SPEC-REMOVE-SEARCH-2026-10-25.md#b0-closeout-and-pivot) records a strict-extension non-Boolean RHS profile with normative acceptance null and revalidates existing BS/IF paths. No global b domain or Boolean implementation change is inferred. Independent-error diagnostic winner is not a promise. This B0 conflict/applicability branch stops; the separate remove search demand is determined by its fixed source.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt"
