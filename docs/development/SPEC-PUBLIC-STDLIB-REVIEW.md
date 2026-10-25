@@ -129,6 +129,15 @@ to a Boolean length failure. General native key counts/order and an independent
 diagnostic winner are non-promises, not indefinitely pending requirements.
 Other receiver/comparison gaps remain; still65 subsets and zero whole functions.
 
+The [receiver/comparison boundary](SPEC-SORT-DEMAND-2026-10-25.md#standard-receiver-composition-and-comparison-boundary)
+links four existing-object-file cases to partial language rules. A preserved
+2-pass/2-failure baseline exposed lost final self in an inherited optimized
+field; the source-context repair passed4/4 plus44 neighbors while canonical
+std stays native. Saved/forwarded functions remain lexical, not receiver hooks.
+The malformed comparison conclusions remain a stopped global document conflict,
+with a proposed erratum only. No sort-specific framework or function completion
+was added;65 reviewed subsets and zero whole functions remain.
+
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its
 source-header assumptions were reviewed against those exact bytes. It records

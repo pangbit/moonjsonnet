@@ -608,3 +608,156 @@ needed. The original source/fixture guards and both preserved failure runs remai
 | final-info | 0 | 0.272 |
 | final-format | 0 | 0.024 |
 | public-inventory | 0 | 1.637 |
+
+## Standard receiver composition and comparison boundary
+
+These are existing language obligations, not two new sort API options.
+[Object inheritance and final self](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/language.html.md#L348-L372),
+[object indexing](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2215-L2225),
+[object inheritance](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2293-L2327),
+lexical closure substitution and the fixed e_std binding apply to source-library
+fields too. The pinned source declares local std=self and sort reads that local
+receiver. Forwarding an already obtained function value is different: it keeps
+its old closure, without a new call-site receiver. The standard object is not
+advertised as a stable dependency-hook interface; the particular context result
+comes from this fixed field definition plus general language rules. An optimized
+replacement must preserve its observable value, not every internal step.
+
+Four cases were appended to the existing
+[object-language tests](../../spec_language_object_test.mbt), with the original
+seven case bodies unchanged. They link to existing object-inherit, object-index,
+apply, local-var, SUBSTITUTION, DESUGAR-FIELDS, DESUGAR-SLICE and private-library
+binding evidence in the [language matrix](SPEC-LANGUAGE-MATRIX.md). No new
+sort framework, method-hook promise or rule-completion form was introduced.
+
+| ID | Frozen independent control/result |
+| --- | --- |
+| SMC1 | A saved canonical function ignores later lexical std poison; forwarding it into a new object with length0 keeps canonical [1,2]. Both entry paths. |
+| SMC2 | Reading the inherited source field under length0 captures final self, so its <=1 branch returns literal [2,1]. This decisive counterexample evaluates no conflicted < operator. |
+| SMC3 | super field search retains final self; extracting that inherited method freezes the derived closure despite caller std shadowing. Both literal results are [2,1]. |
+| SMC4 | A31-item constant-key inherited method still uses the private canonical library for syntax slicing despite a poisoned public slice field. This integration control assumes the existing slice/comparison child profile; it does not adjudicate relational print errors. |
+
+The first four-case baseline passed SMC1/SMC4 and failed SMC2/SMC3: **2 passed,
+2 failed,exit2**. The failing source inheritance and source super arms returned
+[1,2] instead of [2,1]. Their later handmade/extraction arms were NOTRUN until
+the repair passed; the raw failure is preserved. Canonical function forwarding
+was not misclassified as a receiver defect.
+
+The minimal correction retains source sort below the native override and reads
+that source field only for an inherited receiver. Canonical std retains its
+native path; an ordinary field forwarding a function is never rebound. Source
+fields' original enclosing environment now retains the canonical private $std,
+so syntax slicing is not redirected to a public receiver override. Only
+stdlib_layer.mbt, objects.mbt and imports.mbt changed in product code. The sort
+algorithm, comparators, integer conversion, upstream source and public API are
+unchanged. The private-binding addition is a dependency of activating the
+source-method path, not a second independently measured baseline failure.
+
+The unchanged four cases then passed **4/4,exit0**. The original object cases
+passed7/7; operators/super/import/binding/sort neighbors passed33/33; canonical
+sort's original four groups, including its scale/budget control, passed4/4.
+These are48 distinct selected groups across separate commands, not a full suite.
+
+### Actual global comparison conflict: stopped without a new oracle
+
+The same fixed [less-than-false](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2369-L2378)
+and [greater-than-true as printed](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2382-L2387)
+have the following conflicting consequences under one comparison child:
+
+```text
+premise: cmp(eL,eR) = 1
+less-than-false:          eL < eR = false
+greater-than-true, raw:   eL < eR = true
+```
+
+The [greater-than-false conclusion](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2390-L2397)
+also prints <. This is a contradiction in general EXEC-OPERATORS, already held
+in the two unreviewed greater-than rows. It is not a sort-specific extension
+point or a missing native experiment. No new runtime comparison oracle or
+comparator change was made; Go/C++ are not used to choose a meaning.
+
+Recommended erratum: put > in both greater-than conclusions, consistent with
+the rule names, cmp signs and the Number/String/Array ordering prose. The public
+sort postcondition uses <= and the existing six named transfer reviews remain
+relative to their admitted comparison child. This is a proposed clarification,
+not an accepted rewrite of the fixed raw text. Literal whole-spec comparison
+consistency cannot be certified until an authoritative correction/interpretation
+is selected. This conflict branch stops here; its source hash and equations stay
+intact, without repeatedly attaching a new private requirement to every sort
+case. See the existing [relational-sign review](SPEC-RELATIONAL-SIGN-2026-10-23.md).
+
+### Binding evidence and remaining scope
+
+Base1ef7cd2327ab63d144f1e7527a399952a5fe16ba has686 entries. Only the four-case
+append differed at baseline; the other685 entries matched. Original source,
+frozen criteria/test, first-failure cutoffs, raw stdout/stderr and bounded
+PID/exit/time/group-exit receipts remain at
+`/tmp/moonjsonnet-stdlib-binding.hwa3b68x`. Each check/test was native debug,
+frozen/deny-warn/j1/no-parallelize where applicable, closed stdin and <=300s.
+The new test-file SHA-256 stayed
+`6e0b29544bd7cb89c1e9d5478a82fcf924992181f7a80b8489c5960e7600ab62`.
+
+| Stage | Exit | Actual result | Seconds |
+| --- | --- | --- | --- |
+| baseline-check | 0 | Native check passed | 0.560 |
+| baseline-test | 2 | 2 passed /2 failed (4 selected) | 5.588 |
+| repair-check | 0 | Native check passed | 0.511 |
+| repair-test | 0 | 4/4 unchanged selected cases | 7.841 |
+| old-object-neighbors | 0 | 7/7 original object cases | 0.328 |
+| binding-sort-neighbors | 0 | 33/33 related cases | 4.714 |
+| canonical-sort-neighbors | 0 | 4/4 canonical sort cases | 0.331 |
+
+| Validated artifact | SHA-256 |
+| --- | --- |
+| objects.mbt | 7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25 |
+| imports.mbt | 5854e3b0f3a928a7e8dbc1f16ee556e0a3d5cbbb680e739a5a835c6f7579d70c |
+| stdlib_layer.mbt | eb377427476933be93e0d269933859006f04f7f62147b078ee1abc1caea61325 |
+| spec_language_object_test.mbt | 6e0b29544bd7cb89c1e9d5478a82fcf924992181f7a80b8489c5960e7600ab62 |
+| baseline-test stdout | 1954374a16e8e9025bd7ffe4b16ba3311c66de9c44716775bc953b46b15e0669 |
+| repair-test stdout | 68e3eed91ee5d217ff66600d731275bc52d0148ef97ff479d64faef8d2e15499 |
+| old-object-neighbors stdout | 29250d71d26eddc15e31c1bdd9bba84e69f30e65ab60f24e083ca22ffdaddc4a |
+| binding-sort-neighbors stdout | 68c4c6881ce4c27d1a508e590f60bdf047fd85f8b316c64187e9ae7305d7b527 |
+| canonical-sort-neighbors stdout | 68e3eed91ee5d217ff66600d731275bc52d0148ef97ff479d64faef8d2e15499 |
+
+SMC1-SMC4 only extend existing partial language rows. All216 prior evidence
+records stay equal; four canonical case IDs make220. Fourteen snapshots of
+unchanged membership/visibility/assertion helpers are rebound after inspecting
+the added early field-value guard; their contracts/arguments are unchanged.
+The first in-memory metadata preparation encountered an absent optional boundary
+field in DESUGAR-SLICE and stopped before writing; the update reused that row's
+existing normal/lazy dimensions, with no schema change or new semantic run.
+
+No new sort-specific unresolved hook requirement remains. General substitution/
+inheritance and N0/R0/DF0 stay partial at their existing matrix scopes; the global
+comparison conflict remains exactly recorded. No whole-function or language
+acceptance is inferred;65 public subsets/zero whole functions are unchanged.
+Full package, release, CLI, Linux and reference campaigns were NOTRUN. No older
+full-suite result validates these new product bytes. No SSH, upstream edit,
+private proposal import, snapshot update or push was performed.
+
+### Final metadata and interface checks for receiver composition
+
+The required native interface generation and formatting both exited0; no .mbti
+changed, and all eight validated product/oracle hashes remained unchanged.
+The language generator first rejected a new assertion anchor whose multiline
+literal omitted its formatting comma, then rejected four existing whole-file
+test snapshots after the append. Only exact assertion-call anchors and those
+four hashes were corrected: all seven original case bodies remain byte-identical
+and passed7/7. Both original generator failures remain in the evidence directory.
+No test result or normative expected value was changed by metadata alignment.
+
+| Stage | Exit | Seconds |
+| --- | --- | --- |
+| final-info | 0 | 0.265 |
+| final-format | 0 | 0.024 |
+| language-matrix | 1 | 0.211 |
+| language-matrix-corrected | 1 | 3.492 |
+| language-matrix-final | 0 | 4.308 |
+| public-inventory | 0 | 1.574 |
+
+The regenerated language matrix retains28 completed named-rule reviews, one
+constructor transfer relative to children,63 partial rows and two unreviewed
+rows. The two malformed greater-than rules remain unreviewed. The220 canonical
+evidence IDs include the four new cases; all216 older evidence objects are
+unchanged. This is evidence alignment after a measured repair, not a new rule
+completion or whole-language/function acceptance.

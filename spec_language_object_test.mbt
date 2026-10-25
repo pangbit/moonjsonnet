@@ -167,3 +167,115 @@ test "language JSON conversion rejects demanded nested functions and errors" {
   }
   assert_eq(@moonjsonnet.evaluate("[{a::function()error 'body'}]"), [{}])
 }
+
+///|
+// These are object/closure/private-binding composition controls, not a sort hook API.
+test "language standard function aliases preserve lexical binding when forwarded or shadowed" {
+  let input = ordering_array([sequence_num(2), sequence_num(1)])
+  let root_sort = additive_select(sequence_var("std"), "sort")
+  let shadowed = sequence_local(
+    [("saved", root_sort)],
+    sequence_local(
+      [("std", ordering_error("lexical std must stay captured"))],
+      value_head_call(sequence_var("saved"), [input]),
+    ),
+  )
+  let forwarded = sequence_local(
+    [("saved", root_sort)],
+    value_head_call(
+      additive_select(
+        reflect_object([
+          (reflect_string("sort"), 2, sequence_var("saved")),
+          (reflect_string("length"), 2, make_function(["x"], sequence_num(0))),
+        ]),
+        "sort",
+      ),
+      [input],
+    ),
+  )
+  sequence_value(shadowed, [1, 2])
+  sequence_value(forwarded, [1, 2])
+}
+
+///|
+test "language inherited source library fields resolve self in their final object" {
+  let input = ordering_array([sequence_num(2), sequence_num(1)])
+  let derived = ordering_binary(
+    sequence_var("std"),
+    "+",
+    reflect_object([
+      (reflect_string("length"), 2, make_function(["x"], sequence_num(0))),
+    ]),
+  )
+  // The exact pinned body takes the length<=1 branch, without comparing keys.
+  sequence_value(value_head_call(additive_select(derived, "sort"), [input]), [
+    2, 1,
+  ])
+}
+
+///|
+test "language super lookup and extracted inherited methods retain final self" {
+  let input = ordering_array([sequence_num(2), sequence_num(1)])
+  let run = make_function(
+    ["arr"],
+    value_head_call(
+      additive_select(ordering_leaf("super", Var("super")), "sort"),
+      [sequence_var("arr")],
+    ),
+  )
+  let derived = ordering_binary(
+    sequence_var("std"),
+    "+",
+    reflect_object([
+      (reflect_string("length"), 2, make_function(["x"], sequence_num(0))),
+      (reflect_string("run"), 2, run),
+    ]),
+  )
+  sequence_value(value_head_call(additive_select(derived, "run"), [input]), [
+    2, 1,
+  ])
+  sequence_value(
+    sequence_local(
+      [("saved", additive_select(derived, "sort"))],
+      sequence_local(
+        [("std", ordering_error("call scope must not rebind a closure"))],
+        value_head_call(sequence_var("saved"), [input]),
+      ),
+    ),
+    [2, 1],
+  )
+}
+
+///|
+test "language inherited source methods retain the private library for slicing" {
+  let derived = ordering_binary(
+    sequence_var("std"),
+    "+",
+    reflect_object([
+      (
+        reflect_string("slice"),
+        2,
+        make_function(
+          ["value", "start", "end", "step"],
+          ordering_error(
+            "public receiver slice must not replace private syntax",
+          ),
+        ),
+      ),
+    ]),
+  )
+  let elements : Array[OrderingExpr] = []
+  for _ in 0..<31 {
+    elements.push(sequence_num(7))
+  }
+  let input = ordering_array(elements)
+  let call = value_head_call(additive_select(derived, "sort"), [
+    input,
+    make_function(["x"], sequence_num(0)),
+  ])
+  // A composition regression under the existing slice/comparison child profile;
+  // it is not an adjudication of the malformed greater-than conclusions.
+  for handmade in [false, true] {
+    sort_admission_value(sequence_call("type", [call]), handmade, "array")
+  }
+}

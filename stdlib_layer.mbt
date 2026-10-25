@@ -37,7 +37,8 @@ fn standard_library_expression() -> Expr raise {
       Literal(String(name)) =>
         source_standard_function(name) ||
         (match name {
-          "uniq"
+          "sort"
+          | "uniq"
           | "set"
           | "setUnion"
           | "setInter"

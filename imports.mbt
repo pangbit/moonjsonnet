@@ -128,6 +128,8 @@ fn Vm::base_env(
     self.objects[id].standard = true
   }
   let library_thunk = self.store(Ready(value))
+  // Source fields keep the file-private library even when inherited elsewhere.
+  env.names["$std"] = library_thunk
   {
     parent: None,
     names: Map([("std", library_thunk), ("$std", library_thunk)]),

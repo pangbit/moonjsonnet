@@ -2,10 +2,10 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "26ff948b5f1ad9c84cbccb863bb9c8ce3f5eef1547f5dc171092056a9207a111",
+  "mapping_sha256": "2d0b82cb1e0bd1c486ccf5fc1a9521f5e9907fcfdb2a0e27c8563f96a7598d1b",
   "tool_sha256": "da3657872b9348056bfcf5579eba583f1dc9fbd1f854be99bc59ce77ab94296f",
   "mapping_schema_version": 2,
-  "global_test_ids": 216,
+  "global_test_ids": 220,
   "named_rules": 70,
   "prose_grammar_rows": 24,
   "manually_reviewed_subset_rows": 63,
@@ -17,6 +17,52 @@
   "complete_conformance": false,
   "execution_inferred": false,
   "evidence": {
+    "SMC1": {
+      "file": "spec_language_object_test.mbt",
+      "line": 173,
+      "test": "language standard function aliases preserve lexical binding when forwarded or shadowed",
+      "test_id": "spec_language_object_test.mbt::language standard function aliases preserve lexical binding when forwarded or shadowed",
+      "assertions": [
+        "sequence_value(shadowed, [1, 2])",
+        "sequence_value(forwarded, [1, 2])"
+      ],
+      "checks": "Saved canonical functions keep their lexical context under caller std poison and forwarding into a new object. Both source and handmade literal controls pass; forwarding is not inheritance.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SMC2": {
+      "file": "spec_language_object_test.mbt",
+      "line": 201,
+      "test": "language inherited source library fields resolve self in their final object",
+      "test_id": "spec_language_object_test.mbt::language inherited source library fields resolve self in their final object",
+      "assertions": [
+        "sequence_value(value_head_call(additive_select(derived, \"sort\"), [input]), [\n    2, 1,\n  ])"
+      ],
+      "checks": "The inherited fixed-source field captures final self through object-local std. A length0 method selects its <=1 return, yielding literal[2,1] without evaluating the disputed <; this is ordinary language composition, not a permanent sort hook.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SMC3": {
+      "file": "spec_language_object_test.mbt",
+      "line": 217,
+      "test": "language super lookup and extracted inherited methods retain final self",
+      "test_id": "spec_language_object_test.mbt::language super lookup and extracted inherited methods retain final self",
+      "assertions": [
+        "sequence_value(value_head_call(additive_select(derived, \"run\"), [input]), [\n    2, 1,\n  ])",
+        "value_head_call(sequence_var(\"saved\"), [input]),\n      ),\n    ),\n    [2, 1],\n  )"
+      ],
+      "checks": "Super lookup retains final self and extracting that inherited method freezes its closure before caller std shadowing. Both separate literal-result assertions execute through source and handmade AST after repair; the baseline stopped at the first source super arm.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "SMC4": {
+      "file": "spec_language_object_test.mbt",
+      "line": 250,
+      "test": "language inherited source methods retain the private library for slicing",
+      "test_id": "spec_language_object_test.mbt::language inherited source methods retain the private library for slicing",
+      "assertions": [
+        "sort_admission_value(sequence_call(\"type\", [call]), handmade, \"array\")"
+      ],
+      "checks": "A31-item constant-key source-method integration must use the canonical private slice rather than a poisoned public receiver field. It assumes the previously reviewed slice/comparison child profile, and does not resolve the greater-than printed contradiction.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
     "OH1": {
       "file": "spec_object_head_test.mbt",
       "line": 23,
@@ -3173,6 +3219,7 @@
     }
   },
   "test_file_sha256": {
+    "spec_language_object_test.mbt": "6e0b29544bd7cb89c1e9d5478a82fcf924992181f7a80b8489c5960e7600ab62",
     "spec_object_head_test.mbt": "026febcc69f4f2f243685569002b81c44fc8ed176aabe15f7e36a970eda648de",
     "spec_foundation_arrays_test.mbt": "beb47db7cee9b2ebf3372954ae2c975810b9b61daa3f14448f847ea67b18a19f",
     "spec_filter_test.mbt": "448e73f9a5810e72eecad905c9cffed2446d6a4e5b7acd8ac03e7070d31362fc",
@@ -3189,7 +3236,6 @@
     "spec_function_static_test.mbt": "4d7e433ff2b5b0851f33ab823abbafea31cc3c33c0e2499a1bee769bbcb4ccc3",
     "spec_language_function_test.mbt": "ddf1840ccfcd89545ddb6e51fcead6404999484697dbd3ad8649ae7b29b0f39a",
     "spec_object_construction_test.mbt": "acfb04859691b752e3cca576ccd72d6a11519b12d3be648dd829cbd8100e7807",
-    "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d",
     "spec_static_test.mbt": "2b56b8efa83348f0ab266b8f18d00d31cf2a5e0543920e7cfb1d2c0d66923491",
     "spec_import_scope_test.mbt": "a267fed917387b8edf62b4d1b72ed7764680cd14b919ced2af7f298847a9d2ed",
     "spec_index_test.mbt": "8082f3d1253b242b9e6b4fd6f1397275fe1f5732c8ae62f922fc2c32963b2b67",
@@ -4591,7 +4637,9 @@
           "AX1",
           "AL1",
           "AC1",
-          "AC2"
+          "AC2",
+          "SMC2",
+          "SMC3"
         ],
         "static_error": [],
         "runtime_error": [
@@ -4638,10 +4686,12 @@
           "AL1",
           "AL2",
           "AC1",
-          "AC2"
+          "AC2",
+          "SMC2",
+          "SMC3"
         ]
       },
-      "remaining": "The bounded assertion behavior components are reviewed. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves R0 the state-free in-progress/self-index model unresolved; N0 affects inherited assertion-super cases. General target/key/missing-field errors and equality interactions are separate obligations. No assertion execution order or whole child judgment is completed.",
+      "remaining": "The bounded assertion behavior components are reviewed. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves R0 the state-free in-progress/self-index model unresolved; N0 affects inherited assertion-super cases. General target/key/missing-field errors and equality interactions are separate obligations. No assertion execution order or whole child judgment is completed. SMC2/SMC3 add assertion-free inherited/super source-method reads in their final object. In-progress indexing and general assertions remain unproved.",
       "implementation": [
         "eval.mbt",
         "objects.mbt"
@@ -4660,7 +4710,9 @@
           "F1",
           "F6",
           "AP1",
-          "AP2"
+          "AP2",
+          "SMC1",
+          "SMC3"
         ],
         "static_error": [],
         "runtime_error": [
@@ -4674,16 +4726,20 @@
           "F4",
           "AP3",
           "AP4",
-          "AP5"
+          "AP5",
+          "SMC1",
+          "SMC3"
         ],
         "boundary": [
           "F1",
           "F3",
           "AP2",
-          "AP4"
+          "AP4",
+          "SMC1",
+          "SMC3"
         ]
       },
-      "remaining": "Other non-function heads, exhaustive named/positional permutations, recursive closure forms and tailstrict forcing/order remain unreviewed.",
+      "remaining": "Other non-function heads, exhaustive named/positional permutations, recursive closure forms and tailstrict forcing/order remain unreviewed. SMC1/SMC3 distinguish canonical/derived closure capture from caller std shadowing and function forwarding; no universal receiver-binding theorem is claimed.",
       "implementation": [
         "eval.mbt",
         "arguments.mbt"
@@ -4729,17 +4785,21 @@
       "dimensions": {
         "normal": [
           "F1",
-          "R1"
+          "R1",
+          "SMC1",
+          "SMC3"
         ],
         "static_error": [],
         "runtime_error": [],
         "lazy": [
           "F3",
-          "R3"
+          "R3",
+          "SMC1",
+          "SMC3"
         ],
         "boundary": []
       },
-      "remaining": "Capture avoidance across every binder and recursive expression.",
+      "remaining": "Capture avoidance across every binder and recursive expression. SMC1/SMC3 add bounded lexical std capture with unused caller poison, without completing general binder substitution.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt"
@@ -4941,7 +5001,10 @@
           "AL1",
           "AC1",
           "AC2",
-          "OC3"
+          "OC3",
+          "SMC2",
+          "SMC3",
+          "SMC4"
         ],
         "static_error": [],
         "runtime_error": [
@@ -4976,10 +5039,13 @@
           "AL2",
           "AC1",
           "AC2",
-          "OC3"
+          "OC3",
+          "SMC2",
+          "SMC3",
+          "SMC4"
         ]
       },
-      "remaining": "Assertion-list retention/conjunction is reviewed; [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves N0 the omitted assertion-super transformation unresolved. Other inheritance/association, additive and computed-name obligations remain separate; later-demand failures are not errors of addition. The [ordinary-object construction record](SPEC-OBJECT-CONSTRUCTION-2026-10-23.md) adds OC3 operand-construction preconditions and a same-name valid-layer metadata control. Its left-child failures are not intrinsic addition or later-field errors; selected values and all existing N0/R0/DF0 limitations stay separate.",
+      "remaining": "Assertion-list retention/conjunction is reviewed; [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) leaves N0 the omitted assertion-super transformation unresolved. Other inheritance/association, additive and computed-name obligations remain separate; later-demand failures are not errors of addition. The [ordinary-object construction record](SPEC-OBJECT-CONSTRUCTION-2026-10-23.md) adds OC3 operand-construction preconditions and a same-name valid-layer metadata control. Its left-child failures are not intrinsic addition or later-field errors; selected values and all existing N0/R0/DF0 limitations stay separate. SMC2/SMC3 add final-self binding of inherited source-library fields; SMC4 adds private-library composition. This creates no stable sort hook API or whole-inheritance claim; N0/R0/DF0 remain separate.",
       "implementation": [
         "operators.mbt",
         "objects.mbt",
@@ -6516,7 +6582,7 @@
           "evidence_sha256": {
             "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
             "spec_import_scope_test.mbt": "a267fed917387b8edf62b4d1b72ed7764680cd14b919ced2af7f298847a9d2ed",
-            "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d",
+            "spec_language_object_test.mbt": "6e0b29544bd7cb89c1e9d5478a82fcf924992181f7a80b8489c5960e7600ab62",
             "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
             "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30"
           }
@@ -6611,7 +6677,7 @@
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": ".filter(k => hidden || self.visible(id, top, k))",
               "argument": "The reviewed helper filters unique inherited names by effective visibility. Its producer/visibility proof is reused, not expanded."
             },
@@ -6630,7 +6696,7 @@
             "spec_object_head_test.mbt": "026febcc69f4f2f243685569002b81c44fc8ed176aabe15f7e36a970eda648de",
             "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
             "spec_foundation_types_test.mbt": "0c209adf036e789c5ad2407352188125e985367ba756fc2664f3220859063392",
-            "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d"
+            "spec_language_object_test.mbt": "6e0b29544bd7cb89c1e9d5478a82fcf924992181f7a80b8489c5960e7600ab62"
           }
         }
       ]
@@ -6992,7 +7058,7 @@
             "spec_object_head_test.mbt": "026febcc69f4f2f243685569002b81c44fc8ed176aabe15f7e36a970eda648de",
             "spec_length_test.mbt": "4715ab555f5bde4b5b07c7efec972463f32d4a7ef0e4bad4f1f933ec714a962d",
             "spec_foundation_types_test.mbt": "0c209adf036e789c5ad2407352188125e985367ba756fc2664f3220859063392",
-            "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d"
+            "spec_language_object_test.mbt": "6e0b29544bd7cb89c1e9d5478a82fcf924992181f7a80b8489c5960e7600ab62"
           }
         }
       ]
@@ -7126,31 +7192,31 @@
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "if self.objects[id].layers[i].fields.contains(name) {",
               "argument": "has_field is exactly the union membership predicate for all admitted layers."
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "fn Vm::visible(self : Vm, id : Int, top : Int, name : String) -> Bool {",
               "argument": "Visibility folds bottom to top: default leaves the prior status, hidden clears it, forced-visible sets it, matching the fixed separator law by induction over layers."
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "seen[k] = true",
               "argument": "All layer names enter one map; uniqueness is exact String identity, independent of overriding field payloads."
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": ".filter(k => hidden || self.visible(id, top, k))",
               "argument": "Enumeration filters the same effective visibility predicate as membership."
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "out.sort_by(compare_unicode)",
               "argument": "Enumeration produces a sorted list of each eligible name once."
             },
@@ -7262,31 +7328,31 @@
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "if self.objects[id].layers[i].fields.contains(name) {",
               "argument": "has_field is exactly the union membership predicate for all admitted layers."
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "fn Vm::visible(self : Vm, id : Int, top : Int, name : String) -> Bool {",
               "argument": "Visibility folds bottom to top: default leaves the prior status, hidden clears it, forced-visible sets it, matching the fixed separator law by induction over layers."
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "seen[k] = true",
               "argument": "All layer names enter one map; uniqueness is exact String identity, independent of overriding field payloads."
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": ".filter(k => hidden || self.visible(id, top, k))",
               "argument": "Enumeration filters the same effective visibility predicate as membership."
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "out.sort_by(compare_unicode)",
               "argument": "Enumeration produces a sorted list of each eligible name once."
             },
@@ -7995,19 +8061,19 @@
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "let condition = self.eval(cond, env)",
               "argument": "The condition is evaluated before the shared Boolean gate; only false evaluates/coerces an optional message. This delegates child judgments and does not specify indexing reentry."
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "for index, (cond, msg) in obj.layers[i].assertions",
               "argument": "Every stored pair is retained in the ordinary demand traversal; this source inspection is not a formal derivation of N0 or R0."
             },
             {
               "file": "objects.mbt",
-              "sha256": "06fe3700af7171f9b67a9641a35c92d541849409bcd009e34428ee0456079436",
+              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
               "anchor": "self.bind(obj.layers[layer].locals, env)",
               "argument": "Layer locals are bound after installing current self and supplied to the assertion condition/message environment."
             },
@@ -8043,7 +8109,7 @@
             "spec_assertion_self_test.mbt": "eaf067af506d8151d87cfe8f8cbe2527580cabb6d5a8b73ea2a56a88072faaf6",
             "spec_assertion_super_test.mbt": "d118e17f3fd36f4bcfaa5ebbd6ec4131cb8794c738a6826cac0ea7c23b24f884",
             "spec_conditional_runtime_test.mbt": "ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf",
-            "spec_language_object_test.mbt": "a25702df3c41f0dacd4447cd4b5c344608c24ba2938a555e8d401f80064c7b0d"
+            "spec_language_object_test.mbt": "6e0b29544bd7cb89c1e9d5478a82fcf924992181f7a80b8489c5960e7600ab62"
           }
         }
       ]
@@ -8056,18 +8122,20 @@
       "state": "manually-reviewed-subset",
       "dimensions": {
         "normal": [
-          "SLICE"
+          "SLICE",
+          "SMC4"
         ],
         "static_error": [],
         "runtime_error": [
           "SLICE"
         ],
         "lazy": [
-          "SLICE"
+          "SLICE",
+          "SMC4"
         ],
         "boundary": []
       },
-      "remaining": "Full negative/null/step/domain matrix and retained cardinality ambiguity.",
+      "remaining": "Full negative/null/step/domain matrix and retained cardinality ambiguity. SMC4 adds only inherited-source/private-library composition under the existing slice/comparison child profile, without adjudicating the printed comparison conflict.",
       "implementation": [
         "eval.mbt",
         "slice.mbt"
@@ -8093,7 +8161,10 @@
           "AD4",
           "EX0VIS",
           "SP1",
-          "SP2"
+          "SP2",
+          "SMC1",
+          "SMC2",
+          "SMC3"
         ],
         "static_error": [
           "AD4",
@@ -8120,10 +8191,13 @@
           "EX0VIS",
           "OR3",
           "PI2",
-          "CK2"
+          "CK2",
+          "SMC1",
+          "SMC2",
+          "SMC3"
         ]
       },
-      "remaining": "The [additive-field record](SPEC-ADDITIVE-FIELDS-2026-10-23.md) reviews explicit guide-equivalent If/in/super-index witnesses for name forms, separator visibility, defining prefixes/final self, absent parents, outer-key capture and demand boundaries. DF0 records that the printed ordinary computed-field rule uses key e where its value input is e-prime, so literal whole-field composition is not proved or silently repaired. Full method/object-local/binder/name/substitution/plus-child domains and complete nested inheritance lowering remain open; existing N0/R0 and other unknowns are unchanged. Native successful-read counts are finite host controls, not a callback-order/computed-key-count theorem. DESUGAR-FIELDS remains partial with no whole formal Core or language completion claim.",
+      "remaining": "The [additive-field record](SPEC-ADDITIVE-FIELDS-2026-10-23.md) reviews explicit guide-equivalent If/in/super-index witnesses for name forms, separator visibility, defining prefixes/final self, absent parents, outer-key capture and demand boundaries. DF0 records that the printed ordinary computed-field rule uses key e where its value input is e-prime, so literal whole-field composition is not proved or silently repaired. Full method/object-local/binder/name/substitution/plus-child domains and complete nested inheritance lowering remain open; existing N0/R0 and other unknowns are unchanged. Native successful-read counts are finite host controls, not a callback-order/computed-key-count theorem. DESUGAR-FIELDS remains partial with no whole formal Core or language completion claim. SMC1-SMC3 extend the existing field/method composition review; the source standard-library field is a context witness, not a permanent dependency-hook interface. DF0 and general lowering remain open.",
       "implementation": [
         "parser.mbt",
         "ast_convert.mbt",
@@ -8153,7 +8227,8 @@
           "RS1",
           "BS1",
           "PREC1",
-          "PREC2"
+          "PREC2",
+          "SMC4"
         ],
         "static_error": [
           "PI1",
@@ -8181,10 +8256,11 @@
           "SP1",
           "PREC2",
           "NB1",
-          "US1"
+          "US1",
+          "SMC4"
         ]
       },
-      "remaining": "The [fixed operator record](SPEC-OPERATOR-REWRITES-2026-10-23.md) supplies independent finite witnesses for !=/==/%/in and in-super under private std binding, preserving lazy/error and lexical-prefix boundaries. Public ASTs retain semantic operators rather than exporting canonical Core; complete syntax-directed lowering and full child equality/mod/format/visibility/invocation domains are not proved. The in-super reference has a shared-prefix predicate inspection, not a public bare-super Call equivalence. Comparisons, logical operators and unary plus remain core constructors with scoped recursive-preservation evidence; full runtime domains, B0, the greater-than printed conflict, PE0/N0/R0 and all prior child-relative limits remain separate. Fresh native counts are bounded host controls, with no universal demand order or competing-error priority claim. The whole clause remains partial.",
+      "remaining": "The [fixed operator record](SPEC-OPERATOR-REWRITES-2026-10-23.md) supplies independent finite witnesses for !=/==/%/in and in-super under private std binding, preserving lazy/error and lexical-prefix boundaries. Public ASTs retain semantic operators rather than exporting canonical Core; complete syntax-directed lowering and full child equality/mod/format/visibility/invocation domains are not proved. The in-super reference has a shared-prefix predicate inspection, not a public bare-super Call equivalence. Comparisons, logical operators and unary plus remain core constructors with scoped recursive-preservation evidence; full runtime domains, B0, the greater-than printed conflict, PE0/N0/R0 and all prior child-relative limits remain separate. Fresh native counts are bounded host controls, with no universal demand order or competing-error priority claim. The whole clause remains partial. SMC4 checks the shared private root-library binding through inherited source slicing. It adds no new equality/mod/comparison domain or complete lowering claim.",
       "implementation": [
         "parser.mbt",
         "ast_convert.mbt",
@@ -8408,7 +8484,10 @@
           "AL1",
           "AC2",
           "CK2",
-          "IC1"
+          "IC1",
+          "SMC1",
+          "SMC2",
+          "SMC3"
         ],
         "static_error": [
           "F5",
@@ -8424,7 +8503,9 @@
           "SP3",
           "RT3",
           "AL2",
-          "IC3"
+          "IC3",
+          "SMC1",
+          "SMC3"
         ],
         "boundary": [
           "SR1",
@@ -8441,10 +8522,13 @@
           "AC2",
           "CK2",
           "IC1",
-          "IC3"
+          "IC3",
+          "SMC1",
+          "SMC2",
+          "SMC3"
         ]
       },
-      "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) adds definition-context capture across code-import and lazy default/dependency boundaries, without completing general substitution. The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) adds iteration-tuple capture after construction, without completing general substitution. Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule.",
+      "remaining": "The bounded [code-import closure review](SPEC-IMPORT-CLOSURE-EVIDENCE-2026-10-22.md) adds definition-context capture across code-import and lazy default/dependency boundaries, without completing general substitution. The bounded [dynamic-key collision/null/capture group](SPEC-OBJECT-COMP-KEYS-EVIDENCE-2026-10-22.md) adds iteration-tuple capture after construction, without completing general substitution. Bounded receiver/local/root capture reviews retain their scopes. [normative adjudication](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md) does not derive N0 assertion-super substitution or the full binder/self/super/root algebra. R0 is an indexing-state child question, not a newly completed substitution rule. SMC1-SMC3 add finite canonical/derived source-method capture and final-self controls; arbitrary substitution and N0/R0 remain separate.",
       "implementation": [
         "eval.mbt",
         "runtime_types.mbt",
@@ -8507,7 +8591,7 @@
           "OT3"
         ]
       },
-      "remaining": "The [bounded shift record](SPEC-BOUNDED-SHIFTS-2026-10-23.md) adds independent source/AST witnesses for exact integral signed-64 input conversion, nonnegative no-loss << / >> results, modulo-64 counts, negative integer refusal and demanded/type/lazy boundaries. Fractional and architecture-specific out-of-range conversion, negative-left/sign-fill, sign/discarded bits and general integer-to-binary64 rounding remain unreviewed; no legacy mixed Go vector supplies the oracle. Earlier sequence/array/Boolean subsets retain their scopes. Whole arithmetic/bitwise/equality/coercion/relational and producer/child domains remain open. EXEC-OPERATORS stays partial; A0/B0/N0/R0/PE0/DF0, the greater-than print conflict and all earlier limits are unchanged.",
+      "remaining": "The [bounded shift record](SPEC-BOUNDED-SHIFTS-2026-10-23.md) adds independent source/AST witnesses for exact integral signed-64 input conversion, nonnegative no-loss << / >> results, modulo-64 counts, negative integer refusal and demanded/type/lazy boundaries. Fractional and architecture-specific out-of-range conversion, negative-left/sign-fill, sign/discarded bits and general integer-to-binary64 rounding remain unreviewed; no legacy mixed Go vector supplies the oracle. Earlier sequence/array/Boolean subsets retain their scopes. Whole arithmetic/bitwise/equality/coercion/relational and producer/child domains remain open. EXEC-OPERATORS stays partial; A0/B0/N0/R0/PE0/DF0, the greater-than print conflict and all earlier limits are unchanged. The raw greater-than conclusions conflict with less-than transfers under the same cmp sign. The proposed > erratum is not adopted; the existing relational-sign review and source-method boundary note retain this global conflict without a new runtime oracle or sort-specific requirement.",
       "implementation": [
         "operators.mbt",
         "eval.mbt",
