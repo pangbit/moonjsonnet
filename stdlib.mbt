@@ -170,8 +170,7 @@ fn Vm::builtin(
     }
     let input = self.force(arr, loc)
     if name == "sort" {
-      let key = ids.get("keyF").map(t => self.force(t, loc))
-      return self.sort_values(input, key, loc)
+      return self.sort_values(input, ids.get("keyF"), loc)
     }
     return self.extreme_value(
       input,

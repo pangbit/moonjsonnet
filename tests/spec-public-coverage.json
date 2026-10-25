@@ -62,5 +62,46 @@
   {"name":"findSubstr","signature_review":{"parameters":["pat","str"],"defaults":{},"test":"spec_string_calls_test.mbt","status":"Required-only source/documentation names with reordered named call and common binding controls."},"dimensions":{"N":{"test":"spec_string_sequence_test.mbt","expectation":"All overlapping matches return codepoint offsets, including non-BMP and decomposed combining sequences without normalization."},"E":{"test":"spec_string_sequence_test.mbt","expectation":"All nonstring pattern/haystack kinds fail under explicit source checks; invalid pattern stops before native haystack callback."},"L":{"test":"spec_string_sequence_test.mbt","expectation":"Native counter remains zero for the unused haystack after pattern guard failure; common tests cover unselected calls."},"B":{"test":"spec_string_sequence_test.mbt","expectation":"Empty pattern/input and longer-than-input pattern return empty; overlapping aa and supplementary matches preserve exact offsets."}},"remaining":"Full guard/error-order/resource, repeated native-input and arbitrary Unicode-combination contracts remain unreviewed; no complete function acceptance."},
   {"name":"stringChars","signature_review":{"parameters":["str"],"defaults":{},"test":"spec_string_calls_test.mbt","status":"One required source/documented argument, named str and common rejected-binding controls."},"dimensions":{"N":{"test":"spec_string_sequence_test.mbt","expectation":"String input splits into one-codepoint strings in order, including CJK, non-BMP, combining mark and NUL."},"E":{"test":"spec_string_sequence_test.mbt","expectation":"Primitive null/boolean/number inputs on which source length fails raise runtime/type errors; common tests validate demanded binding failures."},"L":{"test":"spec_string_sequence_test.mbt","expectation":"Native outer string is executed once across array construction/length/reordered/repeated selections; unselected calls also remain lazy."},"B":{"test":"spec_string_sequence_test.mbt","expectation":"Empty string gives empty array; supplementary and combining characters remain separate codepoints."}},"remaining":"Array/object/function inputs can pass source length outside the documented string domain; their success/error policy is unadjudicated rather than inferred from Go. Complete resource/host/error combinations remain pending."},
   {"name":"startsWith","signature_review":{"parameters":["a","b"],"defaults":{},"test":"spec_string_calls_test.mbt","status":"Both documented/source arguments required; reordered named and rejected binding cases tested."},"dimensions":{"N":{"test":"spec_string_sequence_test.mbt","expectation":"String prefix uses exact codepoint sequence, with CJK/supplementary and case/normalization distinctions."},"E":{"test":"spec_string_sequence_test.mbt","expectation":"Primitive length-invalid input kinds in each position fail; needed first/second outer errors propagate."},"L":{"test":"spec_string_calls_test.mbt","expectation":"Unselected/unused/short-circuit/hidden calls do not evaluate required string expressions."},"B":{"test":"spec_string_sequence_test.mbt","expectation":"Empty prefix including empty input succeeds; longer prefix and differing composed/decomposed sequences return false."}},"remaining":"Nonstrings accepted by mechanical source length/early branches and competing-invalid-input error order are unadjudicated; complete resource/Unicode matrix remains pending."},
-  {"name":"endsWith","signature_review":{"parameters":["a","b"],"defaults":{},"test":"spec_string_calls_test.mbt","status":"Both documented/source parameters required; named order and invalid binding controls exercised."},"dimensions":{"N":{"test":"spec_string_sequence_test.mbt","expectation":"String suffix comparison follows codepoint sequence, including non-BMP and combining examples."},"E":{"test":"spec_string_sequence_test.mbt","expectation":"Primitive length-invalid input kinds in either position and needed outer errors fail."},"L":{"test":"spec_string_calls_test.mbt","expectation":"Unused and unselected calls, hidden fields and short circuits keep argument errors lazy."},"B":{"test":"spec_string_sequence_test.mbt","expectation":"Empty suffix is true, longer suffix false, and composed/decomposed endings remain distinct."}},"remaining":"Array/object/function source extensions, competing-input error precedence and exhaustive resource/Unicode combinations remain unadjudicated."}
+  {"name":"endsWith","signature_review":{"parameters":["a","b"],"defaults":{},"test":"spec_string_calls_test.mbt","status":"Both documented/source parameters required; named order and invalid binding controls exercised."},"dimensions":{"N":{"test":"spec_string_sequence_test.mbt","expectation":"String suffix comparison follows codepoint sequence, including non-BMP and combining examples."},"E":{"test":"spec_string_sequence_test.mbt","expectation":"Primitive length-invalid input kinds in either position and needed outer errors fail."},"L":{"test":"spec_string_calls_test.mbt","expectation":"Unused and unselected calls, hidden fields and short circuits keep argument errors lazy."},"B":{"test":"spec_string_sequence_test.mbt","expectation":"Empty suffix is true, longer suffix false, and composed/decomposed endings remain distinct."}},"remaining":"Array/object/function source extensions, competing-input error precedence and exhaustive resource/Unicode combinations remain unadjudicated."},
+  {
+    "name": "sort",
+    "signature_review": {
+      "parameters": [
+        "arr",
+        "keyF"
+      ],
+      "defaults": {
+        "keyF": "identity (id)"
+      },
+      "test": "spec_sort_demand_test.mbt",
+      "status": "Array-only branch review; positional/reordered named calls, omitted/default keys and binding/static controls passed. The official zero/singleton branch does not evaluate keyF."
+    },
+    "reference_candidates": [
+      {
+        "file": "spec_sort_demand_test.mbt",
+        "line": 71,
+        "test_declaration": "test \"source sort empty and singleton Arrays never demand an unused key expression\" {",
+        "classification": "manual SD1-SD8 independent source/handmade-AST criteria; original2-pass/6-failure baseline retained"
+      }
+    ],
+    "dimensions": {
+      "N": {
+        "test": "spec_sort_demand_test.mbt",
+        "expectation": "SD1/SD2/SD5: zero/singleton identity, literal numeric/Unicode ordering, equal-key stability, unchanged original Array and finite lengths2/30/31 through independent entries."
+      },
+      "E": {
+        "test": "spec_sort_demand_test.mbt",
+        "expectation": "SD6/SD8: isolated required Array/key/element errors, selected singleton payload demand, required callable/comparison rejection, invalid bindings before native argument gates and Static rejection of unused missing names."
+      },
+      "L": {
+        "test": "spec_sort_demand_test.mbt",
+        "expectation": "SD1-SD4/SD7: complete admitted zero/singleton Array branch returns original thunks without evaluating keyF, callback body or elements. A selected result demands only its element. Constant-key multi-element metadata leaves payloads unread; no universal callback count/order claim."
+      },
+      "B": {
+        "test": "spec_sort_demand_test.mbt",
+        "expectation": "SD1-SD8: empty/singleton poison heads, Array/Object/Function payloads, omitted/error-valued keys, source threshold30/31, equal keys, supplementary/NUL/combining Strings, unused malformed bindings and named argument order."
+      }
+    },
+    "remaining": "Complete zero/singleton Array identity branch relative to its admitted Array head, with bounded nondegenerate controls; not whole-function acceptance. Non-Array source extensions, arbitrary key/comparison/producer domains, native/source algorithm callback multiplicity, competing independent error order, all host/resource/encoding combinations and public std rebinding remain unproved. No Go/C++ output chooses the oracle; A0/B0/N0/R0/PE0/DF0/HP0 and greater-than print conflicts are unchanged. Invalid unused key type/arity admission remains separate from the documented single-argument callable domain; the legacy migration records literal fixed-source reductions without accepting that whole public error policy."
+  }
 ]

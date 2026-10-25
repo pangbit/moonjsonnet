@@ -37,7 +37,7 @@ that no test exists anywhere.
 N/E/L/B in the table are normal/error/lazy/boundary dimensions. R means only the
 specific assertions reviewed against the fixed contract in
 [manual case mappings](../../tests/spec-public-coverage.json). U means that
-dimension remains unreviewed/unmapped. Sixty-four functions currently have reviewed
+dimension remains unreviewed/unmapped. Sixty-five functions currently have reviewed
 subsets, including the ten independent [foundation reviews](SPEC-FOUNDATIONS-REVIEW.md)
 and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [object visibility/lookup functions](SPEC-OBJECT-CONTRACTS-REVIEW.md) and seven
@@ -53,7 +53,8 @@ and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [three character stripping subsets](SPEC-STRIP-CHARS-2026-10-23.md) and
 [three split-family subsets](SPEC-SPLIT-LIMITS-2026-10-23.md) and
 [two membership subsets](SPEC-MEMBERSHIP-2026-10-23.md) and
-[two Array extrema demand subsets](SPEC-EXTREMA-DEMAND-2026-10-23.md);
+[two Array extrema demand subsets](SPEC-EXTREMA-DEMAND-2026-10-23.md) and
+[a sort Array cardinality/demand subset](SPEC-SORT-DEMAND-2026-10-25.md);
 even these functions have unresolved or uncovered contracts. No whole
 function is accepted as fully conforming by this inventory. Earlier executed
 test counts remain tied to their respective stage sources, not to a new claim
@@ -100,6 +101,16 @@ and both legacy groups then passed. Only the two existing extrema map records
 are extended. The total remains 64 reviewed subsets and zero whole-function
 acceptances; non-Array admission, exact callback counts, independent error order
 and the greater-than formal-rule conflict remain unresolved.
+
+The [sort cardinality/demand review](SPEC-SORT-DEMAND-2026-10-25.md) retains
+its two-pass/six-failure baseline. Passing the key thunk through the dispatcher
+and returning zero/singleton Arrays before key/element demand passed all eight
+unchanged groups and eight neighboring checks. The old sort tests were run
+unchanged first; their raw failure is retained, and four conflicting inputs
+were individually moved to required two-element contexts. The 64 prior manual
+records remain unchanged, yielding 65 reviewed subsets and zero whole-function
+acceptances. Non-Array scope, arbitrary key/comparison domains and independent
+error priority remain outside this review.
 
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its

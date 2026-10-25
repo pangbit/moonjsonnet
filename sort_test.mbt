@@ -39,17 +39,17 @@ test "sort forces keys but preserves original element laziness" {
 test "sort validates key results callback and argument binding" {
   let cases = [
     ("std.sort('abc')", @moonjsonnet.Type),
-    ("std.sort([],null)", @moonjsonnet.Type),
+    ("std.sort([2,1],null)", @moonjsonnet.Type),
     ("std.sort([true,false])", @moonjsonnet.Type),
     ("std.sort([1,'a'])", @moonjsonnet.Type),
     ("std.sort([{},{}])", @moonjsonnet.Type),
     ("std.sort([1,2],function(x)null)", @moonjsonnet.Type),
-    ("std.length(std.sort([error 'forced']))", @moonjsonnet.Runtime),
+    ("std.length(std.sort([1,error 'forced']))", @moonjsonnet.Runtime),
     (
-      "std.length(std.sort([1],function(x)error 'forced key'))",
+      "std.length(std.sort([1,2],function(x)error 'forced key'))",
       @moonjsonnet.Runtime,
     ),
-    ("std.sort([1],function(x,y)x)", @moonjsonnet.Runtime),
+    ("std.sort([1,2],function(x,y)x)", @moonjsonnet.Runtime),
     ("std.sort()", @moonjsonnet.Runtime),
     ("std.sort(keyF=function(x)x)", @moonjsonnet.Runtime),
     ("std.sort(xs=[])", @moonjsonnet.Runtime),
