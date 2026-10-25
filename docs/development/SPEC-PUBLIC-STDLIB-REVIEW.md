@@ -37,7 +37,7 @@ that no test exists anywhere.
 N/E/L/B in the table are normal/error/lazy/boundary dimensions. R means only the
 specific assertions reviewed against the fixed contract in
 [manual case mappings](../../tests/spec-public-coverage.json). U means that
-dimension remains unreviewed/unmapped. Sixty-six functions currently have reviewed
+dimension remains unreviewed/unmapped. Sixty-seven functions currently have reviewed
 subsets, including the ten independent [foundation reviews](SPEC-FOUNDATIONS-REVIEW.md)
 and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [object visibility/lookup functions](SPEC-OBJECT-CONTRACTS-REVIEW.md) and seven
@@ -299,3 +299,21 @@ quoting/layout certification is not inferred; explicit stream ends avoid the
 unresolved documentation false/source true default. Flat field-demand controls
 do not decide inherited/cyclic N0/R0. Prior802/802 and older Linux evidence do
 not apply to the new source bytes; no full/release/remote/CLI run was done here.
+
+
+## parseYaml best-effort collection-root review at bbe0bc3
+
+The [bounded public review](SPEC-PARSE-YAML-2026-10-25.md) separates the fixed
+JSON-compatible collection-root requirement from existing YAML1.1/empty/stream/
+duplicate/alias project profiles. It repairs scalar document admission with one
+wrapper guard, preserving nested scalars and the scalar/parser implementations.
+The original public4-pass/2-failure and separate profile1-pass/1-failure outputs
+remain preserved. One untagged-overflow numeric assertion exceeded the specified
+scalar schema and moves, on the same input, to a normative-null profile; it is
+not a second implementation defect. Eleven exact old scalar-success expectations
+are individually migrated after retaining the original three legacy failures.
+Final related regression passes21/21, including six public and two separate
+profile groups. Only parseYaml is newly mapped; all66 previous public records
+and225 language evidence fields remain byte-identical, giving67 public subsets
+and zero whole-function acceptances. The new source does not inherit816/816,
+release or Linux results. Best-effort is not a full YAML standards promise.

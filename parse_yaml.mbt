@@ -150,6 +150,13 @@ fn Vm::yaml_document(self : Vm, source : String, loc : Location) -> Json raise {
   if root < 0 {
     return Json::null()
   }
+  if !(nodes[root] is Sequence(_) || nodes[root] is Mapping(_)) {
+    raise problem(
+      Runtime,
+      loc,
+      "failed to parse YAML: document root must be a sequence or mapping",
+    )
+  }
   self.yaml_to_json(nodes, root, Map([]), 0, loc)
 }
 

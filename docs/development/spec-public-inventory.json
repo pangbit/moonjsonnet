@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "6569b9f29396484de9e46abc9cf7abae77106c85",
-  "uncommitted_test_paths": "spec_shared_call_mode_test.mbt",
+  "input_source_commit": "bbe0bc37864b8eee327329e2ced308f3a1f2f275",
+  "uncommitted_test_paths": "json_yaml_diagnostic_test.mbt\nparse_yaml_test.mbt\nspec_parse_yaml_contract_test.mbt\nspec_parse_yaml_profile_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "965028fe74da63f52ee9c5a43e7d19d4464f915a01fb3dcb7359311c48d2d7b8",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -37,7 +37,7 @@
     "formatter_imports_test.mbt": "c8e0e0dd7bc49878fbbeda3a05d97340f570b8d7227d3a9fa8cc586bb6301bbf",
     "formatter_sort_wbtest.mbt": "7748d9b01c81d20e2f80579de88008e9050d4066326a070ea33c50b450e144c8",
     "formatter_test.mbt": "5b31ab6d4d46c7f90f4dfd89eb6fe8ac059d4913f94317a9ab420bfd00ff0e7a",
-    "json_yaml_diagnostic_test.mbt": "f98f5b3013afd6f6a821e528d67c06a1b6acd2c8a83e22b21354b6c237caa668",
+    "json_yaml_diagnostic_test.mbt": "6fbf3f06bd5554329062a54ae81b9e3a508c82081f78df45b8a034f0661edea0",
     "language_test.mbt": "d3f79117d44309c608996f50473574dd3b74ae51e3421a46955c610348156746",
     "lazy_reentry_test.mbt": "b1b84360eeaa5ef971d747c87d62fc9d3ccb167a26d385b94afa820c19eea4f7",
     "lexer_diagnostic_test.mbt": "685eadc5726465791f271e9a029257899d481640895ba5b7e46d09de54c4bbdb",
@@ -55,7 +55,7 @@
     "parameter_forwarding_test.mbt": "a3ed58d902ed801f47dd3a891cde9922dc0566c1f574d3b2f3c913739f350e35",
     "parameter_range_test.mbt": "d4b69de5fd88b14cc9ec9507fde0a17d654be0da1740dc57c0260932f702cbbe",
     "parameters_test.mbt": "49afc09505389ede48474e8d2bf9c9e02346592cd901df7313cc02addf669cd0",
-    "parse_yaml_test.mbt": "6d9ef6181f74e9207b8eea6eba4634a587270890dc733aa7f09a1845d83ca748",
+    "parse_yaml_test.mbt": "59551146c9f7dac17c140ad6ae6b81afccc0901d88250bddf8e8274447b8f010",
     "parsed_source_test.mbt": "69a376b9911f0a64b6586a9223244a4e37c6ca72aa3d0f2bd61b87310f9eaa9c",
     "parser_diagnostic_test.mbt": "8274fdc918873dd15b13b510fb0356fc644d42e752cfe704ae394120aab92167",
     "program_parameters_test.mbt": "c6491f7f73ec8dafcd0ab97bfb10606c251b6ba1722cbbca2a492a622a39b91e",
@@ -142,6 +142,8 @@
     "spec_operator_rewrites_test.mbt": "ea6f10a9e4ce289d228c21c0d0dc10d1efc9d8ee2f791e645e6523ee665b59e4",
     "spec_operator_tokens_test.mbt": "2c4046d97f089d130b7b84d3f907e68707ac5b2ebc9bebe373b2b2f2f38c7d0d",
     "spec_operator_tokens_wbtest.mbt": "896ac6d32f1def656fe0085409c68bd5cc8abe804826358b68435903a368785a",
+    "spec_parse_yaml_contract_test.mbt": "ed1bfcd735a4f2599d0242af78715710bc9ece628d1e725df1896bf7d67eaeb2",
+    "spec_parse_yaml_profile_test.mbt": "39137883964d32308c402e2898127e8020ef3a7beb3edade0f3fdcf6f3edb3f9",
     "spec_precedence_test.mbt": "77c48b9b7cc730acd6bb1044319768ea6afb4c82214c5a03a75ba529dfe0456a",
     "spec_primitive_equals_test.mbt": "0d67a459511e3f84426e992d391337f87f8ac6fce084e267acc61e708dee9fe8",
     "spec_prune_test.mbt": "fd53ba8c1e516ffd1964d935c5dffd7fd3b738e350bed5d49011cdcdb544473f",
@@ -189,7 +191,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "dbe9bdeba00c198d264f5a7037ca4bae9dbe43ef0f6fd4bc3f7babbf681e9587"
   },
-  "coverage_sha256": "647dd2eed42d600a9099be206320f1f4c43651ec66f11892f1e9633de42fcb2f",
+  "coverage_sha256": "8c97c84e91d5bff00e6c67d0a8b5f7527ca47e68abc469920a1cef20e0019da3",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -4367,6 +4369,12 @@
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
+          "file": "spec_parse_yaml_contract_test.mbt",
+          "line": 129,
+          "test_declaration": "test \"parseYaml decodes collection String data without executing Jsonnet expressions\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
           "file": "spec_review_test.mbt",
           "line": 30,
           "test_declaration": "test \"finite numbers fail at their producing expression before type inspection\" {",
@@ -5323,7 +5331,44 @@
         "heading": "std.parseYaml(str)",
         "heading_line": "1297"
       },
-      "reviewed_subset": null,
+      "reviewed_subset": {
+        "name": "parseYaml",
+        "signature_review": {
+          "parameters": [
+            "str"
+          ],
+          "defaults": {},
+          "test": "spec_parse_yaml_contract_test.mbt",
+          "status": "Fixed public signature: one required String input. Positional/named/alias calls and binding-before-demand checked independently; no scalar-schema or multi-document return promise invented."
+        },
+        "reference_candidates": [
+          {
+            "file": "spec_parse_yaml_contract_test.mbt",
+            "line": 12,
+            "test_declaration": "test \"parseYaml public example and JSON compatible collection roots retain literal values\" {",
+            "classification": "PYC1-PYC6 bounded best-effort public contract with independent source/handmade AST expectations; original baseline4pass2fail retained, one overstrong untagged-overflow classification moved to normative-null profile before root-only repair."
+          }
+        ],
+        "dimensions": {
+          "N": {
+            "test": "spec_parse_yaml_contract_test.mbt",
+            "expectation": "PYC1/PYC6: official foo:bar example and bounded JSON-compatible map/sequence/empty/nested collection values, including Unicode and escaped String data. No full YAML version/dialect support claimed."
+          },
+          "E": {
+            "test": "spec_parse_yaml_contract_test.mbt",
+            "expectation": "PYC2-PYC5: binding errors, non-String heads, required argument markers, explicitly unsupported scalar document roots and actually parsed collection syntax/Inf/NaN errors reject before type observation; phase tags are host controls, not mandated prose."
+          },
+          "L": {
+            "test": "spec_parse_yaml_contract_test.mbt",
+            "expectation": "Unused whole calls skip input/error demand; wrong outer heads do not visit Array/Object/Function payloads. Parsed String values remain data rather than executing Jsonnet code/import/native text."
+          },
+          "B": {
+            "test": "spec_parse_yaml_contract_test.mbt",
+            "expectation": "Empty collections, six wrong input-head kinds, one-parameter reflection/binding, nested versus root scalar distinction and bounded Unicode/NUL data use literal source/handmade controls."
+          }
+        },
+        "remaining": "Bounded public collection-root/error/demand responsibility reviewed in SPEC-PARSE-YAML-2026-10-25.md. Best-effort API does not specify full YAML grammar/schema, duplicate/merge/alias policies, empty/no-document results, stream packaging/trailing-data policy or exact diagnostic text. Those existing project extensions and untagged overflow-text classification have normative acceptance null, not extra required successes. Unbounded parser/encoding/numeric/resource children and whole-function acceptance are not inferred."
+      },
       "test_reference_candidates": [
         {
           "file": "json_yaml_diagnostic_test.mbt",
@@ -5348,6 +5393,12 @@
           "line": 21,
           "test_declaration": "test \"standard error messages preserve types and raw byte offsets\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_parse_yaml_contract_test.mbt",
+          "line": 12,
+          "test_declaration": "test \"parseYaml public example and JSON compatible collection roots retain literal values\" {",
+          "classification": "PYC1-PYC6 bounded best-effort public contract with independent source/handmade AST expectations; original baseline4pass2fail retained, one overstrong untagged-overflow classification moved to normative-null profile before root-only repair."
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"

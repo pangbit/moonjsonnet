@@ -10,16 +10,10 @@ fn parse_yaml_test(
 }
 
 ///|
-test "parseYaml YAML 1.1 scalars and recursive collections" {
-  assert_eq(
-    parse_yaml_test("!<tag:example.com,%C0%80> value"),
-    Json::string("value"),
-  )
-  assert_eq(parse_yaml_test("!<tag:yaml.org,2002:int> '012'"), 10)
-  assert_eq(
-    parse_yaml_test("!<tag:example.com,%E4%B8%AD> value"),
-    Json::string("value"),
-  )
+test "parseYaml retains nested YAML 1.1 scalar and collection compatibility" {
+  assert_eq(parse_yaml_test("[!<tag:example.com,%C0%80> value]"), ["value"])
+  assert_eq(parse_yaml_test("[!<tag:yaml.org,2002:int> '012']"), [10])
+  assert_eq(parse_yaml_test("[!<tag:example.com,%E4%B8%AD> value]"), ["value"])
   assert_eq(parse_yaml_test("\ufeffa: 1\u0085b: 2"), { "a": 1, "b": 2 })
   assert_eq(
     parse_yaml_test("{a: [YES,off,~,012,08,0xFF], b: 'true', c: é😀}"),
@@ -49,20 +43,20 @@ test "parseYaml YAML 1.1 scalars and recursive collections" {
 }
 
 ///|
-test "parseYaml document splitting mirrors Go reader" {
+test "parseYaml keeps no document profiles and rejects decoded scalar documents" {
+  for source in ["\n", "# comment"] {
+    assert_eq(parse_yaml_test(source), Json::null())
+  }
   for
-    (source, expected) in [
-      ("\n", Json::null()),
-      ("# comment", Json::null()),
-      ("---", Json::array([Json::null()])),
-      ("---\n---\n", Json::array([Json::null()])),
-      ("1\n---\nfalse\n---\n", Json::array([1, false])),
-      ("# comment\n---\n1", Json::array([null, 1])),
-      ("--- # comment\n1", Json::number(1)),
-      ("1\n...\nignored", Json::number(1)),
-      ("1\n--- ignored", Json::number(1)),
+    source in [
+      "---", "---\n---\n", "1\n---\nfalse\n---\n", "# comment\n---\n1", "--- # comment\n1",
+      "1\n...\nignored", "1\n--- ignored",
     ] {
-    assert_eq(parse_yaml_test(source), expected)
+    try parse_yaml_test(source) catch {
+      @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Runtime)
+    } noraise {
+      _ => fail("decoded scalar document was accepted: " + source)
+    }
   }
 }
 
@@ -105,6 +99,7 @@ test "parseYaml rejects invalid input without escaping diagnostics" {
   }
   for
     source in [
+      "!<tag:example.com,%C0%80> value", "!<tag:yaml.org,2002:int> '012'", "!<tag:example.com,%E4%B8%AD> value",
       "", "[", "*missing", "{a: &a [*a]}", "{<<: [1]}", "{null: 1}", "{18446744073709551615: 1}",
       "? [1,2]\n: 3", ".inf", "!!int '1.0'", "!!bool maybe", "!!timestamp 2023-02-29",
       "!!timestamp 2024-01-01T99:00:00Z", "!!timestamp 2024-01-01extra",

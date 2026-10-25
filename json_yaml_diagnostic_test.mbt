@@ -48,5 +48,9 @@ test "YAML errors preserve parser scanner and directive semantics" {
       _ => fail("malformed YAML accepted")
     }
   }
-  assert_eq(@moonjsonnet.evaluate("std.parseYaml('a')"), "a")
+  try @moonjsonnet.evaluate("std.parseYaml('a')") catch {
+    @moonjsonnet.Error(d) => assert_eq(d.kind, @moonjsonnet.Runtime)
+  } noraise {
+    _ => fail("scalar YAML root was accepted")
+  }
 }
