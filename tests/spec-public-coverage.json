@@ -18,60 +18,117 @@
   {"name":"sum","dimensions":{"N":{"test":"spec_aggregate_test.mbt","expectation":"Empty sum, finite examples and cancellation without overflow."},"E":{"test":"spec_aggregate_test.mbt","expectation":"Overflow is Runtime at the first invalid addition, before later operands or type inspection."},"L":{"test":"spec_aggregate_test.mbt","expectation":"Unused binding, short circuit and hidden fields do not evaluate overflow."},"B":{"test":"spec_aggregate_test.mbt","expectation":"Empty array and large finite/cancellation examples."}},"remaining":"All element/argument types, signatures and evaluation orders are not fully adjudicated."},
   {"name":"avg","dimensions":{"N":{"test":"spec_aggregate_test.mbt","expectation":"Finite average of [1,2,3] is 2."},"E":{"test":"spec_aggregate_test.mbt","expectation":"Intermediate sum overflow fails before division/cancellation or consumers."},"L":{"test":"tests/spec-acceptance.json","case":"short-circuit-or","expectation":"The average on the unselected right side of true || remains unforced."},"B":{"test":"spec_aggregate_test.mbt","expectation":"Large finite operands that overflow the intermediate sum are rejected."}},"remaining":"Empty/type/signature/error-order coverage outside these reviewed tests remains unadjudicated."},
   {
-    "name": "remove",
-    "dimensions": {
-      "N": {
-        "test": "spec_remove_search_test.mbt",
-        "expectation": "RSD1/RSD3: empty/original alias, first-occurrence deletion, duplicate matching values, absent elements and positional/reordered named calls have literal unchanged-array/result expectations. Existing spec_remove immutability controls remain source-bound supporting evidence.",
-        "additional_tests": [
-          "spec_remove_test.mbt"
-        ]
-      },
-      "E": {
-        "test": "spec_remove_search_test.mbt",
-        "expectation": "RSD2/RSD3: an isolated required comparison head before or after an earlier match, required elem on a nonempty array and input-head errors propagate supplied Runtime markers before a result head. Both length/type observations require complete find. No same-type function-equality or competing-error oracle."
-      },
-      "L": {
-        "test": "spec_remove_search_test.mbt",
-        "expectation": "RSD1-RSD3: an empty search skips elem; nonempty search compares every element head even after its first match. Retained nested Array/Object payloads remain lazy when disjoint types decide equality. Whole unused calls and explicit if/Boolean shortcut wrappers skip errors; this supersedes the old retained-error-head length1 claim, which was not source-correct."
-      },
-      "B": {
-        "test": "spec_remove_search_test.mbt",
-        "expectation": "Empty/single/multiple matches, early/duplicate match plus a later required error, no match, primitive target versus lazy nested containers, unchanged originals and Bool/if control-flow integration. Source invokes first valid removeAt index positionally, without adjudicating its named-index conflict."
-      }
-    },
-    "remaining": "The reviewed source-defined remove search contract now requires the full find result, fixing premature target forcing and native first-match early exit. The old L claim that length skipped an erroneous retained head is explicitly superseded with three preserved input/expectation migrations; removeAt lazy copying remains separate. No whole-function acceptance: complete parameter/error/producer and equality child domains retain their scopes, including PE0 where applicable; diagnostic wording, independent error winner, exact native traces and resource complexity are not added requirements. B0 is separately unadjudicated and not used as this search oracle. No Go/C++ output or old full-suite count validates the new bytes.",
-    "signature_review": {
-      "parameters": [
-        "arr",
-        "elem"
-      ],
-      "defaults": {},
+  "name": "remove",
+  "dimensions": {
+    "N": {
       "test": "spec_remove_search_test.mbt",
-      "status": "Fixed public/source arr,elem names agree and are required. Independent positional/reordered named calls execute; complete mixed/invalid-binding domain remains a shared obligation. Source calls removeAt positionally, so its idx/at/i name dispute is not silently resolved."
+      "expectation": "RSD1/RSD3: empty/original alias, first-occurrence deletion, duplicate matching values, absent elements and positional/reordered named calls have literal unchanged-array/result expectations. Existing spec_remove immutability controls remain source-bound supporting evidence.",
+      "additional_tests": [
+        "spec_remove_test.mbt",
+        "spec_deletion_contract_test.mbt"
+      ]
     },
-    "reference_candidates": [
-      {
-        "file": "spec_remove_search_test.mbt",
-        "line": 43,
-        "test_declaration": "test \"remove empty arrays skip target evaluation through positional and named calls\" {",
-        "classification": "RSD1 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
-      },
-      {
-        "file": "spec_remove_search_test.mbt",
-        "line": 65,
-        "test_declaration": "test \"remove completes every find comparison before returning a result head\" {",
-        "classification": "RSD2 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
-      },
-      {
-        "file": "spec_remove_search_test.mbt",
-        "line": 89,
-        "test_declaration": "test \"remove preserves first deletion values aliases nested laziness and control flow gates\" {",
-        "classification": "RSD3 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
-      }
-    ]
+    "E": {
+      "test": "spec_remove_search_test.mbt",
+      "expectation": "RSD2/RSD3: an isolated required comparison head before or after an earlier match, required elem on a nonempty array and input-head errors propagate supplied Runtime markers before a result head. Both length/type observations require complete find. No same-type function-equality or competing-error oracle. DEL3 independently covers the fixed find nonarray guard before unused elem; DEL1 covers missing/extra/unknown/duplicate-arr argument rejection without value demand.",
+      "additional_tests": [
+        "spec_deletion_contract_test.mbt"
+      ]
+    },
+    "L": {
+      "test": "spec_remove_search_test.mbt",
+      "expectation": "RSD1-RSD3: an empty search skips elem; nonempty search compares every element head even after its first match. Retained nested Array/Object payloads remain lazy when disjoint types decide equality. Whole unused calls and explicit if/Boolean shortcut wrappers skip errors; this supersedes the old retained-error-head length1 claim, which was not source-correct."
+    },
+    "B": {
+      "test": "spec_remove_search_test.mbt",
+      "expectation": "Empty/single/multiple matches, early/duplicate match plus a later required error, no match, primitive target versus lazy nested containers, unchanged originals and Bool/if control-flow integration. Source invokes first valid removeAt index positionally, without adjudicating its named-index conflict. DEL2 adds singleton primitive/container targets and Unicode non-normalization; DEL9 combines remove/removeAt/map aliases and unchanged originals.",
+      "additional_tests": [
+        "spec_deletion_contract_test.mbt"
+      ]
+    }
   },
-  {"name":"removeAt","dimensions":{"N":{"test":"spec_remove_test.mbt","expectation":"Positional deletion preserves original, aliases and earlier map/slice."},"L":{"test":"spec_review_test.mbt","expectation":"Result shares cached payload once; removed/retained error payloads stay lazy for length/other indices."},"B":{"test":"spec_remove_test.mbt","expectation":"Deleting sole element and chained deletion keep inputs immutable."}},"remaining":"Named parameter idx versus source at/current i is unresolved. Invalid/fractional/out-of-range index behavior is not assumed from Go tests."},
+  "remaining": "The reviewed deletion responsibility is mapped in SPEC-DELETION-CONTRACT-2026-10-25.md: source-defined complete find demand, required binding and find input guard, first-only deletion, literal target kinds, empty/single/duplicate/no-match, Unicode and immutable alias/map composition. The source remove body is unchanged from the preserved ccf50ef search fix; this continuation adds only independent boundary evidence for remove. Shared equality/producer/static/resource judgments, PE0 on same-type Function children and N0/R0 on assertion-bearing objects are not resolved by these finite cases. No whole-function acceptance, callback/allocation identity promise, Go oracle or historical full-suite inheritance.",
+  "signature_review": {
+    "parameters": [
+      "arr",
+      "elem"
+    ],
+    "defaults": {},
+    "test": "spec_remove_search_test.mbt",
+    "status": "Fixed arr/elem names agree and both are required without defaults. RSD1/RSD3 cover positional/reordered named calls; DEL1 covers mixed positional/named calls, reflection length2 and missing/extra/unknown/duplicate-arr binding before argument demand. Generic bind-child/static judgments retain their own scopes. removeAt index spelling remains separately conflicted."
+  },
+  "reference_candidates": [
+    {
+      "file": "spec_remove_search_test.mbt",
+      "line": 43,
+      "test_declaration": "test \"remove empty arrays skip target evaluation through positional and named calls\" {",
+      "classification": "RSD1 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
+    },
+    {
+      "file": "spec_remove_search_test.mbt",
+      "line": 65,
+      "test_declaration": "test \"remove completes every find comparison before returning a result head\" {",
+      "classification": "RSD2 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
+    },
+    {
+      "file": "spec_remove_search_test.mbt",
+      "line": 89,
+      "test_declaration": "test \"remove preserves first deletion values aliases nested laziness and control flow gates\" {",
+      "classification": "RSD3 independent source/handmade-AST frozen criteria, preserved1-pass/2-failure baseline including illegal head1, executed after one-line source routing repair"
+    }
+  ]
+},
+  {
+  "name": "removeAt",
+  "dimensions": {
+    "N": {
+      "test": "spec_deletion_contract_test.mbt",
+      "expectation": "DEL4/DEL6/DEL8: one matching numeric position only, -0/integral forms, singleton, unmatched negative/end/fraction/large-finite indices, Unicode String character Arrays and source-defined length admission. Existing immutable Array results remain supporting evidence.",
+      "additional_tests": [
+        "spec_remove_test.mbt",
+        "remove_test.mbt"
+      ]
+    },
+    "E": {
+      "test": "spec_deletion_contract_test.mbt",
+      "expectation": "DEL1 rejects invalid binding before argument values. DEL7 requires nonempty index errors/finite-number producer failure. DEL8 rejects Null/Bool/Number length inputs and selected numeric Object/Function indexing. There is no invented bounds, integer-conversion or Array-only guard in the fixed body."
+    },
+    "L": {
+      "test": "spec_deletion_contract_test.mbt",
+      "expectation": "DEL5 empty ranges skip all index expressions; DEL7 skips nested disjoint index payloads/bodies; DEL8 separates result shape from retained indexing; DEL9 preserves removed/retained errors, callable closures and hidden values. Generic unused calls stay lazy. Existing callback count is host compatibility, not a normative trace.",
+      "additional_tests": [
+        "spec_review_test.mbt",
+        "spec_aggregate_test.mbt"
+      ]
+    },
+    "B": {
+      "test": "spec_deletion_contract_test.mbt",
+      "expectation": "DEL4-DEL9 plus original immutable aliases and sequence controls cover zero/single/multiple, matched/unmatched positions, finite extremes, nonarray source admission, map/alias composition and demanded versus undemanded retained values.",
+      "additional_tests": [
+        "spec_remove_test.mbt",
+        "spec_sequence_structure_test.mbt"
+      ]
+    }
+  },
+  "remaining": "Positional source-defined behavior now uses the unchanged embedded removeAt definition through a lazy two-parameter adapter, preserving current i only as compatibility. Fixed docs idx versus fixed source at remains a signature conflict, so no whole-function acceptance. The separate binding profile has normative acceptance null and adds no alias. Five precise old error assertions were migrated with raw original failure retained; no Go/C++ fixtures or snapshots changed. Array/Object/Function producer, length/index/equality children, assertion/cycle disputes and resource limits retain their independent scope; exact native callback counts, allocation identity and independent-error winners are not new promises.",
+  "signature_review": {
+    "parameters_documentation": [
+      "arr",
+      "idx"
+    ],
+    "parameters_fixed_source": [
+      "arr",
+      "at"
+    ],
+    "parameters_current_compatibility": [
+      "arr",
+      "i"
+    ],
+    "defaults": {},
+    "test": "spec_deletion_contract_test.mbt",
+    "status": "Two required parameters with no defaults agree; DEL1 verifies cardinality and undisputed arr binding. idx/at cannot be uniquely selected from the pinned sources. Current i is retained by a lazy positional adapter without aliases; spec_deletion_binding_profile_test.mbt checks only preservation, normative acceptance null."
+  }
+},
   {"name":"manifestYamlDoc","dimensions":{"E":{"test":"spec_yaml_test.mbt","expectation":"Root/nested functions and nested runtime errors fail instead of returning partial YAML."},"L":{"test":"spec_aggregate_test.mbt","expectation":"Unused manifestation and hidden fields remain unforced."}},"remaining":"All formatting/options/normal-result/numeric/layout boundaries are not adjudicated by this error/lazy subset."},
   {"name":"manifestYamlStream","dimensions":{"E":{"test":"spec_yaml_test.mbt","expectation":"Errors and functions in any demanded document fail the stream call."}},"remaining":"Official documentation c_document_end=false conflicts with source default true; normal/default/options/lazy/boundary behavior remains unresolved or unmapped."},
   {"name":"md5","dimensions":{},"reference_candidates":[{"file":"digest_test.mbt","line":38,"classification":"Manual dynamic-call reference; values/types/work limits are asserted, but the complete normative contract has not been adjudicated."}],"remaining":"Dynamic test references are mapped without awarding normative N/E/L/B coverage."},

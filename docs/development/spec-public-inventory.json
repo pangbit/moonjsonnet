@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "a03af756d74e97cbf84ca1c5dd8fbf4a2775fb68",
-  "uncommitted_test_paths": "remove_test.mbt\nspec_aggregate_test.mbt\nspec_boolean_rhs_profile_test.mbt\nspec_remove_search_test.mbt",
+  "input_source_commit": "ccf50ef16b1c24656f05d0cce8c78acea83d8814",
+  "uncommitted_test_paths": "remove_test.mbt\nspec_deletion_binding_profile_test.mbt\nspec_deletion_contract_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -61,7 +61,7 @@
     "program_parameters_test.mbt": "c6491f7f73ec8dafcd0ab97bfb10606c251b6ba1722cbbca2a492a622a39b91e",
     "program_test.mbt": "7932f143daf41eae2d477be035bf0ff059b23094c7e1786cec01ad750ff43be6",
     "raw_ast_test.mbt": "9009981d5a1e56a1e1fdd33f43c937b0f4638f4393e35e61c847fd64b6a5b4e5",
-    "remove_test.mbt": "1a9f970ccda698c569594f5611d62a2076f5fdac1795323f7c2ac20ec8fe7b31",
+    "remove_test.mbt": "1361b5ad22858164563e1ae59575c682dd76ef3995a7b777216c45038637b590",
     "render_test.mbt": "de5bec68aa7a01e91b9c4033e04a822752f562f69a560c4e197fe9de63c451e3",
     "sequence_combine_test.mbt": "cbc22e5934cd48df0244d772fab35ad3ceb93135b7d6c59c5fc742d22f64ccb7",
     "sequence_test.mbt": "4e357359c56a1416c2e5f4d015f5faeae699822b64cd4376ca88d54080efb99b",
@@ -87,6 +87,8 @@
     "spec_composed_strings_test.mbt": "896627825a13c8760a163a97fe2f49a22155be78e3204c08acde6bdf3fce1ed0",
     "spec_conditional_runtime_test.mbt": "ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf",
     "spec_conditional_static_test.mbt": "6f596f443401defc8c4865a5ac19084973c1bc27aeba11dd487e131462b4ea8e",
+    "spec_deletion_binding_profile_test.mbt": "8264b6b5e796acb315618e9883e5ea8782e8011c7d56d3cd0c309027015bd4b7",
+    "spec_deletion_contract_test.mbt": "70fdcbca0382c4255941a509c0d02ee94a3e9f9329ce35c943565434aac99c6d",
     "spec_encoding_entries_test.mbt": "2a4d39967638879a230a300ad345a7f52986a03ab739048e996d12f911dd4d4c",
     "spec_error_static_test.mbt": "b931793ba7ad955b4a83f30600f6eeaca66c2ff0e99640004c059254866e9610",
     "spec_expression_lists_test.mbt": "a28036727517e12ab3e27243f613eafc56172aa764b0432192196cb1d1a793c0",
@@ -182,7 +184,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "cbecf4fae4ff9f770e94775316fe8bf70a79e287a71df3557ec585efe75396d6",
+  "coverage_sha256": "2563c934cc626148873982d38b81469b59820067acd20419d96ee785de3be9c2",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -4463,7 +4465,7 @@
         },
         {
           "file": "remove_test.mbt",
-          "line": 78,
+          "line": 88,
           "test_declaration": "test \"flat object merge keeps bindings visibility and self while dropping assertions\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -5602,12 +5604,16 @@
             "test": "spec_remove_search_test.mbt",
             "expectation": "RSD1/RSD3: empty/original alias, first-occurrence deletion, duplicate matching values, absent elements and positional/reordered named calls have literal unchanged-array/result expectations. Existing spec_remove immutability controls remain source-bound supporting evidence.",
             "additional_tests": [
-              "spec_remove_test.mbt"
+              "spec_remove_test.mbt",
+              "spec_deletion_contract_test.mbt"
             ]
           },
           "E": {
             "test": "spec_remove_search_test.mbt",
-            "expectation": "RSD2/RSD3: an isolated required comparison head before or after an earlier match, required elem on a nonempty array and input-head errors propagate supplied Runtime markers before a result head. Both length/type observations require complete find. No same-type function-equality or competing-error oracle."
+            "expectation": "RSD2/RSD3: an isolated required comparison head before or after an earlier match, required elem on a nonempty array and input-head errors propagate supplied Runtime markers before a result head. Both length/type observations require complete find. No same-type function-equality or competing-error oracle. DEL3 independently covers the fixed find nonarray guard before unused elem; DEL1 covers missing/extra/unknown/duplicate-arr argument rejection without value demand.",
+            "additional_tests": [
+              "spec_deletion_contract_test.mbt"
+            ]
           },
           "L": {
             "test": "spec_remove_search_test.mbt",
@@ -5615,10 +5621,13 @@
           },
           "B": {
             "test": "spec_remove_search_test.mbt",
-            "expectation": "Empty/single/multiple matches, early/duplicate match plus a later required error, no match, primitive target versus lazy nested containers, unchanged originals and Bool/if control-flow integration. Source invokes first valid removeAt index positionally, without adjudicating its named-index conflict."
+            "expectation": "Empty/single/multiple matches, early/duplicate match plus a later required error, no match, primitive target versus lazy nested containers, unchanged originals and Bool/if control-flow integration. Source invokes first valid removeAt index positionally, without adjudicating its named-index conflict. DEL2 adds singleton primitive/container targets and Unicode non-normalization; DEL9 combines remove/removeAt/map aliases and unchanged originals.",
+            "additional_tests": [
+              "spec_deletion_contract_test.mbt"
+            ]
           }
         },
-        "remaining": "The reviewed source-defined remove search contract now requires the full find result, fixing premature target forcing and native first-match early exit. The old L claim that length skipped an erroneous retained head is explicitly superseded with three preserved input/expectation migrations; removeAt lazy copying remains separate. No whole-function acceptance: complete parameter/error/producer and equality child domains retain their scopes, including PE0 where applicable; diagnostic wording, independent error winner, exact native traces and resource complexity are not added requirements. B0 is separately unadjudicated and not used as this search oracle. No Go/C++ output or old full-suite count validates the new bytes.",
+        "remaining": "The reviewed deletion responsibility is mapped in SPEC-DELETION-CONTRACT-2026-10-25.md: source-defined complete find demand, required binding and find input guard, first-only deletion, literal target kinds, empty/single/duplicate/no-match, Unicode and immutable alias/map composition. The source remove body is unchanged from the preserved ccf50ef search fix; this continuation adds only independent boundary evidence for remove. Shared equality/producer/static/resource judgments, PE0 on same-type Function children and N0/R0 on assertion-bearing objects are not resolved by these finite cases. No whole-function acceptance, callback/allocation identity promise, Go oracle or historical full-suite inheritance.",
         "signature_review": {
           "parameters": [
             "arr",
@@ -5626,7 +5635,7 @@
           ],
           "defaults": {},
           "test": "spec_remove_search_test.mbt",
-          "status": "Fixed public/source arr,elem names agree and are required. Independent positional/reordered named calls execute; complete mixed/invalid-binding domain remains a shared obligation. Source calls removeAt positionally, so its idx/at/i name dispute is not silently resolved."
+          "status": "Fixed arr/elem names agree and both are required without defaults. RSD1/RSD3 cover positional/reordered named calls; DEL1 covers mixed positional/named calls, reflection length2 and missing/extra/unknown/duplicate-arr binding before argument demand. Generic bind-child/static judgments retain their own scopes. removeAt index spelling remains separately conflicted."
         },
         "reference_candidates": [
           {
@@ -5689,19 +5698,52 @@
         "name": "removeAt",
         "dimensions": {
           "N": {
-            "test": "spec_remove_test.mbt",
-            "expectation": "Positional deletion preserves original, aliases and earlier map/slice."
+            "test": "spec_deletion_contract_test.mbt",
+            "expectation": "DEL4/DEL6/DEL8: one matching numeric position only, -0/integral forms, singleton, unmatched negative/end/fraction/large-finite indices, Unicode String character Arrays and source-defined length admission. Existing immutable Array results remain supporting evidence.",
+            "additional_tests": [
+              "spec_remove_test.mbt",
+              "remove_test.mbt"
+            ]
+          },
+          "E": {
+            "test": "spec_deletion_contract_test.mbt",
+            "expectation": "DEL1 rejects invalid binding before argument values. DEL7 requires nonempty index errors/finite-number producer failure. DEL8 rejects Null/Bool/Number length inputs and selected numeric Object/Function indexing. There is no invented bounds, integer-conversion or Array-only guard in the fixed body."
           },
           "L": {
-            "test": "spec_review_test.mbt",
-            "expectation": "Result shares cached payload once; removed/retained error payloads stay lazy for length/other indices."
+            "test": "spec_deletion_contract_test.mbt",
+            "expectation": "DEL5 empty ranges skip all index expressions; DEL7 skips nested disjoint index payloads/bodies; DEL8 separates result shape from retained indexing; DEL9 preserves removed/retained errors, callable closures and hidden values. Generic unused calls stay lazy. Existing callback count is host compatibility, not a normative trace.",
+            "additional_tests": [
+              "spec_review_test.mbt",
+              "spec_aggregate_test.mbt"
+            ]
           },
           "B": {
-            "test": "spec_remove_test.mbt",
-            "expectation": "Deleting sole element and chained deletion keep inputs immutable."
+            "test": "spec_deletion_contract_test.mbt",
+            "expectation": "DEL4-DEL9 plus original immutable aliases and sequence controls cover zero/single/multiple, matched/unmatched positions, finite extremes, nonarray source admission, map/alias composition and demanded versus undemanded retained values.",
+            "additional_tests": [
+              "spec_remove_test.mbt",
+              "spec_sequence_structure_test.mbt"
+            ]
           }
         },
-        "remaining": "Named parameter idx versus source at/current i is unresolved. Invalid/fractional/out-of-range index behavior is not assumed from Go tests."
+        "remaining": "Positional source-defined behavior now uses the unchanged embedded removeAt definition through a lazy two-parameter adapter, preserving current i only as compatibility. Fixed docs idx versus fixed source at remains a signature conflict, so no whole-function acceptance. The separate binding profile has normative acceptance null and adds no alias. Five precise old error assertions were migrated with raw original failure retained; no Go/C++ fixtures or snapshots changed. Array/Object/Function producer, length/index/equality children, assertion/cycle disputes and resource limits retain their independent scope; exact native callback counts, allocation identity and independent-error winners are not new promises.",
+        "signature_review": {
+          "parameters_documentation": [
+            "arr",
+            "idx"
+          ],
+          "parameters_fixed_source": [
+            "arr",
+            "at"
+          ],
+          "parameters_current_compatibility": [
+            "arr",
+            "i"
+          ],
+          "defaults": {},
+          "test": "spec_deletion_contract_test.mbt",
+          "status": "Two required parameters with no defaults agree; DEL1 verifies cardinality and undisputed arr binding. idx/at cannot be uniquely selected from the pinned sources. Current i is retained by a lazy positional adapter without aliases; spec_deletion_binding_profile_test.mbt checks only preservation, normative acceptance null."
+        }
       },
       "test_reference_candidates": [
         {

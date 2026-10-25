@@ -42,12 +42,11 @@ test "remove and removeAt preserve lazy payloads and immutable inputs" {
 }
 
 ///|
-test "remove validates inputs without native bounds failures" {
+test "remove rejects guarded inputs and removeAt preserves unmatched positions" {
   for
     source in [
       "std.remove([error 'forced'],0)", "std.remove([function()0],function()0)",
-      "std.remove('abc','a')", "std.removeAt([1],-1)", "std.removeAt([1],1)", "std.removeAt([],0)",
-      "std.removeAt([1],0.5)", "std.removeAt([1],'0')",
+      "std.remove('abc','a')",
     ] {
     try @moonjsonnet.evaluate(source) catch {
       @moonjsonnet.Error(d) => assert_true(d.kind != @moonjsonnet.Unsupported)
@@ -59,6 +58,17 @@ test "remove validates inputs without native bounds failures" {
     @moonjsonnet.evaluate("std.remove([],error 'forced')"),
     Json::array([]),
   )
+  // Fixed removeAt filters matching indices; it does not reject unmatched ones.
+  for
+    (source, expected) in [
+      ("std.removeAt([1],-1)", "[1]"),
+      ("std.removeAt([1],1)", "[1]"),
+      ("std.removeAt([],0)", "[]"),
+      ("std.removeAt([1],0.5)", "[1]"),
+      ("std.removeAt([1],'0')", "[1]"),
+    ] {
+    assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))
+  }
 }
 
 ///|

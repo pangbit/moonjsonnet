@@ -221,3 +221,20 @@ These are review findings, not newly executed implementation-failure claims.
 Next useful work is to adjudicate one conflict with minimal source-level probes
 and to review actual normal/error/lazy/boundary assertions for currently U rows.
 Adding rows, registration checks or new Go-equal snapshots cannot replace that.
+
+
+## Complete deletion responsibility continuation at ccf50ef
+
+The [combined deletion review](SPEC-DELETION-CONTRACT-2026-10-25.md) maps the
+existing search/immutability evidence with nine new independent groups across
+binding, target/value types, full-search demand, numeric/disjoint/empty index
+behavior, source length admission, retained values and alias/map composition.
+The actual baseline passed5/9; source-body removeAt selection with a lazy current-i
+adapter repairs four observed groups without choosing between idx/at or adding
+aliases. Five exact old error assumptions have preserved source/input migrations.
+The final directed unit batch passes28/28, including one compatibility-only name
+profile with normative acceptance null. The remove source body from ccf50ef stays
+unchanged. Only remove/removeAt public records change: other64 records and all225
+language evidence remain equal,66 reviewed subsets and zero whole-function accepts.
+Shared producer/equality/assertion children and the name conflict remain scoped;
+no fresh full-suite, platform or reference-execution acceptance follows.
