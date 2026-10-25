@@ -278,3 +278,24 @@ are equal, 66 reviewed subsets and zero unqualified whole-function accepts.
 All 225 language evidence objects and completion conditions stay equal; only the
 unchanged SQ0UNI declaration's full-file hash rebinds after its unrelated YAML
 fixture migration, with exact-prefix proof. Prior 25/789 are not inherited.
+
+
+## YAML error and option-demand responsibility at 3da8ab8
+
+The [bounded YAML review](SPEC-YAML-DEMAND-2026-10-25.md) confirms that the old
+nested-error P0 was already fixed: raised failures cannot return a successful
+partial String. The new gap was eager forcing/type checking of unused Doc
+formatting options. Their thunks now follow actual visible Object/nonempty
+Array-field demand while explicit tailstrict still forces bound heads. The
+unchanged Stream definition inherits that correction. Seven frozen groups first
+passed3/7, and a separately frozen strict control failed; the final related
+regression passes29/29 after one exact old scalar-option error oracle migration.
+
+Only the two existing YAML public records extend: the other64 remain equal,
+66 reviewed subsets and zero whole-function acceptances. Thirty-five disjoint
+stdlib/eval inspections rebind current full-file hashes, with unchanged anchors
+and all225 language evidence/completion fields otherwise equal. Full YAML
+quoting/layout certification is not inferred; explicit stream ends avoid the
+unresolved documentation false/source true default. Flat field-demand controls
+do not decide inherited/cyclic N0/R0. Prior802/802 and older Linux evidence do
+not apply to the new source bytes; no full/release/remote/CLI run was done here.

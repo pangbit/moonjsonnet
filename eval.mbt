@@ -481,7 +481,7 @@ fn Vm::call(
   self.tick(loc)
   match function {
     Native(f) => self.call_native(f, args, loc)
-    Builtin(name) => self.builtin(name, args, loc)
+    Builtin(name) => self.builtin(name, args, loc, strict~)
     Closure(params, body, outer) => {
       let env = self.call_env(params, args, outer, loc, body~)
       if strict {

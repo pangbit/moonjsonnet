@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "3397975c966e4c3a48748a5136776dd2b950d8d0",
-  "uncommitted_test_paths": "stdlib_contract_test.mbt",
+  "input_source_commit": "3da8ab84953997aab53d96c726656cdbe60e02de",
+  "uncommitted_test_paths": "spec_yaml_demand_test.mbt\nspec_yaml_strict_test.mbt\ntoml_yaml_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "965028fe74da63f52ee9c5a43e7d19d4464f915a01fb3dcb7359311c48d2d7b8",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -171,6 +171,8 @@
     "spec_text_chomp_test.mbt": "72d6b50c1c56686e26978f01eba5ac54c59d1a0fe9643199797090660d70a1fa",
     "spec_unary_static_test.mbt": "4595a91bb4d5bcf2521048626ba09e08fef98882d28fe2b66642e5110fa5d14d",
     "spec_value_heads_test.mbt": "c333432caf47be1eb43ef9650c86309361f3dc5e6bcd80befc435cb2802a20fc",
+    "spec_yaml_demand_test.mbt": "e12117551de7ef28530b0998ee5f3973f8055e5ce3a4373fa43757dea8c08e5c",
+    "spec_yaml_strict_test.mbt": "479ecaacea2d21446d3d37151748d7b0eed318d2d3069b2de070139fd43e0d5c",
     "spec_yaml_test.mbt": "f3e780945664c28724177b15d5f8540ff668526218e1b6ab0c55b468c2bb280d",
     "spec_yaml_wbtest.mbt": "a9d65846e43f8cb06e783f6138fde5f1afd3e8da1a8cc2f0b4a74441f1141dba",
     "stack_test.mbt": "70a86f582e38e7fac74448bf8e28079400855538d574a27cdbc5f528a53f0634",
@@ -184,9 +186,9 @@
     "string_literal_test.mbt": "9b20b698e56ad17e2688d7bb88663587cdb9f1f09d2dddf787f9ebf24bb51e6f",
     "syntax_diagnostic_test.mbt": "32d3f2b3b7846d58000f605abd3dd145eab700ecc38a9a58ce756c8eeec3a846",
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
-    "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
+    "toml_yaml_test.mbt": "dbe9bdeba00c198d264f5a7037ca4bae9dbe43ef0f6fd4bc3f7babbf681e9587"
   },
-  "coverage_sha256": "3f5f5d6881d7524e36af70766e3b1cf9a13f90fe8e74b223314a1b218f09536b",
+  "coverage_sha256": "647dd2eed42d600a9099be206320f1f4c43651ec66f11892f1e9633de42fcb2f",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -3334,7 +3336,7 @@
       "test_reference_candidates": [
         {
           "file": "toml_yaml_test.mbt",
-          "line": 42,
+          "line": 43,
           "test_declaration": "test \"TOML YAML parameter errors and resource limits\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
@@ -3371,16 +3373,24 @@
       "reviewed_subset": {
         "name": "manifestYamlDoc",
         "dimensions": {
+          "N": {
+            "test": "spec_yaml_demand_test.mbt",
+            "expectation": "Literal scalar, empty, visible Object and nested Array YAML results use explicit formatting options; only actual nonempty Object Array fields require indentation."
+          },
           "E": {
-            "test": "spec_yaml_test.mbt",
-            "expectation": "Root/nested functions and nested runtime errors fail instead of returning partial YAML."
+            "test": "spec_yaml_demand_test.mbt",
+            "expectation": "Required option Runtime/Type errors and late visible Runtime/Type/function failures reject the call, never return a successful prefix; existing defensive finite/output/recovery controls are retained."
           },
           "L": {
-            "test": "spec_aggregate_test.mbt",
-            "expectation": "Unused manifestation and hidden fields remain unforced."
+            "test": "spec_yaml_demand_test.mbt",
+            "expectation": "Unused options, hidden values and flat zero-key library assertion traversal stay dormant; actual visible reads demand flat assertions. Separate spec_yaml_strict_test protects bound-head forcing without unused condition type checks."
+          },
+          "B": {
+            "test": "spec_yaml_demand_test.mbt",
+            "expectation": "Empty/single/nested value shapes, three-parameter reflection, agreed named binding and nonempty Array-field option demand are independently checked through source and handmade AST entries."
           }
         },
-        "remaining": "All formatting/options/normal-result/numeric/layout boundaries are not adjudicated by this error/lazy subset."
+        "remaining": "Error/option-demand responsibility reviewed at SPEC-YAML-DEMAND-2026-10-25.md; full quoting/layout/numeric formatting certification is not inferred. Shared inherited/cyclic assertion N0/R0 qualifications remain at the language review; no whole-function acceptance."
       },
       "test_reference_candidates": [
         {
@@ -3427,12 +3437,24 @@
       "reviewed_subset": {
         "name": "manifestYamlStream",
         "dimensions": {
+          "N": {
+            "test": "spec_yaml_demand_test.mbt",
+            "expectation": "Exact empty and multi-document markers/results are checked with explicit false/true c_document_end and bounded scalar/empty/hidden/visible documents."
+          },
           "E": {
-            "test": "spec_yaml_test.mbt",
-            "expectation": "Errors and functions in any demanded document fail the stream call."
+            "test": "spec_yaml_demand_test.mbt",
+            "expectation": "Late document Runtime/Type/function and required Doc option failures reject the stream without a successful prefix; nonarray input guard and explicitly used end condition errors propagate."
+          },
+          "L": {
+            "test": "spec_yaml_demand_test.mbt",
+            "expectation": "Per-document unused formatting options remain dormant; a later visible Object demands only the options it needs. Nonarray guard skips unrelated options/end; flat empty-library assertion scope stays conditional on actual reads."
+          },
+          "B": {
+            "test": "spec_yaml_demand_test.mbt",
+            "expectation": "Four-parameter reflection/binding, all six nonarray head kinds, empty streams requiring an explicit Bool end flag, and later-document demand use independent source/manual AST probes."
           }
         },
-        "remaining": "Official documentation c_document_end=false conflicts with source default true; normal/default/options/lazy/boundary behavior remains unresolved or unmapped."
+        "remaining": "Documentation c_document_end=false conflicts with source default true and is unresolved: new probes always supply it explicitly. Full YAML layout/quoting and inherited/cyclic assertion children are not accepted by this bounded error/option-demand review."
       },
       "test_reference_candidates": [
         {
@@ -3449,7 +3471,7 @@
         },
         {
           "file": "toml_yaml_test.mbt",
-          "line": 32,
+          "line": 33,
           "test_declaration": "test \"YAML layout quoting and visible fields\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
@@ -5839,7 +5861,7 @@
         },
         {
           "file": "toml_yaml_test.mbt",
-          "line": 54,
+          "line": 55,
           "test_declaration": "test \"TOML YAML parameter errors and resource limits\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }

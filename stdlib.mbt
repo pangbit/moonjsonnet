@@ -121,6 +121,7 @@ fn Vm::builtin(
   name : String,
   args : Array[(String?, Int)],
   loc : Location,
+  strict? : Bool = false,
 ) -> Value raise {
   let params = builtin_params(name)
   let required = if name == "sort" ||
@@ -241,6 +242,26 @@ fn Vm::builtin(
       name == "contains",
       loc,
     )
+  }
+  if name == "manifestYamlDoc" {
+    if strict {
+      // Strict calls demand bound heads, not an unused formatting condition.
+      for key in params {
+        ignore(self.force(ids[key], loc))
+      }
+    }
+    let out = ManifestText::new(self.limits.output_bytes, loc)
+    self.yaml_value(
+      self.force(ids["value"], loc),
+      false,
+      true,
+      "",
+      0,
+      out,
+      loc,
+      option_thunks=Some((ids["indent_array_in_object"], ids["quote_keys"])),
+    )
+    return Str(out.text())
   }
   let values = if name == "join" {
     // The fixed source rejects arr before inspecting the separator.

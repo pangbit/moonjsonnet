@@ -126,6 +126,7 @@ fn Vm::yaml_value(
   depth : Int,
   out : ManifestText,
   loc : Location,
+  option_thunks? : (Int, Int)? = None,
 ) -> Unit raise {
   self.tick(loc)
   if depth >= self.limits.depth {
@@ -183,6 +184,7 @@ fn Vm::yaml_value(
           depth + 1,
           out,
           loc,
+          option_thunks~,
         )
       }
     }
@@ -191,6 +193,10 @@ fn Vm::yaml_value(
       if keys.is_empty() {
         out.write("{}")
         return
+      }
+      let quote_keys = match option_thunks {
+        Some((_, key_option)) => boolean(self.force(key_option, loc), loc)
+        None => quote_keys
       }
       for i, key in keys {
         let child = self.field(id, top, key, loc)
@@ -212,10 +218,19 @@ fn Vm::yaml_value(
           _ => false
         }
         let child_indent = if nested {
-          if child is ArrayValue(_) && !indent_arrays {
-            current_indent
+          let add_indent = if child is ArrayValue(_) {
+            match option_thunks {
+              Some((array_option, _)) =>
+                boolean(self.force(array_option, loc), loc)
+              None => indent_arrays
+            }
           } else {
+            true
+          }
+          if add_indent {
             current_indent + "  "
+          } else {
+            current_indent
           }
         } else {
           current_indent
@@ -234,6 +249,7 @@ fn Vm::yaml_value(
           depth + 1,
           out,
           loc,
+          option_thunks~,
         )
       }
     }
