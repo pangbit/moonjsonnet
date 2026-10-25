@@ -29,7 +29,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `ceil` | I: `std.ceil(x)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_math_rounding_test.mbt:35](../../spec_math_rounding_test.mbt#L35) |
 | `char` | D: `std.char(n)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_scalar_test.mbt:5](../../spec_string_scalar_test.mbt#L5); [standard_character_test.mbt:5](../../standard_character_test.mbt#L5) |
 | `clamp` | D: `std.clamp(x, minVal, maxVal)` | S: `std.clamp(x, minVal, maxVal)` | U/U/U/U | [array_std_test.mbt:29](../../array_std_test.mbt#L29) |
-| `codepoint` | D: `std.codepoint(str)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_review_test.mbt:71](../../spec_review_test.mbt#L71); [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21); [spec_string_scalar_test.mbt:5](../../spec_string_scalar_test.mbt#L5) |
+| `codepoint` | D: `std.codepoint(str)` | Native/not defined in std.jsonnet | R/R/R/R | [spec_review_test.mbt:71](../../spec_review_test.mbt#L71); [spec_sort_admission_test.mbt:73](../../spec_sort_admission_test.mbt#L73); [spec_string_calls_test.mbt:21](../../spec_string_calls_test.mbt#L21) |
 | `contains` | D: `std.contains(arr, elem)` | S: `std.contains(arr, elem)` | R/R/R/R | [extrema_test.mbt:52](../../extrema_test.mbt#L52); [spec_membership_test.mbt:15](../../spec_membership_test.mbt#L15) |
 | `cos` | I: `std.cos(x)` | Native/not defined in std.jsonnet | U/U/U/U | [std_math_test.mbt:10](../../std_math_test.mbt#L10) |
 | `count` | D: `std.count(arr, x)` | S: `std.count(arr, x)` | U/U/U/U | [array_std_test.mbt:22](../../array_std_test.mbt#L22) |
@@ -131,7 +131,7 @@ Signatures are transcribed independently; conflicting names/defaults are not nor
 | `removeAt` | D: `std.removeAt(arr, idx)` | S: `std.removeAt(arr, at)` | R/U/R/R | [program_parameters_test.mbt:181](../../program_parameters_test.mbt#L181); [program_test.mbt:187](../../program_test.mbt#L187); [remove_test.mbt:7](../../remove_test.mbt#L7) |
 | `repeat` | D: `std.repeat(what, count)` | S: `std.repeat(what, count)` | U/U/U/U | [array_std_test.mbt:23](../../array_std_test.mbt#L23); [toml_yaml_test.mbt:54](../../toml_yaml_test.mbt#L54) |
 | `resolvePath` | Not listed | S: `std.resolvePath(f, r)` | U/U/U/U | [std_string_test.mbt:38](../../std_string_test.mbt#L38) |
-| `reverse` | D: `std.reverse(arrs)` | S: `std.reverse(arr)` | U/U/U/U | [sequence_test.mbt:40](../../sequence_test.mbt#L40); [sort_test.mbt:72](../../sort_test.mbt#L72) |
+| `reverse` | D: `std.reverse(arrs)` | S: `std.reverse(arr)` | U/U/U/U | [sequence_test.mbt:40](../../sequence_test.mbt#L40); [sort_test.mbt:73](../../sort_test.mbt#L73) |
 | `round` | I: `std.round(x)` | S: `std.round(x)` | U/U/U/U | [std_math_test.mbt:26](../../std_math_test.mbt#L26) |
 | `rstripChars` | D: `std.rstripChars(str, chars)` | S: `std.rstripChars(str, chars)` | R/R/R/R | [std_string_test.mbt:10](../../std_string_test.mbt#L10); [spec_strip_chars_test.mbt:5](../../spec_strip_chars_test.mbt#L5) |
 | `set` | D: `std.set(arr, keyF=id)` | S: `std.set(arr, keyF=id)` | U/U/U/U | [sets_test.mbt:7](../../sets_test.mbt#L7) |

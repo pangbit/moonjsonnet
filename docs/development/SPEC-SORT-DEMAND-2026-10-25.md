@@ -424,3 +424,187 @@ separately and is not a semantic test failure.
 | final-info-supported | 0 | 0.331 |
 | final-format | 0 | 0.024 |
 | public-inventory | 0 | 1.643 |
+
+## Sort admission and non-promises: frozen adjudication
+
+Base 81dc0ef7381d5557d329cfa5e99e04132f237784; fixed Google Jsonnet
+bbb38f1020be1f5aed560928fb839b2c448cefb4. No new network/reference interpreter.
+
+Decisive authority: spec.html1095-1132 defines desugaring using parsed
+std.jsonnet and specifies source-library behavior by its implementation;
+stdlib.html22-32 points readers to that code and binds the same std object.
+Apply at2231-2249 substitutes untyped lazy arguments; no Array-only premise
+is added to sort. Its public entry2573-2593 describes array sorting and a
+one-supplied-argument key, but declares no non-Array error/undefined rule and no
+unconditional key validation. The exact source1433-1466 defines the following
+results. This is not a general precedence rule for genuinely conflicting
+signatures elsewhere. Earlier sort admission U rows are superseded by this
+specific cross-source adjudication; their history and raw tests remain intact.
+
+| Item | Decision and independent requirement |
+| --- | --- |
+| Non-Array admission | Defined by source where operations succeed. Length0/1 String/Object/Function returns the original kind/value. Longer String sorts codepoints into an Array. Object/Function length2..30 can yield deferred invalid-index elements under a constant key; demanding such an element fails. Length>30 reaches slice's explicit String-or-Array assertion at source233; it rejects Object/Function even with constant keys. Null/Bool/Number length fails. Do not invent a blanket Array guard. |
+| Unused invalid key | Defined by lazy apply plus <=1 guard, for every key value/expression. No key head or call is required at length0/1. For longer inputs a required call must be callable/admit one argument and needed comparisons must succeed. Preserve all previous valid/invalid-required-call tests. |
+| Native callback multiplicity/order | Observable through host effects, but no universal sort trace is a fixed-language/API promise. Language140-174 requires pure/referentially transparent functions; spec2854-2857 leaves native semantics custom. Value results/necessary errors and per-thunk sharing still matter. Native API's fully manifested argument order and single forced lazy call are retained; that does not mean one key application per item for all algorithms. Exact general sort callback trace is NON-PROMISE, not an indefinitely unresolved mandatory test. |
+| Multiple independent errors | Spec1765-1770 and2843-2851 model stuck execution and do not standardize presentation. Require failure; do not promise which independent diagnostic is selected. Structural skip/demand and a sole required error stay mandatory. This does not authorize evaluating a poison that changes a defined successful result to failure. |
+
+Six groups are frozen before baseline: SA1 source Strings; SA2 handmade Strings;
+SA3 source Object/Closure/Builtin/Native input heads plus length2/30/31 and deferred
+index demand; SA4 handmade same; SA5 all ignored key value kinds/call profiles at
+Array length0/1; SA6 independent required key errors with either controlled marker
+accepted, never success. Source/AST trees are built independently. Expected
+values are literals or elementary finite repetitions, not product/host sorts.
+The test budget is200000 steps/depth128/stack256, not a product default change.
+Per command300s, closed stdin, native/frozen/deny-warn/j1/no-parallelize.
+
+Run unchanged product first and preserve raw cutoffs. If the Array guard fails,
+make the smallest own-code correction: for non-Arrays obtain the fixed length,
+return the original at0/1, defer index expressions through the existing helper
+at2..30, preserve slice's >30 rejection for non-String/non-Array, and reuse the
+native stable merge for actual sequences. Array paths/key caching and global
+comparison/integer conversion stay unchanged. No source code is copied from
+outside into the repo. Run old sort tests unchanged after repair, preserve its
+String-Type conflict, then migrate only that obsolete Type input to a source-
+rejected primitive. Revalidate the six admission groups, prior8+6 sort groups,
+and affected sort/argument/set neighbors. No full suite, SSH, Go/C++ or push.
+
+### Why these decisions supersede the earlier open rows
+
+The decisive clauses are [desugaring and e_std](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L1095-L1132),
+[stdlib introduction](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html#L22-L32),
+[lazy untyped apply](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2231-L2249),
+and [sort's body](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1433-L1466).
+The short sort description contains no type annotation, rejection or undefined-
+behavior rule that could override these reductions. Its array wording is not
+an extra runtime guard. This resolves the earlier admission U classification;
+it does not establish precedence for actual conflicting declarations elsewhere.
+The maintained embedded sort body was compared with the fixed source and is
+byte-identical (body SHA-256 b4cef37499a75a7946daef6c571f4ad736732b350dc8f4fb21f979c4578dbdbb).
+No upstream source file was edited or copied anew into the repository.
+
+For callbacks, [pure functions and equivalence](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/language.html.md#L84-L174)
+constrain value/error results; the evaluation judgment has no cost or callback-
+event trace. [Native functions](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2854-L2859)
+have custom semantics. Host effects can observe native caching, so the counts
+are not claimed to be unobservable. The public sort entry nevertheless promises
+no exact count/order, and the embedding's per-thunk/argument contract makes no
+such library-wide promise. Pure repeatable key results must conform; stateful
+host results do not create a new reference-algorithm trace guarantee.
+
+[Stuck execution](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L1760-L1775)
+and [error presentation](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L2843-L2852)
+require an error where a demanded child cannot evaluate, but provide no general
+winner among independent failed key applications. This is now NON-PROMISE,
+not an indefinitely pending first-message test. Binding/static phases,
+conditional skip/demand, sole required errors and formatting of a chosen
+Diagnostic retain their separate contracts. SA6 accepts either controlled error
+and still rejects successful output or an unrelated failure.
+
+### Measured mismatch and minimal correction
+
+The first check rejected deprecated Ref::new under --deny-warn before executing
+any semantic test (exit255). Replacing that test-only constructor with Ref
+changed no expectation or branch; both versions/plans are preserved. The typed
+baseline then checked successfully and ran six groups: **2 passed,4 failed,
+exit2**. SA1/SA2 stopped at the empty String with omitted key; later String/key/
+threshold cases were NOTRUN. SA3/SA4 stopped at empty Object shape with omitted
+key; Function, native-input and larger-object cases were NOTRUN. SA5/SA6 passed.
+The raw harness prints JsonnetError.Error without diagnostic fields; the Array-
+guard cause follows the preserved implementation, not invented printed text.
+
+Only sort.mbt changed in product code. Arrays retain their previous fast path,
+key cache and stable merge. Non-Arrays obtain the existing length result and
+return the original at0/1. Longer strict Strings materialize codepoints once;
+Object/Function index expressions use the existing deferred-index helper.
+The >30 non-String/non-Array path rejects with the explicit [slice assertion](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L205-L245).
+This avoids falsely extending the short-source branch beyond its slice seam.
+No general comparator, integer conversion, source layer or product budget changed.
+String materialization reuses the established sequence helper instead of
+rescanning the entire String separately for every index.
+
+All six admission groups plus the unchanged eight SD and six SC groups then
+passed together: **20/20,exit0**. All finite branches that were previously
+skipped executed. The typed admission oracle stayed byte-identical.
+
+### Single legacy conflict, kept as a positive and a negative regression
+
+The old sort_test.mbt was run unchanged after repair: **3 passed,1 failed,
+exit2**. Its error loop stopped at std.sort('abc'); later error cases were
+NOTRUN in that run. The original file and stdout remain preserved. Fixed length3,
+String indexing, identity keys and the quickSort definition produce the literal
+Array ["a","b","c"], so the old unconditional Type expectation was wrong.
+
+| Original input/expectation | Fixed-source result | New project assertions |
+| --- | --- | --- |
+| std.sort('abc') -> Type | ["a","b","c"] | Keep exactly that input as a literal positive regression; replace only the obsolete Type input with std.sort(true), whose source length fails |
+
+This adds one normal assertion and keeps the Type negative: the legacy four
+groups now contain31 assertions. The earlier thirty-row table is historical
+at81dc0ef; current positive case positions after its N1 shift by one, and its
+old E1/U classification is superseded here. No other old expectation, frozen
+SD/SC/SA oracle or raw Go/C++ snapshot changed. Sort4 + arguments1 + sets3
+passed together: **8/8,exit0**.
+
+### Execution and source binding
+
+Base is81dc0ef7381d5557d329cfa5e99e04132f237784 (685 entries). All685 matched
+before baseline, including after the test-only constructor correction. Only
+sort.mbt changed before the20-group repair run; the legacy migration followed
+the preserved old-test failure. Original bytes, both frozen test versions,
+plans, cutoff record, migration record and raw stdout/stderr/PID/exit/time/group
+receipts remain at `/tmp/moonjsonnet-sort-adjudication.qhbb1jnl`.
+Each check/test was native/frozen/deny-warn, one worker, closed stdin, maximum300s;
+tests used debug/no-parallelize. All command groups exited.
+
+| Stage | Exit | Actual result | Seconds |
+| --- | --- | --- | --- |
+| baseline-check | 255 | Deprecated test constructor; no semantic execution | 0.501 |
+| baseline-check-typed | 0 | Native check passed | 0.331 |
+| baseline-test | 2 | 2 passed /4 failed (6 total) | 6.175 |
+| repair-check | 0 | Native check passed | 0.505 |
+| repair-normative-tests | 0 | 20/20 unchanged groups passed | 11.146 |
+| legacy-original | 2 | 3 passed /1 failed (4 total), original file | 0.211 |
+| neighbors | 0 | 8/8 after exact migration | 6.098 |
+
+| Frozen/validated artifact | SHA-256 |
+| --- | --- |
+| frozen/spec_sort_admission_test.mbt | 64d3681e9e8eb2a96373a36ffa7c7cbd68466b8644274914131d6a5ef1de4f08 |
+| frozen-typed/spec_sort_admission_test.mbt | 0715e8fd135475a4a2e6dff7615d402e8f30fc84656b6c106efd1716b461984d |
+| plan.json | 9044551ff04f5e497bee0a4abb49e292039785bf03d76fcc585be89400eb4d5a |
+| plan-typed.json | 6317578ba5d0342042fb1dd7966b9045880793e9f384c7c878b77f7a3b1c4a48 |
+| sort.mbt | e69df2f24fb09e6b5746dc21834964ad8356e2e6fd93a8297322160ec77f31cd |
+| sort_test.mbt | 4a1ee1e6746d88f2efdcdc2a0bdf216901a160a2fec11d6c5f30680a9b81dc94 |
+| spec_sort_demand_test.mbt | 6d67ed4889384f26e9f230e44ed8bea47c35ccbe2b2832f1971fd9814ec02979 |
+| spec_sort_contract_test.mbt | b43ad430cbcf40fe8fb2fb97bca29821832e97f5a099c1ad47ad5ac658795ade |
+
+| Raw stdout | SHA-256 |
+| --- | --- |
+| baseline-test | 477f75d129dc497bad3a078ef70e4f8d67b60daa91b2ae719b7e36c907d31f6f |
+| repair-normative-tests | d1a37b738e822c0721c7d89ab13954d581721ee65228d7693d1e8d1294bc4beb |
+| legacy-original | 68c5b4785b60310e53a6a6184c0a37678f2fac7bf992d1cf28654cd2b2f2331b |
+| neighbors | 764157e72b2dd2e8e0a0545e7f821c609e694e542766a3c5c6666f28561c5f05 |
+
+The three requested adjudications are closed: defined admission is a required
+contract and now repaired; general native key trace and independent diagnostic
+choice are not promised. They no longer block on nonexistent mandatory tests.
+This does not grant whole-function acceptance. Receiver inheritance/public std
+rebinding is still unverified, and the existing comparison print conflict and
+child-language obligations remain recorded separately. Those are not waived by
+these decisions. The public map still has65 reviewed subsets and zero whole-
+function acceptances; all64 non-sort records are unchanged. Full package,
+release, CLI, Linux and Go/C++ campaigns were NOTRUN. No older full-suite count
+is attributed to the new product bytes. No new SSH or push was performed.
+
+### Final interface and audit checks
+
+Product/oracle hashes above stayed unchanged through the required interface and
+format checks; no .mbti changed. The existing frozen inventory generator includes
+the typed admission test hash after precise staging. No language inspection
+record references sort.mbt, so no language-map hash or completion change was
+needed. The original source/fixture guards and both preserved failure runs remain.
+
+| Stage | Exit | Seconds |
+| --- | --- | --- |
+| final-info | 0 | 0.272 |
+| final-format | 0 | 0.024 |
+| public-inventory | 0 | 1.637 |

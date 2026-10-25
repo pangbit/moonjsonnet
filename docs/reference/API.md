@@ -102,6 +102,12 @@ manifested in parameter order before the callback runs, including object
 assertions and visible fields. Hidden fields are omitted. Function arguments
 cannot be converted to JSON. A lazy call runs once when forced.
 
+For `std.sort`, this sharing rule does not promise a particular number or order
+of `keyF` applications. Use pure, repeatable keys for defined sorting results.
+Independent failing key applications have no promised diagnostic winner;
+required errors and branch laziness still apply. These algorithm details do not
+change the argument/manifestation or shared-call contracts above.
+
 Return containers are copied eagerly, rejecting non-finite numbers even in
 unread fields. Callback errors become `Runtime` diagnostics at the call site;
 MoonBit process aborts are not recoverable Go panics. Native callbacks are trusted

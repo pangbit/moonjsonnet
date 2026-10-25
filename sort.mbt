@@ -9,8 +9,41 @@ fn Vm::sort_values(
   if input is ArrayValue(items) && items.length() <= 1 {
     return input
   }
+  let items = match input {
+    ArrayValue(items) => items
+    _ => {
+      // The source definition first asks for length, without an Array guard.
+      let size = integer(
+        self.builtin("length", [(None, self.store(Ready(input)))], loc),
+        loc,
+      )
+      if size <= 1 {
+        return input
+      }
+      // Its long branch slices the input before sorting either half.
+      if size > 30 && !(input is Str(_)) {
+        raise problem(
+          Assertion,
+          loc,
+          "std.slice accepts a string or an array, but got: " +
+          value_type(input),
+        )
+      }
+      if input is Str(_) {
+        // Strings are strict; materialize codepoints once instead of rescanning
+        // the complete String for each deferred index.
+        self.sequence(input, loc)
+      } else {
+        let items = []
+        for i in 0..<size {
+          self.tick(loc)
+          items.push(self.defer_index(input, i.to_double(), loc))
+        }
+        items
+      }
+    }
+  }
   let key_value = key.map(t => self.force(t, loc))
-  let items = array_value(input, loc)
   if key_value is Some(f) && value_type(f) != "function" {
     raise problem(
       Type,

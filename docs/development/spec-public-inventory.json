@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "dbf322dabb8aa250003a9cf00b429946b8243bb5",
-  "uncommitted_test_paths": "spec_sort_contract_test.mbt",
+  "input_source_commit": "81dc0ef7381d5557d329cfa5e99e04132f237784",
+  "uncommitted_test_paths": "sort_test.mbt\nspec_sort_admission_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "ba8f9de64e2088896b130b0f787af13e2fc5dc2672bc42f34e2ed56241ae8b6e",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -67,7 +67,7 @@
     "sequence_test.mbt": "4e357359c56a1416c2e5f4d015f5faeae699822b64cd4376ca88d54080efb99b",
     "sets_test.mbt": "d0b7871aa99c4f457a595585cdcdf8cc174e8450d53c9016f7eaafa925c0598d",
     "sha256_test.mbt": "fa8fb6a5ee0d46f4d253be1df8c3df200926d865b84049f243fecf00469de1e1",
-    "sort_test.mbt": "2cb9794bd670abc9040085c3a31ac4cb6a399092ecdec57d31581845f49c9471",
+    "sort_test.mbt": "4a1ee1e6746d88f2efdcdc2a0bdf216901a160a2fec11d6c5f30680a9b81dc94",
     "source_fidelity_wbtest.mbt": "15ab02366daf8fbbcc88abcf17fa46a0886eeaabe4e0aff52aefe854de61441d",
     "source_range_test.mbt": "6816cf11eb3a70e8ce82cd1f2eaffa711ceee6cf8fca2b20efbbebbe94383790",
     "spec_additive_fields_test.mbt": "831593d7e2afce69bf9a5dd8518ccb88c0f28648a35368d9316bea2c79284852",
@@ -145,6 +145,7 @@
     "spec_review_test.mbt": "a68f57e1b2233e51a9af8eb89c0ac6d642d8fd41c818e54334754ae3a21cf495",
     "spec_root_scope_test.mbt": "6f43b1017c33c74f6207911312193df725bf06d59d09d7464546a0a16cb461d5",
     "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+    "spec_sort_admission_test.mbt": "0715e8fd135475a4a2e6dff7615d402e8f30fc84656b6c106efd1716b461984d",
     "spec_sort_contract_test.mbt": "b43ad430cbcf40fe8fb2fb97bca29821832e97f5a099c1ad47ad5ac658795ade",
     "spec_sort_demand_test.mbt": "6d67ed4889384f26e9f230e44ed8bea47c35ccbe2b2832f1971fd9814ec02979",
     "spec_split_limits_test.mbt": "c4df06a99535f812bff99a9a4c4ab44147e733543a60d7d7f9cc3c318a59d7a7",
@@ -177,7 +178,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "6aa769ef1e8966dba9b535ca50b21ee1674c77a3b962dac1b528021215f08aad"
   },
-  "coverage_sha256": "111242f0110c15117a168a1a6d97a973b4a34172d9aebccd59832c4cf90d17fe",
+  "coverage_sha256": "fb0446e585b890f1e018d4eb758d725a5ac17b06c8ed39aa53ba8fe966f2256d",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -691,6 +692,12 @@
           "file": "spec_review_test.mbt",
           "line": 71,
           "test_declaration": "test \"Unicode codepoint and slice boundaries retain exact error timing\" {",
+          "classification": "reference candidate only; assertion and normative dimensions not inferred"
+        },
+        {
+          "file": "spec_sort_admission_test.mbt",
+          "line": 73,
+          "test_declaration": "outside test declaration",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
         {
@@ -2467,7 +2474,7 @@
         },
         {
           "file": "sort_test.mbt",
-          "line": 14,
+          "line": 15,
           "test_declaration": "test \"sort supports defaults named keys stability and array ordering\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -4560,7 +4567,7 @@
         },
         {
           "file": "sort_test.mbt",
-          "line": 14,
+          "line": 15,
           "test_declaration": "test \"sort supports defaults named keys stability and array ordering\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -4639,7 +4646,7 @@
         },
         {
           "file": "sort_test.mbt",
-          "line": 14,
+          "line": 15,
           "test_declaration": "test \"sort supports defaults named keys stability and array ordering\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -5447,7 +5454,7 @@
         },
         {
           "file": "sort_test.mbt",
-          "line": 72,
+          "line": 73,
           "test_declaration": "test \"sort scales iteratively and respects the step budget\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         },
@@ -5646,7 +5653,7 @@
         },
         {
           "file": "sort_test.mbt",
-          "line": 72,
+          "line": 73,
           "test_declaration": "test \"sort scales iteratively and respects the step budget\" {",
           "classification": "reference candidate only; assertion and normative dimensions not inferred"
         }
@@ -6139,9 +6146,10 @@
             "keyF": "identity (id)"
           },
           "test": "spec_sort_demand_test.mbt",
-          "status": "Array-only branch review; positional/reordered named calls, omitted/default keys and binding/static controls passed. The official zero/singleton branch does not evaluate keyF. SC1 extends the one-supplied-argument callable profile: default/explicit identity, closed capture, used/unused optional key defaults, Static duplicate named rejection, all six required non-Function heads and zero-/two-required-formal call rejection.",
+          "status": "Fixed arr/keyF names and identity default with lazy untyped application. SD/SC cover bindings and required callable profiles; SA settles non-Array and unused-invalid-key admission from the fixed source included by desugaring. No blanket Array-only rejection premise is added from the prose description. Supplied standard receiver reviewed; receiver inheritance/rebinding is not accepted here.",
           "additional_tests": [
-            "spec_sort_contract_test.mbt"
+            "spec_sort_contract_test.mbt",
+            "spec_sort_admission_test.mbt"
           ]
         },
         "reference_candidates": [
@@ -6156,39 +6164,49 @@
             "line": 41,
             "test_declaration": "test \"sort contract admits its documented signature defaults closures and static unique names\" {",
             "classification": "manual SC1-SC6 contract continuation; six independent groups passed before and after a preserved append-only SC1 admission enrichment; product bytes unchanged from dbf322d"
+          },
+          {
+            "file": "spec_sort_admission_test.mbt",
+            "line": 98,
+            "test_declaration": "test \"source sort admission follows String identity character ordering and slice seam\" {",
+            "classification": "manual SA1-SA6; fixed-source admission and non-promise adjudication, preserved2-pass/4-failure baseline then20/20 unchanged sort groups and8/8 neighbors; legacy String-Type failure retained and precisely migrated"
           }
         ],
         "dimensions": {
           "N": {
             "test": "spec_sort_demand_test.mbt",
-            "expectation": "SD1/SD2/SD5: zero/singleton identity, literal numeric/Unicode ordering, equal-key stability, unchanged original Array and finite lengths2/30/31 through independent entries. SC1/SC2/SC5 add captured/default keys, exact dyadic and 2^53 values, Unicode BMP/supplementary order and recursive Array keys, plus independently grouped stable permutation indices.",
+            "expectation": "SD1/SD2/SD5: zero/singleton identity, literal numeric/Unicode ordering, equal-key stability, unchanged original Array and finite lengths2/30/31 through independent entries. SC1/SC2/SC5 add captured/default keys, exact dyadic and 2^53 values, Unicode BMP/supplementary order and recursive Array keys, plus independently grouped stable permutation indices. SA1-SA4 add source-defined String/Object/Closure/Builtin/Native input heads: length0/1 identity, longer String character Arrays and constant-key Object/Function shapes through30.",
             "additional_tests": [
-              "spec_sort_contract_test.mbt"
+              "spec_sort_contract_test.mbt",
+              "spec_sort_admission_test.mbt"
             ]
           },
           "E": {
             "test": "spec_sort_demand_test.mbt",
-            "expectation": "SD6/SD8: isolated required Array/key/element errors, selected singleton payload demand, required callable/comparison rejection, invalid bindings before native argument gates and Static rejection of unused missing names. SC1/SC3/SC4 add complete required non-Function key-head classes, zero-/two-required-formal rejection, duplicate-named Static rejection, demanded incompatible key prefixes and four isolated producer/key/body/comparison errors. Non-Array extensions and competing error priority remain open.",
+            "expectation": "SD6/SD8: isolated required Array/key/element errors, selected singleton payload demand, required callable/comparison rejection, invalid bindings before native argument gates and Static rejection of unused missing names. SC1/SC3/SC4 add complete required non-Function key-head classes, zero-/two-required-formal rejection, duplicate-named Static rejection, demanded incompatible key prefixes and four isolated producer/key/body/comparison errors. Non-Array extensions and competing error priority remain open. SA3/SA4 require deferred invalid index failure and the explicit slice assertion above30 for Object/Function. SA6 requires failure with either independent controlled marker, without a diagnostic-winner promise. Old sort(String)-Type assertion is not normative and was retained as a measured failure before migration.",
             "additional_tests": [
-              "spec_sort_contract_test.mbt"
+              "spec_sort_contract_test.mbt",
+              "spec_sort_admission_test.mbt"
             ]
           },
           "L": {
             "test": "spec_sort_demand_test.mbt",
-            "expectation": "SD1-SD4/SD7: complete admitted zero/singleton Array branch returns original thunks without evaluating keyF, callback body or elements. A selected result demands only its element. Constant-key multi-element metadata leaves payloads unread; no universal callback count/order claim. SC3/SC4/SC6 add shorter/nested Array key prefixes that skip poisoned or noncomparable children, required comparison errors before unrelated payload demand, mixed payload heads and finite original/result thunk-sharing gates. No universal native key callback count/order is asserted.",
+            "expectation": "SD1-SD4/SD7: complete admitted zero/singleton Array branch returns original thunks without evaluating keyF, callback body or elements. A selected result demands only its element. Constant-key multi-element metadata leaves payloads unread; no universal callback count/order claim. SC3/SC4/SC6 add shorter/nested Array key prefixes that skip poisoned or noncomparable children, required comparison errors before unrelated payload demand, mixed payload heads and finite original/result thunk-sharing gates. No universal native key callback count/order is asserted. SA1-SA5 require source-defined return branches to skip every unused key value/expression and incompatible call profile; non-Array invalid indexes remain deferred when a constant key ignores them. No generally fixed native callback count/order is inferred from host observations.",
             "additional_tests": [
-              "spec_sort_contract_test.mbt"
+              "spec_sort_contract_test.mbt",
+              "spec_sort_admission_test.mbt"
             ]
           },
           "B": {
             "test": "spec_sort_demand_test.mbt",
-            "expectation": "SD1-SD8: empty/singleton poison heads, Array/Object/Function payloads, omitted/error-valued keys, source threshold30/31, equal keys, supplementary/NUL/combining Strings, unused malformed bindings and named argument order. SC1/SC2/SC5/SC6 add optional key parameters, exact +/-2^53 and +/-0 ties, Unicode scalar/prefix seams, all payload head kinds and independent stability controls at sizes2/3/7/8/9/29/30/31/32/33/63/64/65.",
+            "expectation": "SD1-SD8: empty/singleton poison heads, Array/Object/Function payloads, omitted/error-valued keys, source threshold30/31, equal keys, supplementary/NUL/combining Strings, unused malformed bindings and named argument order. SC1/SC2/SC5/SC6 add optional key parameters, exact +/-2^53 and +/-0 ties, Unicode scalar/prefix seams, all payload head kinds and independent stability controls at sizes2/3/7/8/9/29/30/31/32/33/63/64/65. SA1-SA5 add non-BMP singleton Strings, String30/31/32, Object/Function0/1/2/30/31, all ignored key heads, Native/Builtin function arities and required index boundaries.",
             "additional_tests": [
-              "spec_sort_contract_test.mbt"
+              "spec_sort_contract_test.mbt",
+              "spec_sort_admission_test.mbt"
             ]
           }
         },
-        "remaining": "Array branch and six-group continuation audited with independent finite expectations; no whole-function acceptance. Docs Array/one-supplied-argument key domain versus source non-Array/unused-invalid-key reductions remains unresolved; existing sort(String) Type is a candidate, not normative pass evidence. Source quick partitions versus native cached stable merges have different syntactic key-application structures; exact effectful-native traces and independent error priority are not uniquely fixed by the saved pure-language/error/native clauses. No Go/C++ run resolves them. General producer, raw encoding, resource, manifestation and public-std contexts are not fully proved. A0/B0/N0/R0/PE0/DF0/HP0 and the greater-than print conflict remain unchanged."
+        "remaining": "The three admission/trace/diagnostic questions are adjudicated, not pending mandatory coverage: source definitions determine non-Array and unused-invalid-key results; general sort native callback multiplicity/order and the winning diagnostic among independent failures are not promised. Defined value/error behavior, skipped poison and per-thunk/API argument contracts remain required. No whole-function acceptance is claimed: source-method receiver inheritance/public-std rebinding is still unverified, and child comparison/representation obligations plus the greater-than print conflict remain in the language matrix. These are separate from non-promised algorithm traces. All64 other records and original Go/C++ fixtures remain unchanged; no Go/C++ run supplies the oracle."
       },
       "test_reference_candidates": [
         {
@@ -6220,6 +6238,12 @@
           "line": 41,
           "test_declaration": "test \"sort contract admits its documented signature defaults closures and static unique names\" {",
           "classification": "manual SC1-SC6 contract continuation; six independent groups passed before and after a preserved append-only SC1 admission enrichment; product bytes unchanged from dbf322d"
+        },
+        {
+          "file": "spec_sort_admission_test.mbt",
+          "line": 98,
+          "test_declaration": "test \"source sort admission follows String identity character ordering and slice seam\" {",
+          "classification": "manual SA1-SA6; fixed-source admission and non-promise adjudication, preserved2-pass/4-failure baseline then20/20 unchanged sort groups and8/8 neighbors; legacy String-Type failure retained and precisely migrated"
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"

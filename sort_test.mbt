@@ -2,6 +2,7 @@
 test "sort supports defaults named keys stability and array ordering" {
   let cases = [
     ("std.sort([3,-1,2,2])", "[-1,2,2,3]"),
+    ("std.sort('abc')", "[\"a\",\"b\",\"c\"]"),
     ("std.sort(arr=['😀','你','a'])", "[\"a\",\"你\",\"😀\"]"),
     ("std.sort([[1,2],[],[1],[0]])", "[[],[0],[1],[1,2]]"),
     (
@@ -38,7 +39,7 @@ test "sort forces keys but preserves original element laziness" {
 ///|
 test "sort validates key results callback and argument binding" {
   let cases = [
-    ("std.sort('abc')", @moonjsonnet.Type),
+    ("std.sort(true)", @moonjsonnet.Type),
     ("std.sort([2,1],null)", @moonjsonnet.Type),
     ("std.sort([true,false])", @moonjsonnet.Type),
     ("std.sort([1,'a'])", @moonjsonnet.Type),

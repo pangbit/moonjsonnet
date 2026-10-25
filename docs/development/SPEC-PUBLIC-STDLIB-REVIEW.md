@@ -119,6 +119,16 @@ groups passed on unchanged dbf322d product, with a preserved initial pass before
 key-call class enrichment. Only the existing sort record advances; the count
 remains 65 reviewed subsets and zero whole-function acceptances.
 
+The [sort admission adjudication](SPEC-SORT-DEMAND-2026-10-25.md#sort-admission-and-non-promises-frozen-adjudication)
+uses the explicit e_std/source implementation contract to resolve the earlier
+non-Array/unused-invalid-key scope question. Its preserved2-pass/4-failure
+baseline led to a minimal length/deferred-index correction, then20 unchanged
+sort groups and8 neighbors passed. The old String-Type assertion was measured
+as a failure, retained as a correct positive input, and its Type negative moved
+to a Boolean length failure. General native key counts/order and an independent
+diagnostic winner are non-promises, not indefinitely pending requirements.
+Other receiver/comparison gaps remain; still65 subsets and zero whole functions.
+
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its
 source-header assumptions were reviewed against those exact bytes. It records
