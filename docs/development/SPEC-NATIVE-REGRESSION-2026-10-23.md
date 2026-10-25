@@ -885,3 +885,76 @@ new semantic domain, product repair, reference snapshot update, environment
 installation, upstream/proposal change or push occurred. Shared normative disputes
 and incomplete overall conformance remain; no public whole-function completion
 is promoted by 802 unit passes.
+
+
+## macOS native debug regression at 0d06ded
+
+The clean703-entry source snapshot
+`0d06dedeb40ade30b6501ef961ce86cc3c5f4916` completes the cumulative YAML demand
+and shared-call follow-up. All inputs match the committed manifest before and
+after this run. No product, oracle, snapshot, configuration or interface changed.
+Installed moon/moonc/moonrun/clang SHA256 values match the earlier3397975 audit:
+moon/moonrun0.1.20260920 (914d7da), moonc0.10.14+7d59c7ec9 on macOS ARM64.
+
+The same closed-stdin, one-worker, frozen unfiltered command was used:
+
+```sh
+RUST_LOG=error LANG=C LC_ALL=C moon test --target native --debug --frozen --deny-warn -j 1 --no-parallelize </dev/null
+```
+
+Fresh --outline enumeration lists816 entries. Current metadata agrees:12
+nonempty drivers, no skip attributes; the duplicate no_args_tests index is not
+counted a second time. Root contributes781, cmd/jsonnetfmt4, cmd/main11, examples2,
+fs5, internal/number4, internal/posix4 and internal/yaml5. Raw final stdout is:
+
+```text
+Total tests: 816, passed: 816, failed: 0.
+```
+
+Exit0, skipped0, empty stderr, timeout=false; the completed native command took
+130.751987333 seconds including any build work. The package command includes
+conditional compatibility tests, so816 passes are not816 normative judgments.
+
+The original600-second window began at11:47:51.618172 UTC on2026-10-25, with
+fixed deadline11:57:51.618172 UTC. Outline succeeded in0.090479 seconds. The first
+just-started test was safely stopped when optional local /bin/ps own-process
+sampling raised sandbox PermissionError. Its controller exited124, with empty
+outputs and no semantic test statistics; this is a preserved harness failure,
+not an implementation failure or a passing test run.
+
+The prohibited sampler was not retried. A continuation retained the Popen child
+handle, dedicated process group, input checks and termination reserve, while
+disabling only that optional observation. It began11:49:33.906980 and completed
+11:51:44.661438 UTC, using233.043301 seconds of the original window. The absolute
+deadline never changed. Detailed compiler-versus-test phase timings were not
+observed and are not inferred. Outline/aborted/finished groups89847/89848/89879
+were independently confirmed absent. The heavy slot was released before
+documentation-only closeout.
+
+This complete local regression covers the initial P0 tests, current source
+foldl/sum/avg and deletion routes, integer indexing/lazy slices, sort, YAML
+required/unused options and late errors, and ordinary/strict call controls.
+The original failures, exact legacy migrations and conditional normative limits
+remain in their stage records. This run changes none of their expectations.
+
+Local raw evidence: `/tmp/moonjsonnet-native-debug-0d06ded.r03ooman`.
+verification.json contains12 driver/binary SHA256 pairs, exact package counts,
+no-skip basis, input stability and independent process-exit receipts.
+
+| Artifact | SHA256 |
+| --- | --- |
+| inputs-before.json | `68a098ef00afca1f07f6d2762562d2a5ab5a554f70a2d9e6ae18966e9145b671` |
+| outline.stdout | `5105d308027eb2dfd3aa0d4b990bd4707638c38fd823100ebdea4a89faf0bbfb` |
+| run.json | `84904179302d0cc23e971bc9a39d1a09b3e313d389c7c1a71a63d7d678abd1dc` |
+| continuation/stdout | `f7fb8057dfa60b3f956bcb26d014b899892f26f544f7a2b28e0f38442b1874e1` |
+| continuation/run.json | `2acb0f842e93ee8d6e2c3ea1eb8a5d1803a0e3e9b768576f88d2d38482743e51` |
+| verification.json | `487997483444f719dd64103c2dc0b230ba189f4da0778c8b6bcd3773df845d20` |
+| toolchain.json | `8148c8fa0357325355b154a48edd82efac2a1a75693406d0ff72f74839bbd4cb` |
+
+Subsequent changes in this closeout are documentation only. The
+[phase inventory](SPEC-CONFORMANCE.md#stage-inventory-after-0d06ded) distinguishes
+current P0 regressions, existing subsets, evidence-mapping gaps and shared
+normative questions. No release, Linux/SSH, independent CLI/API, standalone
+tools/*.mbtx integration or reference interpreter was executed. The older
+228cb25 Linux evidence remains bound to that source, and whole conformance
+remains incomplete. No further test or new semantic domain starts in this turn.

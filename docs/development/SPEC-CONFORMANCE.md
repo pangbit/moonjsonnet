@@ -71,7 +71,7 @@ checks. Files are linked to repository sources rather than private documents.
 
 | ID | Fixed normative basis | Expected behavior and boundaries | Tests | Implementation | First result / corrected result |
 | --- | --- | --- | --- | --- | --- |
-| P0-IMM | Language reference, Values; stdlib remove/removeAt descriptions | `local a=[1,2,3,4]; local b=std.removeAt(a,1); [b,a]` is `[[1,3,4],[1,2,3,4]]`; aliases, earlier map/slice and chained deletions preserve originals; length does not force payloads | [spec_remove_test.mbt](../../spec_remove_test.mbt), [remove_test.mbt](../../remove_test.mbt) | [std_remove.mbt](../../std_remove.mbt) | Original mutated / corrected local regression passes |
+| P0-IMM | Language reference, Values; stdlib remove/removeAt descriptions | `local a=[1,2,3,4]; local b=std.removeAt(a,1); [b,a]` is `[[1,3,4],[1,2,3,4]]`; aliases, earlier map/slice and chained deletions preserve originals; length does not force payloads | [spec_remove_test.mbt](../../spec_remove_test.mbt), [remove_test.mbt](../../remove_test.mbt) | [current source routes](../../stdlib_layer.mbt), [fixed definitions](../../stdlib_source.mbt), [retained native helper](../../std_remove.mbt) | Original mutated / corrected local regression passes |
 | P0-NUM | Language reference, Number | sum/avg overflow is a runtime error at the first invalid addition, including before comparison/type/string consumers or later operands; unused/short-circuited/hidden values stay lazy | [spec_aggregate_test.mbt](../../spec_aggregate_test.mbt), [aggregate_test.mbt](../../aggregate_test.mbt) | [source routing](../../stdlib_layer.mbt), [finite operators](../../operators.mbt), [retained native fallback](../../stdlib.mbt) | Inf/NaN succeeded / corrected local regression passes |
 | P0-NUM-OUT | Number requirement and manifestation into JSON | Defensive rejection of internal +/-Inf and NaN by JSON/YAML output paths | [spec_manifest_wbtest.mbt](../../spec_manifest_wbtest.mbt), [spec_yaml_wbtest.mbt](../../spec_yaml_wbtest.mbt) | [manifest.mbt](../../manifest.mbt), [manifest_json.mbt](../../manifest_json.mbt), [manifest_yaml.mbt](../../manifest_yaml.mbt) | Guard added; direct internal-value tests pass |
 | P0-IDX | Specification, array-index; language reference, String | Fractional/huge/negative/out-of-bounds indices error before conversion or element access; integral doubles and Unicode code-point access succeed | [spec_index_test.mbt](../../spec_index_test.mbt), [numeric_test.mbt](../../numeric_test.mbt) | [eval.mbt](../../eval.mbt), array_index | Fractional indices truncated / corrected local regression passes |
@@ -191,3 +191,107 @@ mark missing normal/error/lazy/boundary coverage as untested. In particular:
 No Linux upload/execution, database access, remote push, tag, publication,
 toolchain upgrade or dependency upgrade is part of this stage. Linux execution
 scope and host authorization remain for the parent task to arrange.
+
+
+## Stage inventory after 0d06ded
+
+The [current macOS native debug run](SPEC-NATIVE-REGRESSION-2026-10-23.md#macos-native-debug-regression-at-0d06ded)
+passes816/816, exit0, skipped0 at clean0d06ded (703 inputs). No product or test
+bytes changed in this closeout; old failures and migrations remain preserved.
+This refreshes regression evidence, not whole-language acceptance.
+
+| Initial P0 responsibility | Current implementation and regression status |
+| --- | --- |
+| IMM | Original arrays/aliases remain immutable through source remove/removeAt and map/slice compositions; original P0 and complete deletion responsibility tests pass in this run. The named idx/at/i conflict is separate. |
+| NUM | sum/avg source reductions and finite operators reject actual nonfinite arithmetic at its producing step; unused expressions, short circuits and hidden fields stay lazy. Addition/coercion, non-Array admission and required foldl consumers are included. |
+| NUM-OUT | Defensive internal Inf/NaN rejection in JSON/YAML remains tested; output checks do not substitute for producer checks. |
+| IDX | Ordinary Array/String access rejects invalid fractional/huge/negative/range indices and retains Unicode codepoint units. Broader source-defined removeAt admission did not change ordinary indexing. |
+| SLICE | Array slice indexing remains deferred until demanded, with length and strict String boundaries preserved. |
+| YAML | Nested visible errors/functions cannot return successful partial text; hidden payloads remain lazy. The later option-demand correction and scoped strict dispatch are covered by current directed and full tests. No new swallowed-value defect was manufactured. |
+
+These six scoped regressions are repaired at the current source; no remaining
+confirmed initial-P0 implementation failure is recorded. Later sort, member,
+extrema, deletion and aggregation repairs also have independent red/green
+evidence and current regression coverage. Zero unconditional whole-function
+acceptances does not mean those implementations or passing subsets are absent.
+The language matrix still has28 named-rule reviews,1 constructor review relative
+to children,63 partial rows,2 unreviewed rows and225 evidence IDs; child assumptions
+and complete_conformance=false remain unchanged.
+
+### Public evidence rather than registration counts
+
+The [153-candidate inventory](SPEC-PUBLIC-STDLIB-INVENTORY.md) and
+[66 exact manual records](../../tests/spec-public-coverage.json) identify every
+currently mapped subset and its N/E/L/B assertions. The candidates retain both
+XML spelling variants;153 is not153 resolved full contracts. There are87 entries
+without a public manual contract record, grouped exhaustively below.
+
+Unmapped is not proof of no implementation, no tests or no independent evidence.
+In particular objectHasEx/objectFieldsEx already have independent language-rule
+transfer reviews, primitiveEquals has bounded PG evidence, and hypot/parseYaml
+have direct finite-producer controls in spec_review_test. Host native references
+can instead be test instrumentation. Other literal candidate references require
+assertion review before they earn coverage. This inventory does not falsely
+classify all87 as zero-evidence functions or promote those cross-domain witnesses
+to complete public contracts.
+
+| Unmapped public-record family | Count | Exact candidate names |
+| --- | --- | --- |
+| Configuration, rendering and host | 12 | extVar, native, trace, format, toString, parseYaml, manifestIni, manifestPython, manifestPythonVars, manifestToml, manifestTomlEx, manifestXmlJsonml |
+| String, byte encoding and paths | 17 | asciiLower, asciiUpper, base64, base64Decode, base64DecodeBytes, decodeUTF8, encodeUTF8, equalsIgnoreCase, escapeStringBash, escapeStringDollars, escapeStringJson, escapeStringPython, escapeStringXML, escapeStringXml, resolvePath, strReplace, trim |
+| Sequence, predicates and sets | 15 | all, any, count, filterMap, find, isEmpty, mapWithIndex, repeat, reverse, set, setDiff, setInter, setMember, setUnion, uniq |
+| Object projections | 6 | mapWithKey, objectFieldsEx, objectHasEx, objectKeysValues, objectKeysValuesAll, objectValuesAll |
+| Type, equality and logic | 10 | assertEqual, equals, primitiveEquals, isArray, isBoolean, isFunction, isObject, isString, xnor, xor |
+| Numeric domain and arithmetic | 25 | acos, asin, atan, atan2, clamp, cos, deg2rad, exp, exponent, hypot, isDecimal, isEven, isInteger, isOdd, log, log10, log2, mantissa, mod, modulo, rad2deg, round, sin, sqrt, tan |
+| Digest conditional scope | 2 | sha256, sha512 |
+
+The66 recorded subsets plus87 unmapped public records partition the153 candidates
+without double-counting shared language obligations. The precise count with no
+independent assertion anywhere is not established by this map; an absent textual
+reference is insufficient, especially for dynamically constructed Ex calls.
+
+### Shared normative questions, counted once
+
+| Question class | Current decision and existing source |
+| --- | --- |
+| Printed formula conflicts | [A0](SPEC-SEQUENCE-STRUCTURE-2026-10-22.md): array-concat drops e0 in its conclusion despite append prose/library; [DF0](SPEC-ADDITIVE-FIELDS-2026-10-23.md): ordinary-field lowering uses key e as value instead of rhs e-prime; [greater-than](SPEC-RELATIONAL-SIGN-2026-10-23.md): printed cmp-sign conclusions conflict. Behavioral witnesses do not silently repair formulas. |
+| Inheritance and assertion model | [N0/R0](SPEC-OBJECT-ASSERTION-ADJUDICATION-2026-10-22.md#complete-shared-assertion-domain-review-atf3871b8): right-only super prefix conflicts with the layered guide; assertion prefix/checking-state rules are missing. Agreed flat demand stays distinct from conditional inheritance/reentry profiles. |
+| Underdefined applicability | [B0](SPEC-REMOVE-SEARCH-2026-10-25.md#b0-closeout-and-pivot) does not state the longcut RHS domain; [PE0](SPEC-PRIMITIVE-EQUALS-2026-10-22.md#subsequent-bounded-applicability-review) does not define metavalue equality/application domain. Conditional alternatives are not unconditional pairs of contradictory public promises. |
+| Public documentation/source conflicts | [removeAt idx/at and current i](SPEC-PUBLIC-STDLIB-REVIEW.md#removeat-named-parameter-candidates), XML spelling, Stream end default false/true, isEven/isOdd integral-part/round and digest Go-only/stub scope remain unresolved in the existing public review. [HP0](SPEC-INTEGER-PARSERS-2026-10-23.md) covers parseHex punctuation aliases. |
+| Unspecified details versus missing tests | [tailstrict TODO and call boundary](SPEC-YAML-DEMAND-2026-10-25.md#bounded-shared-call-follow-up-frozen-at-6569b9f), unrelated-error winner order and exact native callback counts cannot be invented as stronger public promises. Unreviewed input/encoding/numeric/resource cases remain evidence gaps; they are not all specification conflicts or implementation failures. |
+
+These questions remain explicit; they are not normative waivers and are not
+recounted for every dependent standard-library function. Go/C++ agreement cannot
+settle them. No conflict branch is reopened by this status inventory.
+
+### Recommended bounded batches and acceptance gates
+
+1. Highest-value semantic batch: parseYaml's complete public input/return/error/
+   demand responsibility. Reuse existing parser/finite diagnostics first, then
+   freeze only missing independent ordinary, malformed/multiple-document, nested
+   finite, type/binding, unused-call and resource cases within the fixed contract.
+   Stop when that matrix is mapped and any demonstrated defect is repaired with
+   unchanged-oracle directed regression; unsupported or contradictory source
+   clauses stay explicit. No general YAML-format or new parser feature campaign.
+2. Next risk group: encodeUTF8/decodeUTF8 and byte/String/base64 boundaries for
+   configuration transport. Separate valid Unicode/byte contracts, error/demand
+   and aliasing from unresolved malformed raw-text rules. Then cover the other
+   configuration manifests' success-versus-error/output responsibility as a
+   distinct batch; do not treat candidate references as evidence.
+3. Sequence/object/type groups follow by shared implementation risk, reusing the
+   existing Ex, primitive and combinator evidence before adding tests. Math and
+   digest work needs independent numeric expectations and conditional API scope;
+   it must not copy a reference implementation's outputs. Each batch ends at a
+   finite signature/value/error/lazy/boundary map with actual source-bound results.
+
+For delivery, use a stable source boundary rather than another environment loop:
+if the next chosen parseYaml batch changes production, complete it and one
+combined local debug regression before freezing the new source for macOS release
+and Linux debug/release plus controlled API/CLI/embedded checks. If it needs no
+production change, current0d06ded product bytes already supply that freeze point.
+Schedule one same-source cross-mode/platform cohort, binding inputs/toolchain/
+binaries and retaining failure, timeout and cleanup evidence. It must separately
+close the full67-scenario application and independently installed consumer gaps;
+the old11-process subset cannot establish those. Old228cb25 Linux734/734 evidence
+is historical, not coverage of current product bytes. This turn starts none of
+those validations or new semantic batches and returns for coordinator assessment.
