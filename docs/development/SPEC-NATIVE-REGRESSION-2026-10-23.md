@@ -958,3 +958,94 @@ normative questions. No release, Linux/SSH, independent CLI/API, standalone
 tools/*.mbtx integration or reference interpreter was executed. The older
 228cb25 Linux evidence remains bound to that source, and whole conformance
 remains incomplete. No further test or new semantic domain starts in this turn.
+
+
+## macOS native debug regression at1a46122
+
+Clean source `1a461221627e54d983611f7a5e773fab7577869b` is the708-entry
+freeze point for the completed input-parsing/shared-returned-data batch. It
+includes the bounded parseYaml root guard, parseJson eager finite-tree visitor
+and native/YAML String-key isolation. This validation changes no product, test,
+oracle, snapshot, package/module, executable README or interface bytes. Earlier
+red results and any individually justified legacy migrations remain in the
+[JSON/input record](SPEC-JSON-CONTRACTS-2026-10-23.md) and
+[YAML root record](SPEC-PARSE-YAML-2026-10-25.md); a green full suite does not
+replace them or settle their explicit conditional profiles.
+
+The unfiltered command closes stdin and uses frozen dependencies, one worker
+and serial test execution:
+
+```sh
+RUST_LOG=error LANG=C LC_ALL=C moon test --target native --debug --frozen --deny-warn -j 1 --no-parallelize </dev/null
+```
+
+Fresh installed --outline succeeds and lists835 entries. Current generated
+metadata independently agrees across12 nonempty drivers and8 packages: root800,
+cmd/jsonnetfmt4, cmd/main11, examples2, fs5, internal/number4, internal/posix4 and
+internal/yaml5. This is812 explicit tests,16 source documentation tests and7
+README tests. The nineteen added groups since0d06ded are six public YAML, two
+normative-null YAML profiles, five JSON input and six returned-data-key groups.
+No test attributes or selectors skip anything; no_args_tests aliases are not
+counted a second time. Raw final stdout is:
+
+```text
+Total tests: 835, passed: 835, failed: 0.
+```
+
+Exit0, skipped0, empty stderr, timeout=false. The complete suite command takes
+134.280120166 seconds, including any build work. The whole600-second window
+starts2026-10-25 at14:31:29.029634 UTC, with fixed deadline14:41:29.029634 UTC;
+it ends14:33:45.748986 UTC after136.718975208 seconds. Toolchain metadata and
+outline precede the suite in the same clock. No command is retried and the
+budget is not reset. No process-table sampler is invoked; exact exclusive
+compile-versus-test durations are unavailable and not inferred from silence.
+
+All708 input hashes match before and after execution. Popen groups32511
+(toolchain),32514 (outline) and32515 (suite) exit normally and are independently
+absent. The heavy slot is returned before this documentation-only closeout.
+The twelve executed driver binaries and their metadata have recorded SHA256
+values in verification.json. macOS ARM64 moon/moonrun0.1.20260920 (914d7da),
+moonc0.10.14+7d59c7ec9 and the Apple clang binary have exactly the preceding
+0d06ded audit's hashes; no toolchain is installed or changed.
+
+Local evidence: `/tmp/moonjsonnet-native-debug-1a46122.8g0ycb6t`.
+
+| Artifact | SHA256 |
+| --- | --- |
+| plan.json | `c14a420b78ebca60bddcc1e04bbc51ae06095e583d52e9da78f33517dfc552f5` |
+| inputs-before.json | `c847bd942fb05f4dd728382882a48f1a666ac83680b3d005edcfba9ea0b87897` |
+| static-enumeration.json | `cdef7aa3674bb1925e107430e84dbdf579c52ef4e5c6ec9c2bfba336618a997a` |
+| outline.stdout | `207a5cc8aa7886581e0f9f90492525f29be136e234ea64832355e78185180f59` |
+| suite.stdout | `0b82ad14a02aad27dabfd9ee96e56a387522472b8dfbfc60860bd70f79a75aab` |
+| suite.stderr | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
+| run.json | `ae1aad06555b5507171257e6d50afe54a803dc09b1ce9af156bf8351b5cfeaa3` |
+| verification.json | `65c7e281c33a43b2b5f662fc146b3e9ae2001e6e32d801781130be94afe33ef3` |
+| toolchain.json | `3f72b0e9477ef4ff426a9b70ca28a48e398b9c9b0c5ace36f4d589441242b419` |
+| run.py | `ca394d3a69facec807aca279d1b2f596040bbf5d11bcae9067267befcbd121c8` |
+
+This is current local regression evidence, not835 normative acceptances. Public
+coverage stays67 mapped subsets/zero whole-function acceptances; all225 language
+evidence records and their conditional child assumptions are unchanged. Overall
+specification conformance remains incomplete. Current release, Linux/SSH,
+standalone tools/*.mbtx, independent CLI/API/package-consumer and Go/C++ checks
+are NOTRUN. Historical228cb25 Linux734/734 and earlier full-suite counts are not
+inherited by this source. Only this record and the concise cohort checkpoint
+are edited after testing; tested implementation/fixture bytes remain identical.
+
+### Same-source platform follow-up boundary
+
+The complete708-entry allowlist and README.md -> README.mbt.md link are frozen
+at1a46122. A later documentation-only commit must prove identical product/test/
+package/executable-README bytes. No new archive, upload or remote operation is
+prepared or launched here. The existing Linux flow can be reused at a separately
+scheduled boundary: strict host/toolchain identity, audited private read-only SDK
+layout and two internal links, private caches/UID65534, check, release build-only,
+unfiltered complete release tests, existing application build and unchanged
+eleven-process delivery subset, evidence readback/verification and owner-only
+current-identity/process cleanup. No new environment loop or installation is
+needed. The old734-case test used119.692 of120 seconds, so that cap must not be
+silently reused for835; a new explicit phase allocation must retain the total
+1800-second transfer/execution/recovery/cleanup bound. Current debug134.280
+seconds informs sizing but does not predict release/Linux duration. Full67-case
+application and independent package-consumer acceptance stay separate from the
+eleven-process subset. No further semantic domain or test starts in this turn.

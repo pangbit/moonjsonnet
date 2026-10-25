@@ -295,3 +295,28 @@ close the full67-scenario application and independently installed consumer gaps;
 the old11-process subset cannot establish those. Old228cb25 Linux734/734 evidence
 is historical, not coverage of current product bytes. This turn starts none of
 those validations or new semantic batches and returns for coordinator assessment.
+
+
+## Input-converter cohort checkpoint at1a46122
+
+The bounded parseYaml root, parseJson finite-data and shared native/YAML
+String-key work is now closed for this batch. Its original failures, scope
+limits, independent oracles and justified migrations remain in the linked
+contract records. The subsequent [same-source macOS native debug regression](SPEC-NATIVE-REGRESSION-2026-10-23.md#macos-native-debug-regression-at1a46122)
+passes835/835, failed/skipped0, exit0 on the fixed708-entry source. No product
+or test changes were needed during full validation.835 package regressions
+include conditional profiles and are not835 normative judgments.
+
+This checkpoint supersedes only the earlier stage inventory's next parseYaml
+batch and source-freeze recommendation: that finite batch is complete, the
+current public map is67 subsets plus86 unmapped public records, and zero whole
+functions are promoted. All225 language evidence records, shared disputes and
+whole-conformance incomplete status remain unchanged. Unmapped public records
+still do not prove absence of implementations or independent assertions.
+
+Freeze1a46122 product/test/package/executable-README bytes for later release and
+Linux scheduling. Reuse the existing reviewed minimum workflow with fresh
+source/toolchain identity and adequate complete-test budget; do not inherit
+228cb25 Linux results or silently reuse its near-exhausted120-second test cap.
+No archive, SSH, release, standalone application/consumer or new semantic-domain
+run starts here. The coordinator assesses that next cohort after this result.
