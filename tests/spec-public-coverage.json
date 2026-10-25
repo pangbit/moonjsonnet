@@ -135,5 +135,86 @@
       }
     },
     "remaining": "Canonical sort admission/results/demand subsets and bounded source-standard receiver composition have executed evidence; no whole-function acceptance. Four language-matrix cases distinguish lexical aliases/forwarding from inherited final-self/source closures, without advertising a permanent sort dependency-hook API. General inheritance/substitution remains partial with N0/R0/DF0 limits. Malformed greater-than conclusions are a global EXEC-OPERATORS conflict, not a new sort-specific option or unknown implementation detail; the proposed erratum is not adopted. Native key trace/independent diagnostic choice remain non-promises. No Go/C++ run is an oracle; all64 other public records stay unchanged."
+  },
+  {
+    "name": "objectRemoveKey",
+    "signature_review": {
+      "parameters": [
+        "obj",
+        "key"
+      ],
+      "defaults": {},
+      "test": "spec_object_remove_key_test.mbt",
+      "status": "Fixed public/source obj,key names agree. Positional/reordered named controls and required/extra binding errors execute through source and independent public ASTs; no String-only key guard is invented."
+    },
+    "reference_candidates": [
+      {
+        "file": "spec_object_remove_key_test.mbt",
+        "line": 30,
+        "test_declaration": "test \"objectRemoveKey retained fields read the original self after dependency removal\" {",
+        "classification": "manual ORK1 source-defined independent frozen literal expectations; executed after preserved unchanged-product baseline"
+      },
+      {
+        "file": "spec_object_remove_key_test.mbt",
+        "line": 47,
+        "test_declaration": "test \"objectRemoveKey preserves inherited values closures and immutable aliases under overlays\" {",
+        "classification": "manual ORK2 source-defined independent frozen literal expectations; executed after preserved unchanged-product baseline"
+      },
+      {
+        "file": "spec_object_remove_key_test.mbt",
+        "line": 96,
+        "test_declaration": "test \"objectRemoveKey projects visible keys and preserves exact empty and Unicode names\" {",
+        "classification": "manual ORK3 source-defined independent frozen literal expectations; executed after preserved unchanged-product baseline"
+      },
+      {
+        "file": "spec_object_remove_key_test.mbt",
+        "line": 154,
+        "test_declaration": "test \"objectRemoveKey shape and unused calls leave all value payloads dormant\" {",
+        "classification": "manual ORK4 source-defined independent frozen literal expectations; executed after preserved unchanged-product baseline"
+      },
+      {
+        "file": "spec_object_remove_key_test.mbt",
+        "line": 186,
+        "test_declaration": "test \"objectRemoveKey only demands a key when a visible field must be filtered\" {",
+        "classification": "manual ORK5 source-defined independent frozen literal expectations; executed after preserved unchanged-product baseline"
+      },
+      {
+        "file": "spec_object_remove_key_test.mbt",
+        "line": 210,
+        "test_declaration": "test \"objectRemoveKey compares nonstring keys without coercion or nested payload demand\" {",
+        "classification": "manual ORK6 source-defined independent frozen literal expectations; executed after preserved unchanged-product baseline"
+      },
+      {
+        "file": "spec_object_remove_key_test.mbt",
+        "line": 230,
+        "test_declaration": "test \"objectRemoveKey retained reads demand original flat assertions but empty projections do not\" {",
+        "classification": "manual ORK7 source-defined independent frozen literal expectations; executed after preserved unchanged-product baseline"
+      },
+      {
+        "file": "spec_object_remove_key_test.mbt",
+        "line": 258,
+        "test_declaration": "test \"objectRemoveKey requires object construction and valid bindings while retaining static checks\" {",
+        "classification": "manual ORK8 source-defined independent frozen literal expectations; executed after preserved unchanged-product baseline"
+      }
+    ],
+    "dimensions": {
+      "N": {
+        "test": "spec_object_remove_key_test.mbt",
+        "expectation": "ORK1-ORK3: obj[k] retains original final self/super and closure capture after deletion and output overlay; visible fields are projected with exact String-key removal, ordinary/forced-visible values and original aliases intact."
+      },
+      "E": {
+        "test": "spec_object_remove_key_test.mbt",
+        "expectation": "ORK4/ORK5/ORK7/ORK8: selected retained field, required nonempty filter key, isolated object head/computed key and original flat false assertion fail on demand. Non-Object inputs reject; required/extra binding errors and statically free unused arguments remain distinct."
+      },
+      "L": {
+        "test": "spec_object_remove_key_test.mbt",
+        "expectation": "ORK4/ORK5/ORK7: shape/reflection skips all value payloads; an unused call skips argument evaluation; empty/hidden-only inputs skip an error key. Original flat assertions run only when a retained original field is read, and removing the final visible field skips them."
+      },
+      "B": {
+        "test": "spec_object_remove_key_test.mbt",
+        "expectation": "ORK1-ORK8: positional/named obj,key, empty/hidden-only/missing key, empty/composed/decomposed/astral String names, all six disjoint nonstring key heads with dormant payloads, ordinary/inherited/closure sources and later overlays. No same-type nonscalar equality or inherited assertion-super oracle."
+      }
+    },
+    "remaining": "Eight bounded canonical source-projection groups are reviewed after a 2-pass/6-failure baseline and routing the public function to its exact embedded fixed definition. No whole-function acceptance or new general language completion. Producer/index/visibility/substitution/equality child judgments retain their existing matrix scope; A0/B0/N0/R0/PE0/DF0 are not silently adjudicated. Native callback trace and independent diagnostic choice are not new requirements. Four legacy expectations were individually migrated with original raw outcomes preserved; Go/C++ fixtures are unchanged and no reference output is an oracle."
   }
 ]

@@ -53,6 +53,11 @@ test "equality source functions and object argument contracts" {
     @moonjsonnet.evaluate("std.equals(x=[1],y=[1])"),
     Json::boolean(true),
   )
+  // Fixed objectRemoveKey projects obj[k], retaining the original receiver.
+  assert_eq(
+    @moonjsonnet.evaluate("std.objectRemoveKey({a:1,b:self.a},'a').b"),
+    Json::number(1),
+  )
   for
     (source, expected) in [
       (
@@ -75,8 +80,7 @@ test "equality source functions and object argument contracts" {
       "std.objectFieldsEx({},0)", "std.objectHasEx({},1,true)", "std.objectHasEx([], 'x', true)",
       "std.objectFieldsEx({},error 'forced')", "std.get({},'x',inc_hidden=0)", "std.mapWithKey(1,{})",
       "std.mapWithKey(function(k,v)v,[])", "std.primitiveEquals([] ,[])", "std.primitiveEquals({}, {})",
-      "std.equals(function()1,function()1)", "std.objectRemoveKey({a:1,b:self.a},'a').b",
-      "std.equals(a=1,b=1)",
+      "std.equals(function()1,function()1)", "std.equals(a=1,b=1)",
     ] {
     try @moonjsonnet.evaluate(source) catch {
       @moonjsonnet.Error(d) => assert_true(d.kind != @moonjsonnet.Unsupported)
@@ -87,17 +91,27 @@ test "equality source functions and object argument contracts" {
 }
 
 ///|
-test "objectRemoveKey keeps hidden fields and rebinds self without mutating input" {
+test "objectRemoveKey projects visible fields with original values without mutating input" {
   for
     (source, expected) in [
       (
-        "local o={a:1,h::2}; local r=std.objectRemoveKey(o,'a'); [std.objectFieldsAll(r),r.h,o.a]",
-        "[[\"h\"],2,1]",
+        "local o={a:1,h::2}; local r=std.objectRemoveKey(o,'a'); [std.objectFieldsAll(r),std.objectHasAll(r,'h'),o.a]",
+        "[[],false,1]",
       ),
-      ("local o={a:1,b:self.a}; (std.objectRemoveKey(o,'a')+{a:4}).b", "4"),
-      ("std.objectRemoveKey({assert false, a:1,b:2},'a')", "{\"b\":2}"),
+      ("local o={a:1,b:self.a}; (std.objectRemoveKey(o,'a')+{a:4}).b", "1"),
       ("local x=3; std.objectRemoveKey({local y=x,a:y,b:y+1},'a')", "{\"b\":4}"),
     ] {
     assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))
   }
+  // Preserve the original hidden-read input as an explicit absence check.
+  assert_eq(
+    object_contract_error(
+      "local o={a:1,h::2}; local r=std.objectRemoveKey(o,'a'); [std.objectFieldsAll(r),r.h,o.a]",
+    ).kind,
+    @moonjsonnet.Runtime,
+  )
+  assert_eq(
+    object_contract_error("std.objectRemoveKey({assert false, a:1,b:2},'a')").kind,
+    @moonjsonnet.Assertion,
+  )
 }

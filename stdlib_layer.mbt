@@ -12,6 +12,7 @@ fn source_standard_function(name : String) -> Bool {
     | "objectFieldsAll"
     | "objectHas"
     | "objectHasAll"
+    | "objectRemoveKey"
     | "manifestJson"
     | "split"
     | "format"

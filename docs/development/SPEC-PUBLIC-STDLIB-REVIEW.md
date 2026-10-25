@@ -37,7 +37,7 @@ that no test exists anywhere.
 N/E/L/B in the table are normal/error/lazy/boundary dimensions. R means only the
 specific assertions reviewed against the fixed contract in
 [manual case mappings](../../tests/spec-public-coverage.json). U means that
-dimension remains unreviewed/unmapped. Sixty-five functions currently have reviewed
+dimension remains unreviewed/unmapped. Sixty-six functions currently have reviewed
 subsets, including the ten independent [foundation reviews](SPEC-FOUNDATIONS-REVIEW.md)
 and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [object visibility/lookup functions](SPEC-OBJECT-CONTRACTS-REVIEW.md) and seven
@@ -137,6 +137,15 @@ std stays native. Saved/forwarded functions remain lexical, not receiver hooks.
 The malformed comparison conclusions remain a stopped global document conflict,
 with a proposed erratum only. No sort-specific framework or function completion
 was added;65 reviewed subsets and zero whole functions remain.
+
+The [objectRemoveKey projection review](SPEC-OBJECT-REMOVE-KEY-2026-10-25.md)
+adds one distinct public subset. The fixed comprehension retains original obj[k]
+values, projects visible keys and defers an unused filter key. Its unchanged
+product baseline passed2/8; routing to the exact embedded source passed8/8,
+plus three precisely migrated legacy groups and29 neighboring groups. All65
+prior manual records remain unchanged, making66 reviewed subsets and zero
+whole-function acceptances. This does not alter the general assertion/equality
+text disputes or reuse older whole-suite/Linux evidence for new product bytes.
 
 [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx) checks
 the three reference hashes before extracting the fixed headers/exports. Its
