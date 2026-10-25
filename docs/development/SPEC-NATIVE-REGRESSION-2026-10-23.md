@@ -653,3 +653,102 @@ bytes. No new specification domain or feature, comparison erratum, snapshot
 migration, SSH, push or release was introduced. Existing red-case evidence,
 N0/R0/DF0 and other language disputes remain intact. Overall conformance stays
 incomplete; 65 public subsets and zero whole-function acceptances are unchanged.
+
+
+## macOS native debug regression at 9150705
+
+The accumulated objectRemoveKey, remove and removeAt source-routing changes
+were exercised together at source commit
+`915070528e59e8f899ecc60033923d1bd8b2ab62`. All **695 tracked input entries**
+matched the preceding committed manifest before execution and afterward. The
+worktree was clean during the run. No product, test, expected value, snapshot,
+selection or package configuration changed. All earlier independent red runs
+and exact legacy migrations remain in their original evidence records.
+
+The unfiltered package command was:
+
+```sh
+RUST_LOG=error LANG=C LC_ALL=C moon test --target native --debug --frozen --deny-warn -j 1 --no-parallelize </dev/null
+```
+
+Raw stdout, including its final newline, is exactly:
+
+```text
+Total tests: 789, passed: 789, failed: 0.
+```
+
+Exit was 0, stderr empty, timeout false and skipped 0. The current metadata
+independently enumerates 789 tests across 12 nonempty drivers: 766 explicit tests
+plus the unchanged 16 source documentation and 7 README tests. No file/package/
+index/name filter or skip/ignore attribute exists in the executed selection.
+The metadata total equals the raw actual total; these are regression unit counts,
+not 789 normative judgments. In particular, conditional compatibility profiles
+remain unit checks with their existing normative acceptance null. tools/*.mbtx
+standalone integration scripts were not dispatched by this package command.
+
+| Package | Current debug metadata total |
+| --- | --- |
+| Root library | 754 |
+| cmd/jsonnetfmt | 4 |
+| cmd/main | 11 |
+| examples | 2 |
+| fs | 5 |
+| internal/number | 4 |
+| internal/posix | 4 |
+| internal/yaml | 5 |
+| Total | 789 |
+
+### Cross-impact boundary and actual phases
+
+The full run includes the two `spec_index_test.mbt` groups requiring integer
+Array/Unicode String indices and the six `numeric_test.mbt` groups, as well as
+immutable deletion, alias/map/caching, all independent remove/search and current
+objectRemoveKey/deletion groups. Ordinary Array/String indexing therefore keeps
+its existing fractional/type/bounds rejection; source-defined removeAt index
+filtering/admission is not generalized into a relaxed ordinary-index rule.
+The index/number operators and their expected values were not edited.
+
+One 600-second window began **2026-10-25 at 09:21:24.780285 UTC**, with the fixed
+09:31:24.780285 UTC deadline. A 590-second command soft limit reserved 10 seconds
+for owned-group termination if needed. The run ended at 09:23:34.664808 UTC,
+using **129.885 seconds**, including input verification and exit bookkeeping.
+It did not need a retry, budget reset, product repair or oracle migration.
+
+Read-only own-process sampling first observed moonc at 2.069 seconds and an actual
+package test driver at 22.346 seconds; the root library drivers were also seen.
+These are sampled compiler/test boundaries, not exact exclusive phase timings.
+All observed descendants belonged to the owned process group 19698. The controller
+and a later independent signal-zero check both confirmed that group absent.
+The test command was fully joined, and the heavy slot was released before the
+following documentation-only work. No product test was rerun after 789/789.
+
+### Same-source evidence binding and unexecuted scope
+
+Raw stdout/stderr, unchanged source manifests, toolchain/binary fingerprints,
+current metadata, phase observations and exit/cleanup receipts are at
+`/tmp/moonjsonnet-native-debug-9150705.9d1pcey9`. Temp storage is not an archival
+availability guarantee. This host is macOS ARM64, with freshly checked moon and
+moonrun 0.1.20260920 (914d7da), moonc v0.10.14+7d59c7ec9. Only the 12 current nonempty
+metadata-driver executables are selected as binary evidence; other cached files
+are not counted as executed tests.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| inputs-before.json (695 entries) | `99e8bdd202f6e0beec6ea35dbc4839096cc7a35df6048b2b95778b97ab16f1ef` |
+| inputs-after.json (same 695 entries) | `99e8bdd202f6e0beec6ea35dbc4839096cc7a35df6048b2b95778b97ab16f1ef` |
+| plan.json | `64bb5fc5914b8785135846970106152ccb576330d3b86ba23457345fcf8c3a1d` |
+| run.py | `d19acf984eb3acc5b37b0098c7895983fb2021fa2369f76336d91cb45892a487` |
+| run.json | `d06dd921d3e7df6c7e9e771072fd8debb2a330d627b7dd430aacd75b4fb25b34` |
+| Raw stdout | `05872ffddbfe5a9237cd914285554e17dc0d8f43cde1354d88be539a8c916e90` |
+| Raw empty stderr | `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855` |
+| Current toolchain and binary hashes | `92e6af90e375881e1b361a444c6a0e071364df89b466929e42235babfef47e98` |
+| Current metadata/12 drivers and independent exit verification | `89b522cd4ec9b001729ceba737c7b722d3e6eb7695b6d65267a4ad5b8c22ed3f` |
+
+This establishes current-source macOS native debug package regression only.
+Release, standalone API/CLI delivery scenarios, Linux/SSH and Go/C++ were NOTRUN.
+Earlier Linux results remain bound to 228cb25; the former 758 result remains at
+4b1be8a. No remote window, new feature/domain, upstream/proposal change, toolchain
+installation, snapshot update or push occurred. The removeAt idx/at signature
+conflict, current-i compatibility status and shared language disputes remain
+unchanged. Overall conformance stays incomplete; 66 public subsets and zero
+whole-function acceptances are not promoted by this regression.
