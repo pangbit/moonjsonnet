@@ -321,3 +321,128 @@ occurs here. Old816/816 and Linux228cb25 counts are not inherited by these new
 product bytes. No dependency, upstream, private proposal or push operation was
 performed. Overall specification conformance remains incomplete; this bounded
 JSON-input responsibility ends after evidence/commit closeout.
+
+
+## Shared returned-data String keys (frozen at8aba1ec)
+
+This follow-up independently checks the adjacent risk left above. Fixed
+google/jsonnet bbb38f1020be1f5aed560928fb839b2c448cefb4 language Object
+paragraphs305–343 define a mapping from String keys and arbitrary-expression
+bracket indexing, with simple-map inheritance replacing only matching fields.
+The specification JSON-value grammar2868–2936 admits String-keyed JObject
+data without reserving self/super/$. The language353–372 describes self/super
+as actual receiver references; a String bearing the same text is data. The
+project NativeFunction callback API returns Json, so the same data distinction
+applies to its returned object members. parseYaml uses only unambiguous
+JSON-compatible Mapping examples here, not an expanded YAML schema promise.
+
+Actual direct callers are Vm.call_native and Vm.parse_yaml. Current parseJson
+uses its finite visitor plus unchanged from_json and is a negative control.
+The old candidate diagnosis above grouped self/super/$ too broadly: scope
+always shadows self/super, whereas it injects $ only when outer.lookup lacks
+that binding. This follow-up tests $ independently rather than presuming failure.
+
+Six fixed groups NK1–NK6 separately check native self, native super, the YAML
+Mapping entry, dollar/opaque/code-looking String controls including candidate
+internal-binding-like names, nested data/closures/simple overlays, and eager
+nonfinite rejection versus unused whole calls. Every tree is handmade separately
+from source and both Program entries share literal independent expectations.
+NK5 runs json then native then yaml; any first-failure loop cutoff is NOTRUN.
+Native callbacks return Json data, not language closures: the closure test
+captures returned data in ordinary Jsonnet. No key text is evaluated as code.
+
+Frozen plan/oracles and the707-entry base manifest are held in
+`/tmp/moonjsonnet-data-keys.2pidvzs6`. No implementation has changed at freeze.
+The first test run must preserve all raw failures before repair. Any repair is
+limited to the shared converter and must retain recursive eager number/depth
+checks, copying, and ordinary language-field laziness. No old assertion or
+reference snapshot may change. Scope/stdlib/from_json are outside the repair.
+No full suite, release, SSH/Linux, external reference run or push occurs here.
+
+
+### Independent baseline, minimal repair and direct-entry result
+
+The initial check exited255 because MoonBit reserves the local identifier
+member for future use. Renaming only that host-local variable to selected in
+NK1/NK2 let check pass; Jsonnet source, handmade trees and literal oracles were
+unchanged. That first fixture has no semantic result. The corrected baseline
+is6 total,2 passed/4 failed, exit2,7.890883166 seconds. NK1/NK2 each independently
+observe String("object") where the literal type oracle requires String("number")
+for native {"self":7}/{"super":8}. NK3 independently observes the same self
+Mapping failure through parseYaml. These stop on their first source observation;
+their later value/full-object/handmade branches were NOTRUN at baseline. NK5
+passes its json source/AST control before the native source raises an opaque
+JsonnetError; subsequent native/YAML branches were NOTRUN there. No narrower
+per-field cause or all-loop coverage is inferred from that opaque output.
+NK4 opaque/$ controls and NK6 eager nonfinite/unused-call controls both pass.
+The earlier broad $ diagnosis is therefore corrected, not promoted to a defect.
+
+The product diff changes only native_result's Object branch. External keys
+remain Literal(String(name)); each eagerly copied/validated value is instead
+stored under a fresh $native:<ordinal> private binding, and its field references
+that binding. The ordinal advances per unique Map key, so bindings are distinct
+regardless of input names, including names that resemble the internal prefix.
+They cannot be self/super/$/$std, and the colon is not an ordinary source
+identifier. No input name becomes executable code. Reversing these8 diff lines
+reconstructs the entire old native.mbt byte-for-byte. Existing recursive Ready
+conversion, finite/depth/step checks, value copying and generic lazy fields stay
+unchanged. objects.mbt, runtime_types.mbt, stdlib.mbt and parse_yaml.mbt are
+byte-identical to8aba1ec. No old test/assertion or Go/reference snapshot changes.
+
+The fixed basis is [String-keyed objects and bracket indexing](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/language.html.md#object)
+and [JSON values](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#json_values),
+combined with the project's [NativeFunction Json-result API](../reference/API.md).
+The fixed specification explicitly leaves std.native environment semantics
+external; these host-API observations do not certify that whole public function.
+parseYaml uses already-admitted JSON-compatible collection data, while parseJson
+retains its independent finite visitor and original from_json constructor.
+This is an adapter-data repair, not a change to general self/super/$ semantics,
+object assertions, public std receivers or unresolved N0/R0/DF0 contracts.
+
+| Group | Independent observation | Baseline | Final |
+| --- | --- | --- | --- |
+| NK1 | Native String self selects7 and manifests the same map | Type object != number; later branches NOTRUN | Source/AST exact values pass |
+| NK2 | Native String super selects8 and manifests the same map | Type object != number; later branches NOTRUN | Source/AST exact values pass |
+| NK3 | YAML JSON-compatible map retains self7/super8 | First self type fails; later branches NOTRUN | Source/AST accesses/full map pass |
+| NK4 | parseJson control; $, opaque, NUL/Unicode and inert code/internal-name-like keys | Pass; no $ ordinary-map defect observed | All three entries pass |
+| NK5 | Nested data in captured closures/maps; matching right overlay leaves other/original data | JSON dual entry passes; native source error, rest NOTRUN | All three entries/source/AST pass |
+| NK6 | Native Inf/NaN, JSON overflow, YAML parsed Inf/NaN under each special-looking key | Pass; unused calls return42, used calls Runtime | Same unchanged eager/lazy criteria pass |
+
+After info then fmt and deny-warn check, the final directed result is37/37,
+failed0, exit0,15.388536417 seconds. The eight files are the six new groups,
+six native API/copy/error/depth regressions, six YAML public groups, two separate
+YAML normative-null profiles, five JSON input groups, six JSON contract groups,
+two JSON/YAML diagnostics and four P0 controls. All loops in these six new groups
+complete in both entries after repair. Existing host-mutation/cycle/output-limit
+cases are reused rather than duplicating those established direct-entry tests.
+Formatter changes to the new fixture are layout/trailing commas only; its
+corrected frozen oracle and all old tests remain semantically unchanged.
+No mbti diff occurs and all13 final source/test inputs retain tested hashes.
+
+Only the two existing public records change: parseYaml gains direct String-key
+and adapter-demand evidence; parseJson gains unaffected control witnesses and
+updates its separate-risk link. Other65 equal,67 subsets and zero whole-function
+acceptances remain. native_result has no existing inspected-source hash binding;
+the entire language map, all225 evidence records and completion counters stay
+byte-identical. No language-source inspection is silently rebound or broadened.
+The public inventory refresh only reflects these mapped inputs/provenance.
+
+Evidence root: `/tmp/moonjsonnet-data-keys.2pidvzs6`. Raw first check, corrected
+check, red baseline and green result are separate, with argv/DEVNULL/C locale/
+RUST_LOG=error and300-second per-command bounds. All recorded command process
+groups are absent after exit. No current full-suite/release/Linux/CLI/API or
+Go/C++ result is inherited; no dependency/upstream/proposal/push operation occurs.
+Overall specification conformance remains incomplete. This concrete converter
+and its two direct consumers are the boundary of this follow-up.
+
+| Artifact | SHA256 |
+| --- | --- |
+| plan.json | `5f9b95369fb09a8831a5b5dacb08e1884193035defc718d752922f21c19593fc` |
+| frozen/spec_native_data_keys_test.mbt | `9f8d995bab7dc32328eda629f792afb070474717a43505fe0650a9be3a5135e0` |
+| frozen/spec_native_data_keys_host_corrected_test.mbt | `b4614233f46ecd7b01a0e0c57aec1bde14f17dbaad1953506de5467ced6df29b` |
+| frozen/spec_native_data_keys_formatted_test.mbt | `1f40c3d4f36e83a04e0fd4433b13f325f4ff21865009bb359698ae6ddb89547a` |
+| baseline/stdout | `de4274ab83c99c98db1c4cd92338fc89e6099c1440f0ea191a1e583ccfdf8a6f` |
+| final-directed/stdout | `692831b047c266f17b1e325dce2cd02f863c7390a89daf97c3ab7cd4358b6c8e` |
+| validated-inputs.json | `0d791d9ebadc284f8f4a3db29af7faad2098620059547f1ee2f27b7c216f9841` |
+| repair-proof.json | `eb374007e6ca45a8209c08acf08985d47ef304019694928d3ad522cd5ead3e10` |
+| public-map-delta.json | `3395c941bd8135f1b2cf928968a2974d09bac794ba0d7640d79fe1c4ec9f48e2` |

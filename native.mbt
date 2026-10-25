@@ -81,13 +81,17 @@ fn Vm::native_result(
       }
       let result : Map[String, LayerField] = Map([])
       for name, item in fields {
-        env.names[name] = self.store(
+        // Data keys may spell self/super or any other String. Keep their ready
+        // values under distinct private names so receiver scope cannot shadow
+        // them, without deferring recursive validation or copying.
+        let binding = "$native:" + result.length().to_string()
+        env.names[binding] = self.store(
           Ready(self.native_result(item, loc, depth + 1)),
         )
         result[name] = {
           field: {
             key: { kind: Literal(Json::string(name)), loc, end: None, },
-            value: { kind: Var(name), loc, end: None, },
+            value: { kind: Var(binding), loc, end: None, },
             visibility: 1,
             additive: false,
           },

@@ -333,3 +333,21 @@ other66 stay equal,67 subsets and zero whole-function accepts. Sixteen disjoint
 stdlib inspection hashes are maintained, with all225 language evidence/decisions
 otherwise equal. BOM/lone-surrogate/duplicate-key and broader resource/numeric
 questions remain separate; prior full/Linux counts are not inherited.
+
+
+## Returned-data String-key isolation at8aba1ec
+
+The [shared converter follow-up](SPEC-JSON-CONTRACTS-2026-10-23.md#shared-returned-data-string-keys-frozen-at8aba1ec)
+independently reproduces self/super data capture through native callbacks and
+parseYaml. Six frozen source/handmade groups initially pass2/fail4, then pass
+with the scoped private-binding repair and required neighbors37/37. parseJson
+uses its original constructor and is an unaffected control; $ ordinary data
+bindings already worked. String keys resembling internal names, nested data,
+captured closures, simple overlays and eager invalid-number versus unused-call
+checks stay distinct from general language scope/receiver rules. No old oracle
+or reference snapshot changes. Only parseYaml's existing subset and parseJson's
+control map extend; other65 public records and all225 language evidence fields
+remain equal.67 subsets and zero whole-function acceptances remain. Host native
+callback Json-return observations do not create std.native formal acceptance.
+YAML schema/stream profiles and existing unresolved language contracts retain
+their status. No current full-suite/release/Linux/CLI evidence is claimed.

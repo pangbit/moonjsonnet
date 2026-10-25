@@ -5,8 +5,8 @@
     "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
     "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
   },
-  "input_source_commit": "727a59dd9695009113a554b1d623dd071950ede0",
-  "uncommitted_test_paths": "spec_parse_json_input_test.mbt",
+  "input_source_commit": "8aba1ec567c8522da43ed05a673434a62b1823ab",
+  "uncommitted_test_paths": "spec_native_data_keys_test.mbt",
   "test_input_sha256": {
     "aggregate_test.mbt": "965028fe74da63f52ee9c5a43e7d19d4464f915a01fb3dcb7359311c48d2d7b8",
     "anonymous_test.mbt": "bcbfa687303fc5283fb69c9bac4bc1ece47359fa97829c5d74be8e771423cca6",
@@ -126,6 +126,7 @@
     "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
     "spec_membership_test.mbt": "ff98fa18f761be4560885c2d02c55bf926ab5532c14f56b049d825ec692ae39e",
     "spec_merge_patch_test.mbt": "52953d3c31c78e8451c8fbce03c8be345bccecb770b24a7d7e9340ae948ccb90",
+    "spec_native_data_keys_test.mbt": "1f40c3d4f36e83a04e0fd4433b13f325f4ff21865009bb359698ae6ddb89547a",
     "spec_negation_test.mbt": "92edd8ad7eaac31c60676c8c7f3882f440c78391edd58a16d47ee0942465e3ac",
     "spec_number_tokens_test.mbt": "f2b0623824df00431f167bacc8cf04290ab91158827eb79c4d27c632693d576c",
     "spec_object_assertion_paths_test.mbt": "a6cb41c025eb6e7120f6f70a6681efe0f8095f4bfbea754fe64a6350ef96ebc3",
@@ -192,7 +193,7 @@
     "syntax_document_test.mbt": "a32b18c100d0e9820185e4ac62f264d958af51dc888ae06037bbc3e64a77afe9",
     "toml_yaml_test.mbt": "dbe9bdeba00c198d264f5a7037ca4bae9dbe43ef0f6fd4bc3f7babbf681e9587"
   },
-  "coverage_sha256": "34dc426c9dc47d226ff1534d8583695ad33898b30c9404f7875cbecaafa37f0e",
+  "coverage_sha256": "1d50c103939a4d41deade772de9f21d5337078f4318b8b702fdfad942f93c18c",
   "generator_sha256": "fe98329f6afd0ab8abc9f07f2fbd33bd3fb7c5ae85cef6cb64eb45a3ff25fb1b",
   "public_function_candidates": 153,
   "functions": [
@@ -5208,15 +5209,22 @@
             "line": 10,
             "test_declaration": "test \"parseJson consumes one complete JSON value for every root family\" {",
             "classification": "PJI1-PJI5 independent literal source/handmade input, EOF/escape/finite/resource controls; preserved4pass1fail baseline and rejected25pass1fail constructor candidate, final26/26 without oracle migration."
+          },
+          {
+            "file": "spec_native_data_keys_test.mbt",
+            "line": 92,
+            "test_declaration": "test \"converted dollar opaque and code looking keys remain inert Strings\" {",
+            "classification": "NK4-NK6 unaffected parseJson controls for opaque/reserved String keys, nested closures/simple overlays, eager overflow and unused calls; parseJson is not a native_result direct entry and its product route is unchanged."
           }
         ],
         "dimensions": {
           "N": {
             "test": "spec_json_contracts_test.mbt",
             "additional_tests": [
-              "spec_parse_json_input_test.mbt"
+              "spec_parse_json_input_test.mbt",
+              "spec_native_data_keys_test.mbt"
             ],
-            "expectation": "JC1 plus PJI1/PJI2: all JSON primitive/Array/Object roots, bounded nested data, standard escapes, canonical well-formed Unicode pairs, literal astral data, interior U+FEFF and arbitrary String keys retain literal outcomes through source/handmade calls. JSON scalar roots remain legal."
+            "expectation": "JC1 plus PJI1/PJI2: all JSON primitive/Array/Object roots, bounded nested data, standard escapes, canonical well-formed Unicode pairs, literal astral data, interior U+FEFF and arbitrary String keys retain literal outcomes through source/handmade calls. JSON scalar roots remain legal. NK4/NK5 confirm the unchanged parseJson constructor preserves opaque/reserved data keys, captured reads and simple overlays independently of native/YAML conversion."
           },
           "E": {
             "test": "spec_parse_json_input_test.mbt",
@@ -5235,12 +5243,13 @@
           "B": {
             "test": "spec_parse_json_input_test.mbt",
             "additional_tests": [
-              "spec_json_contracts_test.mbt"
+              "spec_json_contracts_test.mbt",
+              "spec_native_data_keys_test.mbt"
             ],
-            "expectation": "All root families and JSON whitespace/EOF, empty containers, exact Unicode/escape/reserved-key data and nested positive/negative overflow are mapped. PJI5 distinguishes quoted brackets from actual nesting under a controlled host depth bound; no universal rounding/resource threshold is inferred."
+            "expectation": "All root families and JSON whitespace/EOF, empty containers, exact Unicode/escape/reserved-key data and nested positive/negative overflow are mapped. PJI5 distinguishes quoted brackets from actual nesting under a controlled host depth bound; no universal rounding/resource threshold is inferred. NK4-NK6 add control witnesses for self/super/$ and internal-name-like String data while preserving eager reserved-member overflow rejection."
           }
         },
-        "remaining": "Input responsibility reviewed at SPEC-JSON-CONTRACTS-2026-10-23.md#parsejson-input-domain-continuation-frozen-at-727a59d. Initial BOM, lone/ill-paired surrogate and malformed host-text recovery, duplicate keys, general numeric rounding and unbounded grammar/resource proofs remain separately unadjudicated. Canonical paired JSON-data witnesses do not settle Jsonnet source quoting. No whole-function acceptance, exact diagnostic winner or native callback-order promise. Existing native_result reserved-key risk is documented separately; this repair leaves that helper and its other entry points unchanged."
+        "remaining": "Input responsibility reviewed at SPEC-JSON-CONTRACTS-2026-10-23.md#parsejson-input-domain-continuation-frozen-at-727a59d. Initial BOM, lone/ill-paired surrogate and malformed host-text recovery, duplicate keys, general numeric rounding and unbounded grammar/resource proofs remain separately unadjudicated. Canonical paired JSON-data witnesses do not settle Jsonnet source quoting. No whole-function acceptance, exact diagnostic winner or native callback-order promise. The subsequent shared-converter follow-up independently repairs native/YAML self/super capture and rules out the presupposed $ ordinary-map defect; parseJson keeps its existing finite visitor and from_json route. These new control witnesses do not inherit native entry semantics or whole-function acceptance."
       },
       "test_reference_candidates": [
         {
@@ -5272,6 +5281,12 @@
           "line": 10,
           "test_declaration": "test \"parseJson consumes one complete JSON value for every root family\" {",
           "classification": "PJI1-PJI5 independent literal source/handmade input, EOF/escape/finite/resource controls; preserved4pass1fail baseline and rejected25pass1fail constructor candidate, final26/26 without oracle migration."
+        },
+        {
+          "file": "spec_native_data_keys_test.mbt",
+          "line": 92,
+          "test_declaration": "test \"converted dollar opaque and code looking keys remain inert Strings\" {",
+          "classification": "NK4-NK6 unaffected parseJson controls for opaque/reserved String keys, nested closures/simple overlays, eager overflow and unused calls; parseJson is not a native_result direct entry and its product route is unchanged."
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
@@ -5372,27 +5387,45 @@
             "line": 12,
             "test_declaration": "test \"parseYaml public example and JSON compatible collection roots retain literal values\" {",
             "classification": "PYC1-PYC6 bounded best-effort public contract with independent source/handmade AST expectations; original baseline4pass2fail retained, one overstrong untagged-overflow classification moved to normative-null profile before root-only repair."
+          },
+          {
+            "file": "spec_native_data_keys_test.mbt",
+            "line": 80,
+            "test_declaration": "test \"parseYaml preserves self and super in JSON compatible Mapping data\" {",
+            "classification": "NK3-NK6 direct shared-converter evidence: preserved2pass4fail baseline; literal String-key fidelity, nested closures/overlays, eager invalid-number and unused-call controls, final37/37 directed tests. YAML profiles are not promoted."
           }
         ],
         "dimensions": {
           "N": {
             "test": "spec_parse_yaml_contract_test.mbt",
-            "expectation": "PYC1/PYC6: official foo:bar example and bounded JSON-compatible map/sequence/empty/nested collection values, including Unicode and escaped String data. No full YAML version/dialect support claimed."
+            "expectation": "PYC1/PYC6: official foo:bar example and bounded JSON-compatible map/sequence/empty/nested collection values, including Unicode and escaped String data. No full YAML version/dialect support claimed. NK3/NK4/NK5 preserve self/super/$ and opaque String names as data in JSON-compatible Mapping roots, nested Arrays/Objects, captured closures and simple right overlays; names resembling internal bindings remain literal external keys.",
+            "additional_tests": [
+              "spec_native_data_keys_test.mbt"
+            ]
           },
           "E": {
             "test": "spec_parse_yaml_contract_test.mbt",
-            "expectation": "PYC2-PYC5: binding errors, non-String heads, required argument markers, explicitly unsupported scalar document roots and actually parsed collection syntax/Inf/NaN errors reject before type observation; phase tags are host controls, not mandated prose."
+            "expectation": "PYC2-PYC5: binding errors, non-String heads, required argument markers, explicitly unsupported scalar document roots and actually parsed collection syntax/Inf/NaN errors reject before type observation; phase tags are host controls, not mandated prose. NK6 keeps actually parsed Inf/NaN rejection eager even under self/super/$ data names before type can succeed; no unrelated-error winner is promised.",
+            "additional_tests": [
+              "spec_native_data_keys_test.mbt"
+            ]
           },
           "L": {
             "test": "spec_parse_yaml_contract_test.mbt",
-            "expectation": "Unused whole calls skip input/error demand; wrong outer heads do not visit Array/Object/Function payloads. Parsed String values remain data rather than executing Jsonnet code/import/native text."
+            "expectation": "Unused whole calls skip input/error demand; wrong outer heads do not visit Array/Object/Function payloads. Parsed String values remain data rather than executing Jsonnet code/import/native text. NK6 keeps unused whole calls lazy while the shared converter validates every returned data member eagerly; no generic language-field rule changes.",
+            "additional_tests": [
+              "spec_native_data_keys_test.mbt"
+            ]
           },
           "B": {
             "test": "spec_parse_yaml_contract_test.mbt",
-            "expectation": "Empty collections, six wrong input-head kinds, one-parameter reflection/binding, nested versus root scalar distinction and bounded Unicode/NUL data use literal source/handmade controls."
+            "expectation": "Empty collections, six wrong input-head kinds, one-parameter reflection/binding, nested versus root scalar distinction and bounded Unicode/NUL data use literal source/handmade controls. NK3-NK5 additionally cover self/super/$/$std, empty/NUL/Unicode/keyword-like/code-looking String keys, nested accesses, simple overlays and original-object preservation. Native callback API observations are separate, not extra std.native acceptance.",
+            "additional_tests": [
+              "spec_native_data_keys_test.mbt"
+            ]
           }
         },
-        "remaining": "Bounded public collection-root/error/demand responsibility reviewed in SPEC-PARSE-YAML-2026-10-25.md. Best-effort API does not specify full YAML grammar/schema, duplicate/merge/alias policies, empty/no-document results, stream packaging/trailing-data policy or exact diagnostic text. Those existing project extensions and untagged overflow-text classification have normative acceptance null, not extra required successes. Unbounded parser/encoding/numeric/resource children and whole-function acceptance are not inferred."
+        "remaining": "Bounded public collection-root/error/demand responsibility reviewed in SPEC-PARSE-YAML-2026-10-25.md. Best-effort API does not specify full YAML grammar/schema, duplicate/merge/alias policies, empty/no-document results, stream packaging/trailing-data policy or exact diagnostic text. Those existing project extensions and untagged overflow-text classification have normative acceptance null, not extra required successes. Unbounded parser/encoding/numeric/resource children and whole-function acceptance are not inferred. Shared data-key conversion follow-up at SPEC-JSON-CONTRACTS-2026-10-23.md#shared-returned-data-string-keys-frozen-at8aba1ec closes independently confirmed self/super capture for native/YAML direct entries only; $ ordinary-map control was already correct. No universal receiver, YAML dialect, whole-function or language-assertion claim follows."
       },
       "test_reference_candidates": [
         {
@@ -5424,6 +5457,12 @@
           "line": 12,
           "test_declaration": "test \"parseYaml public example and JSON compatible collection roots retain literal values\" {",
           "classification": "PYC1-PYC6 bounded best-effort public contract with independent source/handmade AST expectations; original baseline4pass2fail retained, one overstrong untagged-overflow classification moved to normative-null profile before root-only repair."
+        },
+        {
+          "file": "spec_native_data_keys_test.mbt",
+          "line": 80,
+          "test_declaration": "test \"parseYaml preserves self and super in JSON compatible Mapping data\" {",
+          "classification": "NK3-NK6 direct shared-converter evidence: preserved2pass4fail baseline; literal String-key fidelity, nested closures/overlays, eager invalid-number and unused-call controls, final37/37 directed tests. YAML profiles are not promoted."
         }
       ],
       "whole_contract_status": "unaccepted; dimensions/signature/value/error/lazy boundaries not fully adjudicated"
