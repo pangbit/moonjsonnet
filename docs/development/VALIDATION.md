@@ -22,6 +22,16 @@ the existing fixture expectations and uses one worker, closed stdin and bounded
 commands. This is separate from the full package regression and does not establish
 all 67 application cases, an independent package consumer or Linux acceptance.
 
+The [2026-10-25 Linux record at 228cb25](SPEC-NATIVE-REGRESSION-2026-10-23.md#linux-native-evidence-at-228cb25)
+adds same-source debug 734/734 and release 734/734 from separate windows, plus
+11/11 existing release CLI/embedded process cases. The first release attempt's
+600-second incomplete build and historical cleanup refusal remain preserved;
+the successful window used a separately approved 1050-second build followed by
+the unchanged complete test command. Source, full private-SDK fingerprints,
+raw output, binaries and independent cleanup receipts are bound in that record.
+This does not establish complete 67-case application acceptance, a package consumer,
+new macOS 734 results, reference parity or full specification conformance.
+
 The [P1 stage](SPEC-P1-EVIDENCE-2026-10-22.md) rejects duplicate formal names
 statically under the fixed specification, including public Program AST input.
 Historical repeated-parameter success fixtures below remain unchanged and are

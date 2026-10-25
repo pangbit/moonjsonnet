@@ -1,7 +1,9 @@
 # Native package regression records
 
-The latest complete local run is [84eb1f7](#later-complete-regression-at-84eb1f7).
-The earlier strip/split entry remains bound to its original source and counts.
+The latest complete macOS run is [84eb1f7](#later-complete-regression-at-84eb1f7).
+[Linux evidence at 228cb25](#linux-native-evidence-at-228cb25) separately binds
+debug 734/734, release 734/734 and eleven release delivery cases across two
+source-identical windows. Earlier results and failures keep their original boundaries.
 
 ## Source and result boundary
 
@@ -396,3 +398,168 @@ SSH, transfer, network tool, installation, container, ASan, push or release was
 performed. The run adds no normative-rule or public-function completion: all
 recorded disputes remain unresolved where previously unresolved, and overall
 specification conformance remains incomplete.
+
+
+## Linux native evidence at 228cb25
+
+On 2026-10-25, two separate Linux AMD64 validation windows established complete
+native debug and release package results for the same source commit
+`228cb252e76ebba07b447b11b16eaf99850bf954`, tree
+`130ccfc2115c6b59244226bbfeb7fb4a65a84b41`. Both used the same 682-entry Git
+archive, including literal `README.md -> README.mbt.md`, and checked source
+hashes before and after execution. The later documentation commit changes no
+tested product, fixture, interface, module/package manifest or executable README
+bytes; it is not another test run of a newly committed 682-entry archive.
+
+### Separate results and preserved failure
+
+The first window passed debug and then timed out during the combined release
+build/test command. Its release stdout and stderr are empty. The preserved
+inventory has 45 generated C test drivers but only 40 corresponding executables;
+the final executable was produced 593.685 seconds after release started. There
+is no final release test count for that attempt. Application build and all eleven
+process cases were NOTRUN. This is an incomplete build under its original budget,
+not an adjudicated language failure or an earlier release pass.
+
+The independently approved new window split release driver construction from the
+ordinary complete test invocation. It did not repeat debug, filter any test,
+change a fixture/snapshot or reinterpret the first timeout as passing.
+
+| Window / stage | Actual result | Exit | Elapsed seconds | UTC start / finish |
+| --- | --- | --- | --- | --- |
+| First window: native debug | 734 total, 734 passed, 0 failed | 0 | 349.361 | 02:12:13.789790 / 02:18:03.150409 |
+| First window: combined release | Timeout; no final test summary | -9 | 600.066 | 02:18:03.265763 / 02:28:03.331818 |
+| New window: release driver build | 45 native drivers; metadata totals 734 | 0 | 711.240 | 03:37:25.131979 / 03:49:16.372225 |
+| New window: complete release test | 734 total, 734 passed, 0 failed | 0 | 119.692 | 03:49:17.465765 / 03:51:17.158259 |
+| New window: application build | CLI and embedded executables | 0 | 80.096 | 03:51:18.031535 / 03:52:38.127376 |
+
+The successful debug and release stdout files each contain exactly the following
+42-byte summary (SHA-256
+`97f9b62ec2158c3a6b9ae92837e4e8f3ccbe13f3b646003e63a2a0ddbb4f1fc8`),
+with separate raw files and empty stderr:
+
+```text
+Total tests: 734, passed: 734, failed: 0.
+```
+
+Each mode's generated metadata independently totals 734: root library 699,
+cmd/jsonnetfmt 4, cmd/main 11, examples 2, fs 5, internal/number 4,
+internal/posix 4 and internal/yaml 5. The source inventory contains 711 explicit
+MoonBit tests and 23 documentation tests. Forecast inventory counts alone were
+not treated as execution. The release build produced 45 test drivers, including
+empty drivers; executable presence does not add assertion counts. Their C and
+binary hashes and timestamps stayed unchanged across the complete test command.
+
+The new application campaign reused exactly the eleven existing case IDs and
+expectations in the [local application subset](#local-application-delivery-subset-at-f23210c).
+All eleven verdicts passed: five successful exit-0 processes and six required
+exit-1 error processes. Full typed JSON, diagnostic fragments, source locations
+where required, import confinement, budgets and before/after output sentinels
+were checked. The six expected nonzero exits are not test failures. API example
+tests are included in the package suite, not counted again as extra executions.
+
+### Commands, budgets and toolchain binding
+
+All native commands used one worker, sequential tests, frozen dependencies,
+RUST_LOG=error and closed stdin. The first debug/release commands each had a
+600-second limit. The new window had one 1800-second total limit, including
+transfer, evidence recovery and cleanup. Its explicit revised allocation was
+setup120/check30/driver-build1050/complete-test120/application-build180/
+eleven-processes110/evidence-and-cleanup180/stop-reserve10 seconds. The actual
+complete test took 119.692 seconds within its 120-second cap; no budget was
+silently extended. The full new window completed in 941.587 seconds.
+
+```sh
+moon check . --target native --frozen --deny-warn -j 1
+moon test --build-only --target native --release --frozen --deny-warn -j 1 --no-parallelize
+moon test --target native --release --frozen --deny-warn -j 1 --no-parallelize
+moon build cmd/main examples/embedded --target native --release --frozen --deny-warn -j 1
+```
+
+The preceding debug window used the full reproduction command with `--debug`.
+`--build-only` was confirmed by installed same-version help; the following
+ordinary test command retained its normal build checks and full execution.
+No unsupported run-only option or test selector was introduced.
+
+Host: Linux 6.17.0-14-generic, x86_64; Python 3.12.3; GCC 13.3.0.
+Moon/moonrun were 0.1.20260920 (914d7da), moonc v0.10.14+7d59c7ec9.
+The new window pinned all 1866 resources in the earlier private SDK manifest,
+209271649 bytes, including contents and modes; every resource matched the
+successful debug environment. Native children used UID/GID 65534 with private
+read-only SDK files and private empty caches. The installed SDK binary hashes
+and three watched cache-marker hashes/sizes/mtimes were unchanged. These limited
+checks are not a whole-host filesystem audit. No toolchain installation or
+system configuration change occurred.
+
+| Tool / application binary | SHA-256 |
+| --- | --- |
+| Linux moon | `6da4919f45f4abf7c6d7f3cf8d9a457de77dca430d6fb811d21b27ae1ac8e11d` |
+| Linux moonc | `d163b2c4c878ca584870764b75e633d73e8b9c178dcc6b00c692f6b2a6b1b2dc` |
+| Linux moonrun | `1b22f489621059b8c22ee4acdaddc5f5d1781f62529d3000a24c03d45032d0e2` |
+| Linux GCC binary | `1b99826121ae6682a634e5efe09bd3e3df58ce58e0b28f849114ab5b89139c26` |
+| Linux Python binary | `c2c20b4745d447551221ec3d4e70f92c270c4609fe3df34fc52ea6dd46e92273` |
+| _build/native/release/build/cmd/main/main.exe | `b539b537103dae425a0194abe8270f769f5aab2ecaf585b93ea36cc7d9a57cb9` |
+| _build/native/release/build/examples/embedded/embedded.exe | `9d1c31430f61cdcc01f636ea83498d9d2fcf5c2ce26091c60d07ae5b56de3563` |
+
+### Evidence recovery, cleanup and scope
+
+The first-window evidence root is `/tmp/moonjsonnet-linux-window.kx1teq2a`.
+Its archive and all 153 members were verified locally before any cleanup.
+The immutable original receipt records a transient residual process group;
+the original cleanup helper refused with `Owned-process cleanup unconfirmed`.
+Fresh subsequent checks found the recorded PIDs/groups absent, but the receipt
+was not rewritten. The directory was retained with mode 0700 until a separately
+approved 300-second cleanup-only window on the same date. That cleanup completed
+in 6.927 seconds with a new current identity/process receipt and independent
+absence confirmation. Its local evidence root is
+`/tmp/moonjsonnet-next-frozen.vh6m0r85/runs/cleanup-20261025T032623Z`.
+
+The new release/delivery evidence root is
+`/tmp/moonjsonnet-next-frozen.vh6m0r85/runs/validation-20261025T033716Z`.
+All 255 archive members were hash-verified locally. The current receipt separately
+verified directory identity, original evidence, complete generated-file inventory,
+source bytes and current PID/birth/group absence. Only the owned validation
+directory and controls were removed, followed by an independent directory and
+process absence check. All native groups, controllers and local transport
+processes exited. Historical reports/receipts remain byte-identical locally.
+
+The following hashes bind source, the separate windows and cleanup results.
+Reports contain exact argv/environment, per-command raw stdout/stderr, actual
+counts, toolchain and executable hashes, own-process samples and before/after
+output files. `verified-evidence/results/` is the extracted archive under each
+window's local evidence root; current cleanup receipts are separate local files.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Source archive | `9464643fb1d99f11b85aec2d44cf249ab112b3cd3d14601e88f02b98b4154174` |
+| 682-entry source manifest | `2e609ef87ebdd4935e71259f80c6c3a14429e2a1339c671fed5ce1bddbbb43b8` |
+| First-window freeze | `7be1e085ba0e0c64fa87208ddc1154c37a9d9672b9f257522cc429b298921314` |
+| First-window evidence archive | `78798f0ceec783222ec4121c6db062144e84219d228b7aef26d63aeaa43d07f5` |
+| First-window report | `4b685aa06281e332ce615731a620723542a58b675565dd69233e57cb5dac43df` |
+| First-window historical receipt | `54602c3c18fdd1887c149bce66fbf107744edc24dc46014a32e5295e9b94a5a3` |
+| New release/delivery freeze | `77dade9a534506dded57a23865748baf1821db0d057b031142eb929918b9f56a` |
+| New release/delivery archive | `fc35551b95930fab2c9b845b424683fc517c0facfdbea60a182343111c6e4c82` |
+| New release/delivery report | `a6a69b3de08a592da0d9bca8f90573278bf0e540fac1a8f343adfc9c1364abf8` |
+| New release/delivery historical receipt | `dce8298a63dda31775f99c899878860e5e680238eb1ffed424884ea237ae1cbc` |
+| New current cleanup receipt | `350308bdf27e951cbe2b39ca19424a3b80485331081d03e8a16fd12ded52862e` |
+| New independent absence receipt | `bd692add798055b01eead0a28e4a95d800d4930099c2fe89ce00e15062cca200` |
+| Final validation result | `ab09dd847904576cb8aa0f556eb4c1bef9dc24a2cbc2137b92dd41d6d01d3df4` |
+| Old-directory cleanup result | `bad0f02acba18b12e86845cbe5a3577693d83b59d8f5660db6f94b17bb976410` |
+
+Two older SDK-copy guard failures before any native command also remain preserved:
+`/tmp/moonjsonnet-linux-window.p17wtuao` (archive
+`d852d2b9eb85b0d0b2e84a51882d435107e14441e64c484ae8dd30fe72d703e9`)
+and `/tmp/moonjsonnet-linux-window.dn4u715s` (archive
+`6a2ed8573c196730bf3b70ec4c81f701eadd17acb17fc6cffd59489a41dc2e7c`).
+Their native stages remain NOTRUN. Their fixture failures and the later
+600-second release timeout were not hidden by this passing window.
+
+These results add Linux package and eleven-case release application evidence.
+They do not establish all 67 application cases, an independently installed
+consumer, debug CLI process acceptance, fresh Go/C++ or upstream-language
+comparisons, ASan, current-source full macOS 734 testing, public whole-function
+acceptance or complete language-rule coverage. Historical macOS713 evidence
+remains bound to 84eb1f7. All A0/B0/N0/R0/PE0/DF0/HP0 and other recorded unknowns
+retain their separate status. Overall specification conformance remains
+incomplete. Temporary evidence locations are not an archival availability
+guarantee. No private proposal, upstream modification, push or release is included.

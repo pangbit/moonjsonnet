@@ -51,6 +51,16 @@ evidence only: debug API tests and release executables. It does not establish th
 complete 67-case application suite, an independently installed package consumer,
 Linux acceptance or a full package regression at f23210c.
 
+The [2026-10-25 Linux record at 228cb25](SPEC-NATIVE-REGRESSION-2026-10-23.md#linux-native-evidence-at-228cb25)
+adds same-source debug 734/734 and release 734/734 from separate windows, plus
+11/11 existing release CLI/embedded process cases. The first release attempt's
+600-second incomplete build and historical cleanup refusal remain preserved;
+the successful window used a separately approved 1050-second build followed by
+the unchanged complete test command. Source, full private-SDK fingerprints,
+raw output, binaries and independent cleanup receipts are bound in that record.
+This does not establish complete 67-case application acceptance, a package consumer,
+new macOS 734 results, reference parity or full specification conformance.
+
 ## P0 normative matrix
 
 This is a focused regression matrix, not the complete final conformance matrix.
