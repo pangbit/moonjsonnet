@@ -402,6 +402,13 @@ byte decoder and explicit UTF-8 operations are unchanged. B64D-M0/A0, malformed
 UTF-8 profiles and encoder B64-R0/F0 remain separate unresolved boundaries.
 
 This adds bounded contract evidence without regenerating the historical inventory
-or promoting a whole function. Full-suite, release, Linux and standalone CLI/API
-have not run on this decoder repair; the preceding 851-test result applies to its
-earlier source. Overall specification conformance remains **incomplete**.
+or promoting a whole function. The subsequent
+[complete macOS debug regression](SPEC-BASE64-DECODE-CONTRACT-2026-10-26.md#complete-macos-native-debug-regression-at-5afcbea)
+binds `5afcbea099c2b79e96d5ffcce4a375cbdf1b90b6` and 714 committed inputs:
+actual 864/864 passed, failed/skipped 0, exit 0. Compilation/execution took
+141.812s, with stable inputs, a clean index/worktree and independently confirmed
+process exit. The 48 decoder and 18 encoder observations remain ungraded.
+Release, Linux, independent CLI/API and installed-consumer validation are still
+NOTRUN for this source. The next delivery checkpoint holds product semantics
+fixed while preparing those same-source checks; other normative gaps remain in
+the matrix. Overall specification conformance remains **incomplete**.

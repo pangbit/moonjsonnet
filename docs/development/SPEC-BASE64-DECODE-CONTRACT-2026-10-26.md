@@ -154,9 +154,38 @@ bytes than the executed candidate. Subsequent `moon info --frozen`, `moon fmt`
 and `moon fmt --check` each exited 0. All product and test files remain
 byte-identical to the executed candidate, including all 20 generated interfaces;
 no token or literal migration is needed. The other 712 candidate inputs remain
-unchanged. Full-suite, release, Linux and independent CLI/API runs are NOTRUN
-for this changed implementation. The earlier 851-test encoder result remains
-bound to its previous implementation.
+unchanged. At that directed checkpoint, full-suite, release, Linux and independent
+CLI/API runs were NOTRUN. The later complete debug run below binds the committed
+decoder repair; the earlier 851-test encoder result retains its original source.
+
+## Complete macOS native debug regression at 5afcbea
+
+The complete package suite on 2026-10-26 binds implementation commit
+`5afcbea099c2b79e96d5ffcce4a375cbdf1b90b6` and all 714 committed inputs. With
+`RUST_LOG=error`, closed stdin and the command below, actual output reports
+**864/864 passed, failed 0, skipped 0, exit 0**. Post-run generated metadata
+agrees: 812 root blackbox cases plus 52 other cases.
+
+```sh
+moon test --target native --debug --frozen --deny-warn -j 1 --no-parallelize
+```
+
+Compilation and execution together took 141.812s; separate stage timings were
+not emitted. The command window took 142.207s within its 600s limit. Inputs and
+the clean index/worktree remained stable, and the owned process group and
+controller were independently confirmed absent. The source-manifest SHA-256 is
+`313dcb90f515ff2a4750d9e82ee7fe3e34cab2b3c40ced6aa238e05fb6cdd5ab`;
+raw stdout is `80165965b52a62b620ba8021b59a21f8c34798cedd7a6e05abcf978450665ca8`.
+Stderr is empty. The execution-result SHA-256 is
+`def8ed4b3ee08cb295a147c9f3cd95235231e69b88b38c10ef1c065d6adc139d`.
+
+The 48 decoder observations match the directed baseline; they and the 18 encoder
+observations earn zero normative passes. Original RED results, historical blocked
+branches and all unresolved boundaries retain their recorded status. Full package
+regression does not establish whole-function or complete specification acceptance.
+Release, Linux, independent CLI/API and installed-consumer validation remain
+NOTRUN for this source. Subsequent work should close delivery evidence for the
+two Base64 repairs before expanding into another product semantic domain.
 
 ## Remaining boundaries
 
