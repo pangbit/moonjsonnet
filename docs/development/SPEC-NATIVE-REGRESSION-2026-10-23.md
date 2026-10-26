@@ -1049,3 +1049,118 @@ silently reused for835; a new explicit phase allocation must retain the total
 seconds informs sizing but does not predict release/Linux duration. Full67-case
 application and independent package-consumer acceptance stay separate from the
 eleven-process subset. No further semantic domain or test starts in this turn.
+
+## Same-source validation cohort at 97f0938
+
+The 2026-10-26 Linux runs below used the original 708-entry archive from
+`9bdacec96fc5482fedfbe9d82b07efd02efed094`. Its Git tree is exactly
+`4adb19e924825ebe4c50e72b0c049df2288c70d2`, also the tree of
+`97f0938d957ac1f5ca29b0a2126671dffc367350` after a commit-message-only rewrite.
+Original reports retain their original source commit; they are not relabeled as
+new executions. The archive preserves the README symlink and excludes Git
+metadata, SDKs, caches and external project documents.
+
+The [macOS debug run above](#macos-native-debug-regression-at1a46122) actually
+tested `1a46122`. Only this record and `SPEC-CONFORMANCE.md`, both non-executable
+documents, changed between that test and `9bdacec`. Product, tests, package
+configuration, executable README and interface bytes are identical through
+`97f0938`. The subsequent documentation update changes only those same two files;
+it does not establish a fresh full-tree execution of the documentation commit.
+
+### Actual results and execution scope
+
+| Platform and independently recorded run | Actual result | Exit and measured duration |
+| --- | --- | --- |
+| macOS ARM64 native debug, 2026-10-25 | 835/835; failed/skipped 0 | Exit 0; suite command 134.280s including build work |
+| Linux AMD64 native release, B | 835/835; failed/skipped 0 | Exit 0; driver build 721.046s, suite command 146.030s |
+| Linux AMD64 native debug, F1 | 835/835; failed/skipped 0 | Exit 0; driver build 103.913s, suite command 305.246s |
+| Linux examples API, separate D1 invocation | 2/2 | Exit 0; 0.209s |
+| Linux release CLI/embedded delivery subset, D1 | 11/11 | Five required successes exit 0; six required errors exit 1 |
+
+Fresh outline and generated metadata agree on 835 tests: root blackbox 783,
+root whitebox 17, and 35 in the other packages. These execute through 12 nonempty
+drivers across eight packages; 45 built driver artifacts include empty drivers.
+The full debug and release commands contain no package, file or case selector.
+No assertions, snapshots or skip attributes changed to obtain these results.
+835 regression passes include conditional compatibility profiles, not 835
+independent normative acceptances.
+
+Both platforms used moon/moonrun 0.1.20260920 (914d7da) and
+moonc 0.10.14+7d59c7ec9. Linux used x86_64 Ubuntu, kernel 6.17.0-14-generic and
+GCC 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04.1). The retained SDK inventory binds
+the tool binaries, sources and runtime resources. Native execution used a
+read-only private SDK, private caches, `MOON_BUILD_CACHE=off`, frozen dependencies,
+closed stdin and one worker. No system or installed-toolchain change was made.
+
+The Linux complete-suite sequence was the following, with `--release` replacing
+`--debug` for B. Each command had its own recorded output and exit status.
+
+```sh
+moon check . --target native --frozen --deny-warn -j 1 </dev/null
+moon test --target native --debug --frozen --deny-warn -j 1 --no-parallelize --outline </dev/null
+moon test --build-only --target native --debug --frozen --deny-warn -j 1 --no-parallelize </dev/null
+moon test --target native --debug --frozen --deny-warn -j 1 --no-parallelize </dev/null
+```
+
+F1 ran from 06:32:46.036273 to 06:40:30.672379 UTC on 2026-10-26, taking
+464.636s of its 1800s window. Its test envelope was 600s, including a five-second
+termination reserve; admission preserved 280s for evidence recovery and cleanup.
+The raw suite output is `Total tests: 835, passed: 835, failed: 0.` There was no
+timeout or budget extension. The 4 GiB address-space and 540 CPU-second limits
+were per process, not aggregate quotas; process-group resource sampling supplied
+additional observed limits. F1's observed test-group peak RSS was 35,500,032 bytes.
+
+D1 invoked `moon test examples/examples_test.mbt --target native --debug --frozen
+--deny-warn -j 1 --no-parallelize` separately. Its release build selected only
+`cmd/main` and `examples/embedded`; each application process had a ten-second cap.
+The unchanged [eleven-case subset](#local-application-delivery-subset-at-f23210c)
+covers configuration generation, file output, monitoring panels, embedded use,
+parameter failures, import escape, step limits and output preservation on
+overflow. Original fixture expectations and output-file checks were retained.
+This is neither all 67 application scenarios nor a separately installed consumer.
+
+### Preserved failures and evidence bindings
+
+Earlier attempts remain failures or NOTRUN at their original boundaries:
+
+- A completed the debug driver build, then its release-style `.c` fingerprint
+  check rejected debug artifacts. All tests and separate API/CLI checks were NOTRUN.
+- A2 used corrected debug fingerprints, but the full suite timed out at 300.206s
+  with exit 130 and no final test statistics. Separate API/CLI checks were NOTRUN.
+- D1's 300s root-only diagnostic ended with 672 passes, zero reported failures,
+  one interrupted case without a result and 110 NOTRUN. Its overall diagnostic
+  remains FAIL/TIMEOUT despite the independent API and delivery successes.
+
+F1 closes complete Linux debug regression with a separately frozen 600s test
+budget. Its duration is consistent with an insufficient earlier 300s budget,
+but does not prove the exact cause of A2's unobserved execution. It does not
+replace any earlier raw result, rerun B or repeat D1's independent delivery work.
+
+The evidence bundles retain commands, stdout/stderr, per-file inputs, toolchain
+and binary fingerprints, resource samples and cleanup receipts. The following
+SHA-256 values identify the local retained artifacts; hashes alone are not an
+archival availability guarantee. Machine-specific paths and process identifiers
+remain in those operational records rather than this public summary.
+
+| Artifact | SHA-256 |
+| --- | --- |
+| Original 9bdacec source archive | `6eb5bd288595fcb6a62abd2b28896c1101c33b3530da7b96e36f3a8d775a3335` |
+| Linux 708-entry source manifest | `d80e84ec42d1739cfe57ceca89206d8a3bf84874129fa570f22f225e561c7dca` |
+| F1 frozen packet manifest | `4b4c33cbd91c22afe8c2c667320050080ffaa47723c2fb4e3cc823d489e0ea4d` |
+| F1 private SDK inventory | `c48d50be006ab42b86240bade6de70cf0ff6fd5dd74604271980793d3df15668` |
+| F1 45-driver fingerprints, identical before/after | `6b34552d59cf177289c0874a72fdac0ce662651d9cbc27d1c40cd80813986d32` |
+| F1 raw full-suite stdout | `0b82ad14a02aad27dabfd9ee96e56a387522472b8dfbfc60860bd70f79a75aab` |
+| F1 evidence archive | `187cfe991debc937fef7408797a145bec106758feb9d89c88cdba11e520f6bb8` |
+| B release evidence archive | `9187815d73d931c3396acbd8a86e8f285728e1187639da46bde1fe361e064efc` |
+| D1 diagnostic/API/delivery evidence archive | `d4b7321d8a4e5fb118ea00ea081d32756ecf1547727c8e7c74e2d769beb771cf` |
+
+F1's 172-file evidence verification completed before cleanup. Its 45 debug
+artifact vectors, source inputs and installed-tool/shared-cache checks remained
+stable. Final receipts independently confirm removal of the owned remote
+directory and absence of all owned remote and local transport process groups.
+B and D1 retain their separate verified evidence and completed cleanup receipts.
+
+Current-source macOS release, the complete 67 application scenarios and a
+separately installed package consumer remain NOTRUN. No new Go/C++ comparison or
+full specification acceptance is established. The [current conformance checkpoint](SPEC-CONFORMANCE.md#same-source-platform-checkpoint-at-97f0938)
+keeps public subsets, missing evidence and shared normative questions distinct.

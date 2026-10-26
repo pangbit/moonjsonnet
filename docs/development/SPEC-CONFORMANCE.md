@@ -320,3 +320,41 @@ source/toolchain identity and adequate complete-test budget; do not inherit
 228cb25 Linux results or silently reuse its near-exhausted120-second test cap.
 No archive, SSH, release, standalone application/consumer or new semantic-domain
 run starts here. The coordinator assesses that next cohort after this result.
+
+## Same-source platform checkpoint at 97f0938
+
+The [source-bound validation cohort](SPEC-NATIVE-REGRESSION-2026-10-23.md#same-source-validation-cohort-at-97f0938)
+now records complete Linux debug F1 and release B, each 835/835 with zero failures
+or skips and exit 0, plus D1's independent API 2/2 and CLI/embedded subset 11/11.
+All Linux runs used the original 708-entry `9bdacec` archive, whose tree exactly
+matches `97f0938` after the commit-message-only rewrite. macOS debug 835/835 was
+actually run at `1a46122`; only two non-executable documentation records differ
+from that source. Product, test, package, executable README and interface bytes
+are unchanged. These are separate runs, not one combined test count.
+
+The earlier A fingerprint failure, A2 timeout without statistics, and D1 partial
+root diagnostic remain preserved. F1 supplies complete debug evidence; it does
+not retroactively turn those attempts into passes. Evidence recovery, hash
+verification and owned-process/directory cleanup have completed. This checkpoint
+supersedes only the preceding recommendation to schedule this Linux cohort.
+Current-source macOS release, all 67 application scenarios and a separately
+installed package consumer still require their own acceptance; the 11-process
+subset and in-package API examples do not establish them.
+
+The fixed normative revision remains `bbb38f1020be1f5aed560928fb839b2c448cefb4`.
+The [public review](SPEC-PUBLIC-STDLIB-REVIEW.md) still has 67 mapped subsets and
+86 candidates without a manual public-contract record, out of 153 candidates;
+zero unconditional whole-function acceptances are claimed. The
+[language matrix](SPEC-LANGUAGE-MATRIX.md) retains 28 completed named-rule reviews,
+one relative prose-constructor review, 63 partial rows, two unreviewed comparison
+rules and 225 evidence IDs. The initial prose inventory is not an exhaustive
+completed decomposition. Missing mapping does not prove a missing implementation
+or an absence of independent assertions; these counts are not a conformance rate.
+
+The scoped original immutability, finite-number/output, integer-index, lazy-slice
+and YAML-error repairs are included in the tested source. No still-unfixed
+original P0 defect is currently confirmed. The [shared normative questions](#shared-normative-questions-counted-once),
+conditional profiles and unreviewed contract boundaries remain open and are
+counted once, not once per dependent function. Overall specification conformance
+remains **incomplete**. This documentation closeout adds no implementation,
+oracle, matrix record, new test execution or new remote campaign.
