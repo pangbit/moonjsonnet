@@ -1,5 +1,5 @@
 ///|
-test "UTF-8 and base64 match reference byte contracts" {
+test "encoding byte contracts retain separate decoder compatibility profiles" {
   for
     (source, expected) in [
       (
@@ -12,9 +12,11 @@ test "UTF-8 and base64 match reference byte contracts" {
         "[std.decodeUTF8([226,130]),std.decodeUTF8([240,159,152]),std.decodeUTF8([237,160,128]),std.decodeUTF8([239,187,191])]",
         "[\"��\",\"���\",\"���\",\"\\ufeff\"]",
       ),
+      // Fixed std.jsonnet codepoint conversion; see
+      // docs/development/SPEC-BASE64-CONTRACT-2026-10-26.md.
       (
         "[std.base64('é'),std.base64([233]),std.base64(input=[0,1,255]),std.base64(''),std.base64([])]",
-        "[\"w6k=\",\"6Q==\",\"AAH/\",\"\",\"\"]",
+        "[\"6Q==\",\"6Q==\",\"AAH/\",\"\",\"\"]",
       ),
       (
         "[std.base64Decode('w6k='),std.base64Decode('6Q=='),std.base64DecodeBytes(str='AAH/')]",
@@ -31,6 +33,8 @@ test "UTF-8 and base64 match reference byte contracts" {
 
 ///|
 test "encoding rejects invalid bytes and padding" {
+  // Negative/fractional base64 Array checks retain the existing project
+  // profile; B64-R0/F0 in the contract record remain unresolved.
   for
     source in [
       "std.base64('中')", "std.base64([256])", "std.base64([-1])", "std.base64([1.5])",

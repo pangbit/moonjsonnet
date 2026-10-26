@@ -358,3 +358,22 @@ conditional profiles and unreviewed contract boundaries remain open and are
 counted once, not once per dependent function. Overall specification conformance
 remains **incomplete**. This documentation closeout adds no implementation,
 oracle, matrix record, new test execution or new remote campaign.
+
+## Base64 byte-domain correction after 2d34a66
+
+The [bounded base64 contract record](SPEC-BASE64-CONTRACT-2026-10-26.md) adds an
+independent String/codepoint-to-byte review. The unchanged fifteen groups first
+passed 10 and failed 5: String codepoints 128..255 were incorrectly encoded as
+UTF-8 bytes. The scoped String conversion repair passes 15/15 with the same
+expectations, plus the existing encoding 2/2, argument 1/1 and scalar 4/4 groups.
+The eighteen negative/fraction observations are unchanged and remain ungraded;
+B64-R0/F0 are unresolved. One legacy `base64('é')` expectation migrates from
+`w6k=` to `6Q==` with its fixed-definition derivation and original result retained.
+
+The record binds executed and subsequently formatted test hashes separately;
+product bytes and all public interfaces are unchanged by formatting. The earlier
+835-test platform cohort is historical for this changed implementation. Current
+full-suite, release, Linux and standalone CLI/API results are not claimed.
+Generated inventory counts above remain checkpoint-specific; this closeout adds
+the linked scoped evidence without regenerating that snapshot or promoting a
+whole function. Overall specification conformance remains **incomplete**.

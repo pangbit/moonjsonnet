@@ -9,6 +9,7 @@ fn Vm::encoding_builtin(
     "base64" => {
       let bytes = match value {
         Str(s) => {
+          let bytes : Array[Byte] = []
           for c in s.iter() {
             self.tick(loc)
             if c.to_int() > 255 {
@@ -19,9 +20,10 @@ fn Vm::encoding_builtin(
                 c.to_int().to_string(),
               )
             }
+            bytes.push(c.to_int().to_byte())
           }
-          // Go validates Latin-1 code points but encodes their UTF-8 bytes.
-          @utf8.encode(s)
+          // The fixed stdlib maps each character to one codepoint byte.
+          Bytes::from_array(bytes)
         }
         ArrayValue(_) => self.byte_array(value, true, loc)
         _ =>
