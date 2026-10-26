@@ -18,9 +18,11 @@ test "encoding byte contracts retain separate decoder compatibility profiles" {
         "[std.base64('é'),std.base64([233]),std.base64(input=[0,1,255]),std.base64(''),std.base64([])]",
         "[\"6Q==\",\"6Q==\",\"AAH/\",\"\",\"\"]",
       ),
+      // Fixed std.jsonnet maps decoded bytes through std.char; see
+      // docs/development/SPEC-BASE64-DECODE-CONTRACT-2026-10-26.md.
       (
         "[std.base64Decode('w6k='),std.base64Decode('6Q=='),std.base64DecodeBytes(str='AAH/')]",
-        "[\"é\",\"�\",[0,1,255]]",
+        "[\"Ã©\",\"é\",[0,1,255]]",
       ),
       (
         "[std.base64DecodeBytes('Zh=='),std.base64DecodeBytes('Zm9='),std.base64DecodeBytes('Zg==\\r\\n\\r\\n'),std.base64DecodeBytes('\\r\\n\\r\\n')]",

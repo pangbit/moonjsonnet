@@ -50,7 +50,12 @@ fn Vm::encoding_builtin(
       if name == "base64DecodeBytes" {
         self.bytes_value(bytes, loc)
       } else {
-        Str(decode_go_utf8(bytes))
+        // The fixed stdlib maps each decoded byte through std.char.
+        let output = StringBuilder()
+        for b in bytes.iter() {
+          output.write_char(b.to_int().to_char().unwrap())
+        }
+        Str(output.to_string())
       }
     }
   }

@@ -382,3 +382,26 @@ current release, Linux and standalone CLI/API results are not claimed.
 Generated inventory counts above remain checkpoint-specific; this closeout adds
 the linked scoped evidence without regenerating that snapshot or promoting a
 whole function. Overall specification conformance remains **incomplete**.
+
+## Canonical Base64 decoding after b60c035
+
+The [decoder contract record](SPEC-BASE64-DECODE-CONTRACT-2026-10-26.md) follows
+the fixed definition that maps each decoded byte through `std.char`. Its twelve
+independent groups first passed 6 and failed 6: `base64Decode` incorrectly
+interpreted those bytes as UTF-8. The scoped final String conversion now passes
+12/12 with unchanged independent expectations, including all previously blocked
+C08/C09 source/AST and length branches. The original failures and historical
+NOTRUN branches remain recorded.
+
+The same 714-input candidate passed migrated encoding 2/2, encoder contract
+15/15, argument 1/1 and String-scalar 4/4 groups, with check and all directed
+commands exiting 0 in a 17.861s window. The 48 observations are byte-identical
+to baseline and earn zero normative passes. Only two legacy decoded-String
+expectations migrate with fixed-definition evidence; the shared Base64 parser,
+byte decoder and explicit UTF-8 operations are unchanged. B64D-M0/A0, malformed
+UTF-8 profiles and encoder B64-R0/F0 remain separate unresolved boundaries.
+
+This adds bounded contract evidence without regenerating the historical inventory
+or promoting a whole function. Full-suite, release, Linux and standalone CLI/API
+have not run on this decoder repair; the preceding 851-test result applies to its
+earlier source. Overall specification conformance remains **incomplete**.
