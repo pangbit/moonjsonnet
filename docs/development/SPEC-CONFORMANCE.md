@@ -370,10 +370,15 @@ The eighteen negative/fraction observations are unchanged and remain ungraded;
 B64-R0/F0 are unresolved. One legacy `base64('é')` expectation migrates from
 `w6k=` to `6Q==` with its fixed-definition derivation and original result retained.
 
-The record binds executed and subsequently formatted test hashes separately;
-product bytes and all public interfaces are unchanged by formatting. The earlier
-835-test platform cohort is historical for this changed implementation. Current
-full-suite, release, Linux and standalone CLI/API results are not claimed.
+The record binds directed-run and subsequently formatted test hashes separately;
+product bytes and all public interfaces are unchanged by formatting. The later
+[complete macOS native debug run](SPEC-BASE64-CONTRACT-2026-10-26.md#complete-macos-native-debug-regression-at-5ae6aab)
+validates final `5ae6aabf4150fcf1e9114555f94d9e9419ac6249` and its 711 committed
+inputs: actual 851/851 passed, failed/skipped 0, exit 0 in 152.930s. The eighteen
+profile observations remain ungraded, with B64-R0/F0 unresolved. Input hashes
+and clean repository state stayed stable, and all owned processes exited.
+The earlier 835-test platform cohort is historical for this changed implementation;
+current release, Linux and standalone CLI/API results are not claimed.
 Generated inventory counts above remain checkpoint-specific; this closeout adds
 the linked scoped evidence without regenerating that snapshot or promoting a
 whole function. Overall specification conformance remains **incomplete**.

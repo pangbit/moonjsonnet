@@ -137,9 +137,32 @@ compared with the executed inputs; there is no assertion or input migration.
 | `spec_base64_profile_test.mbt` | `c8a36de1a2a62297f54d683b7dce1e4a6b7d32b3f6a064898b3f1ec397a01d8a` | `8d1be03754b95e751a5b08efd29a1382c30920877032acc164066bba474c2ac2` |
 
 These formatted files and this updated record are later bytes, not the old
-candidate freeze. No post-format semantic rerun is claimed. Current full-suite,
-release, Linux and standalone CLI/API validation remain NOTRUN for this repair;
-the earlier 835-test platform cohort does not certify these product changes.
+candidate freeze. At that directed checkpoint no post-format semantic rerun was
+claimed. The subsequent complete run below validates the final committed bytes.
+
+## Complete macOS native debug regression at 5ae6aab
+
+The complete package suite on 2026-10-26 binds final implementation commit
+`5ae6aabf4150fcf1e9114555f94d9e9419ac6249` and all 711 committed inputs. With
+`RUST_LOG=error`, closed stdin and the command below, actual output reports
+**851/851 passed, failed 0, skipped 0, exit 0**. Generated test metadata agrees:
+799 root blackbox cases plus 52 other cases. The entire window took 152.930s
+within its 600s bound; no separate compile/test duration is inferred.
+
+```sh
+moon test --target native --debug --frozen --deny-warn -j 1 --no-parallelize
+```
+
+The committed-input manifest SHA-256 is
+`770529c8724536e54820ffbb157a6944c03d285ca2e157150c2526b6a6a08da3`;
+raw stdout is `00ca837672c893409005c9e9284229c5784e13609bb64e1e1138878be822c86e`.
+Stderr is empty. Inputs and clean repository state remained stable; all owned
+processes exited. This run includes the final formatted tests. The eighteen
+observations still match the baseline and earn zero normative passes; B64-R0/F0
+and the original five failures retain their recorded status. Package regression
+does not establish whole-function or complete specification acceptance.
+Release, Linux and standalone CLI/API remain NOTRUN for this changed product;
+the earlier 835-test platform cohort remains bound to its earlier source.
 
 ## Unresolved boundaries retained separately
 
