@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.1.0 — Unreleased
+## 0.2.0 — Unreleased
+
+This is a local release candidate. No registry publication, source tag or remote
+CI result is implied. Public MoonBit API signatures are unchanged from the
+previous public repository revision; corrected Jsonnet behavior can change
+results or reject inputs previously accepted.
 
 - Correct `base64` String encoding to map codepoints 0..255 directly to bytes:
   `base64('é')` now returns `"6Q=="`, matching `base64([233])`.
@@ -14,6 +19,27 @@
 - Preserve immutable arrays during removal; reject aggregate overflow when
   evaluated and fractional array/string indices; propagate nested YAML errors
   and reject YAML function values. Array slices retain lazy index validation.
+- Preserve source-defined demand, defaults and input admission in array
+  combinators, sorting, extrema, membership, deletion and numeric reductions.
+  Unused values and formatting options remain lazy where the fixed definition
+  requires it; errors from demanded computations propagate.
+- Correct string stripping, split limits, substring demand, decimal parsing and
+  CRLF text-block handling; reject duplicate formal parameters statically.
+- Reject scalar YAML document roots and non-finite values nested in parsed JSON;
+  preserve ordinary JSON keys such as `self`, `super` and `$` when returning
+  parsed data or native callback results.
+- Make packaged compatibility references self-contained and document explicit
+  UTF-8 migration. Historical reference mismatches and unresolved specification
+  questions remain recorded in [compatibility](docs/reference/COMPATIBILITY.md);
+  this release does not claim complete specification conformance.
+
+## 0.1.0 — 2026-10-13
+
+Initial publication, confirmed by the public
+[Mooncakes version record](https://mooncakes.io/docs/pangbit/moonjsonnet@0.1.0).
+The original capability notes below retain the historical scope; they do not
+establish full specification conformance or describe the later fixes above.
+
 - All 163 reflected go-jsonnet v0.21.0 standard-library members, with bounded
   differential evidence and explicit compatibility differences.
 - Native MoonBit `sha256` over UTF-8 strings with bounded work and known-answer tests.
@@ -35,7 +61,7 @@
 - Stable `sort` with an optional key function, cached keys, lazy payloads and
   iterative merging bounded by the evaluation step limit.
 - Go-compatible required function arity and iterative `foldl` argument/result evaluation.
-- Fractional slice progression and signed 64-bit wrapping bitwise operators;
+- Fractional indexing/slicing and signed 64-bit wrapping bitwise operators;
   explicit ARM64/AMD64 conversion paths preserve the pinned Go behavior for
   positive `2^63` and NaN without an out-of-range C cast.
 - Go-compatible shortest fixed decimal numbers in `manifestJson`, preserving signed

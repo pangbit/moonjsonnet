@@ -15,7 +15,7 @@ Jsonnet v0.21.0，不主动裁剪语言结构。固定参考清单中的 163 个
 
 ## 状态与安装
 
-0.1.0 面向 **macOS 和 Linux 的 native 后端**。文件访问使用 POSIX libc；求值器本身
+0.2.0 候选版本面向 **macOS 和 Linux 的 native 后端**。文件访问使用 POSIX libc；求值器本身
 没有第三方运行时依赖。迁移已有 Jsonnet 程序前，请阅读[兼容性说明](docs/reference/COMPATIBILITY.md)。
 
 已记录的兼容边界保留所有已知差异：
@@ -31,10 +31,12 @@ Jsonnet v0.21.0，不主动裁剪语言结构。固定参考清单中的 163 个
 后续规范整改已拒绝非有限数和小数索引、保持数组不可变，并传播 YAML 错误。
 这些更改尚未重跑上述参考语料，历史计数不代表完整规范符合性。
 
-此版本发布到 Mooncakes 后，可运行：
+当前源码正在准备 0.2.0，尚未发布。
+[0.1.0 已在 Mooncakes 发布](https://mooncakes.io/docs/pangbit/moonjsonnet@0.1.0)，
+不包含[变更记录](CHANGELOG.md)中的后续修复。0.2.0 发布后，可运行以下命令安装本候选版本的正式发行：
 
 ```sh
-moon add pangbit/moonjsonnet@0.1.0
+moon add pangbit/moonjsonnet@0.2.0
 ```
 
 在 `moon.pkg` 中导入 `"pangbit/moonjsonnet"`，并使用 native 后端。
@@ -57,7 +59,7 @@ fn main raise {
 ```
 
 将 MoonBit 源代码保存为 `main.mbt`，运行 `moon run --target native .`，输出为
-`{"answer":42}`。发布之前，同一示例可把解包后的本地归档作为工作区成员；依赖名称不变。
+`{"answer":42}`。0.2.0 发布之前，同一示例可把解包后的本地归档作为工作区成员；依赖名称不变。
 
 ```mbt check
 ///|
