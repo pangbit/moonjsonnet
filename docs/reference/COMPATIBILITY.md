@@ -170,14 +170,14 @@ Only the following functions are supported. Arity/named-argument violations are
 | `uniq`, `set`, `setUnion`, `setInter`, `setDiff`, `setMember` | Pinned upstream Jsonnet definitions, evaluated by the MoonBit runtime; optional key functions, lazy elements and left-hand representatives preserved |
 | `mergePatch(target,patch)` | Recursive JSON merge patch with null deletion, visible fields, lazy retained values and scalar replacement |
 | `all`, `any`, `filterMap`, `count`, `repeat`, `find` | Pinned source definitions; boolean short circuit and lazy retained values |
-| `deepJoin(arr)` | Returns a String root unchanged or recursively concatenates String/Array leaves without separators; null and other leaf kinds reject. See the [scoped String composition review](../development/SPEC-COMPOSED-STRINGS-2026-10-23.md) |
-| `lines(arr)` | Appends a newline after every retained String, including empty strings; the fixed source skips null items and returns an empty String for empty/all-null inputs. Original arrays stay unchanged. See the [scoped String composition review](../development/SPEC-COMPOSED-STRINGS-2026-10-23.md) |
-| `flattenArrays(arrs)` | Concatenates one level of an array of arrays; requires outer member heads and keeps inner payloads lazy. Documentation names the parameter arr; named conformance remains unresolved. See the [scoped flatten review](../development/SPEC-FLATTEN-2026-10-23.md) |
-| `flattenDeepArray(value)` | Recursively flattens arrays, retaining null and all other non-array leaves; the fixed source also wraps scalar roots. Structure requires recursive leaf heads, while object fields and function bodies remain lazy. See the [scoped flatten review](../development/SPEC-FLATTEN-2026-10-23.md) |
+| `deepJoin(arr)` | Returns a String root unchanged or recursively concatenates String/Array leaves without separators; null and other leaf kinds reject. See the [scoped String composition review](#development-evidence-index) |
+| `lines(arr)` | Appends a newline after every retained String, including empty strings; the fixed source skips null items and returns an empty String for empty/all-null inputs. Original arrays stay unchanged. See the [scoped String composition review](#development-evidence-index) |
+| `flattenArrays(arrs)` | Concatenates one level of an array of arrays; requires outer member heads and keeps inner payloads lazy. Documentation names the parameter arr; named conformance remains unresolved. See the [scoped flatten review](#development-evidence-index) |
+| `flattenDeepArray(value)` | Recursively flattens arrays, retaining null and all other non-array leaves; the fixed source also wraps scalar roots. Structure requires recursive leaf heads, while object fields and function bodies remain lazy. See the [scoped flatten review](#development-evidence-index) |
 | `min`, `max`, `clamp` | Source numeric min/max and lazy clamp branches |
 | `sum(arr)`, `avg(arr)` | Numeric left-to-right aggregation; avg rejects an empty array; each addition rejects non-finite results |
-| `member(arr,x)`, `contains(arr,elem)` | Both validate the collection before the target and leave the target lazy for empty Arrays. Array member examines every equality predicate, including errors after a match; contains stops at its first match. String member follows findSubstr and returns false for an empty pattern. See the [scoped membership review](../development/SPEC-MEMBERSHIP-2026-10-23.md) |
-| `minArray(arr,keyF=function(x)x,onEmpty=error ...)`, `maxArray(...)` | Stable Array extrema select onEmpty only when empty and leave keyF lazy on that branch. Nonempty Arrays skip onEmpty; explicit keys can leave discarded elements lazy. The initial key is compared even for a singleton; a failing key condition skips selection, while selected results remain required. See the [demand review](../development/SPEC-EXTREMA-DEMAND-2026-10-23.md) and [comparison continuation](../development/SPEC-EXTREMA-COMPARISON-2026-10-23.md). Non-Array admission, exact callback counts and full comparator scope remain open |
+| `member(arr,x)`, `contains(arr,elem)` | Both validate the collection before the target and leave the target lazy for empty Arrays. Array member examines every equality predicate, including errors after a match; contains stops at its first match. String member follows findSubstr and returns false for an empty pattern. See the [scoped membership review](#development-evidence-index) |
+| `minArray(arr,keyF=function(x)x,onEmpty=error ...)`, `maxArray(...)` | Stable Array extrema select onEmpty only when empty and leave keyF lazy on that branch. Nonempty Arrays skip onEmpty; explicit keys can leave discarded elements lazy. The initial key is compared even for a singleton; a failing key condition skips selection, while selected results remain required. See the [demand review](#development-evidence-index) and [comparison continuation](#development-evidence-index). Non-Array admission, exact callback counts and full comparator scope remain open |
 | `$flatMapArray(func,arr)` | Reflected Go helper; flatMap behavior restricted to array input |
 | `__compare`, `__compare_array`, `__array_less`, `__array_greater`, `__array_less_or_equal`, `__array_greater_or_equal` | Reflected upstream comparison helpers, including lexicographic nested arrays |
 | `get`, `objectValues`, `objectValuesAll`, `objectKeysValues`, `objectKeysValuesAll`, `mapWithKey`, `prune` | Pinned Jsonnet definitions; hidden-field policy, lazy defaults/values and inherited self preserved |
@@ -189,16 +189,16 @@ Only the following functions are supported. Arity/named-argument violations are
 | `foldl(func,arr,init)` | Iterative left fold over array/string; empty input returns init without using func, the first callback may ignore init, and each intermediate result head is forced; elements and nested fields remain lazy |
 | `foldr(func,arr,init)` | Iterative right fold over array/string; callback receives element then accumulator, with the same empty/initial/intermediate forcing rules as `foldl` |
 | `range(from,to)` | Source-defined inclusive unit steps; finite endpoints are not narrowed, including fractional bounds with integral length; generated size remains subject to host limits |
-| `join(sep,arr)` | String/array separator with like-typed non-null entries; null is skipped but empty items count toward delimiters. Validates the outer array before demanding the separator; nested array payloads stay lazy. See the [scoped contract review](../development/SPEC-JOIN-2026-10-23.md) |
-| `split(str,c)` | Source assertions validate str, then nonempty c; unlimited left-to-right splitting retains empty pieces. See the [scoped split review](../development/SPEC-SPLIT-LIMITS-2026-10-23.md) |
-| `splitLimit(str,c,maxsplits)`, `splitLimitR(str,c,maxsplits)` | Validates str/c before demanding maxsplits; finite nonnegative integral bounds are not narrowed to Int32. -1 means unlimited; native R still scans from the right, with overlapping -1 cases unresolved against fixed source (SPL-R0). Fractional/other-negative limits remain rejected but unadjudicated. See the [scoped review](../development/SPEC-SPLIT-LIMITS-2026-10-23.md) |
-| `lstripChars(str,chars)`, `rstripChars(str,chars)`, `stripChars(str,chars)` | Validates String input before demanding chars; empty input leaves chars lazy. Uses Unicode String-set membership or source-defined Array membership, inspecting every Array member even after a match while sharing element values. Supersedes the historical eager/short-circuit behavior; see the [scoped review](../development/SPEC-STRIP-CHARS-2026-10-23.md) |
+| `join(sep,arr)` | String/array separator with like-typed non-null entries; null is skipped but empty items count toward delimiters. Validates the outer array before demanding the separator; nested array payloads stay lazy. See the [scoped contract review](#development-evidence-index) |
+| `split(str,c)` | Source assertions validate str, then nonempty c; unlimited left-to-right splitting retains empty pieces. See the [scoped split review](#development-evidence-index) |
+| `splitLimit(str,c,maxsplits)`, `splitLimitR(str,c,maxsplits)` | Validates str/c before demanding maxsplits; finite nonnegative integral bounds are not narrowed to Int32. -1 means unlimited; native R still scans from the right, with overlapping -1 cases unresolved against fixed source (SPL-R0). Fractional/other-negative limits remain rejected but unadjudicated. See the [scoped review](#development-evidence-index) |
+| `lstripChars(str,chars)`, `rstripChars(str,chars)`, `stripChars(str,chars)` | Validates String input before demanding chars; empty input leaves chars lazy. Uses Unicode String-set membership or source-defined Array membership, inspecting every Array member even after a match while sharing element values. Supersedes the historical eager/short-circuit behavior; see the [scoped review](#development-evidence-index) |
 | `trim(str)` | Unicode 15 White_Space trimming; zero-width space and BOM are retained |
 | `isEmpty(str)` | String-only emptiness predicate |
 | `equalsIgnoreCase(str1,str2)` | Unicode 15 simple case folding from pinned Go data, including Kelvin sign, sigma variants and supplementary letters; does not expand ß to ss or apply locale rules |
 | `asciiLower(str)`, `asciiUpper(str)`, `stringChars(str)` | Pinned source definitions; ASCII-only case conversion and Unicode code-point array |
 | `findSubstr(pat,str)` | All overlapping code-point offsets; empty pattern or string gives an empty array |
-| `parseInt(str)` | Fixed official optional minus and ASCII decimal digits; separate finite Number multiply/add accumulation without an Int64 bound; plus, whitespace, prefixes and underscores reject. This supersedes the historical Go-oriented native range/sign behavior; see the [scoped review](../development/SPEC-INTEGER-PARSERS-2026-10-23.md) |
+| `parseInt(str)` | Fixed official optional minus and ASCII decimal digits; separate finite Number multiply/add accumulation without an Int64 bound; plus, whitespace, prefixes and underscores reject. This supersedes the historical Go-oriented native range/sign behavior; see the [scoped review](#development-evidence-index) |
 | `parseHex(str)`, `parseOctal(str)` | Pinned source Number digit accumulation without a host Int64 bound; no sign or radix prefix. The review leaves the hex helper's punctuation-alias discrepancy (HP0) unresolved |
 | `escapeStringJson(str_)`, `escapeStringPython(str)`, `escapeStringBash(str_)`, `escapeStringDollars(str_)`, `escapeStringXML(str_)` | String coercion and context-specific escaping, including C0/C1 JSON controls |
 | `resolvePath(f,r)` | Pinned lexical directory joining; does not normalize .. or treat r as an absolute replacement |
@@ -245,7 +245,7 @@ they can reach comparison, string conversion or indexing. JSON and YAML
 manifestation also reject internal non-finite values defensively. Frozen Go
 Infinity/NaN outputs remain historical compatibility evidence, not normative passes.
 
-The [string contract review](../development/SPEC-STRING-CONTRACTS-REVIEW.md)
+The [string contract review](#development-evidence-index)
 records the fixed substring definition's clipping and forcing order, and char's
 integer-identifier criterion. Original Go truncation and early substring-error
 fixtures remain preserved as comparison evidence; they do not establish these
@@ -352,8 +352,32 @@ value. The tailstrict recursion requires every new accumulator head, while
 nested payloads and unused elements remain lazy. The implementation remains
 iterative. This intentionally supersedes the old strict-Go argument assertions;
 original frozen comparison inputs and results are retained without being rerun.
-See the [array contract review](../development/SPEC-ARRAY-COMBINATORS-REVIEW.md)
+See the [array contract review](#development-evidence-index)
 for independently established expectations and unresolved boundaries.
+
+## Development evidence index
+
+The scoped reviews referenced above are summarized here so this guide remains
+usable in the distribution archive. The full review files are retained under
+`docs/development/` in the source repository, together with their original
+failures, independent expectations and bounded regression results. The filenames
+below identify those repository records; they are not files shipped in the
+archive. A scoped result does not establish whole-function conformance, and the
+unresolved boundaries remain unaccepted.
+
+| Repository review file | Scope and retained limits |
+| --- | --- |
+| `SPEC-COMPOSED-STRINGS-2026-10-23.md` | `deepJoin` and `lines`: ordered String composition, required leaf errors, unused calls and immutable inputs. `lines` null skipping is a fixed-source obligation beyond the Array-of-Strings prose. |
+| `SPEC-FLATTEN-2026-10-23.md` | One-level and recursive flattening, structure demand and retained lazy payloads. `flattenArrays` has conflicting public/source parameter names (`arr`/`arrs`); broader source-only input admission and the printed Array-concatenation rule remain unresolved. |
+| `SPEC-MEMBERSHIP-2026-10-23.md` | `member` demands all Array equality predicates; `contains` stops at its first match. Empty Array targets stay lazy, and String membership follows `findSubstr`, including its empty-pattern result. |
+| `SPEC-EXTREMA-DEMAND-2026-10-23.md` | Array extrema: empty/nonempty branch demand, singleton key comparison, lazy discarded payloads and stable selection. Non-Array admission and exact callback counts remain outside this acceptance. |
+| `SPEC-EXTREMA-COMPARISON-2026-10-23.md` | Extrema comparison demands required key heads, recursive Array prefixes and selected values. The printed comparison-rule conflict is retained; these cases do not accept the full comparator domain. |
+| `SPEC-JOIN-2026-10-23.md` | Ordered String/Array joining, null skipping, delimiter placement, outer-array validation before separator demand, and lazy inner Array payloads. The printed Array-concatenation conflict remains open. |
+| `SPEC-SPLIT-LIMITS-2026-10-23.md` | Ordered String/delimiter/limit validation, retained empty pieces, Unicode preservation and large integral limits. Right-split overlapping unlimited cases (SPL-R0), fractional limits and other negative limits remain unadjudicated. |
+| `SPEC-STRIP-CHARS-2026-10-23.md` | Character-set stripping, empty-input laziness, String validation before membership, strict Array membership and preserved input/aliases. No extra normalization or whitespace policy is introduced. |
+| `SPEC-INTEGER-PARSERS-2026-10-23.md` | Decimal/octal/hexadecimal String grammars and finite Number accumulation without a host Int64 bound. The hex punctuation-alias discrepancy (HP0) remains unresolved. |
+| `SPEC-STRING-CONTRACTS-REVIEW.md` | Scalar `char`/`codepoint`, substring clipping and forcing order, overlapping search, character arrays and prefix/suffix matching. Surrogate identifiers, non-String source extensions and fractional generated cardinality remain unadjudicated. |
+| `SPEC-ARRAY-COMBINATORS-REVIEW.md` | Array construction, folds, flatMap and slicing with lazy payloads and immutable inputs. Negative/fractional cardinality, nonboolean filter results and source-only input extensions remain open; observations are not normative passes. |
 
 ## Known boundaries
 
