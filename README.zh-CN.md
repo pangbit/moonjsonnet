@@ -18,7 +18,7 @@ Jsonnet v0.21.0，不主动裁剪语言结构。固定参考清单中的 163 个
 0.2.0 版本面向 **macOS 和 Linux 的 native 后端**。文件访问使用 POSIX libc；求值器本身
 没有第三方运行时依赖。迁移已有 Jsonnet 程序前，请阅读[兼容性说明](docs/reference/COMPATIBILITY.md)。
 
-已记录的兼容边界保留所有已知差异：
+历史兼容记录保留原始差异：
 
 | 参考语料 | 原始结果 |
 | --- | --- |
@@ -29,7 +29,9 @@ Jsonnet v0.21.0，不主动裁剪语言结构。固定参考清单中的 163 个
 历史验收契约保留 18 项 CLI 和 1 项静态检查的参考崩溃例外、独立的可选
 `import_ast` API，以及与同架构参考一致的 NaN 行为。原始失败没有重新标记为通过。
 后续规范整改已拒绝非有限数和小数索引、保持数组不可变，并传播 YAML 错误。
-这些更改尚未重跑上述参考语料，历史计数不代表完整规范符合性。
+这些更改尚未重跑上述 Go 语料；当前 C++ 复验与明确的差异声明迁移记录在
+[CI 验收说明](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/CI-VALIDATION.md)。
+历史计数不代表当前完整规范符合性。
 
 安装前请查看 [0.2.0 注册库记录](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.0)，
 确认发布状态。此前已发布的 [0.1.0](https://mooncakes.io/docs/pangbit/moonjsonnet@0.1.0)
@@ -222,7 +224,7 @@ moon run examples/embedded
 ```
 
 示例生成开发和生产配置、监控面板，以及包含导入和断言错误处理的嵌入式应用。
-输入和预期输出均保存在仓库中，详见[示例目录](https://github.com/pangbit/moonjsonnet/tree/main/examples)。
+输入和预期输出均保存在仓库中，详见[示例教程与开发驱动索引](https://github.com/pangbit/moonjsonnet/blob/main/examples/README.zh-CN.md)。
 
 ```sh
 moon run cmd/main -- --root examples/embedded/config --ext-code replicas=3 main.jsonnet

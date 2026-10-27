@@ -22,7 +22,7 @@ Version 0.2.0 targets **native on macOS and Linux**. File access uses POSIX libc
 the evaluator itself has no third-party runtime dependency. See
 [compatibility](docs/reference/COMPATIBILITY.md) before adopting existing Jsonnet programs.
 
-The recorded compatibility boundary retains all known differences:
+The historical compatibility record retains its original differences:
 
 | Reference corpus | Raw result |
 | --- | --- |
@@ -34,8 +34,10 @@ The historical acceptance contract retained 18 CLI and 1 lint reference-crash
 exceptions, the separate optional `import_ast` API and same-architecture NaN
 behavior. Those raw failures are not relabeled as passes. Subsequent normative
 fixes reject non-finite numbers and fractional indices, preserve array
-immutability and propagate YAML errors. The recorded totals have not been rerun
-for these changes and do not establish full specification conformance.
+immutability and propagate YAML errors. The Go totals have not been rerun
+for these changes. The current C++ recheck and explicit declaration migrations are
+tracked in [CI validation](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/CI-VALIDATION.md);
+historical totals do not establish current full specification conformance.
 
 Check the [0.2.0 registry record](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.0)
 for publication status before installing. The previously published
@@ -235,7 +237,7 @@ moon run examples/embedded
 The examples generate development/production configuration, monitoring panels,
 and an embedded application with import and assertion error handling. Their
 inputs and expected outputs are checked into the repository. See
-[examples](https://github.com/pangbit/moonjsonnet/tree/main/examples).
+[example walkthroughs and development-driver index](https://github.com/pangbit/moonjsonnet/blob/main/examples/README.md).
 
 ```sh
 moon run cmd/main -- --root examples/embedded/config --ext-code replicas=3 main.jsonnet

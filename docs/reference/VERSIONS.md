@@ -38,7 +38,7 @@ uses 18 CLI plus 1 lint reference-crash exceptions, the optional
 import_ast API while import_program remains strict, and same-architecture NaN
 behavior. NaN succeeds on ARM64 and returns the same complete error output as Go
 on AMD64; its frozen ARM64 success expectation is unchanged. No additional
-exceptions were introduced. ASan leak detection was disabled. The C++ corpus
+exceptions were introduced. ASan leak detection was disabled. The historical C++ result
 retains 98 compatible cases plus 10 declared differences out of 108; see
 [compatibility](COMPATIBILITY.md#recorded-acceptance-boundary).
 

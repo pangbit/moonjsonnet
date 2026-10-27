@@ -51,8 +51,10 @@ complete error output but still fails the frozen ARM64 success expectation.
 These historical bounds do not establish current conformance or universal Go parity.
 The subsequent immutability, finite-number, integer-index and YAML-error fixes
 intentionally diverge from some frozen Go expectations. Those inputs and original
-reports remain unchanged; the whole reference corpora have not been rerun for
-these fixes. Repository
+reports remain unchanged; the whole Go corpus has not been rerun for
+these fixes. The current C++ recheck and declaration migrations are recorded in
+[CI validation](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/CI-VALIDATION.md);
+the table above remains historical. Repository
 [validation instructions](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/VALIDATION.md)
 describe reproduction; development fixtures and reports are excluded from the archive.
 
