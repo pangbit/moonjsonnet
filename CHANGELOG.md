@@ -2,6 +2,15 @@
 
 ## 0.1.0 — Unreleased
 
+- Correct `base64` String encoding to map codepoints 0..255 directly to bytes:
+  `base64('é')` now returns `"6Q=="`, matching `base64([233])`.
+  For the former UTF-8 encoding intent,
+  use `base64(encodeUTF8(str))`.
+- Correct the deprecated `base64Decode` String result to map each decoded byte
+  to its Unicode codepoint: `base64Decode('6Q==')` returns `"é"`,
+  while `base64Decode('w6k=')` returns `"Ã©"`.
+  Decode UTF-8 text explicitly with `decodeUTF8(base64DecodeBytes(str))`;
+  the byte decoder and UTF-8 decoder are unchanged.
 - Preserve immutable arrays during removal; reject aggregate overflow when
   evaluated and fractional array/string indices; propagate nested YAML errors
   and reject YAML function values. Array slices retain lazy index validation.

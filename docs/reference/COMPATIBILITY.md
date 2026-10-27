@@ -207,8 +207,8 @@ Only the following functions are supported. Arity/named-argument violations are
 | `$objectFlatMerge(x)` | Internal helper: merge simple objects with disjoint keys, preserving field visibility and bindings, rebinding self, dropping assertions; explicit object locals and inherited objects are rejected |
 | `encodeUTF8(str)` | UTF-8 bytes, with BOM and zero characters preserved |
 | `decodeUTF8(arr)` | Integer bytes in 0..255; each malformed UTF-8 byte becomes U+FFFD, including incomplete multibyte sequences |
-| `base64(input)` | Standard padded alphabet; accepts a byte array or a string with code points <=255, then encodes the string's UTF-8 bytes |
-| `base64DecodeBytes(str)`, `base64Decode(str)` | Original UTF-8 byte length must be divisible by 4; ignore CR/LF only; require complete padding, accept nonzero unused pad bits; text output follows decodeUTF8 replacement rules |
+| `base64(input)` | Standard padded alphabet with no line breaks; String codepoints 0..255 map directly to bytes, matching the corresponding byte Array. Codepoints above 255 error. For UTF-8 text, use `base64(encodeUTF8(str))`. Negative/fractional Array admission remains unresolved in the normative review |
+| `base64DecodeBytes(str)`, `base64Decode(str)` | Return byte numbers / a String mapping each byte to the same-numbered Unicode codepoint. The deprecated String decoder does not decode UTF-8; use `decodeUTF8(base64DecodeBytes(str))` for UTF-8 text. Current parser observations: original UTF-8 byte length divisible by 4, only CR/LF ignored, complete padding required, nonzero unused pad bits accepted. These malformed-input observations and non-String admission are not normative acceptance |
 | `substr(str,from,len)` | Source-defined code-point substring; validates types/length in source order and clips length to the available suffix before allocation; an empty result performs no character lookup |
 | `strReplace(str,from,to)` | Nonoverlapping literal replacement; empty pattern rejected |
 | `startsWith(a,b)`, `endsWith(a,b)` | String prefix/suffix checks |
