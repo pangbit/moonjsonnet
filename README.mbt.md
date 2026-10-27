@@ -18,7 +18,7 @@ See [compatibility](docs/reference/COMPATIBILITY.md) for the reference contract 
 
 ## Status and installation
 
-The 0.2.0 release candidate targets **native on macOS and Linux**. File access uses POSIX libc;
+Version 0.2.0 targets **native on macOS and Linux**. File access uses POSIX libc;
 the evaluator itself has no third-party runtime dependency. See
 [compatibility](docs/reference/COMPATIBILITY.md) before adopting existing Jsonnet programs.
 
@@ -37,10 +37,10 @@ fixes reject non-finite numbers and fractional indices, preserve array
 immutability and propagate YAML errors. The recorded totals have not been rerun
 for these changes and do not establish full specification conformance.
 
-This checkout prepares 0.2.0; it has not been published. Version
-[0.1.0 is already available on Mooncakes](https://mooncakes.io/docs/pangbit/moonjsonnet@0.1.0)
-and does not include the subsequent fixes in the [changelog](CHANGELOG.md).
-After 0.2.0 is published, install this candidate's release with:
+Check the [0.2.0 registry record](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.0)
+for publication status before installing. The previously published
+[0.1.0](https://mooncakes.io/docs/pangbit/moonjsonnet@0.1.0) does not include the
+subsequent fixes in the [changelog](CHANGELOG.md). To select version 0.2.0:
 
 ```sh
 moon add pangbit/moonjsonnet@0.2.0
@@ -66,8 +66,8 @@ fn main raise {
 ```
 
 Save the MoonBit source as `main.mbt`, then run `moon run --target native .`.
-It prints `{"answer":42}`. Until 0.2.0 is published, the same example can use an
-unpacked local archive as a workspace member; the dependency name stays the same.
+It prints `{"answer":42}`. For local archive evaluation, the same example can use
+an unpacked archive as a workspace member; the dependency name stays the same.
 
 ```mbt check
 ///|

@@ -7,15 +7,25 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        include:
+          - os: ubuntu-24.04
+            system: Linux
+            machine: x86_64
+          - os: macos-15
+            system: Darwin
+            machine: arm64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v5
+      - name: Verify supported native profile
+        run: |
+          test "$(uname -s)" = "${{ matrix.system }}"
+          test "$(uname -m)" = "${{ matrix.machine }}"
       - name: Install pinned MoonBit
         run: curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- '0.10.14+7d59c7ec9'
       - name: Add toolchain path
         run: echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
-      - name: Initialize package index for standalone tools
+      - name: Initialize index for versioned script dependencies
         run: moon update
       - name: Test differential validator regressions
         run: moon test tools/differential.mbtx --deny-warn

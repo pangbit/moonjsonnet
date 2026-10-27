@@ -1,9 +1,11 @@
 # Release checklist
 
 Publication and remote push are explicit maintainer actions. Version 0.1.0 was
-published on Mooncakes on 2026-10-13. The current candidate is 0.2.0 and remains
-Unreleased until its registry publication succeeds. This checklist does not
-claim a 0.2.0 publication, source tag or successful remote CI run.
+published on Mooncakes on 2026-10-13. The current publication target is 0.2.0.
+Its versioned release notes use neutral wording so the immutable archive does
+not claim either a successful publication or a stale candidate-only status.
+Record the actual registry publication timestamp after success; this checklist
+does not establish a publication, source tag or successful remote CI run.
 
 1. Review the diff, compatibility matrix, license/NOTICE, module version and
    repository URL. Run every applicable check in [VALIDATION](VALIDATION.md).
@@ -24,13 +26,13 @@ claim a 0.2.0 publication, source tag or successful remote CI run.
    are byte-identical merely because their extracted contents match.
 5. Verify a clean worktree and `moon whoami` for namespace `pangbit`. Inspect the
    target registry version before any publication; versions are release identities.
-   Keep the candidate `0.2.0` marked Unreleased until its authorized publication.
+   Keep version `0.2.0` notes free of unverified publication dates or claims.
    If the version already exists, stop and select a new version explicitly;
    do not attempt to replace it. Revalidate a changed toolchain or package.
 6. With explicit authorization, push commits and verify remote CI. No auto-publish
    token is stored in CI. Then publish using `moon publish` and verify the registry
    with a fresh independent `moon add pangbit/moonjsonnet@0.2.0` consumer. Update
-   both README status paragraphs only after the actual publication is confirmed;
+   both README status paragraphs if needed after the actual publication is confirmed;
    do not present the local archive consumer as a registry installation.
 7. Record the actual registry result and archive checksum, update release notes,
    and create a matching source tag/release when authorized.

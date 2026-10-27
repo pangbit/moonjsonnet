@@ -1,11 +1,12 @@
 # Changelog
 
-## 0.2.0 — Unreleased
+## 0.2.0
 
-This is a local release candidate. No registry publication, source tag or remote
-CI result is implied. Public MoonBit API signatures are unchanged from the
-previous public repository revision; corrected Jsonnet behavior can change
-results or reject inputs previously accepted.
+Release notes for version 0.2.0. Publication status and its timestamp are recorded
+by [Mooncakes](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.0); these notes do
+not assert a publication date or a source tag. Public MoonBit API signatures are
+unchanged from the previous public repository revision; corrected Jsonnet
+behavior can change results or reject inputs previously accepted.
 
 - Correct `base64` String encoding to map codepoints 0..255 directly to bytes:
   `base64('é')` now returns `"6Q=="`, matching `base64([233])`.
@@ -28,6 +29,8 @@ results or reject inputs previously accepted.
 - Reject scalar YAML document roots and non-finite values nested in parsed JSON;
   preserve ordinary JSON keys such as `self`, `super` and `$` when returning
   parsed data or native callback results.
+- Pin validation scripts to the async version used by the previous successful
+  CI, retaining the fixed MoonBit toolchain and explicit native CI profiles.
 - Make packaged compatibility references self-contained and document explicit
   UTF-8 migration. Historical reference mismatches and unresolved specification
   questions remain recorded in [compatibility](docs/reference/COMPATIBILITY.md);

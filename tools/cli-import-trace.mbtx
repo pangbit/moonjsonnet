@@ -1,4 +1,4 @@
-import { "moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell", "moonbitlang/core/env", "moonbitlang/core/json" }
+import { "moonbitlang/async@0.22.4", "moonbitlang/async@0.22.4/fs", "moonbitlang/async@0.22.4/shell", "moonbitlang/core/env", "moonbitlang/core/json" }
 
 async fn compare(name : String, reference : String, cli : String, args : Array[String], stdin : String, library_path : String, rows : Array[Json]) -> Unit {
   let environment=Map([("JSONNET_PATH",library_path),("NO_COLOR","1"),("TERM","dumb"),("ASAN_OPTIONS","detect_leaks=0:fast_unwind_on_malloc=0:exitcode=99")])

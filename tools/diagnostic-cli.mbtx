@@ -1,4 +1,4 @@
-import {"moonbitlang/async", "moonbitlang/async/fs", "moonbitlang/async/shell", "moonbitlang/core/env", "moonbitlang/core/json", "moonbitlang/core/encoding/utf8"}
+import {"moonbitlang/async@0.22.4", "moonbitlang/async@0.22.4/fs", "moonbitlang/async@0.22.4/shell", "moonbitlang/core/env", "moonbitlang/core/json", "moonbitlang/core/encoding/utf8"}
 
 fn field(value : Json,key : String,fallback : Json) -> Json {match value {Object(fields)=>fields.get(key).unwrap_or(fallback);_=>fallback}}
 async fn command(program : String,args : Array[String]) -> String {let result=@shell.Cmd(program,args).output();result.check();result.stdout().trim().to_owned()}

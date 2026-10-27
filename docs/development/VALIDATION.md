@@ -378,7 +378,8 @@ Leak detection is disabled for portability with Apple Clang; this check covers
 address errors, not a LeakSanitizer proof. The script sets ASan `exitcode=99` for
 tests, both CLI integration suites and the parameter/evaluator/AST API probes so a sanitizer
 failure cannot satisfy an expected application-error exit code. Test scripts use MoonBit script mode
-and `moonbitlang/async`; commands may need access to Moon's dependency cache.
+and `moonbitlang/async@0.22.4`; commands may need access to Moon's dependency cache.
+See the [script dependency and CI profile constraints](CI-VALIDATION.md#script-dependency-and-platform-constraints).
 `tools/consumer.mbtx` extracts the actual Mooncakes archive into a temporary
 workspace and compiles/tests a separate module using only public APIs.
 It also verifies that the archive includes `NOTICE`, Go BSD attribution and
