@@ -6,7 +6,7 @@ import {
 
 async fn main {
   @shell.Cmd("moon", ["package", "--frozen"]).run()
-  let archive = @fs.realpath("_build/publish/pangbit-moonjsonnet-0.2.1.zip")
+  let archive = @fs.realpath("_build/publish/pangbit-moonjsonnet-0.2.2.zip")
   let listing = @shell.Cmd("unzip", ["-Z1", archive]).output()
   listing.check()
   let package_docs = ["docs/README.md", "docs/README.zh-CN.md", "docs/reference/API.md", "docs/reference/CLI.md", "docs/reference/COMPATIBILITY.md", "docs/reference/VERSIONS.md", "docs/reference/GO-STDLIB-SURFACE.md"]
@@ -47,7 +47,7 @@ async fn main {
       }
     }
   }
-  @fs.write_file(work + "/consumer/moon.mod", "name = \"pangbit/moonjsonnet_consumer_check\"\nversion = \"0.0.0\"\npreferred_target = \"native\"\nimport { \"pangbit/moonjsonnet@0.2.1\" }\n")
+  @fs.write_file(work + "/consumer/moon.mod", "name = \"pangbit/moonjsonnet_consumer_check\"\nversion = \"0.0.0\"\npreferred_target = \"native\"\nimport { \"pangbit/moonjsonnet@0.2.2\" }\n")
   @fs.write_file(work + "/consumer/moon.pkg", "import { \"pangbit/moonjsonnet\", \"pangbit/moonjsonnet/fs\" } for \"test\"\nsupported_targets = \"native\"\n")
   @fs.write_file(work + "/consumer/native.jsonnet", "std.trace('file consumer',std.native('id')(42))")
   let test_source =

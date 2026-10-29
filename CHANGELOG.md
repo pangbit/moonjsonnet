@@ -1,6 +1,20 @@
 # Changelog
 
-## Unreleased
+## 0.2.2
+
+Cumulative compatibility and embedding fixes after 0.2.1. Public MoonBit API
+signatures are unchanged; corrected Jsonnet results and argument demand can
+change behavior. `removeAt` gains explicitly documented same-slot aliases.
+Known source/documentation conflicts and input-domain profiles remain in
+[compatibility](docs/reference/COMPATIBILITY.md); this release does not claim
+complete Jsonnet v0.21.0 conformance. Version availability is recorded by
+[Mooncakes](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.2).
+
+The cumulative native debug regression passed 1118/1118 on both macOS ARM64 and
+Linux AMD64. The same product also passed eight independent archive-consumer
+groups and 24 CLI acceptance cases. These are source-bound regression and
+delivery results, separate from historical Go/C++ differential totals; final
+release CI and a registry installation are separate release checks.
 
 - Prevent evaluation-hook node/stack inspection from aborting on private standard
   adapters. Keep exportable source events paired and return a checked diagnostic

@@ -158,7 +158,7 @@ async fn main {
   assert_true(short_help.stdout().has_prefix("Usage:"))
   let short_version = @shell.Cmd(cli,["-v"]).output()
   short_version.check()
-  assert_true(short_version.stdout().contains("moonjsonnet 0.2.1"))
+  assert_true(short_version.stdout().contains("moonjsonnet 0.2.2"))
   let output_alias = @shell.Cmd(cli,["--root",root,"--output-file",output,"-e","42"]).output()
   output_alias.check()
   assert_eq(output_alias.stdout(),"")

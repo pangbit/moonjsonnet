@@ -120,18 +120,45 @@
     "new_runtime_tests_from_metadata_refresh": 0
   },
   "linux_current_source": {
-    "status": "DENIED_BEFORE_PROCESS_CREATION",
-    "uploaded": false,
-    "executed": false,
-    "prior_1087_debug_release_records": "historical source only; not substituted for this revision",
-    "next_action": "Obtain explicit approval for the exact new frozen source packet and one bounded native debug regression."
+    "status": "PASS",
+    "source_commit": "6ca452f7be9c80d032fec2e762f1714178e14c78",
+    "mode": "native-debug",
+    "tests_total": 1118,
+    "passed": 1118,
+    "failed": 0,
+    "test_elapsed_s": 624.159894052078,
+    "lifecycle_elapsed_s": 632.297569292,
+    "test_limit_s": 900,
+    "lifecycle_limit_s": 1200,
+    "packet_bytes": 2046210,
+    "packet_sha256": "291eb61cfa685cc962083dc5b53fc7ab9b334ce42edd219ec075664325033020",
+    "resources": {
+      "cpu_quota": "200%",
+      "memory_bytes": 4294967296,
+      "swap_bytes": 0,
+      "tasks_max": 256,
+      "uid": 65534
+    },
+    "artifact_sha256": "63aed417072e3079250f3a4268dea2457f546ac3ee0fe865a4960c48cde4a7e0",
+    "artifact_members_verified": 112,
+    "all_inputs_tools_unchanged": true,
+    "host_preserved": true,
+    "own_removed": true,
+    "unit_cgroup_and_process_groups_absent": true,
+    "independent_absence_verified": true,
+    "prior_attempt": {
+      "status": "DENIED_BEFORE_PROCESS_CREATION",
+      "uploaded": false,
+      "executed": false
+    },
+    "prior_1087_debug_release_records": "historical source only; not substituted for this revision"
   },
   "remaining_for_unqualified_complete_specification_claim": [
     "Selected source/documentation conflicts do not prove agreement with contradictory signatures, defaults or printed rules.",
     "B0/PE0, non-Boolean filter, surrogate recovery and HP0 hexadecimal admission retain explicitly scoped interpretation/profile limits.",
     "Finite constructor/environment/recursive reviews are closed under child premises; historical matrix statuses are not missing-feature counts or infinite input-enumeration duties.",
     "Several new directed repair groups are linked in SPEC-CONFORMANCE.md rather than integrated into every older clause/public mapping.",
-    "Current Linux execution and subsequent release CI are separate pending evidence; no current full workflow or fresh upstream-reference result is claimed."
+    "Release CI and a fresh registry installation are separate release checks; this cumulative validation record does not claim a fresh full upstream-reference campaign."
   ],
   "preservation": {
     "all_800_current_tracked_inputs_unchanged": true,
@@ -147,10 +174,12 @@
     "repo_clean": true,
     "all_owned_process_groups_absent": true
   },
-  "scope": "Local cumulative code/package/consumer/CLI validation only. No push, tag or publication.",
+  "scope": "Cumulative macOS code/package/consumer/CLI validation and the subsequently approved Linux native-debug follow-up. No push, tag or publication was part of these checks.",
   "raw_receipt_sha256": {
     "full": "f99cb447e013c9f9d77652eafca00897e84e88f3034322ec7314d327bf5bba9d",
     "focused": "c3910a1bcb3dcf5a6aff44d04c3962f6bab8e68aa42049ca173ab1aa47a83721",
-    "delivery": "5bda6d8c81f304d289b9020172e53fd5f5cb14f52680a880f85ffedc0128b62f"
+    "delivery": "5bda6d8c81f304d289b9020172e53fd5f5cb14f52680a880f85ffedc0128b62f",
+    "linux_lifecycle": "4296cb5c1b062f8b3d75d9fba4a5c83918536dc630bf3e04767d67f91c5b2bdb",
+    "linux_test": "9ce07ad46955725a31f5a95f2acf7d418f57ee86d89fbfe075c1ecf86c47f891"
   }
 }

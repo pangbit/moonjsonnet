@@ -18,7 +18,7 @@ See [compatibility](docs/reference/COMPATIBILITY.md) for the reference contract 
 
 ## Status and installation
 
-The 0.2.1 release candidate targets **native on macOS and Linux**. File access uses POSIX libc;
+Version 0.2.2 targets **native on macOS and Linux**. File access uses POSIX libc;
 the evaluator itself has no third-party runtime dependency. See
 [compatibility](docs/reference/COMPATIBILITY.md) before adopting existing Jsonnet programs.
 
@@ -39,16 +39,18 @@ for these changes. The current C++ recheck and explicit declaration migrations a
 tracked in [CI validation](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/CI-VALIDATION.md);
 historical totals do not establish current full specification conformance.
 
-Publication of 0.2.1 is not confirmed by this document. Check its
-[registry record](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.1) before installing;
-use this source checkout or a local archive while preparing the release.
-Published [0.2.0](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.0) and
-[0.1.0](https://mooncakes.io/docs/pangbit/moonjsonnet@0.1.0) retain their historical
-behavior; the [changelog](CHANGELOG.md) describes the subsequent corrections.
-Full specification conformance remains unestablished. Once 0.2.1 is available:
+Version 0.2.2 corrects decoded field-name checks, inherited standard-library
+dependencies, strict native calls and evaluation-hook inspection, and adds
+compatible `removeAt` index aliases. Public MoonBit API signatures are unchanged.
+See the [changelog](CHANGELOG.md) and the
+[registry record](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.2) for the release
+and version availability. Earlier versions retain their documented historical
+behavior. Full specification conformance remains unestablished.
+
+Install the versioned native library:
 
 ```sh
-moon add pangbit/moonjsonnet@0.2.1
+moon add pangbit/moonjsonnet@0.2.2
 ```
 
 Import `"pangbit/moonjsonnet"` in your `moon.pkg`, and use the native target.

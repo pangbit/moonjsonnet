@@ -16,12 +16,14 @@ CLI output corpus also pins complete stdout bytes for JSON layout, plain strings
 and YAML document streams. Multi-file fixtures separately compare complete file
 contents and filename lists in isolated reference/local output directories.
 
-This document retains the 0.2.1 release notes and adds corrections explicitly
-identified as after 0.2.1. Legacy "Unreleased" table labels refer to the 0.2.1
-changes; published 0.2.0 behavior is identified separately.
-The 138 finite public-contract mappings and existing macOS/Linux native
-debug/release records of 1087/1087 each establish their stated tested scopes,
-not complete specification conformance or publication of the new version.
+Version 0.2.2 adds the corrections identified below as after 0.2.1. Legacy
+"Unreleased" table labels refer to the 0.2.1 changes; published 0.2.0 behavior
+is identified separately. The cumulative 0.2.2 product passed 1118/1118 native
+debug tests on macOS ARM64 and Linux AMD64, plus eight independent archive
+consumer groups and 24 CLI acceptance cases. These source-bound regressions
+and the 138 finite public-contract mappings do not establish complete
+specification conformance. Older four-mode 1087 records and upstream
+differential totals retain their historical scope.
 
 ## Implementation reference
 

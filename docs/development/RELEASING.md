@@ -1,18 +1,21 @@
 # Release checklist
 
-Publication and remote push are explicit maintainer actions. Versions 0.1.0 and
-0.2.0 have published registry records; 0.1.0 was published on 2026-10-13.
-The selected next candidate is 0.2.1. Do not overwrite an existing version.
+Publication and remote push are explicit maintainer actions. Versions 0.1.0,
+0.2.0 and 0.2.1 have published registry records; 0.1.0 was published on 2026-10-13.
+The selected next candidate is 0.2.2. Do not overwrite an existing version.
 Versioned release notes describe the changes without asserting publication or
 a source tag. Record the registry result and timestamp after actual success.
 This checklist does not establish a successful publication or remote CI run.
 
-The existing macOS/Linux native debug/release campaigns each passed 1087/1087
-at product source `3d25317903f1d42799c3d05a1e3c07bdf3a75ffc`. Reuse those results
-only after confirming the tested product and fixture hashes still match. The
-138 finite public mappings do not establish complete v0.21.0 conformance.
-Version/documentation changes create a new package identity: earlier archive
-and local-consumer success do not verify the 0.2.1 archive or a registry install.
+The cumulative native debug regression passed 1118/1118 on macOS ARM64 at
+product source `802249795bef6d1cabb9759f780c53475d68d604` and Linux AMD64 at
+`6ca452f7be9c80d032fec2e762f1714178e14c78`; their product and fixture bytes match.
+Eight independent archive-consumer groups and 24 CLI acceptance cases passed
+for that product. Reuse those source-bound results instead of repeating them
+for version/documentation-only edits. The older four-mode 1087 results remain
+historical. The 138 finite public mappings do not establish complete v0.21.0
+conformance. A new version creates a distinct package identity: earlier archive
+and local-consumer success do not verify the 0.2.2 archive or a registry install.
 
 1. Review the diff, compatibility scope, license/NOTICE, module version and
    repository URL. Select applicable checks from [VALIDATION](VALIDATION.md),
@@ -36,13 +39,13 @@ and local-consumer success do not verify the 0.2.1 archive or a registry install
    are byte-identical merely because their extracted contents match.
 5. Verify a clean worktree and `moon whoami` for namespace `pangbit`. Inspect the
    target registry version before any publication; versions are release identities.
-   Keep version `0.2.1` notes free of unverified publication dates or claims.
+   Keep version `0.2.2` notes free of unverified publication dates or claims.
    If the version already exists, stop and select a new version explicitly;
    do not attempt to replace it. Revalidate a changed toolchain or package.
 6. With explicit authorization, push commits and verify CI for that exact release
    commit; an older green main run is not evidence for new commits. No auto-publish
    token is stored in CI. Then publish using `moon publish` and verify the registry
-   with a fresh independent `moon add pangbit/moonjsonnet@0.2.1` consumer. Update
+   with a fresh independent `moon add pangbit/moonjsonnet@0.2.2` consumer. Update
    both README status paragraphs if needed after the actual publication is confirmed;
    do not present the local archive consumer as a registry installation.
 7. Record the actual registry result and archive checksum, update release notes,
