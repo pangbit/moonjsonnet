@@ -71,7 +71,19 @@ fn Vm::byte_array(
   let items = array_value(value, loc)
   Bytes::makei(items.length(), fn(i) raise {
     let value = self.force(items[i], loc)
-    let n = integer(value, loc) catch {
+    // Base64's documented Number range includes fractions. The fixed source
+    // encodes them through truncating bitwise conversion. Check the original
+    // bounds first; decodeUTF8 and rejected inputs keep their integer path.
+    let converted = match value {
+      Num(n) =>
+        if base64 && n >= 0 && n <= 255 {
+          Num(n.trunc())
+        } else {
+          value
+        }
+      _ => value
+    }
+    let n = integer(converted, loc) catch {
       e =>
         if base64 {
           raise problem(

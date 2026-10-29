@@ -208,6 +208,97 @@ unchanged. Tested SHA-256 values:
 
 The earlier eight and ten groups, full suites and other platforms were not rerun.
 
+### Profile decisions and wrapper repair
+
+The preceding 15-method inventory is a historical source/native comparison,
+not 15 missing functions. The current interpretation gives explicit public
+input/output requirements priority over contradictory source branches. Where
+the public text leaves a conversion unspecified, a documented project policy
+is a choice, not a proof that all interpretations agree. Fixed C++ behavior
+must also account for its [native replacement pass](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/core/desugarer.cpp#L858-L886):
+raw `std.jsonnet` is not the effective implementation of every method.
+For example, C++ replaces `splitLimit`, `join` and `strReplace`. The preceding
+receiver tests establish source-level behavior, not new C++ execution results.
+
+| Boundary | Adopted behavior and compatibility consequence |
+| --- | --- |
+| `isEven` / `isOdd` | Follow the public **integral part** description: truncate then compute parity without narrowing to a host integer. For 0.5, even is true. The fixed source's `round(x)` gives the opposite result; both cannot be promised simultaneously. |
+| Unlimited `splitLimitR` | Follow the public right-to-left direction, including overlapping separators: `('aaa', 'aa', -1)` gives `['a', '']`. The fixed source calls forward splitting in this branch and gives `['', 'a']`. Retain correct right splitting rather than reproduce that conflict. |
+| Split count conversion | Accept -1 or a finite nonnegative integer. Other negatives reject under the documented -1 sentinel/length bound. Fractions reject as a discrete-count policy. For `('a,b', ',', 0.5)`, raw source would split, while [C++ truncates its native count to zero](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/core/vm.cpp#L1372-L1396). The public prose does not select a fractional conversion. |
+| Base64 range and conversion | Reject negative values and values above 255, following the explicit public 0..255 domain. Truncate Numbers within that range toward zero before encoding, following the effective fixed source/C++ path described below. Neither the source's missing lower-bound check nor its `<256` fractional upper-bound extension is adopted. |
+| `base64DecodeBytes` input | The public contract specifies padded, line-free output of `base64`. Retain existing CR/LF and unused-pad-bit acceptance as project extensions, not required malformed-input behavior; reject non-Strings. |
+| `startsWith` / `endsWith` | Retain the explicitly documented String domain. Incidental Array results from the source's early length comparison are not required String features. |
+| `lstripChars` / `rstripChars` | Retain String input for the character-stripping contract and existing String/Array character-set support. Empty Array input to a mechanical source definition is not adopted as an additional return type. |
+| `minArray` / `maxArray` | Retain the documented Array domain and reject String/Object inputs. Mechanical source extensions do not require broader admission. |
+| `manifestTomlEx` empty key | Preserve `'' = 1` for `{'': 1}`. The source's ` = 1` violates [TOML key syntax](https://toml.io/en/v1.0.0#keys); it is not a valid compatibility target. |
+
+These decisions supersede the corresponding unresolved-policy labels in older
+records without rewriting historical results. They do not declare whole
+functions conforming or change the acceptance target. The remaining 13 native
+methods still need any demonstrated receiver differences addressed under these
+policies; blanket source fallback would be incorrect.
+
+Two wrappers can already use their fixed source bodies safely: `base64Decode`
+composes `base64DecodeBytes`, `map`, `char` and `join`; `stripChars` composes
+`rstripChars` and `lstripChars`. Retaining native callees preserves their input
+policies while inherited calls observe overrides. For example, overriding `char`
+to return `X` now makes the derived decoder return `X` for `Zg==`; overriding a
+strip method similarly affects the wrapper. Canonical calls keep native paths.
+
+The [four new wrapper groups](../../spec_inherited_profile_wrappers_test.mbt)
+passed 4/4 in local native debug (11.901 s), using source and handmade AST inputs.
+They cover unchanged/empty/overridden receivers, CRLF extension, String admission,
+captured and `super` receivers, unused operands and demanded dependency errors.
+Info/fmt passed with frozen dependencies, denied warnings and one reduced-priority
+sequential worker. Public interfaces, existing tests and frozen oracles are
+unchanged. Layer SHA-256:
+`9526a223294b1bbcc3524d23f32086c34add7ee0e13a6d6fa0bfd50de8527bc9`;
+test SHA-256:
+`e4bb35f131961c10bc8f7d3537554abf46625d6ba0b09fa53e3d59c1ef7e6924`.
+No old test groups, full suites, other platforms or reference interpreter ran
+for this repair. Generated matrix states and complete-conformance status are
+unchanged.
+
+### Base64 fractional Number correction
+
+The public byte-Array domain explicitly permits Numbers in 0..255. The fixed
+[encoder source](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1291-L1333)
+leaves those Numbers intact until bitwise masking. C++ does not replace `base64`
+with a native, and its [bitwise operand conversion](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/core/vm.cpp#L3176-L3190)
+truncates finite safe-range values toward zero. Thus `[0.5]`, `[1.5]` and
+`[254.5]` encode as `AA==`, `AQ==` and `/g==`. These conclusions follow from
+static implementation reading, not a newly executed reference interpreter.
+The generic numeric specification does not itself spell out fractional
+rounding; the effective fixed implementation supplies the conversion within
+the explicit public input domain. This settles B64-F0 for that domain.
+
+The repair truncates only Base64 Array Numbers already within 0..255. Values
+outside that interval retain rejection, including 255.5 despite the source's
+weaker `<256` sanity check. The shared `decodeUTF8` conversion remains integral;
+String encoding, non-Number errors and byte forcing are unchanged. The existing
+`std.base64([1.5])` rejection assertion is migrated to the independently derived
+`AQ==` result with its input retained. Frozen `encoding-base64-reject-fraction`
+entries in both Go fixture files stay untouched and remain declared comparison
+differences. Historical ungraded numeric observations retain their original
+scope and are not retroactively counted as passing tests.
+
+Local native debug passed 5/5 groups in 10.596 s: the
+[three new Number-boundary groups](../../spec_base64_fractional_numbers_test.mbt)
+and the two directly affected [encoding groups](../../std_encoding_test.mbt).
+Literal source/AST expectations cover subnormals, fractional one/two/three-byte
+encodings, original bounds before conversion, strict UTF-8 bytes, required tail
+errors and unchanged original Arrays. Info/fmt passed under the same frozen,
+deny-warn, one-worker settings. Tested SHA-256 values:
+
+- `std_encoding.mbt`: `e39427ae7fccc03b2f32afa6cb26d45ae069d3f21e83eec8f687e180d274ab56`
+- `std_encoding_test.mbt`: `34e96edfdc36621608f4c4abc26a9bec0a0639605d3dabb76920774aeba32048`
+- `spec_base64_fractional_numbers_test.mbt`: `41ef68d493500feac928cec7b5b522882b408c80d1633a82e94fbe04de5d366e`
+
+The earlier four wrapper groups were not rerun: their frozen files are unchanged,
+and the new byte conversion is not used by Base64 decoding or character stripping.
+No full suite, remote, release or reference execution was added. Public interfaces
+and frozen oracles are unchanged; complete conformance remains unestablished.
+
 ### Shared intrinsic dispatch review
 
 The next dependency review inspected the six remaining type observations:

@@ -43,6 +43,7 @@ fn source_standard_function(name : String) -> Bool {
 // Keep source bodies for native accelerators whose inherited calls must bind
 // object-local std to the final receiver. Canonical calls still use the native.
 // Methods with known source/native profile conflicts remain excluded.
+// Thin wrappers keep their native callees and those callees' input profiles.
 fn inherited_standard_function(name : String) -> Bool {
   match name {
     "sort"
@@ -57,6 +58,8 @@ fn inherited_standard_function(name : String) -> Bool {
     | "member"
     | "contains"
     | "parseInt"
+    | "base64Decode"
+    | "stripChars"
     | "manifestJsonEx"
     | "manifestYamlDoc" => true
     _ => false

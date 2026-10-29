@@ -16,8 +16,9 @@ CLI output corpus also pins complete stdout bytes for JSON layout, plain strings
 and YAML document streams. Multi-file fixtures separately compare complete file
 contents and filename lists in isolated reference/local output directories.
 
-This document describes the 0.2.1 release candidate. "Unreleased" below refers
-to these 0.2.1 changes; published 0.2.0 behavior is identified separately.
+This document retains the 0.2.1 release notes and adds corrections explicitly
+identified as after 0.2.1. Legacy "Unreleased" table labels refer to the 0.2.1
+changes; published 0.2.0 behavior is identified separately.
 The 138 finite public-contract mappings and existing macOS/Linux native
 debug/release records of 1087/1087 each establish their stated tested scopes,
 not complete specification conformance or publication of the new version.
@@ -163,9 +164,13 @@ retain the receiver from which they were selected. Canonical `std` calls retain
 native execution; native-only fields such as `length` and `type` are not
 redirected to user fields beneath `std`. The same correction now includes `join`,
 `strReplace`, `toString`, `abs`, `lines`, `equals`, `member`, `contains`, `parseInt`,
-`manifestJsonEx` and `manifestYamlDoc`. The
-[remaining source/native profile conflicts](../development/SPEC-CONFORMANCE.md#inherited-method-follow-up)
-prevent indiscriminate source fallback for other accelerated methods. These are
+`manifestJsonEx`, `manifestYamlDoc`, `base64Decode` and `stripChars`. The last
+two retain native callees, including their existing input policies. The
+[source/native profile decisions](../development/SPEC-CONFORMANCE.md#profile-decisions-and-wrapper-repair)
+prevent indiscriminate source fallback for other accelerated methods. Fixed C++
+also replaces some source methods with natives, including `join` and `strReplace`;
+those inherited corrections follow the source-level receiver contract and are
+not claims of agreement with every C++ accelerator. These are
 bounded inheritance corrections, not whole-function or whole-library conformance.
 
 ## Standard library
@@ -207,7 +212,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `min`, `max`, `clamp` | Source numeric min/max and lazy clamp branches |
 | `sum(arr)`, `avg(arr)` | Numeric left-to-right aggregation; avg rejects an empty array; each addition rejects non-finite results |
 | `member(arr,x)`, `contains(arr,elem)` | Both validate the collection before the target and leave the target lazy for empty Arrays. Array member examines every equality predicate, including errors after a match; contains stops at its first match. String member follows findSubstr and returns false for an empty pattern. See the [scoped membership review](#development-evidence-index) |
-| `minArray(arr,keyF=function(x)x,onEmpty=error ...)`, `maxArray(...)` | Stable Array extrema select onEmpty only when empty and leave keyF lazy on that branch. Nonempty Arrays skip onEmpty; explicit keys can leave discarded elements lazy. The initial key is compared even for a singleton; a failing key condition skips selection, while selected results remain required. See the [demand review](#development-evidence-index) and [comparison continuation](#development-evidence-index). Non-Array admission, exact callback counts and full comparator scope remain open |
+| `minArray(arr,keyF=function(x)x,onEmpty=error ...)`, `maxArray(...)` | Stable Array extrema select onEmpty only when empty and leave keyF lazy on that branch. Nonempty Arrays skip onEmpty; explicit keys can leave discarded elements lazy. The initial key is compared even for a singleton; a failing key condition skips selection, while selected results remain required. See the [demand review](#development-evidence-index) and [comparison continuation](#development-evidence-index). Non-Arrays are rejected under the documented Array domain; exact callback counts and full comparator scope remain open |
 | `$flatMapArray(func,arr)` | Reflected Go helper; flatMap behavior restricted to array input |
 | `__compare`, `__compare_array`, `__array_less`, `__array_greater`, `__array_less_or_equal`, `__array_greater_or_equal` | Reflected upstream comparison helpers, including lexicographic nested arrays |
 | `get`, `objectValues`, `objectValuesAll`, `objectKeysValues`, `objectKeysValuesAll`, `mapWithKey`, `prune` | Pinned Jsonnet definitions; hidden-field policy, lazy defaults/values and inherited self preserved |
@@ -221,7 +226,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `range(from,to)` | Source-defined inclusive unit steps; finite endpoints are not narrowed, including fractional bounds with integral length; generated size remains subject to host limits |
 | `join(sep,arr)` | String/array separator with like-typed non-null entries; null is skipped but empty items count toward delimiters. Validates the outer array before demanding the separator; nested array payloads stay lazy. See the [scoped contract review](#development-evidence-index) |
 | `split(str,c)` | Source assertions validate str, then nonempty c; unlimited left-to-right splitting retains empty pieces. See the [scoped split review](#development-evidence-index) |
-| `splitLimit(str,c,maxsplits)`, `splitLimitR(str,c,maxsplits)` | Validates str/c before demanding maxsplits; finite nonnegative integral bounds are not narrowed to Int32. -1 means unlimited; native R still scans from the right, with overlapping -1 cases unresolved against fixed source (SPL-R0). Fractional/other-negative limits remain rejected but unadjudicated. See the [scoped review](#development-evidence-index) |
+| `splitLimit(str,c,maxsplits)`, `splitLimitR(str,c,maxsplits)` | Validates str/c before demanding maxsplits; finite nonnegative integral bounds are not narrowed to Int32. -1 means unlimited. R scans from the right even for -1, following the public description rather than the fixed source's forward-split branch for overlapping separators (SPL-R0). Other negative limits reject; fractional limits reject under the project's discrete-count policy, whose conversion is not specified by the public prose. See [profile decisions](../development/SPEC-CONFORMANCE.md#profile-decisions-and-wrapper-repair) |
 | `lstripChars(str,chars)`, `rstripChars(str,chars)`, `stripChars(str,chars)` | Validates String input before demanding chars; empty input leaves chars lazy. Uses Unicode String-set membership or source-defined Array membership, inspecting every Array member even after a match while sharing element values. Supersedes the historical eager/short-circuit behavior; see the [scoped review](#development-evidence-index) |
 | `trim(str)` | Unreleased: fixed seven-character endpoint set U+0020/U+0009/U+000A/U+000C/U+000D/U+0085/U+00A0; other codepoints are retained. Published 0.2.0 used Unicode 15 White_Space |
 | `isEmpty(str)` | Unreleased: fixed `length(str) == 0`, including Array, visible Object fields and Function parameter counts; nested payloads remain lazy. Published 0.2.0 accepted Strings only |
@@ -237,7 +242,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `$objectFlatMerge(x)` | Internal helper: merge simple objects with disjoint keys, preserving field visibility and bindings, rebinding self, dropping assertions; explicit object locals and inherited objects are rejected |
 | `encodeUTF8(str)` | UTF-8 bytes, with BOM and zero characters preserved |
 | `decodeUTF8(arr)` | Integer bytes in 0..255; each malformed UTF-8 byte becomes U+FFFD, including incomplete multibyte sequences |
-| `base64(input)` | Standard padded alphabet with no line breaks; String codepoints 0..255 map directly to bytes, matching the corresponding byte Array. Codepoints above 255 error. For UTF-8 text, use `base64(encodeUTF8(str))`. Negative/fractional Array admission remains unresolved in the normative review |
+| `base64(input)` | Standard padded alphabet with no line breaks; String codepoints 0..255 map directly to bytes, matching the corresponding byte Array. Codepoints above 255 error. After 0.2.1, Array Numbers in 0..255 truncate toward zero before encoding, following the fixed source and C++ bitwise conversion; negative values and values above 255 still reject before conversion. Frozen Go fractional-rejection fixtures are retained as differences. For UTF-8 text, use `base64(encodeUTF8(str))` |
 | `base64DecodeBytes(str)`, `base64Decode(str)` | Return byte numbers / a String mapping each byte to the same-numbered Unicode codepoint. The deprecated String decoder does not decode UTF-8; use `decodeUTF8(base64DecodeBytes(str))` for UTF-8 text. Current parser observations: original UTF-8 byte length divisible by 4, only CR/LF ignored, complete padding required, nonzero unused pad bits accepted. These malformed-input observations and non-String admission are not normative acceptance |
 | `substr(str,from,len)` | Source-defined code-point substring; validates types/length in source order and clips length to the available suffix before allocation; an empty result performs no character lookup |
 | `strReplace(str,from,to)` | Nonoverlapping literal replacement; empty pattern rejected |
@@ -258,7 +263,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `hypot(a,b)`, `atan2(y,x)`, `pow(x,n)`, `modulo(x,y)` | Native numeric argument names and signed-zero handling; modulo rejects zero divisor. 0.2.1 corrects hypot to a,b and rejects the legacy x,y names |
 | `round(x)` | Unreleased: fixed `floor(x + 0.5)` with IEEE addition; -0.5 gives 0, and 4503599627370497 gives 4503599627370498. Published 0.2.0 used half-away-from-zero rounding and retained negative zero |
 | `mantissa(x)`, `exponent(x)` | Binary fraction and exponent, including subnormal normalization; exponent returns 0 for zero |
-| `isEven(x)`, `isOdd(x)` | Parity of truncated numeric value |
+| `isEven(x)`, `isOdd(x)` | Parity of the truncated numeric value, following the public integral-part description; intentionally differs from the fixed source's `round(x)` for fractions and some large integers |
 | `isInteger(x)`, `isDecimal(x)` | Unreleased: equality/inequality between fixed `round(x)` and x; 4503599627370497 therefore gives false/true. Published 0.2.0 tested zero/nonzero fractional part |
 | `pi`, `deg2rad(x)`, `rad2deg(x)`, `log2(x)`, `log10(x)`, `sign(n)`, `mod(a,b)` | Pinned source definitions; mod dispatches numeric modulo or string formatting |
 | `xor(x,y)`, `xnor(x,y)` | Eager boolean-only operands |

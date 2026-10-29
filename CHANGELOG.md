@@ -15,6 +15,14 @@
   `manifestYamlDoc`. Their inherited source methods now observe dependency
   overrides, including calls through other source methods and object-local
   helpers. Methods with known source/native profile conflicts remain unchanged.
+- Preserve dependency overrides in inherited `base64Decode` and `stripChars`
+  wrappers while keeping their native decoding/stripping callees. Empty `std`
+  extensions retain the existing CRLF decoding and String-input policies;
+  overridden methods can still leave unused operands lazy.
+- Accept fractional Numbers within 0..255 in `base64` byte Arrays, truncating
+  toward zero as the fixed source's bitwise encoding does: `[1.5]` produces
+  `AQ==`. Negative values and values above 255 still reject; `decodeUTF8` still
+  requires integral bytes. Frozen Go rejection fixtures remain unchanged.
 
 ## 0.2.1
 
