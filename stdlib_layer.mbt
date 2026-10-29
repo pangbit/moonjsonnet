@@ -42,8 +42,9 @@ fn source_standard_function(name : String) -> Bool {
 ///|
 // Keep source bodies for native accelerators whose inherited calls must bind
 // object-local std to the final receiver. Canonical calls still use the native.
-// Methods with known source/native profile conflicts remain excluded.
-// Thin wrappers keep their native callees and those callees' input profiles.
+// Thin wrappers keep their callees' reviewed input profiles.
+// Reviewed profile differences use the local adapters below. Integral-part
+// parity remains native because its chosen contract rejects the round formula.
 fn inherited_standard_function(name : String) -> Bool {
   match name {
     "sort"
@@ -60,6 +61,17 @@ fn inherited_standard_function(name : String) -> Bool {
     | "parseInt"
     | "base64Decode"
     | "stripChars"
+    | "startsWith"
+    | "endsWith"
+    | "lstripChars"
+    | "rstripChars"
+    | "minArray"
+    | "maxArray"
+    | "splitLimit"
+    | "splitLimitR"
+    | "base64"
+    | "base64DecodeBytes"
+    | "manifestTomlEx"
     | "manifestJsonEx"
     | "manifestYamlDoc" => true
     _ => false
@@ -167,7 +179,11 @@ fn standard_library_expression() -> Expr raise {
           },
         }
       } else {
-        field
+        match field.key.kind {
+          Literal(String(name)) =>
+            { ..field, value: inherited_profile_expression(name, field.value), }
+          _ => field
+        }
       }
     })
   {

@@ -121,6 +121,11 @@ bound need not generate fractional indices. Zero or negative steps are errors in
 mapping keys, flags, dynamic width/precision, length modifiers and every v0.21.0
 conversion (`diuoxXeEfFgGcs%`). `tailstrict` forces supplied/default parameters
 and uses a trampoline for tail calls; a 10,000-iteration regression verifies this.
+After 0.2.1, native standard functions also apply that head-forcing policy before
+early returns. In particular, `minArray([1]) tailstrict` evaluates its failing
+default `onEmpty`; supplying `onEmpty` explicitly avoids that default. This is
+the project's documented invocation policy, not a resolution of the fixed
+specification's `tailstrict` TODO. Ordinary calls keep their lazy boundaries.
 Bitwise operators truncate operands to signed 64-bit integers, with shift counts
 reduced modulo 64. Left shifts wrap at 64 bits and right shifts preserve the sign,
 matching Go. Negative shift counts are rejected before truncation. Operands must
@@ -164,11 +169,17 @@ retain the receiver from which they were selected. Canonical `std` calls retain
 native execution; native-only fields such as `length` and `type` are not
 redirected to user fields beneath `std`. The same correction now includes `join`,
 `strReplace`, `toString`, `abs`, `lines`, `equals`, `member`, `contains`, `parseInt`,
-`manifestJsonEx`, `manifestYamlDoc`, `base64Decode` and `stripChars`. The last
-two retain native callees, including their existing input policies. The
+`manifestJsonEx`, `manifestYamlDoc`, `base64Decode` and `stripChars`. Reviewed
+local adapters also cover `startsWith`, `endsWith`, `lstripChars`, `rstripChars`,
+`minArray`, `maxArray`, `splitLimit`, `splitLimitR`, `base64`, `base64DecodeBytes` and
+`manifestTomlEx`. Their parameter guards are lazy: ignored arguments stay
+unforced, while consumed values retain the documented input policies. Decoder
+extensions are normalized through native byte conversion; TOML keeps quoted
+empty keys and resource-limit propagation. The
 [source/native profile decisions](../development/SPEC-CONFORMANCE.md#profile-decisions-and-wrapper-repair)
-prevent indiscriminate source fallback for other accelerated methods. Fixed C++
-also replaces some source methods with natives, including `join` and `strReplace`;
+retain integral-part `isEven`/`isOdd` as native operations; the discarded rounding
+definition does not define their dependency behavior. Fixed C++
+replaces some source methods with natives, including `join`, `strReplace` and `splitLimit`;
 those inherited corrections follow the source-level receiver contract and are
 not claims of agreement with every C++ accelerator. These are
 bounded inheritance corrections, not whole-function or whole-library conformance.

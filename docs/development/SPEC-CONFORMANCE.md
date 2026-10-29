@@ -234,14 +234,15 @@ receiver tests establish source-level behavior, not new C++ execution results.
 
 These decisions supersede the corresponding unresolved-policy labels in older
 records without rewriting historical results. They do not declare whole
-functions conforming or change the acceptance target. The remaining 13 native
-methods still need any demonstrated receiver differences addressed under these
-policies; blanket source fallback would be incorrect.
+functions conforming or change the acceptance target. At that revision, 13 native
+methods still needed demonstrated receiver differences addressed under these
+policies; the follow-up below resolves this class without blanket source fallback.
 
 Two wrappers can already use their fixed source bodies safely: `base64Decode`
 composes `base64DecodeBytes`, `map`, `char` and `join`; `stripChars` composes
-`rstripChars` and `lstripChars`. Retaining native callees preserves their input
-policies while inherited calls observe overrides. For example, overriding `char`
+`rstripChars` and `lstripChars`. At that revision, retaining native callees
+preserved their input policies while inherited calls observed overrides.
+For example, overriding `char`
 to return `X` now makes the derived decoder return `X` for `Zg==`; overriding a
 strip method similarly affects the wrapper. Canonical calls keep native paths.
 
@@ -298,6 +299,89 @@ The earlier four wrapper groups were not rerun: their frozen files are unchanged
 and the new byte conversion is not used by Base64 decoding or character stripping.
 No full suite, remote, release or reference execution was added. Public interfaces
 and frozen oracles are unchanged; complete conformance remains unestablished.
+
+### Remaining inherited native profiles
+
+The 13-method follow-up at 7ab5444 separates implementation obligations from
+discarded source behavior. `isEven`/`isOdd` retain the documented integral-part
+policy; observing the rejected `round` formula is not an additional obligation.
+These two retain native behavior. Effective C++ native replacement alone does
+not exempt `splitLimit`: as with `join` and `strReplace`, the adopted source-level
+receiver contract is implemented while its discrete-count policy is preserved.
+
+The other eleven methods have concrete final-receiver differences on documented
+input types. Examples include `substr` overrides in prefix checks, `member`
+overrides in character stripping, `__compare` overrides in extrema, and
+`objectFields` overrides in TOML rendering. Private local adapters retain the
+fixed source bodies while preserving the previously chosen input policies:
+
+- String prefix/strip and Array-extrema guards are lazy parameter views. For
+  example, a zero-length override can select `onEmpty` without demanding `arr`.
+- Right splitting uses the reverse pipeline for every admitted count, including
+  -1. Base64 checks original byte bounds lazily and retains fractional conversion.
+- The byte decoder lazily normalizes native-supported input through native
+  decode/encode before using the source definition. Canonical input is unchanged;
+  CRLF/pad-bit extensions retain their results. An ignored input stays unforced.
+- TOML keeps a quoted empty key and lazy Object/String guards. Numeric and String
+  output already share the native formatting policy. Depth/output exhaustion
+  propagates `Limit`; equivalent internal step/stack costs are not promised.
+
+This review also found an actual shared invocation defect: Closure calls force
+supplied/default heads under `tailstrict`, but several native early returns did
+not. Native binding now applies that existing public project policy before
+dispatch, including extrema's failing default `onEmpty`. Invalid binding still
+rejects first; ordinary calls remain lazy and strict calls do not recursively
+force argument contents. This is a consistency repair under the documented
+policy, not a claim that the fixed specification resolves its `tailstrict` TODO.
+
+The original fixed source, public interfaces and frozen Go/C++ fixtures are
+retained. This finishes the implementation classification for these 13 methods;
+it does not accept whole functions, generic substitution or full conformance.
+
+Local native-debug evidence covers ten distinct groups: the
+[eight new adapter/strict-call groups](../../spec_inherited_profile_adapters_test.mbt),
+the existing YAML strict-call group and TOML TI4. The last affected groups
+(splitting, TOML and receiver/policy controls) passed 3/3 in 12.036 s; seven
+unaffected passing groups were reused after checking their test bodies and
+product dependencies. The final product delta since those earlier passes only
+adds the `splitLimit` adapter. Info/fmt passed with frozen dependencies, denied
+warnings and one sequential worker; public interfaces remained unchanged.
+
+The initial TOML run failed at the helper's depth-64 budget. A diagnostic-only
+catch first failed compilation, then exposed `evaluation depth limit exceeded`;
+those attempts remain failures. Ordinary TOML correctness now uses the published
+default limits. Dedicated output-32 and depth-24 controls remain, with other
+limits set to defaults. An additional empty-key/long-String control bypasses the
+key-character Array and requires a text-output limit, preserving the original
+resource checks. No product limit was increased. Final tested SHA-256 values:
+
+- `stdlib.mbt`: `f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25`
+- `stdlib_layer.mbt`: `c12dd3421439f9851f04cd73d43d99d7e4374019b168b8dfd7ff0553f6b432db`
+- `stdlib_inherited_profiles.mbt`: `108084f085de62361689218ae009c7b57d813868317d635d85816d2a44e74ebf`
+- `spec_inherited_profile_adapters_test.mbt`: `c93a546a5231b478bd952df7deb4aff7a655a883850c49453a8716fbf8d98220`
+
+The eleven dependency groups were then checked against actual remaining work,
+without promoting generated matrix rows or rerunning old suites:
+
+| Groups | Current progress and remaining responsibility |
+| --- | --- |
+| Static scope; lexing/syntax; type observation | Decoded field-name repair is already tested. `validate`/`check_ast_shape` have explicit constructor branches and `value_type` is exhaustive; this read found no additional missing branch. Finite constructor/child transfer review remains distinct from testing every possible AST combination. |
+| Calls/substitution; objects/inheritance | The identified accelerated-method receiver class and native strict shortcut defect are addressed above. General binding/substitution review and the N0/R0 assertion model remain separate. |
+| Sequences; manifestation/coercion | Existing immutable/lazy/index and rendering evidence remains usable; the adapters preserve the selected input domains and TOML validity. Complete callback/comparator and recursive-child responsibilities are not established by this inheritance batch. |
+| Imports | Existing controlled-import/cache/cycle evidence is reused. No new import defect was identified here; mutable host callbacks outside the declared source-identity contract are not a missing interpreter feature. |
+| Boolean/equality applicability; scalar/operator/library dependencies | B0/PE0 describe underdefined rule domains. Concrete public-library choices still include `removeAt`'s documented `idx` versus source `at` versus current `i`, XML `Xml`/`XML` spelling, and the YAML-stream false/true end-marker default. These observable interfaces require explicit reconciliation, not more registration counts. |
+| Printed greater-than rules | Keep `c > 0`, following the stated operator and ordering prose. The printed less-than conclusion is disclosed; changing correct ordering or enumerating more numeric inputs cannot satisfy both texts. |
+
+N0's right-only `super` rule conflicts with layered inheritance, while R0 lacks
+an active assertion-check state; current layered lookup and guarded reentry are
+explicit implementation choices. B0's demanded RHS domain and PE0's metavalue
+equality domain are underdefined. These concrete conflicts are recorded once,
+not multiplied into missing functions or used to block unrelated repairs.
+The remaining acceptance work is bounded constructor/public-contract review,
+the named/default interface reconciliation above, and a final source-bound
+delivery cohort for accumulated post-0.2.1 changes. The older four-mode 1087
+records do not automatically cover changed product bytes. No new full-platform
+campaign or publication is part of this local repair.
 
 ### Shared intrinsic dispatch review
 

@@ -167,6 +167,25 @@ fn Vm::builtin(
       }
     }
   }
+  if strict {
+    // Match Closure calls: validate binding first, then force parameter heads
+    // in declaration order, including defaults, before any builtin shortcut.
+    for key in params {
+      match ids.get(key) {
+        Some(id) => ignore(self.force(id, loc))
+        None =>
+          if key == "onEmpty" && (name == "minArray" || name == "maxArray") {
+            raise problem(
+              Runtime,
+              loc,
+              "Expected at least one element in array. Got none",
+            )
+          }
+        // The only other omitted default is sort/extrema's identity function;
+        // its function head is already a value and has no deferred work.
+      }
+    }
+  }
   if name == "sort" || name == "minArray" || name == "maxArray" {
     guard ids.get("arr") is Some(arr) else {
       raise problem(Runtime, loc, "std.\{name}: missing arr argument")
@@ -217,11 +236,6 @@ fn Vm::builtin(
     )
   }
   if name == "manifestTomlEx" {
-    if strict {
-      for key in params {
-        ignore(self.force(ids[key], loc))
-      }
-    }
     // Flat fields and empty tables need no indentation. Keep the style thunk
     // until the renderer actually emits an indented prefix.
     return Str(
@@ -265,12 +279,6 @@ fn Vm::builtin(
     )
   }
   if name == "manifestYamlDoc" {
-    if strict {
-      // Strict calls demand bound heads, not an unused formatting condition.
-      for key in params {
-        ignore(self.force(ids[key], loc))
-      }
-    }
     let out = ManifestText::new(self.limits.output_bytes, loc)
     self.yaml_value(
       self.force(ids["value"], loc),

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Preserve inherited dependencies in String prefix/strip methods, Array extrema,
+  bounded splitting, Base64 encoding/decoding and TOML rendering. Lazy local
+  adapters keep the documented input policies, decoder extensions and valid
+  empty TOML keys without changing canonical native dispatch.
+- Apply the existing `tailstrict` argument-head policy consistently to native
+  standard functions, including early-return paths and extrema's failing
+  default `onEmpty`. Ordinary calls retain lazy arguments; strict calls do not
+  force nested payloads merely to evaluate an argument head.
 - Compare decoded literal object-field names when checking duplicates. Escaped
   and verbatim spellings with the same raw text can name distinct fields; true
   duplicate names remain static errors. This corrects a valid-source rejection
@@ -14,9 +22,9 @@
   `lines`, `equals`, `member`, `contains`, `parseInt`, `manifestJsonEx` and
   `manifestYamlDoc`. Their inherited source methods now observe dependency
   overrides, including calls through other source methods and object-local
-  helpers. Methods with known source/native profile conflicts remain unchanged.
+  helpers.
 - Preserve dependency overrides in inherited `base64Decode` and `stripChars`
-  wrappers while keeping their native decoding/stripping callees. Empty `std`
+  wrappers while retaining the decoding/stripping input policies. Empty `std`
   extensions retain the existing CRLF decoding and String-input policies;
   overridden methods can still leave unused operands lazy.
 - Accept fractional Numbers within 0..255 in `base64` byte Arrays, truncating
