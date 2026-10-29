@@ -37,8 +37,10 @@ that no test exists anywhere.
 N/E/L/B in the table are normal/error/lazy/boundary dimensions. R means only the
 specific assertions reviewed against the fixed contract in
 [manual case mappings](../../tests/spec-public-coverage.json). U means that
-dimension remains unreviewed/unmapped. Sixty-seven functions currently have reviewed
-subsets, including the ten independent [foundation reviews](SPEC-FOUNDATIONS-REVIEW.md)
+dimension remains unreviewed/unmapped. One hundred thirty-eight identifiers currently have manual
+records, leaving 15 candidates without current mappings; this does not mean they
+are untested. Records include reviewed subsets and the accepted constructor-transfer
+and call-binding scopes below, including the ten independent [foundation reviews](SPEC-FOUNDATIONS-REVIEW.md)
 and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [object visibility/lookup functions](SPEC-OBJECT-CONTRACTS-REVIEW.md) and seven
 [string/Unicode functions](SPEC-STRING-CONTRACTS-REVIEW.md), plus
@@ -55,8 +57,10 @@ and five [array combinators](SPEC-ARRAY-COMBINATORS-REVIEW.md), plus six
 [two membership subsets](SPEC-MEMBERSHIP-2026-10-23.md) and
 [two Array extrema demand subsets](SPEC-EXTREMA-DEMAND-2026-10-23.md) and
 [a sort Array cardinality/demand subset](SPEC-SORT-DEMAND-2026-10-25.md);
-even these functions have unresolved or uncovered contracts. No whole
-function is accepted as fully conforming by this inventory. Earlier executed
+the earlier subset records retain their stated limits. The explicitly delimited
+constructor-transfer and call-binding scopes below are accepted under generic child premises;
+source-text conflicts retain their stated domain limits. This
+inventory does not certify whole-language conformance. Earlier executed
 test counts remain tied to their respective stage sources, not to a new claim
 about every signature, type, default or forcing order.
 
@@ -351,3 +355,60 @@ remain equal.67 subsets and zero whole-function acceptances remain. Host native
 callback Json-return observations do not create std.native formal acceptance.
 YAML schema/stream profiles and existing unresolved language contracts retain
 their status. No current full-suite/release/Linux/CLI evidence is claimed.
+
+## Canonical UTF-8 conversion subset at 7fadc7b
+
+The [valid-scalar contract](SPEC-STRING-CONTRACTS-EVIDENCE-2026-10-22.md#utf-8-valid-scalar-contract-frozen-at-7fadc7b)
+adds encodeUTF8/decodeUTF8 literal width boundaries, named aliases, sole required
+errors, unused calls, alias preservation and interior FEFF/NUL through source
+and handmade ASTs. All 11 new groups and 15 existing controls pass on unchanged
+implementation (26/26); no product fix or old expectation migration was needed.
+Exactly two manual records are added, preserving all 67 prior objects and giving
+69 distinct reviewed subsets, with no whole-function acceptance. Generated
+inventory files remain historical snapshots, separate from the current manual map.
+Malformed recovery, leading-BOM signatures, invalid scalars, out-of-domain byte
+coercion and wider resource/diagnostic obligations remain unadjudicated; old
+compatibility observations earn no new normative passes. These 11 groups were
+not part of the earlier 890-test full native cohort; no new full/platform run occurred.
+
+## strReplace subset at 5ecbf9f
+
+The [replacement contract](SPEC-STRING-CONTRACTS-EVIDENCE-2026-10-22.md#strreplace-contract-frozen-at-5ecbf9f)
+adds eight source/handmade-AST groups on unchanged production. The original 17/18
+result retains SR8's overstrong internal-byte inference; correcting that embedding
+check to the documented final compact JSON budget yields 18/18 (eight new, ten
+neighbors), without changing SR1-SR7, product code or old expectations.
+One new manual record preserves all 69 prior objects, giving 70 reviewed subsets;
+historical inventories remain unchanged. Language value/demand checks and SR8's
+embedding checks stay separate. No whole-function/full/platform acceptance is
+claimed; UTF-8 leading-BOM and malformed-recovery policy remains UNRESOLVED/NOTPASS.
+
+## ASCII case family at 59eb3e8
+
+The [combined ASCII case review](SPEC-STRING-CONTRACTS-EVIDENCE-2026-10-22.md#ascii-case-family-at-59eb3e8) adds asciiUpper, asciiLower and equalsIgnoreCase; the fixed-source correction passes 14/14 while preserving the 12/14 baseline and exact legacy migrations.
+Three new records preserve all 70 prior objects, giving 73 reviewed subsets and 80 candidate identifiers without current manual mappings; those mapping gaps do not mean untested functions, and unconditional whole-function acceptance remains zero.
+
+## Mapping constructor-transfer at e42ef923
+
+The [combined mapWithIndex/filterMap review](SPEC-ARRAY-COMBINATORS-EVIDENCE-2026-10-22.md#mapping-constructor-transfer-at-e42ef923) passes 21/21 on unchanged production and accepts mapWithIndex's public constructor-transfer scope plus filterMap's Boolean-predicate composition scope under explicit generic child judgments. Only filterMap's existing nonboolean predicate child policy remains unresolved outside that accepted scope.
+Two new records preserve all 73 prior objects, giving 75 current mappings and 78 unmapped candidates; historical generated inventory counts remain snapshots, and mapping gaps do not imply absent tests.
+
+## Repeat and search-transfer at 2e288eef
+
+The [repeat/count/find review](SPEC-ARRAY-COMBINATORS-EVIDENCE-2026-10-22.md#repeat-and-search-transfer-at-2e288eef) accepts all three finite constructor/search-transfer scopes under explicit generic child judgments, with 16/16 directed groups passing on unchanged production. Three new records preserve all 75 prior objects, giving 78 current mappings and 75 unmapped candidates; this count concerns mappings, not absent tests or whole-language acceptance.
+
+## Object projection-transfer at d2874a40
+
+The [four-function object projection review](SPEC-OBJECT-CONTRACTS-EVIDENCE-2026-10-22.md#object-projection-transfer-at-d2874a40) accepts objectValuesAll/mapWithKey transfer and the Object-valued common-domain scopes of objectKeysValues/objectKeysValuesAll. The pair functions retain their shared return-type annotation conflict; 19/19 directed tests include unchanged legacy source profiles, not unconditional all-Value pair acceptance. Four new records preserve all 78 prior objects, giving 82 current mappings and 71 unmapped candidates.
+
+## equals public call-binding at acb42b3e
+
+The [equals binding review](SPEC-OBJECT-CONTRACTS-EVIDENCE-2026-10-22.md#equals-public-call-binding-at-acb42b3e) preserves the 8/10 baseline and passes 10/10 after correcting only its required a/b parameter names and two legacy call inputs. The new record accepts the call-binding protocol, not the complete equality comparator; all 82 prior objects remain unchanged, giving 83 current mappings and 70 unmapped candidates.
+
+## Six set transfers at 6346da6e
+
+The [uniq/set/union/intersection/difference/membership review](SPEC-ARRAY-COMBINATORS-EVIDENCE-2026-10-22.md#six-set-transfers-at-6346da6e) accepts six finite constructor-transfer scopes with 17/17 directed groups on unchanged production. uniq/set include established source admission; binary/member scopes retain their sorted-unique Array precondition and all six use explicit generic child premises. Six new records preserve all 83 prior objects, giving 89 current mappings and 64 unmapped candidates, not 89 complete-function or overall conformance certificates.
+
+## native host-contract subset at 3d253179
+
+The [fixed specification](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#execution) requires String lookup of a configured function and explicitly leaves its semantics to the custom execution environment. The repository's [host contract](../reference/API.md#L96) additionally defines absent-name `null`, parameter-order JSON manifestation, shared lazy calls, copied finite returns and callback diagnostics. The four existing [native test groups](../../native_test.mbt#L40) at lines 40, 77, 134 and 181 assert that finite profile; none is a new whole-function or universal host-semantics claim. Both pinned [Go](https://github.com/google/go-jsonnet/blob/67968688d9952f50662e979fab1bef889d0d3e57/builtins.go#L2261) and [C++](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/core/vm.cpp#L1277) return `null` for an absent registration, an implementation convention consistent with the published host policy, not a version discrepancy or a required new error. At source `3d25317903f1d42799c3d05a1e3c07bdf3a75ffc`, the test SHA-256 `abc42f546f6334e3176c150b1384b0b8e45d50bbd0ce729bffb34e2b9b677221` matches the macOS before/after and Linux packet/before/after manifests; all four modes' hash-verified test metadata identify these groups at indices 1-4. Their existing complete native debug/release campaigns each passed 1087/1087; no standalone four-test run occurred. One finite native mapping is added, preserving all 137 prior records. No product/test/oracle changes or new execution are needed; exact arbitrary host semantics and error presentation are not manufactured blockers, and direct lookup-binding combinations and shared language children retain their separate scopes.

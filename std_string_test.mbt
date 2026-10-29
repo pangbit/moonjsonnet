@@ -1,5 +1,5 @@
 ///|
-test "string functions preserve Unicode and native Go contracts" {
+test "string functions preserve reviewed Unicode and standard-library contracts" {
   for
     (source, expected) in [
       (
@@ -24,11 +24,11 @@ test "string functions preserve Unicode and native Go contracts" {
       ),
       (
         "[std.equalsIgnoreCase('KelvinK','kELVINk'),std.equalsIgnoreCase('Σσς','ςΣσ'),std.equalsIgnoreCase('ß','ss'),std.equalsIgnoreCase('İ','i'),std.equalsIgnoreCase('ı','I'),std.equalsIgnoreCase('ß','ẞ')]",
-        "[true,true,false,false,false,true]",
+        "[false,false,false,false,false,false]",
       ),
       (
         "[std.trim('\\u2003\\u3000x\\u2029'),std.trim('\\u200bx\\u200b'),std.isEmpty(''),std.isEmpty(' '),std.id(x={a:3, b:error 'lazy'}).a]",
-        "[\"x\",\"\\u200bx\\u200b\",true,false,3]",
+        "[\"\\u2003\\u3000x\\u2029\",\"\\u200bx\\u200b\",true,false,3]",
       ),
       (
         "[std.escapeStringJson('a\\n\\u0085😀'),std.escapeStringPython('x'),std.escapeStringBash(\"a'b\"),std.escapeStringDollars('$a'),std.escapeStringXML('<&>')]",
@@ -45,6 +45,7 @@ test "string functions preserve Unicode and native Go contracts" {
 
 ///|
 test "string argument and numeric parsing boundaries" {
+  assert_eq(@moonjsonnet.evaluate("std.isEmpty([])"), @json.parse("true"))
   for
     source in [
       "std.parseInt('')",
@@ -64,7 +65,7 @@ test "string argument and numeric parsing boundaries" {
       "std.splitLimit('a,b',',',0.5)",
       "std.splitLimitR('a,b',',',-2)",
       "std.splitLimit('a','',1)",
-      "std.isEmpty([])",
+      "std.isEmpty(null)",
       "std.trim(null)",
       "std.equalsIgnoreCase('a',1)",
       "std.id(error 'eager')",

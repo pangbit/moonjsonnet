@@ -1,0 +1,71 @@
+{
+  "state": "STATIC_METADATA_CANDIDATE_NOT_APPLIED_OR_VALIDATED",
+  "base_commit": "71441b558038d53b94b073d54c4a9f60a996f136",
+  "reason": "The four functions have executed independent finite evidence but no rows in spec-public-coverage.json. Existing sqrt/exp/log/sin/cos rows use reviewed_native_math_profile with remaining accuracy obligations; tools/spec-public-inventory.mbtx:170-174 explicitly defines R as a reviewed subset, not complete-contract acceptance. The earlier no-whole-domain-certificate rationale does not by itself prohibit such bounded metadata. These proposed rows record only the existing evidence; they do not resolve full-contract acceptance or authorize a count update.",
+  "application": "Keep separate from the active registry. Review exact references/schema and the distinction between evidence-record counts and complete-contract acceptance before any merge. Active mapping stays 116/37 in this preparation.",
+  "evidence": {
+    "receipt": "docs/archive/reports/spec-math-utilities-2026-10-28.json",
+    "receipt_sha256": "ab8f60f25cd8666c017d3c86792d5a2f6a085e0585ae620f427e5c709add2281",
+    "commands": "docs/archive/reports/spec-math-utilities-2026-10-28-evidence/commands.json",
+    "commands_sha256": "57e61314b35f8a950310e7720ca5a4e8a017440378b6d29f573e0a21dae7e692",
+    "fixture_sha256": "da3959e55fa048a4d59aec716097299e88285f4c513146bf85a22e99d9d15983",
+    "registry_sha256": "eb369af4ebe615ff80d3b6d80a662d39b8b99140413eb35bc44bc1c897d2b041",
+    "generator_sha256": "a8e11761ea03605159282bdb75eb60eea08799f497b34d665dba6b25730a37c1",
+    "result": "Original 11/12 with all 12 MU2 entries failing; repaired 11/12 with legacy spelling failure; final formatted inputs 12/12. No new execution in this proposal.",
+    "timing": "Preserve original 613-second completion and separately authorized 124-second commit / 134-second readback as overruns. Existing receipts are unchanged."
+  },
+  "records": [
+    {
+      "name": "hypot",
+      "signature_review": {"parameters": ["a", "b"], "defaults": {}, "test": "spec_math_utilities_contract_test.mbt", "status": "MU2/MU5: documented names, direct/reordered/mixed/aliased calls, arity and ordinary invalid bindings; final 12/12 after the isolated binding repair and legacy spelling migration."},
+      "reference_candidates": [{"file": "spec_math_utilities_contract_test.mbt", "line": 7, "test_declaration": "test \"MU1 hypot preserves ordinary positional lengths and sign symmetry\" {", "classification": "MU1/MU2/MU5-MU8 independent source and handmade-AST finite witnesses; final 12/12 directed batch."}],
+      "dimensions": {
+        "N": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU1/MU2: exact ordinary Pythagorean pairs, sign symmetry, positional and named/alias results."},
+        "E": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU5-MU7: invalid bindings, nonnumber heads, isolated required errors and a nonfinite result reject; no diagnostic-winner rule."},
+        "L": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU8: positive unused-call/branch/Boolean/argument/hidden-field controls and unchanged input aliases. Rejection alone proves no skipped-payload property."},
+        "B": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU1/MU7: zero axes, sign variants, 1e308 with zero avoiding needless square overflow, and 1.7e308 pair rejection."}
+      },
+      "contract_review": {"decision": "reviewed_native_math_profile", "scope": "Executed finite Euclidean-norm and ordinary public binding/error/demand witnesses; explicit a,b spelling is fixed documentation, norm meaning is the recorded mathematical inference.", "remaining_in_scope": ["General numerical rounding and all-input accuracy are not certified."], "evidence": "docs/archive/reports/spec-math-utilities-2026-10-28.json"},
+      "remaining": "No new ULP requirement or whole-domain/platform acceptance. Existing shared language disputes are unchanged."
+    },
+    {
+      "name": "mantissa",
+      "signature_review": {"parameters": ["x"], "defaults": {}, "test": "spec_math_utilities_contract_test.mbt", "status": "MU5: required x, arity one, direct and aliased positional/named calls and invalid-binding controls passed."},
+      "reference_candidates": [{"file": "spec_math_utilities_contract_test.mbt", "line": 54, "test_declaration": "test \"MU3 mantissa and exponent decompose ordinary nonzero binary fractions\" {", "classification": "MU3/MU5/MU6/MU8 independent ordinary dyadic source and handmade-AST witnesses; final 12/12."}],
+      "dimensions": {
+        "N": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU3: exact normalized signed fractions for 1,2,3,8,-0.25,0.75,-6,1024."},
+        "E": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU5/MU6: invalid binding/nonnumber heads and isolated required errors reject, also under type."},
+        "L": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU8: positive unused-call controls and repeated aliases preserve inputs; no competing-error inference."},
+        "B": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU3: ordinary positive/negative dyadics below and above one. Zero normalization and subnormal completeness are excluded."}
+      },
+      "contract_review": {"decision": "reviewed_native_math_profile", "scope": "Recorded normalized-base-two interpretation on eight ordinary nonzero inputs plus public names/errors/demand.", "remaining_in_scope": ["All-exponent/IEEE coverage and zero normalization are not certified."], "evidence": "docs/archive/reports/spec-math-utilities-2026-10-28.json"},
+      "remaining": "No whole-domain numerical certificate; separate legacy subnormal compatibility cases do not enlarge these independent criteria."
+    },
+    {
+      "name": "exponent",
+      "signature_review": {"parameters": ["x"], "defaults": {}, "test": "spec_math_utilities_contract_test.mbt", "status": "MU5: required x, arity one, direct and aliased positional/named calls and invalid-binding controls passed."},
+      "reference_candidates": [{"file": "spec_math_utilities_contract_test.mbt", "line": 54, "test_declaration": "test \"MU3 mantissa and exponent decompose ordinary nonzero binary fractions\" {", "classification": "MU3/MU5/MU6/MU8 independent ordinary dyadic source and handmade-AST witnesses; final 12/12."}],
+      "dimensions": {
+        "N": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU3: literal binary exponents 1,2,2,4,-1,0,3,11 for the eight recorded inputs."},
+        "E": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU5/MU6: invalid binding/nonnumber heads and isolated required errors reject, also under type."},
+        "L": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU8: positive unused-call controls and repeated aliases preserve inputs; no competing-error inference."},
+        "B": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU3: ordinary negative/zero/positive exponents and signed inputs; no exhaustive exponent sweep."}
+      },
+      "contract_review": {"decision": "reviewed_native_math_profile", "scope": "Recorded normalized-base-two interpretation on eight ordinary nonzero inputs plus public names/errors/demand.", "remaining_in_scope": ["All-exponent/IEEE coverage and zero normalization are not certified."], "evidence": "docs/archive/reports/spec-math-utilities-2026-10-28.json"},
+      "remaining": "No whole-domain numerical certificate; separate legacy subnormal compatibility cases do not enlarge these independent criteria."
+    },
+    {
+      "name": "tan",
+      "signature_review": {"parameters": ["x"], "defaults": {}, "test": "spec_math_utilities_contract_test.mbt", "status": "MU5: required x, arity one, direct and aliased positional/named calls and invalid-binding controls passed."},
+      "reference_candidates": [{"file": "spec_math_utilities_contract_test.mbt", "line": 79, "test_declaration": "test \"MU4 tan retains zero and independent ordinary radian bounds\" {", "classification": "MU4/MU5/MU6/MU8 independent ordinary-radian source and handmade-AST witnesses; final 12/12."}],
+      "dimensions": {
+        "N": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU4: zero and broad independently derived intervals at +/-0.5 and +/-1 radian."},
+        "E": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU5/MU6: invalid binding/nonnumber heads and isolated required errors reject, also under type; no invented finite-input domain error."},
+        "L": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU8: positive unused-call controls and repeated aliases preserve inputs; no competing-error inference."},
+        "B": {"test": "spec_math_utilities_contract_test.mbt", "expectation": "MU4: zero and signed ordinary inputs only, without pole-neighbor or large-reduction accuracy claims."}
+      },
+      "contract_review": {"decision": "reviewed_native_math_profile", "scope": "Finite zero/ordinary-radian bounds and public names/errors/demand. Existing alternating-series oracle and deliberately broad intervals are unchanged.", "remaining_in_scope": ["General rounding, pole-neighbor and large-argument reduction accuracy are not certified."], "evidence": "docs/archive/reports/spec-math-utilities-2026-10-28.json"},
+      "remaining": "No arbitrary ULP requirement, whole-domain numerical certificate or platform acceptance."
+    }
+  ]
+}

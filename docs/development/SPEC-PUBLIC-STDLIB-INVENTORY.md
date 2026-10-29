@@ -2,6 +2,7 @@
 
 Generated from the pinned official sources by [tools/spec-public-inventory.mbtx](../../tools/spec-public-inventory.mbtx).
 This is an inventory and partial coverage map, not conformance acceptance.
+This generated snapshot belongs to the `input_source_commit` recorded in [its JSON](spec-public-inventory.json); consult the [manual coverage records](../../tests/spec-public-coverage.json) for subsequently tested subsets.
 See [review method and unresolved contracts](SPEC-PUBLIC-STDLIB-REVIEW.md).
 
 D = documentation heading; I = inline official API declaration/reference; S = source export; F = specification function.

@@ -1,0 +1,665 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "61a2dcf516a04950b7521cbbf2d7fe5a5b6a6f666b0b78ce599779eec1d178cf",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "schema_version": 1,
+  "base_commit": "c44f7d4a67a13cd7a4aa7a3d91151046478f7729",
+  "reference_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+  "scope": [
+    "trim",
+    "isEmpty"
+  ],
+  "state": "FINAL_NINE_GROUPS_PASSED",
+  "overall_conformance": "incomplete",
+  "artifacts": [
+    {
+      "role": "frozen-plan.json",
+      "bytes": 11739,
+      "sha256": "eefc20ecdbcb5ae05b73dd635b2fefc3ebfbe84aaaff3c3fefe21223fd55cdfd",
+      "content_utf8": "{\n  \"state\": \"NOT_STARTED\",\n  \"phase\": \"Static durable fixture preparation only; next concrete validation phase is scheduled separately.\",\n  \"base_head\": \"c44f7d4a67a13cd7a4aa7a3d91151046478f7729\",\n  \"functions\": [\n    \"trim\",\n    \"isEmpty\"\n  ],\n  \"fixture\": {\n    \"path\": \"spec_string_utilities_contract_test.mbt\",\n    \"sha256\": \"8e4e819cb0e1bfeb99a0f7cf52bf21c9ead4fe9a1abd2a09e87b9136ebb41cf9\",\n    \"groups\": [\n      {\n        \"id\": \"SU1\",\n        \"line\": 38,\n        \"declaration\": \"test \\\"SU1 trim removes exactly the seven fixed endpoint characters\\\" {\",\n        \"scope\": \"Exact seven trim endpoint characters; combinations, empty/all-trimmed input, internal characters, Unicode/NUL, all 18 extra native whitespace characters and ZWSP. All 68 source/AST observations are collected before failure.\"\n      },\n      {\n        \"id\": \"SU2\",\n        \"line\": 88,\n        \"declaration\": \"test \\\"SU2 isEmpty follows supported length heads without demanding payloads\\\" {\",\n        \"scope\": \"String/Array/Object/Function zero/nonzero length, visible versus hidden-only fields and optional Function parameter. Container/default/body errors stay unread. All 28 source/AST observations are collected before failure.\"\n      },\n      {\n        \"id\": \"SU3\",\n        \"line\": 112,\n        \"declaration\": \"test \\\"SU3 utilities retain required names arities aliases and safe binding rejection\\\" {\",\n        \"scope\": \"Required str/no default/arity one, positional/named/aliased calls; safe missing/extra/unknown/mixed-duplicate rejection.\"\n      },\n      {\n        \"id\": \"SU4\",\n        \"line\": 152,\n        \"declaration\": \"test \\\"SU4 utilities reject only the required incompatible argument heads\\\" {\",\n        \"scope\": \"All six nonstring heads reject for trim; Null/Bool/Number reject for isEmpty. Rejection alone proves neither skipped payloads nor any diagnostic kind.\"\n      },\n      {\n        \"id\": \"SU5\",\n        \"line\": 180,\n        \"declaration\": \"test \\\"SU5 isolated required errors propagate while unused utility calls remain lazy\\\" {\",\n        \"scope\": \"Single required outer error remains failure under direct/type consumers; unused call/argument/hidden field/branch/short circuit/missing binding remains lazy.\"\n      },\n      {\n        \"id\": \"SU6\",\n        \"line\": 208,\n        \"declaration\": \"test \\\"SU6 utility results preserve original String Array Object and Function aliases\\\" {\",\n        \"scope\": \"Literal repeated results preserve String/Array/Object/Function aliases, without assertion/inherited receiver policies.\"\n      }\n    ]\n  },\n  \"authority\": {\n    \"fixed_commit\": \"bbb38f1020be1f5aed560928fb839b2c448cefb4\",\n    \"recorded_reference_sha256\": {\n      \"spec.html\": \"bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a\",\n      \"stdlib.html\": \"0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853\",\n      \"upstream-std.jsonnet\": \"e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351\"\n    },\n    \"inventory_path\": \"docs/development/spec-public-inventory.json\",\n    \"inventory_sha256\": \"69a8f7b6888dd22020417895195b6a8a4d7c509a5602047e586c73de6463d08e\",\n    \"embedded_path\": \"stdlib_source.mbt\",\n    \"embedded_sha256\": \"39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98\",\n    \"definitions\": {\n      \"trim\": {\n        \"embedded_line\": 1805,\n        \"embedded_block\": \"    #|  trim(str):: std.stripChars(str, ' \\\\t\\\\n\\\\f\\\\r\\\\u0085\\\\u00A0'),\\n\",\n        \"embedded_block_sha256\": \"aad8dd5bc14afa884e413430e92ff1fc6facf9de6ba5ec009851264bfcfc08ad\",\n        \"fixed_definition\": \"  trim(str):: std.stripChars(str, ' \\\\t\\\\n\\\\f\\\\r\\\\u0085\\\\u00A0'),\\n\",\n        \"definition_sha256\": \"666216ac3385152baac8b70dee1b7cb57529f88219679e83dccf24d8d6efb364\",\n        \"inventory_declarations\": {\n          \"heading\": \"std.trim(str)\",\n          \"heading_line\": \"830\",\n          \"source\": \"std.trim(str)\",\n          \"source_line\": \"1799\"\n        }\n      },\n      \"isEmpty\": {\n        \"embedded_line\": 1768,\n        \"embedded_block\": \"    #|  isEmpty(str):: std.length(str) == 0,\\n\",\n        \"embedded_block_sha256\": \"12ab9fc75e9dab7a382751204123dbeeef7f7c35a11dbd248b3f21c73bdd4b8e\",\n        \"fixed_definition\": \"  isEmpty(str):: std.length(str) == 0,\\n\",\n        \"definition_sha256\": \"d35733f863631cdd8356a9cc5376ccb1afea631a35faabcb5dcb747b4af95cb3\",\n        \"inventory_declarations\": {\n          \"heading\": \"std.isEmpty(str)\",\n          \"heading_line\": \"803\",\n          \"source\": \"std.isEmpty(str)\",\n          \"source_line\": \"1762\"\n        }\n      },\n      \"resolvePath\": {\n        \"embedded_line\": 1625,\n        \"embedded_block\": \"    #|  resolvePath(f, r)::\\n    #|    local arr = std.split(f, '/');\\n    #|    std.join('/', std.makeArray(std.length(arr) - 1, function(i) arr[i]) + [r]),\\n\",\n        \"embedded_block_sha256\": \"978fc540766a63d22e097d1975a70e9a7b8623f780b4f6a0d582dafbd68a4110\",\n        \"fixed_definition\": \"  resolvePath(f, r)::\\n    local arr = std.split(f, '/');\\n    std.join('/', std.makeArray(std.length(arr) - 1, function(i) arr[i]) + [r]),\\n\",\n        \"definition_sha256\": \"22ea9ac6591c2c20547c1abf527e6aa46fc4c1bb43070b1cb848eab2b9975fc8\",\n        \"inventory_declarations\": {\n          \"source\": \"std.resolvePath(f, r)\",\n          \"source_line\": \"1619\"\n        }\n      }\n    },\n    \"availability\": \"Pre-reboot /tmp reference caches are absent and were not recreated/downloaded. This phase reads embedded definitions and persisted inventory declarations/hashes; full upstream HTML prose was not reread.\"\n  },\n  \"static_findings\": {\n    \"trim\": {\n      \"route\": \"stdlib.mbt:329 -> std_string.mbt:25 trim_space\",\n      \"fixed_codepoints\": [\n        \"U+0020\",\n        \"U+0009\",\n        \"U+000A\",\n        \"U+000C\",\n        \"U+000D\",\n        \"U+0085\",\n        \"U+00A0\"\n      ],\n      \"native_extra_codepoints\": [\n        \"U+000B\",\n        \"U+1680\",\n        \"U+2000\",\n        \"U+2001\",\n        \"U+2002\",\n        \"U+2003\",\n        \"U+2004\",\n        \"U+2005\",\n        \"U+2006\",\n        \"U+2007\",\n        \"U+2008\",\n        \"U+2009\",\n        \"U+200A\",\n        \"U+2028\",\n        \"U+2029\",\n        \"U+202F\",\n        \"U+205F\",\n        \"U+3000\"\n      ],\n      \"state\": \"STATIC_SET_DIFFERENCE_NOT_RUNTIME_RED\"\n    },\n    \"isEmpty\": {\n      \"route\": \"stdlib.mbt:328 -> text_value requires String\",\n      \"source\": \"length(str)==0; reviewed length supports String/Array/Object/Closure/Native/Builtin heads without reading container values or Function defaults/bodies; Null/Bool/Number reject.\",\n      \"state\": \"STATIC_ADMISSION_DIFFERENCE_NOT_RUNTIME_RED\"\n    }\n  },\n  \"deferred\": {\n    \"name\": \"resolvePath\",\n    \"state\": \"DEFERRED_SHARED_A0\",\n    \"reason\": \"makeArray(prefix)+[r] depends on unresolved printed array-concat. No executable resolvePath case or passing score remains.\",\n    \"references\": [\n      \"docs/development/SPEC-CONFORMANCE.md:257\",\n      \"docs/development/SPEC-SEQUENCE-STRUCTURE-2026-10-22.md:22\"\n    ]\n  },\n  \"premises\": [\n    \"Reviewed stripChars endpoint membership and String admission\",\n    \"Reviewed length rules and visible-field/parameter counts\",\n    \"Ordinary call/static binding and child-Value evaluation\"\n  ],\n  \"excluded\": [\n    \"Object assertion/inheritance N0/R0\",\n    \"Independent error kind/winner, precise callback counts or resource thresholds\",\n    \"Filesystem or path normalization\",\n    \"Whole-language acceptance and mapping scores\"\n  ],\n  \"unchanged_inputs_sha256\": {\n    \"stdlib_source.mbt\": \"39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98\",\n    \"stdlib_layer.mbt\": \"8f48647412fd144ee49915a6bfa292481cc00b2cf52d556fa1235518d1c2b4bd\",\n    \"imports.mbt\": \"5854e3b0f3a928a7e8dbc1f16ee556e0a3d5cbbb680e739a5a835c6f7579d70c\",\n    \"stdlib.mbt\": \"078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950\",\n    \"std_string.mbt\": \"11251f9f1142f364c56865cd5398e4523fd7714ec720582c7dbc67bca2c71026\",\n    \"std_string_test.mbt\": \"3533660f22ab38fe3bb139c7f578c766bc874e7d98c022d3c8e1960f8ba15242\",\n    \"arguments_test.mbt\": \"86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336\",\n    \"tests/spec-public-coverage.json\": \"2f488490f7db88a69a1415e9595be0c1c25e7701e36fadc5ac5f74f0ad1ac6a3\"\n  },\n  \"source_proposal\": {\n    \"state\": \"NOT_APPLIED_PENDING_BASELINE\",\n    \"diff\": \"--- a/stdlib_layer.mbt\\n+++ b/stdlib_layer.mbt\\n@@ -28,6 +28,8 @@\\n     | \\\"isObject\\\"\\n     | \\\"isArray\\\"\\n     | \\\"isFunction\\\"\\n+    | \\\"trim\\\"\\n+    | \\\"isEmpty\\\"\\n     | \\\"round\\\"\\n     | \\\"isInteger\\\"\\n     | \\\"isDecimal\\\"\\n\",\n    \"reason\": \"Whitelist enables unchanged embedded fields and makes imports skip native overrides. Do not change std_string.mbt, other dispatch or resolvePath.\"\n  },\n  \"anticipated_legacy_conflicts\": [\n    {\n      \"file\": \"std_string_test.mbt\",\n      \"line\": 30,\n      \"raw_lines\": [\n        \"        \\\"[std.trim('\\\\\\\\u2003\\\\\\\\u3000x\\\\\\\\u2029'),std.trim('\\\\\\\\u200bx\\\\\\\\u200b'),std.isEmpty(''),std.isEmpty(' '),std.id(x={a:3, b:error 'lazy'}).a]\\\",\",\n        \"        \\\"[\\\\\\\"x\\\\\\\",\\\\\\\"\\\\\\\\u200bx\\\\\\\\u200b\\\\\\\",true,false,3]\\\",\"\n      ],\n      \"reason\": \"Expected x deletes U+2003/U+3000/U+2029 outside fixed trim set; preserve until actual post-fix failure.\"\n    },\n    {\n      \"file\": \"std_string_test.mbt\",\n      \"line\": 67,\n      \"raw_line\": \"      \\\"std.isEmpty([])\\\",\",\n      \"reason\": \"Error-list isEmpty([]) conflicts with length([])==0. Preserve for baseline/post-fix evidence.\"\n    }\n  ],\n  \"planned_validation\": {\n    \"state\": \"PROPOSED_NOT_EXECUTED\",\n    \"files\": [\n      \"spec_string_utilities_contract_test.mbt\",\n      \"std_string_test.mbt\",\n      \"arguments_test.mbt\"\n    ],\n    \"expected_groups\": 9,\n    \"actual_outline_required\": true,\n    \"single_worker\": true,\n    \"suggested_seconds\": 300,\n    \"commands\": [\n      {\n        \"id\": \"fmt-check\",\n        \"argv\": [\n          \"moon\",\n          \"fmt\",\n          \"--check\",\n          \"spec_string_utilities_contract_test.mbt\"\n        ],\n        \"cap_seconds\": 10\n      },\n      {\n        \"id\": \"check\",\n        \"argv\": [\n          \"moon\",\n          \"check\",\n          \".\",\n          \"--target\",\n          \"native\",\n          \"--frozen\",\n          \"--deny-warn\",\n          \"-j\",\n          \"1\"\n        ],\n        \"cap_seconds\": 60\n      },\n      {\n        \"id\": \"outline\",\n        \"argv\": [\n          \"moon\",\n          \"test\",\n          \"spec_string_utilities_contract_test.mbt\",\n          \"std_string_test.mbt\",\n          \"arguments_test.mbt\",\n          \"--outline\",\n          \"--target\",\n          \"native\",\n          \"--debug\",\n          \"--frozen\",\n          \"--deny-warn\",\n          \"-j\",\n          \"1\",\n          \"--no-parallelize\"\n        ],\n        \"cap_seconds\": 10\n      },\n      {\n        \"id\": \"tests\",\n        \"argv\": [\n          \"moon\",\n          \"test\",\n          \"spec_string_utilities_contract_test.mbt\",\n          \"std_string_test.mbt\",\n          \"arguments_test.mbt\",\n          \"--target\",\n          \"native\",\n          \"--debug\",\n          \"--frozen\",\n          \"--deny-warn\",\n          \"-j\",\n          \"1\",\n          \"--no-parallelize\"\n        ],\n        \"cap_seconds\": 180\n      }\n    ],\n    \"closeout_reserve_seconds\": 40,\n    \"accounting\": \"SU1/SU2 aggregate all values/Jsonnet exceptions for both entries. Later arms after a sequential SU3-SU6 failure are NOTRUN.\"\n  },\n  \"format\": {\n    \"argv\": [\n      \"<USER_HOME>/.moon/bin/moonfmt\",\n      \"-w\",\n      \"spec_string_utilities_contract_test.mbt\"\n    ],\n    \"exit\": 0,\n    \"note\": \"Two tuple-returning lambda blocks were simplified by formatter; a preliminary whitespace-only token guard flagged that syntactic change. Final literals/operations were statically reviewed. No compiler/test ran.\"\n  },\n  \"execution\": {\n    \"info\": false,\n    \"check\": false,\n    \"tests\": false,\n    \"product_changed\": false,\n    \"legacy_tests_changed\": false,\n    \"mappings_changed\": false\n  }\n}\n"
+    },
+    {
+      "role": "frozen-fixture.mbt",
+      "bytes": 8969,
+      "sha256": "8e4e819cb0e1bfeb99a0f7cf52bf21c9ead4fe9a1abd2a09e87b9136ebb41cf9",
+      "content_utf8": "// Fixed std.jsonnet 1799/1762, preserved in stdlib_source.mbt.\n// Literal ordinary-source and handmade-AST expectations for trim and isEmpty.\n// Child judgments: stripChars, length and ordinary calls; resolvePath is deferred.\n\n///|\nfn string_utilities_values(cases : Array[(OrderingExpr, Json)]) -> Unit raise {\n  let failures : Array[String] = []\n  for (call, expected) in cases {\n    for handmade in [false, true] {\n      let label = call.source + \" handmade=\" + handmade.to_string()\n      try {\n        let actual = ordering_program(call, handmade).evaluate(\n          limits=transfer_limits(),\n        )\n        if actual != expected {\n          failures.push(\n            label +\n            \" actual=\" +\n            actual.stringify() +\n            \" expected=\" +\n            expected.stringify(),\n          )\n        }\n      } catch {\n        @moonjsonnet.Error(d) =>\n          failures.push(\n            label + \" error=\" + d.message + \" expected=\" + expected.stringify(),\n          )\n      }\n    }\n  }\n  if !failures.is_empty() {\n    fail(failures.join(\"; \"))\n  }\n}\n\n///|\ntest \"SU1 trim removes exactly the seven fixed endpoint characters\" {\n  let cases : Array[(String, String)] = [\n    (\" x \", \"x\"),\n    (\"\\tx\\t\", \"x\"),\n    (\"\\nx\\n\", \"x\"),\n    (\"\\u{000c}x\\u{000c}\", \"x\"),\n    (\"\\rx\\r\", \"x\"),\n    (\"\\u{0085}x\\u{0085}\", \"x\"),\n    (\"\\u{00a0}x\\u{00a0}\", \"x\"),\n    (\n      \" \\t\\n\\u{000c}\\r\\u{0085}\\u{00a0}\u00e9\u4e2d\ud83d\ude00\\u{00a0}\\u{0085}\\r\\u{000c}\\n\\t \",\n      \"\u00e9\u4e2d\ud83d\ude00\",\n    ),\n    (\" \\t\\n\\u{000c}\\r\\u{0085}\\u{00a0}\", \"\"),\n    (\"\", \"\"),\n    (\"x y\\tz\\nq\", \"x y\\tz\\nq\"),\n    (\n      \"\u00e9\\u{000c}\u4e2d\\r\ud83d\ude00\\u{0085}x\\u{00a0}y\", \"\u00e9\\u{000c}\u4e2d\\r\ud83d\ude00\\u{0085}x\\u{00a0}y\",\n    ),\n    (\" \\u{0000}x\\u{0000} \", \"\\u{0000}x\\u{0000}\"),\n    (\"\\u{000b}x\\u{000b}\", \"\\u{000b}x\\u{000b}\"),\n    (\"\\u{1680}x\\u{1680}\", \"\\u{1680}x\\u{1680}\"),\n    (\"\\u{2000}x\\u{2000}\", \"\\u{2000}x\\u{2000}\"),\n    (\"\\u{2001}x\\u{2001}\", \"\\u{2001}x\\u{2001}\"),\n    (\"\\u{2002}x\\u{2002}\", \"\\u{2002}x\\u{2002}\"),\n    (\"\\u{2003}x\\u{2003}\", \"\\u{2003}x\\u{2003}\"),\n    (\"\\u{2004}x\\u{2004}\", \"\\u{2004}x\\u{2004}\"),\n    (\"\\u{2005}x\\u{2005}\", \"\\u{2005}x\\u{2005}\"),\n    (\"\\u{2006}x\\u{2006}\", \"\\u{2006}x\\u{2006}\"),\n    (\"\\u{2007}x\\u{2007}\", \"\\u{2007}x\\u{2007}\"),\n    (\"\\u{2008}x\\u{2008}\", \"\\u{2008}x\\u{2008}\"),\n    (\"\\u{2009}x\\u{2009}\", \"\\u{2009}x\\u{2009}\"),\n    (\"\\u{200a}x\\u{200a}\", \"\\u{200a}x\\u{200a}\"),\n    (\"\\u{2028}x\\u{2028}\", \"\\u{2028}x\\u{2028}\"),\n    (\"\\u{2029}x\\u{2029}\", \"\\u{2029}x\\u{2029}\"),\n    (\"\\u{3000}x\\u{3000}\", \"\\u{3000}x\\u{3000}\"),\n    (\"\\u{202f}x\\u{202f}\", \"\\u{202f}x\\u{202f}\"),\n    (\"\\u{205f}x\\u{205f}\", \"\\u{205f}x\\u{205f}\"),\n    (\"\\u{200b}x\\u{200b}\", \"\\u{200b}x\\u{200b}\"),\n    (\" \\u{2003}x\\u{2003} \", \"\\u{2003}x\\u{2003}\"),\n    (\" \\u{2003} x \\t\", \"\\u{2003} x\"),\n  ]\n  string_utilities_values(\n    cases.map(c => {\n      (sequence_call(\"trim\", [reflect_string(c.0)]), Json::string(c.1))\n    }),\n  )\n}\n\n///|\ntest \"SU2 isEmpty follows supported length heads without demanding payloads\" {\n  let unread = ordering_error(\"utilities-unread-payload\")\n  let cases : Array[(OrderingExpr, Bool)] = [\n    (reflect_string(\"\"), true),\n    (reflect_string(\" \"), false),\n    (reflect_string(\"\\u{0000}\"), false),\n    (reflect_string(\"\u00e9\u4e2d\ud83d\ude00\"), false),\n    (ordering_array([]), true),\n    (ordering_array([sequence_num(0)]), false),\n    (ordering_array([unread]), false),\n    (reflect_object([]), true),\n    (reflect_object([(reflect_string(\"\u4e2d\ud83d\ude00\"), 1, unread)]), false),\n    (reflect_object([(reflect_string(\"hidden\"), 2, unread)]), true),\n    (make_function([], unread), true),\n    (make_function([\"x\"], unread), false),\n    (value_head_function(unread, unread), false),\n    (additive_select(sequence_var(\"std\"), \"length\"), false),\n  ]\n  string_utilities_values(\n    cases.map(c => (sequence_call(\"isEmpty\", [c.0]), Json::boolean(c.1))),\n  )\n}\n\n///|\ntest \"SU3 utilities retain required names arities aliases and safe binding rejection\" {\n  for\n    (name, input, expected) in [\n      (\"trim\", \" x \", Json::string(\"x\")),\n      (\"isEmpty\", \"\", Json::boolean(true)),\n    ] {\n    let function = additive_select(sequence_var(\"std\"), name)\n    transfer_value(sequence_call(\"length\", [function]), 1)\n    for label in [None, Some(\"str\")] {\n      let args = [(label, reflect_string(input))]\n      transfer_value(rounding_apply(name, args), expected)\n      transfer_value(\n        sequence_local(\n          [(\"f\", function)],\n          shared_mode_call(sequence_var(\"f\"), args),\n        ),\n        expected,\n      )\n    }\n    let safe = reflect_string(\"x\")\n    let invalid : Array[Array[(String?, OrderingExpr)]] = [\n      [],\n      [(None, safe), (None, safe)],\n      [(Some(\"x\"), safe)],\n      [(Some(\"str\"), safe), (Some(\"unknown\"), safe)],\n      [(None, safe), (Some(\"str\"), safe)],\n    ]\n    for args in invalid {\n      transfer_reject(rounding_apply(name, args))\n      transfer_reject(\n        sequence_local(\n          [(\"f\", function)],\n          shared_mode_call(sequence_var(\"f\"), args),\n        ),\n      )\n    }\n  }\n}\n\n///|\ntest \"SU4 utilities reject only the required incompatible argument heads\" {\n  let unread = ordering_error(\"utilities-rejected-payload\")\n  let nonstrings = [\n    ordering_leaf(\"null\", Literal(Json::null())),\n    reflect_bool(false),\n    sequence_num(0),\n    ordering_array([]),\n    ordering_array([unread]),\n    reflect_object([]),\n    reflect_object([(reflect_string(\"x\"), 1, unread)]),\n    value_head_function(unread, unread),\n  ]\n  for input in nonstrings {\n    transfer_reject(sequence_call(\"trim\", [input]))\n  }\n  // Rejection alone does not prove a rejected payload was skipped or set its diagnostic kind.\n  for\n    input in [\n      ordering_leaf(\"null\", Literal(Json::null())),\n      reflect_bool(false),\n      reflect_bool(true),\n      sequence_num(0),\n    ] {\n    transfer_reject(sequence_call(\"isEmpty\", [input]))\n  }\n}\n\n///|\ntest \"SU5 isolated required errors propagate while unused utility calls remain lazy\" {\n  let required = [\n    sequence_call(\"trim\", [ordering_error(\"utilities-trim-outer\")]),\n    sequence_call(\"isEmpty\", [ordering_error(\"utilities-empty-outer\")]),\n  ]\n  for call in required {\n    transfer_reject(call)\n    transfer_reject(sequence_call(\"type\", [call]))\n    transfer_value(ordering_unused(call), 42)\n    transfer_value(transfer_if(reflect_bool(false), call, sequence_num(42)), 42)\n    transfer_value(transfer_if(reflect_bool(true), sequence_num(42), call), 42)\n    transfer_value(ordering_binary(reflect_bool(false), \"&&\", call), false)\n    transfer_value(ordering_binary(reflect_bool(true), \"||\", call), true)\n    transfer_value(\n      value_head_call(make_function([\"unused\"], sequence_num(42)), [call]),\n      42,\n    )\n    transfer_value(\n      reflect_object([(reflect_string(\"hidden\"), 2, call)]),\n      Json::object(Map([])),\n    )\n  }\n  for name in [\"trim\", \"isEmpty\"] {\n    transfer_value(ordering_unused(rounding_apply(name, [])), 42)\n  }\n}\n\n///|\ntest \"SU6 utility results preserve original String Array Object and Function aliases\" {\n  let original = sequence_var(\"original\")\n  let aliased_expr = sequence_var(\"copied\")\n  transfer_value(\n    sequence_local(\n      [\n        (\"original\", reflect_string(\" \\t\u00e9\u4e2d\ud83d\ude00\\u{00a0}\")),\n        (\"copied\", original),\n      ],\n      ordering_array([\n        sequence_call(\"trim\", [original]),\n        sequence_call(\"trim\", [aliased_expr]),\n        original,\n        aliased_expr,\n      ]),\n    ),\n    [\"\u00e9\u4e2d\ud83d\ude00\", \"\u00e9\u4e2d\ud83d\ude00\", \" \\t\u00e9\u4e2d\ud83d\ude00\\u{00a0}\", \" \\t\u00e9\u4e2d\ud83d\ude00\\u{00a0}\"],\n  )\n  transfer_value(\n    sequence_local(\n      [\n        (\n          \"original\",\n          ordering_array([\n            reflect_string(\"\u00e9\"),\n            ordering_error(\"utilities-alias-tail\"),\n          ]),\n        ),\n        (\"copied\", original),\n      ],\n      ordering_array([\n        sequence_call(\"isEmpty\", [original]),\n        sequence_call(\"isEmpty\", [aliased_expr]),\n        sequence_call(\"length\", [original]),\n        make_index(original, 0),\n        make_index(aliased_expr, 0),\n      ]),\n    ),\n    [false, false, 2, \"\u00e9\", \"\u00e9\"],\n  )\n  transfer_value(\n    sequence_local(\n      [\n        (\n          \"original\",\n          reflect_object([\n            (reflect_string(\"x\"), 1, sequence_num(7)),\n            (\n              reflect_string(\"hidden\"),\n              2,\n              ordering_error(\"utilities-alias-hidden\"),\n            ),\n          ]),\n        ),\n        (\"copied\", original),\n      ],\n      ordering_array([\n        sequence_call(\"isEmpty\", [original]),\n        sequence_call(\"isEmpty\", [aliased_expr]),\n        additive_select(original, \"x\"),\n        additive_select(aliased_expr, \"x\"),\n      ]),\n    ),\n    [false, false, 7, 7],\n  )\n  transfer_value(\n    sequence_local(\n      [(\"original\", make_function([], sequence_num(7))), (\"copied\", original)],\n      ordering_array([\n        sequence_call(\"isEmpty\", [original]),\n        sequence_call(\"isEmpty\", [aliased_expr]),\n        value_head_call(original, []),\n        value_head_call(aliased_expr, []),\n      ]),\n    ),\n    [true, true, 7, 7],\n  )\n}\n"
+    },
+    {
+      "role": "legacy-original.mbt",
+      "bytes": 3169,
+      "sha256": "3533660f22ab38fe3bb139c7f578c766bc874e7d98c022d3c8e1960f8ba15242",
+      "content_utf8": "///|\ntest \"string functions preserve Unicode and native Go contracts\" {\n  for\n    (source, expected) in [\n      (\n        \"[std.asciiLower('AbC\u00c4\u03a3\ud83d\ude00'),std.asciiUpper('abC\u00e4\u03c3\ud83d\ude00'),std.stringChars('a\ud83d\ude00\u4e2d')]\",\n        \"[\\\"abc\u00c4\u03a3\ud83d\ude00\\\",\\\"ABC\u00e4\u03c3\ud83d\ude00\\\",[\\\"a\\\",\\\"\ud83d\ude00\\\",\\\"\u4e2d\\\"]]\",\n      ),\n      (\n        \"[std.stripChars('\ud83d\ude00x\ud83d\ude00','\ud83d\ude00'),std.lstripChars('aaabaaa','a'),std.rstripChars('aaabaaa','a')]\",\n        \"[\\\"x\\\",\\\"baaa\\\",\\\"aaab\\\"]\",\n      ),\n      (\n        \"[std.findSubstr('aa','aaaa'),std.findSubstr('\ud83d\ude00','\ud83d\ude00a\ud83d\ude00'),std.findSubstr('','a')]\",\n        \"[[0,1,2],[0,2],[]]\",\n      ),\n      (\n        \"[std.splitLimit('a::b::c','::',1),std.splitLimitR('a::b::c','::',1),std.splitLimitR('aaa','aa',-1),std.splitLimit('a,b',',',0)]\",\n        \"[[\\\"a\\\",\\\"b::c\\\"],[\\\"a::b\\\",\\\"c\\\"],[\\\"a\\\",\\\"\\\"],[\\\"a,b\\\"]]\",\n      ),\n      (\n        \"[std.parseInt('-12'),std.parseInt('-100000000000000000000'),std.parseInt('100000000000000000000'),std.parseHex('Ff'),std.parseOctal('010') ]\",\n        \"[-12,-100000000000000000000,100000000000000000000,255,8]\",\n      ),\n      (\n        \"[std.equalsIgnoreCase('Kelvin\u212a','kELVINk'),std.equalsIgnoreCase('\u03a3\u03c3\u03c2','\u03c2\u03a3\u03c3'),std.equalsIgnoreCase('\u00df','ss'),std.equalsIgnoreCase('\u0130','i'),std.equalsIgnoreCase('\u0131','I'),std.equalsIgnoreCase('\u00df','\u1e9e')]\",\n        \"[false,false,false,false,false,false]\",\n      ),\n      (\n        \"[std.trim('\\\\u2003\\\\u3000x\\\\u2029'),std.trim('\\\\u200bx\\\\u200b'),std.isEmpty(''),std.isEmpty(' '),std.id(x={a:3, b:error 'lazy'}).a]\",\n        \"[\\\"x\\\",\\\"\\\\u200bx\\\\u200b\\\",true,false,3]\",\n      ),\n      (\n        \"[std.escapeStringJson('a\\\\n\\\\u0085\ud83d\ude00'),std.escapeStringPython('x'),std.escapeStringBash(\\\"a'b\\\"),std.escapeStringDollars('$a'),std.escapeStringXML('<&>')]\",\n        \"[\\\"\\\\\\\"a\\\\\\\\n\\\\\\\\u0085\ud83d\ude00\\\\\\\"\\\",\\\"\\\\\\\"x\\\\\\\"\\\",\\\"'a'\\\\\\\"'\\\\\\\"'b'\\\",\\\"$$a\\\",\\\"&lt;&amp;&gt;\\\"]\",\n      ),\n      (\n        \"[std.resolvePath('a/b/c','../d'),std.resolvePath('a','b'),std.resolvePath('/a/b','/c')]\",\n        \"[\\\"a/b/../d\\\",\\\"b\\\",\\\"/a//c\\\"]\",\n      ),\n    ] {\n    assert_eq(@moonjsonnet.evaluate(source), @json.parse(expected))\n  }\n}\n\n///|\ntest \"string argument and numeric parsing boundaries\" {\n  for\n    source in [\n      \"std.parseInt('')\",\n      \"std.parseInt('+')\",\n      \"std.parseInt('-')\",\n      \"std.parseInt('1_0')\",\n      \"std.parseInt(' 1')\",\n      \"std.parseInt('1 ')\",\n      \"std.parseInt('0x10')\",\n      \"std.parseInt('\uff11\uff12')\",\n      \"std.parseInt('1\" + \"0\".repeat(310) + \"')\",\n      \"std.parseInt('-1\" + \"0\".repeat(310) + \"')\",\n      \"std.parseInt(1)\",\n      \"std.parseHex('0x10')\",\n      \"std.parseOctal('8')\",\n      \"std.parseHex('-1')\",\n      \"std.splitLimit('a,b',',',0.5)\",\n      \"std.splitLimitR('a,b',',',-2)\",\n      \"std.splitLimit('a','',1)\",\n      \"std.isEmpty([])\",\n      \"std.trim(null)\",\n      \"std.equalsIgnoreCase('a',1)\",\n      \"std.id(error 'eager')\",\n      \"std.stripChars('a',error 'eager')\",\n      \"std.stripChars([], 'a')\",\n      \"std.stripChars('a', null)\",\n    ] {\n    try @moonjsonnet.evaluate(source) catch {\n      @moonjsonnet.Error(d) => assert_true(d.kind != @moonjsonnet.Unsupported)\n    } noraise {\n      _ => fail(\"expected error: \" + source)\n    }\n  }\n}\n"
+    },
+    {
+      "role": "baseline-tests-tests.stdout",
+      "bytes": 5914,
+      "sha256": "cfa99c9c491b485f505af1bd5e00fc8a9574b19662601cac3d6fde00e2750c4d",
+      "content_utf8": "[pangbit/moonjsonnet] test spec_string_utilities_contract_test.mbt:38 (\"SU1 trim removes exactly the seven fixed endpoint characters\") failed: spec_string_utilities_contract_test.mbt:33:5-33:30@pangbit/moonjsonnet FAILED: std.trim((\"\\u000bx\\u000b\")) handmade=false actual=\"x\" expected=\"\\u000bx\\u000b\"; std.trim((\"\\u000bx\\u000b\")) handmade=true actual=\"x\" expected=\"\\u000bx\\u000b\"; std.trim((\"\u1680x\u1680\")) handmade=false actual=\"x\" expected=\"\u1680x\u1680\"; std.trim((\"\u1680x\u1680\")) handmade=true actual=\"x\" expected=\"\u1680x\u1680\"; std.trim((\"\u2000x\u2000\")) handmade=false actual=\"x\" expected=\"\u2000x\u2000\"; std.trim((\"\u2000x\u2000\")) handmade=true actual=\"x\" expected=\"\u2000x\u2000\"; std.trim((\"\u2001x\u2001\")) handmade=false actual=\"x\" expected=\"\u2001x\u2001\"; std.trim((\"\u2001x\u2001\")) handmade=true actual=\"x\" expected=\"\u2001x\u2001\"; std.trim((\"\u2002x\u2002\")) handmade=false actual=\"x\" expected=\"\u2002x\u2002\"; std.trim((\"\u2002x\u2002\")) handmade=true actual=\"x\" expected=\"\u2002x\u2002\"; std.trim((\"\u2003x\u2003\")) handmade=false actual=\"x\" expected=\"\u2003x\u2003\"; std.trim((\"\u2003x\u2003\")) handmade=true actual=\"x\" expected=\"\u2003x\u2003\"; std.trim((\"\u2004x\u2004\")) handmade=false actual=\"x\" expected=\"\u2004x\u2004\"; std.trim((\"\u2004x\u2004\")) handmade=true actual=\"x\" expected=\"\u2004x\u2004\"; std.trim((\"\u2005x\u2005\")) handmade=false actual=\"x\" expected=\"\u2005x\u2005\"; std.trim((\"\u2005x\u2005\")) handmade=true actual=\"x\" expected=\"\u2005x\u2005\"; std.trim((\"\u2006x\u2006\")) handmade=false actual=\"x\" expected=\"\u2006x\u2006\"; std.trim((\"\u2006x\u2006\")) handmade=true actual=\"x\" expected=\"\u2006x\u2006\"; std.trim((\"\u2007x\u2007\")) handmade=false actual=\"x\" expected=\"\u2007x\u2007\"; std.trim((\"\u2007x\u2007\")) handmade=true actual=\"x\" expected=\"\u2007x\u2007\"; std.trim((\"\u2008x\u2008\")) handmade=false actual=\"x\" expected=\"\u2008x\u2008\"; std.trim((\"\u2008x\u2008\")) handmade=true actual=\"x\" expected=\"\u2008x\u2008\"; std.trim((\"\u2009x\u2009\")) handmade=false actual=\"x\" expected=\"\u2009x\u2009\"; std.trim((\"\u2009x\u2009\")) handmade=true actual=\"x\" expected=\"\u2009x\u2009\"; std.trim((\"\u200ax\u200a\")) handmade=false actual=\"x\" expected=\"\u200ax\u200a\"; std.trim((\"\u200ax\u200a\")) handmade=true actual=\"x\" expected=\"\u200ax\u200a\"; std.trim((\"\u2028x\u2028\")) handmade=false actual=\"x\" expected=\"\u2028x\u2028\"; std.trim((\"\u2028x\u2028\")) handmade=true actual=\"x\" expected=\"\u2028x\u2028\"; std.trim((\"\u2029x\u2029\")) handmade=false actual=\"x\" expected=\"\u2029x\u2029\"; std.trim((\"\u2029x\u2029\")) handmade=true actual=\"x\" expected=\"\u2029x\u2029\"; std.trim((\"\u3000x\u3000\")) handmade=false actual=\"x\" expected=\"\u3000x\u3000\"; std.trim((\"\u3000x\u3000\")) handmade=true actual=\"x\" expected=\"\u3000x\u3000\"; std.trim((\"\u202fx\u202f\")) handmade=false actual=\"x\" expected=\"\u202fx\u202f\"; std.trim((\"\u202fx\u202f\")) handmade=true actual=\"x\" expected=\"\u202fx\u202f\"; std.trim((\"\u205fx\u205f\")) handmade=false actual=\"x\" expected=\"\u205fx\u205f\"; std.trim((\"\u205fx\u205f\")) handmade=true actual=\"x\" expected=\"\u205fx\u205f\"; std.trim((\" \u2003x\u2003 \")) handmade=false actual=\"x\" expected=\"\u2003x\u2003\"; std.trim((\" \u2003x\u2003 \")) handmade=true actual=\"x\" expected=\"\u2003x\u2003\"; std.trim((\" \u2003 x \\t\")) handmade=false actual=\"x\" expected=\"\u2003 x\"; std.trim((\" \u2003 x \\t\")) handmade=true actual=\"x\" expected=\"\u2003 x\"\n[pangbit/moonjsonnet] test spec_string_utilities_contract_test.mbt:88 (\"SU2 isEmpty follows supported length heads without demanding payloads\") failed: spec_string_utilities_contract_test.mbt:33:5-33:30@pangbit/moonjsonnet FAILED: std.isEmpty(([])) handmade=false error=Unexpected type array, expected string expected=true; std.isEmpty(([])) handmade=true error=Unexpected type array, expected string expected=true; std.isEmpty(([0])) handmade=false error=Unexpected type array, expected string expected=false; std.isEmpty(([0])) handmade=true error=Unexpected type array, expected string expected=false; std.isEmpty(([error \"utilities-unread-payload\"])) handmade=false error=Unexpected type array, expected string expected=false; std.isEmpty(([error \"utilities-unread-payload\"])) handmade=true error=Unexpected type array, expected string expected=false; std.isEmpty(({})) handmade=false error=Unexpected type object, expected string expected=true; std.isEmpty(({})) handmade=true error=Unexpected type object, expected string expected=true; std.isEmpty(({[\"\u4e2d\ud83d\ude00\"]:(error \"utilities-unread-payload\")})) handmade=false error=Unexpected type object, expected string expected=false; std.isEmpty(({[\"\u4e2d\ud83d\ude00\"]:(error \"utilities-unread-payload\")})) handmade=true error=Unexpected type object, expected string expected=false; std.isEmpty(({[\"hidden\"]::(error \"utilities-unread-payload\")})) handmade=false error=Unexpected type object, expected string expected=true; std.isEmpty(({[\"hidden\"]::(error \"utilities-unread-payload\")})) handmade=true error=Unexpected type object, expected string expected=true; std.isEmpty((function()(error \"utilities-unread-payload\"))) handmade=false error=Unexpected type function, expected string expected=true; std.isEmpty((function()(error \"utilities-unread-payload\"))) handmade=true error=Unexpected type function, expected string expected=true; std.isEmpty((function(x)(error \"utilities-unread-payload\"))) handmade=false error=Unexpected type function, expected string expected=false; std.isEmpty((function(x)(error \"utilities-unread-payload\"))) handmade=true error=Unexpected type function, expected string expected=false; std.isEmpty((function(p=(error \"utilities-unread-payload\")) (error \"utilities-unread-payload\"))) handmade=false error=Unexpected type function, expected string expected=false; std.isEmpty((function(p=(error \"utilities-unread-payload\")) (error \"utilities-unread-payload\"))) handmade=true error=Unexpected type function, expected string expected=false; std.isEmpty(((std)[\"length\"])) handmade=false error=Unexpected type function, expected string expected=false; std.isEmpty(((std)[\"length\"])) handmade=true error=Unexpected type function, expected string expected=false\n[pangbit/moonjsonnet] test spec_string_utilities_contract_test.mbt:208 (\"SU6 utility results preserve original String Array Object and Function aliases\") failed: pangbit/moonjsonnet.JsonnetError.Error\nTotal tests: 9, passed: 6, failed: 3.\n"
+    },
+    {
+      "role": "baseline-tests-tests.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "repair-original-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "repair-original-check.stderr",
+      "bytes": 44,
+      "sha256": "c79826b968ab80e4632fd7628b7c2b6b8300755d69c7d7c480e13ee010cac331",
+      "content_utf8": "Finished. moon: ran 3 tasks, now up to date\n"
+    },
+    {
+      "role": "repair-original-tests.stdout",
+      "bytes": 644,
+      "sha256": "4c14d0bc8fb4fa8b46cec0896b88e8098acabeaf97ff536129097baa2592e9ec",
+      "content_utf8": "[pangbit/moonjsonnet] test std_string_test.mbt:2 (\"string functions preserve Unicode and native Go contracts\") failed: std_string_test.mbt:42:5-42:68@pangbit/moonjsonnet FAILED: `Array([String(\"\u2003\u3000x\u2029\"), String(\"\u200bx\u200b\"), True, False, Number(3)]) != Array([String(\"x\"), String(\"\u200bx\u200b\"), True, False, Number(3)])`\ndiff:\nArray([String(-\"\u2003\u3000x\u2029\" +\"x\"), String(\"\u200bx\u200b\"), True, False, Number(3)])\n[pangbit/moonjsonnet] test std_string_test.mbt:47 (\"string argument and numeric parsing boundaries\") failed: std_string_test.mbt:78:12-78:45@pangbit/moonjsonnet FAILED: expected error: std.isEmpty([])\nTotal tests: 9, passed: 7, failed: 2.\n"
+    },
+    {
+      "role": "repair-original-tests.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "final-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "final-check.stderr",
+      "bytes": 43,
+      "sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489",
+      "content_utf8": "Finished. moon: ran 1 task, now up to date\n"
+    },
+    {
+      "role": "final-tests.stdout",
+      "bytes": 38,
+      "sha256": "2bbf8d5bcbf8824a27ba86cfb25fbacbee7e78a130dab463b6c2354ad2f75540",
+      "content_utf8": "Total tests: 9, passed: 9, failed: 0.\n"
+    },
+    {
+      "role": "final-tests.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "light-info.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "light-info.stderr",
+      "bytes": 44,
+      "sha256": "2987817259f1ba9f98be0bacda42c847ea21b7cab3f3d161a9b9b2bad4ccb787",
+      "content_utf8": "Finished. moon: ran 5 tasks, now up to date\n"
+    },
+    {
+      "role": "light-fmt.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "light-fmt.stderr",
+      "bytes": 46,
+      "sha256": "1fc8599dded350326c492ea636bee59a441b84cae0365cd86b402a3f99105e40",
+      "content_utf8": "Finished. moon: ran 381 tasks, now up to date\n"
+    },
+    {
+      "role": "light-fmt-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "light-fmt-check.stderr",
+      "bytes": 46,
+      "sha256": "1fc8599dded350326c492ea636bee59a441b84cae0365cd86b402a3f99105e40",
+      "content_utf8": "Finished. moon: ran 381 tasks, now up to date\n"
+    },
+    {
+      "role": "light-docs.stdout",
+      "bytes": 137,
+      "sha256": "bd6a6bf8ba769bc7dc37cecf111b94b8f585f4d62cf5b1b1553a1ea8721bb459",
+      "content_utf8": "Documentation: 217 files, 1855 local/current-source links, root layout, language candidates, README parity and migration targets passed.\n"
+    },
+    {
+      "role": "light-docs.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "verified_source_and_legacy_diff",
+      "bytes": 1869,
+      "sha256": "806f28f445dff0d6d7ed5ccbdd1f2ebf3585b52736291b3352ce67e51695d620",
+      "content_utf8": "diff --git a/std_string_test.mbt b/std_string_test.mbt\nindex 2546ef5..8fbd8c3 100644\n--- a/std_string_test.mbt\n+++ b/std_string_test.mbt\n@@ -1,5 +1,5 @@\n ///|\n-test \"string functions preserve Unicode and native Go contracts\" {\n+test \"string functions preserve reviewed Unicode and standard-library contracts\" {\n   for\n     (source, expected) in [\n       (\n@@ -28,7 +28,7 @@ test \"string functions preserve Unicode and native Go contracts\" {\n       ),\n       (\n         \"[std.trim('\\\\u2003\\\\u3000x\\\\u2029'),std.trim('\\\\u200bx\\\\u200b'),std.isEmpty(''),std.isEmpty(' '),std.id(x={a:3, b:error 'lazy'}).a]\",\n-        \"[\\\"x\\\",\\\"\\\\u200bx\\\\u200b\\\",true,false,3]\",\n+        \"[\\\"\\\\u2003\\\\u3000x\\\\u2029\\\",\\\"\\\\u200bx\\\\u200b\\\",true,false,3]\",\n       ),\n       (\n         \"[std.escapeStringJson('a\\\\n\\\\u0085\ud83d\ude00'),std.escapeStringPython('x'),std.escapeStringBash(\\\"a'b\\\"),std.escapeStringDollars('$a'),std.escapeStringXML('<&>')]\",\n@@ -45,6 +45,7 @@ test \"string functions preserve Unicode and native Go contracts\" {\n \n ///|\n test \"string argument and numeric parsing boundaries\" {\n+  assert_eq(@moonjsonnet.evaluate(\"std.isEmpty([])\"), @json.parse(\"true\"))\n   for\n     source in [\n       \"std.parseInt('')\",\n@@ -64,7 +65,7 @@ test \"string argument and numeric parsing boundaries\" {\n       \"std.splitLimit('a,b',',',0.5)\",\n       \"std.splitLimitR('a,b',',',-2)\",\n       \"std.splitLimit('a','',1)\",\n-      \"std.isEmpty([])\",\n+      \"std.isEmpty(null)\",\n       \"std.trim(null)\",\n       \"std.equalsIgnoreCase('a',1)\",\n       \"std.id(error 'eager')\",\ndiff --git a/stdlib_layer.mbt b/stdlib_layer.mbt\nindex 3069b13..772c5f2 100644\n--- a/stdlib_layer.mbt\n+++ b/stdlib_layer.mbt\n@@ -28,6 +28,8 @@ fn source_standard_function(name : String) -> Bool {\n     | \"isObject\"\n     | \"isArray\"\n     | \"isFunction\"\n+    | \"trim\"\n+    | \"isEmpty\"\n     | \"round\"\n     | \"isInteger\"\n     | \"isDecimal\"\n"
+    }
+  ],
+  "runs": [
+    {
+      "phase": "baseline",
+      "start_utc": "2026-10-28T01:18:25.220482+00:00",
+      "elapsed_before": 0.0007420829999999906,
+      "commands": [
+        {
+          "id": "fmt-check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "fmt",
+            "--check",
+            "spec_string_utilities_contract_test.mbt"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:18:25.401155+00:00",
+          "cap_seconds": 10,
+          "stdout": "baseline-fmt-check.stdout",
+          "stderr": "baseline-fmt-check.stderr",
+          "pid": 15795,
+          "pgid": 15795,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.153934833,
+          "end_utc": "2026-10-28T01:18:25.555088+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489"
+        },
+        {
+          "id": "check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "check",
+            ".",
+            "--target",
+            "native",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:18:25.555981+00:00",
+          "cap_seconds": 60,
+          "stdout": "baseline-check.stdout",
+          "stderr": "baseline-check.stderr",
+          "pid": 15799,
+          "pgid": 15799,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.5776033329999999,
+          "end_utc": "2026-10-28T01:18:26.133585+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "08dfb28aa47cadb52adbbe0e17f43b3527323993cdb1c310eea3ddaafceb5d46"
+        },
+        {
+          "id": "outline",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "test",
+            "spec_string_utilities_contract_test.mbt",
+            "std_string_test.mbt",
+            "arguments_test.mbt",
+            "--outline",
+            "--target",
+            "native",
+            "--debug",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1",
+            "--no-parallelize"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:18:26.134406+00:00",
+          "cap_seconds": 10,
+          "stdout": "baseline-outline.stdout",
+          "stderr": "baseline-outline.stderr",
+          "pid": 15807,
+          "pgid": 15807,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.20697179200000015,
+          "end_utc": "2026-10-28T01:18:26.341378+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "448e18f085a4613a3d4602813a1d429f907938340365d0310ea83c60138d5d61",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "outline_count": 0
+        }
+      ],
+      "outline_requires_explicit_review": true,
+      "end_utc": "2026-10-28T01:18:26.343512+00:00",
+      "elapsed_after": 1.1237684579999998,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 737,
+        "sha256": "bdf5bb1c6ab2c16d6c1d7c39024f877482b7526b4c0aad4a81e3f4bfd113f96b"
+      },
+      "inputs_after": {
+        "entries": 737,
+        "sha256": "bdf5bb1c6ab2c16d6c1d7c39024f877482b7526b4c0aad4a81e3f4bfd113f96b"
+      }
+    },
+    {
+      "phase": "baseline-tests",
+      "start_utc": "2026-10-28T01:18:37.186465+00:00",
+      "elapsed_before": -0.0471265,
+      "commands": [
+        {
+          "id": "tests",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "test",
+            "spec_string_utilities_contract_test.mbt",
+            "std_string_test.mbt",
+            "arguments_test.mbt",
+            "--target",
+            "native",
+            "--debug",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1",
+            "--no-parallelize"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:18:37.218611+00:00",
+          "cap_seconds": 180,
+          "stdout": "baseline-tests-tests.stdout",
+          "stderr": "baseline-tests-tests.stderr",
+          "pid": 15815,
+          "pgid": 15815,
+          "timed_out": false,
+          "exit": 2,
+          "elapsed_seconds": 10.386823167,
+          "end_utc": "2026-10-28T01:18:47.605455+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "cfa99c9c491b485f505af1bd5e00fc8a9574b19662601cac3d6fde00e2750c4d",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "end_utc": "2026-10-28T01:18:47.606433+00:00",
+      "elapsed_after": 10.372702749999998,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 737,
+        "sha256": "bdf5bb1c6ab2c16d6c1d7c39024f877482b7526b4c0aad4a81e3f4bfd113f96b"
+      },
+      "inputs_after": {
+        "entries": 737,
+        "sha256": "bdf5bb1c6ab2c16d6c1d7c39024f877482b7526b4c0aad4a81e3f4bfd113f96b"
+      }
+    },
+    {
+      "phase": "repair-original",
+      "start_utc": "2026-10-28T01:19:47.763357+00:00",
+      "elapsed_before": 82.54402685165405,
+      "commands": [
+        {
+          "id": "check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "check",
+            ".",
+            "--target",
+            "native",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:19:47.963313+00:00",
+          "cap_seconds": 60,
+          "stdout": "repair-original-check.stdout",
+          "stderr": "repair-original-check.stderr",
+          "pid": 15867,
+          "pgid": 15867,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.631440125,
+          "end_utc": "2026-10-28T01:19:48.594753+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "c79826b968ab80e4632fd7628b7c2b6b8300755d69c7d7c480e13ee010cac331"
+        },
+        {
+          "id": "tests",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "test",
+            "spec_string_utilities_contract_test.mbt",
+            "std_string_test.mbt",
+            "arguments_test.mbt",
+            "--target",
+            "native",
+            "--debug",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1",
+            "--no-parallelize"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:19:48.595617+00:00",
+          "cap_seconds": 180,
+          "stdout": "repair-original-tests.stdout",
+          "stderr": "repair-original-tests.stderr",
+          "pid": 15872,
+          "pgid": 15872,
+          "timed_out": false,
+          "exit": 2,
+          "elapsed_seconds": 12.256524708999999,
+          "end_utc": "2026-10-28T01:20:00.852175+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "4c14d0bc8fb4fa8b46cec0896b88e8098acabeaf97ff536129097baa2592e9ec",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "end_utc": "2026-10-28T01:20:00.853139+00:00",
+      "elapsed_after": 95.63353705406189,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 737,
+        "sha256": "baf96109b396ee8bf0cef590c510e0ad3f298834083e11ae63d653f4429b9455"
+      },
+      "inputs_after": {
+        "entries": 737,
+        "sha256": "baf96109b396ee8bf0cef590c510e0ad3f298834083e11ae63d653f4429b9455"
+      }
+    },
+    {
+      "phase": "final",
+      "start_utc": "2026-10-28T01:20:29.861295+00:00",
+      "elapsed_before": 124.64201402664185,
+      "commands": [
+        {
+          "id": "check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "check",
+            ".",
+            "--target",
+            "native",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:20:30.030542+00:00",
+          "cap_seconds": 60,
+          "stdout": "final-check.stdout",
+          "stderr": "final-check.stderr",
+          "pid": 15935,
+          "pgid": 15935,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.420494875,
+          "end_utc": "2026-10-28T01:20:30.451035+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489"
+        },
+        {
+          "id": "tests",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "test",
+            "spec_string_utilities_contract_test.mbt",
+            "std_string_test.mbt",
+            "arguments_test.mbt",
+            "--target",
+            "native",
+            "--debug",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1",
+            "--no-parallelize"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:20:30.452053+00:00",
+          "cap_seconds": 164.76756402334593,
+          "stdout": "final-tests.stdout",
+          "stderr": "final-tests.stderr",
+          "pid": 15938,
+          "pgid": 15938,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 10.533823875000001,
+          "end_utc": "2026-10-28T01:20:40.985900+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "2bbf8d5bcbf8824a27ba86cfb25fbacbee7e78a130dab463b6c2354ad2f75540",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "end_utc": "2026-10-28T01:20:40.987147+00:00",
+      "elapsed_after": 135.7675428390503,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 737,
+        "sha256": "66058ee920928c8c1cf6cd0a1499f0625651fb31c0dd42334b456e6c311bd8fa"
+      },
+      "inputs_after": {
+        "entries": 737,
+        "sha256": "66058ee920928c8c1cf6cd0a1499f0625651fb31c0dd42334b456e6c311bd8fa"
+      }
+    },
+    {
+      "phase": "light",
+      "start_utc": "2026-10-28T01:21:43.165659+00:00",
+      "elapsed_before": 197.94636297225952,
+      "commands": [
+        {
+          "id": "info",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "info",
+            "--target",
+            "native",
+            "--frozen"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:21:43.354776+00:00",
+          "cap_seconds": 30,
+          "stdout": "light-info.stdout",
+          "stderr": "light-info.stderr",
+          "pid": 15984,
+          "pgid": 15984,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.372624042,
+          "end_utc": "2026-10-28T01:21:43.727399+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "2987817259f1ba9f98be0bacda42c847ea21b7cab3f3d161a9b9b2bad4ccb787"
+        },
+        {
+          "id": "fmt",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "fmt"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:21:43.728271+00:00",
+          "cap_seconds": 20,
+          "stdout": "light-fmt.stdout",
+          "stderr": "light-fmt.stderr",
+          "pid": 15991,
+          "pgid": 15991,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.624557458,
+          "end_utc": "2026-10-28T01:21:44.352828+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "1fc8599dded350326c492ea636bee59a441b84cae0365cd86b402a3f99105e40"
+        },
+        {
+          "id": "fmt-check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "fmt",
+            "--check"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:21:44.353639+00:00",
+          "cap_seconds": 15,
+          "stdout": "light-fmt-check.stdout",
+          "stderr": "light-fmt-check.stderr",
+          "pid": 16374,
+          "pgid": 16374,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.9012845,
+          "end_utc": "2026-10-28T01:21:45.254924+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "1fc8599dded350326c492ea636bee59a441b84cae0365cd86b402a3f99105e40"
+        },
+        {
+          "id": "docs",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "run",
+            "--frozen",
+            "tools/documentation.mbtx"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:21:45.255810+00:00",
+          "cap_seconds": 30,
+          "stdout": "light-docs.stdout",
+          "stderr": "light-docs.stderr",
+          "pid": 17138,
+          "pgid": 17138,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 2.5055166249999994,
+          "end_utc": "2026-10-28T01:21:47.761327+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "bd6a6bf8ba769bc7dc37cecf111b94b8f585f4d62cf5b1b1553a1ea8721bb459",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "end_utc": "2026-10-28T01:21:47.762295+00:00",
+      "elapsed_after": 202.54268980026245,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 737,
+        "sha256": "b885f34ab8127a3b14214e90a1936c52860397098cb88003459ec9efbb5878a0"
+      },
+      "inputs_after": {
+        "entries": 737,
+        "sha256": "b885f34ab8127a3b14214e90a1936c52860397098cb88003459ec9efbb5878a0"
+      }
+    }
+  ],
+  "legacy_migrations": [
+    {
+      "input": "std.trim('\\u2003\\u3000x\\u2029')",
+      "old_expected": "x",
+      "new_expected": "\u2003\u3000x\u2029",
+      "basis": "Fixed std.jsonnet:1799 delegates to stripChars with seven explicit characters, excluding these three. The same existing source input and the other array outputs are preserved.",
+      "observed_pre_migration": "Old first string group failed after the two-name repair; unchanged SU1 already passed all 68 observations."
+    },
+    {
+      "input": "std.isEmpty([])",
+      "old_expected": "error",
+      "new_expected": true,
+      "basis": "Fixed std.jsonnet:1762 length(str)==0 and the empty Array length rule require true. The old input now has an explicit success assertion; std.isEmpty(null) is a separate invalid-head negative control.",
+      "observed_pre_migration": "Old second string group failed expected-error after the two-name repair; unchanged SU2 already passed all 28 observations."
+    }
+  ],
+  "validation_summary": {
+    "actual_outline_groups": 9,
+    "baseline": {
+      "passed": 6,
+      "failed": 3,
+      "exit": 2,
+      "new_groups_passed": 3,
+      "new_groups_failed": 3
+    },
+    "repair_with_original_legacy": {
+      "passed": 7,
+      "failed": 2,
+      "exit": 2,
+      "new_groups_passed": 6,
+      "new_groups_failed": 0
+    },
+    "final": {
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "exit": 0
+    },
+    "independent_fixture_unchanged": true,
+    "interfaces_unchanged": true,
+    "format_changed_inputs": false,
+    "original_mapping_objects_preserved": 110,
+    "manual_mappings": 112,
+    "unmapped_candidates": 41,
+    "baseline_executed_branches": "SU1 all 68 observations: 40 differences/28 successes. SU2 all 28: 20 rejected/8 successes. SU6 reached its first Array rejection; later aliases were NOTRUN then, and passed after the repair.",
+    "scope": "Source/handmade-AST witnesses under reviewed stripChars/length/call/child-Value premises. No new N0/R0/A0, diagnostic-winner or callback-count decision.",
+    "NOTRUN": [
+      "complete package suite",
+      "release",
+      "Linux/x86",
+      "standalone CLI/API",
+      "Go/C++ reference comparisons"
+    ]
+  },
+  "source_changes": "Only two source_standard_function entries enable unchanged fixed trim/isEmpty definitions; shared trim_space, native implementations, imports and resolvePath are unchanged.",
+  "final_input_sha256": {
+    "stdlib_source.mbt": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+    "stdlib_layer.mbt": "04fa199f43ac20b769abda17f046f4f6920d3bbc9ed8c1a588992eac745b5422",
+    "stdlib.mbt": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+    "imports.mbt": "5854e3b0f3a928a7e8dbc1f16ee556e0a3d5cbbb680e739a5a835c6f7579d70c",
+    "std_string.mbt": "11251f9f1142f364c56865cd5398e4523fd7714ec720582c7dbc67bca2c71026",
+    "std_string_test.mbt": "2ec506af9844dc2772331c8fc3ca72477016084539dc8c8d729fd4d111e6729f",
+    "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336",
+    "spec_string_utilities_contract_test.mbt": "8e4e819cb0e1bfeb99a0f7cf52bf21c9ead4fe9a1abd2a09e87b9136ebb41cf9",
+    "tests/spec-string-utilities-plan.json": "eefc20ecdbcb5ae05b73dd635b2fefc3ebfbe84aaaff3c3fefe21223fd55cdfd",
+    "tests/spec-public-coverage.json": "e6ddd2294277d8e47ea22edcc534eb6c15496fd3cb1c70bed1fb1d993e91fab9"
+  },
+  "toolchain": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "moon_version": "moon 0.1.20260920 (914d7da 2026-09-20)\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+    "sha256": {
+      "<USER_HOME>/.moon/bin/moon": "a0cd1c0014f2ca17089542939ac4ad3c983452c5952ca6140af0fcef258e1967",
+      "<USER_HOME>/.moon/bin/moonc": "8a49fb209d896b8ce72322883aa53a2395a1bdd88d35423ebfd841fc66b8f127",
+      "/usr/bin/cc": "34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2"
+    }
+  },
+  "window": {
+    "start_utc": "2026-10-28T01:18:25.219609+00:00",
+    "end_utc": "2026-10-28T01:22:58.172418+00:00",
+    "limit_seconds": 300,
+    "actual_wall_seconds": 272.952809,
+    "subprocess_seconds": 39.571599334,
+    "test_subprocess_seconds": 33.177171751,
+    "all_owned_pids_and_groups_gone": true,
+    "owned_pids": 12,
+    "owned_groups": 12,
+    "clock_note": "The first two historical elapsed counters used process-local macOS monotonic readings across interpreters and are not cumulative wall-time evidence. Subsequent caps and this receipt use the unchanged original UTC start/deadline; no window reset occurred."
+  }
+}

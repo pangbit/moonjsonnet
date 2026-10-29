@@ -103,7 +103,8 @@ fn reference_atan2(y : Double, x : Double) -> Double {
   }
   let q = reference_atan(y / x)
   if x < 0 {
-    if q <= 0 {
+    // The quotient may underflow to zero; retain the quadrant from the original y.
+    if y > 0 {
       q + 3.141592653589793
     } else {
       q - 3.141592653589793

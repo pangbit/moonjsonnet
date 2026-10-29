@@ -1164,3 +1164,33 @@ Current-source macOS release, the complete 67 application scenarios and a
 separately installed package consumer remain NOTRUN. No new Go/C++ comparison or
 full specification acceptance is established. The [current conformance checkpoint](SPEC-CONFORMANCE.md#same-source-platform-checkpoint-at-97f0938)
 keeps public subsets, missing evidence and shared normative questions distinct.
+
+## Combined macOS native regression at 7672947
+
+On 2026-10-27, clean `7672947367912ea8a66acdb6ea136d5da0ec5e22` (tree `1213873cad7735a7b973fdfe9e87c1be50092091`, 719 tracked inputs) passed both full native package modes.
+Tools: Moon 0.1.20260920 (914d7da), moonc 0.10.14+7d59c7ec9 (2026-09-18), Apple clang 21.0.0; macOS 27.0.1 ARM64.
+
+```sh
+moon test --debug --target native --frozen --deny-warn -j 1 --no-parallelize
+moon test --release --target native --frozen --deny-warn -j 1 --no-parallelize
+```
+
+| Mode | Actual passed/total | Failed/skipped | Exit; command duration |
+| --- | --- | --- | --- |
+| Debug | 890/890 | 0/0 | 0; 146.123s |
+| Release | 890/890 | 0/0 | 0; 171.540s |
+
+| Retained binding | SHA-256 |
+| --- | --- |
+| 719-entry input manifest | `4fb86b56d9031aeb489812b852fe917f5be9e809dd382f57acac2dfa8b56d4b9` |
+| Moon executable | `a0cd1c0014f2ca17089542939ac4ad3c983452c5952ca6140af0fcef258e1967` |
+| moonc executable | `8a49fb209d896b8ce72322883aa53a2395a1bdd88d35423ebfd841fc66b8f127` |
+| cc executable | `34129c71a01a74f7f3b2443521519b2e5447553fa187f5fcafaaf8c42cc192e2` |
+| Debug binary manifest | `1da693bcdb06131e8770bebed3a60f8b4cce19a0408cb4c4b608db0e35d82406` |
+| Release binary manifest | `df7b8928123d917223fcd884601a8b085148e6fd6d4d3a7a0a23eabb6af65bc9` |
+
+Actual totals match both unfiltered outlines. Runs were sequential with closed stdin; source/tool hashes stayed stable, and both mode groups and their controller were independently confirmed absent.
+The whole window took 475.484s from first preflight within its unchanged 1260s deadline. Each mode's manifest inventories 45 regular ARM64 test binaries, not individual-case execution traces.
+This covers cumulative [JSON Number/String/key](SPEC-JSON-CONTRACTS-2026-10-23.md) and [YAML Number/bare-key](SPEC-YAML-DEMAND-2026-10-25.md) corrections without promoting whole functions.
+Separate `.mbtx` integration/differential, API/CLI and Linux validation, and publication, remain NOTRUN for this checkpoint. Stream default and other normative gaps remain NOTPASS; overall conformance is incomplete.
+Earlier failures and published 0.2.0 evidence remain unchanged. This documentation-only follow-up does not claim a new full-tree run of its future commit.

@@ -49,6 +49,18 @@ test "reverse preserves lazy elements and leaves its input unchanged" {
 }
 
 ///|
+test "reverse String input follows fixed source codepoint indexing" {
+  // Fixed bbb38f std.jsonnet 1428-1430 uses length and lazy indexed elements.
+  assert_eq(@moonjsonnet.evaluate("std.reverse('ab')"), ["b", "a"])
+}
+
+///|
+test "reverse empty Object input follows fixed source length" {
+  // Zero visible fields produce makeArray(0, ...); no numeric index is read.
+  assert_eq(@moonjsonnet.evaluate("std.reverse({})"), [])
+}
+
+///|
 test "sequence functions validate arguments and remain hidden" {
   let cases = [
     ("std.makeArray(-1, function(i) i)", @moonjsonnet.Runtime),
@@ -60,8 +72,6 @@ test "sequence functions validate arguments and remain hidden" {
     ("std.mapWithIndex(1,[])", @moonjsonnet.Runtime),
     ("std.mapWithIndex(function(i,x)x,{})", @moonjsonnet.Runtime),
     ("std.mapWithIndex(function(x)x,[1])[0]", @moonjsonnet.Runtime),
-    ("std.reverse('ab')", @moonjsonnet.Type),
-    ("std.reverse({})", @moonjsonnet.Type),
     ("std.reverse(xs=[])", @moonjsonnet.Runtime),
   ]
   for (source, kind) in cases {

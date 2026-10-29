@@ -1,0 +1,2 @@
+[pangbit/moonjsonnet] test std_math_test.mbt:2 ("math and boolean standard functions use reviewed contracts") failed: pangbit/moonjsonnet.JsonnetError.Error
+Total tests: 12, passed: 11, failed: 1.

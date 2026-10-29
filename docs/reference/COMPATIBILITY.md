@@ -16,6 +16,12 @@ CLI output corpus also pins complete stdout bytes for JSON layout, plain strings
 and YAML document streams. Multi-file fixtures separately compare complete file
 contents and filename lists in isolated reference/local output directories.
 
+This document describes the 0.2.1 release candidate. "Unreleased" below refers
+to these 0.2.1 changes; published 0.2.0 behavior is identified separately.
+The 138 finite public-contract mappings and existing macOS/Linux native
+debug/release records of 1087/1087 each establish their stated tested scopes,
+not complete specification conformance or publication of the new version.
+
 ## Implementation reference
 
 [google/go-jsonnet](https://github.com/google/go-jsonnet) is the functional
@@ -149,9 +155,11 @@ Go v0.21.0 crashes internally when `objectRemoveKey` receives an inherited objec
 `object-operations-inheritance` fixture records this Go difference. Removing a key
 from an object whose retained fields use object-local bindings also causes a Go
 internal error (`object-remove-local-bindings`); MoonJsonnet preserves those bindings.
-MoonJsonnet copies the remaining layers and reports a normal missing-field error
-if a retained field accesses the removed key through `self`; it does not reproduce
-the reference crash. This is not counted as a compatible pass.
+MoonJsonnet projects the remaining visible field names and lazily reads each
+retained value from the original object. A retained field therefore keeps its
+original `self`, including access to a key omitted from the projection. Demanded
+retained reads check the original object's assertions under the ordinary object
+rules. These fixed-source results do not relabel the retained Go crashes as passes.
 
 Only the following functions are supported. Arity/named-argument violations are
 `Runtime`; invalid types are `Type` unless an explicit assertion is involved.
@@ -166,9 +174,9 @@ Only the following functions are supported. Arity/named-argument violations are
 | `objectHas(o,f)`, `objectHasAll(o,f)` | Membership excluding/including hidden fields |
 | `map(func,arr)` | Lazy mapped array; accepts array or string |
 | `mapWithIndex(func,arr)` | Lazy mapped array; callback receives zero-based index and element; strings use Unicode code points |
-| `makeArray(sz,func)` | Lazy generated array; callback receives index; signed 32-bit integer size, with negative sizes producing an empty array; callback arity checked when an element is used |
-| `reverse(arr)` | New array in reverse order; elements remain lazy and the input is unchanged |
-| `sort(arr,keyF=function(x)x)` | Stable array sort; optional key function evaluated once per element; numeric, string or lexicographic array keys; preserves original element thunks and input order for equal keys |
+| `makeArray(sz,func)` | Lazy generated array; callback receives index; size must be a nonnegative signed 32-bit integer; negative and fractional sizes reject; callback arity checked when an element is used |
+| `reverse(arr)` | 0.2.1 uses the fixed length and lazy indexing definition: Array elements are reversed without changing the input; String input returns an Array of one-character Strings in reverse Unicode code-point order |
+| `sort(arr,keyF=function(x)x)` | Stable array sort; numeric, string or lexicographic array keys; preserves original element thunks and input order for equal keys. General key-function call counts/order are not guaranteed; use pure repeatable keys |
 | `uniq`, `set`, `setUnion`, `setInter`, `setDiff`, `setMember` | Pinned upstream Jsonnet definitions, evaluated by the MoonBit runtime; optional key functions, lazy elements and left-hand representatives preserved |
 | `mergePatch(target,patch)` | Recursive JSON merge patch with null deletion, visible fields, lazy retained values and scalar replacement |
 | `all`, `any`, `filterMap`, `count`, `repeat`, `find` | Pinned source definitions; boolean short circuit and lazy retained values |
@@ -183,9 +191,9 @@ Only the following functions are supported. Arity/named-argument violations are
 | `$flatMapArray(func,arr)` | Reflected Go helper; flatMap behavior restricted to array input |
 | `__compare`, `__compare_array`, `__array_less`, `__array_greater`, `__array_less_or_equal`, `__array_greater_or_equal` | Reflected upstream comparison helpers, including lexicographic nested arrays |
 | `get`, `objectValues`, `objectValuesAll`, `objectKeysValues`, `objectKeysValuesAll`, `mapWithKey`, `prune` | Pinned Jsonnet definitions; hidden-field policy, lazy defaults/values and inherited self preserved |
-| `objectRemoveKey(obj,key)` | Copies remaining fields including hidden fields, rebinds self and omits object assertions, matching Go's native implementation for simple objects; input is unchanged |
+| `objectRemoveKey(obj,key)` | Projects retained visible fields with lazy reads from the original object; input and original field bindings stay unchanged. Demanded retained reads check original object assertions under the ordinary object rules |
 | `objectFieldsEx(obj,hidden)`, `objectHasEx(obj,fname,hidden)` | Native reflection with explicit hidden-field selection and reference parameter names |
-| `primitiveEquals(x,y)`, `equals(x,y)` | Primitive comparison or recursive equality; unlike types compare false, same-type functions cannot be compared; parameter names follow Go's native override |
+| `primitiveEquals(x,y)`, `equals(a,b)` | Primitive comparison or recursive equality; unlike types compare false, same-type functions cannot be compared. Unreleased `equals` uses the fixed definition's required `a,b` names; published 0.2.0 uses `x,y`. `primitiveEquals` retains its native `x,y` names |
 | `filter(func,arr)` | Array filtering; predicate must return boolean |
 | `flatMap(func,arr)` | Validates the function before demanding the input; concatenates callback arrays or strings using Unicode code points; callback result heads are forced but returned array elements stay lazy; out-of-documented-kind return policies remain under review |
 | `foldl(func,arr,init)` | Iterative left fold over array/string; empty input returns init without using func, the first callback may ignore init, and each intermediate result head is forced; elements and nested fields remain lazy |
@@ -195,9 +203,9 @@ Only the following functions are supported. Arity/named-argument violations are
 | `split(str,c)` | Source assertions validate str, then nonempty c; unlimited left-to-right splitting retains empty pieces. See the [scoped split review](#development-evidence-index) |
 | `splitLimit(str,c,maxsplits)`, `splitLimitR(str,c,maxsplits)` | Validates str/c before demanding maxsplits; finite nonnegative integral bounds are not narrowed to Int32. -1 means unlimited; native R still scans from the right, with overlapping -1 cases unresolved against fixed source (SPL-R0). Fractional/other-negative limits remain rejected but unadjudicated. See the [scoped review](#development-evidence-index) |
 | `lstripChars(str,chars)`, `rstripChars(str,chars)`, `stripChars(str,chars)` | Validates String input before demanding chars; empty input leaves chars lazy. Uses Unicode String-set membership or source-defined Array membership, inspecting every Array member even after a match while sharing element values. Supersedes the historical eager/short-circuit behavior; see the [scoped review](#development-evidence-index) |
-| `trim(str)` | Unicode 15 White_Space trimming; zero-width space and BOM are retained |
-| `isEmpty(str)` | String-only emptiness predicate |
-| `equalsIgnoreCase(str1,str2)` | Unicode 15 simple case folding from pinned Go data, including Kelvin sign, sigma variants and supplementary letters; does not expand ß to ss or apply locale rules |
+| `trim(str)` | Unreleased: fixed seven-character endpoint set U+0020/U+0009/U+000A/U+000C/U+000D/U+0085/U+00A0; other codepoints are retained. Published 0.2.0 used Unicode 15 White_Space |
+| `isEmpty(str)` | Unreleased: fixed `length(str) == 0`, including Array, visible Object fields and Function parameter counts; nested payloads remain lazy. Published 0.2.0 accepted Strings only |
+| `equalsIgnoreCase(str1,str2)` | Unreleased compares ASCII-lowered strings; non-ASCII codepoints stay unchanged, so K/k, Σ/σ and ß/ẞ compare false. Published 0.2.0 retains pinned Go Unicode 15 simple folding, without ß-to-ss expansion or locale rules |
 | `asciiLower(str)`, `asciiUpper(str)`, `stringChars(str)` | Pinned source definitions; ASCII-only case conversion and Unicode code-point array |
 | `findSubstr(pat,str)` | All overlapping code-point offsets; empty pattern or string gives an empty array |
 | `parseInt(str)` | Fixed official optional minus and ASCII decimal digits; separate finite Number multiply/add accumulation without an Int64 bound; plus, whitespace, prefixes and underscores reject. This supersedes the historical Go-oriented native range/sign behavior; see the [scoped review](#development-evidence-index) |
@@ -205,7 +213,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `escapeStringJson(str_)`, `escapeStringPython(str)`, `escapeStringBash(str_)`, `escapeStringDollars(str_)`, `escapeStringXML(str_)` | String coercion and context-specific escaping, including C0/C1 JSON controls |
 | `resolvePath(f,r)` | Pinned lexical directory joining; does not normalize .. or treat r as an absolute replacement |
 | `id(x)` | Eager identity; nested array/object values remain lazy |
-| `remove(arr,elem)`, `removeAt(arr,i)` | Return a new array while preserving the original and its aliases; remove searches only through the first match, removeAt does not force elements; the public named-index contract remains under review |
+| `remove(arr,elem)`, `removeAt(arr,i)` | Preserve the original array and its aliases; remove computes find results and removes the first matched index, while removeAt defers retained payloads and leaves unmatched positions unchanged. removeAt's documentation uses idx, fixed source uses at, and this implementation retains i; prefer positional calls while that naming conflict remains unresolved |
 | `$objectFlatMerge(x)` | Internal helper: merge simple objects with disjoint keys, preserving field visibility and bindings, rebinding self, dropping assertions; explicit object locals and inherited objects are rejected |
 | `encodeUTF8(str)` | UTF-8 bytes, with BOM and zero characters preserved |
 | `decodeUTF8(arr)` | Integer bytes in 0..255; each malformed UTF-8 byte becomes U+FFFD, including incomplete multibyte sequences |
@@ -215,29 +223,29 @@ Only the following functions are supported. Arity/named-argument violations are
 | `strReplace(str,from,to)` | Nonoverlapping literal replacement; empty pattern rejected |
 | `startsWith(a,b)`, `endsWith(a,b)` | String prefix/suffix checks |
 | `parseJson(str)` | Core JSON parser with bounded nesting; malformed JSON is `Runtime` |
-| `manifestJson(value)` | Sorted keys, four-space indentation, shortest round-trip decimal numbers without exponents; preserves negative zero |
-| `manifestJsonEx(value,indent,newline='\n',key_val_sep=': ')`, `manifestJsonMinified(value)` | Custom layout or compact JSON; empty containers retain both surrounding newlines; JSON escapes C0 and U+2028/U+2029 but preserves HTML characters and C1 |
+| `manifestJson(value)` | Sorted keys and four-space indentation; Unreleased Number text follows ordinary String coercion, may use exponents and preserves negative zero. Published 0.2.0 retains the prior shortest fixed-decimal text described below |
+| `manifestJsonEx(value,indent,newline='\n',key_val_sep=': ')`, `manifestJsonMinified(value)` | Custom layout or compact JSON; empty containers retain both surrounding newlines. Unreleased String values/keys escape C0/C1 and preserve HTML characters and raw U+2028/U+2029; published 0.2.0 retains the prior policy described below |
 | `manifestPython(v)`, `manifestPythonVars(conf)` | Pinned source layout: Python True/False/None, sorted visible object fields, 17-digit numeric coercion; vars adds one assignment and newline per field |
 | `manifestIni(ini)` | Optional main object and required sections object; sorted fields, array values emit repeated key lines, no escaping |
 | `manifestXmlJsonml(value)` | Pinned source JsonML conversion; sorted visible attributes and paired tags; text and attribute values are emitted without automatic XML escaping |
-| `manifestToml(value)`, `manifestTomlEx(value,indent)` | Native Go table/array-of-tables layout; default indent is two spaces; empty key is `''`; null and functions rejected; numeric coercion uses 17 significant digits |
-| `manifestYamlDoc(value,indent_array_in_object=false,quote_keys=true)` | Native layout, shortest fixed-decimal numbers, newline-terminated block strings, conservative bare-key recognition; functions and nested errors fail the call |
+| `manifestToml(value)`, `manifestTomlEx(value,indent)` | Native table/array-of-tables layout; default indent is two spaces; empty key is `''`; null and functions rejected; numeric coercion uses 17 significant digits. In 0.2.1, ordinary calls demand indent only when output needs an indented prefix; tailstrict retains its argument forcing |
+| `manifestYamlDoc(value,indent_array_in_object=false,quote_keys=true)` | Native layout; Unreleased Number text follows ordinary String coercion and bare keys follow the fixed Jsonnet predicates described below. Published 0.2.0 retains shortest fixed-decimal numbers and Go bare-key rules. Newline-terminated block strings remain; functions and nested errors fail the call |
 | `manifestYamlStream(value,indent_array_in_object=false,c_document_end=true,quote_keys=true)` | Pinned source document separators and optional final marker; empty stream preserves separators and leaves unused document options lazy |
-| `toString(a)` | Strings unchanged; other manifestable values become compact JSON with Jsonnet spacing |
+| `toString(a)` | Strings unchanged; other manifestable values become single-line JSON. Current spacing is a compatibility profile; the fixed definition does not mandate a unique empty-container spacing |
 | `floor(x)`, `ceil(x)` | Reject non-finite results |
 | `abs(n)` | Go source rule: retain n if positive, otherwise negate; flips signed zero |
 | `sqrt(x)`, `sin(x)`, `cos(x)`, `tan(x)`, `asin(x)`, `acos(x)`, `atan(x)`, `log(x)`, `exp(x)` | Numeric functions; non-finite results are Runtime errors |
-| `hypot(x,y)`, `atan2(y,x)`, `pow(x,n)`, `modulo(x,y)` | Native numeric argument names and signed-zero handling; modulo rejects zero divisor |
-| `round(x)` | Nearest integer, half away from zero, preserving negative zero |
+| `hypot(a,b)`, `atan2(y,x)`, `pow(x,n)`, `modulo(x,y)` | Native numeric argument names and signed-zero handling; modulo rejects zero divisor. 0.2.1 corrects hypot to a,b and rejects the legacy x,y names |
+| `round(x)` | Unreleased: fixed `floor(x + 0.5)` with IEEE addition; -0.5 gives 0, and 4503599627370497 gives 4503599627370498. Published 0.2.0 used half-away-from-zero rounding and retained negative zero |
 | `mantissa(x)`, `exponent(x)` | Binary fraction and exponent, including subnormal normalization; exponent returns 0 for zero |
 | `isEven(x)`, `isOdd(x)` | Parity of truncated numeric value |
-| `isInteger(x)`, `isDecimal(x)` | Zero/nonzero fractional part |
+| `isInteger(x)`, `isDecimal(x)` | Unreleased: equality/inequality between fixed `round(x)` and x; 4503599627370497 therefore gives false/true. Published 0.2.0 tested zero/nonzero fractional part |
 | `pi`, `deg2rad(x)`, `rad2deg(x)`, `log2(x)`, `log10(x)`, `sign(n)`, `mod(a,b)` | Pinned source definitions; mod dispatches numeric modulo or string formatting |
 | `xor(x,y)`, `xnor(x,y)` | Eager boolean-only operands |
 | `format(str,vals)` | Same formatting semantics as string `%` |
 | `slice(indexable,index,end,step)` | Same semantics as array/string slice syntax |
 | `char(n)`, `codepoint(str)` | Integral identifier conversion / one-code-point string; scalar round trips and fractional-ID rejection reviewed; surrogate-ID policy remains unadjudicated |
-| `assertEqual(a,b)` | Returns true or reports `Assertion` |
+| `assertEqual(a,b)` | Source-defined: equal comparable values return true; unequal values or required comparison/formatting errors fail. Exact diagnostic presentation is not a portable promise |
 | `lines(arr)` | Join non-null strings with a newline after each |
 | `sha256(s)` | SHA-256 of UTF-8 string bytes, lowercase hexadecimal; rounds consume the evaluation step budget |
 | `md5(s)`, `sha1(s)`, `sha512(s)`, `sha3(s)` | MD5, SHA-1, SHA-512 and SHA3-512 of UTF-8 string bytes; lowercase hexadecimal; require strings and consume a work step per compression/permutation round |
@@ -266,11 +274,40 @@ Integer-only standard function bounds and resource limits may reject inputs that
 the reference accepts. Restricted argument domains return an error and are not
 silently truncated. String coercion (`toString`, string concatenation and `%s`)
 uses the C locale, fixed integer formatting or 17 significant digits.
-`manifestJson` follows Go's shortest round-trip digits in fixed decimal notation,
-including subnormal numbers and signed zero. It uses MoonBit core's shortest
-conversion and expands exponents; expanded output remains subject to the output
-byte limit. C++ uses the older numeric text rule for both operations, so the
-shared numeric-string fixture records both exact outputs as a declared difference.
+In **Unreleased**, Number output in `manifestJsonEx`, `manifestJson` and
+`manifestJsonMinified` follows the fixed Jsonnet definition's ordinary String
+coercion. For example, `0.1` produces `0.10000000000000001`, `1e-8` produces
+`1e-08`, and `5e-324` produces `4.9406564584124654e-324`. Signed zero remains
+`-0`; finite-value checks and output-byte limits still apply. Consumers that
+compare emitted text or set tight output budgets should update the expected
+spelling and byte length. This Number correction does not establish complete
+conformance of the three JSON functions or change YAML/TOML numeric output.
+
+Published **0.2.0**, from `277ccfe0bf017ec65332a14ca80475dfb8ae0ff2`, retains
+the earlier shortest fixed-decimal JSON Number output, including expanded
+subnormal text. Its historical Go/C++ comparison reports preserve those exact
+outputs and the numeric difference recorded at that revision. The Unreleased
+numeric-string case now requires the original reference result as exact success.
+
+Also in **Unreleased**, all three JSON functions apply the fixed
+`escapeStringJson` policy to String values and visible object keys. Quote and
+backslash are escaped; C0 controls use the standard short escapes or lowercase
+four-digit hex, and codepoints 127..159 use lowercase four-digit hex. Other
+valid Unicode remains raw, including U+2028/U+2029. For example, U+0085 now
+occupies the six output characters `\u0085`, while U+2028 occupies its three
+UTF-8 bytes. Text comparisons and tight byte budgets should use this spelling.
+Published **0.2.0** leaves C1 raw and escapes U+2028/U+2029 in JSON values and
+keys; its historical reports retain that behavior. This correction preserves
+YAML/TOML output and makes no new malformed-Unicode or whole-function claim.
+
+The separate **Unreleased** YAML Number correction applies to both
+`manifestYamlDoc` and its `manifestYamlStream` wrapper. For example, `0.1` now
+produces `0.10000000000000001` and `1e-8` produces `1e-08`; signed zero remains
+`-0`. Update exact-text comparisons and tight output budgets accordingly.
+Published **0.2.0** retains the earlier shortest fixed-decimal YAML numbers.
+This change does not decide the disputed Stream end-flag default or alter YAML
+quoting/layout, TOML or JSON behavior; it is not whole-function acceptance.
+
 CLI JSON follows the pinned Go layout described in [CLI](CLI.md), with complete
 stdout-byte comparisons in its dedicated corpus.
 
@@ -287,8 +324,10 @@ index 1 from `[1,2,3,4]` returns `[1,3,4]` while leaving the original array as
 `[1,2,3,4]`. The returned array, original, aliases, and previously created lazy
 maps or slices remain independent of subsequent deletions. Payload thunks remain
 lazy; querying the result length does not force its elements.
-Out-of-bounds `removeAt` inputs cause an internal Go crash but return `Runtime`
-here; those cases remain differential failures.
+For Array inputs, `removeAt` indices outside the bounds match no position and
+leave the array unchanged. The corresponding fixed-Go crashes remain retained
+comparison differences. Named calls currently use `i`; the public documentation's
+`idx` conflicts with the fixed source's `at`, so positional calls are recommended.
 
 Go's `$objectFlatMerge` is designed for desugared comprehensions. Top-level
 object literals gain an implicit `$` local in Go and crash when passed directly
@@ -298,11 +337,20 @@ passing cases. This implementation safely merges simple top-level literals;
 all observed reference crashes remain failed inputs, including duplicate-field
 and eager-error examples that crash before reaching those checks in Go.
 
-TOML/YAML native string quoting escapes C0/C1 controls but preserves HTML and
-U+2028/U+2029, unlike native JSON output. TOML renders fields in sorted key order
-before grouping scalar output ahead of sections, preserving evaluation order.
-YAML bare keys follow Go's case-sensitive binary and unanchored hexadecimal
-checks, decimal underscores, overflow/underflow and reserved-word rules.
+TOML/YAML string quoting escapes C0/C1 controls and preserves HTML and
+U+2028/U+2029. Unreleased JSON manifests share this policy; published 0.2.0 JSON
+manifests use the legacy policy described above. TOML renders fields in sorted
+key order before grouping scalar output ahead of sections, preserving evaluation order.
+The **Unreleased** YAML bare-key correction applies when `quote_keys=false`,
+including documents inside `manifestYamlStream`. Keys follow the fixed Jsonnet
+ASCII sets, case-insensitive reserved list, character counts and original-case
+`0b`/`-0b` or `0x`/`-0x` prefixes. These conservative predicates do not parse a
+general YAML number: for example, `nan`, `1e3` and `x0xffz` are bare, while `_`,
+`0b29`, `0x-` and `1.0e309` are quoted. Update exact-text comparisons and tight
+byte budgets accordingly. Published **0.2.0** retains Go's case-sensitive binary,
+unanchored hexadecimal, decimal parsing and reserved-word rules. Forced quoting,
+Unicode escaping, Number output, TOML/JSON and the disputed Stream default are
+unchanged by this correction; it does not establish whole-function conformance.
 
 YAML rendering propagates nested errors and rejects functions at every level.
 `{a:[1,error 'nested']}` therefore fails instead of returning partial text.
@@ -331,16 +379,16 @@ The bundled MoonBit syntax parser and its local fixes are documented in
 library or executable is needed at runtime. Explicit tags, scalar resolution and
 stream handling are implemented locally; the upstream JSON loader is not used.
 
-New sequence functions follow the pinned Go implementation. In particular,
-`makeArray` uses the parameter name `sz`, rejects fractional sizes, returns an
-empty array for negative sizes, and defers callback arity errors until an
-element is used. C++ v0.21.0 uses `size`, truncates fractional sizes, rejects
-negative sizes and requires exactly one declared callback parameter up front.
-`reverse` accepts only arrays, as in Go; C++ also accepts strings (returning an
-array of characters) and an empty object (returning an empty array).
-The new sequence corpus is checked against Go; the original C++ corpus is
-retained unchanged. Sequence allocation consumes the evaluation step budget
-even when generated elements are never forced.
+`makeArray` uses the parameter name `sz`, rejects negative and fractional sizes,
+and defers callback arity errors until an element is used. The historical Go
+profile returned an empty array for negative sizes; it does not describe the
+current rejection. In 0.2.1, `reverse` uses the fixed source's length and lazy
+indexing definition: Arrays retain deferred elements, and Strings produce Arrays
+of one-character Strings in reverse Unicode code-point order. The earlier Array-only implementation
+and its Go comparison remain historical. Structural Object/Function lengths and
+later numeric-index failures have bounded tests, not general sequence admission
+acceptance. Original reference fixtures stay unchanged. Sequence allocation
+consumes the evaluation step budget even when elements are never forced.
 
 `length` on a function counts all declared parameters, including defaults, under
 the fixed public contract; C++ counting corroborates the documentation. This

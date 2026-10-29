@@ -9,6 +9,7 @@ Use --case-prefix sign- for only the comparison-sign form controls.
 Use --case-prefix neg- for only the Boolean-negation form controls.
 Use --case-prefix pair- for only the static-pair transfer controls.
 Use --case-prefix value- for only the core-value transfer controls.
+Use --case-prefix core- for only the comparison-core transfer controls.
 Only tracked/staged inputs are mirrored; stage new test/report fixtures first. The
 negative checker runs sequentially in that mirror. Positive readback runs in
 the real repository and regenerates its matrix, whose Git identity is required.
@@ -166,6 +167,31 @@ def main():
         sign_review(data)["inspection"][0]["sha256"] = "0" * 64
         add("sign-snapshot", data, "inspected implementation changed: operators.mbt")
 
+    if "rule_review" in original["rules"].get("cmp-number", {}):
+        def core_review(data):
+            return data["rules"]["cmp-number"]["rule_review"]
+
+        data = copy.deepcopy(original)
+        row = copy.deepcopy(data["rules"]["cmp-number"])
+        row["rule_review"]["rule"] = "greater-than-true"
+        data["rules"]["greater-than-true"] = row
+        add("core-foreign-rule", data, "comparison-core completion restricted to seven reviewed rules")
+        data = copy.deepcopy(original)
+        core_review(data)["fixed_statement"] += " UNREVIEWED"
+        add("core-formula", data, "reviewed comparison-core statement mismatch")
+        data = copy.deepcopy(original)
+        core_review(data)["operand_roles"] = ["right", "left"]
+        add("core-roles", data, "comparison-core operand order")
+        data = copy.deepcopy(original)
+        core_review(data)["comparison_domain"] = [-1, 0, 1, 2]
+        add("core-sign-domain", data, "comparison-core sign domain")
+        data = copy.deepcopy(original)
+        core_review(data)["child_judgments_assumed"] = ""
+        add("core-child", data, "comparison-core child assumptions required")
+        data = copy.deepcopy(original)
+        core_review(data)["inspection"][0]["sha256"] = "0" * 64
+        add("core-snapshot", data, "inspected implementation changed: operators.mbt")
+
     if "not-true" in original["rules"]:
         def negation_review(data):
             return data["rules"]["not-true"]["rule_review"]
@@ -251,7 +277,7 @@ def main():
             (mirror / source_change[0]).write_text(source_change[1])
         destination = output / name
         assert not destination.exists() and not any(path.exists() for path in generated)
-        argv = ["nice", "-n", "10", "moon", "run", "--frozen", "-j", "1", "tools/spec-language-matrix.mbtx", str(reference), str(destination)]
+        argv = ["moon", "run", "--frozen", "-j", "1", "tools/spec-language-matrix.mbtx", str(reference), str(destination)]
         started = time.monotonic()
         proc = subprocess.run(argv, cwd=mirror, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=60)
         log = output / (name + ".log")
@@ -270,7 +296,7 @@ def main():
     (mirror / mapping_path).write_text(original_text)
     destination = output / ("positive-recovered" if resume else "positive")
     assert not destination.exists(), "inspect previous positive outcome before retry"
-    argv = ["nice", "-n", "10", "moon", "run", "--frozen", "-j", "1", "tools/spec-language-matrix.mbtx", str(reference), str(destination)]
+    argv = ["moon", "run", "--frozen", "-j", "1", "tools/spec-language-matrix.mbtx", str(reference), str(destination)]
     started = time.monotonic()
     proc = subprocess.run(argv, cwd=root, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, timeout=60)
     log = output / ("positive-recovered.log" if resume else "positive.log")
@@ -284,6 +310,13 @@ def main():
     ids = [item["test_id"] for item in matrix["evidence"].values()]
     assert len(ids) == len(set(ids)) == matrix["global_test_ids"]
     assert all(item["test_id"] == item["file"] + "::" + item["test"] for item in matrix["evidence"].values())
+    if args.case_prefix in ("", "core-") and "rule_review" in original["rules"].get("cmp-number", {}):
+        rows = {item["id"]: item for item in matrix["clauses"]}
+        for name in ("cmp-number", "cmp-string", "cmp-array-left-empty", "cmp-array-right-empty", "cmp-array-both-empty", "cmp-array-first-different", "cmp-array-first-equal"):
+            assert rows[name]["state"] == "completed-rule-review", name
+            assert rows[name]["rule_review"] == [original["rules"][name]["rule_review"]], name
+        for name in ("CC1", "CC2", "CC3", "CC4"):
+            assert matrix["evidence"][name]["test_id"] == original["evidence"][name]["test_id"], name
     for path, digest in identities.items():
         assert sha(root / path) == digest, "real input changed: " + path
     record = {"argv": argv, "cwd": str(root), "exit": proc.returncode, "seconds": round(time.monotonic() - started, 3), "log_sha256": sha(log), "negative_controls": len(results), "case_prefix": args.case_prefix, "all_rejected_before_output": all(item["passed"] for item in results), "positive_bindings_verified": True, "global_test_ids": len(ids), "real_inputs_unchanged": True, "reused_negative_results": resume}

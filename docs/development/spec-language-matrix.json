@@ -2,17 +2,17 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "3c1f0ad5eeaef38dfd0e9097671612fa4b7908c7b6c024047deed56179134d8e",
-  "tool_sha256": "da3657872b9348056bfcf5579eba583f1dc9fbd1f854be99bc59ce77ab94296f",
+  "mapping_sha256": "0bce11bd21916c2f2aabecc20ed90b77a8aeecb02a5847c94b1e5f7c96879ef2",
+  "tool_sha256": "a0c13a584368aa46883e0dc8b886affe17d47db6a93b93668f4fcd31a7b71b88",
   "mapping_schema_version": 2,
-  "global_test_ids": 225,
+  "global_test_ids": 229,
   "named_rules": 70,
   "prose_grammar_rows": 24,
-  "manually_reviewed_subset_rows": 63,
-  "completed_rule_rows": 28,
+  "manually_reviewed_subset_rows": 56,
+  "completed_rule_rows": 35,
   "completed_constructor_rows": 1,
   "completed_static_rule_rows": 9,
-  "completed_evaluation_rule_rows": 19,
+  "completed_evaluation_rule_rows": 26,
   "unreviewed_rows": 2,
   "complete_conformance": false,
   "execution_inferred": false,
@@ -3283,6 +3283,69 @@
       ],
       "checks": "Both shift operand roles reject all six nonnumber heads Type without forcing container payloads or Function defaults/body. Isolated left/count Runtime markers are demanded, including a count error with zero left. Unselected branches, explicit Boolean shortcuts and hidden access remain lazy; malformed missing operands reject source Syntax under the existing helper, without a malformed typed-Binary equivalent. Tags are host API checks; existing PI1 static transfer is separately reused and no full grammar/operator judgment is completed.",
       "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "CC1": {
+      "file": "spec_comparison_core_test.mbt",
+      "line": 12,
+      "test": "CC1 finite numeric comparison preserves IEEE order at representable boundaries",
+      "test_id": "spec_comparison_core_test.mbt::CC1 finite numeric comparison preserves IEEE order at representable boundaries",
+      "assertions": [
+        "comparison_number(\"-0\", -0.0)",
+        "comparison_number(\"-5e-324\", -5.0e-324)",
+        "comparison_number(\"2.225073858507201e-308\", 2.225073858507201e-308)",
+        "comparison_number(\"1.7976931348623157e308\", 1.7976931348623157e308)",
+        "Json::array([false, true, true])",
+        "Json::array([false, false, true])",
+        "relational_values(left, right, expected)"
+      ],
+      "checks": "Literal (<,<=,>=) vectors cover finite IEEE order at signed zero, fractional, minimum-subnormal/adjacent-subnormal, maximum-subnormal/minimum-normal, exact-integer-width and maximum-finite boundaries. Source numeric text and canonical handmade Literal values are supplied independently; no host or interpreter comparator computes expected signs. Numeric production/rounding is a separate child obligation.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "CC2": {
+      "file": "spec_comparison_core_test.mbt",
+      "line": 101,
+      "test": "CC2 string comparison uses codepoint order across widths and equal prefixes",
+      "test_id": "spec_comparison_core_test.mbt::CC2 string comparison uses codepoint order across widths and equal prefixes",
+      "assertions": [
+        "(\"\\u007f\", \"\\u0080\", Json::array([true, true, false]))",
+        "(\"\\uffff\", \"\\u{10000}\", Json::array([true, true, false]))",
+        "(\"\\u0000\\u{10ffff}\", \"\\u0000\\u{10ffff}\", Json::array([false, true, true]))",
+        "(\"\\u{10ffff}\\u0000\", \"\\u{10ffff}\", Json::array([false, false, true]))",
+        "relational_values(reflect_string(left), reflect_string(right), expected)"
+      ],
+      "checks": "Literal sign vectors cover valid Unicode codepoint width transitions, maximum scalar, NUL/equal prefixes, first differing codepoints, length fallback and distinct composed/decomposed text. Both source and independently built Literal ASTs are used; this is codepoint lexicography, not malformed encoding or surrogate admission.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "CC3": {
+      "file": "spec_comparison_core_test.mbt",
+      "line": 122,
+      "test": "CC3 scalar comparisons demand each required head and leave unused expressions lazy",
+      "test_id": "spec_comparison_core_test.mbt::CC3 scalar comparisons demand each required head and leave unused expressions lazy",
+      "assertions": [
+        "for op in [\"<\", \"<=\", \">=\"]",
+        "ordering_error(\"comparison-left-head\")",
+        "ordering_error(\"comparison-right-head\")",
+        "transfer_error(expression, marker)",
+        "transfer_if(reflect_bool(false), expression, sequence_num(42))",
+        "transfer_if(reflect_bool(true), sequence_num(42), expression)"
+      ],
+      "checks": "Both entry paths require each isolated scalar operand head for all three consumers. Unused bindings and either unselected conditional branch return 42. Runtime kind and sole marker are extra embedding diagnostics, not a prescribed priority among competing errors.",
+      "status": "manually reviewed assertion subset; execution is separate"
+    },
+    "CC4": {
+      "file": "spec_comparison_core_test.mbt",
+      "line": 159,
+      "test": "CC4 scalar comparison gates incompatible heads before nested payload demand",
+      "test_id": "spec_comparison_core_test.mbt::CC4 scalar comparison gates incompatible heads before nested payload demand",
+      "assertions": [
+        "let bad = ordering_error(\"comparison-unread-payload\")",
+        "let closure = make_function([], bad)",
+        "let array = ordering_array([bad])",
+        "for (left, right) in [(scalar, other), (other, scalar)]",
+        "sequence_failure( ordering_binary(left, op, right), @moonjsonnet.Type, None, )"
+      ],
+      "checks": "Both operand directions reject scalar/Array/Object/Function mismatches through source and handmade ASTs without reaching poisoned nested payloads. Type versus poisoned Runtime distinguishes the embedding head gate; unused whole expressions return 42. No callback multiplicity, general error priority or new admissible producer domain is inferred.",
+      "status": "manually reviewed assertion subset; execution is separate"
     }
   },
   "test_file_sha256": {
@@ -3360,7 +3423,8 @@
     "spec_expression_lists_test.mbt": "a28036727517e12ab3e27243f613eafc56172aa764b0432192196cb1d1a793c0",
     "spec_additive_fields_test.mbt": "831593d7e2afce69bf9a5dd8518ccb88c0f28648a35368d9316bea2c79284852",
     "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
-    "spec_bounded_shift_test.mbt": "dff823b5287e3a7a6a502f04bbdc7a3afbd589fa5db019396f5df8e801df3d81"
+    "spec_bounded_shift_test.mbt": "dff823b5287e3a7a6a502f04bbdc7a3afbd589fa5db019396f5df8e801df3d81",
+    "spec_comparison_core_test.mbt": "eba515de8347ecc020ff9324f7148a0dbdab6f166a1f6f4b1b8daa9399c4bd71"
   },
   "clauses": [
     {
@@ -5908,198 +5972,750 @@
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2448,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
-          "AO1"
+          "AO1",
+          "AO2",
+          "RS2"
         ],
         "static_error": [],
-        "runtime_error": [],
+        "runtime_error": [
+          "AO3",
+          "RS2",
+          "RS3"
+        ],
         "lazy": [
-          "AO1"
+          "AO1",
+          "AO2",
+          "RS2"
         ],
         "boundary": [
-          "AO1"
+          "AO1",
+          "AO3",
+          "RS2"
         ]
       },
-      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers this empty-shape case via < and <=. No generic constructor-transfer completion or completion of its head-evaluation children is recorded; std.cmp is specification notation, not a claimed public API.",
+      "remaining": "",
       "implementation": [
         "operators.mbt",
-        "eval.mbt"
+        "eval.mbt",
+        "runtime_types.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "cmp-array-left-empty",
+          "decision": "complete",
+          "review_form": "comparison-core-transfer",
+          "fixed_statement": "\\rule{cmp-array-left-empty} { e_L ↓ \\array{} \\hspace{15pt} e_R ↓ \\array{a_0 \\ldots a_{n - 1}} \\\\ n &gt 0 } { \\texttt{std.cmp}(e_L, e_R) ↓ -1 }",
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "premise_roles": [
+            "left-empty-array",
+            "right-nonempty-array"
+          ],
+          "operand_domains": [
+            "Array",
+            "Array"
+          ],
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "representation": "sgn(private Int)",
+          "result_transfer": "negative",
+          "child_judgments_assumed": "Both operand evaluations produce finite Array heads; each required element and recursive comparison obeys its own judgment, represented by the sign of its private result. Host length comparison supplies integer order. This constructor does not prove arbitrary producers or cyclic evaluation.",
+          "scope": "The full cmp-array-left-empty finite Array constructor transfer under its exact empty/nonempty and child-sign premises; generic head and recursive child judgments are assumed rather than new in-rule obligations.",
+          "reasoning": "With left length zero and right length positive the common-prefix loop is empty, and the length comparison has negative sign. No payload can be forced. Operand-head evaluation remains a child judgment.",
+          "review_report": "docs/development/SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "These execution judgments assume statically admitted operand expressions. Existing AO3 supplies adjacent static controls, without claiming their completion here."
+          },
+          "excluded_obligations": [
+            "Whole operand/static/grammar judgments and Number/String/Array producers.",
+            "Public std.cmp registration, private Int magnitude, greater-than rules and other consumers.",
+            "A0/B0/N0/R0/PE0, encoding/surrogate admission, cycles/resources, callback counts/error priority and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_arrays(",
+              "argument": "With left length zero and right length positive the common-prefix loop is empty, and the length comparison has negative sign. No payload can be forced. Operand-head evaluation remains a child judgment."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_values(",
+              "argument": "Dispatch is by the left admitted Value kind, with the matching right head gate. The returned private Int represents its sign; recursive c!=0 and the <, <=, >= consumers preserve that abstraction."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn array_value(v : Value, loc : Location) -> Array[Int] raise {",
+              "argument": "The right operand must be an Array head. The outer gate does not force its element thunks; subsequent required-element evaluations are explicit recursive children."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b"
+          }
+        }
+      ]
     },
     {
       "id": "cmp-array-right-empty",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2460,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
-          "AO1"
+          "AO1",
+          "AO2",
+          "RS2"
         ],
         "static_error": [],
-        "runtime_error": [],
+        "runtime_error": [
+          "AO3",
+          "RS2",
+          "RS3"
+        ],
         "lazy": [
-          "AO1"
+          "AO1",
+          "AO2",
+          "RS2"
         ],
         "boundary": [
-          "AO1"
+          "AO1",
+          "AO3",
+          "RS2"
         ]
       },
-      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers this empty-shape case via < and <=. No generic constructor-transfer completion or completion of its head-evaluation children is recorded; std.cmp is specification notation, not a claimed public API.",
+      "remaining": "",
       "implementation": [
         "operators.mbt",
-        "eval.mbt"
+        "eval.mbt",
+        "runtime_types.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "cmp-array-right-empty",
+          "decision": "complete",
+          "review_form": "comparison-core-transfer",
+          "fixed_statement": "\\rule{cmp-array-right-empty} { e_L ↓ \\array{a_0 \\ldots a_{n - 1}} \\hspace{15pt} e_R ↓ \\array{} \\\\ n &gt 0 } { \\texttt{std.cmp}(e_L, e_R) ↓ 1 }",
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "premise_roles": [
+            "left-nonempty-array",
+            "right-empty-array"
+          ],
+          "operand_domains": [
+            "Array",
+            "Array"
+          ],
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "representation": "sgn(private Int)",
+          "result_transfer": "positive",
+          "child_judgments_assumed": "Both operand evaluations produce finite Array heads; each required element and recursive comparison obeys its own judgment, represented by the sign of its private result. Host length comparison supplies integer order. This constructor does not prove arbitrary producers or cyclic evaluation.",
+          "scope": "The full cmp-array-right-empty finite Array constructor transfer under its exact empty/nonempty and child-sign premises; generic head and recursive child judgments are assumed rather than new in-rule obligations.",
+          "reasoning": "With left length positive and right length zero the common-prefix loop is empty, and the length comparison has positive sign. No payload can be forced. Operand-head evaluation remains a child judgment.",
+          "review_report": "docs/development/SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "These execution judgments assume statically admitted operand expressions. Existing AO3 supplies adjacent static controls, without claiming their completion here."
+          },
+          "excluded_obligations": [
+            "Whole operand/static/grammar judgments and Number/String/Array producers.",
+            "Public std.cmp registration, private Int magnitude, greater-than rules and other consumers.",
+            "A0/B0/N0/R0/PE0, encoding/surrogate admission, cycles/resources, callback counts/error priority and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_arrays(",
+              "argument": "With left length positive and right length zero the common-prefix loop is empty, and the length comparison has positive sign. No payload can be forced. Operand-head evaluation remains a child judgment."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_values(",
+              "argument": "Dispatch is by the left admitted Value kind, with the matching right head gate. The returned private Int represents its sign; recursive c!=0 and the <, <=, >= consumers preserve that abstraction."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn array_value(v : Value, loc : Location) -> Array[Int] raise {",
+              "argument": "The right operand must be an Array head. The outer gate does not force its element thunks; subsequent required-element evaluations are explicit recursive children."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b"
+          }
+        }
+      ]
     },
     {
       "id": "cmp-array-both-empty",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2472,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
-          "AO1"
+          "AO1",
+          "AO2",
+          "RS2"
         ],
         "static_error": [],
-        "runtime_error": [],
-        "lazy": [],
+        "runtime_error": [
+          "AO3",
+          "RS2",
+          "RS3"
+        ],
+        "lazy": [
+          "AO1",
+          "AO2",
+          "RS2"
+        ],
         "boundary": [
-          "AO1"
+          "AO1",
+          "AO3",
+          "RS2"
         ]
       },
-      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers this empty-shape case via < and <=. No generic constructor-transfer completion or completion of its head-evaluation children is recorded; std.cmp is specification notation, not a claimed public API.",
+      "remaining": "",
       "implementation": [
         "operators.mbt",
-        "eval.mbt"
+        "eval.mbt",
+        "runtime_types.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "cmp-array-both-empty",
+          "decision": "complete",
+          "review_form": "comparison-core-transfer",
+          "fixed_statement": "\\rule{cmp-array-both-empty} { e_L ↓ \\array{} \\hspace{15pt} e_R ↓ \\array{} } { \\texttt{std.cmp}(e_L, e_R) ↓ 0 }",
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "premise_roles": [
+            "left-empty-array",
+            "right-empty-array"
+          ],
+          "operand_domains": [
+            "Array",
+            "Array"
+          ],
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "representation": "sgn(private Int)",
+          "result_transfer": "zero",
+          "child_judgments_assumed": "Both operand evaluations produce finite Array heads; each required element and recursive comparison obeys its own judgment, represented by the sign of its private result. Host length comparison supplies integer order. This constructor does not prove arbitrary producers or cyclic evaluation.",
+          "scope": "The full cmp-array-both-empty finite Array constructor transfer under its exact empty/nonempty and child-sign premises; generic head and recursive child judgments are assumed rather than new in-rule obligations.",
+          "reasoning": "Two zero lengths give an empty common-prefix loop and zero length-comparison sign, without evaluating payloads. Operand-head evaluation remains a child judgment.",
+          "review_report": "docs/development/SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "These execution judgments assume statically admitted operand expressions. Existing AO3 supplies adjacent static controls, without claiming their completion here."
+          },
+          "excluded_obligations": [
+            "Whole operand/static/grammar judgments and Number/String/Array producers.",
+            "Public std.cmp registration, private Int magnitude, greater-than rules and other consumers.",
+            "A0/B0/N0/R0/PE0, encoding/surrogate admission, cycles/resources, callback counts/error priority and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_arrays(",
+              "argument": "Two zero lengths give an empty common-prefix loop and zero length-comparison sign, without evaluating payloads. Operand-head evaluation remains a child judgment."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_values(",
+              "argument": "Dispatch is by the left admitted Value kind, with the matching right head gate. The returned private Int represents its sign; recursive c!=0 and the <, <=, >= consumers preserve that abstraction."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn array_value(v : Value, loc : Location) -> Array[Int] raise {",
+              "argument": "The right operand must be an Array head. The outer gate does not force its element thunks; subsequent required-element evaluations are explicit recursive children."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b"
+          }
+        }
+      ]
     },
     {
       "id": "cmp-array-first-different",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2482,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
           "AO1",
-          "AO2"
+          "AO2",
+          "RS2"
         ],
         "static_error": [],
         "runtime_error": [
-          "AO3"
+          "AO3",
+          "RS2",
+          "RS3"
         ],
         "lazy": [
           "AO1",
-          "AO2"
+          "AO2",
+          "RS2"
         ],
         "boundary": [
           "AO1",
-          "AO3"
+          "AO3",
+          "RS2"
         ]
       },
-      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers finite nested/equal-prefix and first-difference demand. General child comparison domains and producer judgments are not completed; cycles and host resource policies are outside this decision. Reuse the existing finite cases rather than treating arbitrary independent error order as a missing requirement.",
+      "remaining": "",
       "implementation": [
         "operators.mbt",
+        "eval.mbt",
         "runtime_types.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "cmp-array-first-different",
+          "decision": "complete",
+          "review_form": "comparison-core-transfer",
+          "fixed_statement": "\\rule{cmp-array-first-different} { e_L ↓ \\array{a_0 \\ldots a_{n - 1}} \\hspace{15pt} e_R ↓ \\array{b_0 \\ldots b_{m - 1}} \\\\ n > 0 \\hspace{15pt} m > 0 \\\\ \\texttt{std.cmp}(a_0, b_0) ↓ r \\\\ r ≠ 0 } { \\texttt{std.cmp}(e_L, e_R) ↓ r }",
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "premise_roles": [
+            "left-nonempty-array",
+            "right-nonempty-array",
+            "first-child-nonzero-sign"
+          ],
+          "operand_domains": [
+            "Array",
+            "Array"
+          ],
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "representation": "sgn(private Int)",
+          "result_transfer": "first-child-sign",
+          "child_judgments_assumed": "Both operand evaluations produce finite Array heads; each required element and recursive comparison obeys its own judgment, represented by the sign of its private result. Host length comparison supplies integer order. This constructor does not prove arbitrary producers or cyclic evaluation.",
+          "scope": "The full cmp-array-first-different finite Array constructor transfer under its exact empty/nonempty and child-sign premises; generic head and recursive child judgments are assumed rather than new in-rule obligations.",
+          "reasoning": "For nonempty heads, the first pair is forced and recursively compared. A nonzero child result is immediately returned; sgn of that result is the same abstract r, regardless of private magnitude. Neither tail is inspected.",
+          "review_report": "docs/development/SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "These execution judgments assume statically admitted operand expressions. Existing AO3 supplies adjacent static controls, without claiming their completion here."
+          },
+          "excluded_obligations": [
+            "Whole operand/static/grammar judgments and Number/String/Array producers.",
+            "Public std.cmp registration, private Int magnitude, greater-than rules and other consumers.",
+            "A0/B0/N0/R0/PE0, encoding/surrogate admission, cycles/resources, callback counts/error priority and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_arrays(",
+              "argument": "For nonempty heads, the first pair is forced and recursively compared. A nonzero child result is immediately returned; sgn of that result is the same abstract r, regardless of private magnitude. Neither tail is inspected."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_values(",
+              "argument": "Dispatch is by the left admitted Value kind, with the matching right head gate. The returned private Int represents its sign; recursive c!=0 and the <, <=, >= consumers preserve that abstraction."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn array_value(v : Value, loc : Location) -> Array[Int] raise {",
+              "argument": "The right operand must be an Array head. The outer gate does not force its element thunks; subsequent required-element evaluations are explicit recursive children."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b"
+          }
+        }
+      ]
     },
     {
       "id": "cmp-array-first-equal",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2498,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
           "AO1",
-          "AO2"
+          "AO2",
+          "RS2"
         ],
         "static_error": [],
         "runtime_error": [
-          "AO3"
+          "AO3",
+          "RS2",
+          "RS3"
         ],
         "lazy": [
           "AO1",
-          "AO2"
+          "AO2",
+          "RS2"
         ],
         "boundary": [
           "AO1",
-          "AO3"
+          "AO3",
+          "RS2"
         ]
       },
-      "remaining": "The bounded [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) covers finite nested/equal-prefix and first-difference demand. General child comparison domains and producer judgments are not completed; cycles and host resource policies are outside this decision. Reuse the existing finite cases rather than treating arbitrary independent error order as a missing requirement.",
+      "remaining": "",
       "implementation": [
         "operators.mbt",
+        "eval.mbt",
         "runtime_types.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "cmp-array-first-equal",
+          "decision": "complete",
+          "review_form": "comparison-core-transfer",
+          "fixed_statement": "\\rule{cmp-array-first-equal} { e_L ↓ \\array{a_0 \\ldots a_{n - 1}} \\hspace{15pt} e_R ↓ \\array{b_0 \\ldots b_{m - 1}} \\\\ n > 0 \\hspace{15pt} m > 0 \\\\ \\texttt{std.cmp}(a_0, b_0) ↓ 0 \\\\ \\texttt{std.cmp}(\\array{a_1 \\ldots a_{n - 1}}, \\array{b_1 \\ldots b_{m - 1}}) ↓ r' } { \\texttt{std.cmp}(e_L, e_R) ↓ r' }",
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "premise_roles": [
+            "left-nonempty-array",
+            "right-nonempty-array",
+            "first-child-zero-sign",
+            "tail-child-sign"
+          ],
+          "operand_domains": [
+            "Array",
+            "Array"
+          ],
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "representation": "sgn(private Int)",
+          "result_transfer": "tail-child-sign",
+          "child_judgments_assumed": "Both operand evaluations produce finite Array heads; each required element and recursive comparison obeys its own judgment, represented by the sign of its private result. Host length comparison supplies integer order. This constructor does not prove arbitrary producers or cyclic evaluation.",
+          "scope": "The full cmp-array-first-equal finite Array constructor transfer under its exact empty/nonempty and child-sign premises; generic head and recursive child judgments are assumed rather than new in-rule obligations.",
+          "reasoning": "The invariant before index i is that every preceding child comparison has sign zero. A zero first comparison advances to exactly the remaining paired suffix. Each later nonzero sign returns immediately; exhausted equal prefixes fall back to length order, unchanged by removing one element from each side. Induction on the finite common-prefix length yields the recursive tail judgment; nested comparisons assume their own child judgments.",
+          "review_report": "docs/development/SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "These execution judgments assume statically admitted operand expressions. Existing AO3 supplies adjacent static controls, without claiming their completion here."
+          },
+          "excluded_obligations": [
+            "Whole operand/static/grammar judgments and Number/String/Array producers.",
+            "Public std.cmp registration, private Int magnitude, greater-than rules and other consumers.",
+            "A0/B0/N0/R0/PE0, encoding/surrogate admission, cycles/resources, callback counts/error priority and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_arrays(",
+              "argument": "The invariant before index i is that every preceding child comparison has sign zero. A zero first comparison advances to exactly the remaining paired suffix. Each later nonzero sign returns immediately; exhausted equal prefixes fall back to length order, unchanged by removing one element from each side. Induction on the finite common-prefix length yields the recursive tail judgment; nested comparisons assume their own child judgments."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_values(",
+              "argument": "Dispatch is by the left admitted Value kind, with the matching right head gate. The returned private Int represents its sign; recursive c!=0 and the <, <=, >= consumers preserve that abstraction."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn array_value(v : Value, loc : Location) -> Array[Int] raise {",
+              "argument": "The right operand must be an Array head. The outer gate does not force its element thunks; subsequent required-element evaluations are explicit recursive children."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b"
+          }
+        }
+      ]
     },
     {
       "id": "cmp-string",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2514,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
-          "AO1"
+          "CC2",
+          "RS1"
         ],
         "static_error": [],
         "runtime_error": [
-          "AO3"
+          "CC3",
+          "CC4",
+          "RS3"
         ],
-        "lazy": [],
+        "lazy": [
+          "CC3",
+          "CC4"
+        ],
         "boundary": [
-          "AO1",
-          "AO3"
+          "CC2",
+          "CC4",
+          "RS1",
+          "RS3"
         ]
       },
-      "remaining": "Only the U+E000/U+1F600 child comparison and mixed-type errors in the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) are mapped. String prefixes, equality and remaining codepoint/producer boundaries have no whole-rule decision.",
+      "remaining": "",
       "implementation": [
-        "operators.mbt"
+        "operators.mbt",
+        "eval.mbt",
+        "runtime_types.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "cmp-string",
+          "decision": "complete",
+          "review_form": "comparison-core-transfer",
+          "fixed_statement": "\\rule{cmp-string} { e_L ↓ v_L \\hspace{15pt} e_R ↓ v_R \\\\ v_L ∈ String \\\\ v_R ∈ String } { \\texttt{std.cmp}(e_L, e_R) ↓ stringcmp(v_L, v_R) }",
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "premise_roles": [
+            "left-string",
+            "right-string"
+          ],
+          "operand_domains": [
+            "Unicode-codepoint-String",
+            "Unicode-codepoint-String"
+          ],
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "representation": "sgn(private Int)",
+          "result_transfer": "stringcmp",
+          "child_judgments_assumed": "Already admitted Strings of Unicode codepoints and their operand-evaluation judgments; String iteration yields those codepoints, and integer comparison supplies its negative/zero/positive ordering contract.",
+          "scope": "The full cmp-string transfer on already admitted Unicode-codepoint String operands, relative to their child evaluations; adjacent head rejection and whole-expression laziness are controls.",
+          "reasoning": "to_array materializes the admitted String as Unicode codepoints. The loop compares the first unequal pair of codepoint integers; if the common prefix is equal, codepoint-array lengths decide. The loop invariant is equality of the consumed prefix. The sign abstraction uses only Int.compare negative/zero/positive guarantees, not exact nonzero magnitudes.",
+          "review_report": "docs/development/SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "These execution judgments assume statically admitted operand expressions. Existing AO3 supplies adjacent static controls, without claiming their completion here."
+          },
+          "excluded_obligations": [
+            "Whole operand/static/grammar judgments and Number/String/Array producers.",
+            "Public std.cmp registration, private Int magnitude, greater-than rules and other consumers.",
+            "A0/B0/N0/R0/PE0, encoding/surrogate admission, cycles/resources, callback counts/error priority and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn compare_unicode(a : String, b : String) -> Int {",
+              "argument": "to_array materializes the admitted String as Unicode codepoints. The loop compares the first unequal pair of codepoint integers; if the common prefix is equal, codepoint-array lengths decide. The loop invariant is equality of the consumed prefix. The sign abstraction uses only Int.compare negative/zero/positive guarantees, not exact nonzero magnitudes."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_values(",
+              "argument": "Dispatch is by the left admitted Value kind, with the matching right head gate. The returned private Int represents its sign; recursive c!=0 and the <, <=, >= consumers preserve that abstraction."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn text_value(v : Value, loc : Location) -> String raise {",
+              "argument": "The right operand must have the same String head. This exhaustive Value gate reads no nested payload, while valid-codepoint String representation is the admitted premise."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_comparison_core_test.mbt": "eba515de8347ecc020ff9324f7148a0dbdab6f166a1f6f4b1b8daa9399c4bd71",
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b"
+          }
+        }
+      ]
     },
     {
       "id": "cmp-number",
       "kind": "named-rule",
       "section": "execution",
       "source_line": 2528,
-      "state": "manually-reviewed-subset",
+      "state": "completed-rule-review",
       "dimensions": {
         "normal": [
-          "AO1",
-          "AO2"
+          "CC1",
+          "RS1"
         ],
         "static_error": [],
         "runtime_error": [
-          "AO3"
+          "CC3",
+          "CC4",
+          "RS3"
         ],
-        "lazy": [],
+        "lazy": [
+          "CC3",
+          "CC4"
+        ],
         "boundary": [
-          "AO1",
-          "AO3"
+          "CC1",
+          "CC4",
+          "RS1",
+          "RS3"
         ]
       },
-      "remaining": "Only small integer children of the [array-ordering review](SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md) and mixed-type rejection are mapped. Signed zero, fractional/subnormal/extreme finite operands and the full scalar judgment remain unreviewed here.",
+      "remaining": "",
       "implementation": [
-        "operators.mbt"
+        "operators.mbt",
+        "eval.mbt",
+        "runtime_types.mbt"
       ],
       "obligation": null,
-      "rule_review": null
+      "rule_review": [
+        {
+          "rule": "cmp-number",
+          "decision": "complete",
+          "review_form": "comparison-core-transfer",
+          "fixed_statement": "\\rule{cmp-number} { e_L ↓ v_L \\hspace{15pt} e_R ↓ v_R \\\\ v_L ∈ Number \\\\ v_R ∈ Number } { \\texttt{std.cmp}(e_L, e_R) ↓ numbercmp(v_L, v_R) }",
+          "operand_roles": [
+            "left",
+            "right"
+          ],
+          "premise_roles": [
+            "left-number",
+            "right-number"
+          ],
+          "operand_domains": [
+            "finite-Number",
+            "finite-Number"
+          ],
+          "comparison_domain": [
+            -1,
+            0,
+            1
+          ],
+          "representation": "sgn(private Int)",
+          "result_transfer": "numbercmp",
+          "child_judgments_assumed": "Already admitted finite Number Values and their operand-evaluation judgments, within resource bounds; IEEE binary64 primitive comparisons have their specified finite semantics.",
+          "scope": "The full cmp-number transfer on already admitted finite Number operands, relative to their child evaluations; adjacent head rejection and whole-expression laziness are controls.",
+          "reasoning": "For two finite binary64 values, the explicit a<b / a>b / otherwise branches return -1 / 1 / 0. IEEE trichotomy on this admitted domain, including equality of signed zeros, implements numbercmp without subtraction, conversion or rounding. Independent boundary literals supplement this exhaustive branch argument.",
+          "review_report": "docs/development/SPEC-ARRAY-ORDERING-EVIDENCE-2026-10-22.md",
+          "remaining_in_rule": [],
+          "not_applicable": {
+            "static_error": "These execution judgments assume statically admitted operand expressions. Existing AO3 supplies adjacent static controls, without claiming their completion here."
+          },
+          "excluded_obligations": [
+            "Whole operand/static/grammar judgments and Number/String/Array producers.",
+            "Public std.cmp registration, private Int magnitude, greater-than rules and other consumers.",
+            "A0/B0/N0/R0/PE0, encoding/surrogate admission, cycles/resources, callback counts/error priority and Go-C++ acceptance."
+          ],
+          "inspection": [
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn compare_numbers(a : Double, b : Double) -> Int {",
+              "argument": "For two finite binary64 values, the explicit a<b / a>b / otherwise branches return -1 / 1 / 0. IEEE trichotomy on this admitted domain, including equality of signed zeros, implements numbercmp without subtraction, conversion or rounding. Independent boundary literals supplement this exhaustive branch argument."
+            },
+            {
+              "file": "operators.mbt",
+              "sha256": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+              "anchor": "fn Vm::compare_values(",
+              "argument": "Dispatch is by the left admitted Value kind, with the matching right head gate. The returned private Int represents its sign; recursive c!=0 and the <, <=, >= consumers preserve that abstraction."
+            },
+            {
+              "file": "eval.mbt",
+              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "anchor": "self.binary(op, left, self.eval(b, env), loc)",
+              "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
+            },
+            {
+              "file": "runtime_types.mbt",
+              "sha256": "eb8a948f5aa45e57ba9417753d9d97e80e55ab4a35cd8524dc51a6a950f3e8e9",
+              "anchor": "fn number_value(v : Value, loc : Location) -> Double raise {",
+              "argument": "The right operand must have the same Number head. The Value match rejects other kinds without reading Array/Object/Function payloads; scalar production is assumed."
+            }
+          ],
+          "evidence_sha256": {
+            "spec_comparison_core_test.mbt": "eba515de8347ecc020ff9324f7148a0dbdab6f166a1f6f4b1b8daa9399c4bd71",
+            "spec_relational_sign_test.mbt": "9e802e562d4d855e518bf298678b0004b5690a579e1790eb26d35c0b96d8278b"
+          }
+        }
+      ]
     },
     {
       "id": "boolean-and-shortcut",
@@ -6637,13 +7253,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The one official length parameter is forced to its outer Value; this does not traverse array payloads."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "ArrayValue(a) => a.length().to_double()",
               "argument": "This exhaustive value-kind arm implements element count without payload demand."
             },
@@ -6740,7 +7356,7 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The explicit argument head is forced before dispatch; any child construction/key error propagates without a catch, and no field/default/body traversal is added."
             },
@@ -6752,7 +7368,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "ObjectValue(id, top) => self.keys(id, top, false).length().to_double()",
               "argument": "The Object overload counts the visible-only name vector used by objectFieldsEx(false), without demanding fields. Finite admitted host lengths are exact Double counts."
             },
@@ -6764,7 +7380,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "The completed object-fields-ex child has one ready String per name; length-array counts that vector. The direct Object branch is the same cardinality."
             }
@@ -6843,13 +7459,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The one official length parameter is forced to its outer Value; this does not traverse array payloads."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "Str(s) => s.iter().count().to_double()",
               "argument": "This value-kind arm counts Unicode codepoints of the already produced String."
             },
@@ -7108,7 +7724,7 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The explicit argument head is forced before dispatch; any child construction/key error propagates without a catch, and no field/default/body traversal is added."
             },
@@ -7120,13 +7736,13 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "\"type\" => Str(value_type(x))",
               "argument": "The intrinsic returns its evaluated head tag without nested demand."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "ObjectValue(_, _) => \"object\"",
               "argument": "The exhaustive Object arm is exactly the required literal tag, independent of fields and pending assertions."
             }
@@ -7261,13 +7877,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. Only explicit Object/String/Boolean argument heads are forced, without field traversal."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "Bool(self.has_field(id, top, k) && (hidden || self.visible(id, top, k)))",
               "argument": "The predicate is name membership conjoined with include-hidden or effective visibility; neither helper reads payloads/assertion bodies."
             },
@@ -7309,7 +7925,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "Output elements are ready String names, not deferred field reads, and cannot force values or assertion bodies."
             },
@@ -7397,13 +8013,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. Only explicit Object/String/Boolean argument heads are forced, without field traversal."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "Bool(self.has_field(id, top, k) && (hidden || self.visible(id, top, k)))",
               "argument": "The predicate is name membership conjoined with include-hidden or effective visibility; neither helper reads payloads/assertion bodies."
             },
@@ -7445,7 +8061,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a",
+              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "Output elements are ready String names, not deferred field reads, and cannot force values or assertion bodies."
             },

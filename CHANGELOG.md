@@ -1,5 +1,53 @@
 # Changelog
 
+## 0.2.1
+
+Prepared from incremental corrections and finite contract reviews made on
+2026-10-27 through 2026-10-29, building on the existing 0.2.0 project. These are
+the release candidate's changes, previously listed as Unreleased. Publication
+status and its timestamp belong to the
+[registry record](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.1); these notes
+do not assert publication or a source tag. Public MoonBit API signatures are
+unchanged. Complete Jsonnet v0.21.0 conformance remains unestablished.
+
+- Keep `manifestTomlEx` indentation lazy until output needs an indented prefix;
+  flat fields and empty output no longer evaluate an unused indentation argument.
+- Make `reverse` use the fixed length and lazy indexing definition. String input
+  produces an Array of one-character Strings in reverse Unicode code-point order;
+  Array payloads remain lazy and original values stay unchanged.
+- Correct `hypot`'s required named parameters to `a,b`; positional calls are
+  unchanged and legacy `x,y` named calls are rejected.
+- Normalize positive subnormal inputs in the AMD64 logarithm implementation
+  and preserve `atan2` quadrants when the intermediate ratio underflows to zero.
+
+- Make `trim(str)` use the fixed seven-character endpoint set and make
+  `isEmpty(str)` follow `length(str) == 0` for supported String, Array, Object
+  and Function values, preserving unused payloads and original aliases.
+
+- Make `round(x)` follow fixed `floor(x + 0.5)` and make `isInteger`/`isDecimal`
+  compare that rounded value with x. Negative halves round upward; IEEE addition
+  also changes some large odd integers before the comparison.
+
+- Make Number output in `manifestJsonEx`, `manifestJson` and
+  `manifestJsonMinified` follow the fixed Jsonnet definition's ordinary String
+  coercion. For example, `0.1` now produces `0.10000000000000001`; signed zero,
+  finite-value checks, lazy options and exact output-byte limits are preserved.
+- Make JSON String values and object keys follow `escapeStringJson`: escape
+  C0/C1 controls and leave U+2028/U+2029 raw. Ordinary Unicode, hidden fields,
+  lazy options and UTF-8 output-byte limits retain their existing behavior.
+- Make YAML Number output in `manifestYamlDoc` and `manifestYamlStream` follow
+  ordinary String coercion, including scientific notation for small values;
+  signed zero, finite checks, lazy options and output-byte limits are preserved.
+- Make YAML keys with `quote_keys=false` follow the fixed Jsonnet character,
+  reserved-word and numeric-shape predicates: `nan`, `1e3` and `x0xffz` are bare,
+  while `_`, `0b29` and `1.0e309` are quoted. Forced quoting is unchanged.
+- Make `equalsIgnoreCase` follow the fixed ASCII-lowering definition. Distinct
+  non-ASCII variants such as K/k, Σ/σ and ß/ẞ now compare false; `asciiUpper` and
+  `asciiLower` retain their existing behavior.
+- Make `equals` accept the fixed definition's required `a,b` parameter names
+  and reject legacy `x,y` names. Positional equality and `primitiveEquals`
+  retain their existing behavior.
+
 ## 0.2.0
 
 Release notes for version 0.2.0. Publication status and its timestamp are recorded

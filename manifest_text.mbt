@@ -36,8 +36,8 @@ fn ManifestText::text(self : ManifestText) -> String {
 }
 
 ///|
-// Go unparseString, used by native TOML and YAML, escapes C0/C1 but does not
-// escape HTML or U+2028/U+2029. JSON's native manifest has a different contract.
+// Shared JSON, TOML and YAML quoting escapes C0/C1 but leaves HTML and
+// U+2028/U+2029 raw, matching the fixed escapeStringJson String policy.
 fn manifest_text_quote(s : String) -> String {
   let out = StringBuilder()
   out.write_string("\"")

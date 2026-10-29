@@ -1,0 +1,81 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "4451b755421b9e59ba40c4bedb87de02980bf1cf3c9a357f4d7a66db5d37994a",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "state": "STATIC_CANDIDATE_NOT_FORMATTED_COMPILED_OR_EXECUTED",
+  "base_commit": "71441b558038d53b94b073d54c4a9f60a996f136",
+  "selection": {
+    "functions": ["extVar"],
+    "reason": "Useful configuration lookup boundary with existing host-parameter regressions and no established new deviation. This is a finite evidence candidate, not a claim that extVar is broken.",
+    "product_patch": null,
+    "candidate_path": "spec_extvar_contract_test.mbt",
+    "candidate_sha256": "a28b4730639c56b1af56b5acda5ce5211e06199cad90d4904384c62f36f121f0",
+    "math_metadata_candidate": "tests/spec-math-utilities-coverage-candidate.json",
+    "math_metadata_sha256": "386e1d54ac8040a220eb790b31dc203cce63204d77d36d80558aadd1e5983057",
+    "mapping": "Active 116 mapped / 37 unmapped unchanged. Four math metadata records remain separate proposals for previously executed finite evidence; they are not full-contract acceptance."
+  },
+  "authority_and_scope": {
+    "fixed_jsonnet_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+    "declaration": "std.extVar(x)",
+    "declaration_source": "Persisted docs/development/spec-public-inventory.json heading std.extVar(x), heading_line 57. No upstream/network retrieval or new mathematical research in this preparation.",
+    "host_setup": "Program.evaluate ext_vars/ext_code configure external values. Existing pkg.generated.mbti and program_parameters_test.mbt supply the embedding API contract; host source parsing and configuration lifetime are not invented Jsonnet stdlib source bodies.",
+    "oracle": "Independent literal configured JSON values, exact key distinctions, ordinary call binding, demanded-error rejection, positive lazy-container/function head observations, and changed per-execution configurations. No Go/C++ output, callback counts or diagnostic winners.",
+    "routes": ["eval.mbt:160 tail Builtin extVar path binds x and may forward code parameters", "parameter_forwarding.mbt:48 requires a String name and selects the configured thunk", "stdlib.mbt:491 ordinary builtin path forces the selected external parameter", "parameters.mbt:6 creates per-execution parameter thunks"],
+    "entry_points": "Every new caller expression runs through ordinary source and separately constructed AST. ext_code is shared host-supplied text; it is not mislabelled an independently handmade external AST.",
+    "exclusions": ["Complete ext_code/ext_program precedence or import-origin acceptance", "Native callback semantics/counts and trace order", "Cycles, forwarding depth, source-size limits and error priority", "Object assertions/inherited std, A0/N0/R0/PE0", "Invalid host Unicode or exhaustive key/data combinations", "Full-suite, CLI, release, Linux or platform acceptance"],
+    "failure_accounting": "New groups use sequential loops; after a first failure, later arms in that group are NOTRUN. Report only actually completed evidence and preserve raw output before any repair."
+  },
+  "selected_input_sha256": {
+    "stdlib.mbt": "b31241733ac2f5278102073a3cedd95c78e560866e5da9a5b5c427d9e6370851",
+    "eval.mbt": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+    "parameter_forwarding.mbt": "3477816cfde6a06ef55e00e00080805f3865a77dd1e781641dc277dd878d245e",
+    "parameters.mbt": "9a339dd4c3fb0d21da68f730fc7e33c0b8c40c53fbacbdd45d87efa95b929776",
+    "pkg.generated.mbti": "dd585b072ff5a5136c68c2b66f92b9faf31721d392fcb44ab3e687b4c72fb3a3",
+    "program_parameters_test.mbt": "c6491f7f73ec8dafcd0ab97bfb10606c251b6ba1722cbbca2a492a622a39b91e",
+    "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336",
+    "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+    "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+    "spec_shared_call_mode_test.mbt": "dbbfe455c182196d6c27a40424114ff964ee59781ecfe2f63900d16a4696ed02",
+    "spec_mapping_transfer_test.mbt": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877",
+    "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
+    "spec_value_heads_test.mbt": "c333432caf47be1eb43ef9650c86309361f3dc5e6bcd80befc435cb2802a20fc",
+    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "tests/spec-public-coverage.json": "eb369af4ebe615ff80d3b6d80a662d39b8b99140413eb35bc44bc1c897d2b041"
+  },
+  "proposed_validation": {
+    "state": "NOT_AUTHORIZED_BY_ANY_EXPIRED_WINDOW_NOT_STARTED",
+    "executor": "Sol max Fast; any product logic repair belongs to Astra xhigh Fast",
+    "environment": "Local single worker, frozen dependencies, RUST_LOG=error, stdin DEVNULL. No network/upload/remote/push/publish.",
+    "total_seconds": 300,
+    "clock": "A new explicitly authorized wall-clock window begins before the first startup/hash/format command. Its hard deadline covers tool startup, testing, receipt writes, staging, commit, readback and process exit; never reset across a repair or handoff.",
+    "schedule_seconds_from_start": {
+      "0_to_40": "Read/hash inputs, retain original candidate bytes, moon info then format; review any interface/format diff and bind final formatted bytes.",
+      "40_to_80": "Narrow native check (cap 30s) and exact 10-group outline (cap 10s). Stop on mismatch or fixture error; do not enlarge scope.",
+      "80_to_150": "Run exactly the selected 10 groups once, command cap 70s; preserve small raw evidence incrementally.",
+      "150_to_180": "If PASS, documentation check with a meaningful 30s cap; use a known matching precompiled checker when available.",
+      "180_to_240": "Finalize a short receipt, inspect final input hashes and metadata; exact local commit only after all required results and sufficient remaining time.",
+      "240_to_300": "Reserved closeout. Do not start git commit or readback unless they fit their caps plus process-exit margin. At or after the hard deadline start no commands, including git/status/readback."
+    },
+    "closeout_reserve_seconds": 60,
+    "commit_start_gate": "At least 60 seconds remain, all selected results are PASS, and the complete exact staged scope has already been inspected. Otherwise persist VERIFIED_NOT_COMMITTED before the gate closes; do not start a late commit or spend the reserve generating long reports.",
+    "red_policy": "Stop and report the exact failed/NOTRUN arms to Astra with remaining deadline; no speculative logic change, baseline overwrite, test weakening or automatic retry loop. Preserve incomplete/uncommitted state if time is insufficient.",
+    "expected_groups": 10,
+    "files_and_groups": {
+      "spec_extvar_contract_test.mbt": ["EV1 extVar transfers configured literal data with exact names", "EV2 extVar uses required x through direct aliased and nested calls", "EV3 extVar rejects invalid names and demands only selected value heads", "EV4 extVar keeps unused calls lazy and configurations execution local"],
+      "program_parameters_test.mbt": ["parsed parameters share a thunk only within one execution", "parsed parameter bindings override code and JSON across output entrypoints", "parsed parameter retains diagnostics and import origin with synthetic thisFile", "parsed parameter budgets are lazy and checked against current execution", "parsed parameter failure and container mutation do not escape an execution"],
+      "arguments_test.mbt": ["builtin and closure argument validation precedes forcing"]
+    },
+    "commands": {
+      "info": ["<USER_HOME>/.moon/bin/moon", "info", "--target", "native", "--frozen"],
+      "fmt": ["<USER_HOME>/.moon/bin/moon", "fmt"],
+      "check": ["<USER_HOME>/.moon/bin/moon", "check", ".", "--target", "native", "--frozen", "--deny-warn", "-j", "1"],
+      "outline": ["<USER_HOME>/.moon/bin/moon", "test", "spec_extvar_contract_test.mbt", "program_parameters_test.mbt", "arguments_test.mbt", "--outline", "--target", "native", "--debug", "--frozen", "--deny-warn", "-j", "1", "--no-parallelize"],
+      "test": ["<USER_HOME>/.moon/bin/moon", "test", "spec_extvar_contract_test.mbt", "program_parameters_test.mbt", "arguments_test.mbt", "--target", "native", "--debug", "--frozen", "--deny-warn", "-j", "1", "--no-parallelize"]
+    },
+    "math_metadata": "Only static/schema/reference/hash checks of the separate four-row candidate are needed; the existing mathematical 12/12 is not rerun merely to record its metadata. Do not change an acceptance count or merge the candidate by treating finite evidence as a complete contract."
+  }
+}

@@ -15,7 +15,7 @@ Jsonnet v0.21.0，不主动裁剪语言结构。固定参考清单中的 163 个
 
 ## 状态与安装
 
-0.2.0 版本面向 **macOS 和 Linux 的 native 后端**。文件访问使用 POSIX libc；求值器本身
+0.2.1 发布候选面向 **macOS 和 Linux 的 native 后端**。文件访问使用 POSIX libc；求值器本身
 没有第三方运行时依赖。迁移已有 Jsonnet 程序前，请阅读[兼容性说明](docs/reference/COMPATIBILITY.md)。
 
 历史兼容记录保留原始差异：
@@ -33,12 +33,14 @@ Jsonnet v0.21.0，不主动裁剪语言结构。固定参考清单中的 163 个
 [CI 验收说明](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/CI-VALIDATION.md)。
 历史计数不代表当前完整规范符合性。
 
-安装前请查看 [0.2.0 注册库记录](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.0)，
-确认发布状态。此前已发布的 [0.1.0](https://mooncakes.io/docs/pangbit/moonjsonnet@0.1.0)
-不包含[变更记录](CHANGELOG.md)中的后续修复。选择 0.2.0 版本的安装命令为：
+本文不确认 0.2.1 已发布；安装前请查看其
+[注册库记录](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.1)。发布准备期间可使用当前源码
+或本地归档。已发布的 [0.2.0](https://mooncakes.io/docs/pangbit/moonjsonnet@0.2.0) 和
+[0.1.0](https://mooncakes.io/docs/pangbit/moonjsonnet@0.1.0) 保留各自的历史行为；后续修复见
+[变更记录](CHANGELOG.md)。完整规范符合性仍未达成。注册库确认 0.2.1 可用后，安装命令为：
 
 ```sh
-moon add pangbit/moonjsonnet@0.2.0
+moon add pangbit/moonjsonnet@0.2.1
 ```
 
 在 `moon.pkg` 中导入 `"pangbit/moonjsonnet"`，并使用 native 后端。

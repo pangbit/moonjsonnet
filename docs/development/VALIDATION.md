@@ -384,17 +384,21 @@ See the [script dependency and CI profile constraints](CI-VALIDATION.md#script-d
 workspace and compiles/tests a separate module using only public APIs.
 It also verifies that the archive includes `NOTICE`, Go BSD attribution and
 the inherited Cephes/Sun math notices, plus the bundled Jsonnet standard-library
-source and the generated Unicode fold table. Its independent consumer executes
-`std.set`, Unicode `std.equalsIgnoreCase`, Base64 encoding and malformed UTF-8
-replacement.
+source and the retained generated Unicode fold table. Its independent consumer
+checks `std.set`, the fixed ASCII `std.equalsIgnoreCase` result, Base64 encoding
+and the separate malformed UTF-8 replacement compatibility profile.
 
-Unicode simple folding is generated from Go 1.24.0's Unicode 15.0.0 tables.
+The retained native fallback's Unicode simple folding is generated from
+Go 1.24.0's Unicode 15.0.0 tables; canonical `equalsIgnoreCase` instead uses the
+fixed Jsonnet definition comparing two `asciiLower` results.
 `tools/embed-unicode.mbtx` verifies the pinned source SHA-256 before writing the
 runtime map and 2,880 test pairs. To reproduce, download the exact source from
 `https://raw.githubusercontent.com/golang/go/go1.24.0/src/unicode/tables.go`, run
 `moon run tools/embed-unicode.mbtx PATH_TO_TABLES_GO`, then `moon fmt`.
 The Go differential suite evaluates every generated pair on both interpreters;
 separate fixtures cover non-equivalent characters and multi-character folding.
+These Go inputs and historical results remain unchanged; the ASCII correction
+does not establish a fresh consumer or Go differential pass.
 
 Source formatting has a separate pinned Go corpus:
 

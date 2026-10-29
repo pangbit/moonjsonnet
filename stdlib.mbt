@@ -67,7 +67,8 @@ fn builtin_params(name : String) -> Array[String] {
     | "isOdd"
     | "isInteger"
     | "isDecimal" => ["x"]
-    "hypot" | "modulo" | "xor" | "xnor" => ["x", "y"]
+    "hypot" => ["a", "b"]
+    "modulo" | "xor" | "xnor" => ["x", "y"]
     "atan2" => ["y", "x"]
     "pow" => ["x", "n"]
     "id" => ["x"]
@@ -83,7 +84,8 @@ fn builtin_params(name : String) -> Array[String] {
     "objectHas" | "objectHasAll" => ["o", "f"]
     "objectFieldsEx" => ["obj", "hidden"]
     "objectHasEx" => ["obj", "fname", "hidden"]
-    "primitiveEquals" | "equals" => ["x", "y"]
+    "primitiveEquals" => ["x", "y"]
+    "equals" => ["a", "b"]
     "objectRemoveKey" => ["obj", "key"]
     "member" => ["arr", "x"]
     "contains" => ["arr", "elem"]
@@ -214,6 +216,25 @@ fn Vm::builtin(
       ),
     )
   }
+  if name == "manifestTomlEx" {
+    if strict {
+      for key in params {
+        ignore(self.force(ids[key], loc))
+      }
+    }
+    // Flat fields and empty tables need no indentation. Keep the style thunk
+    // until the renderer actually emits an indented prefix.
+    return Str(
+      self.toml_table(
+        self.force(ids["value"], loc),
+        ids["indent"],
+        [],
+        0,
+        0,
+        loc,
+      ),
+    )
+  }
   if name == "lstripChars" || name == "rstripChars" || name == "stripChars" {
     // The fixed source checks str length before demanding the character set.
     return self.strip_characters(
@@ -296,8 +317,6 @@ fn Vm::builtin(
       )
       Str(out.text())
     }
-    "manifestTomlEx" =>
-      Str(self.toml_table(x, text_value(values[1], loc), [], "", 0, loc))
     "$objectFlatMerge" => self.object_flat_merge(array_value(x, loc), loc)
     "removeAt" =>
       self.remove_at(array_value(x, loc), integer(values[1], loc), loc)

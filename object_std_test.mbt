@@ -49,8 +49,9 @@ test "equality source functions and object argument contracts" {
     ),
     @json.parse("[false,false,false,true]"),
   )
+  // Fixed std.jsonnet:1582 declares equals(a, b), without defaults.
   assert_eq(
-    @moonjsonnet.evaluate("std.equals(x=[1],y=[1])"),
+    @moonjsonnet.evaluate("std.equals(a=[1],b=[1])"),
     Json::boolean(true),
   )
   // Fixed objectRemoveKey projects obj[k], retaining the original receiver.
@@ -80,7 +81,9 @@ test "equality source functions and object argument contracts" {
       "std.objectFieldsEx({},0)", "std.objectHasEx({},1,true)", "std.objectHasEx([], 'x', true)",
       "std.objectFieldsEx({},error 'forced')", "std.get({},'x',inc_hidden=0)", "std.mapWithKey(1,{})",
       "std.mapWithKey(function(k,v)v,[])", "std.primitiveEquals([] ,[])", "std.primitiveEquals({}, {})",
-      "std.equals(function()1,function()1)", "std.equals(a=1,b=1)",
+      "std.equals(function()1,function()1)",
+      // Fixed std.jsonnet:1582 has a/b; legacy x/y are unknown parameters.
+       "std.equals(x=1,y=1)",
     ] {
     try @moonjsonnet.evaluate(source) catch {
       @moonjsonnet.Error(d) => assert_true(d.kind != @moonjsonnet.Unsupported)

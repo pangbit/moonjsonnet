@@ -446,3 +446,295 @@ and its two direct consumers are the boundary of this follow-up.
 | validated-inputs.json | `0d791d9ebadc284f8f4a3db29af7faad2098620059547f1ee2f27b7c216f9841` |
 | repair-proof.json | `eb374007e6ca45a8209c08acf08985d47ef304019694928d3ad522cd5ead3e10` |
 | public-map-delta.json | `3395c941bd8135f1b2cf928968a2974d09bac794ba0d7640d79fe1c4ec9f48e2` |
+
+## JSON Number manifestation continuation frozen at 277ccfe
+
+Base `277ccfe0bf017ec65332a14ca80475dfb8ae0ff2` is the published 0.2.0
+tree. This continuation selects only the Number responsibility of
+manifestJsonEx and its manifestJson/manifestJsonMinified wrappers. The fixed
+[v0.21.0 source Number branch](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1060-L1061)
+is `'' + v`; both wrappers forward to Ex. Therefore numeric JSON String
+manifestation must agree with the existing ordinary numeric String coercion.
+The separate shortest fixed-decimal manifest_number profile currently breaks
+that identity, for example `0.1` versus `0.10000000000000001`. This criterion
+comes from the fixed source definition, not a preference for a C++ executable.
+
+The independent `spec_json_number_contract_test.mbt` freezes seven groups before
+production edits. Every group exercises source and separately handmade public
+ASTs with neutral builders. Literal expected Strings are never produced by a
+product formatter; JN4 additionally checks the defining coercion relation.
+The maximum finite binary64 integer is written in full, and tiny values retain
+the scientific text of the existing coercion contract. No numeric conversion
+or global formatting policy is changed by this continuation.
+
+| Group | Frozen required outcome |
+| --- | --- |
+| JN1 | Scalar fractions use independent exact text in positional/named Ex and both wrapper calls. |
+| JN2 | Negative zero remains `-0`; exact integers, the binary64 integer boundary, a rounded large integer and both largest finite magnitudes use the existing coercion spelling. |
+| JN3 | Small normal and subnormal finite values use independently declared scientific text, including both signs of the minimum positive subnormal. |
+| JN4 | Independently expected empty-String concatenation and toString results agree with each JSON Number entry; the relation supplements rather than replaces literal oracles. |
+| JN5 | Nested numeric arrays/visible fields retain default, minified and custom layouts, key order and hidden-field laziness. |
+| JN6 | Scalar Number does not force erroneous format options; unused calls do not demand erroneous values; demanded scalar/nested explicit errors and arithmetic nonfinite production reject. |
+| JN7 | ASCII numeric text and enclosing array/object punctuation fit at exactly their declared byte length and fail at one byte less; std.length isolates the intermediate String budget from outer JSON quoting. |
+
+Reuse `spec_manifest_wbtest.mbt` for direct defensive Inf/NaN Number rejection,
+and the existing JSON contracts, output, concatenation and legacy render tests
+for adjacent finite/demand/resource controls. JN6 arithmetic overflow does not
+by itself prove the defensive internal Number guard. N0/R0 assertions, invalid
+Unicode and other renderers remain outside this bounded Number responsibility.
+Passing these groups is not whole manifest-function or whole-spec conformance.
+
+The expected unchanged-product failures are JN1 (short fraction text), JN2
+(rounded large integral text), JN3 (fixed instead of scientific text), JN4
+(coercion identity), JN5 (nested numeric text), and JN7 (numeric byte length).
+JN6 is an expected unchanged control. Each group's later loop iterations are
+NOTRUN if an earlier assertion fails; no execution result is claimed at freeze.
+Preserve old assertions, old CI evidence and first raw failures before any
+per-input expectation migration. Production, differential declarations and
+generated interfaces remain untouched during this first phase. No test/build,
+full suite, external reference run, dependency/toolchain installation, remote
+operation, proposal copying, publication or commit occurs at this freeze.
+
+### Independent failure, Number-only repair and preserved legacy conflicts
+
+The unchanged-production native baseline passes the deny-warning check and
+runs all seven frozen groups: 1 passed, 6 failed, exit 2 in 9.094 seconds.
+JN1-JN5 and JN7 fail for exactly the frozen reasons; JN6 passes. Later iterations
+after each first failure remain NOTRUN for that baseline. The earlier published
+CLI probe independently records five requirement mismatches and three passing
+controls; it is not a new C++ reference run or an additional native group count.
+
+The production change replaces only `write(manifest_number(n))` in the Number
+arm with `write(render_json(Json::number(n), false, 0, limit - size, loc))`.
+The existing finite guard runs first, and both render_json and the enclosing
+writer enforce the remaining byte budget. No formatting thunk is touched.
+The shared render.mbt/manifest_number implementation and its other consumers
+remain byte-identical. This restores the fixed `'' + v` identity without
+changing the ordinary numeric String renderer or deciding a new global format.
+
+Before any legacy migration, the same frozen seven groups pass in a directed
+12-file run: 48 total, 44 passed, 4 failed, exit 2 in 19.074 seconds. The four
+failures are the old scalar shortest-profile group, its nested group, its
+326-byte subnormal budget group, and the numeric row of the legacy JSON style
+group. The remaining controls pass, including direct internal Inf/NaN rejection,
+ordinary output/coercion, argument/demand checks, YAML and TOML. A group stopped
+at its first old assertion does not establish later loop results.
+
+Evidence is retained at `/tmp/moonjsonnet-json-number-contract.tai872qs`:
+`native-baseline/initial` contains the original product, legacy tests,
+differential declaration and manual map; `native-baseline/receipt.json` and
+`test.stdout` preserve the red new-regression run;
+`after-fix-before-migration/receipt.json` and `tests.stdout` preserve the green
+new regressions together with the four old-profile conflicts. Their raw bytes
+are not rewritten by the migration. Published macOS/Linux 0.2.0 differential
+artifacts remain separate historical evidence for 277ccfe.
+
+| Input identity | SHA256 |
+| --- | --- |
+| Frozen new regression, unchanged through repair/migration | `f6dba44e14dff27a1195173d7cc3d4afb189f6406c4133e2a446fa750f50d56a` |
+| Original manifest_json.mbt | `319fc7f84c60fd65609af3cc4fbe84bfaa54f4d3107b114a7fca6737f93b08bc` |
+| Number-only repaired manifest_json.mbt | `0c763c7da2c9aa91142bd55731f8183464406138b59d6e338343f5fb7b6a0d7b` |
+| Unchanged shared render.mbt | `c1920a012c82bb49a4327995df20482c14280715a9677ec2236b757c370f3377` |
+| Original render_test.mbt | `de5bec68aa7a01e91b9c4033e04a822752f562f69a560c4e197fe9de63c451e3` |
+| Original std_manifest_test.mbt | `5839dce0b2e12d84bb785151e907d59791059fcb0eb2c9d1c71e93bdfdc1e59f` |
+
+### Exact legacy expectation migration
+
+Every source expression remains unchanged. The following String expectations
+change because each Number leaf must use the fixed definition's ordinary
+coercion; no expected value is copied from a fresh product run. `repeat` below
+is the exact old test's zero-repetition expression, and M denotes the exact
+maximum finite binary64 integer printed after the table. Unlisted scalar rows,
+the independent coercion control, layouts and other legacy assertions stay
+unchanged. Only descriptions of the three affected render groups are renamed.
+
+| Existing input or observation | Old expected text/value | New expected text/value |
+| --- | --- | --- |
+| manifestJson(0.1) | `0.1` | `0.10000000000000001` |
+| manifestJson(1e-8) | `0.00000001` | `1e-08` |
+| manifestJson(-1.23e-7) | `-0.000000123` | `-1.23e-07` |
+| manifestJson(1.234e30) | `"1234" + "0".repeat(27)` | `1233999999999999958672482500608` |
+| manifestJson(1000000000000000100) | `1000000000000000100` | `1000000000000000128` |
+| manifestJson(5e-324) | `"0." + "0".repeat(323) + "5"` | `4.9406564584124654e-324` |
+| manifestJson(-5e-324) | `"-0." + "0".repeat(323) + "5"` | `-4.9406564584124654e-324` |
+| manifestJson(1.7976931348623157e308) | `"17976931348623157" + "0".repeat(292)` | M |
+| manifestJson({z::error 'hidden',b:-0,a:[0.1,1e-8]}) | `"{\n    \"a\": [\n        0.1,\n        0.00000001\n    ],\n    \"b\": -0\n}"` | `"{\n    \"a\": [\n        0.10000000000000001,\n        1e-08\n    ],\n    \"b\": -0\n}"` |
+| manifestJsonEx([-0,0.1,1e-20],'','',':') | `[-0,0.1,0.00000000000000000001]` | `[-0,0.10000000000000001,9.9999999999999995e-21]` |
+| length(manifestJson(5e-324)) at exact output_bytes | 326-byte budget returns 326 | 23-byte budget returns 23 |
+| Same length expression at one byte less | 325-byte budget raises Limit | 22-byte budget raises Limit |
+
+The maximum integer M is independently `(2^53 - 1) * 2^971`:
+
+```text
+179769313486231570814527423731704356798070567525844996598917476803157260780028538760589558632766878171540458953514382464234321326889464182768467546703537516986049910576551282076245490090389328944075868508455133942304583236903222948165808559332123348274797826204144723168738177180919299881250404026184124858368
+```
+
+For `1000000000000000100`, binary64 spacing is 128: quotient
+7812500000000000 and remainder 100 round upward to 1000000000000000128.
+For `1.234e30`, the exact decimal integer is `1234 * 10^27` and spacing is
+`2^47 = 140737488355328`: quotient 8768097359279636 and remainder
+41327517499392 round downward to 1233999999999999958672482500608.
+These are exact integer derivations, independent of either product formatter.
+The scientific/fractional spellings retain the existing numeric coercion
+contract rather than defining a new parser or general conversion policy.
+
+The current `numeric-string-rendering` differential case keeps its source and
+success outcome; its former cpp_difference becomes a literal result equal to
+the original frozen reference array. Its nested x value is now
+`0.10000000000000001`. The other six difference declarations, all Go fixtures
+and historical reports remain unchanged. This declaration edit alone is not
+new external-reference execution evidence.
+
+Only the existing manifestJsonEx/manifestJson/manifestJsonMinified manual
+records gain JN1-JN7 witnesses. Other 64 records, the language matrix, its
+inspection anchors and all completion counters remain unchanged. The Number
+clause is verified relative to existing numeric String coercion; none of these
+three whole functions or the overall specification is accepted. N0/R0,
+invalid Unicode, nonnumeric rendering and other unresolved responsibilities
+retain their prior scope. The generated inventory remains its historical
+checkpoint rather than silently gaining new runtime evidence.
+
+### Final formatted and directed result
+
+After the expectation migration, `moon info --target native --frozen`,
+`moon fmt` and `moon fmt --check` all exit 0 with no generated interface diff.
+Formatting changes only line layout and one optional tuple trailing comma in
+the new regression; the migrated render test has one layout change. Static
+token comparison preserves every String literal and all non-layout tokens
+apart from that optional comma. The independent criteria are unchanged.
+Preformat copies and command output remain in the evidence root's `format/`.
+
+| Final formatted test | SHA256 |
+| --- | --- |
+| spec_json_number_contract_test.mbt | `51aee0b4542cb3f39d1690a6907e79acca642ad29303bc3bea3e44d76742bf91` |
+| render_test.mbt | `4e1780fd1cd69207bc02800ccc6c4ce64accf8e7b10f744863ded263dfba4ce9` |
+| std_manifest_test.mbt | `c5c09aad61f843cec33a26e80a5c2c5fd184fb8925feb8734aee78b6ecca9d14` |
+
+The exact 48-group outline and final native debug run cover the same 12 selected
+files: 48 passed, failed/skipped 0, exit 0 in 14.613 seconds. All JN1-JN7
+source/handmade-AST iterations and migrated legacy rows complete. The directed
+CLI build exits 0 in 3.149 seconds; the unchanged numeric-string-rendering
+input matches its exact original reference literal. The same eight frozen CLI
+probes now pass 8/8, preserving the original five mismatches and three controls
+as separate baseline evidence. Required CLI errors count as expected errors,
+not zero exit codes; API JN7 independently requires the Limit category.
+
+`final-directed/receipt.json` retains commands, input hashes and raw output
+paths. Its controller takes 21.17 seconds; all recorded process groups are
+absent after completion, and all tested input hashes remain stable. The earlier
+1/7 baseline and 44/48 pre-migration records remain unchanged. This closes the
+verified Number clause relative to the existing coercion contract, with no
+whole-function or overall-specification acceptance. No current full-suite,
+release, Linux or fresh C++ run is claimed, and old 0.2.0 platform results are
+not inherited by these new bytes. Published 0.2.0 remains tied to 277ccfe;
+the behavior and text-migration guidance are recorded as Unreleased without
+a version bump.
+
+## JSON String values and keys frozen at d0ba232
+
+Base `d0ba232f1d21fc483d8445f75e2fc4dcde0424d3` contains the committed
+Number-only correction above. This continuation selects valid Unicode String
+values and visible String keys in manifestJsonEx and its two wrappers. The fixed
+[escapeStringJson definition](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L999-L1023)
+escapes quote/backslash, uses the short b/f/n/r/t escapes, and emits lowercase
+four-digit hex for every other C0 control and codepoints 127..159. Other valid
+Unicode, including U+2028/U+2029, remains raw. The same fixed Ex body delegates
+both String values and visible keys to that helper. No new malformed-String,
+surrogate, raw-byte or source-decoding policy follows from this clause.
+
+The independent `spec_json_string_contract_test.mbt` freezes seven groups with
+source and separately handmade AST entries. Quoted expected text is explicitly
+written, never obtained from a product renderer or a second escaping algorithm.
+Complete C0 and C1 tables are literal fixtures; ordinary Unicode and boundary
+characters are controls. The escapeStringJson relation supplements primary
+literal assertions rather than supplying their expected values.
+
+| Group | Frozen required outcome |
+| --- | --- |
+| JS1 | Empty/printable/quote/slash/backslash/HTML/non-BMP/combining controls and every C0 codepoint have independently declared text in Ex and both wrappers. |
+| JS2 | Every codepoint 127..159 is escaped using lowercase four-digit hex; U+007E and U+00A0 remain raw controls at the boundaries. |
+| JS3 | U+2028/U+2029 remain raw alone, together and among ordinary Unicode; each wrapper returns the exact declared String. |
+| JS4 | Visible keys use the same escaping as String values, with sorted keys and exact Ex/default/minified/custom layouts; hidden error fields remain unread and nested Array/Object String values are retained. |
+| JS5 | Independently expected escapeStringJson text agrees with scalar rendering; a visible single-key minified object also obeys the fixed helper relation, without evaluating key text as code. |
+| JS6 | Scalar String skips error-valued style expressions; unused whole calls skip erroneous values/keys; required input, nested value and key-expression errors propagate. |
+| JS7 | Exact UTF-8 byte budgets accept escaped expansion, raw separators, non-BMP data and enclosing key/array punctuation; one byte less raises Limit. Independently declared codepoint lengths are observed through std.length to avoid outer JSON quoting. |
+
+JS7 uses UTF-8 bytes from each literal expected String and checks codepoint
+length separately: quoted raw U+2028/U+2029 is 4 codepoints/8 bytes, while quoted
+escaped U+007F is 8/8. A compact key containing both is 13 codepoints/15 bytes
+with value zero. These are bounded host-resource checks, not a Unicode-policy
+or universal resource-equivalence theorem.
+
+### Preserved baselines and bounded repair
+
+Evidence remains under `/tmp/moonjsonnet-json-number-contract.tai872qs`.
+The original retained CLI probes in `next-string-baseline/` have three failures
+(C1 values, raw separators, visible key) and one ordinary-escaping control pass.
+That executable's String helper equals d0ba232's; the Number change is unrelated.
+
+| Native record | Result | Interpretation |
+| --- | --- | --- |
+| string-native-baseline | 2 passed/5 failed; 7.711 seconds | JS2/3/4/7 text or length failures; JS5 is a harness Limit, not a fifth proven semantic mismatch. |
+| string-corrected-baseline | 2 passed/5 failed; 9.584 seconds | JS5 now reaches the exact raw-C1 versus escaped-C1 mismatch on unchanged production. |
+| string-after-fix-before-migration | 56 passed/1 failed; 18.370 seconds | All seven String and seven Number groups pass; only the old legacy separator expectation fails. |
+| string-final-directed | 57 passed/0 failed; 19.967 seconds | All 14 selected files pass after the single legacy migration and formatting. |
+
+`string-helper-diagnostic/receipt.json` identifies the first JS5 expression at
+depth 64 as `Limit: JSON value depth limit exceeded`; the same helper with API
+default limits yields the unchanged literal. Only JS5's local assertion helper
+uses default depth 200/stack 500, retaining 20000 steps, both entry paths and
+every literal/source/AST. Shared sequence_limits and JS7's byte limits stay
+unchanged. The wrapper edit was restored before the corrected baseline.
+Original fixture copies, raw failures and resource controls remain separate;
+later-loop NOTRUN branches in each failed baseline are not retroactive passes.
+The final run completes every corrected fixture and migrated legacy iteration.
+
+The only executable repair makes manifest_json_quote call the existing
+manifest_text_quote. String/key call sites, Number rendering, sorting, layout,
+lazy styles and output guards retain their logic. The shared helper's obsolete
+comment is updated afterward; its executable tokens and all other consumers
+are unchanged. There is no numeric, YAML/TOML or ordinary-output policy change.
+
+### One exact legacy migration and final identities
+
+Only this std_manifest_test expectation changes. Its source is unchanged:
+[Ex delegates String escaping](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1062-L1063),
+and [the minified wrapper supplies layout only](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1050).
+These are MoonBit expected-String literals: doubled backslashes denote literal
+output escapes; single Unicode escapes denote raw characters.
+
+| Unchanged Jsonnet input | Old expected String literal | New expected String literal |
+| --- | --- | --- |
+| `std.manifestJsonMinified('<>&\u2028\u2029')` | `"\"<>&\\u2028\\u2029\""` | `"\"<>&\u2028\u2029\""` |
+
+The new literal has 7 codepoints/11 UTF-8 bytes, replacing 17 ASCII characters.
+JS3 already independently requires it; no fresh product output supplies the
+oracle. The original row and conflict remain preserved, with no snapshot update.
+
+| Input | SHA256 |
+| --- | --- |
+| Original String fixture, JS5 depth-limited | `1d3618f4b1ae0a7b8926c26aaa1a855e51f916b71d6c8e436f6e691e1be0a43d` |
+| Corrected frozen String fixture | `d5a61eaa9f17b0d9f71e83d054f68bc82d83f5761e3386d63e6d1c996570a891` |
+| Final formatted String fixture | `9f8b3144c6bf6c19327556e2223c09022a4fd2833868c2d7545fe71c18eca6c2` |
+| Repaired manifest_json.mbt | `8d27faa615e0d9f18c6708ff04dd6c0d7050eaa8a1fe02e822674442a9e58456` |
+| Original shared manifest_text.mbt | `bd43da963aaf94eb4859bfcce19271f3253295bd4787f57e2ff5d151ef788e88` |
+| Comment-only shared manifest_text.mbt | `64b60079fcc6a65b1e7037ca5a4c044f2e2383de8321433bd08730694bdccda0` |
+| Migrated std_manifest_test.mbt | `77d76bbf83041e9f44f28f9cef263b5ccfe713145b3a7350f9fc163860533e41` |
+
+Info, formatting and format-check pass with no mbti diff. Only the new fixture
+changes during formatting: layout and optional trailing commas; all literal
+and other executable tokens remain equivalent. Preformat inputs and raw command
+outputs remain in `string-format/`. `string-final-directed/receipt.json` binds
+these final inputs and the 57/57 result; `cli-binding.json` records the selected
+CLI. Its build passes and all four original literal probes pass unchanged.
+The controller takes 24.597 seconds, all eight owned process groups are absent
+after exit, and tested hashes remain stable. No code/test change follows.
+
+Only the three existing manifest public records gain JS1-JS7 evidence; other
+64 records remain byte-identical and the count stays 67. Number evidence,
+differential.json and its six remaining declarations, language-matrix counts
+and historical reports remain unchanged. This verifies the selected Number
+and valid-Unicode String/key clauses, not complete functions or overall
+conformance. N0/R0, malformed Unicode and other responsibilities remain open.
+No current full-suite, release, Linux or fresh C++ result is claimed. Module
+version and published 0.2.0 remain unchanged; no push or publication occurs.

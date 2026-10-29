@@ -29,6 +29,26 @@ fn toml_key(key : String) -> String {
 }
 
 ///|
+// A level-zero prefix never uses indent. In particular, passing through an
+// empty nested table must not demand the next level's formatting argument.
+fn Vm::toml_indent(
+  self : Vm,
+  indent : Int,
+  level : Int,
+  loc : Location,
+) -> String raise {
+  if level == 0 {
+    return ""
+  }
+  let unit = text_value(self.force(indent, loc), loc)
+  let out = ManifestText::new(self.limits.output_bytes, loc)
+  for _ in 0..<level {
+    out.write(unit)
+  }
+  out.text()
+}
+
+///|
 fn Vm::toml_section(self : Vm, value : Value, loc : Location) -> Bool raise {
   match value {
     ObjectValue(_, _) => true
@@ -51,7 +71,7 @@ fn Vm::toml_section(self : Vm, value : Value, loc : Location) -> Bool raise {
 fn Vm::toml_value(
   self : Vm,
   value : Value,
-  indent : String,
+  indent : Int,
   inline : Bool,
   depth : Int,
   loc : Location,
@@ -98,7 +118,7 @@ fn Vm::toml_value(
           out.write(separator)
         }
         if !inline {
-          out.write(indent)
+          out.write(self.toml_indent(indent, 1, loc))
         }
         out.write(
           self.toml_value(
@@ -144,9 +164,9 @@ fn Vm::toml_value(
 fn Vm::toml_table(
   self : Vm,
   value : Value,
-  indent : String,
+  indent : Int,
   path : Array[String],
-  current_indent : String,
+  indent_level : Int,
   depth : Int,
   loc : Location,
   indexed_path? : Array[String] = [],
@@ -183,7 +203,7 @@ fn Vm::toml_table(
           raise problem(Type, loc, "expected TOML table")
         }
         sections.write("\n\n")
-        sections.write(current_indent)
+        sections.write(self.toml_indent(indent, indent_level, loc))
         sections.write(if array_table { "[[" } else { "[" })
         sections.write(header)
         sections.write(if array_table { "]]" } else { "]" })
@@ -195,7 +215,7 @@ fn Vm::toml_table(
             obj,
             indent,
             child_path,
-            current_indent + indent,
+            indent_level + 1,
             depth + 1,
             loc,
             indexed_path=indexed_path +
@@ -219,7 +239,7 @@ fn Vm::toml_table(
           fields.write("\n")
         }
         first = false
-        fields.write(current_indent)
+        fields.write(self.toml_indent(indent, indent_level, loc))
         fields.write(part.to_owned())
       }
     }

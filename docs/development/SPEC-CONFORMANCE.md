@@ -412,3 +412,28 @@ Release, Linux, independent CLI/API and installed-consumer validation are still
 NOTRUN for this source. The next delivery checkpoint holds product semantics
 fixed while preparing those same-source checks; other normative gaps remain in
 the matrix. Overall specification conformance remains **incomplete**.
+
+## JSON manifestation clauses after d0ba232
+
+The [existing JSON contract record](SPEC-JSON-CONTRACTS-2026-10-23.md#json-number-manifestation-continuation-frozen-at-277ccfe)
+records the Number correction committed at `d0ba232` and the subsequent
+String/key correction. All three JSON wrappers now follow the fixed source's
+ordinary numeric String conversion and escapeStringJson policy for valid
+Unicode values and keys. Independent literal regressions preserve the original
+failures, the JS5 harness-depth correction and each exact legacy migration.
+
+Current directed evidence is 57/57 native debug groups across 14 explicit files,
+including both seven-group regressions, plus four unchanged local CLI probes.
+Only the three existing manifest public-coverage records gain this evidence;
+other 64 records and language-matrix completion counts remain unchanged. This
+verifies the selected Number and valid-Unicode String/key clauses, not complete
+manifest functions or global numeric/Unicode policy. N0/R0 and other unresolved
+responsibilities remain open. No current full-suite, release, Linux or fresh
+C++ result is claimed, and published 0.2.0 remains unchanged. Overall
+specification conformance remains **incomplete**.
+
+## Combined native checkpoint at 7672947
+
+[Full local native debug and release](SPEC-NATIVE-REGRESSION-2026-10-23.md#combined-macos-native-regression-at-7672947) each pass 890/890 on clean `7672947367912ea8a66acdb6ea136d5da0ec5e22` and its 719 tracked inputs.
+This includes cumulative [JSON Number/String/key](SPEC-JSON-CONTRACTS-2026-10-23.md) and [YAML Number/bare-key](SPEC-YAML-DEMAND-2026-10-25.md) corrections; the original failures and published 0.2.0 evidence remain intact.
+This is package regression evidence: separate integration/differential/API/CLI/Linux validation and publication remain NOTRUN for this checkpoint. Stream default and other normative gaps remain NOTPASS; whole-function and overall specification acceptance remain **incomplete**.

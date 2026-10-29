@@ -48,7 +48,7 @@ fn run(args : Array[String], diagnostics : CliDiagnostics) -> Unit raise {
       return
     }
     if arg == "--version" || arg == "-v" {
-      println("moonjsonnet 0.2.0 (Jsonnet v0.21.0 subset)")
+      println("moonjsonnet 0.2.1 (Jsonnet v0.21.0 subset)")
       return
     }
     if arg == "-e" || arg == "--exec" {

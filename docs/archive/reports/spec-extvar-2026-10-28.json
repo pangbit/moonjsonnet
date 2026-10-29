@@ -1,0 +1,763 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "780574030681a64d98e05110fa1e2e0a90d56f7a8c1a1512c8245b6d2cb6eb0d",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "state": "SCOPED_10_OF_10_PASS_READY_FOR_EXACT_LOCAL_COMMIT",
+  "base_commit": "71441b558038d53b94b073d54c4a9f60a996f136",
+  "start_utc": "2026-10-28T07:58:31Z",
+  "clock": "System CLOCK_MONOTONIC milliseconds; one absolute deadline written before launching/compiling this controller; never reset.",
+  "start_monotonic_ms": "27388200",
+  "hard_deadline_monotonic_ms": "27688200",
+  "testing_cutoff_monotonic_ms": "27628200",
+  "total_seconds": 300,
+  "closeout_reserve_seconds": 60,
+  "single_worker": true,
+  "commands": [
+    {
+      "id": "head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "start_monotonic_ms": "27410605",
+      "start_elapsed_ms": "22405",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410624",
+      "duration_ms": "19",
+      "stdout_raw": "71441b558038d53b94b073d54c4a9f60a996f136\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "tracked-clean",
+      "argv": [
+        "git",
+        "diff",
+        "--name-only",
+        "HEAD"
+      ],
+      "start_monotonic_ms": "27410638",
+      "start_elapsed_ms": "22438",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410657",
+      "duration_ms": "19",
+      "stdout_raw": "",
+      "stderr_raw": ""
+    },
+    {
+      "id": "index-clean",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "start_monotonic_ms": "27410663",
+      "start_elapsed_ms": "22463",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410678",
+      "duration_ms": "15",
+      "stdout_raw": "",
+      "stderr_raw": ""
+    },
+    {
+      "id": "plan-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tests/spec-extvar-plan.json"
+      ],
+      "start_monotonic_ms": "27410684",
+      "start_elapsed_ms": "22484",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410698",
+      "duration_ms": "14",
+      "stdout_raw": "4451b755421b9e59ba40c4bedb87de02980bf1cf3c9a357f4d7a66db5d37994a  tests/spec-extvar-plan.json\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "candidate-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tests/spec-math-utilities-coverage-candidate.json"
+      ],
+      "start_monotonic_ms": "27410703",
+      "start_elapsed_ms": "22503",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410717",
+      "duration_ms": "14",
+      "stdout_raw": "386e1d54ac8040a220eb790b31dc203cce63204d77d36d80558aadd1e5983057  tests/spec-math-utilities-coverage-candidate.json\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "fixture-original-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_extvar_contract_test.mbt"
+      ],
+      "start_monotonic_ms": "27410723",
+      "start_elapsed_ms": "22523",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410737",
+      "duration_ms": "14",
+      "stdout_raw": "a28b4730639c56b1af56b5acda5ce5211e06199cad90d4904384c62f36f121f0  spec_extvar_contract_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-0",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "stdlib.mbt"
+      ],
+      "start_monotonic_ms": "27410743",
+      "start_elapsed_ms": "22543",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410758",
+      "duration_ms": "15",
+      "stdout_raw": "b31241733ac2f5278102073a3cedd95c78e560866e5da9a5b5c427d9e6370851  stdlib.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-1",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "eval.mbt"
+      ],
+      "start_monotonic_ms": "27410763",
+      "start_elapsed_ms": "22563",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410778",
+      "duration_ms": "15",
+      "stdout_raw": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700  eval.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-2",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "parameter_forwarding.mbt"
+      ],
+      "start_monotonic_ms": "27410783",
+      "start_elapsed_ms": "22583",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410797",
+      "duration_ms": "14",
+      "stdout_raw": "3477816cfde6a06ef55e00e00080805f3865a77dd1e781641dc277dd878d245e  parameter_forwarding.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-3",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "parameters.mbt"
+      ],
+      "start_monotonic_ms": "27410802",
+      "start_elapsed_ms": "22602",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410817",
+      "duration_ms": "15",
+      "stdout_raw": "9a339dd4c3fb0d21da68f730fc7e33c0b8c40c53fbacbdd45d87efa95b929776  parameters.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-4",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "pkg.generated.mbti"
+      ],
+      "start_monotonic_ms": "27410822",
+      "start_elapsed_ms": "22622",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410836",
+      "duration_ms": "14",
+      "stdout_raw": "dd585b072ff5a5136c68c2b66f92b9faf31721d392fcb44ab3e687b4c72fb3a3  pkg.generated.mbti\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-5",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "program_parameters_test.mbt"
+      ],
+      "start_monotonic_ms": "27410841",
+      "start_elapsed_ms": "22641",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410856",
+      "duration_ms": "15",
+      "stdout_raw": "c6491f7f73ec8dafcd0ab97bfb10606c251b6ba1722cbbca2a492a622a39b91e  program_parameters_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-6",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "arguments_test.mbt"
+      ],
+      "start_monotonic_ms": "27410861",
+      "start_elapsed_ms": "22661",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410875",
+      "duration_ms": "14",
+      "stdout_raw": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336  arguments_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-7",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_array_ordering_test.mbt"
+      ],
+      "start_monotonic_ms": "27410880",
+      "start_elapsed_ms": "22680",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410895",
+      "duration_ms": "15",
+      "stdout_raw": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a  spec_array_ordering_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-8",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_sequence_structure_test.mbt"
+      ],
+      "start_monotonic_ms": "27410900",
+      "start_elapsed_ms": "22700",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410914",
+      "duration_ms": "14",
+      "stdout_raw": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30  spec_sequence_structure_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-9",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_shared_call_mode_test.mbt"
+      ],
+      "start_monotonic_ms": "27410919",
+      "start_elapsed_ms": "22719",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410934",
+      "duration_ms": "15",
+      "stdout_raw": "dbbfe455c182196d6c27a40424114ff964ee59781ecfe2f63900d16a4696ed02  spec_shared_call_mode_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-10",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_mapping_transfer_test.mbt"
+      ],
+      "start_monotonic_ms": "27410939",
+      "start_elapsed_ms": "22739",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410954",
+      "duration_ms": "15",
+      "stdout_raw": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877  spec_mapping_transfer_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-11",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_object_ex_test.mbt"
+      ],
+      "start_monotonic_ms": "27410958",
+      "start_elapsed_ms": "22758",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410972",
+      "duration_ms": "14",
+      "stdout_raw": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141  spec_object_ex_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-12",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_value_heads_test.mbt"
+      ],
+      "start_monotonic_ms": "27410978",
+      "start_elapsed_ms": "22778",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27410992",
+      "duration_ms": "14",
+      "stdout_raw": "c333432caf47be1eb43ef9650c86309361f3dc5e6bcd80befc435cb2802a20fc  spec_value_heads_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-13",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_math_rounding_test.mbt"
+      ],
+      "start_monotonic_ms": "27410997",
+      "start_elapsed_ms": "22797",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27411011",
+      "duration_ms": "14",
+      "stdout_raw": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc  spec_math_rounding_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-14",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tests/spec-public-coverage.json"
+      ],
+      "start_monotonic_ms": "27411017",
+      "start_elapsed_ms": "22817",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27411034",
+      "duration_ms": "17",
+      "stdout_raw": "eb369af4ebe615ff80d3b6d80a662d39b8b99140413eb35bc44bc1c897d2b041  tests/spec-public-coverage.json\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "math-receipt",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "docs/archive/reports/spec-math-utilities-2026-10-28.json"
+      ],
+      "start_monotonic_ms": "27411040",
+      "start_elapsed_ms": "22840",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27411056",
+      "duration_ms": "16",
+      "stdout_raw": "ab8f60f25cd8666c017d3c86792d5a2f6a085e0585ae620f427e5c709add2281  docs/archive/reports/spec-math-utilities-2026-10-28.json\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "math-commands",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "docs/archive/reports/spec-math-utilities-2026-10-28-evidence/commands.json"
+      ],
+      "start_monotonic_ms": "27411061",
+      "start_elapsed_ms": "22861",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27411076",
+      "duration_ms": "15",
+      "stdout_raw": "57e61314b35f8a950310e7720ca5a4e8a017440378b6d29f573e0a21dae7e692  docs/archive/reports/spec-math-utilities-2026-10-28-evidence/commands.json\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "math-fixture",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_math_utilities_contract_test.mbt"
+      ],
+      "start_monotonic_ms": "27411082",
+      "start_elapsed_ms": "22882",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27411096",
+      "duration_ms": "14",
+      "stdout_raw": "da3959e55fa048a4d59aec716097299e88285f4c513146bf85a22e99d9d15983  spec_math_utilities_contract_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "info",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "info",
+        "--target",
+        "native",
+        "--frozen"
+      ],
+      "start_monotonic_ms": "27411102",
+      "start_elapsed_ms": "22902",
+      "cap_ms": 20000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27411329",
+      "duration_ms": "227",
+      "stdout_raw": "",
+      "stderr_raw": "Finished. moon: ran 5 tasks, now up to date\n"
+    },
+    {
+      "id": "fmt",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "fmt"
+      ],
+      "start_monotonic_ms": "27411335",
+      "start_elapsed_ms": "23135",
+      "cap_ms": 20000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27411998",
+      "duration_ms": "663",
+      "stdout_raw": "",
+      "stderr_raw": "Finished. moon: ran 384 tasks, now up to date\n"
+    },
+    {
+      "id": "check",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "check",
+        ".",
+        "--target",
+        "native",
+        "--frozen",
+        "--deny-warn",
+        "-j",
+        "1"
+      ],
+      "start_monotonic_ms": "27412004",
+      "start_elapsed_ms": "23804",
+      "cap_ms": 30000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27412487",
+      "duration_ms": "483",
+      "stdout_raw": "",
+      "stderr_raw": "Finished. moon: ran 6 tasks, now up to date\n"
+    },
+    {
+      "id": "outline",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "test",
+        "spec_extvar_contract_test.mbt",
+        "program_parameters_test.mbt",
+        "arguments_test.mbt",
+        "--outline",
+        "--target",
+        "native",
+        "--debug",
+        "--frozen",
+        "--deny-warn",
+        "-j",
+        "1",
+        "--no-parallelize"
+      ],
+      "start_monotonic_ms": "27412492",
+      "start_elapsed_ms": "24292",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27412664",
+      "duration_ms": "172",
+      "stdout_raw": "   1. pangbit/moonjsonnet spec_extvar_contract_test.mbt:47 index=0 name=\"EV1 extVar transfers configured literal data with exact names\"\n   2. pangbit/moonjsonnet spec_extvar_contract_test.mbt:69 index=1 name=\"EV2 extVar uses required x through direct aliased and nested calls\"\n   3. pangbit/moonjsonnet spec_extvar_contract_test.mbt:102 index=2 name=\"EV3 extVar rejects invalid names and demands only selected value heads\"\n   4. pangbit/moonjsonnet spec_extvar_contract_test.mbt:170 index=3 name=\"EV4 extVar keeps unused calls lazy and configurations execution local\"\n   5. pangbit/moonjsonnet program_parameters_test.mbt:2 index=0 name=\"parsed parameters share a thunk only within one execution\"\n   6. pangbit/moonjsonnet program_parameters_test.mbt:32 index=1 name=\"parsed parameter bindings override code and JSON across output entrypoints\"\n   7. pangbit/moonjsonnet program_parameters_test.mbt:84 index=2 name=\"parsed parameter retains diagnostics and import origin with synthetic thisFile\"\n   8. pangbit/moonjsonnet program_parameters_test.mbt:136 index=3 name=\"parsed parameter budgets are lazy and checked against current execution\"\n   9. pangbit/moonjsonnet program_parameters_test.mbt:162 index=4 name=\"parsed parameter failure and container mutation do not escape an execution\"\n  10. pangbit/moonjsonnet arguments_test.mbt:2 index=0 name=\"builtin and closure argument validation precedes forcing\"\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "mbti-diff",
+      "argv": [
+        "git",
+        "diff",
+        "--",
+        "*.mbti"
+      ],
+      "start_monotonic_ms": "27412670",
+      "start_elapsed_ms": "24470",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27412696",
+      "duration_ms": "26",
+      "stdout_raw": "",
+      "stderr_raw": ""
+    },
+    {
+      "id": "fixture-formatted-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_extvar_contract_test.mbt"
+      ],
+      "start_monotonic_ms": "27412701",
+      "start_elapsed_ms": "24501",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27412716",
+      "duration_ms": "15",
+      "stdout_raw": "4cc3473c63d5d534da0cc8052c0d177a0b56b093786ca8cb1b8b4f7a175e7b9c  spec_extvar_contract_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "test",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "test",
+        "spec_extvar_contract_test.mbt",
+        "program_parameters_test.mbt",
+        "arguments_test.mbt",
+        "--target",
+        "native",
+        "--debug",
+        "--frozen",
+        "--deny-warn",
+        "-j",
+        "1",
+        "--no-parallelize"
+      ],
+      "start_monotonic_ms": "27412722",
+      "start_elapsed_ms": "24522",
+      "cap_ms": 70000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27423930",
+      "duration_ms": "11208",
+      "stdout_raw": "Total tests: 10, passed: 10, failed: 0.\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "product-clean",
+      "argv": [
+        "git",
+        "diff",
+        "--name-only",
+        "HEAD"
+      ],
+      "start_monotonic_ms": "27423935",
+      "start_elapsed_ms": "35735",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27423954",
+      "duration_ms": "19",
+      "stdout_raw": "",
+      "stderr_raw": ""
+    },
+    {
+      "id": "coverage-final-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tests/spec-public-coverage.json"
+      ],
+      "start_monotonic_ms": "27423969",
+      "start_elapsed_ms": "35769",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27423983",
+      "duration_ms": "14",
+      "stdout_raw": "4b83c870fb31b498dd5781c9cf722511d72eefabd2ff23f7f0ed8eae96608d32  tests/spec-public-coverage.json\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "fmt-check",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "fmt",
+        "--check"
+      ],
+      "start_monotonic_ms": "27423989",
+      "start_elapsed_ms": "35789",
+      "cap_ms": 15000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27424887",
+      "duration_ms": "898",
+      "stdout_raw": "",
+      "stderr_raw": "Finished. moon: ran 384 tasks, now up to date\n"
+    },
+    {
+      "id": "doc-source-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tools/documentation.mbtx"
+      ],
+      "start_monotonic_ms": "27424892",
+      "start_elapsed_ms": "36692",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27424907",
+      "duration_ms": "15",
+      "stdout_raw": "a8b65a2b84a3e5d8e225d4081552556fa26c9d1f6189544ce45c91b5f1bb63d1  tools/documentation.mbtx\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "doc-binary-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tools/_build/documentation.mbtx/wasm/debug/build/single/single.wasm"
+      ],
+      "start_monotonic_ms": "27424912",
+      "start_elapsed_ms": "36712",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27424930",
+      "duration_ms": "18",
+      "stdout_raw": "f4bbd21218d59a455ff334dc2d7065dcd1b4d9bae61993bc50343d609420127e  tools/_build/documentation.mbtx/wasm/debug/build/single/single.wasm\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "docs",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moonrun",
+        "tools/_build/documentation.mbtx/wasm/debug/build/single/single.wasm"
+      ],
+      "start_monotonic_ms": "27424935",
+      "start_elapsed_ms": "36735",
+      "cap_ms": 30000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "27427429",
+      "duration_ms": "2494",
+      "stdout_raw": "Documentation: 217 files, 1857 local/current-source links, root layout, language candidates, README parity and migration targets passed.\n",
+      "stderr_raw": ""
+    }
+  ],
+  "network_remote_upload_push_publish": false,
+  "controller_startup_elapsed_ms": "22398",
+  "controller_compile_note": "Initial controller compile rejected a missing Unit return annotation before validation began; corrected only the controller. Original monotonic start file and deadline retained, including that startup time.",
+  "elapsed_ms": "39229",
+  "remaining_ms": "260771",
+  "original_input_sha256": {
+    "stdlib.mbt": "b31241733ac2f5278102073a3cedd95c78e560866e5da9a5b5c427d9e6370851",
+    "eval.mbt": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+    "parameter_forwarding.mbt": "3477816cfde6a06ef55e00e00080805f3865a77dd1e781641dc277dd878d245e",
+    "parameters.mbt": "9a339dd4c3fb0d21da68f730fc7e33c0b8c40c53fbacbdd45d87efa95b929776",
+    "pkg.generated.mbti": "dd585b072ff5a5136c68c2b66f92b9faf31721d392fcb44ab3e687b4c72fb3a3",
+    "program_parameters_test.mbt": "c6491f7f73ec8dafcd0ab97bfb10606c251b6ba1722cbbca2a492a622a39b91e",
+    "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336",
+    "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+    "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+    "spec_shared_call_mode_test.mbt": "dbbfe455c182196d6c27a40424114ff964ee59781ecfe2f63900d16a4696ed02",
+    "spec_mapping_transfer_test.mbt": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877",
+    "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
+    "spec_value_heads_test.mbt": "c333432caf47be1eb43ef9650c86309361f3dc5e6bcd80befc435cb2802a20fc",
+    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "tests/spec-public-coverage.json": "eb369af4ebe615ff80d3b6d80a662d39b8b99140413eb35bc44bc1c897d2b041"
+  },
+  "math_mapping_review": {
+    "prior_final_test": "12/12 PASS at unchanged bound inputs",
+    "math_rerun": "NOTRUN",
+    "metadata_only": true,
+    "whole_contract_acceptance": false
+  },
+  "final_fixture_sha256": "4cc3473c63d5d534da0cc8052c0d177a0b56b093786ca8cb1b8b4f7a175e7b9c",
+  "format": "Original bytes retained in /tmp; formatting only, actual test input bound by final hash.",
+  "result": {
+    "total": 10,
+    "passed": 10,
+    "failed": 0,
+    "product_logic_changed": false,
+    "old_test_changed": false
+  },
+  "mapping": {
+    "finite_evidence_records_before": 116,
+    "finite_evidence_records_after": 120,
+    "candidates_without_manual_record_before": 37,
+    "candidates_without_manual_record_after": 33,
+    "whole_contract_acceptance_changed": false,
+    "extVar_record_added": false,
+    "scope": "Only the four previously executed mathematical finite profiles; no acceptance percentage or whole-contract score."
+  },
+  "coverage_final_sha256": "4b83c870fb31b498dd5781c9cf722511d72eefabd2ff23f7f0ed8eae96608d32",
+  "documentation_source_sha256": "a8b65a2b84a3e5d8e225d4081552556fa26c9d1f6189544ce45c91b5f1bb63d1",
+  "documentation_binary_sha256": "f4bbd21218d59a455ff334dc2d7065dcd1b4d9bae61993bc50343d609420127e",
+  "commit_scope": [
+    "spec_extvar_contract_test.mbt",
+    "tests/spec-extvar-plan.json",
+    "tests/spec-math-utilities-coverage-candidate.json",
+    "tests/spec-public-coverage.json",
+    "docs/archive/reports/spec-extvar-2026-10-28.json"
+  ],
+  "receipt_note": "Validation and input hashes are included here; final git/exit audit is saved in /tmp/moonjsonnet-extvar-300/state.json and reported with the commit id. Earlier 600/120-second overruns remain unchanged."
+}

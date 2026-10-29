@@ -31,7 +31,7 @@ fn Vm::manifest_json_ex(
     Bool(b) => write(if b { "true" } else { "false" })
     Num(n) => {
       ignore(finite(n, loc))
-      write(manifest_number(n))
+      write(render_json(Json::number(n), false, 0, limit - size, loc))
     }
     Str(s) => write(manifest_json_quote(s))
     Closure(_, _, _) | Builtin(_) | Native(_) =>
@@ -138,10 +138,7 @@ fn Vm::manifest_json_style(
 }
 
 ///|
-// encoding/json with EscapeHTML(false) still escapes JavaScript line separators.
+// The fixed escapeStringJson definition quotes both String values and keys.
 fn manifest_json_quote(s : String) -> String {
-  Json::string(s)
-  .stringify()
-  .replace(old="\u2028", new="\\u2028")
-  .replace(old="\u2029", new="\\u2029")
+  manifest_text_quote(s)
 }

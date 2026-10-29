@@ -1,0 +1,73 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "06499d9599a60b5092caafb74f15328ce0da590126e875d36d275e2c0a96cdb1",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "state": "STATIC_CANDIDATE_NOT_FORMATTED_COMPILED_OR_EXECUTED",
+  "base_commit": "90cdd16ca6ecf390789b420fb3afe356b9d33ab8",
+  "candidate": {
+    "function": "clamp",
+    "path": "spec_clamp_contract_test.mbt",
+    "sha256": "609f7d0617302643a2a65e7ec132fc63a47c4e7ce0d7fc93236798c1576d23bf",
+    "product_patch": null,
+    "finding": "No established product deviation. The source-backed function has the same three required public names and branch body as the pinned source. Add independent finite evidence only.",
+    "current_mapping": {"records": 120, "without_record": 33, "changed": false},
+    "exclusions": ["Reversed bounds", "All-String or all-Array comparison domains", "IEEE extrema or an all-input accuracy claim", "Signed-zero printing", "Receiver rebinding, inheritance, object assertions and A0", "Competing-error priority, callback counts or tailstrict", "Whole-function, full-project or platform acceptance"]
+  },
+  "fixed_authority": {
+    "commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+    "documentation": "https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html#L280-L306",
+    "source": "https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L884-L887",
+    "signature": "std.clamp(x, minVal, maxVal)",
+    "source_excerpt": "clamp(x, minVal, maxVal)::\n  if x < minVal then minVal\n  else if x > maxVal then maxVal\n  else x,",
+    "documentation_interpretation": "Ordinary numeric values are bounded by the given endpoints. Its nested max/min equivalence describes numerical outcomes; this plan does not use that paraphrase as a separate demand or error-order oracle.",
+    "source_profile": "CL3 follows the explicit first comparison and conditional branches: for x=-1 and minVal=0 the supplied maxVal is unused. When x equals or exceeds minVal, a sole error at maxVal must reject. These are fixed-source demand witnesses, not a resolution of every documentation/source edge case.",
+    "retrieval": "Read the fixed raw upstream source and documentation during static preparation, without reference execution. Browser-rendered line numbers differ from persisted inventory; commit, declaration and exact source excerpt identify the input.",
+    "local_route": "stdlib_layer.mbt enables source clamp; stdlib_source.mbt:890-893 retains the same branch. No native clamp override is listed by builtin_names."
+  },
+  "prior_evidence_reuse": {
+    "extVar": {"result": "10/10 PASS", "receipt": "docs/archive/reports/spec-extvar-2026-10-28.json", "sha256": "780574030681a64d98e05110fa1e2e0a90d56f7a8c1a1512c8245b6d2cb6eb0d", "fixture_sha256": "4cc3473c63d5d534da0cc8052c0d177a0b56b093786ca8cb1b8b4f7a175e7b9c", "rerun": "NOT_PLANNED"},
+    "math": {"result": "12/12 PASS", "receipt": "docs/archive/reports/spec-math-utilities-2026-10-28.json", "sha256": "ab8f60f25cd8666c017d3c86792d5a2f6a085e0585ae620f427e5c709add2281", "fixture_sha256": "da3959e55fa048a4d59aec716097299e88285f4c513146bf85a22e99d9d15983", "rerun": "NOT_PLANNED"},
+    "scope": "Reuse those bounded results and unchanged hashes only. This candidate neither reruns their tests nor promotes their whole-contract status or adds an extVar mapping. Earlier timing overruns remain recorded unchanged."
+  },
+  "selected_input_sha256": {
+    "stdlib_source.mbt": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+    "stdlib_layer.mbt": "04fa199f43ac20b769abda17f046f4f6920d3bbc9ed8c1a588992eac745b5422",
+    "stdlib.mbt": "b31241733ac2f5278102073a3cedd95c78e560866e5da9a5b5c427d9e6370851",
+    "eval.mbt": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+    "pkg.generated.mbti": "dd585b072ff5a5136c68c2b66f92b9faf31721d392fcb44ab3e687b4c72fb3a3",
+    "array_std_test.mbt": "a1e5f588530cb2efabb9b4f9f85644869a76996288479c53f583cca8c36e74cc",
+    "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336",
+    "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+    "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+    "spec_shared_call_mode_test.mbt": "dbbfe455c182196d6c27a40424114ff964ee59781ecfe2f63900d16a4696ed02",
+    "spec_mapping_transfer_test.mbt": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877",
+    "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
+    "spec_value_heads_test.mbt": "c333432caf47be1eb43ef9650c86309361f3dc5e6bcd80befc435cb2802a20fc",
+    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "tests/spec-public-coverage.json": "4b83c870fb31b498dd5781c9cf722511d72eefabd2ff23f7f0ed8eae96608d32",
+    "docs/development/spec-public-inventory.json": "69a8f7b6888dd22020417895195b6a8a4d7c509a5602047e586c73de6463d08e"
+  },
+  "proposed_validation": {
+    "state": "NOTRUN_REQUIRES_NEW_AUTHORIZED_WINDOW",
+    "executor": "Sol max Fast; any product logic repair belongs to Astra xhigh Fast",
+    "environment": "Local native debug, one worker, frozen dependencies, RUST_LOG=error, stdin DEVNULL. No remote execution, upload, push or publication.",
+    "total_seconds": 180,
+    "closeout_reserve_seconds": 60,
+    "clock": "One CLOCK_MONOTONIC start before controller startup; hard deadline T+180 includes startup, all children, receipts, staging, commit, readback and exits. Adapt the prior 39.398-second controller without resetting the start after compilation failures or handoffs.",
+    "phases": ["T+0..35: hash/HEAD guard, preserve original fixture, info then fmt and interface diff", "T+35..120: check cap 20s, exact outline cap 10s, selected tests cap 45s; no testing child survives T+120", "T+120..140 at latest: one documentation check cap 20s, using a known matching precompiled checker when available", "Finish receipt and review scope early; do not stage or commit unless at least 30s remain", "All commands, readback and process cleanup finish before T+180; retain validated-but-uncommitted state if time is insufficient"],
+    "groups": ["CL1 clamp preserves literal finite ranges endpoints and equal bounds", "CL2 clamp retains required public names through direct and aliased calls", "CL3 clamp source lower branch skips the upper argument and other paths demand it", "CL4 clamp rejects demanded mixed heads while unused calls and aliases remain safe", "array source functions preserve lazy values and short circuit", "array source functions validate inputs and budget", "builtin and closure argument validation precedes forcing"],
+    "expected_group_count": 7,
+    "failure_accounting": "Each new group is sequential. After its first failure, later arms are NOTRUN. Preserve raw results and hashes; a product RED goes back to Astra without weakening expected values. No repair authorization or extra time is inferred from this plan.",
+    "commands": {
+      "info": ["<USER_HOME>/.moon/bin/moon", "info", "--target", "native", "--frozen"],
+      "fmt": ["<USER_HOME>/.moon/bin/moon", "fmt"],
+      "check": ["<USER_HOME>/.moon/bin/moon", "check", ".", "--target", "native", "--frozen", "--deny-warn", "-j", "1"],
+      "outline": ["<USER_HOME>/.moon/bin/moon", "test", "spec_clamp_contract_test.mbt", "array_std_test.mbt", "arguments_test.mbt", "--outline", "--target", "native", "--debug", "--frozen", "--deny-warn", "-j", "1", "--no-parallelize"],
+      "test": ["<USER_HOME>/.moon/bin/moon", "test", "spec_clamp_contract_test.mbt", "array_std_test.mbt", "arguments_test.mbt", "--target", "native", "--debug", "--frozen", "--deny-warn", "-j", "1", "--no-parallelize"]
+    }
+  }
+}

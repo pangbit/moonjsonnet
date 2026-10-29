@@ -1,9 +1,9 @@
 ///|
-test "math and boolean standard functions use Go contracts" {
+test "math and boolean standard functions use reviewed contracts" {
   for
     (source, expected) in [
       (
-        "[std.sqrt(4),std.hypot(x=3,y=4),std.pow(x=2,n=10),std.modulo(-5,2),std.mod(5,2),std.mod('%02d',3)]",
+        "[std.sqrt(4),std.hypot(a=3,b=4),std.pow(x=2,n=10),std.modulo(-5,2),std.mod(5,2),std.mod('%02d',3)]",
         "[2,5,1024,-1,1,\"03\"]",
       ),
       (
@@ -24,11 +24,11 @@ test "math and boolean standard functions use Go contracts" {
       ),
       (
         "[std.round(-2.5),std.round(-1.5),std.round(-0.5),std.round(0.49999999999999994),std.round(0.5),std.round(1.5),std.round(4503599627370497)]",
-        "[-3,-2,-1,0,1,2,4503599627370497]",
+        "[-2,-1,0,1,1,2,4503599627370498]",
       ),
       (
         "[std.toString(std.round(-0.1)),std.toString(std.round(0)),std.toString(std.mantissa(-0))]",
-        "[\"-0\",\"0\",\"-0\"]",
+        "[\"0\",\"0\",\"-0\"]",
       ),
       (
         "[std.mantissa(8),std.exponent(8),std.mantissa(-0.25),std.exponent(-0.25),std.mantissa(5e-324),std.exponent(5e-324),std.mantissa(1.7976931348623157e308),std.exponent(1.7976931348623157e308)]",

@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "purpose": "Identify personal-path-redacted public copies of existing local evidence for the 0.2.1 release candidate.",
+  "public_base_commit": "277ccfe0bf017ec65332a14ca80475dfb8ae0ff2",
+  "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+  "original_commit_publication": "The original unpublished history and complete evidence remain local; this identifier does not imply a publicly reachable commit.",
+  "transformation": "Replace the local account home-directory prefix with <USER_HOME> and add _public_copy provenance metadata. The placeholder is descriptive and is not an executable command path.",
+  "evidence_scope": "Execution times, results, recorded command hashes and other original hash references are retained. They identify the original evidence, not necessarily the redacted bytes. This copy operation is not a test run or a claim of complete specification conformance.",
+  "original_storage": "The original main checkout and an independent local recovery bundle retain the unmodified originals; neither is part of this public candidate.",
+  "files": [
+    {
+      "path": "docs/archive/reports/spec-boolean-parity-2026-10-28.json",
+      "original_sha256": "3e6bcf1f4003e1a171628787558385357491c8d39ec96c818c24ad992065606c",
+      "public_copy_sha256": "8a3ca1b2fbc8d1eacb065567f7b46ea0d9b990382f22c5e3db1f6a7a83b85309",
+      "replaced_home_prefix_occurrences": 7
+    },
+    {
+      "path": "docs/archive/reports/spec-clamp-2026-10-28.json",
+      "original_sha256": "07dc9e0ee24c240be84fdc3f71e3c2f638b4afdd0b5358a2310146a00274b02a",
+      "public_copy_sha256": "b7bf9010f4066dd67beccac3e89c391fee649d6cca7c325413b50b53ab5e6800",
+      "replaced_home_prefix_occurrences": 7
+    },
+    {
+      "path": "docs/archive/reports/spec-config-checks-2026-10-28.json",
+      "original_sha256": "721075175795992de4ad62d24c5c6bcf702c52362a6b26b1ed945ebaf2873a3d",
+      "public_copy_sha256": "deefb4c8ec0da78a0341d04136d081e8eb6e61c72ad7a0b3166997ad694dde8b",
+      "replaced_home_prefix_occurrences": 38
+    },
+    {
+      "path": "docs/archive/reports/spec-extvar-2026-10-28.json",
+      "original_sha256": "780574030681a64d98e05110fa1e2e0a90d56f7a8c1a1512c8245b6d2cb6eb0d",
+      "public_copy_sha256": "4954175a496fe199d6a058cc27109c2f713e8eac05367c9f09e0bc57d38ba85f",
+      "replaced_home_prefix_occurrences": 7
+    },
+    {
+      "path": "docs/archive/reports/spec-math-utilities-2026-10-28-evidence/commands.json",
+      "original_sha256": "57e61314b35f8a950310e7720ca5a4e8a017440378b6d29f573e0a21dae7e692",
+      "public_copy_sha256": "5bf3ac02f7117170ec7021e050498233a222ddb4efb0275fb2a857336c8755e0",
+      "replaced_home_prefix_occurrences": 13
+    },
+    {
+      "path": "docs/archive/reports/spec-math-utilities-2026-10-28.json",
+      "original_sha256": "ab8f60f25cd8666c017d3c86792d5a2f6a085e0585ae620f427e5c709add2281",
+      "public_copy_sha256": "efa2e38e9ed6d5af51c3d5b584216cd44e01d5beee1df341e96b2443f72978d6",
+      "replaced_home_prefix_occurrences": 4
+    },
+    {
+      "path": "docs/archive/reports/spec-rounding-predicates-2026-10-28.json",
+      "original_sha256": "56f069ff91c5610fcaa91dccc4e7f0108d680333fff388edda562cc605bf4fb1",
+      "public_copy_sha256": "b2d3bc4b0697ab2554fb01fbbf7b4b9b411c705e1f8b9bf320307b417f89d770",
+      "replaced_home_prefix_occurrences": 18
+    },
+    {
+      "path": "docs/archive/reports/spec-string-utilities-2026-10-28.json",
+      "original_sha256": "61a2dcf516a04950b7521cbbf2d7fe5a5b6a6f666b0b78ce599779eec1d178cf",
+      "public_copy_sha256": "3eab7720e20c468d26d4ce2a371c2ab85bceead88fcf80728193b89cc03c3d59",
+      "replaced_home_prefix_occurrences": 27
+    },
+    {
+      "path": "tests/spec-boolean-parity-plan.json",
+      "original_sha256": "5222ee82888edcc5426db5019a6e755008b55124f1a2e36215e815195956f033",
+      "public_copy_sha256": "d0599d2978afa030cae4f597b76221cd43a617e96b31624fe0d15d278b8ef4f8",
+      "replaced_home_prefix_occurrences": 5
+    },
+    {
+      "path": "tests/spec-clamp-plan.json",
+      "original_sha256": "06499d9599a60b5092caafb74f15328ce0da590126e875d36d275e2c0a96cdb1",
+      "public_copy_sha256": "d8e9adcad18900c6b41e56d39f5dca32df2057b4bf80bc1f5195d6ee837cbb7e",
+      "replaced_home_prefix_occurrences": 5
+    },
+    {
+      "path": "tests/spec-config-checks-plan.json",
+      "original_sha256": "8fbae624a1d4dc5630bc83450e2395875cdb999890a8ee410255892e2d571c7b",
+      "public_copy_sha256": "fc22b01c8d2b5931e8f15a9c7d529a5d9357e73ad8f934434aecdbc8b850cb3b",
+      "replaced_home_prefix_occurrences": 5
+    },
+    {
+      "path": "tests/spec-extvar-plan.json",
+      "original_sha256": "4451b755421b9e59ba40c4bedb87de02980bf1cf3c9a357f4d7a66db5d37994a",
+      "public_copy_sha256": "8596d4432ac40be0c41784735a79251f78a39769c8453216fa7491bb56a396dc",
+      "replaced_home_prefix_occurrences": 5
+    },
+    {
+      "path": "tests/spec-math-utilities-plan.json",
+      "original_sha256": "7e7fc1dd8a09da66002f75814ff5317fb048820ae6fdc82a1edd257e1321c8c8",
+      "public_copy_sha256": "d88931640326344f8c23320e4e0d95fa413fd6fda16b285bbbfd3fdf86e3e558",
+      "replaced_home_prefix_occurrences": 3
+    },
+    {
+      "path": "tests/spec-string-utilities-plan.json",
+      "original_sha256": "eefc20ecdbcb5ae05b73dd635b2fefc3ebfbe84aaaff3c3fefe21223fd55cdfd",
+      "public_copy_sha256": "42eabc36217675f6e16802d29f6e7802f3d656ce9bdd868a29ae2157fcb8e123",
+      "replaced_home_prefix_occurrences": 1
+    }
+  ]
+}

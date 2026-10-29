@@ -5,6 +5,7 @@ fn source_standard_function(name : String) -> Bool {
   match name {
     "map"
     | "mapWithIndex"
+    | "reverse"
     | "foldl"
     | "sum"
     | "avg"
@@ -20,6 +21,7 @@ fn source_standard_function(name : String) -> Bool {
     | "removeAt"
     | "manifestJson"
     | "split"
+    | "equalsIgnoreCase"
     | "format"
     | "isString"
     | "isNumber"
@@ -27,6 +29,11 @@ fn source_standard_function(name : String) -> Bool {
     | "isObject"
     | "isArray"
     | "isFunction"
+    | "trim"
+    | "isEmpty"
+    | "round"
+    | "isInteger"
+    | "isDecimal"
     | "slice" => true
     _ => false
   }

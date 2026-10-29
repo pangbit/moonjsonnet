@@ -1,0 +1,448 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "8fbae624a1d4dc5630bc83450e2395875cdb999890a8ee410255892e2d571c7b",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "state": "EXECUTED_WITH_RECORDED_FIXTURE_CORRECTIONS",
+  "created_utc": "2026-10-28T01:34:26.892646+00:00",
+  "base_commit": "7c291cdd27045337cb809b3426348dd32940abfd",
+  "purpose": "One bounded configuration-check/String-coercion batch for four currently unmapped public functions; no product patch is justified by this static phase.",
+  "manual_inventory": {
+    "public_candidates": 153,
+    "mapped_before": 112,
+    "unmapped_before": 41,
+    "names_selected": [
+      "all",
+      "any",
+      "assertEqual",
+      "toString"
+    ],
+    "possible_after_successful_execution_and_review": {
+      "mapped": 116,
+      "unmapped": 37
+    },
+    "counts_are_not_function_acceptance_or_conformance_percentages": true,
+    "mapped_after_review": 116,
+    "unmapped_after_review": 37
+  },
+  "authority": {
+    "reference_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+    "recorded_reference_sha256": {
+      "spec.html": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
+      "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
+      "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
+    },
+    "embedded_path": "stdlib_source.mbt",
+    "embedded_sha256": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+    "inventory_path": "docs/development/spec-public-inventory.json",
+    "inventory_sha256": "69a8f7b6888dd22020417895195b6a8a4d7c509a5602047e586c73de6463d08e",
+    "definitions": {
+      "all": {
+        "embedded_line": 1667,
+        "fixed_source_line": 1661,
+        "embedded_block": "    #|  all(arr)::\n    #|    assert std.isArray(arr) : 'all() parameter should be an array, got ' + std.type(arr);\n    #|    local arrLen = std.length(arr);\n    #|    local aux(idx) =\n    #|      if idx >= arrLen then\n    #|        true\n    #|      else\n    #|        local e = arr[idx];\n    #|        assert std.isBoolean(e) : 'element \"%s\" of type %s is not a boolean' % [e, std.type(e)];\n    #|        if !e then\n    #|          false\n    #|        else\n    #|          aux(idx + 1) tailstrict;\n    #|    aux(0),\n",
+        "embedded_sha256": "fae564c9882fb2abc7951da888fbbaf255d27603a92e6001718d89f2733bb23f",
+        "fixed_definition": "  all(arr)::\n    assert std.isArray(arr) : 'all() parameter should be an array, got ' + std.type(arr);\n    local arrLen = std.length(arr);\n    local aux(idx) =\n      if idx >= arrLen then\n        true\n      else\n        local e = arr[idx];\n        assert std.isBoolean(e) : 'element \"%s\" of type %s is not a boolean' % [e, std.type(e)];\n        if !e then\n          false\n        else\n          aux(idx + 1) tailstrict;\n    aux(0),\n",
+        "definition_sha256": "7d2e590c581f6f5099e1db1523f776bb2d581d54ee784b0e371a82f36b975e6d",
+        "public_declarations": {
+          "heading": "std.all(arr)",
+          "heading_line": "2636",
+          "source": "std.all(arr)",
+          "source_line": "1661"
+        }
+      },
+      "any": {
+        "embedded_line": 1682,
+        "fixed_source_line": 1676,
+        "embedded_block": "    #|  any(arr)::\n    #|    assert std.isArray(arr) : 'any() parameter should be an array, got ' + std.type(arr);\n    #|    local arrLen = std.length(arr);\n    #|    local aux(idx) =\n    #|      if idx >= arrLen then\n    #|        false\n    #|      else\n    #|        local e = arr[idx];\n    #|        assert std.isBoolean(e) : 'element \"%s\" of type %s is not a boolean' % [e, std.type(e)];\n    #|        if e then\n    #|          true\n    #|        else\n    #|          aux(idx + 1) tailstrict;\n    #|    aux(0),\n",
+        "embedded_sha256": "a877b110a15d8c07f825a9f9efd3069c349a482222d753322dddd8e09ec77c87",
+        "fixed_definition": "  any(arr)::\n    assert std.isArray(arr) : 'any() parameter should be an array, got ' + std.type(arr);\n    local arrLen = std.length(arr);\n    local aux(idx) =\n      if idx >= arrLen then\n        false\n      else\n        local e = arr[idx];\n        assert std.isBoolean(e) : 'element \"%s\" of type %s is not a boolean' % [e, std.type(e)];\n        if e then\n          true\n        else\n          aux(idx + 1) tailstrict;\n    aux(0),\n",
+        "definition_sha256": "e43cf70e6c8934ae42ba8615cb51da16e100f905bf5400c63154e7800bef0f91",
+        "public_declarations": {
+          "heading": "std.any(arr)",
+          "heading_line": "2666",
+          "source": "std.any(arr)",
+          "source_line": "1676"
+        }
+      },
+      "assertEqual": {
+        "embedded_line": 848,
+        "fixed_source_line": 842,
+        "embedded_block": "    #|  assertEqual(a, b)::\n    #|    // If the values are strings, escape them for printing.\n    #|    // If not, they'll be JSON-stringified anyway by the later string concatenation.\n    #|    local astr = if std.type(a) == 'string' then std.escapeStringJson(a) else a;\n    #|    local bstr = if std.type(b) == 'string' then std.escapeStringJson(b) else b;\n    #|    if a == b then\n    #|      true\n    #|    else\n    #|      error 'Assertion failed. ' + astr + ' != ' + bstr,\n",
+        "embedded_sha256": "e2700adb07c8319e10c95b643005ed034aaf8e175a921b5b0d9de8f667867afe",
+        "fixed_definition": "  assertEqual(a, b)::\n    // If the values are strings, escape them for printing.\n    // If not, they'll be JSON-stringified anyway by the later string concatenation.\n    local astr = if std.type(a) == 'string' then std.escapeStringJson(a) else a;\n    local bstr = if std.type(b) == 'string' then std.escapeStringJson(b) else b;\n    if a == b then\n      true\n    else\n      error 'Assertion failed. ' + astr + ' != ' + bstr,\n",
+        "definition_sha256": "fe3287408a3be2052507052871d8e239442e15300d64243410ed7aba1c18b4d6",
+        "public_declarations": {
+          "heading": "std.assertEqual(a, b)",
+          "heading_line": "329",
+          "source": "std.assertEqual(a, b)",
+          "source_line": "842"
+        }
+      },
+      "toString": {
+        "embedded_line": 43,
+        "fixed_source_line": 37,
+        "embedded_block": "    #|  toString(a)::\n    #|    if std.type(a) == 'string' then a else '' + a,\n",
+        "embedded_sha256": "60d43ba684575fb6235bfc58982e1175e4486636dfe603376b4043e7e1febff0",
+        "fixed_definition": "  toString(a)::\n    if std.type(a) == 'string' then a else '' + a,\n",
+        "definition_sha256": "977b273807961433630269ffcdb7ae9c5b53552680f66b06b2b6bb82c5201bac",
+        "public_declarations": {
+          "heading": "std.toString(a)",
+          "heading_line": "368",
+          "source": "std.toString(a)",
+          "source_line": "37"
+        }
+      }
+    },
+    "availability": "Pre-reboot external fixed-reference caches remain absent. This preparation reads the exact embedded definitions and persisted declaration/version metadata; full upstream HTML prose was not reread, and Go/C++ outputs supply no expected values."
+  },
+  "contract_reviews": {
+    "all": {
+      "contract": "One required arr/no default; Array only. Empty returns true; visit a Boolean prefix left to right, stop at first false and do not visit later elements; visited nonbooleans and required errors reject.",
+      "route": "stdlib_layer.mbt fixed all field, no native all override in builtin_names.",
+      "static_state": "SOURCE_ROUTE_CONSISTENT_NOT_RUNTIME_PASS",
+      "source_findings": "Unchanged definition asserts Array, reads each required e, asserts isBoolean(e), then uses if !e with tailstrict aux(idx+1). No Array+Array operation.",
+      "existing_evidence": [
+        "array_std_test.mbt:2 existing empty/truth/prefix values",
+        "array_std_test.mbt:42 existing invalid heads and bounded all recursion"
+      ],
+      "new_groups": [
+        "CC1",
+        "CC2",
+        "CC3",
+        "CC8",
+        "CC9",
+        "CC10"
+      ]
+    },
+    "any": {
+      "contract": "One required arr/no default; Array only. Empty returns false; visit a Boolean prefix left to right, stop at first true and do not visit later elements; visited nonbooleans and required errors reject.",
+      "route": "stdlib_layer.mbt fixed any field, no native any override in builtin_names.",
+      "static_state": "SOURCE_ROUTE_CONSISTENT_NOT_RUNTIME_PASS",
+      "source_findings": "Unchanged definition asserts Array, reads each required e, asserts isBoolean(e), then uses if e with tailstrict aux(idx+1). No Array+Array operation.",
+      "existing_evidence": [
+        "array_std_test.mbt:2 existing empty/truth/prefix values",
+        "array_std_test.mbt:42 existing invalid visited null"
+      ],
+      "new_groups": [
+        "CC1",
+        "CC2",
+        "CC3",
+        "CC8",
+        "CC9",
+        "CC10"
+      ]
+    },
+    "assertEqual": {
+      "contract": "Required a,b/no defaults. Return true for equal comparable values; unequal values fail. Equality and failure-expression required child errors propagate. Unused String-rendering locals remain lazy on the equal branch.",
+      "route": "source_standard_function(assertEqual) is true; Vm::base_env skips native override and retains exact fixed definition.",
+      "static_state": "SOURCE_ROUTE_CONSISTENT_NOT_RUNTIME_PASS",
+      "source_findings": "Source locals astr/bstr are used only in the unequal error branch. Ordinary equality and String coercion remain child rules; no error-message winner or diagnostic-frame oracle is invented. No Array+Array operation.",
+      "existing_evidence": [
+        "stdlib_layer.mbt source route is present; this is static implementation evidence, not a test pass.",
+        "No pre-existing explicit assertEqual reference was found by the current literal scan of root test files; dynamic references could be missed."
+      ],
+      "new_groups": [
+        "CC4",
+        "CC5",
+        "CC8",
+        "CC9",
+        "CC10"
+      ]
+    },
+    "toString": {
+      "contract": "One required a/no default. String values are returned unchanged; other Values use ordinary empty-String concatenation coercion. Manifestable visible data becomes a String; required nested errors and function manifestation fail.",
+      "route": "stdlib.mbt builtin toString(a) -> Vm::coerce_string; operators.mbt String concatenation calls the same helper.",
+      "static_state": "STATIC_EQUIVALENT_CHILD_PATH_NOT_RUNTIME_PASS",
+      "source_findings": "coerce_string returns Str contents unchanged and otherwise render_json(manifest(value),false). Both native toString and the fixed nonstring String+Value expression use this same path. No competing admission guard or Array+Array operation was found.",
+      "existing_evidence": [
+        "render_test.mbt:40 fixed numeric coercion examples",
+        "moonjsonnet_test.mbt:103 existing nested object String representation"
+      ],
+      "new_groups": [
+        "CC6",
+        "CC7",
+        "CC8",
+        "CC9",
+        "CC10"
+      ]
+    }
+  },
+  "fixture": {
+    "path": "spec_config_checks_contract_test.mbt",
+    "bytes": 14247,
+    "sha256": "ba58214e8aae9eb3d4f53993e3a97c38b90fa4bffabc49dbd9476a3ed11ab62c",
+    "groups": [
+      {
+        "line": 7,
+        "declaration": "test \"CC1 Boolean reducers preserve empty identities and literal truth tables\" {"
+      },
+      {
+        "line": 33,
+        "declaration": "test \"CC2 reducer decisive prefixes leave later invalid heads and errors unused\" {"
+      },
+      {
+        "line": 72,
+        "declaration": "test \"CC3 reducers reject nonarray inputs and every visited nonboolean head\" {"
+      },
+      {
+        "line": 111,
+        "declaration": "test \"CC4 assertEqual returns true for equal ordinary values without printing them\" {"
+      },
+      {
+        "line": 159,
+        "declaration": "test \"CC5 assertEqual rejects unequal values noncomparable functions and needed errors\" {"
+      },
+      {
+        "line": 188,
+        "declaration": "test \"CC6 toString preserves raw Strings and fixed ordinary scalar representations\" {"
+      },
+      {
+        "line": 211,
+        "declaration": "test \"CC7 toString manifests visible data and propagates nested failures\" {"
+      },
+      {
+        "line": 270,
+        "declaration": "test \"CC8 configuration utilities keep required public names arities and aliases\" {"
+      },
+      {
+        "line": 345,
+        "declaration": "test \"CC9 sole demanded errors propagate while unused utility calls stay lazy\" {"
+      },
+      {
+        "line": 377,
+        "declaration": "test \"CC10 repeated utility results preserve original container and String aliases\" {"
+      }
+    ],
+    "entries": [
+      "Program::parse of generated ordinary source",
+      "Program::from_ast of independently constructed expression trees"
+    ],
+    "all_pass_and_fail_labels_not_yet_assigned": true,
+    "normal_observation_collection": "CC1/CC2/CC4/CC6 and the value section of CC7 reuse string_utilities_values only as a neutral value/error collector; they continue after Jsonnet exceptions/differences through both entries.",
+    "failure_accounting": "Other assertions are sequential. After the first unexpected outcome, later arms/entries of that group are NOTRUN. No estimated observation count becomes a passing count.",
+    "planned_collecting_observations": {
+      "CC1": 32,
+      "CC2": 56,
+      "CC4": 24,
+      "CC6": 22,
+      "CC7_value_section": 10,
+      "meaning": "144 planned source/AST value observations; not actual results. Error/binding/alias groups are sequential and counted only after execution."
+    },
+    "correction_note": "Original plan and fixture are preserved in the execution report. Corrections: valid MoonBit host Double literal, canonical format, and source-justified single-line parsed-JSON checks instead of a unique empty-container spacing. Product and legacy tests unchanged."
+  },
+  "finite_scope_and_premises": [
+    "Ordinary call/static binding, finite child Values, equality of comparable non-assertion Values, ordinary String coercion, visibility, literal Array constructors, indexing and Boolean if/! are existing child judgments.",
+    "Numeric toString witnesses 0.1 and 1e-8 reuse the already-reviewed ordinary String representation, with independent fixed literals. No new ULP or math accuracy requirement is added.",
+    "True/false Array prefixes, reached nonbooleans and sole errors are independently asserted; successful unread-tail/hidden-field witnesses prove demand properties. Rejection alone proves no skipped payload or exact diagnostic.",
+    "Object witnesses have no assertions/inheritance. Function equality/manifestation rejection does not execute or assign an exact callback/default/body count.",
+    "The four fixed bodies contain no Array+Array operation. String+Value error formatting/toString is not the unresolved A0 array-concatenation rule."
+  ],
+  "excluded": [
+    "Shared A0 array concatenation, including resolvePath/manifestIni/manifestPythonVars constructor transfers",
+    "Object assertion/inheritance N0/R0, cmp printing conflicts and primitiveEquals PE0",
+    "B0 cases with an evaluated nonboolean RHS, precise independent-error precedence, diagnostic kinds/frames or exact callback counts",
+    "New native numerical accuracy/resource thresholds, malformed UTF-8/BOM byte recovery, full platform/application acceptance"
+  ],
+  "legacy_regression": {
+    "files_and_declarations": {
+      "array_std_test.mbt": [
+        {
+          "line": 2,
+          "declaration": "test \"array source functions preserve lazy values and short circuit\" {"
+        },
+        {
+          "line": 42,
+          "declaration": "test \"array source functions validate inputs and budget\" {"
+        }
+      ],
+      "arguments_test.mbt": [
+        {
+          "line": 2,
+          "declaration": "test \"builtin and closure argument validation precedes forcing\" {"
+        }
+      ],
+      "render_test.mbt": [
+        {
+          "line": 2,
+          "declaration": "test \"manifest numbers use ordinary numeric String coercion text\" {"
+        },
+        {
+          "line": 28,
+          "declaration": "test \"nested manifests retain sorting visibility and coercion number text\" {"
+        },
+        {
+          "line": 40,
+          "declaration": "test \"string coercion keeps its separate numeric representation\" {"
+        },
+        {
+          "line": 52,
+          "declaration": "test \"scientific manifest numbers respect the intermediate output limit\" {"
+        }
+      ]
+    },
+    "groups": 7,
+    "unchanged": true,
+    "interpretation": "These are unchanged regression groups, not seven new normative contracts. array_std_test also retains historical flatten/concatenation/comparison witnesses; their passing output cannot resolve A0/cmp or broaden the four new scopes."
+  },
+  "planned_validation": {
+    "state": "PROPOSED_NOT_STARTED_SEPARATE_STAGE",
+    "environment": "macOS local existing toolchain/cache only; no network/SSH/upload/install/push/publish",
+    "worker_count": 1,
+    "stdin": "DEVNULL",
+    "expected_groups": 17,
+    "outline_must_match_exact_files_and_groups_before_test": true,
+    "total_seconds": 600,
+    "budget_seconds": {
+      "fmt_check": 10,
+      "native_check": 60,
+      "outline": 10,
+      "baseline_test": 150,
+      "conditional_same_scope_repair_and_retest": 200,
+      "info_fmt_documentation_if_committing": 50,
+      "closeout_process_and_receipt_reserve": 60,
+      "unallocated_edit_margin": 60
+    },
+    "commands": [
+      {
+        "id": "fmt-check",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "fmt",
+          "--check",
+          "spec_config_checks_contract_test.mbt"
+        ]
+      },
+      {
+        "id": "check",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "check",
+          ".",
+          "--target",
+          "native",
+          "--frozen",
+          "--deny-warn",
+          "-j",
+          "1"
+        ]
+      },
+      {
+        "id": "outline",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "test",
+          "spec_config_checks_contract_test.mbt",
+          "array_std_test.mbt",
+          "arguments_test.mbt",
+          "render_test.mbt",
+          "--outline",
+          "--target",
+          "native",
+          "--debug",
+          "--frozen",
+          "--deny-warn",
+          "-j",
+          "1",
+          "--no-parallelize"
+        ]
+      },
+      {
+        "id": "tests",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "test",
+          "spec_config_checks_contract_test.mbt",
+          "array_std_test.mbt",
+          "arguments_test.mbt",
+          "render_test.mbt",
+          "--target",
+          "native",
+          "--debug",
+          "--frozen",
+          "--deny-warn",
+          "-j",
+          "1",
+          "--no-parallelize"
+        ]
+      }
+    ],
+    "conditional_repair_rule": "Preserve raw unchanged-implementation output first. If new criteria pass, only add reviewed mappings/evidence; do not modify correct product code. A confirmed defect permits only necessary minimal same-scope repair under a separately scheduled phase, unchanged independent semantic expectations, and repetition of the same selected groups inside the original deadline. A fixture compile error is not a semantic FAIL.",
+    "closeout": "Record raw stdout/stderr/exit/timings, exact source/fixture/tool hashes and actual counts in one small durable receipt. Check all owned PID/groups exited; preserve first failures and any old-assertion migration input/old/new/fixed-source basis. No blanket snapshot update.",
+    "end_conditions": [
+      "Actual 10 new + 7 unchanged groups match the outline.",
+      "All defined result/error/demand/binding/alias witnesses have actual outcomes; NOTRUN is not PASS.",
+      "Each accepted transfer/profile retains explicit child premises; shared unresolved rules are unchanged.",
+      "No product/source/mapping acceptance is claimed merely from static consistency or test totals."
+    ]
+  },
+  "input_sha256": {
+    "stdlib_source.mbt": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+    "stdlib_layer.mbt": "04fa199f43ac20b769abda17f046f4f6920d3bbc9ed8c1a588992eac745b5422",
+    "stdlib.mbt": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+    "imports.mbt": "5854e3b0f3a928a7e8dbc1f16ee556e0a3d5cbbb680e739a5a835c6f7579d70c",
+    "operators.mbt": "a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209",
+    "manifest.mbt": "27afd5b294541c7990d58420fc3e862f0e911f0fadaef8699c6eb95d1254cc6c",
+    "render.mbt": "c1920a012c82bb49a4327995df20482c14280715a9677ec2236b757c370f3377",
+    "moon.mod": "60a0e01b55aed4163d5e9b9ef61efc06cc9c167ef3e6161a7cd50c617929aa9d",
+    "moon.pkg": "46cd807333bb7c9ced7199c68d2fda9513813dd3696cd8f1fcb00349072bb74f",
+    "spec_mapping_transfer_test.mbt": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877",
+    "spec_string_utilities_contract_test.mbt": "8e4e819cb0e1bfeb99a0f7cf52bf21c9ead4fe9a1abd2a09e87b9136ebb41cf9",
+    "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+    "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+    "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
+    "spec_make_array_test.mbt": "2528ec26e9449cd6bc1a9acb2819258c79dca4d24d1916b3a263008a0c867554",
+    "spec_shared_call_mode_test.mbt": "dbbfe455c182196d6c27a40424114ff964ee59781ecfe2f63900d16a4696ed02",
+    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "spec_additive_fields_test.mbt": "831593d7e2afce69bf9a5dd8518ccb88c0f28648a35368d9316bea2c79284852",
+    "spec_conditional_runtime_test.mbt": "ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf",
+    "array_std_test.mbt": "a1e5f588530cb2efabb9b4f9f85644869a76996288479c53f583cca8c36e74cc",
+    "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336",
+    "render_test.mbt": "4e1780fd1cd69207bc02800ccc6c4ce64accf8e7b10f744863ded263dfba4ce9",
+    "spec_config_checks_contract_test.mbt": "ba58214e8aae9eb3d4f53993e3a97c38b90fa4bffabc49dbd9476a3ed11ab62c",
+    "docs/development/spec-public-inventory.json": "69a8f7b6888dd22020417895195b6a8a4d7c509a5602047e586c73de6463d08e",
+    "tests/spec-public-coverage.json": "eb369af4ebe615ff80d3b6d80a662d39b8b99140413eb35bc44bc1c897d2b041",
+    "spec_value_heads_test.mbt": "c333432caf47be1eb43ef9650c86309361f3dc5e6bcd80befc435cb2802a20fc"
+  },
+  "static_actions_completed": {
+    "single_file_formatter": {
+      "argv": [
+        "<USER_HOME>/.moon/bin/moonfmt",
+        "-w",
+        "spec_config_checks_contract_test.mbt"
+      ],
+      "exit": 0
+    },
+    "native_check": false,
+    "outline": false,
+    "test": false,
+    "info": false,
+    "product_changed": false,
+    "legacy_tests_changed": false,
+    "mappings_changed": false,
+    "stage_commit": false,
+    "remote": false
+  },
+  "source_changes_proposed": [],
+  "acceptance_boundary": "A successful directed run would permit evidence review for these four explicit transfers under existing child rules. It would neither resolve shared conflicts nor establish complete Jsonnet or proposal acceptance.",
+  "original_frozen_plan_sha256": "55e453be72e67ea50da300bc785b23f776a353cea0a58ca41c8b98d84d4a28dc",
+  "original_fixture_sha256": "876b9a9383251b925fed298b4f0e063698d927c9d73a42c7b335772a10194678",
+  "execution_report": "docs/archive/reports/spec-config-checks-2026-10-28.json",
+  "execution_summary": {
+    "check_exit": 0,
+    "actual_outline_groups": 17,
+    "semantic_baseline": {
+      "passed": 16,
+      "failed": 1
+    },
+    "final": {
+      "passed": 17,
+      "failed": 0
+    },
+    "product_changed": false,
+    "legacy_tests_changed": false
+  }
+}

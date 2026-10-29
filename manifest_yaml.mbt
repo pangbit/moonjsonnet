@@ -8,7 +8,9 @@
 // License and retained attribution: LICENSE and NOTICE at the module root.
 
 ///|
-// Adapted from go-jsonnet v0.21.0 native YAML rendering. See NOTICE and LICENSE.
+// Adapted from Jsonnet v0.21.0 std.manifestYamlDoc bareSafe (Apache-2.0).
+// https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1089-L1220
+// Copyright 2015 Google Inc. All rights reserved. See NOTICE and LICENSE.
 fn yaml_bare_safe(s : String) -> Bool {
   let chars = s.to_array()
   if chars.is_empty() {
@@ -27,93 +29,54 @@ fn yaml_bare_safe(s : String) -> Bool {
   }
   let lower = s.to_lower()
   if [
-      "true", "false", "yes", "no", "on", "off", "y", "n", ".nan", "-.inf", ".inf",
-      "null", "-", "---", "nan", "inf", "infinity", "-inf", "-infinity",
+      "true", "false", "yes", "no", "on", "off", "y", "n", ".nan", "-.inf", "+.inf",
+      ".inf", "null", "-", "---", "",
     ].contains(lower) {
     return false
   }
-  // The reference timestamp regexp allows even empty digit groups.
-  if chars.iter().all(c => (c >= '0' && c <= '9') || c == '-') &&
-    chars.iter().filter(c => c == '-').count() == 2 {
+  let lower_chars = lower.to_array()
+  let dashes = chars.iter().filter(c => c == '-').count()
+  // These are the fixed source's conservative character/count predicates,
+  // including malformed-looking numeric shapes; they do not parse numbers.
+  if chars.iter().all(c => (c >= '0' && c <= '9') || c == '-') && dashes == 2 {
     return false
   }
-  let positive = if s.has_prefix("-") { s[1:].to_owned() } else { s }
-  if positive.has_prefix("0b") &&
-    positive.length() > 2 &&
-    positive[2:].iter().all(c => c == '0' || c == '1' || c == '_') {
+  if lower_chars.iter().all(c => (c >= '0' && c <= '9') || c == '_' || c == '-') &&
+    dashes < 2 {
     return false
   }
-  // Intentionally unanchored and case sensitive, like yamlHexPattern in Go.
-  for i in 0..<(chars.length() - 2) {
-    if chars[i] == '0' && chars[i + 1] == 'x' {
-      let c = chars[i + 2]
-      if (c >= '0' && c <= '9') ||
-        (c >= 'a' && c <= 'f') ||
-        (c >= 'A' && c <= 'F') ||
-        c == '_' {
-        return false
-      }
-    }
-  }
-  !yaml_decimal(s)
-}
-
-///|
-// ParseFloat accepts decimal underscores only between digits. Overflow returns
-// ErrRange and therefore does not disqualify a bare key; underflow is accepted.
-fn yaml_decimal(s : String) -> Bool {
-  let chars = s.to_array()
-  let n = chars.length()
-  let mut i = if chars[0] == '-' { 1 } else { 0 }
-  let digits = fn() {
-    let mut count = 0
-    while i < n && ((chars[i] >= '0' && chars[i] <= '9') || chars[i] == '_') {
-      if chars[i] == '_' {
-        if count == 0 ||
-          i + 1 == n ||
-          chars[i - 1] == '_' ||
-          chars[i + 1] < '0' ||
-          chars[i + 1] > '9' {
-          return -1
-        }
-      } else {
-        count += 1
-      }
-      i += 1
-    }
-    count
-  }
-  let before = digits()
-  if before < 0 {
+  if lower_chars
+    .iter()
+    .all(c => (c >= '0' && c <= '9') || c == '_' || c == '-' || c == 'b') &&
+    chars.length() > 2 &&
+    (s.has_prefix("0b") || s.has_prefix("-0b")) {
     return false
   }
-  let after = if i < n && chars[i] == '.' {
-    i += 1
-    digits()
-  } else {
-    0
-  }
-  if after < 0 || before + after == 0 {
+  if lower_chars
+    .iter()
+    .all(c => {
+      (c >= '0' && c <= '9') || c == 'e' || c == '.' || c == '_' || c == '-'
+    }) &&
+    chars.iter().filter(c => c == '.').count() == 1 &&
+    dashes < 3 &&
+    lower_chars.iter().filter(c => c == 'e').count() < 2 {
     return false
   }
-  if i < n && (chars[i] == 'e' || chars[i] == 'E') {
-    i += 1
-    if i < n && chars[i] == '-' {
-      i += 1
-    }
-    if digits() <= 0 {
-      return false
-    }
-  }
-  if i != n {
+  if lower_chars
+    .iter()
+    .all(c => {
+      (c >= '0' && c <= '9') ||
+      (c >= 'a' && c <= 'f') ||
+      c == 'x' ||
+      c == '_' ||
+      c == '-'
+    }) &&
+    dashes < 2 &&
+    chars.length() > 2 &&
+    (s.has_prefix("0x") || s.has_prefix("-0x")) {
     return false
   }
-  let cleaned = s.replace(old="_", new="")
-  try @string.parse_double(cleaned[:]) catch {
-    _ => false
-  } noraise {
-    value => !value.is_inf()
-  }
+  true
 }
 
 ///|
@@ -137,7 +100,9 @@ fn Vm::yaml_value(
     Bool(v) => out.write(if v { "true" } else { "false" })
     Num(v) => {
       ignore(finite(v, loc))
-      out.write(manifest_number(v))
+      out.write(
+        render_json(Json::number(v), false, 0, out.limit - out.bytes, loc),
+      )
     }
     Str(s) =>
       if s.has_suffix("\n") {

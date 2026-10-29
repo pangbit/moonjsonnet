@@ -1,0 +1,943 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "3e6bcf1f4003e1a171628787558385357491c8d39ec96c818c24ad992065606c",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "state": "SCOPED_5_OF_5_PASS_READY_FOR_EXACT_LOCAL_COMMIT",
+  "base_commit": "16e8358d765b4d229f959e01f1051ea9dac08e00",
+  "start_utc": "2026-10-28T10:43:41Z",
+  "clock": "System CLOCK_MONOTONIC milliseconds; one absolute deadline saved before controller compilation/startup; never reset.",
+  "start_monotonic_ms": "37298225",
+  "hard_deadline_monotonic_ms": "37478225",
+  "testing_cutoff_monotonic_ms": "37418225",
+  "total_seconds": 180,
+  "closeout_reserve_seconds": 60,
+  "single_worker": true,
+  "commands": [
+    {
+      "id": "head",
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "start_monotonic_ms": "37299250",
+      "start_elapsed_ms": "1025",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299265",
+      "duration_ms": "15",
+      "stdout_raw": "16e8358d765b4d229f959e01f1051ea9dac08e00\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "tracked-clean",
+      "argv": [
+        "git",
+        "diff",
+        "--name-only",
+        "HEAD"
+      ],
+      "start_monotonic_ms": "37299278",
+      "start_elapsed_ms": "1053",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299296",
+      "duration_ms": "18",
+      "stdout_raw": "",
+      "stderr_raw": ""
+    },
+    {
+      "id": "index-clean",
+      "argv": [
+        "git",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "start_monotonic_ms": "37299301",
+      "start_elapsed_ms": "1076",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299316",
+      "duration_ms": "15",
+      "stdout_raw": "",
+      "stderr_raw": ""
+    },
+    {
+      "id": "plan-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tests/spec-boolean-parity-plan.json"
+      ],
+      "start_monotonic_ms": "37299321",
+      "start_elapsed_ms": "1096",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299337",
+      "duration_ms": "16",
+      "stdout_raw": "5222ee82888edcc5426db5019a6e755008b55124f1a2e36215e815195956f033  tests/spec-boolean-parity-plan.json\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "fixture-original-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_boolean_parity_contract_test.mbt"
+      ],
+      "start_monotonic_ms": "37299342",
+      "start_elapsed_ms": "1117",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299355",
+      "duration_ms": "13",
+      "stdout_raw": "fee9c0642cda5260d8317ea97db7bcfa29ea16d0b211312ab4382886a93cae49  spec_boolean_parity_contract_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-0",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "stdlib.mbt"
+      ],
+      "start_monotonic_ms": "37299360",
+      "start_elapsed_ms": "1135",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299374",
+      "duration_ms": "14",
+      "stdout_raw": "b31241733ac2f5278102073a3cedd95c78e560866e5da9a5b5c427d9e6370851  stdlib.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-1",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "stdlib_source.mbt"
+      ],
+      "start_monotonic_ms": "37299379",
+      "start_elapsed_ms": "1154",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299392",
+      "duration_ms": "13",
+      "stdout_raw": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98  stdlib_source.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-2",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "stdlib_layer.mbt"
+      ],
+      "start_monotonic_ms": "37299397",
+      "start_elapsed_ms": "1172",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299409",
+      "duration_ms": "12",
+      "stdout_raw": "04fa199f43ac20b769abda17f046f4f6920d3bbc9ed8c1a588992eac745b5422  stdlib_layer.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-3",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "std_math.mbt"
+      ],
+      "start_monotonic_ms": "37299414",
+      "start_elapsed_ms": "1189",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299427",
+      "duration_ms": "13",
+      "stdout_raw": "3e77bc7b07190d73126c580429c638d74fc54621eac1bd2f05cdb5c473b7a9ef  std_math.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-4",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "eval.mbt"
+      ],
+      "start_monotonic_ms": "37299431",
+      "start_elapsed_ms": "1206",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299444",
+      "duration_ms": "13",
+      "stdout_raw": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700  eval.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-5",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "pkg.generated.mbti"
+      ],
+      "start_monotonic_ms": "37299449",
+      "start_elapsed_ms": "1224",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299464",
+      "duration_ms": "15",
+      "stdout_raw": "dd585b072ff5a5136c68c2b66f92b9faf31721d392fcb44ab3e687b4c72fb3a3  pkg.generated.mbti\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-6",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_array_ordering_test.mbt"
+      ],
+      "start_monotonic_ms": "37299469",
+      "start_elapsed_ms": "1244",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299483",
+      "duration_ms": "14",
+      "stdout_raw": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a  spec_array_ordering_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-7",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_sequence_structure_test.mbt"
+      ],
+      "start_monotonic_ms": "37299488",
+      "start_elapsed_ms": "1263",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299501",
+      "duration_ms": "13",
+      "stdout_raw": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30  spec_sequence_structure_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-8",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_math_rounding_test.mbt"
+      ],
+      "start_monotonic_ms": "37299506",
+      "start_elapsed_ms": "1281",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299519",
+      "duration_ms": "13",
+      "stdout_raw": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc  spec_math_rounding_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-9",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_shared_call_mode_test.mbt"
+      ],
+      "start_monotonic_ms": "37299523",
+      "start_elapsed_ms": "1298",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299536",
+      "duration_ms": "13",
+      "stdout_raw": "dbbfe455c182196d6c27a40424114ff964ee59781ecfe2f63900d16a4696ed02  spec_shared_call_mode_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-10",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_mapping_transfer_test.mbt"
+      ],
+      "start_monotonic_ms": "37299541",
+      "start_elapsed_ms": "1316",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299554",
+      "duration_ms": "13",
+      "stdout_raw": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877  spec_mapping_transfer_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-11",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_object_ex_test.mbt"
+      ],
+      "start_monotonic_ms": "37299559",
+      "start_elapsed_ms": "1334",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299572",
+      "duration_ms": "13",
+      "stdout_raw": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141  spec_object_ex_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "input-12",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tests/spec-public-coverage.json"
+      ],
+      "start_monotonic_ms": "37299577",
+      "start_elapsed_ms": "1352",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299591",
+      "duration_ms": "14",
+      "stdout_raw": "a822ae2b0226bc4dfdd2448063961da627be951faeafedfc2e65c63cf2dc62a4  tests/spec-public-coverage.json\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "prior-clamp-receipt",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "docs/archive/reports/spec-clamp-2026-10-28.json"
+      ],
+      "start_monotonic_ms": "37299597",
+      "start_elapsed_ms": "1372",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299612",
+      "duration_ms": "15",
+      "stdout_raw": "07dc9e0ee24c240be84fdc3f71e3c2f638b4afdd0b5358a2310146a00274b02a  docs/archive/reports/spec-clamp-2026-10-28.json\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "controller-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "/tmp/moonjsonnet-boolean-parity-180/run.mbtx"
+      ],
+      "start_monotonic_ms": "37299618",
+      "start_elapsed_ms": "1393",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299632",
+      "duration_ms": "14",
+      "stdout_raw": "d8fdcb0c93364ff600ed81b733c0141b23046e298a1c98fd491e157e88d73a4b  /tmp/moonjsonnet-boolean-parity-180/run.mbtx\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "info",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "info",
+        "--target",
+        "native",
+        "--frozen"
+      ],
+      "start_monotonic_ms": "37299637",
+      "start_elapsed_ms": "1412",
+      "cap_ms": 20000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37299880",
+      "duration_ms": "243",
+      "stdout_raw": "",
+      "stderr_raw": "Finished. moon: ran 5 tasks, now up to date\n"
+    },
+    {
+      "id": "fmt",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "fmt"
+      ],
+      "start_monotonic_ms": "37299885",
+      "start_elapsed_ms": "1660",
+      "cap_ms": 20000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37300499",
+      "duration_ms": "614",
+      "stdout_raw": "",
+      "stderr_raw": "Finished. moon: ran 386 tasks, now up to date\n"
+    },
+    {
+      "id": "check",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "check",
+        ".",
+        "--target",
+        "native",
+        "--frozen",
+        "--deny-warn",
+        "-j",
+        "1"
+      ],
+      "start_monotonic_ms": "37300504",
+      "start_elapsed_ms": "2279",
+      "cap_ms": 20000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37300974",
+      "duration_ms": "470",
+      "stdout_raw": "",
+      "stderr_raw": "Finished. moon: ran 6 tasks, now up to date\n"
+    },
+    {
+      "id": "outline",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "test",
+        "spec_boolean_parity_contract_test.mbt",
+        "--outline",
+        "--target",
+        "native",
+        "--debug",
+        "--frozen",
+        "--deny-warn",
+        "-j",
+        "1",
+        "--no-parallelize"
+      ],
+      "start_monotonic_ms": "37300979",
+      "start_elapsed_ms": "2754",
+      "cap_ms": 10000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37301147",
+      "duration_ms": "168",
+      "stdout_raw": "   1. pangbit/moonjsonnet spec_boolean_parity_contract_test.mbt:7 index=0 name=\"BP1 xor and xnor retain the complete Boolean truth tables\"\n   2. pangbit/moonjsonnet spec_boolean_parity_contract_test.mbt:25 index=1 name=\"BP2 parity retains literal small signed integer results\"\n   3. pangbit/moonjsonnet spec_boolean_parity_contract_test.mbt:54 index=2 name=\"BP3 shared predicate binding preserves names arity and aliased inputs\"\n   4. pangbit/moonjsonnet spec_boolean_parity_contract_test.mbt:151 index=3 name=\"BP4 predicates propagate sole required errors and parity rejects nonnumbers\"\n   5. pangbit/moonjsonnet spec_boolean_parity_contract_test.mbt:182 index=4 name=\"BP5 unused predicate calls retain ordinary lazy branches and arguments\"\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "mbti-diff",
+      "argv": [
+        "git",
+        "diff",
+        "--",
+        "*.mbti"
+      ],
+      "start_monotonic_ms": "37301153",
+      "start_elapsed_ms": "2928",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37301174",
+      "duration_ms": "21",
+      "stdout_raw": "",
+      "stderr_raw": ""
+    },
+    {
+      "id": "fixture-formatted-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "spec_boolean_parity_contract_test.mbt"
+      ],
+      "start_monotonic_ms": "37301179",
+      "start_elapsed_ms": "2954",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37301192",
+      "duration_ms": "13",
+      "stdout_raw": "2f7266a7450f168cb0b16c45b467cfe9f88c641ef8705148bc0a1802b7104a6b  spec_boolean_parity_contract_test.mbt\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "test",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "test",
+        "spec_boolean_parity_contract_test.mbt",
+        "--target",
+        "native",
+        "--debug",
+        "--frozen",
+        "--deny-warn",
+        "-j",
+        "1",
+        "--no-parallelize"
+      ],
+      "start_monotonic_ms": "37301197",
+      "start_elapsed_ms": "2972",
+      "cap_ms": 45000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37311744",
+      "duration_ms": "10547",
+      "stdout_raw": "Total tests: 5, passed: 5, failed: 0.\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "product-clean",
+      "argv": [
+        "git",
+        "diff",
+        "--name-only",
+        "HEAD"
+      ],
+      "start_monotonic_ms": "37311749",
+      "start_elapsed_ms": "13524",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37311765",
+      "duration_ms": "16",
+      "stdout_raw": "",
+      "stderr_raw": ""
+    },
+    {
+      "id": "coverage-final-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tests/spec-public-coverage.json"
+      ],
+      "start_monotonic_ms": "37311784",
+      "start_elapsed_ms": "13559",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37311798",
+      "duration_ms": "14",
+      "stdout_raw": "b81bcafba9fcc6de40cf2aa215bb66679c4fb8372a2d093655dfcdce5fafd67f  tests/spec-public-coverage.json\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "fmt-check",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "fmt",
+        "--check"
+      ],
+      "start_monotonic_ms": "37311803",
+      "start_elapsed_ms": "13578",
+      "cap_ms": 15000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37312627",
+      "duration_ms": "824",
+      "stdout_raw": "",
+      "stderr_raw": "Finished. moon: ran 386 tasks, now up to date\n"
+    },
+    {
+      "id": "doc-source-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tools/documentation.mbtx"
+      ],
+      "start_monotonic_ms": "37312632",
+      "start_elapsed_ms": "14407",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37312646",
+      "duration_ms": "14",
+      "stdout_raw": "a8b65a2b84a3e5d8e225d4081552556fa26c9d1f6189544ce45c91b5f1bb63d1  tools/documentation.mbtx\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "doc-binary-hash",
+      "argv": [
+        "/usr/bin/shasum",
+        "-a",
+        "256",
+        "tools/_build/documentation.mbtx/wasm/debug/build/single/single.wasm"
+      ],
+      "start_monotonic_ms": "37312651",
+      "start_elapsed_ms": "14426",
+      "cap_ms": 5000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37312667",
+      "duration_ms": "16",
+      "stdout_raw": "f4bbd21218d59a455ff334dc2d7065dcd1b4d9bae61993bc50343d609420127e  tools/_build/documentation.mbtx/wasm/debug/build/single/single.wasm\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "docs",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moonrun",
+        "tools/_build/documentation.mbtx/wasm/debug/build/single/single.wasm"
+      ],
+      "start_monotonic_ms": "37312676",
+      "start_elapsed_ms": "14451",
+      "cap_ms": 20000,
+      "state": "PASS",
+      "exit": 0,
+      "end_monotonic_ms": "37314999",
+      "duration_ms": "2323",
+      "stdout_raw": "Documentation: 217 files, 1857 local/current-source links, root layout, language candidates, README parity and migration targets passed.\n",
+      "stderr_raw": ""
+    }
+  ],
+  "network_remote_upload_push_publish": false,
+  "handoff": "Complete this authorized batch, stop, and use no Fast on later tasks.",
+  "controller_startup_elapsed_ms": "1019",
+  "elapsed_ms": "16774",
+  "remaining_ms": "163226",
+  "original_input_sha256": {
+    "stdlib.mbt": "b31241733ac2f5278102073a3cedd95c78e560866e5da9a5b5c427d9e6370851",
+    "stdlib_source.mbt": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+    "stdlib_layer.mbt": "04fa199f43ac20b769abda17f046f4f6920d3bbc9ed8c1a588992eac745b5422",
+    "std_math.mbt": "3e77bc7b07190d73126c580429c638d74fc54621eac1bd2f05cdb5c473b7a9ef",
+    "eval.mbt": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+    "pkg.generated.mbti": "dd585b072ff5a5136c68c2b66f92b9faf31721d392fcb44ab3e687b4c72fb3a3",
+    "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+    "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "spec_shared_call_mode_test.mbt": "dbbfe455c182196d6c27a40424114ff964ee59781ecfe2f63900d16a4696ed02",
+    "spec_mapping_transfer_test.mbt": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877",
+    "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
+    "tests/spec-public-coverage.json": "a822ae2b0226bc4dfdd2448063961da627be951faeafedfc2e65c63cf2dc62a4"
+  },
+  "preserved_prior_evidence": {
+    "clamp_receipt": "docs/archive/reports/spec-clamp-2026-10-28.json",
+    "clamp_receipt_sha256": "07dc9e0ee24c240be84fdc3f71e3c2f638b4afdd0b5358a2310146a00274b02a",
+    "clamp_result": "7/7 PASS; 17.808-second completed controller window",
+    "reuse": "All prior clamp, extVar and mathematical results remain bound to their existing inputs and scope. No old test group or full suite is scheduled again here; previous overruns remain unchanged."
+  },
+  "prior_test_reruns": "NOTRUN; no prior clamp, extVar, mathematical or other old test group rerun",
+  "controller_sha256": "d8fdcb0c93364ff600ed81b733c0141b23046e298a1c98fd491e157e88d73a4b",
+  "final_fixture_sha256": "2f7266a7450f168cb0b16c45b467cfe9f88c641ef8705148bc0a1802b7104a6b",
+  "format": "Original bytes retained in /tmp; formatted test input bound by final hash; no assertion edit.",
+  "result": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "product_logic_changed": false,
+    "old_test_changed": false
+  },
+  "prepared_mapping_records": [
+    {
+      "name": "xor",
+      "signature_review": {
+        "parameters": [
+          "x",
+          "y"
+        ],
+        "defaults": {},
+        "test": "spec_boolean_parity_contract_test.mbt",
+        "status": "BP3: fixed required names, arity, direct and saved-function call forms and safe invalid bindings; scoped batch 5/5."
+      },
+      "reference_candidates": [
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 7,
+          "test_declaration": "test \"BP1 xor and xnor retain the complete Boolean truth tables\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 54,
+          "test_declaration": "test \"BP3 shared predicate binding preserves names arity and aliased inputs\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 151,
+          "test_declaration": "test \"BP4 predicates propagate sole required errors and parity rejects nonnumbers\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 182,
+          "test_declaration": "test \"BP5 unused predicate calls retain ordinary lazy branches and arguments\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        }
+      ],
+      "dimensions": {
+        "N": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP1/BP3: all four Boolean input pairs have independent literal truth values, with positional/named/reordered/mixed/alias calls."
+        },
+        "E": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP3/BP4: invalid bindings reject; either operand's sole error is required with each possible Boolean partner, also under type. No nonboolean admission or rejection rule is inferred."
+        },
+        "L": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP3/BP5: repeated input aliases retain their literal values; unused whole calls in locals, unselected branches, Boolean shortcuts and ordinary arguments leave argument errors dormant. No callback-count or payload-order claim."
+        },
+        "B": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP1/BP3/BP4: complete two-Boolean truth table, both operand positions, required x/y names and arity two. No nonboolean equality-domain completion."
+        }
+      },
+      "contract_review": {
+        "decision": "reviewed_finite_common_domain_profile",
+        "scope": "Executed finite common documentation/source domain plus ordinary binding and demand only. Five independent source and handmade-AST groups pass on unchanged product logic.",
+        "remaining_in_scope": [
+          "Nonboolean xor/xnor admission and general equality remain unadjudicated."
+        ],
+        "evidence": "docs/archive/reports/spec-boolean-parity-2026-10-28.json"
+      },
+      "remaining": "Only the explicitly executed subset is recorded. Shared A0/N0/R0, signed modulo, diagnostic priority, full IEEE and whole-function/project/platform acceptance do not gain a passing decision."
+    },
+    {
+      "name": "xnor",
+      "signature_review": {
+        "parameters": [
+          "x",
+          "y"
+        ],
+        "defaults": {},
+        "test": "spec_boolean_parity_contract_test.mbt",
+        "status": "BP3: fixed required names, arity, direct and saved-function call forms and safe invalid bindings; scoped batch 5/5."
+      },
+      "reference_candidates": [
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 7,
+          "test_declaration": "test \"BP1 xor and xnor retain the complete Boolean truth tables\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 54,
+          "test_declaration": "test \"BP3 shared predicate binding preserves names arity and aliased inputs\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 151,
+          "test_declaration": "test \"BP4 predicates propagate sole required errors and parity rejects nonnumbers\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 182,
+          "test_declaration": "test \"BP5 unused predicate calls retain ordinary lazy branches and arguments\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        }
+      ],
+      "dimensions": {
+        "N": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP1/BP3: all four Boolean input pairs have independent literal truth values, with positional/named/reordered/mixed/alias calls."
+        },
+        "E": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP3/BP4: invalid bindings reject; either operand's sole error is required with each possible Boolean partner, also under type. No nonboolean admission or rejection rule is inferred."
+        },
+        "L": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP3/BP5: repeated input aliases retain their literal values; unused whole calls in locals, unselected branches, Boolean shortcuts and ordinary arguments leave argument errors dormant. No callback-count or payload-order claim."
+        },
+        "B": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP1/BP3/BP4: complete two-Boolean truth table, both operand positions, required x/y names and arity two. No nonboolean equality-domain completion."
+        }
+      },
+      "contract_review": {
+        "decision": "reviewed_finite_common_domain_profile",
+        "scope": "Executed finite common documentation/source domain plus ordinary binding and demand only. Five independent source and handmade-AST groups pass on unchanged product logic.",
+        "remaining_in_scope": [
+          "Nonboolean xor/xnor admission and general equality remain unadjudicated."
+        ],
+        "evidence": "docs/archive/reports/spec-boolean-parity-2026-10-28.json"
+      },
+      "remaining": "Only the explicitly executed subset is recorded. Shared A0/N0/R0, signed modulo, diagnostic priority, full IEEE and whole-function/project/platform acceptance do not gain a passing decision."
+    },
+    {
+      "name": "isEven",
+      "signature_review": {
+        "parameters": [
+          "x"
+        ],
+        "defaults": {},
+        "test": "spec_boolean_parity_contract_test.mbt",
+        "status": "BP3: fixed required names, arity, direct and saved-function call forms and safe invalid bindings; scoped batch 5/5."
+      },
+      "reference_candidates": [
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 25,
+          "test_declaration": "test \"BP2 parity retains literal small signed integer results\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 54,
+          "test_declaration": "test \"BP3 shared predicate binding preserves names arity and aliased inputs\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 151,
+          "test_declaration": "test \"BP4 predicates propagate sole required errors and parity rejects nonnumbers\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 182,
+          "test_declaration": "test \"BP5 unused predicate calls retain ordinary lazy branches and arguments\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        }
+      ],
+      "dimensions": {
+        "N": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP2/BP3: twelve literal exact integers -16,-11,-3,-2,-1,0,1,2,3,10,11,16 have independently specified parity, with ordinary named/aliased calls."
+        },
+        "E": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP3/BP4: invalid bindings, sole required errors and Null/Boolean/String/Array/Object heads reject. Required errors also reject under type. Function-head admission and competing-error winners are not tested."
+        },
+        "L": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP3/BP5: repeated input aliases retain their literal values; unused whole calls in locals, unselected branches, Boolean shortcuts and ordinary arguments leave argument errors dormant. No callback-count or payload-order claim."
+        },
+        "B": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP2/BP3: zero, signed odd/even witnesses and twelve exact small integers only; x is required and arity is one. No fractional, large-integer or full IEEE certificate."
+        }
+      },
+      "contract_review": {
+        "decision": "reviewed_finite_common_domain_profile",
+        "scope": "Executed finite common documentation/source domain plus ordinary binding and demand only. Five independent source and handmade-AST groups pass on unchanged product logic.",
+        "remaining_in_scope": [
+          "Fractional integral-part versus source-round behavior and large-integer rounding boundaries remain unadjudicated."
+        ],
+        "evidence": "docs/archive/reports/spec-boolean-parity-2026-10-28.json"
+      },
+      "remaining": "Only the explicitly executed subset is recorded. Shared A0/N0/R0, signed modulo, diagnostic priority, full IEEE and whole-function/project/platform acceptance do not gain a passing decision."
+    },
+    {
+      "name": "isOdd",
+      "signature_review": {
+        "parameters": [
+          "x"
+        ],
+        "defaults": {},
+        "test": "spec_boolean_parity_contract_test.mbt",
+        "status": "BP3: fixed required names, arity, direct and saved-function call forms and safe invalid bindings; scoped batch 5/5."
+      },
+      "reference_candidates": [
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 25,
+          "test_declaration": "test \"BP2 parity retains literal small signed integer results\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 54,
+          "test_declaration": "test \"BP3 shared predicate binding preserves names arity and aliased inputs\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 151,
+          "test_declaration": "test \"BP4 predicates propagate sole required errors and parity rejects nonnumbers\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        },
+        {
+          "file": "spec_boolean_parity_contract_test.mbt",
+          "line": 182,
+          "test_declaration": "test \"BP5 unused predicate calls retain ordinary lazy branches and arguments\" {",
+          "classification": "Independent finite source and handmade-AST witnesses; directed new-only batch 5/5. Each row retains its stated input-domain limits."
+        }
+      ],
+      "dimensions": {
+        "N": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP2/BP3: twelve literal exact integers -16,-11,-3,-2,-1,0,1,2,3,10,11,16 have independently specified parity, with ordinary named/aliased calls."
+        },
+        "E": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP3/BP4: invalid bindings, sole required errors and Null/Boolean/String/Array/Object heads reject. Required errors also reject under type. Function-head admission and competing-error winners are not tested."
+        },
+        "L": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP3/BP5: repeated input aliases retain their literal values; unused whole calls in locals, unselected branches, Boolean shortcuts and ordinary arguments leave argument errors dormant. No callback-count or payload-order claim."
+        },
+        "B": {
+          "test": "spec_boolean_parity_contract_test.mbt",
+          "expectation": "BP2/BP3: zero, signed odd/even witnesses and twelve exact small integers only; x is required and arity is one. No fractional, large-integer or full IEEE certificate."
+        }
+      },
+      "contract_review": {
+        "decision": "reviewed_finite_common_domain_profile",
+        "scope": "Executed finite common documentation/source domain plus ordinary binding and demand only. Five independent source and handmade-AST groups pass on unchanged product logic.",
+        "remaining_in_scope": [
+          "Fractional integral-part versus source-round behavior and large-integer rounding boundaries remain unadjudicated."
+        ],
+        "evidence": "docs/archive/reports/spec-boolean-parity-2026-10-28.json"
+      },
+      "remaining": "Only the explicitly executed subset is recorded. Shared A0/N0/R0, signed modulo, diagnostic priority, full IEEE and whole-function/project/platform acceptance do not gain a passing decision."
+    }
+  ],
+  "mapping": {
+    "finite_evidence_records_before": 121,
+    "finite_evidence_records_after": 125,
+    "candidates_without_manual_record_before": 32,
+    "candidates_without_manual_record_after": 28,
+    "whole_contract_acceptance_changed": false,
+    "scope": "Four bounded common-domain predicate profiles only; nonboolean xor/xnor and fractional/large parity remain unresolved."
+  },
+  "coverage_final_sha256": "b81bcafba9fcc6de40cf2aa215bb66679c4fb8372a2d093655dfcdce5fafd67f",
+  "commit_scope": [
+    "spec_boolean_parity_contract_test.mbt",
+    "tests/spec-boolean-parity-plan.json",
+    "tests/spec-public-coverage.json",
+    "docs/archive/reports/spec-boolean-parity-2026-10-28.json"
+  ],
+  "receipt_note": "Completed validation and bounded metadata are frozen here. Final commit/exit audit is saved in /tmp/moonjsonnet-boolean-parity-180/state.json and reported with HEAD. Earlier overruns remain unchanged; stop after this batch and use no Fast for subsequent tasks."
+}

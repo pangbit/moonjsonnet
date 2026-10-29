@@ -121,3 +121,49 @@ every public-function combination remain pending. Earlier signature/default
 conflicts and the eleven boundary observations are unchanged. No local approval
 or environment blocker exists; Linux execution still awaits the parent task's
 specific arrangement. Complete conformance is not established by this stage.
+
+## Object projection-transfer at d2874a40
+
+The fixed [projection definitions](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1573-L1580) and [mapWithKey definition](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L289-L295) are already source-enabled in [stdlib_layer.mbt](../../stdlib_layer.mbt). They delegate enumeration to objectFields(All), values to original obj[k], and construction to ordinary calls/comprehensions. The [independent OP1–OP9 fixture](../../spec_object_projection_contract_test.mbt) closes these finite scopes under those generic child judgments:
+
+| Accepted constructor-transfer scope | Decisive obligations |
+| --- | --- |
+| objectValuesAll: all declared Value projection | All sorted names including hidden fields; required o/Object guard, lazy Array elements, needed original indexing and receiver/alias preservation. |
+| objectKeysValues: visible projection in the Object-valued common domain | Exact key/value pair shape and String keys; binding/Object guard, key versus value demand, original receiver and overlays. |
+| objectKeysValuesAll: all-field projection in the Object-valued common domain | Same pair obligations, including hidden fields; the shared return-type conflict below limits acceptance. |
+| mapWithKey: all declared visible-field mapping transfer | Function-before-Object guards, required func/obj, regular result fields containing func(k,obj[k]), lazy shape/arity/body/value and original receivers. |
+
+Each recorded scope is **accepted_constructor_transfer** with `remaining_in_scope=[]`. Generic enumeration/index/receiver/application judgments are premises, not new function-specific pending work. Flat assertion demand is tested directly; no new inherited assertion-super or recursive-index judgment is made. OP6's successful host-gate non-demand and Runtime/exact-marker checks are embedding evidence, not general mapper counts or independent-error priority.
+
+### Shared pair return-type annotation conflict
+
+The fixed [objectKeysValues prose](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html#std-objectKeysValues) labels value as Object, and objectKeysValuesAll inherits that description; both source bodies instead store unrestricted o[k]. For o={a:1}, source pair.value is 1, incompatible with a literal Object-only annotation. No source precedence is established: this is a shared unresolved item in the two functions' own return contracts, not a generic-child exemption. No scalar rejection, wrapping or unconditional all-Value acceptance is inferred. All new normal pair tests use Object values; existing scalar-pair assertions remain source-defined profiles.
+
+On unchanged production source d2874a40e2998ba4c1e1237c97e7fca84e59e88f, one native debug run passed **19/19** (9 new + 10 existing), exit 0, 9.769 seconds; warning-denying check and matching outline passed, with all 725 input hashes stable. The test total includes legacy source profiles and is not a count of cross-source normative successes. Commands:
+
+```sh
+moon check . --target native --frozen --deny-warn -j 1
+moon test spec_object_projection_contract_test.mbt object_std_test.mbt spec_object_reflection_test.mbt arguments_test.mbt --target native --debug --frozen --deny-warn -j 1 --no-parallelize
+```
+
+Fixture SHA-256: `dc409fecada3755def02eaa3e68993fe366a8f299c3ff67d74ebbc3d852cb7c7`; retained `directed/receipt.json` SHA-256: `fa7f37b727c5f360d057adabb5e69446df12389b9e2874fd7a3ce16434e0da5a`. Info/format preserved interfaces, literals and operation tokens. Four new manual records preserve all 78 prior objects. No product fix, new full-suite/release/Linux/consumer/Go/C++ run or whole-language certificate is claimed; historical inventory snapshots and source-profile fixtures remain unchanged.
+
+## equals public call-binding at acb42b3e
+
+The fixed [equals(a,b) declaration](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1582) has two required parameters and no defaults. [EN1–EN3/EN5](../../spec_equals_names_contract_test.mbt) accept this bounded protocol as **accepted_call_binding**: positional/named/reordered/mixed and first-class calls, ordinary invalid bindings, unknown legacy x/y, named uniqueness and unused-call laziness. `remaining_in_scope=[]`; equality outcomes are child premises, and EN4/EN6 are behavior-preservation controls rather than proof of the comparison algorithm, == or all equality domains.
+
+On acb42b3e01f48020f2d9955b5d68b65ca1d6da27 the unchanged-product run passed **8/10**, exit 2: EN1 rejected its first a/b source call after positional direct/alias controls had passed through both entries; EN3 accepted its first x/y source call. Remaining arms after each failure were NOTRUN, and all four old groups passed. Splitting only the builtin_params entry into equals[a,b] and primitiveEquals[x,y] leaves the handler, self.equal, operators and source routing unchanged. The same frozen six new groups plus four neighbors then passed **10/10**, exit 0, 9.334 seconds, including every previously blocked arm; warning-denying checks and matching outlines passed, and each run's 726-input manifest stayed stable.
+
+| Legacy input before | Migrated input | Unchanged expectation and basis |
+| --- | --- | --- |
+| std.equals(x=[1],y=[1]) | std.equals(a=[1],b=[1]) | true; fixed source1582 names are a,b. |
+| std.equals(a=1,b=1) | std.equals(x=1,y=1) | error; x,y are unknown under that same declaration. |
+
+Original inputs/logs remain preserved; these are the only two legacy literal changes. The bounded adjacent audit found objectFields(All), objectRemoveKey, member and contains labels already matched their fixed declarations. Formal objectFieldsEx/objectHasEx/primitiveEquals rules do not declare public parameter labels, so no names were inferred from metavariables or changed. The two frozen Go named-argument profiles remain unchanged and were not rerun.
+
+```sh
+moon check . --target native --frozen --deny-warn -j 1
+moon test spec_equals_names_contract_test.mbt object_std_test.mbt arguments_test.mbt --target native --debug --frozen --deny-warn -j 1 --no-parallelize
+```
+
+Frozen fixture SHA-256: `0c31a91c16d3420e2b3167a0a9fb28b886980d47a2eb7e267e054de5ef88c48f`; corrected stdlib.mbt: `078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950`. Retained baseline/candidate receipt hashes: `59bbcf5716471f74c1df143857221f762309c432c3dfb423a3bd3889732e1f35` / `d4ceb091c9f4ab9f19b5c4c54e9e451493a7d630e18ab5ae594959cc6e9e6cd3`. Info/format checks changed no interface or frozen oracle. One new manual record preserves all 82 prior objects. No new full-suite/release/Linux/consumer/Go/C++ run, publication or whole-comparison acceptance is claimed.

@@ -136,3 +136,70 @@ Earlier local Linux packets remain evidence for their own commits. A new local
 packet may be rebound after this stable batch; execution still needs the parent
 to arrange the precise authorized Linux scope. There is no local approval or
 environment blocker. This stage does not establish complete conformance.
+
+## Mapping constructor-transfer at e42ef923
+
+The fixed [mapWithIndex definition](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L281-L287) and [filterMap definition](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L832-L840) have the same required names and no defaults as their public signatures. Static review confirms canonical source routing in [stdlib_layer.mbt](../../stdlib_layer.mbt): mapWithIndex uses makeArray with func(i, arr[i]); filterMap composes map with filter. Neither definition adds a callback-result kind guard.
+
+| Accepted constructor-transfer scope | Independent witnesses and assumed children |
+| --- | --- |
+| mapWithIndex: all public guards and Function + Array/String mapping obligations | [MT1/MT3–MT6/MT8–MT10](../../spec_mapping_transfer_test.mbt), existing sequence and binding controls; generic application, indexing, type/length, makeArray and child evaluation are premises. |
+| filterMap: all public guards and composition obligations for Boolean predicates | MT2–MT5/MT7–MT10 plus existing array/filter controls; generic application, type/child evaluation and map/Boolean-filter judgments are premises. The [nonboolean predicate policy](SPEC-FILTER-2026-10-22.md#frozen-criteria) remains UNRESOLVED/NOTPASS and prevents unconditional acceptance. |
+
+Both finite scopes are **accepted_constructor_transfer**, with no remaining obligations inside their stated scope. The tests cover required bindings, complete wrong outer-head guards, empty and demanded callback arity, membership versus output demand, isolated errors, unused calls and original aliases through source and independent handmade ASTs. Runtime/exact-marker assertions are additional embedding checks; exact callback counts, independent-error order and resource thresholds are not required. Before execution, static review strengthened MT5 by replacing error bodies with safe 7/true literals so arity rejection could not pass merely from a body failure; this was not a product or runtime failure.
+
+On unchanged production source e42ef923d58f127fbf952e96fb7c4830f9a493ff, the single directed native debug run passed **21/21** (10 new + 11 existing), exit 0, 9.218 seconds; warning-denying check and matching outline also passed. The 723-input manifest remained stable. Commands:
+
+```sh
+moon check . --target native --frozen --deny-warn -j 1
+moon test spec_mapping_transfer_test.mbt sequence_test.mbt array_std_test.mbt spec_filter_test.mbt arguments_test.mbt --target native --debug --frozen --deny-warn -j 1 --no-parallelize
+```
+
+Fixture SHA-256: `c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877`; retained `directed/receipt.json` SHA-256: `3cd7add9f9b5720a3aa6d3345416575c49129c38b4d803f238fe4bd0edf619ce`. Info/format checks changed no interface or original input; formatting preserved literals and operation tokens. No product fix, new full-suite/release/Linux/consumer/Go/C++ run or whole-language acceptance is claimed. The two new manual records preserve all 73 prior objects; historical inventory snapshots remain unchanged.
+
+## Repeat and search-transfer at 2e288eef
+
+The fixed [repeat](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L198-L203), [count](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L254) and [find](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1655-L1660) definitions are already source-enabled in [stdlib_layer.mbt](../../stdlib_layer.mbt). Their public names are respectively what/count, arr/x and value/arr, all required without defaults. Static branch review and the independent [RS1–RS9 source/handmade-AST fixture](../../spec_repeat_search_contract_test.mbt) close these finite responsibilities:
+
+| Accepted constructor-transfer scope | Explicit child premises and witnesses |
+| --- | --- |
+| repeat: String/Array copies for nonnegative integral Number count; complete type/cardinality errors, output kind/order, lazy Array payloads, bindings and originals | makeArray cardinality, join, String/Array concatenation and ordinary evaluation; RS1/RS2/RS4/RS5/RS8/RS9 plus existing array/cardinality controls. |
+| count: Array guard, all-occurrence count, empty-target laziness, complete comparison/error demand, bindings and originals | ==, Boolean filter, length and ordinary evaluation; RS3–RS9. |
+| find: Array guard, all zero-based matching indices, empty-target laziness, complete comparison/error demand, bindings and originals | ==, Boolean filter, range/length/indexing and ordinary evaluation; RS3–RS9. |
+
+Each scope is **accepted_constructor_transfer**, with `remaining_in_scope=[]`; the stated generic judgments are premises rather than new function-specific pending work. Isolated Runtime/exact-marker checks are extra embedding assertions. The fixed filterMap if branches only check argument types and then delegate membership to the primitive filter rule, so its [nonboolean-result question](SPEC-FILTER-2026-10-22.md#frozen-criteria) remains unresolved; count/find predicates instead obtain Boolean results from == or propagate its child error, and add no such policy question.
+
+On unchanged production source 2e288eef6689e96d666c8583b9335f37b7f01c91, the single directed native debug run passed **16/16** (9 new + 7 existing), exit 0, 10.444 seconds; check and matching outline passed, and all 724 input hashes remained stable. Commands:
+
+```sh
+moon check . --target native --frozen --deny-warn -j 1
+moon test spec_repeat_search_contract_test.mbt array_std_test.mbt spec_make_array_test.mbt arguments_test.mbt --target native --debug --frozen --deny-warn -j 1 --no-parallelize
+```
+
+Fixture SHA-256: `9a88ca152951bbd08f511e78e84a4ef7673236de1b016ac0d46e6a19c52049b8`; retained `directed/receipt.json` SHA-256: `dc464b0d5bd926498497087996ba02512edf4b0889152c429a6808e3f4ebdd8d`. Info/format checks preserved interfaces, literals and operation tokens. No product fix or additional full-suite/release/Linux/consumer/Go/C++ run is claimed. Three new manual records preserve all 75 prior objects; historical inventory snapshots and whole-language status remain unchanged.
+
+## Six set transfers at 6346da6e
+
+The six embedded [fixed definitions](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1468-L1530) match their cached source bytes, are enabled in stdlib_layer.mbt and have no native override. The [SC1–SC13 fixture](../../spec_sets_contract_test.mbt) supplies independent literal source/handmade-AST witnesses for these **accepted_constructor_transfer** scopes; every record has `remaining_in_scope=[]`:
+
+| Function | Accepted finite constructor/parameter/demand responsibility |
+| --- | --- |
+| uniq(arr,keyF=id) | Successive key deduplication with first representatives; empty/singleton key skipping, demanded calls and lazy retained Values. |
+| set(arr,keyF=id) | sort+uniq composition, stable first representatives, identity/custom keys and lazy retained Values. |
+| setUnion(a,b,keyF=id) | Ordered merge, left representative on equal keys, both comparison directions and exhausted suffix transfer. |
+| setInter(a,b,keyF=id) | Ordered intersection with left representatives, all merge branches and initial tailstrict input-head demand. |
+| setDiff(a,b,keyF=id) | Ordered left difference, all merge branches, retained suffixes and initial tailstrict input-head demand. |
+| setMember(x,arr,keyF=id) | Boolean intersection-length result, key identity, empty-arr target/key skipping and match/target-exhaustion tail demand. |
+
+All six include required names, the optional identity default, positional/named/mixed/aliased forms, safe binding/arity errors, isolated failures, unused calls and unchanged originals. uniq/set retain the established [source-defined String/Object/Function admission](SPEC-SORT-DEMAND-2026-10-25.md#sort-admission-and-non-promises-frozen-adjudication), including deferred invalid indices; no blanket Array guard is added. Binary/member value cases satisfy the [public sorted-unique Array precondition](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html#sets) under the same keyF. Outside it no meaningful set-result promise is asserted; error-valued probes separately test exact source-branch demand.
+
+Sort/foldl, equality/order/>0, Boolean branches, Array concat/slice/index and ordinary call/evaluation are explicit child premises in the existing [language matrix](SPEC-LANGUAGE-MATRIX.md) and [combinator review](SPEC-ARRAY-COMBINATORS-REVIEW.md), not six duplicated unresolved items or a circular comparison proof. Runtime/marker checks are embedding evidence; general callback counts and resource thresholds are not added. No new function-specific textual conflict or implementation defect was found; shared unresolved judgments retain their own scope.
+
+At unchanged production source 6346da6ea3aa47013475d253c84c49d727b118de, one native debug run passed **17/17** (13 new + 4 existing), exit 0, 11.208 seconds; check/outline passed and all 727 input hashes stayed stable. Existing receiver/profile controls retain their previous scope. Commands:
+
+```sh
+moon check . --target native --frozen --deny-warn -j 1
+moon test spec_sets_contract_test.mbt sets_test.mbt arguments_test.mbt --target native --debug --frozen --deny-warn -j 1 --no-parallelize
+```
+
+Fixture SHA-256: `e36139e7176c15c3ed42648f380c487522d08f4395f7807218bbdf46860d14d9`; retained `directed/receipt.json` SHA-256: `0bf098510d60abf9f88683d027cdda2af309faf38384f86b2185dffa1fba064e`. Info/format preserved interfaces and operation/literal tokens, apart from the pre-freeze SC8 title clarification. Six records preserve all 83 prior objects; historical inventory snapshots are unchanged. No product fix, new full-suite/release/Linux/consumer/Go/C++ run or overall compliance claim is made.

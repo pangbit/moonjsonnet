@@ -276,3 +276,141 @@ There is no additional production delta in this follow-up. No full, release,
 remote/Linux, independent CLI/API or reference execution occurred. Stream default
 and assertion N0/R0 qualifications remain unchanged, with overall conformance
 still incomplete. This follow-up ends here rather than expanding call semantics.
+
+## YAML Number clause frozen at fbe2b117
+
+Base `fbe2b117cae1042bccd44cbb7d4dc1b5098e38b9`. The fixed
+[Doc Number branch](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1225-L1226)
+returns `'' + v`; [Stream delegates each document](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1300-L1306).
+The public Doc description supplies no conflicting numeric precision rule.
+The current shortest fixed-decimal branch breaks that identity. The preserved
+seven-case CLI baseline at `moonjsonnet-yaml-number.59jhivf_/formal-probes/`
+has five text mismatches and two controls; its separate launcher failure ran no
+product cases. The new native fixture still needs its own unchanged baseline.
+
+`spec_yaml_number_contract_test.mbt` uses source and independently handmade ASTs,
+with literal expected text and supplemental ordinary-coercion identities.
+Large integers reuse the independent binary64 derivations in the
+[JSON Number record](SPEC-JSON-CONTRACTS-2026-10-23.md#exact-legacy-expectation-migration).
+
+| Group | Frozen required outcome |
+| --- | --- |
+| YN1 | Positive/negative fractions, exact fractions, signed zero, integer boundaries, rounded large integers, normal/subnormal values and both finite extrema use declared coercion text. |
+| YN2 | Numeric leaves preserve nested Doc layout under both explicit indentation values, sorted ordinary quoted keys and hidden-field laziness. |
+| YN3 | Explicit false/true Stream end flags preserve complete document markers and numeric/nested text; no default decision is made. |
+| YN4 | Independent Doc/Stream literal expectations also satisfy the fixed empty-String coercion relation; product output is never the primary oracle. |
+| YN5 | Scalar options and unused whole calls stay lazy; required scalar/nested errors and nonfinite producers reject. Existing spec_yaml_wbtest supplies direct internal Inf/NaN checks. |
+| YN6 | Exact ASCII byte budgets include numeric text, indentation and explicit Stream markers; one byte less is Limit, observed through std.length to exclude outer JSON quoting. |
+
+Expected baseline: YN1-YN4 and YN6 fail, YN5 passes; later loop branches after
+the first failure are NOTRUN. This selects only the Number clause relative to
+ordinary coercion. N0/R0, keys/quoting/bare-safe policy, TOML/JSON behavior and
+the Stream default dispute remain outside scope. Production, legacy tests,
+public documentation and coverage maps stay untouched at this freeze; no
+build/test/format/commit, full/platform run, push or publication occurs here.
+
+### Preserved baseline and minimal candidate
+
+The frozen fixture `7f0d489da3514669bedadf50a687d575b11fd3cf76c424fd454f2eeef0dfe6f6`
+passes 1/6 and fails 5/6 on unchanged production (exit 2, 6.906 seconds),
+exactly YN1-YN4/YN6 versus the passing YN5 control. Check exits 0. Later loop
+branches after each failure remain NOTRUN. The completed native receipt was
+recovered after a transport error; `native-baseline/receipt.json` and raw logs
+remain intact, while `recovered-receipt.json` supersedes the earlier uncertain
+execution classification without rewriting it. Both process groups are absent.
+
+The candidate changes only the Num arm to ordinary numeric rendering with
+`out.limit - out.bytes`, retaining the finite guard and ManifestText writer.
+Shared formatters, other YAML branches, dispatcher/defaults, TOML and JSON are
+unchanged. No old test expectation requires migration. Only the two existing
+YAML coverage records gain the six Number witnesses; other 65 stay unchanged.
+At the candidate freeze, final directed validation remained pending.
+
+Info, formatting and format-check pass with no mbti diff. Formatting changes
+only layout and optional trailing commas; literal and executable tokens remain
+equivalent. Preformat inputs and raw outputs are retained under `format/`.
+Final candidate hashes: regression
+`26f7f0ff1d14bd90932ea2b5d2010165003b7497ec772b5398782bfeecb441c2`;
+manifest_yaml.mbt
+`43da75cae91495727d94cef1b9467e3cf2757be54460ea223b72ee44b63e49a0`.
+
+Final validation passes 27/27 native debug groups (six new, 21 existing; exit 0,
+16.222 seconds) and the same seven frozen CLI probes pass 7/7.
+`final-directed/receipt.json` binds the exact source/test hashes above; all 11
+owned process groups are absent and input hashes remain stable. The original
+1/6 baseline and failures remain preserved; no old oracle was migrated.
+Full-suite, release, Linux and fresh C++ runs are NOTRUN. This Number clause
+does not establish whole-function or overall conformance, which remains incomplete.
+
+## YAML bare-key classifier frozen at 353af358
+
+Base `353af358e695eadb381edef9febc9419a1d1c9fc`. The fixed executable
+[bareSafe predicates](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1089-L1220)
+use ASCII sets, reserved words, counts and original-case prefixes. They do not
+parse a general YAML number: safeChars includes a dot and the float condition
+requires exactly one dot, despite looser explanatory comments. Independent
+literal field-text expectations in `spec_yaml_key_contract_test.mbt` cover
+source and handmade ASTs; no copied interpreter output or second classifier
+supplies the oracle. The preserved ten-case CLI baseline has seven mismatches
+and three controls at `moonjsonnet-yaml-key.w4encs9i/baseline.json`.
+
+| Group | Frozen required outcome |
+| --- | --- |
+| YK1 | Exact ASCII admission and full case-insensitive reserved list; nan/inf/infinity boundaries remain nonreserved. |
+| YK2 | Date/integer decisions follow allowed characters and dash counts, including underscore-only and malformed-looking shapes. |
+| YK3 | Binary decisions admit the fixed permissive digit/set shapes; lowercase original prefixes and total length distinguish 0b/-0b/0B10. |
+| YK4 | Float decisions use exactly one dot and bounded e/dash counts, independent of parseability, overflow, underflow or exponent case. |
+| YK5 | Hex decisions use anchored lowercase original prefixes, allowed folded characters, length and dash counts; 0x/-0x/0Xaf and x0xffz are distinct. |
+| YK6 | Nested Doc and explicit false/true Stream layouts preserve classification; forced quoting is unchanged; exact ASCII output bytes pass and one byte less is Limit. |
+
+All six groups are expected to expose an unchanged-product mismatch; subsequent
+loop branches after the first failure are NOTRUN. Existing demand/error/hidden
+controls are reused. This selects only the private classifier: value formatting,
+quote_keys=true, shared Unicode escaping, JSON/TOML, dispatcher and Stream
+default behavior are unchanged. The explicit default conflict remains NOTPASS;
+no whole-function/YAML certification is inferred. Phase one changes only this
+fixture and frozen criteria, with no production/legacy/map edit or test/build.
+
+### Preserved key baseline and candidate
+
+The frozen key fixture `cbf2ff6f15b42bbff1cd56029410d626b655bac40504d62d096f6935037fdb0f`
+fails 6/6 on unchanged production (exit 2, 6.942 seconds); later loop arms were
+NOTRUN. With only the classifier replaced by the fixed predicates, all six pass,
+including those later arms. The combined legacy run passes 8/9 (10.212 seconds);
+its sole failure is the obsolete quoted `x0xffz` expectation below. Raw evidence
+and the old test copy remain in `moonjsonnet-yaml-key.w4encs9i/native-baseline/`
+and `after-fix-before-migration/`. No old failure is erased or relabeled.
+
+| Unchanged input | Old expected text | New expected text |
+| --- | --- | --- |
+| `std.manifestYamlDoc({'true':1,'1e309':2,'x0xffz':3,'a/b':4},quote_keys=false)` | `1e309: 2\na/b: 4\n"true": 1\n"x0xffz": 3` | `1e309: 2\na/b: 4\n"true": 1\nx0xffz: 3` |
+
+Only that quotation changes: `x0xffz` has neither original `0x` nor `-0x`
+prefix, and `z` is outside the fixed hex set. The private decimal parser is
+removed; Number rendering, other branches and guards are unchanged. Only the
+two existing YAML coverage records gain YK witnesses; the other 65 are unchanged.
+At candidate freeze, the final 33-group run and ten frozen CLI probes were pending.
+
+Info, fmt and fmt-check pass with no interface change. Preformat copies and raw
+logs are preserved under `format/`. Formatting changes only layout, optional
+commas and expression-body braces in two classifier predicates; literal and
+operation tokens are equivalent. Formatted fixture SHA-256:
+`498d1196dcb0a677e30b0f609191b3188855755aa356d1c57f48afe47f4bae42`;
+classifier source: `2a3064f0dac0cb9a8fc6d7eff52beb701119e5e52f2b73c3d0c1c9d3bd842dc7`.
+
+Final directed validation passes 33/33 native debug groups (exit 0, 15.427 seconds)
+and the same ten frozen CLI probes pass 10/10. `final-directed/receipt.json`
+binds the source/test hashes above; all 14 owned groups are absent and inputs stable.
+The original 0/6 baseline and pre-migration 8/9 result remain preserved.
+Full-suite, release and Linux runs are NOTRUN. Stream remains UNRESOLVED/NOTPASS;
+whole-function and overall conformance remain incomplete.
+
+The Stream default remains **UNRESOLVED / NOTPASS**: the fixed
+[public heading](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html#L1757-L1758)
+declares false, while the [source](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1300-L1306)
+declares true. Thus `std.manifestYamlStream(['1'])` would yield `---\n"1"\n`
+versus `---\n"1"\n...\n`. The [fixed e_std rule](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#L1095-L1132) derives the latter source result
+but supplies no precedence for contradictory declarations; the
+[sort review](SPEC-SORT-DEMAND-2026-10-25.md#why-these-decisions-supersede-the-earlier-open-rows)
+explicitly does not establish one. Implementation/default oracles stay unchanged;
+the key probes use explicit flags and do not resolve this conflict.

@@ -11,9 +11,9 @@ test "JSON output style defaults escaping and lazy objects" {
       ),
       ("std.manifestJsonMinified({b:[],a:{}})", "{\"a\":{},\"b\":[]}"),
       ("std.manifestJson({assert false,x::error 'hidden'})", "{\n\n}"),
-      ("std.manifestJsonMinified('<>&\\u2028\\u2029')", "\"<>&\\u2028\\u2029\""),
+      ("std.manifestJsonMinified('<>&\\u2028\\u2029')", "\"<>&\u2028\u2029\""),
       (
-        "std.manifestJsonEx([-0,0.1,1e-20],'','',':')", "[-0,0.1,0.00000000000000000001]",
+        "std.manifestJsonEx([-0,0.1,1e-20],'','',':')", "[-0,0.10000000000000001,9.9999999999999995e-21]",
       ),
     ] {
     assert_eq(@moonjsonnet.evaluate(source), Json::string(expected))

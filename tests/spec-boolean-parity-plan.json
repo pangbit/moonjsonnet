@@ -1,0 +1,92 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "5222ee82888edcc5426db5019a6e755008b55124f1a2e36215e815195956f033",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "state": "STATIC_CANDIDATE_NOT_FORMATTED_COMPILED_OR_EXECUTED",
+  "base_commit": "16e8358d765b4d229f959e01f1051ea9dac08e00",
+  "mapping": {"finite_records": 121, "without_record": 32, "changed": false},
+  "shared_dependency_review": [
+    {
+      "point": "A0 array append",
+      "locations": ["operators.mbt:13-20", "docs/development/SPEC-SEQUENCE-STRUCTURE-2026-10-22.md:22-27"],
+      "affected_remaining": ["format", "escapeStringBash", "escapeStringJson", "escapeStringPython", "manifestIni", "manifestPython", "manifestPythonVars", "manifestToml", "manifestTomlEx", "manifestXmlJsonml", "resolvePath"],
+      "finding": "The recorded formal conclusion starts at e1 although its premise includes e0; prose/library examples preserve the full append. Current ArrayValue(x+y) already implements that independently supported ordinary behavior. Changing it to discard a head would break normal users. No product patch follows from the printed conflict; retain A0 without making it a gate on unrelated Boolean/integer predicates."
+    },
+    {
+      "point": "Numeric remainder and parity",
+      "locations": ["std_math.mbt:14-15", "std_math.mbt:35-40", "stdlib_source.mbt:262-268", "stdlib_source.mbt:1774-1775"],
+      "affected_remaining": ["modulo", "mod", "isEven", "isOdd"],
+      "finding": "Fixed modulo prose provides standard-mathematics wording, not a signed-remainder equation. Current remainder alone does not prove a uniquely prescribed negative-domain defect. Fractional parity has an explicit documentation integral-part versus source round conflict. Do not replace either algorithm by inference or reopen arbitrary precision. Small exact integers have a useful common parity domain despite these separate boundaries."
+    },
+    {
+      "point": "Boolean native admission versus general source equality",
+      "locations": ["std_math.mbt:7-10", "stdlib_source.mbt:1762-1764"],
+      "affected_remaining": ["xor", "xnor"],
+      "finding": "Documentation describes Boolean inputs while source uses general equality. Native Boolean checks differ mechanically on other domains, but that does not settle public nonboolean admission. The complete Boolean truth tables, required x/y bindings and sole-error demand are common and independently decidable. No broad equality rewrite is proposed."
+    }
+  ],
+  "selection": {
+    "functions": ["xor", "xnor", "isEven", "isOdd"],
+    "reason": "Four ordinary flag/predicate APIs share builtin argument binding, demanded-head dispatch and math_builtin. A single finite batch checks those shared paths with independent literals; no new product deviation has been established in the reviewed candidates.",
+    "candidate_path": "spec_boolean_parity_contract_test.mbt",
+    "candidate_sha256": "fee9c0642cda5260d8317ea97db7bcfa29ea16d0b211312ab4382886a93cae49",
+    "product_patch": null,
+    "source_locations": ["stdlib.mbt:50-71 public x and x/y parameter names", "stdlib.mbt:268-275 forces ordinary bound heads", "stdlib.mbt:350-354 dispatches the four predicates", "std_math.mbt:7-15 implements Boolean equality and truncated-number parity"],
+    "acceptance_items_targeted": ["All four Boolean input pairs for xor/xnor", "Twelve literal small integer parity cases spanning -16 to 16", "Required names, arities, positional/reordered/mixed/aliased calls and safe invalid bindings for all four", "Sole required argument errors; wrong nonnumber heads for parity only", "Positive whole-call laziness through unused locals, branches, Boolean shortcuts and ordinary arguments; immutable input aliases"],
+    "not_resolved": ["Nonboolean xor/xnor admission or same-type Function equality", "Fractional parity or large integers affected by round(x+0.5)", "Signed modulo interpretation and modulo parameter-name authority", "All-input IEEE accuracy or signed-zero spelling", "A0, object assertions, inherited receivers, callback counts or diagnostic priority", "Whole-function, whole-project or platform acceptance"]
+  },
+  "authority": {
+    "fixed_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+    "documentation": "https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html",
+    "source": "https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet",
+    "specification": "https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html",
+    "facts_read": ["xor(x,y) and xnor(x,y) are documented Boolean operations; source uses inequality/equality", "isEven(x) and isOdd(x) are documented using the integral part; source compares the remainder of round(x) with zero", "The fixed modulo text gives standard mathematical behavior on double precision without an explicit signed-domain formula"],
+    "oracle": "Literal truth values and small-integer parity, ordinary call rules and positive lazy witnesses. Neither current interpreter output nor an unexecuted Go/C++ reference supplies expected values.",
+    "boundary_reason": "For the twelve selected exact small integers, rounding leaves the integer unchanged; either remainder sign has the same zero/nonzero parity distinction. No assertion chooses the disputed fractional or signed-modulo policy."
+  },
+  "selected_input_sha256": {
+    "stdlib.mbt": "b31241733ac2f5278102073a3cedd95c78e560866e5da9a5b5c427d9e6370851",
+    "stdlib_source.mbt": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+    "stdlib_layer.mbt": "04fa199f43ac20b769abda17f046f4f6920d3bbc9ed8c1a588992eac745b5422",
+    "std_math.mbt": "3e77bc7b07190d73126c580429c638d74fc54621eac1bd2f05cdb5c473b7a9ef",
+    "eval.mbt": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+    "pkg.generated.mbti": "dd585b072ff5a5136c68c2b66f92b9faf31721d392fcb44ab3e687b4c72fb3a3",
+    "spec_array_ordering_test.mbt": "b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a",
+    "spec_sequence_structure_test.mbt": "59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30",
+    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "spec_shared_call_mode_test.mbt": "dbbfe455c182196d6c27a40424114ff964ee59781ecfe2f63900d16a4696ed02",
+    "spec_mapping_transfer_test.mbt": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877",
+    "spec_object_ex_test.mbt": "f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141",
+    "tests/spec-public-coverage.json": "a822ae2b0226bc4dfdd2448063961da627be951faeafedfc2e65c63cf2dc62a4"
+  },
+  "preserved_prior_evidence": {
+    "clamp_receipt": "docs/archive/reports/spec-clamp-2026-10-28.json",
+    "clamp_receipt_sha256": "07dc9e0ee24c240be84fdc3f71e3c2f638b4afdd0b5358a2310146a00274b02a",
+    "clamp_result": "7/7 PASS; 17.808-second completed controller window",
+    "reuse": "All prior clamp, extVar and mathematical results remain bound to their existing inputs and scope. No old test group or full suite is scheduled again here; previous overruns remain unchanged."
+  },
+  "proposed_validation": {
+    "state": "NOTRUN_REQUIRES_NEW_AUTHORIZED_WINDOW",
+    "executor": "Sol max Fast; any product logic repair returns to Astra xhigh Fast",
+    "total_seconds": 180,
+    "testing_cutoff_seconds": 120,
+    "closeout_reserve_seconds": 60,
+    "environment": "Local single worker, native debug, frozen dependencies, stdin DEVNULL and RUST_LOG=error including controller startup. No remote execution, upload or push.",
+    "clock": "Reuse the successful clamp controller structure, adapting prepared metadata before launch. One CLOCK_MONOTONIC deadline starts before controller compilation; no reset across a startup failure or handoff. Every test child ends by T+120. A matching precompiled documentation checker gets one cap of 20s; exact staging/English commit only with at least 30s remaining. All readback/cleanup completes before T+180; otherwise retain verified uncommitted state.",
+    "groups": ["BP1 xor and xnor retain the complete Boolean truth tables", "BP2 parity retains literal small signed integer results", "BP3 shared predicate binding preserves names arity and aliased inputs", "BP4 predicates propagate sole required errors and parity rejects nonnumbers", "BP5 unused predicate calls retain ordinary lazy branches and arguments"],
+    "expected_group_count": 5,
+    "commands": {
+      "info": ["<USER_HOME>/.moon/bin/moon", "info", "--target", "native", "--frozen"],
+      "fmt": ["<USER_HOME>/.moon/bin/moon", "fmt"],
+      "check": ["<USER_HOME>/.moon/bin/moon", "check", ".", "--target", "native", "--frozen", "--deny-warn", "-j", "1"],
+      "outline": ["<USER_HOME>/.moon/bin/moon", "test", "spec_boolean_parity_contract_test.mbt", "--outline", "--target", "native", "--debug", "--frozen", "--deny-warn", "-j", "1", "--no-parallelize"],
+      "test": ["<USER_HOME>/.moon/bin/moon", "test", "spec_boolean_parity_contract_test.mbt", "--target", "native", "--debug", "--frozen", "--deny-warn", "-j", "1", "--no-parallelize"]
+    },
+    "failure_accounting": "Sequential assertions: later arms after the first failure in a group are NOTRUN. Preserve raw output and input hashes; do not repair product logic or lower assertions in the verifier.",
+    "possible_mapping": "Only after successful bounded review, at most four finite records could move 121/32 to 125/28. The nonboolean/fractional and other stated exclusions must remain explicit; neither outcome certifies whole contracts."
+  }
+}

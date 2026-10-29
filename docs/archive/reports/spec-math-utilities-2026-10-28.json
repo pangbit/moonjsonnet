@@ -1,0 +1,306 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "ab8f60f25cd8666c017d3c86792d5a2f6a085e0585ae620f427e5c709add2281",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "state": "FINAL_12_OF_12_PASS_DOCUMENTATION_CONFIRMED_IN_SEPARATELY_AUTHORIZED_CLOSEOUT",
+  "additional_closeout": {
+    "authorization": "User explicitly approved an additional 120-second local documentation-and-commit closeout; no tests, compilation, new logic, remote execution or push.",
+    "start_utc": "2026-10-28T07:20:11Z", "start_epoch": 1793172011,
+    "deadline_utc": "2026-10-28T07:22:11Z", "deadline_epoch": 1793172131,
+    "original_window": "Original 600-second deadline was 07:13:06 UTC; initial documentation command timed out, and evidence persistence finished at 07:13:19 UTC (613 seconds, 13 seconds late). This separate authorization does not erase that overrun or reset the original budget.",
+    "hash_verification": "Current stdlib.mbt, std_math_test.mbt, formatted independent fixture and preparation-plan hashes exactly match the final 12/12 input binding recorded below and in evidence/commands.json.",
+    "documentation_argv": ["<USER_HOME>/.moon/bin/moonrun", "tools/_build/documentation.mbtx/wasm/debug/build/single/single.wasm"],
+    "documentation_command_cap_seconds": 45, "documentation_exit": 0,
+    "documentation_elapsed_ms_including_tool_dispatch": 6123,
+    "documentation_stdout": "spec-math-utilities-2026-10-28-evidence/extra-docs-120.stdout",
+    "documentation_stderr": "spec-math-utilities-2026-10-28-evidence/extra-docs-120.stderr",
+    "documentation_scope": "Already-compiled local documentation checker: 217 files and 1857 links. No compiler or tests invoked.",
+    "commit_scope": "Only hypot binding, its legacy input spelling, independent math fixture, unchanged historical preparation plan and this task's local receipts/raw evidence. Mapping remains 116/37.",
+    "commit": "Included with the verified changes in the local English commit; no push."
+  },
+  "final_verification": {
+    "total": 12, "passed": 12, "failed": 0,
+    "repair_original_total": 12, "repair_original_passed": 11, "repair_original_failed": 1,
+    "legacy_migration": "Only std.hypot(x=3,y=4) -> std.hypot(a=3,b=4); expected 5 unchanged.",
+    "stdlib_sha256": "b31241733ac2f5278102073a3cedd95c78e560866e5da9a5b5c427d9e6370851",
+    "legacy_test_sha256": "9a0f0185c7b35ded5f3e874a94fb8dc730cea4b9962fe402310ceb63dbc73a24",
+    "formatted_fixture_sha256": "da3959e55fa048a4d59aec716097299e88285f4c513146bf85a22e99d9d15983",
+    "check_outline_info_fmt_fmtcheck": "PASS; no mbti diff; outline exactly 12",
+    "documentation": "Original 1-second command timed out after PASS text; later separately authorized closeout ran the precompiled checker once and confirmed exit 0. Both outcomes retained.",
+    "persistent_raw_evidence": "docs/archive/reports/spec-math-utilities-2026-10-28-evidence/commands.json and sibling stdout/stderr files",
+    "commit": "No commit in the original window; local commit completed only after separately authorized documentation closeout.",
+    "mapping": "116 mapped / 37 unmapped unchanged; bounded witnesses do not establish complete all-input mathematical contracts",
+    "budget_deadline_epoch": 1793171586,
+    "budget_reset": false
+  },
+  "base_commit": "266b97753225ea9d41fb6aa5de556c2a0ffad9c6",
+  "base_tree": "29481ce866cf5394d976d2364a94be4d5860719b",
+  "tracked_inputs_match_HEAD": true,
+  "budget_start_epoch": 1793170986,
+  "budget_start_utc": "2026-10-28T07:03:06Z",
+  "budget_deadline_epoch": 1793171586,
+  "budget_seconds": 600,
+  "closeout_reserve_seconds": 90,
+  "budget_reset": false,
+  "clock_basis": "UTC Unix seconds from /bin/date across every phase; preflight reads preceded first check.",
+  "single_worker": true,
+  "stdin": "/dev/null",
+  "env": {
+    "RUST_LOG": "error"
+  },
+  "input_sha256": {
+    "stdlib.mbt": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+    "std_math.mbt": "3e77bc7b07190d73126c580429c638d74fc54621eac1bd2f05cdb5c473b7a9ef",
+    "reference_trig.mbt": "f576bfaa1aa27a4b2d328ba6e26a275c02370390b94c3748f0179f925bfbd3bd",
+    "stdlib_layer.mbt": "04fa199f43ac20b769abda17f046f4f6920d3bbc9ed8c1a588992eac745b5422",
+    "stdlib_source.mbt": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+    "spec_string_utilities_contract_test.mbt": "8e4e819cb0e1bfeb99a0f7cf52bf21c9ead4fe9a1abd2a09e87b9136ebb41cf9",
+    "spec_inverse_trig_contract_test.mbt": "6b50564100b2b8725333416b2342152a6aad141fcacd9545df1c812148184301",
+    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "spec_mapping_transfer_test.mbt": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877",
+    "tests/spec-public-coverage.json": "eb369af4ebe615ff80d3b6d80a662d39b8b99140413eb35bc44bc1c897d2b041",
+    "docs/development/spec-public-inventory.json": "69a8f7b6888dd22020417895195b6a8a4d7c509a5602047e586c73de6463d08e",
+    "std_math_test.mbt": "41e01dd8c62bbae87161bccc611146a50ba9a05fc1407737b9a3415e2a2bb0f6",
+    "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336",
+    "spec_math_utilities_contract_test.mbt": "cea149428f6336aa332820e22b3ed1b9cd3ebd2b83d16a5ffa85ce82ae937981",
+    "tests/spec-math-utilities-plan.json": "7e7fc1dd8a09da66002f75814ff5317fb048820ae6fdc82a1edd257e1321c8c8"
+  },
+  "toolchain": "moon 0.1.20260920 (914d7da 2026-09-20) ~/.moon/bin/moon\nmoonc v0.10.14+7d59c7ec9 (2026-09-18) ~/.moon/bin/moonc\nmoonrun 0.1.20260920 (914d7da 2026-09-20) ~/.moon/bin/moonrun\n\nFeature flags enabled: rr_moon_mod,rr_moon_pkg",
+  "platform": "Darwin arm64",
+  "commands": [
+    {
+      "id": "check",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "check",
+        ".",
+        "--target",
+        "native",
+        "--frozen",
+        "--deny-warn",
+        "-j",
+        "1"
+      ],
+      "start_epoch": 1793170986,
+      "cap_seconds": 60,
+      "stdout": "/tmp/moonjsonnet-math-utilities-sol-baseline/baseline-check.stdout",
+      "stderr": "/tmp/moonjsonnet-math-utilities-sol-baseline/baseline-check.stderr",
+      "state": "PASS",
+      "exit": 0,
+      "end_epoch": 1793170987,
+      "elapsed_seconds": 1,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "08dfb28aa47cadb52adbbe0e17f43b3527323993cdb1c310eea3ddaafceb5d46",
+      "stdout_raw": "",
+      "stderr_raw": "Finished. moon: ran 6 tasks, now up to date\n"
+    },
+    {
+      "id": "outline",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "test",
+        "spec_math_utilities_contract_test.mbt",
+        "std_math_test.mbt",
+        "arguments_test.mbt",
+        "--outline",
+        "--target",
+        "native",
+        "--debug",
+        "--frozen",
+        "--deny-warn",
+        "-j",
+        "1",
+        "--no-parallelize"
+      ],
+      "start_epoch": 1793170998,
+      "cap_seconds": 10,
+      "stdout": "/tmp/moonjsonnet-math-utilities-sol-baseline/baseline-outline.stdout",
+      "stderr": "/tmp/moonjsonnet-math-utilities-sol-baseline/baseline-outline.stderr",
+      "state": "PASS",
+      "exit": 0,
+      "end_epoch": 1793170998,
+      "elapsed_seconds": 0,
+      "stdout_sha256": "77fceed5cc3f6cca0f74c912af24bf0504e3c5f73acad725da945419bc751429",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_raw": "   1. pangbit/moonjsonnet std_math_test.mbt:2 index=0 name=\"math and boolean standard functions use reviewed contracts\"\n   2. pangbit/moonjsonnet std_math_test.mbt:43 index=1 name=\"math argument and domain errors remain explicit\"\n   3. pangbit/moonjsonnet std_math_test.mbt:62 index=2 name=\"math preserves fixed Go native rounding and underflow\"\n   4. pangbit/moonjsonnet spec_math_utilities_contract_test.mbt:7 index=0 name=\"MU1 hypot preserves ordinary positional lengths and sign symmetry\"\n   5. pangbit/moonjsonnet spec_math_utilities_contract_test.mbt:19 index=1 name=\"MU2 hypot uses documented a b names through direct and aliased calls\"\n   6. pangbit/moonjsonnet spec_math_utilities_contract_test.mbt:42 index=2 name=\"MU3 mantissa and exponent decompose ordinary nonzero binary fractions\"\n   7. pangbit/moonjsonnet spec_math_utilities_contract_test.mbt:65 index=3 name=\"MU4 tan retains zero and independent ordinary radian bounds\"\n   8. pangbit/moonjsonnet spec_math_utilities_contract_test.mbt:78 index=4 name=\"MU5 math utility names arities and invalid bindings follow ordinary calls\"\n   9. pangbit/moonjsonnet spec_math_utilities_contract_test.mbt:129 index=5 name=\"MU6 math utilities reject nonnumber heads and isolated required errors\"\n  10. pangbit/moonjsonnet spec_math_utilities_contract_test.mbt:163 index=6 name=\"MU7 hypot avoids needless square overflow but rejects nonfinite results\"\n  11. pangbit/moonjsonnet spec_math_utilities_contract_test.mbt:176 index=7 name=\"MU8 unused math calls stay lazy and repeated aliases preserve inputs\"\n  12. pangbit/moonjsonnet arguments_test.mbt:2 index=0 name=\"builtin and closure argument validation precedes forcing\"\n",
+      "stderr_raw": ""
+    },
+    {
+      "id": "test",
+      "argv": [
+        "<USER_HOME>/.moon/bin/moon",
+        "test",
+        "spec_math_utilities_contract_test.mbt",
+        "std_math_test.mbt",
+        "arguments_test.mbt",
+        "--target",
+        "native",
+        "--debug",
+        "--frozen",
+        "--deny-warn",
+        "-j",
+        "1",
+        "--no-parallelize"
+      ],
+      "start_epoch": 1793171013,
+      "cap_seconds": 150,
+      "stdout": "/tmp/moonjsonnet-math-utilities-sol-baseline/baseline-test.stdout",
+      "stderr": "/tmp/moonjsonnet-math-utilities-sol-baseline/baseline-test.stderr",
+      "state": "NONZERO",
+      "exit": 2,
+      "end_epoch": 1793171025,
+      "elapsed_seconds": 12,
+      "stdout_sha256": "92e83513b50c8e7dcc10ae4756f7c110b4a5f479fb75371720981470561df231",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_raw": "[pangbit/moonjsonnet] test spec_math_utilities_contract_test.mbt:19 (\"MU2 hypot uses documented a b names through direct and aliased calls\") failed: spec_string_utilities_contract_test.mbt:33:5-33:30@pangbit/moonjsonnet FAILED: std.hypot(a=(3),b=(4)) handmade=false error=function has no parameter a expected=5; std.hypot(a=(3),b=(4)) handmade=true error=function has no parameter a expected=5; local f=((std)[\"hypot\"]);(f)(a=(3),b=(4)) handmade=false error=function has no parameter a expected=5; local f=((std)[\"hypot\"]);(f)(a=(3),b=(4)) handmade=true error=function has no parameter a expected=5; std.hypot(b=(4),a=(3)) handmade=false error=function has no parameter b expected=5; std.hypot(b=(4),a=(3)) handmade=true error=function has no parameter b expected=5; local f=((std)[\"hypot\"]);(f)(b=(4),a=(3)) handmade=false error=function has no parameter b expected=5; local f=((std)[\"hypot\"]);(f)(b=(4),a=(3)) handmade=true error=function has no parameter b expected=5; std.hypot((3),b=(4)) handmade=false error=function has no parameter b expected=5; std.hypot((3),b=(4)) handmade=true error=function has no parameter b expected=5; local f=((std)[\"hypot\"]);(f)((3),b=(4)) handmade=false error=function has no parameter b expected=5; local f=((std)[\"hypot\"]);(f)((3),b=(4)) handmade=true error=function has no parameter b expected=5\nTotal tests: 12, passed: 11, failed: 1.\n",
+      "stderr_raw": ""
+    }
+  ],
+  "scope": "Local native debug check and exactly 8 new math utility + 3 existing math + 1 arguments groups. Baseline only; no product/old expected-value changes. Not full project acceptance.",
+  "elapsed_seconds": 39,
+  "remaining_seconds": 561,
+  "outline_exact_12_groups": true,
+  "summary": {
+    "total": 12,
+    "passed": 11,
+    "failed": 1,
+    "group_notrun": 0,
+    "groups": [
+      {
+        "file": "spec_math_utilities_contract_test.mbt",
+        "name": "MU1 hypot preserves ordinary positional lengths and sign symmetry",
+        "state": "PASS"
+      },
+      {
+        "file": "spec_math_utilities_contract_test.mbt",
+        "name": "MU2 hypot uses documented a b names through direct and aliased calls",
+        "state": "FAIL"
+      },
+      {
+        "file": "spec_math_utilities_contract_test.mbt",
+        "name": "MU3 mantissa and exponent decompose ordinary nonzero binary fractions",
+        "state": "PASS"
+      },
+      {
+        "file": "spec_math_utilities_contract_test.mbt",
+        "name": "MU4 tan retains zero and independent ordinary radian bounds",
+        "state": "PASS"
+      },
+      {
+        "file": "spec_math_utilities_contract_test.mbt",
+        "name": "MU5 math utility names arities and invalid bindings follow ordinary calls",
+        "state": "PASS"
+      },
+      {
+        "file": "spec_math_utilities_contract_test.mbt",
+        "name": "MU6 math utilities reject nonnumber heads and isolated required errors",
+        "state": "PASS"
+      },
+      {
+        "file": "spec_math_utilities_contract_test.mbt",
+        "name": "MU7 hypot avoids needless square overflow but rejects nonfinite results",
+        "state": "PASS"
+      },
+      {
+        "file": "spec_math_utilities_contract_test.mbt",
+        "name": "MU8 unused math calls stay lazy and repeated aliases preserve inputs",
+        "state": "PASS"
+      },
+      {
+        "file": "std_math_test.mbt",
+        "name": "math and boolean standard functions use reviewed contracts",
+        "state": "PASS"
+      },
+      {
+        "file": "std_math_test.mbt",
+        "name": "math argument and domain errors remain explicit",
+        "state": "PASS"
+      },
+      {
+        "file": "std_math_test.mbt",
+        "name": "math preserves fixed Go native rounding and underflow",
+        "state": "PASS"
+      },
+      {
+        "file": "arguments_test.mbt",
+        "name": "builtin and closure argument validation precedes forcing",
+        "state": "PASS"
+      }
+    ]
+  },
+  "failure": {
+    "group": "MU2 hypot uses documented a b names through direct and aliased calls",
+    "fixture_location": "spec_math_utilities_contract_test.mbt:19",
+    "aggregation_location": "spec_string_utilities_contract_test.mbt:33",
+    "completed_case_entries": 12,
+    "failed_case_entries": 12,
+    "case_entries_notrun": 0,
+    "forms": [
+      "direct a,b",
+      "aliased a,b",
+      "direct b,a",
+      "aliased b,a",
+      "direct positional,b",
+      "aliased positional,b"
+    ],
+    "entries": [
+      "source",
+      "handmade AST"
+    ],
+    "observed_messages": [
+      "function has no parameter a",
+      "function has no parameter b"
+    ],
+    "oracle": "Literal 5 from ordinary Pythagorean (3,4) pair, with explicitly documented hypot(a,b) at fixed Jsonnet bbb38f1020be1f5aed560928fb839b2c448cefb4.",
+    "candidate_location": "stdlib.mbt:70 builtin_params groups hypot under x,y",
+    "candidate_repair": "Astra to split hypot into [a,b] in builtin_params after this preserved runtime RED. No numerical arithmetic change is supported by this baseline.",
+    "metadata_consumers": [
+      "stdlib.mbt:127 call binding",
+      "stdlib.mbt:506 function length",
+      "debug_value.mbt:89 function parameter rendering"
+    ],
+    "legacy_call_preserved": "std_math_test.mbt:6 std.hypot(x=3,y=4), expected result 5",
+    "legacy_followup": "If product repair rejects the old named call, preserve post-repair failure before migrating input spelling only to a=3,b=4; no value oracle change."
+  },
+  "final_input_sha256": {
+    "stdlib.mbt": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+    "std_math.mbt": "3e77bc7b07190d73126c580429c638d74fc54621eac1bd2f05cdb5c473b7a9ef",
+    "reference_trig.mbt": "f576bfaa1aa27a4b2d328ba6e26a275c02370390b94c3748f0179f925bfbd3bd",
+    "stdlib_layer.mbt": "04fa199f43ac20b769abda17f046f4f6920d3bbc9ed8c1a588992eac745b5422",
+    "stdlib_source.mbt": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+    "spec_string_utilities_contract_test.mbt": "8e4e819cb0e1bfeb99a0f7cf52bf21c9ead4fe9a1abd2a09e87b9136ebb41cf9",
+    "spec_inverse_trig_contract_test.mbt": "6b50564100b2b8725333416b2342152a6aad141fcacd9545df1c812148184301",
+    "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+    "spec_mapping_transfer_test.mbt": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877",
+    "tests/spec-public-coverage.json": "eb369af4ebe615ff80d3b6d80a662d39b8b99140413eb35bc44bc1c897d2b041",
+    "docs/development/spec-public-inventory.json": "69a8f7b6888dd22020417895195b6a8a4d7c509a5602047e586c73de6463d08e",
+    "std_math_test.mbt": "41e01dd8c62bbae87161bccc611146a50ba9a05fc1407737b9a3415e2a2bb0f6",
+    "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336",
+    "spec_math_utilities_contract_test.mbt": "cea149428f6336aa332820e22b3ed1b9cd3ebd2b83d16a5ffa85ce82ae937981",
+    "tests/spec-math-utilities-plan.json": "7e7fc1dd8a09da66002f75814ff5317fb048820ae6fdc82a1edd257e1321c8c8"
+  },
+  "tracked_manifest_sha256": "c05684aa1ca47fb38ea39827b085cea0ba416ee481375ef47cd402b4255beb6a",
+  "runner_sha256": "ff3ab6ba1bea0faee080f7dbcc40ed98a57d131f460ab6e357e539ec5fdbf444",
+  "closeout_runner_sha256": "7c1faa3767bd8872a072e945236eec734dfc865da0c883f6985995ae8453017c",
+  "all_inputs_unchanged_after_baseline": true,
+  "mapping": {
+    "mapped": 116,
+    "unmapped": 37,
+    "changed": false,
+    "acceptance_claim": false
+  },
+  "closeout": {
+    "product_modified": false,
+    "old_test_modified": false,
+    "snapshots_updated": false,
+    "info_fmt_docs_commit": "NOTRUN because this delegation stops at baseline RED and awaits Astra repair.",
+    "no_upload_remote_push_publish": true
+  },
+  "receipt_saved_utc": "2026-10-28T07:04:40Z",
+  "elapsed_seconds_at_receipt": 94,
+  "remaining_seconds_at_receipt": 506
+}

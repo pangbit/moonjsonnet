@@ -1,0 +1,832 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "721075175795992de4ad62d24c5c6bcf702c52362a6b26b1ed945ebaf2873a3d",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "schema_version": 1,
+  "base_commit": "7c291cdd27045337cb809b3426348dd32940abfd",
+  "reference_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+  "state": "DIRECTED_TESTS_AND_SEPARATE_LOCAL_CLOSEOUT_PASSED",
+  "functions": [
+    "all",
+    "any",
+    "assertEqual",
+    "toString"
+  ],
+  "artifacts": [
+    {
+      "role": "frozen-plan.json",
+      "bytes": 22914,
+      "sha256": "55e453be72e67ea50da300bc785b23f776a353cea0a58ca41c8b98d84d4a28dc",
+      "content_utf8": "{\n  \"state\": \"FROZEN_STATIC_PREPARATION_NOT_EXECUTED\",\n  \"created_utc\": \"2026-10-28T01:34:26.892646+00:00\",\n  \"base_commit\": \"7c291cdd27045337cb809b3426348dd32940abfd\",\n  \"purpose\": \"One bounded configuration-check/String-coercion batch for four currently unmapped public functions; no product patch is justified by this static phase.\",\n  \"manual_inventory\": {\n    \"public_candidates\": 153,\n    \"mapped_before\": 112,\n    \"unmapped_before\": 41,\n    \"names_selected\": [\n      \"all\",\n      \"any\",\n      \"assertEqual\",\n      \"toString\"\n    ],\n    \"possible_after_successful_execution_and_review\": {\n      \"mapped\": 116,\n      \"unmapped\": 37\n    },\n    \"counts_are_not_function_acceptance_or_conformance_percentages\": true\n  },\n  \"authority\": {\n    \"reference_commit\": \"bbb38f1020be1f5aed560928fb839b2c448cefb4\",\n    \"recorded_reference_sha256\": {\n      \"spec.html\": \"bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a\",\n      \"stdlib.html\": \"0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853\",\n      \"upstream-std.jsonnet\": \"e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351\"\n    },\n    \"embedded_path\": \"stdlib_source.mbt\",\n    \"embedded_sha256\": \"39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98\",\n    \"inventory_path\": \"docs/development/spec-public-inventory.json\",\n    \"inventory_sha256\": \"69a8f7b6888dd22020417895195b6a8a4d7c509a5602047e586c73de6463d08e\",\n    \"definitions\": {\n      \"all\": {\n        \"embedded_line\": 1667,\n        \"fixed_source_line\": 1661,\n        \"embedded_block\": \"    #|  all(arr)::\\n    #|    assert std.isArray(arr) : 'all() parameter should be an array, got ' + std.type(arr);\\n    #|    local arrLen = std.length(arr);\\n    #|    local aux(idx) =\\n    #|      if idx >= arrLen then\\n    #|        true\\n    #|      else\\n    #|        local e = arr[idx];\\n    #|        assert std.isBoolean(e) : 'element \\\"%s\\\" of type %s is not a boolean' % [e, std.type(e)];\\n    #|        if !e then\\n    #|          false\\n    #|        else\\n    #|          aux(idx + 1) tailstrict;\\n    #|    aux(0),\\n\",\n        \"embedded_sha256\": \"fae564c9882fb2abc7951da888fbbaf255d27603a92e6001718d89f2733bb23f\",\n        \"fixed_definition\": \"  all(arr)::\\n    assert std.isArray(arr) : 'all() parameter should be an array, got ' + std.type(arr);\\n    local arrLen = std.length(arr);\\n    local aux(idx) =\\n      if idx >= arrLen then\\n        true\\n      else\\n        local e = arr[idx];\\n        assert std.isBoolean(e) : 'element \\\"%s\\\" of type %s is not a boolean' % [e, std.type(e)];\\n        if !e then\\n          false\\n        else\\n          aux(idx + 1) tailstrict;\\n    aux(0),\\n\",\n        \"definition_sha256\": \"7d2e590c581f6f5099e1db1523f776bb2d581d54ee784b0e371a82f36b975e6d\",\n        \"public_declarations\": {\n          \"heading\": \"std.all(arr)\",\n          \"heading_line\": \"2636\",\n          \"source\": \"std.all(arr)\",\n          \"source_line\": \"1661\"\n        }\n      },\n      \"any\": {\n        \"embedded_line\": 1682,\n        \"fixed_source_line\": 1676,\n        \"embedded_block\": \"    #|  any(arr)::\\n    #|    assert std.isArray(arr) : 'any() parameter should be an array, got ' + std.type(arr);\\n    #|    local arrLen = std.length(arr);\\n    #|    local aux(idx) =\\n    #|      if idx >= arrLen then\\n    #|        false\\n    #|      else\\n    #|        local e = arr[idx];\\n    #|        assert std.isBoolean(e) : 'element \\\"%s\\\" of type %s is not a boolean' % [e, std.type(e)];\\n    #|        if e then\\n    #|          true\\n    #|        else\\n    #|          aux(idx + 1) tailstrict;\\n    #|    aux(0),\\n\",\n        \"embedded_sha256\": \"a877b110a15d8c07f825a9f9efd3069c349a482222d753322dddd8e09ec77c87\",\n        \"fixed_definition\": \"  any(arr)::\\n    assert std.isArray(arr) : 'any() parameter should be an array, got ' + std.type(arr);\\n    local arrLen = std.length(arr);\\n    local aux(idx) =\\n      if idx >= arrLen then\\n        false\\n      else\\n        local e = arr[idx];\\n        assert std.isBoolean(e) : 'element \\\"%s\\\" of type %s is not a boolean' % [e, std.type(e)];\\n        if e then\\n          true\\n        else\\n          aux(idx + 1) tailstrict;\\n    aux(0),\\n\",\n        \"definition_sha256\": \"e43cf70e6c8934ae42ba8615cb51da16e100f905bf5400c63154e7800bef0f91\",\n        \"public_declarations\": {\n          \"heading\": \"std.any(arr)\",\n          \"heading_line\": \"2666\",\n          \"source\": \"std.any(arr)\",\n          \"source_line\": \"1676\"\n        }\n      },\n      \"assertEqual\": {\n        \"embedded_line\": 848,\n        \"fixed_source_line\": 842,\n        \"embedded_block\": \"    #|  assertEqual(a, b)::\\n    #|    // If the values are strings, escape them for printing.\\n    #|    // If not, they'll be JSON-stringified anyway by the later string concatenation.\\n    #|    local astr = if std.type(a) == 'string' then std.escapeStringJson(a) else a;\\n    #|    local bstr = if std.type(b) == 'string' then std.escapeStringJson(b) else b;\\n    #|    if a == b then\\n    #|      true\\n    #|    else\\n    #|      error 'Assertion failed. ' + astr + ' != ' + bstr,\\n\",\n        \"embedded_sha256\": \"e2700adb07c8319e10c95b643005ed034aaf8e175a921b5b0d9de8f667867afe\",\n        \"fixed_definition\": \"  assertEqual(a, b)::\\n    // If the values are strings, escape them for printing.\\n    // If not, they'll be JSON-stringified anyway by the later string concatenation.\\n    local astr = if std.type(a) == 'string' then std.escapeStringJson(a) else a;\\n    local bstr = if std.type(b) == 'string' then std.escapeStringJson(b) else b;\\n    if a == b then\\n      true\\n    else\\n      error 'Assertion failed. ' + astr + ' != ' + bstr,\\n\",\n        \"definition_sha256\": \"fe3287408a3be2052507052871d8e239442e15300d64243410ed7aba1c18b4d6\",\n        \"public_declarations\": {\n          \"heading\": \"std.assertEqual(a, b)\",\n          \"heading_line\": \"329\",\n          \"source\": \"std.assertEqual(a, b)\",\n          \"source_line\": \"842\"\n        }\n      },\n      \"toString\": {\n        \"embedded_line\": 43,\n        \"fixed_source_line\": 37,\n        \"embedded_block\": \"    #|  toString(a)::\\n    #|    if std.type(a) == 'string' then a else '' + a,\\n\",\n        \"embedded_sha256\": \"60d43ba684575fb6235bfc58982e1175e4486636dfe603376b4043e7e1febff0\",\n        \"fixed_definition\": \"  toString(a)::\\n    if std.type(a) == 'string' then a else '' + a,\\n\",\n        \"definition_sha256\": \"977b273807961433630269ffcdb7ae9c5b53552680f66b06b2b6bb82c5201bac\",\n        \"public_declarations\": {\n          \"heading\": \"std.toString(a)\",\n          \"heading_line\": \"368\",\n          \"source\": \"std.toString(a)\",\n          \"source_line\": \"37\"\n        }\n      }\n    },\n    \"availability\": \"Pre-reboot external fixed-reference caches remain absent. This preparation reads the exact embedded definitions and persisted declaration/version metadata; full upstream HTML prose was not reread, and Go/C++ outputs supply no expected values.\"\n  },\n  \"contract_reviews\": {\n    \"all\": {\n      \"contract\": \"One required arr/no default; Array only. Empty returns true; visit a Boolean prefix left to right, stop at first false and do not visit later elements; visited nonbooleans and required errors reject.\",\n      \"route\": \"stdlib_layer.mbt fixed all field, no native all override in builtin_names.\",\n      \"static_state\": \"SOURCE_ROUTE_CONSISTENT_NOT_RUNTIME_PASS\",\n      \"source_findings\": \"Unchanged definition asserts Array, reads each required e, asserts isBoolean(e), then uses if !e with tailstrict aux(idx+1). No Array+Array operation.\",\n      \"existing_evidence\": [\n        \"array_std_test.mbt:2 existing empty/truth/prefix values\",\n        \"array_std_test.mbt:42 existing invalid heads and bounded all recursion\"\n      ],\n      \"new_groups\": [\n        \"CC1\",\n        \"CC2\",\n        \"CC3\",\n        \"CC8\",\n        \"CC9\",\n        \"CC10\"\n      ]\n    },\n    \"any\": {\n      \"contract\": \"One required arr/no default; Array only. Empty returns false; visit a Boolean prefix left to right, stop at first true and do not visit later elements; visited nonbooleans and required errors reject.\",\n      \"route\": \"stdlib_layer.mbt fixed any field, no native any override in builtin_names.\",\n      \"static_state\": \"SOURCE_ROUTE_CONSISTENT_NOT_RUNTIME_PASS\",\n      \"source_findings\": \"Unchanged definition asserts Array, reads each required e, asserts isBoolean(e), then uses if e with tailstrict aux(idx+1). No Array+Array operation.\",\n      \"existing_evidence\": [\n        \"array_std_test.mbt:2 existing empty/truth/prefix values\",\n        \"array_std_test.mbt:42 existing invalid visited null\"\n      ],\n      \"new_groups\": [\n        \"CC1\",\n        \"CC2\",\n        \"CC3\",\n        \"CC8\",\n        \"CC9\",\n        \"CC10\"\n      ]\n    },\n    \"assertEqual\": {\n      \"contract\": \"Required a,b/no defaults. Return true for equal comparable values; unequal values fail. Equality and failure-expression required child errors propagate. Unused String-rendering locals remain lazy on the equal branch.\",\n      \"route\": \"source_standard_function(assertEqual) is true; Vm::base_env skips native override and retains exact fixed definition.\",\n      \"static_state\": \"SOURCE_ROUTE_CONSISTENT_NOT_RUNTIME_PASS\",\n      \"source_findings\": \"Source locals astr/bstr are used only in the unequal error branch. Ordinary equality and String coercion remain child rules; no error-message winner or diagnostic-frame oracle is invented. No Array+Array operation.\",\n      \"existing_evidence\": [\n        \"stdlib_layer.mbt source route is present; this is static implementation evidence, not a test pass.\",\n        \"No pre-existing explicit assertEqual reference was found by the current literal scan of root test files; dynamic references could be missed.\"\n      ],\n      \"new_groups\": [\n        \"CC4\",\n        \"CC5\",\n        \"CC8\",\n        \"CC9\",\n        \"CC10\"\n      ]\n    },\n    \"toString\": {\n      \"contract\": \"One required a/no default. String values are returned unchanged; other Values use ordinary empty-String concatenation coercion. Manifestable visible data becomes a String; required nested errors and function manifestation fail.\",\n      \"route\": \"stdlib.mbt builtin toString(a) -> Vm::coerce_string; operators.mbt String concatenation calls the same helper.\",\n      \"static_state\": \"STATIC_EQUIVALENT_CHILD_PATH_NOT_RUNTIME_PASS\",\n      \"source_findings\": \"coerce_string returns Str contents unchanged and otherwise render_json(manifest(value),false). Both native toString and the fixed nonstring String+Value expression use this same path. No competing admission guard or Array+Array operation was found.\",\n      \"existing_evidence\": [\n        \"render_test.mbt:40 fixed numeric coercion examples\",\n        \"moonjsonnet_test.mbt:103 existing nested object String representation\"\n      ],\n      \"new_groups\": [\n        \"CC6\",\n        \"CC7\",\n        \"CC8\",\n        \"CC9\",\n        \"CC10\"\n      ]\n    }\n  },\n  \"fixture\": {\n    \"path\": \"spec_config_checks_contract_test.mbt\",\n    \"bytes\": 13542,\n    \"sha256\": \"876b9a9383251b925fed298b4f0e063698d927c9d73a42c7b335772a10194678\",\n    \"groups\": [\n      {\n        \"line\": 7,\n        \"declaration\": \"test \\\"CC1 Boolean reducers preserve empty identities and literal truth tables\\\" {\"\n      },\n      {\n        \"line\": 33,\n        \"declaration\": \"test \\\"CC2 reducer decisive prefixes leave later invalid heads and errors unused\\\" {\"\n      },\n      {\n        \"line\": 72,\n        \"declaration\": \"test \\\"CC3 reducers reject nonarray inputs and every visited nonboolean head\\\" {\"\n      },\n      {\n        \"line\": 111,\n        \"declaration\": \"test \\\"CC4 assertEqual returns true for equal ordinary values without printing them\\\" {\"\n      },\n      {\n        \"line\": 159,\n        \"declaration\": \"test \\\"CC5 assertEqual rejects unequal values noncomparable functions and needed errors\\\" {\"\n      },\n      {\n        \"line\": 188,\n        \"declaration\": \"test \\\"CC6 toString preserves raw Strings and fixed ordinary scalar representations\\\" {\"\n      },\n      {\n        \"line\": 208,\n        \"declaration\": \"test \\\"CC7 toString manifests visible data and propagates nested failures\\\" {\"\n      },\n      {\n        \"line\": 249,\n        \"declaration\": \"test \\\"CC8 configuration utilities keep required public names arities and aliases\\\" {\"\n      },\n      {\n        \"line\": 324,\n        \"declaration\": \"test \\\"CC9 sole demanded errors propagate while unused utility calls stay lazy\\\" {\"\n      },\n      {\n        \"line\": 356,\n        \"declaration\": \"test \\\"CC10 repeated utility results preserve original container and String aliases\\\" {\"\n      }\n    ],\n    \"entries\": [\n      \"Program::parse of generated ordinary source\",\n      \"Program::from_ast of independently constructed expression trees\"\n    ],\n    \"all_pass_and_fail_labels_not_yet_assigned\": true,\n    \"normal_observation_collection\": \"CC1/CC2/CC4/CC6 and the value section of CC7 reuse string_utilities_values only as a neutral value/error collector; they continue after Jsonnet exceptions/differences through both entries.\",\n    \"failure_accounting\": \"Other assertions are sequential. After the first unexpected outcome, later arms/entries of that group are NOTRUN. No estimated observation count becomes a passing count.\",\n    \"planned_collecting_observations\": {\n      \"CC1\": 32,\n      \"CC2\": 56,\n      \"CC4\": 24,\n      \"CC6\": 22,\n      \"CC7_value_section\": 10,\n      \"meaning\": \"144 planned source/AST value observations; not actual results. Error/binding/alias groups are sequential and counted only after execution.\"\n    }\n  },\n  \"finite_scope_and_premises\": [\n    \"Ordinary call/static binding, finite child Values, equality of comparable non-assertion Values, ordinary String coercion, visibility, literal Array constructors, indexing and Boolean if/! are existing child judgments.\",\n    \"Numeric toString witnesses 0.1 and 1e-8 reuse the already-reviewed ordinary String representation, with independent fixed literals. No new ULP or math accuracy requirement is added.\",\n    \"True/false Array prefixes, reached nonbooleans and sole errors are independently asserted; successful unread-tail/hidden-field witnesses prove demand properties. Rejection alone proves no skipped payload or exact diagnostic.\",\n    \"Object witnesses have no assertions/inheritance. Function equality/manifestation rejection does not execute or assign an exact callback/default/body count.\",\n    \"The four fixed bodies contain no Array+Array operation. String+Value error formatting/toString is not the unresolved A0 array-concatenation rule.\"\n  ],\n  \"excluded\": [\n    \"Shared A0 array concatenation, including resolvePath/manifestIni/manifestPythonVars constructor transfers\",\n    \"Object assertion/inheritance N0/R0, cmp printing conflicts and primitiveEquals PE0\",\n    \"B0 cases with an evaluated nonboolean RHS, precise independent-error precedence, diagnostic kinds/frames or exact callback counts\",\n    \"New native numerical accuracy/resource thresholds, malformed UTF-8/BOM byte recovery, full platform/application acceptance\"\n  ],\n  \"legacy_regression\": {\n    \"files_and_declarations\": {\n      \"array_std_test.mbt\": [\n        {\n          \"line\": 2,\n          \"declaration\": \"test \\\"array source functions preserve lazy values and short circuit\\\" {\"\n        },\n        {\n          \"line\": 42,\n          \"declaration\": \"test \\\"array source functions validate inputs and budget\\\" {\"\n        }\n      ],\n      \"arguments_test.mbt\": [\n        {\n          \"line\": 2,\n          \"declaration\": \"test \\\"builtin and closure argument validation precedes forcing\\\" {\"\n        }\n      ],\n      \"render_test.mbt\": [\n        {\n          \"line\": 2,\n          \"declaration\": \"test \\\"manifest numbers use ordinary numeric String coercion text\\\" {\"\n        },\n        {\n          \"line\": 28,\n          \"declaration\": \"test \\\"nested manifests retain sorting visibility and coercion number text\\\" {\"\n        },\n        {\n          \"line\": 40,\n          \"declaration\": \"test \\\"string coercion keeps its separate numeric representation\\\" {\"\n        },\n        {\n          \"line\": 52,\n          \"declaration\": \"test \\\"scientific manifest numbers respect the intermediate output limit\\\" {\"\n        }\n      ]\n    },\n    \"groups\": 7,\n    \"unchanged\": true,\n    \"interpretation\": \"These are unchanged regression groups, not seven new normative contracts. array_std_test also retains historical flatten/concatenation/comparison witnesses; their passing output cannot resolve A0/cmp or broaden the four new scopes.\"\n  },\n  \"planned_validation\": {\n    \"state\": \"PROPOSED_NOT_STARTED_SEPARATE_STAGE\",\n    \"environment\": \"macOS local existing toolchain/cache only; no network/SSH/upload/install/push/publish\",\n    \"worker_count\": 1,\n    \"stdin\": \"DEVNULL\",\n    \"expected_groups\": 17,\n    \"outline_must_match_exact_files_and_groups_before_test\": true,\n    \"total_seconds\": 600,\n    \"budget_seconds\": {\n      \"fmt_check\": 10,\n      \"native_check\": 60,\n      \"outline\": 10,\n      \"baseline_test\": 150,\n      \"conditional_same_scope_repair_and_retest\": 200,\n      \"info_fmt_documentation_if_committing\": 50,\n      \"closeout_process_and_receipt_reserve\": 60,\n      \"unallocated_edit_margin\": 60\n    },\n    \"commands\": [\n      {\n        \"id\": \"fmt-check\",\n        \"argv\": [\n          \"<USER_HOME>/.moon/bin/moon\",\n          \"fmt\",\n          \"--check\",\n          \"spec_config_checks_contract_test.mbt\"\n        ]\n      },\n      {\n        \"id\": \"check\",\n        \"argv\": [\n          \"<USER_HOME>/.moon/bin/moon\",\n          \"check\",\n          \".\",\n          \"--target\",\n          \"native\",\n          \"--frozen\",\n          \"--deny-warn\",\n          \"-j\",\n          \"1\"\n        ]\n      },\n      {\n        \"id\": \"outline\",\n        \"argv\": [\n          \"<USER_HOME>/.moon/bin/moon\",\n          \"test\",\n          \"spec_config_checks_contract_test.mbt\",\n          \"array_std_test.mbt\",\n          \"arguments_test.mbt\",\n          \"render_test.mbt\",\n          \"--outline\",\n          \"--target\",\n          \"native\",\n          \"--debug\",\n          \"--frozen\",\n          \"--deny-warn\",\n          \"-j\",\n          \"1\",\n          \"--no-parallelize\"\n        ]\n      },\n      {\n        \"id\": \"tests\",\n        \"argv\": [\n          \"<USER_HOME>/.moon/bin/moon\",\n          \"test\",\n          \"spec_config_checks_contract_test.mbt\",\n          \"array_std_test.mbt\",\n          \"arguments_test.mbt\",\n          \"render_test.mbt\",\n          \"--target\",\n          \"native\",\n          \"--debug\",\n          \"--frozen\",\n          \"--deny-warn\",\n          \"-j\",\n          \"1\",\n          \"--no-parallelize\"\n        ]\n      }\n    ],\n    \"conditional_repair_rule\": \"Preserve raw unchanged-implementation output first. If new criteria pass, only add reviewed mappings/evidence; do not modify correct product code. A confirmed defect permits only necessary minimal same-scope repair under a separately scheduled phase, unchanged independent semantic expectations, and repetition of the same selected groups inside the original deadline. A fixture compile error is not a semantic FAIL.\",\n    \"closeout\": \"Record raw stdout/stderr/exit/timings, exact source/fixture/tool hashes and actual counts in one small durable receipt. Check all owned PID/groups exited; preserve first failures and any old-assertion migration input/old/new/fixed-source basis. No blanket snapshot update.\",\n    \"end_conditions\": [\n      \"Actual 10 new + 7 unchanged groups match the outline.\",\n      \"All defined result/error/demand/binding/alias witnesses have actual outcomes; NOTRUN is not PASS.\",\n      \"Each accepted transfer/profile retains explicit child premises; shared unresolved rules are unchanged.\",\n      \"No product/source/mapping acceptance is claimed merely from static consistency or test totals.\"\n    ]\n  },\n  \"input_sha256\": {\n    \"stdlib_source.mbt\": \"39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98\",\n    \"stdlib_layer.mbt\": \"04fa199f43ac20b769abda17f046f4f6920d3bbc9ed8c1a588992eac745b5422\",\n    \"stdlib.mbt\": \"078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950\",\n    \"imports.mbt\": \"5854e3b0f3a928a7e8dbc1f16ee556e0a3d5cbbb680e739a5a835c6f7579d70c\",\n    \"operators.mbt\": \"a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209\",\n    \"manifest.mbt\": \"27afd5b294541c7990d58420fc3e862f0e911f0fadaef8699c6eb95d1254cc6c\",\n    \"render.mbt\": \"c1920a012c82bb49a4327995df20482c14280715a9677ec2236b757c370f3377\",\n    \"moon.mod\": \"60a0e01b55aed4163d5e9b9ef61efc06cc9c167ef3e6161a7cd50c617929aa9d\",\n    \"moon.pkg\": \"46cd807333bb7c9ced7199c68d2fda9513813dd3696cd8f1fcb00349072bb74f\",\n    \"spec_mapping_transfer_test.mbt\": \"c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877\",\n    \"spec_string_utilities_contract_test.mbt\": \"8e4e819cb0e1bfeb99a0f7cf52bf21c9ead4fe9a1abd2a09e87b9136ebb41cf9\",\n    \"spec_array_ordering_test.mbt\": \"b0734a9fca7196cc28c1f11800c874edb1373b86fe73acb9d02c1b3d1e13361a\",\n    \"spec_sequence_structure_test.mbt\": \"59ce5b5fcb56f41b6a350479fc0778394a5b73dc7ee7518e189c0e7f9a047d30\",\n    \"spec_object_ex_test.mbt\": \"f3cca119cc1d990f71e63727e65f3f16c0be9f565b41d0feda9b6b86db84a141\",\n    \"spec_make_array_test.mbt\": \"2528ec26e9449cd6bc1a9acb2819258c79dca4d24d1916b3a263008a0c867554\",\n    \"spec_shared_call_mode_test.mbt\": \"dbbfe455c182196d6c27a40424114ff964ee59781ecfe2f63900d16a4696ed02\",\n    \"spec_math_rounding_test.mbt\": \"295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc\",\n    \"spec_additive_fields_test.mbt\": \"831593d7e2afce69bf9a5dd8518ccb88c0f28648a35368d9316bea2c79284852\",\n    \"spec_conditional_runtime_test.mbt\": \"ed86e469169c41f8a7c4badc881152175525dd18c29282d48a23d5be31542ccf\",\n    \"array_std_test.mbt\": \"a1e5f588530cb2efabb9b4f9f85644869a76996288479c53f583cca8c36e74cc\",\n    \"arguments_test.mbt\": \"86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336\",\n    \"render_test.mbt\": \"4e1780fd1cd69207bc02800ccc6c4ce64accf8e7b10f744863ded263dfba4ce9\",\n    \"spec_config_checks_contract_test.mbt\": \"876b9a9383251b925fed298b4f0e063698d927c9d73a42c7b335772a10194678\",\n    \"docs/development/spec-public-inventory.json\": \"69a8f7b6888dd22020417895195b6a8a4d7c509a5602047e586c73de6463d08e\",\n    \"tests/spec-public-coverage.json\": \"e6ddd2294277d8e47ea22edcc534eb6c15496fd3cb1c70bed1fb1d993e91fab9\",\n    \"spec_value_heads_test.mbt\": \"c333432caf47be1eb43ef9650c86309361f3dc5e6bcd80befc435cb2802a20fc\"\n  },\n  \"static_actions_completed\": {\n    \"single_file_formatter\": {\n      \"argv\": [\n        \"<USER_HOME>/.moon/bin/moonfmt\",\n        \"-w\",\n        \"spec_config_checks_contract_test.mbt\"\n      ],\n      \"exit\": 0\n    },\n    \"native_check\": false,\n    \"outline\": false,\n    \"test\": false,\n    \"info\": false,\n    \"product_changed\": false,\n    \"legacy_tests_changed\": false,\n    \"mappings_changed\": false,\n    \"stage_commit\": false,\n    \"remote\": false\n  },\n  \"source_changes_proposed\": [],\n  \"acceptance_boundary\": \"A successful directed run would permit evidence review for these four explicit transfers under existing child rules. It would neither resolve shared conflicts nor establish complete Jsonnet or proposal acceptance.\"\n}\n"
+    },
+    {
+      "role": "frozen-fixture.mbt",
+      "bytes": 13542,
+      "sha256": "876b9a9383251b925fed298b4f0e063698d927c9d73a42c7b335772a10194678",
+      "content_utf8": "// Fixed Jsonnet v0.21.0 std.jsonnet 37-38, 842-849 and 1661-1689.\n// Literal source/handmade-AST criteria for all, any, assertEqual and toString.\n// Reuse only neutral constructors and the existing collecting value helper.\n// Object witnesses have no assertions/inheritance; no array concatenation is used.\n\n///|\ntest \"CC1 Boolean reducers preserve empty identities and literal truth tables\" {\n  let cases : Array[(OrderingExpr, Json)] = []\n  for (name, empty, mixed) in [(\"all\", true, false), (\"any\", false, true)] {\n    for\n      (values, expected) in [\n        ([], empty),\n        ([true], true),\n        ([false], false),\n        ([true, true], true),\n        ([false, false], false),\n        ([true, false], mixed),\n        ([false, true], mixed),\n        ([true, false, true], mixed),\n      ] {\n      cases.push(\n        (\n          sequence_call(name, [ordering_array(values.map(reflect_bool))]),\n          Json::boolean(expected),\n        ),\n      )\n    }\n  }\n  string_utilities_values(cases)\n}\n\n///|\ntest \"CC2 reducer decisive prefixes leave later invalid heads and errors unused\" {\n  let unread = ordering_error(\"config-unread-tail\")\n  let tails = [\n    unread,\n    ordering_leaf(\"null\", Literal(Json::null())),\n    sequence_num(1),\n    reflect_string(\"not a Boolean\"),\n    ordering_array([unread]),\n    reflect_object([(reflect_string(\"x\"), 1, unread)]),\n    value_head_function(unread, unread),\n  ]\n  let cases : Array[(OrderingExpr, Json)] = []\n  for\n    (name, decisive, continuing) in [(\"all\", false, true), (\"any\", true, false)] {\n    for tail in tails {\n      cases.push(\n        (\n          sequence_call(name, [ordering_array([reflect_bool(decisive), tail])]),\n          Json::boolean(decisive),\n        ),\n      )\n      cases.push(\n        (\n          sequence_call(name, [\n            ordering_array([\n              reflect_bool(continuing),\n              reflect_bool(decisive),\n              tail,\n            ]),\n          ]),\n          Json::boolean(decisive),\n        ),\n      )\n    }\n  }\n  string_utilities_values(cases)\n}\n\n///|\ntest \"CC3 reducers reject nonarray inputs and every visited nonboolean head\" {\n  let unread = ordering_error(\"config-invalid-payload\")\n  let nonbooleans = [\n    ordering_leaf(\"null\", Literal(Json::null())),\n    sequence_num(0),\n    reflect_string(\"\"),\n    ordering_array([unread]),\n    reflect_object([(reflect_string(\"x\"), 1, unread)]),\n    value_head_function(unread, unread),\n  ]\n  for (name, continuing) in [(\"all\", true), (\"any\", false)] {\n    for input in nonbooleans {\n      transfer_reject(sequence_call(name, [ordering_array([input])]))\n      transfer_reject(\n        sequence_call(name, [ordering_array([reflect_bool(continuing), input])]),\n      )\n    }\n    for\n      input in [\n        ordering_leaf(\"null\", Literal(Json::null())),\n        reflect_bool(false),\n        reflect_bool(true),\n        sequence_num(0),\n        reflect_string(\"\"),\n        reflect_object([(reflect_string(\"x\"), 1, unread)]),\n        value_head_function(unread, unread),\n      ] {\n      // Rejection alone makes no claim about payload evaluation or diagnostics.\n      transfer_reject(sequence_call(name, [input]))\n    }\n    let needed = sequence_call(name, [\n      ordering_array([reflect_bool(continuing), unread]),\n    ])\n    transfer_reject(needed)\n    transfer_reject(sequence_call(\"type\", [needed]))\n  }\n}\n\n///|\ntest \"CC4 assertEqual returns true for equal ordinary values without printing them\" {\n  let unread = ordering_error(\"config-hidden-equal\")\n  let cases : Array[(OrderingExpr, OrderingExpr)] = [\n    (\n      ordering_leaf(\"null\", Literal(Json::null())),\n      ordering_leaf(\"null\", Literal(Json::null())),\n    ),\n    (reflect_bool(false), reflect_bool(false)),\n    (reflect_bool(true), reflect_bool(true)),\n    (sequence_num(0), sequence_num(0)),\n    (sequence_num(-2), sequence_num(-2)),\n    (reflect_string(\"\"), reflect_string(\"\")),\n    (\n      reflect_string(\"\u00e9\u4e2d\ud83d\ude00\\n\\u{0000}\"),\n      reflect_string(\"\u00e9\u4e2d\ud83d\ude00\\n\\u{0000}\"),\n    ),\n    (ordering_array([]), ordering_array([])),\n    (\n      ordering_array([sequence_num(1), reflect_string(\"\u00e9\"), reflect_bool(true)]),\n      ordering_array([sequence_num(1), reflect_string(\"\u00e9\"), reflect_bool(true)]),\n    ),\n    (reflect_object([]), reflect_object([])),\n    (\n      reflect_object([\n        (reflect_string(\"a\"), 1, sequence_num(7)),\n        (reflect_string(\"h\"), 2, unread),\n      ]),\n      reflect_object([(reflect_string(\"a\"), 1, sequence_num(7))]),\n    ),\n    (\n      reflect_object([\n        (reflect_string(\"z\"), 1, ordering_array([reflect_bool(false)])),\n        (reflect_string(\"a\"), 1, reflect_string(\"\u4e2d\")),\n      ]),\n      reflect_object([\n        (reflect_string(\"a\"), 1, reflect_string(\"\u4e2d\")),\n        (reflect_string(\"z\"), 1, ordering_array([reflect_bool(false)])),\n      ]),\n    ),\n  ]\n  string_utilities_values(\n    cases.map(c => {\n      (sequence_call(\"assertEqual\", [c.0, c.1]), Json::boolean(true))\n    }),\n  )\n}\n\n///|\ntest \"CC5 assertEqual rejects unequal values noncomparable functions and needed errors\" {\n  let unread = ordering_error(\"config-required-equal\")\n  let cases : Array[(OrderingExpr, OrderingExpr)] = [\n    (reflect_bool(true), reflect_bool(false)),\n    (sequence_num(1), sequence_num(2)),\n    (sequence_num(1), reflect_string(\"1\")),\n    (reflect_string(\"\u00e9\"), reflect_string(\"e\")),\n    (ordering_array([]), ordering_array([sequence_num(0)])),\n    (ordering_array([sequence_num(1)]), ordering_array([sequence_num(2)])),\n    (\n      reflect_object([]),\n      reflect_object([(reflect_string(\"a\"), 1, sequence_num(0))]),\n    ),\n    (make_function([], sequence_num(0)), make_function([], sequence_num(0))),\n    (\n      additive_select(sequence_var(\"std\"), \"length\"),\n      additive_select(sequence_var(\"std\"), \"length\"),\n    ),\n    (ordering_array([unread]), ordering_array([sequence_num(0)])),\n    (ordering_array([sequence_num(0)]), ordering_array([unread])),\n  ]\n  for (left, right) in cases {\n    let call = sequence_call(\"assertEqual\", [left, right])\n    transfer_reject(call)\n    transfer_reject(sequence_call(\"type\", [call]))\n  }\n}\n\n///|\ntest \"CC6 toString preserves raw Strings and fixed ordinary scalar representations\" {\n  let cases : Array[(OrderingExpr, String)] = [\n    (reflect_string(\"\"), \"\"),\n    (reflect_string(\" \\t\u00e9\u4e2d\ud83d\ude00\\n\\u{0000}\\u{0085} \"), \" \\t\u00e9\u4e2d\ud83d\ude00\\n\\u{0000}\\u{0085} \"),\n    (reflect_string(\"\\\"\\\\$\"), \"\\\"\\\\$\"),\n    (ordering_leaf(\"null\", Literal(Json::null())), \"null\"),\n    (reflect_bool(false), \"false\"),\n    (reflect_bool(true), \"true\"),\n    (sequence_num(0), \"0\"),\n    (sequence_num(-2), \"-2\"),\n    (ordering_leaf(\"0.5\", Literal(Json::number(0.5))), \"0.5\"),\n    (ordering_leaf(\"0.1\", Literal(Json::number(0.1))), \"0.10000000000000001\"),\n    (ordering_leaf(\"1e-8\", Literal(Json::number(1e-8))), \"1e-08\"),\n  ]\n  string_utilities_values(\n    cases.map(c => (sequence_call(\"toString\", [c.0]), Json::string(c.1))),\n  )\n}\n\n///|\ntest \"CC7 toString manifests visible data and propagates nested failures\" {\n  let unread = ordering_error(\"config-required-string\")\n  let cases : Array[(OrderingExpr, String)] = [\n    (ordering_array([]), \"[]\"),\n    (reflect_object([]), \"{}\"),\n    (ordering_array([sequence_num(1), reflect_string(\"\u00e9\")]), \"[1, \\\"\u00e9\\\"]\"),\n    (\n      reflect_object([\n        (reflect_string(\"b\"), 1, sequence_num(2)),\n        (\n          reflect_string(\"a\"),\n          1,\n          ordering_array([sequence_num(1), sequence_num(2)]),\n        ),\n        (reflect_string(\"hidden\"), 2, unread),\n      ]),\n      \"{\\\"a\\\": [1, 2], \\\"b\\\": 2}\",\n    ),\n    (reflect_object([(reflect_string(\"hidden\"), 2, unread)]), \"{}\"),\n  ]\n  string_utilities_values(\n    cases.map(c => (sequence_call(\"toString\", [c.0]), Json::string(c.1))),\n  )\n  for\n    input in [\n      make_function([], unread),\n      additive_select(sequence_var(\"std\"), \"length\"),\n      ordering_array([unread]),\n      reflect_object([(reflect_string(\"visible\"), 1, unread)]),\n      ordering_array([make_function([], sequence_num(1))]),\n      reflect_object([\n        (reflect_string(\"visible\"), 1, make_function([], sequence_num(1))),\n      ]),\n    ] {\n    let call = sequence_call(\"toString\", [input])\n    transfer_reject(call)\n    transfer_reject(sequence_call(\"type\", [call]))\n  }\n}\n\n///|\ntest \"CC8 configuration utilities keep required public names arities and aliases\" {\n  for\n    (name, parameter, input, expected) in [\n      (\"all\", \"arr\", ordering_array([]), Json::boolean(true)),\n      (\"any\", \"arr\", ordering_array([]), Json::boolean(false)),\n      (\"toString\", \"a\", reflect_string(\"\u00e9\"), Json::string(\"\u00e9\")),\n    ] {\n    let function = additive_select(sequence_var(\"std\"), name)\n    transfer_value(sequence_call(\"length\", [function]), 1)\n    for label in [None, Some(parameter)] {\n      let args = [(label, input)]\n      transfer_value(rounding_apply(name, args), expected)\n      transfer_value(\n        sequence_local(\n          [(\"f\", function)],\n          shared_mode_call(sequence_var(\"f\"), args),\n        ),\n        expected,\n      )\n    }\n    for\n      args in [\n        [],\n        [(None, input), (None, input)],\n        [(Some(\"unknown\"), input)],\n        [(None, input), (Some(parameter), input)],\n      ] {\n      transfer_reject(rounding_apply(name, args))\n      transfer_reject(\n        sequence_local(\n          [(\"f\", function)],\n          shared_mode_call(sequence_var(\"f\"), args),\n        ),\n      )\n    }\n  }\n  let function = additive_select(sequence_var(\"std\"), \"assertEqual\")\n  let safe = sequence_num(7)\n  transfer_value(sequence_call(\"length\", [function]), 2)\n  for\n    args in [\n      [(None, safe), (None, safe)],\n      [(Some(\"a\"), safe), (Some(\"b\"), safe)],\n      [(Some(\"b\"), safe), (Some(\"a\"), safe)],\n      [(None, safe), (Some(\"b\"), safe)],\n    ] {\n    transfer_value(rounding_apply(\"assertEqual\", args), true)\n    transfer_value(\n      sequence_local(\n        [(\"f\", function)],\n        shared_mode_call(sequence_var(\"f\"), args),\n      ),\n      true,\n    )\n  }\n  for\n    args in [\n      [],\n      [(None, safe)],\n      [(Some(\"b\"), safe)],\n      [(None, safe), (None, safe), (None, safe)],\n      [(Some(\"x\"), safe), (Some(\"y\"), safe)],\n      [(None, safe), (Some(\"a\"), safe), (Some(\"b\"), safe)],\n    ] {\n    transfer_reject(rounding_apply(\"assertEqual\", args))\n    transfer_reject(\n      sequence_local(\n        [(\"f\", function)],\n        shared_mode_call(sequence_var(\"f\"), args),\n      ),\n    )\n  }\n}\n\n///|\ntest \"CC9 sole demanded errors propagate while unused utility calls stay lazy\" {\n  let unread = ordering_error(\"config-required-outer\")\n  let required = [\n    sequence_call(\"all\", [unread]),\n    sequence_call(\"any\", [unread]),\n    sequence_call(\"assertEqual\", [unread, sequence_num(0)]),\n    sequence_call(\"assertEqual\", [sequence_num(0), unread]),\n    sequence_call(\"toString\", [unread]),\n  ]\n  for call in required {\n    transfer_reject(call)\n    transfer_reject(sequence_call(\"type\", [call]))\n    transfer_value(ordering_unused(call), 42)\n    transfer_value(transfer_if(reflect_bool(false), call, sequence_num(42)), 42)\n    transfer_value(transfer_if(reflect_bool(true), sequence_num(42), call), 42)\n    transfer_value(ordering_binary(reflect_bool(false), \"&&\", call), false)\n    transfer_value(ordering_binary(reflect_bool(true), \"||\", call), true)\n    transfer_value(\n      value_head_call(make_function([\"unused\"], sequence_num(42)), [call]),\n      42,\n    )\n    transfer_value(\n      reflect_object([(reflect_string(\"hidden\"), 2, call)]),\n      Json::object(Map([])),\n    )\n  }\n  for name in [\"all\", \"any\", \"assertEqual\", \"toString\"] {\n    transfer_value(ordering_unused(rounding_apply(name, [])), 42)\n  }\n}\n\n///|\ntest \"CC10 repeated utility results preserve original container and String aliases\" {\n  let original = sequence_var(\"original\")\n  let copied = sequence_var(\"copied\")\n  for (name, decisive) in [(\"all\", false), (\"any\", true)] {\n    transfer_value(\n      sequence_local(\n        [\n          (\n            \"original\",\n            ordering_array([\n              reflect_bool(decisive),\n              ordering_error(\"config-alias-tail\"),\n            ]),\n          ),\n          (\"copied\", original),\n        ],\n        ordering_array([\n          sequence_call(name, [original]),\n          sequence_call(name, [copied]),\n          sequence_call(\"length\", [original]),\n          make_index(original, 0),\n          make_index(copied, 0),\n        ]),\n      ),\n      Json::array([\n        Json::boolean(decisive),\n        Json::boolean(decisive),\n        Json::number(2),\n        Json::boolean(decisive),\n        Json::boolean(decisive),\n      ]),\n    )\n  }\n  transfer_value(\n    sequence_local(\n      [\n        (\n          \"original\",\n          reflect_object([\n            (reflect_string(\"a\"), 1, sequence_num(7)),\n            (reflect_string(\"h\"), 2, ordering_error(\"config-alias-hidden\")),\n          ]),\n        ),\n        (\"copied\", original),\n      ],\n      ordering_array([\n        sequence_call(\"assertEqual\", [original, copied]),\n        sequence_call(\"toString\", [original]),\n        sequence_call(\"toString\", [copied]),\n        additive_select(original, \"a\"),\n        additive_select(copied, \"a\"),\n      ]),\n    ),\n    [true, \"{\\\"a\\\": 7}\", \"{\\\"a\\\": 7}\", 7, 7],\n  )\n  transfer_value(\n    sequence_local(\n      [(\"original\", reflect_string(\" \\t\u00e9\u4e2d\ud83d\ude00\\n\")), (\"copied\", original)],\n      ordering_array([\n        sequence_call(\"toString\", [original]),\n        sequence_call(\"toString\", [copied]),\n        original,\n        copied,\n      ]),\n    ),\n    [\" \\t\u00e9\u4e2d\ud83d\ude00\\n\", \" \\t\u00e9\u4e2d\ud83d\ude00\\n\", \" \\t\u00e9\u4e2d\ud83d\ude00\\n\", \" \\t\u00e9\u4e2d\ud83d\ude00\\n\"],\n  )\n}\n"
+    },
+    {
+      "role": "baseline-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "baseline-check.stderr",
+      "bytes": 560,
+      "sha256": "1a5ee820cd8b0a96bba5fea1c1fa986829d85d666238fcb1049f7b9f96f81f68",
+      "content_utf8": "Error: [3002]\n     \u256d\u2500[ <USER_HOME>/Workspace/mooncakes/moonjsonnet/spec_config_checks_contract_test.mbt:200:50 ]\n     \u2502\n 200 \u2502     (ordering_leaf(\"1e-8\", Literal(Json::number(1e-8))), \"1e-08\"),\n     \u2502                                                  \u252c  \n     \u2502                                                  \u2570\u2500\u2500 Parse error, unexpected token id (lowercase start), you may expect `,` or `)`.\n\u2500\u2500\u2500\u2500\u2500\u256f\nFailed with 0 warnings, 1 errors.\nError: failed to run check for target Native\n\nCaused by:\n    failed when checking project\n"
+    },
+    {
+      "role": "baseline-corrected-fmt-check.stdout",
+      "bytes": 1466,
+      "sha256": "813462f749aea9213640378ea55f036f3b084a23ac19e4e61b72e19d9bca2591",
+      "content_utf8": "\u001b[1mdiff --git a<USER_HOME>/Workspace/mooncakes/moonjsonnet/spec_config_checks_contract_test.mbt b<USER_HOME>/Workspace/mooncakes/moonjsonnet/_build/wasm-gc/release/format/spec_config_checks_contract_test.mbt\u001b[m\n\u001b[1mindex b4563e2..3226537 100644\u001b[m\n\u001b[1m--- a<USER_HOME>/Workspace/mooncakes/moonjsonnet/spec_config_checks_contract_test.mbt\u001b[m\n\u001b[1m+++ b<USER_HOME>/Workspace/mooncakes/moonjsonnet/_build/wasm-gc/release/format/spec_config_checks_contract_test.mbt\u001b[m\n\u001b[36m@@ -188,7 +188,10 @@\u001b[m \u001b[mtest \"CC5 assertEqual rejects unequal values noncomparable functions and needed\u001b[m\n test \"CC6 toString preserves raw Strings and fixed ordinary scalar representations\" {\u001b[m\n   let cases : Array[(OrderingExpr, String)] = [\u001b[m\n     (reflect_string(\"\"), \"\"),\u001b[m\n\u001b[31m-    (reflect_string(\" \\t\u00e9\u4e2d\ud83d\ude00\\n\\u{0000}\\u{0085} \"), \" \\t\u00e9\u4e2d\ud83d\ude00\\n\\u{0000}\\u{0085} \"),\u001b[m\n\u001b[32m+\u001b[m\u001b[32m    (\u001b[m\n\u001b[32m+\u001b[m\u001b[32m      reflect_string(\" \\t\u00e9\u4e2d\ud83d\ude00\\n\\u{0000}\\u{0085} \"),\u001b[m\n\u001b[32m+\u001b[m\u001b[32m      \" \\t\u00e9\u4e2d\ud83d\ude00\\n\\u{0000}\\u{0085} \",\u001b[m\n\u001b[32m+\u001b[m\u001b[32m    ),\u001b[m\n     (reflect_string(\"\\\"\\\\$\"), \"\\\"\\\\$\"),\u001b[m\n     (ordering_leaf(\"null\", Literal(Json::null())), \"null\"),\u001b[m\n     (reflect_bool(false), \"false\"),\u001b[m\nfailed to execute `git --no-pager diff --color=always --no-index <USER_HOME>/Workspace/mooncakes/moonjsonnet/spec_config_checks_contract_test.mbt <USER_HOME>/Workspace/mooncakes/moonjsonnet/_build/wasm-gc/release/format/spec_config_checks_contract_test.mbt`\n"
+    },
+    {
+      "role": "baseline-corrected-fmt-check.stderr",
+      "bytes": 72,
+      "sha256": "51611de6efdb4e079b2797e68f57635666269f8ddb6022ffd89f0b085dcb436c",
+      "content_utf8": "Failed with 0 warnings, 0 errors.\nError: failed when formatting project\n"
+    },
+    {
+      "role": "baseline-ready-tests.stdout",
+      "bytes": 722,
+      "sha256": "6e0491e9f4fb7d1d15187ad945a8141cba296db5c380060cf401cda5643b4fff",
+      "content_utf8": "[pangbit/moonjsonnet] test spec_config_checks_contract_test.mbt:211 (\"CC7 toString manifests visible data and propagates nested failures\") failed: spec_string_utilities_contract_test.mbt:33:5-33:30@pangbit/moonjsonnet FAILED: std.toString(([])) handmade=false actual=\"[ ]\" expected=\"[]\"; std.toString(([])) handmade=true actual=\"[ ]\" expected=\"[]\"; std.toString(({})) handmade=false actual=\"{ }\" expected=\"{}\"; std.toString(({})) handmade=true actual=\"{ }\" expected=\"{}\"; std.toString(({[\"hidden\"]::(error \"config-required-string\")})) handmade=false actual=\"{ }\" expected=\"{}\"; std.toString(({[\"hidden\"]::(error \"config-required-string\")})) handmade=true actual=\"{ }\" expected=\"{}\"\nTotal tests: 17, passed: 16, failed: 1.\n"
+    },
+    {
+      "role": "baseline-ready-tests.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "baseline-ready-outline.stdout",
+      "bytes": 2404,
+      "sha256": "ee62dde446e6d36cf33e7145b275d760814b067c584a656dc7129de362f52c45",
+      "content_utf8": "   1. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:7 index=0 name=\"CC1 Boolean reducers preserve empty identities and literal truth tables\"\n   2. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:33 index=1 name=\"CC2 reducer decisive prefixes leave later invalid heads and errors unused\"\n   3. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:72 index=2 name=\"CC3 reducers reject nonarray inputs and every visited nonboolean head\"\n   4. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:111 index=3 name=\"CC4 assertEqual returns true for equal ordinary values without printing them\"\n   5. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:159 index=4 name=\"CC5 assertEqual rejects unequal values noncomparable functions and needed errors\"\n   6. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:188 index=5 name=\"CC6 toString preserves raw Strings and fixed ordinary scalar representations\"\n   7. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:211 index=6 name=\"CC7 toString manifests visible data and propagates nested failures\"\n   8. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:252 index=7 name=\"CC8 configuration utilities keep required public names arities and aliases\"\n   9. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:327 index=8 name=\"CC9 sole demanded errors propagate while unused utility calls stay lazy\"\n  10. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:359 index=9 name=\"CC10 repeated utility results preserve original container and String aliases\"\n  11. pangbit/moonjsonnet render_test.mbt:2 index=0 name=\"manifest numbers use ordinary numeric String coercion text\"\n  12. pangbit/moonjsonnet render_test.mbt:28 index=1 name=\"nested manifests retain sorting visibility and coercion number text\"\n  13. pangbit/moonjsonnet render_test.mbt:40 index=2 name=\"string coercion keeps its separate numeric representation\"\n  14. pangbit/moonjsonnet render_test.mbt:52 index=3 name=\"scientific manifest numbers respect the intermediate output limit\"\n  15. pangbit/moonjsonnet array_std_test.mbt:2 index=0 name=\"array source functions preserve lazy values and short circuit\"\n  16. pangbit/moonjsonnet array_std_test.mbt:42 index=1 name=\"array source functions validate inputs and budget\"\n  17. pangbit/moonjsonnet arguments_test.mbt:2 index=0 name=\"builtin and closure argument validation precedes forcing\"\n"
+    },
+    {
+      "role": "baseline-fmt-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "baseline-fmt-check.stderr",
+      "bytes": 43,
+      "sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489",
+      "content_utf8": "Finished. moon: ran 1 task, now up to date\n"
+    },
+    {
+      "role": "baseline-ready-fmt-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "baseline-ready-fmt-check.stderr",
+      "bytes": 43,
+      "sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489",
+      "content_utf8": "Finished. moon: ran 1 task, now up to date\n"
+    },
+    {
+      "role": "baseline-ready-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "baseline-ready-check.stderr",
+      "bytes": 43,
+      "sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489",
+      "content_utf8": "Finished. moon: ran 1 task, now up to date\n"
+    },
+    {
+      "role": "baseline-ready-outline.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "contract-final-fmt-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "contract-final-fmt-check.stderr",
+      "bytes": 46,
+      "sha256": "80d12a2d96a97bb47f08aacb9fc55b53851a121165109c33c9456e01a28306ea",
+      "content_utf8": "Finished. moon: ran 313 tasks, now up to date\n"
+    },
+    {
+      "role": "contract-final-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "contract-final-check.stderr",
+      "bytes": 43,
+      "sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489",
+      "content_utf8": "Finished. moon: ran 1 task, now up to date\n"
+    },
+    {
+      "role": "contract-final-outline.stdout",
+      "bytes": 2404,
+      "sha256": "026c4686309241bb7bbc4407b463463e29e5b5dcc488abb6dea7ec152ef9a15b",
+      "content_utf8": "   1. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:7 index=0 name=\"CC1 Boolean reducers preserve empty identities and literal truth tables\"\n   2. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:33 index=1 name=\"CC2 reducer decisive prefixes leave later invalid heads and errors unused\"\n   3. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:72 index=2 name=\"CC3 reducers reject nonarray inputs and every visited nonboolean head\"\n   4. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:111 index=3 name=\"CC4 assertEqual returns true for equal ordinary values without printing them\"\n   5. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:159 index=4 name=\"CC5 assertEqual rejects unequal values noncomparable functions and needed errors\"\n   6. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:188 index=5 name=\"CC6 toString preserves raw Strings and fixed ordinary scalar representations\"\n   7. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:211 index=6 name=\"CC7 toString manifests visible data and propagates nested failures\"\n   8. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:270 index=7 name=\"CC8 configuration utilities keep required public names arities and aliases\"\n   9. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:345 index=8 name=\"CC9 sole demanded errors propagate while unused utility calls stay lazy\"\n  10. pangbit/moonjsonnet spec_config_checks_contract_test.mbt:377 index=9 name=\"CC10 repeated utility results preserve original container and String aliases\"\n  11. pangbit/moonjsonnet render_test.mbt:2 index=0 name=\"manifest numbers use ordinary numeric String coercion text\"\n  12. pangbit/moonjsonnet render_test.mbt:28 index=1 name=\"nested manifests retain sorting visibility and coercion number text\"\n  13. pangbit/moonjsonnet render_test.mbt:40 index=2 name=\"string coercion keeps its separate numeric representation\"\n  14. pangbit/moonjsonnet render_test.mbt:52 index=3 name=\"scientific manifest numbers respect the intermediate output limit\"\n  15. pangbit/moonjsonnet array_std_test.mbt:2 index=0 name=\"array source functions preserve lazy values and short circuit\"\n  16. pangbit/moonjsonnet array_std_test.mbt:42 index=1 name=\"array source functions validate inputs and budget\"\n  17. pangbit/moonjsonnet arguments_test.mbt:2 index=0 name=\"builtin and closure argument validation precedes forcing\"\n"
+    },
+    {
+      "role": "contract-final-outline.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    },
+    {
+      "role": "contract-final-tests.stdout",
+      "bytes": 40,
+      "sha256": "b28f3b8e4d471a65d42128a3bc856cea2eb1a5f113adb1c3f790d6750a89ba8d",
+      "content_utf8": "Total tests: 17, passed: 17, failed: 0.\n"
+    },
+    {
+      "role": "contract-final-tests.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "content_utf8": ""
+    }
+  ],
+  "baseline_compile_failure": {
+    "check_exit": 255,
+    "groups_run": 0,
+    "reason": "MoonBit exponent-only Double literal spelling 1e-8 is invalid; Jsonnet input and expected output remain unchanged."
+  },
+  "overall_conformance": "incomplete",
+  "fixture_syntax_correction": {
+    "original_sha256": "876b9a9383251b925fed298b4f0e063698d927c9d73a42c7b335772a10194678",
+    "corrected_sha256": "78e30e8ac07129c24a58932ba0d270607aa82c6fa8e699c2de039fad85b2d77e",
+    "from": "Json::number(1e-8)",
+    "to": "Json::number(1.0e-8)",
+    "unchanged_jsonnet_source": "1e-8",
+    "unchanged_expected_string": "1e-08",
+    "basis": "Add the mandatory MoonBit decimal point to the host Double literal. The rational value is unchanged; no Jsonnet input, expected value, assertion, or test declaration changes."
+  },
+  "fixture_format_correction": {
+    "before_sha256": "78e30e8ac07129c24a58932ba0d270607aa82c6fa8e699c2de039fad85b2d77e",
+    "after_sha256": "a0c19cb55c5737cb3d97f721fbf1fcc93b6d987d771bfc9feb431c377d8166d0",
+    "raw_string_tokens_unchanged": true,
+    "code_tokens_equal_modulo_whitespace_and_optional_trailing_comma": true,
+    "reason": "Project moon fmt wraps one Unicode String tuple and adds its optional trailing comma; the earlier standalone formatter used a different layout. No Jsonnet input, expected value or assertion changes."
+  },
+  "controller_only_issue": {
+    "phase": "baseline-formatted",
+    "processes_created": 0,
+    "tests_run": 0,
+    "reason": "An overstrict whitespace-only formatter guard stopped before installing the new phase; invoking that uninstalled phase returned ValueError. This is not a product or semantic test failure. Original phase receipt remains preserved."
+  },
+  "empty_container_oracle_correction": {
+    "original_exact_expected": [
+      "[]",
+      "{}",
+      "{}"
+    ],
+    "baseline_actual": [
+      "[ ]",
+      "{ }",
+      "{ }"
+    ],
+    "baseline_differences": 6,
+    "reason": "Fixed spec tostring requires JSON manifestation and unparsing on one line; it does not mandate unique empty-container whitespace. Native toString and fixed empty-String concatenation already use the same coerce_string helper. The strict literal was an overconstraint, not a demonstrated product defect.",
+    "new_independent_expectation": "String with no raw LF/CR; parse using the core JSON parser and compare with literal empty Array/Object data. The three original inputs and both entries remain. No baseline actual String supplies a new normative expected String.",
+    "source_url": "https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html",
+    "section": "Operational semantics, tostring paragraph, raw page lines 2676-2680",
+    "short_quote": "unparse it as a single line of text",
+    "preserved_nonempty_literals": "Compatibility observations only; they do not standardize whitespace.",
+    "cc7_original_error_section": "NOTRUN after the original value collector failed; reached by the corrected rerun."
+  },
+  "runs": [
+    {
+      "phase": "baseline",
+      "start_utc": "2026-10-28T01:55:35.401785+00:00",
+      "elapsed_before": 0.0016238689422607422,
+      "commands": [
+        {
+          "id": "fmt-check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "fmt",
+            "--check",
+            "spec_config_checks_contract_test.mbt"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:55:35.566426+00:00",
+          "cap_seconds": 10,
+          "stdout": "baseline-fmt-check.stdout",
+          "stderr": "baseline-fmt-check.stderr",
+          "pid": 28442,
+          "pgid": 28442,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.09258083299999997,
+          "end_utc": "2026-10-28T01:55:35.659006+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489"
+        },
+        {
+          "id": "check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "check",
+            ".",
+            "--target",
+            "native",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:55:35.659826+00:00",
+          "cap_seconds": 60,
+          "stdout": "baseline-check.stdout",
+          "stderr": "baseline-check.stderr",
+          "pid": 28446,
+          "pgid": 28446,
+          "timed_out": false,
+          "exit": 255,
+          "elapsed_seconds": 0.628974542,
+          "end_utc": "2026-10-28T01:55:36.288802+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "1a5ee820cd8b0a96bba5fea1c1fa986829d85d666238fcb1049f7b9f96f81f68"
+        }
+      ],
+      "end_utc": "2026-10-28T01:55:36.289752+00:00",
+      "elapsed_after": 0.8895907402038574,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 740,
+        "sha256": "472e50dc42e15e454462f80b55493de4e7466d324c1cf8bcd2e8848758511349"
+      },
+      "inputs_after": {
+        "entries": 740,
+        "sha256": "472e50dc42e15e454462f80b55493de4e7466d324c1cf8bcd2e8848758511349"
+      },
+      "controller_exit": 0
+    },
+    {
+      "phase": "baseline-corrected",
+      "start_utc": "2026-10-28T01:56:29.928987+00:00",
+      "elapsed_before": 54.528937101364136,
+      "commands": [
+        {
+          "id": "fmt-check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "fmt",
+            "--check",
+            "spec_config_checks_contract_test.mbt"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:56:30.061005+00:00",
+          "cap_seconds": 10,
+          "stdout": "baseline-corrected-fmt-check.stdout",
+          "stderr": "baseline-corrected-fmt-check.stderr",
+          "pid": 28478,
+          "pgid": 28478,
+          "timed_out": false,
+          "exit": 255,
+          "elapsed_seconds": 0.094385208,
+          "end_utc": "2026-10-28T01:56:30.155389+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "813462f749aea9213640378ea55f036f3b084a23ac19e4e61b72e19d9bca2591",
+          "stderr_sha256": "51611de6efdb4e079b2797e68f57635666269f8ddb6022ffd89f0b085dcb436c"
+        }
+      ],
+      "end_utc": "2026-10-28T01:56:30.156325+00:00",
+      "elapsed_after": 54.756165981292725,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 740,
+        "sha256": "720d764d00dc58c70a77e3358a6b8de3eb07b74b37a14d8a981bf61f43f7a0f9"
+      },
+      "inputs_after": {
+        "entries": 740,
+        "sha256": "720d764d00dc58c70a77e3358a6b8de3eb07b74b37a14d8a981bf61f43f7a0f9"
+      },
+      "controller_exit": 0
+    },
+    {
+      "phase": "baseline-formatted",
+      "start_utc": "2026-10-28T01:57:33.025901+00:00",
+      "elapsed_before": 117.62585997581482,
+      "commands": [],
+      "end_utc": "2026-10-28T01:57:33.151366+00:00",
+      "elapsed_after": 117.75121593475342,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 740,
+        "sha256": "720d764d00dc58c70a77e3358a6b8de3eb07b74b37a14d8a981bf61f43f7a0f9"
+      },
+      "inputs_after": {
+        "entries": 740,
+        "sha256": "720d764d00dc58c70a77e3358a6b8de3eb07b74b37a14d8a981bf61f43f7a0f9"
+      },
+      "controller_exit": 1
+    },
+    {
+      "phase": "baseline-ready",
+      "start_utc": "2026-10-28T01:58:27.204575+00:00",
+      "elapsed_before": 171.8045198917389,
+      "commands": [
+        {
+          "id": "fmt-check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "fmt",
+            "--check",
+            "spec_config_checks_contract_test.mbt"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:58:27.330837+00:00",
+          "cap_seconds": 10,
+          "stdout": "baseline-ready-fmt-check.stdout",
+          "stderr": "baseline-ready-fmt-check.stderr",
+          "pid": 28562,
+          "pgid": 28562,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.095449,
+          "end_utc": "2026-10-28T01:58:27.426285+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489"
+        },
+        {
+          "id": "check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "check",
+            ".",
+            "--target",
+            "native",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:58:27.427052+00:00",
+          "cap_seconds": 60,
+          "stdout": "baseline-ready-check.stdout",
+          "stderr": "baseline-ready-check.stderr",
+          "pid": 28566,
+          "pgid": 28566,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.36198362500000003,
+          "end_utc": "2026-10-28T01:58:27.789043+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489"
+        },
+        {
+          "id": "outline",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "test",
+            "spec_config_checks_contract_test.mbt",
+            "array_std_test.mbt",
+            "arguments_test.mbt",
+            "render_test.mbt",
+            "--outline",
+            "--target",
+            "native",
+            "--debug",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1",
+            "--no-parallelize"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:58:27.789977+00:00",
+          "cap_seconds": 10,
+          "stdout": "baseline-ready-outline.stdout",
+          "stderr": "baseline-ready-outline.stderr",
+          "pid": 28582,
+          "pgid": 28582,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.20962725000000004,
+          "end_utc": "2026-10-28T01:58:27.999609+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "ee62dde446e6d36cf33e7145b275d760814b067c584a656dc7129de362f52c45",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "outline_count": 17,
+          "actual_groups_by_file": {
+            "spec_config_checks_contract_test.mbt": 10,
+            "render_test.mbt": 4,
+            "array_std_test.mbt": 2,
+            "arguments_test.mbt": 1
+          }
+        },
+        {
+          "id": "tests",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "test",
+            "spec_config_checks_contract_test.mbt",
+            "array_std_test.mbt",
+            "arguments_test.mbt",
+            "render_test.mbt",
+            "--target",
+            "native",
+            "--debug",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1",
+            "--no-parallelize"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T01:58:28.001721+00:00",
+          "cap_seconds": 150,
+          "stdout": "baseline-ready-tests.stdout",
+          "stderr": "baseline-ready-tests.stderr",
+          "pid": 28586,
+          "pgid": 28586,
+          "timed_out": false,
+          "exit": 2,
+          "elapsed_seconds": 12.920451584,
+          "end_utc": "2026-10-28T01:58:40.922210+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "6e0491e9f4fb7d1d15187ad945a8141cba296db5c380060cf401cda5643b4fff",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "end_utc": "2026-10-28T01:58:40.923240+00:00",
+      "elapsed_after": 185.52307987213135,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 740,
+        "sha256": "d6c72f0f7f1b358ff6249dd5d2142bddabd9f7c57e75ff555481a9e77fcc4458"
+      },
+      "inputs_after": {
+        "entries": 740,
+        "sha256": "d6c72f0f7f1b358ff6249dd5d2142bddabd9f7c57e75ff555481a9e77fcc4458"
+      },
+      "controller_exit": 0
+    },
+    {
+      "phase": "contract-final",
+      "start_utc": "2026-10-28T02:03:32.708938+00:00",
+      "elapsed_before": 477.30887508392334,
+      "commands": [
+        {
+          "id": "fmt-check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "fmt",
+            "--check",
+            "spec_config_checks_contract_test.mbt"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T02:03:32.846852+00:00",
+          "cap_seconds": 10,
+          "stdout": "contract-final-fmt-check.stdout",
+          "stderr": "contract-final-fmt-check.stderr",
+          "pid": 29843,
+          "pgid": 29843,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 1.0605549170000002,
+          "end_utc": "2026-10-28T02:03:33.907408+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "80d12a2d96a97bb47f08aacb9fc55b53851a121165109c33c9456e01a28306ea"
+        },
+        {
+          "id": "check",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "check",
+            ".",
+            "--target",
+            "native",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T02:03:33.908397+00:00",
+          "cap_seconds": 60,
+          "stdout": "contract-final-check.stdout",
+          "stderr": "contract-final-check.stderr",
+          "pid": 30473,
+          "pgid": 30473,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.4230780410000001,
+          "end_utc": "2026-10-28T02:03:34.331479+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "stderr_sha256": "81a677771334385895bc0ebfef26a4af4d319fd300182f0918976f6e1f185489"
+        },
+        {
+          "id": "outline",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "test",
+            "spec_config_checks_contract_test.mbt",
+            "array_std_test.mbt",
+            "arguments_test.mbt",
+            "render_test.mbt",
+            "--outline",
+            "--target",
+            "native",
+            "--debug",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1",
+            "--no-parallelize"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T02:03:34.332363+00:00",
+          "cap_seconds": 10,
+          "stdout": "contract-final-outline.stdout",
+          "stderr": "contract-final-outline.stderr",
+          "pid": 30480,
+          "pgid": 30480,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 0.26382937500000003,
+          "end_utc": "2026-10-28T02:03:34.596198+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "026c4686309241bb7bbc4407b463463e29e5b5dcc488abb6dea7ec152ef9a15b",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "outline_count": 17,
+          "actual_groups_by_file": {
+            "spec_config_checks_contract_test.mbt": 10,
+            "render_test.mbt": 4,
+            "array_std_test.mbt": 2,
+            "arguments_test.mbt": 1
+          }
+        },
+        {
+          "id": "tests",
+          "argv": [
+            "<USER_HOME>/.moon/bin/moon",
+            "test",
+            "spec_config_checks_contract_test.mbt",
+            "array_std_test.mbt",
+            "arguments_test.mbt",
+            "render_test.mbt",
+            "--target",
+            "native",
+            "--debug",
+            "--frozen",
+            "--deny-warn",
+            "-j",
+            "1",
+            "--no-parallelize"
+          ],
+          "cwd": "<USER_HOME>/Workspace/mooncakes/moonjsonnet",
+          "start_utc": "2026-10-28T02:03:34.598461+00:00",
+          "cap_seconds": 60.80171414599572,
+          "stdout": "contract-final-tests.stdout",
+          "stderr": "contract-final-tests.stderr",
+          "pid": 30485,
+          "pgid": 30485,
+          "timed_out": false,
+          "exit": 0,
+          "elapsed_seconds": 13.494458792,
+          "end_utc": "2026-10-28T02:03:48.092957+00:00",
+          "group_members_after": [],
+          "stdout_sha256": "b28f3b8e4d471a65d42128a3bc856cea2eb1a5f113adb1c3f790d6750a89ba8d",
+          "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "end_utc": "2026-10-28T02:03:48.094014+00:00",
+      "elapsed_after": 492.69385409355164,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 740,
+        "sha256": "6f8c766ac88ffd596b374596f03894fa51e373979919adde6342b9f5183a1799"
+      },
+      "inputs_after": {
+        "entries": 740,
+        "sha256": "6f8c766ac88ffd596b374596f03894fa51e373979919adde6342b9f5183a1799"
+      },
+      "controller_exit": 0
+    },
+    {
+      "phase": "light",
+      "start_utc": "2026-10-28T02:05:46.576724+00:00",
+      "elapsed_before": 611.1768469810486,
+      "commands": [],
+      "end_utc": "2026-10-28T02:05:46.699023+00:00",
+      "elapsed_after": 611.2988717556,
+      "inputs_stable": true,
+      "all_groups_exited": true,
+      "inputs_before": {
+        "entries": 740,
+        "sha256": "bdd42d0b320ff923b39aff1a4155e10e510297a2c14fd7343444bdca0d22ea32"
+      },
+      "inputs_after": {
+        "entries": 740,
+        "sha256": "bdd42d0b320ff923b39aff1a4155e10e510297a2c14fd7343444bdca0d22ea32"
+      },
+      "controller_exit": 1
+    }
+  ],
+  "product_changed": false,
+  "legacy_tests_changed": false,
+  "public_interfaces_changed": false,
+  "source_repair_needed": false,
+  "validation_summary": {
+    "baseline_after_syntax_fix": {
+      "passed": 16,
+      "failed": 1,
+      "exit": 2,
+      "new_groups_passed": 9,
+      "new_groups_failed": 1
+    },
+    "final": {
+      "passed": 17,
+      "failed": 0,
+      "skipped": 0,
+      "exit": 0,
+      "new_groups": 10,
+      "unchanged_regression_groups": 7
+    },
+    "original_CC7_error_section": "NOTRUN after the original overconstrained value collector failed; reached and passed in the corrected final run.",
+    "fixture_semantics_changes": "Only source-justified empty-container whitespace oracle correction; original exact Strings preserved as historical failed observations. Host Double spelling and formatter-only differences are recorded separately. No observed actual String became a new normative expected String.",
+    "mappings": {
+      "original_preserved": 112,
+      "candidate_total": 116,
+      "unmapped_candidates": 37
+    },
+    "NOTRUN": [
+      "full package suite",
+      "release",
+      "Linux/x86",
+      "standalone CLI/API",
+      "Go/C++ comparison"
+    ],
+    "commit": "Precommit checks complete; this receipt is included in the same local test/evidence commit. No push or publication."
+  },
+  "window": {
+    "start_utc": "2026-10-28T01:55:35.400165+00:00",
+    "hard_limit_seconds": 600,
+    "original_deadline_utc": "2026-10-28T02:05:35.400165+00:00",
+    "last_owned_command_exit_utc": "2026-10-28T02:03:48.092957+00:00",
+    "last_owned_command_elapsed_seconds": 492.692792,
+    "last_test_phase_complete_elapsed_seconds": 492.69385409355164,
+    "all_recorded_command_exits_before_deadline": true,
+    "late_light_attempt_elapsed_seconds": 611.1768469810486,
+    "late_light_created_processes": 0,
+    "closeout_recorded_utc": "2026-10-28T02:08:16.733014+00:00",
+    "actual_closeout_wall_seconds": 761.332849,
+    "complete_closeout_within_window": false,
+    "command_subprocess_seconds": 29.645373167,
+    "test_subprocess_seconds": 26.414910376,
+    "all_recorded_owned_pids_and_groups_gone": true,
+    "recorded_pid_groups": 11,
+    "budget_outcome": "Tests ended and their processes exited inside the original budget. Documentation editing exceeded the window; the local controller refused the subsequent light phase before creating any process. No new native command, deadline reset, or alternate execution path was used."
+  },
+  "final_fixture_sha256": "ba58214e8aae9eb3d4f53993e3a97c38b90fa4bffabc49dbd9476a3ed11ab62c",
+  "final_plan_sha256": "8fbae624a1d4dc5630bc83450e2395875cdb999890a8ee410255892e2d571c7b",
+  "final_candidate_sha256": {
+    "docs/development/SPEC-FOUNDATIONS-REVIEW.md": "4679f061da453d78adfcd68e4a7bd157eacff83953ffd4010c96e7b916bcc115",
+    "docs/development/SPEC-PUBLIC-STDLIB-REVIEW.md": "01a37ec9da9d0adb98c4646d4c9fcbe1b9bbed86ff7e842eea88d26f71ed70a5",
+    "docs/reference/COMPATIBILITY.md": "fe79723604e5e8d7a9d14b35f4801327f4dc0be8e89aacdacd2a7215513f4e01",
+    "spec_config_checks_contract_test.mbt": "ba58214e8aae9eb3d4f53993e3a97c38b90fa4bffabc49dbd9476a3ed11ab62c",
+    "tests/spec-config-checks-plan.json": "8fbae624a1d4dc5630bc83450e2395875cdb999890a8ee410255892e2d571c7b",
+    "tests/spec-public-coverage.json": "eb369af4ebe615ff80d3b6d80a662d39b8b99140413eb35bc44bc1c897d2b041"
+  },
+  "required_next_step": "A separately scheduled minimal info/fmt/documentation closeout, verify no test-input change, then precise Conventional English local test/evidence commit. No repeated directed/full test is indicated by the current facts.",
+  "separate_closeout": {
+    "start_utc": "2026-10-28T03:00:12.879290+00:00",
+    "hard_limit_seconds": 120,
+    "prior_receipt_sha256": "af729f1ea38482cbbe6cc4690d65b52365b0046a804aff27cb78389e58aa2956",
+    "checks": [
+      {
+        "id": "info",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "info",
+          "--target",
+          "native",
+          "--frozen"
+        ],
+        "start_utc": "2026-10-28T03:00:12.880148+00:00",
+        "cap_seconds": 20,
+        "pid": 37550,
+        "pgid": 37550,
+        "exit": 0,
+        "timed_out": false,
+        "elapsed_seconds": 0.37290804099999997,
+        "end_utc": "2026-10-28T03:00:13.254901+00:00",
+        "group_members_after": [],
+        "stdout": "",
+        "stderr": "Finished. moon: ran 5 tasks, now up to date\n"
+      },
+      {
+        "id": "fmt",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "fmt"
+        ],
+        "start_utc": "2026-10-28T03:00:13.270982+00:00",
+        "cap_seconds": 15,
+        "pid": 37558,
+        "pgid": 37558,
+        "exit": 0,
+        "timed_out": false,
+        "elapsed_seconds": 0.688733875,
+        "end_utc": "2026-10-28T03:00:13.961329+00:00",
+        "group_members_after": [],
+        "stdout": "",
+        "stderr": "Finished. moon: ran 382 tasks, now up to date\n"
+      },
+      {
+        "id": "fmt-check",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "fmt",
+          "--check"
+        ],
+        "start_utc": "2026-10-28T03:00:13.980798+00:00",
+        "cap_seconds": 10,
+        "pid": 37953,
+        "pgid": 37953,
+        "exit": 0,
+        "timed_out": false,
+        "elapsed_seconds": 1.0062331250000003,
+        "end_utc": "2026-10-28T03:00:14.989113+00:00",
+        "group_members_after": [],
+        "stdout": "",
+        "stderr": "Finished. moon: ran 382 tasks, now up to date\n"
+      },
+      {
+        "id": "docs",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "run",
+          "--frozen",
+          "tools/documentation.mbtx"
+        ],
+        "start_utc": "2026-10-28T03:00:15.005360+00:00",
+        "cap_seconds": 25,
+        "pid": 38722,
+        "pgid": 38722,
+        "exit": 0,
+        "timed_out": false,
+        "elapsed_seconds": 2.909491125,
+        "end_utc": "2026-10-28T03:00:17.916428+00:00",
+        "group_members_after": [],
+        "stdout": "Documentation: 217 files, 1857 local/current-source links, root layout, language candidates, README parity and migration targets passed.\n",
+        "stderr": ""
+      },
+      {
+        "id": "diff-check",
+        "argv": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "start_utc": "2026-10-28T03:00:17.938434+00:00",
+        "cap_seconds": 3,
+        "pid": 47782,
+        "pgid": 47782,
+        "exit": 0,
+        "timed_out": false,
+        "elapsed_seconds": 0.060119333000000275,
+        "end_utc": "2026-10-28T03:00:18.000274+00:00",
+        "group_members_after": [],
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "validated_fixture_sha256": "ba58214e8aae9eb3d4f53993e3a97c38b90fa4bffabc49dbd9476a3ed11ab62c",
+    "source_and_interfaces_unchanged": true,
+    "test_rerun": false,
+    "elapsed_before_commit_seconds": 5.148225,
+    "commit_binding": "The validated seven paths and this receipt are committed together; obtain the containing SHA from Git history. No product or legacy-test change."
+  }
+}

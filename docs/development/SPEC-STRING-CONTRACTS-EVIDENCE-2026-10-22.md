@@ -116,3 +116,127 @@ stage. Its archive-only controller already passed a local no-Git smoke run;
 Linux execution must wait for the parent to confirm the previous remote job has
 finished and cleaned up. No SSH, upload or remote execution occurred here.
 The proposal is unchanged; no push, publication or tag occurred.
+
+## UTF-8 valid-scalar contract frozen at 7fadc7b
+
+Base `7fadc7b00b1212fab8fd591d2ead6c5869823b99`; no implementation defect is claimed.
+The fixed [UTF-8 declarations](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html#L1329-L1376)
+require `encodeUTF8(str)` and `decodeUTF8(arr)`, without defaults or source bodies.
+[RFC 3629 sections 3/4](https://www.rfc-editor.org/rfc/rfc3629.html#section-3) define the canonical scalar encodings;
+[section 6](https://www.rfc-editor.org/rfc/rfc3629.html#section-6) treats interior FEFF as data. Leading-signature handling is not adjudicated.
+`spec_utf8_contract_test.mbt` uses independent literal text/bytes through source and handmade ASTs, not round trips as oracles.
+
+| Groups | Frozen required outcome |
+| --- | --- |
+| C01-C04 | Literal pairs at U+0000/007F/0080/07FF/0800/D7FF/E000/FFFF/10000/10FFFF cover all widths and scalar-gap edges. |
+| C05 | Explicit mixed-width 26-byte vector converts to ten scalar characters, with independent values and lengths. |
+| C06 | Documented required names str/arr work directly and through function aliases. |
+| C07-C08 | A sole demanded outer or byte-expression error fails; other byte elements are ASCII, without competing-error priority. |
+| C09-C10 | Unselected calls stay lazy; repeated byte Array/String aliases and an identity map retain literal values. |
+| C11 | Interior `A\ufeff\u0000B` maps to `[65,239,187,191,0,66]` and back; four codepoints and six bytes. |
+
+Required failure/laziness follows the existing language rules; `Runtime` and exact user-marker checks are additional embedding assertions, not UTF-8 byte-value requirements.
+Existing `std_encoding_test.mbt` and Base64 decoder C10 retain ordinary/empty Unicode controls; malformed replacement and leading-BOM profiles remain ungraded.
+Invalid scalar Strings, out-of-domain byte coercion, resource equivalence, exact diagnostic order and callback counts remain outside this subset; no whole-function acceptance follows.
+The protected ten-group candidate is retained externally; its literals are preserved, with only C11 added. At fixture freeze, product, old tests and coverage map were unchanged.
+Info, fmt and fmt-check pass without interface changes; formatting preserves literal/operation tokens.
+At that freeze, native execution of 11 new plus 15 existing groups was pending. No full/platform run or publication is part of this batch.
+
+The directed native run passes 26/26 (11 new, 15 existing; exit 0, 9.113 seconds) on unchanged production.
+Raw `moonjsonnet-utf8-contract.2_psxce0/directed/receipt.json` binds the base above and fixture SHA-256
+`b0e3f4ec366262fc49c1078ce4217a1b1679d6fb85bdc7f51ef72f6826bfffed`.
+Inputs stayed stable and all three owned groups exited; no product fix or legacy expectation change was needed.
+Two new manual records add encodeUTF8/decodeUTF8 only; the previous 67 objects remain byte-identical.
+Full/release/Linux/CLI/C++ runs are NOTRUN for this batch; the earlier 890-test source cohort excludes these 11 new groups.
+
+Leading-BOM and malformed recovery remain **UNRESOLVED / NOTPASS**. The fixed
+UTF-8 declarations have no source/formal builtin body specifying rejection versus
+replacement or its granularity. RFC 3629 sections 3/4 identify invalid bytes but
+do not choose that Jsonnet API policy; section 6 permits leading signature
+interpretation. No precedence or mandatory handling resolves these omissions,
+and no new compatibility experiment or decoder change is used to claim acceptance.
+
+## strReplace contract frozen at 5ecbf9f
+
+Base `5ecbf9f391d87422eb1692ef6d361baadf9b5418`; no implementation defect is claimed.
+The fixed [public declaration/example](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html#L772-L794)
+and [source definition](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L148-L178)
+require String str/from/to, no defaults and nonempty from. Source matching advances
+by the matched pattern length; inserted text is not recursively replaced.
+`spec_str_replace_contract_test.mbt` supplies literal expectations through source
+and independently handmade ASTs; it does not reproduce the replacement algorithm.
+
+| Group | Frozen required outcome |
+| --- | --- |
+| SR1 | Official example; empty/no-match/identity/deletion, adjacent and nonoverlapping matches, literal punctuation and nonrecursive replacement. |
+| SR2 | Exact NUL, supplementary and combining codepoints with both single- and multi-codepoint patterns; no normalization folding. |
+| SR3 | Positional/reordered named/alias calls agree; three required parameters, missing/unknown/extra binding rejection with otherwise valid values. |
+| SR4 | Every nonstring head kind in each argument and empty from reject, including empty input; no required error tag or diagnostic winner. |
+| SR5 | Each isolated argument error propagates; to remains required on empty and unmatched input, with no competing invalid arguments. |
+| SR6 | Unused whole calls, false branches and Boolean shortcuts leave errors and invalid empty patterns dormant. |
+| SR7 | Input/pattern/replacement String aliases and repeated results retain independent literal values. |
+| SR8 (revised) | Final compact JSON budgets of 4/5/10/6 UTF-8 bytes include both quotes; exact budgets pass and one byte less is Limit. Separate std.length values remain 1/3/2/2. |
+
+SR4 asserts rejection only, not skipped container/function payload demand. SR5's
+Runtime/marker checks and SR8's Limit/byte budgets are embedding checks alongside
+language value/failure criteria; no exact diagnostic order, callback count or
+general resource equivalence is asserted. SR8 intermediates are no larger than
+the literal final result. Invalid host Strings, N0/R0 and UTF-8 recovery/BOM
+questions remain outside this subset. Existing string/argument/JSON String groups
+are reused as neighbors; native execution was pending at the initial freeze, with product and old tests unchanged.
+Info, fmt and fmt-check pass without interface changes; formatting preserves
+literal/operation tokens. The planned directed subset is eight new plus ten existing groups.
+
+The original directed run passed 17/18 (exit 2, 9.528 seconds): SR1-SR7 and all
+ten neighbors passed; SR8 failed at the first source-entry one-byte-short assertion.
+Its handmade budget arm and remaining three vectors were NOTRUN. Frozen fixture/doc hashes were respectively
+`00031792f973ca5b76486823005cb2b71a0bef7cc0b497cb7633f1371527d382` /
+`7b261ce5656e34a8733c99e5f6bbf0981ecd54efff92da70839fa79718cca15e`.
+Original inputs and `directed/receipt.json`/raw output remain preserved externally.
+The extra inference that std.length must enforce exact UTF-8 intermediate
+String bytes is withdrawn: [API Limits](../reference/API.md#limits) promises
+final compact JSON accounting and only conservative internal construction guards.
+SR8 now checks final JSON bytes including quotes, retaining its literal values
+and separate codepoint counts. SR1-SR7 and product bytes are unchanged; this is
+an embedding-test correction, not a strReplace semantic defect or product fix.
+The corrected directed run passes 18/18 (eight new, ten existing; exit 0,
+9.490 seconds), with check/outline also exiting 0 and all inputs stable.
+`directed-final/receipt.json` binds unchanged source `5ecbf9f` and fixture SHA-256
+`a9b8077a667d8233683238c20a1f1739b0607bb663476507fd69f008ea728b04`.
+It runs `moon test spec_str_replace_contract_test.mbt std_string_test.mbt arguments_test.mbt spec_json_string_contract_test.mbt --target native --debug --frozen --deny-warn -j 1 --no-parallelize`.
+Original 17/18 evidence and the resource correction remain intact; no product or
+legacy expectation change was made. Only strReplace gains a manual record, with
+the previous 69 objects unchanged. No new full/release/Linux/CLI/C++ run or
+whole-function acceptance is claimed; the earlier full cohort excludes these groups.
+
+## ASCII case family at 59eb3e8
+
+From base `59eb3e803e135b0d89a258c2a71dac5c60ff91a7`, the fixed
+[conversion definitions](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L179-L194) and
+[equalsIgnoreCase definition](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L1766)
+support these independent literal source/handmade-AST subsets:
+
+| Function | Fixed rule and bounded witnesses |
+| --- | --- |
+| asciiUpper(str) | Change only ASCII a-z to A-Z; AC1/AC3/AC7-AC11 cover letters, boundaries, unchanged Unicode, required names/errors, laziness and aliases. |
+| asciiLower(str) | Change only ASCII A-Z to a-z; AC2/AC3/AC6-AC11 cover the corresponding literal values and demand controls. |
+| equalsIgnoreCase(str1,str2) | Compare the two asciiLower results; AC4-AC11 distinguish ASCII equivalence from distinct non-ASCII variants without Unicode normalization/folding. |
+
+The baseline passes 12/14 (new 9/11, old 3/3); AC5's first Kelvin source comparison
+and AC6's source comparison fail. Their then-blocked reverse/handmade/later arms
+remain recorded as NOTRUN at baseline. Selecting the existing equalsIgnoreCase
+body in source_standard_function yields 14/14 (11 new, three old; 10.019 seconds),
+including those later arms. Check/outline exit 0; 722 inputs remain stable.
+Native fallback, Unicode table and conversion bodies stay unchanged. Fixture
+`492562b599b86a3e7a08d3a8cb847d393d0d72827d4922a6cbd700c25fdc8f0e`
+differs from the initial freeze only by layout/trailing commas; interfaces are unchanged.
+
+`std_string_test.mbt` keeps its six inputs and changes `[true,true,false,false,false,true]`
+to `[false,false,false,false,false,false]`. `tools/consumer.mbtx` changes only the same AC6 input
+`equalsIgnoreCase('KΣẞ𐐀','kςß𐐨')` from true to false; each non-ASCII character is
+unchanged by asciiLower. Original files/logs and the complete per-pair literal
+derivations remain in the retained scratch evidence; no Go output supplies the oracle.
+Three new manual records preserve the prior 70 objects. Container/function
+stringChars admission, N0/R0, BOM/recovery and Stream-default questions remain
+unresolved. No whole-function, full-suite, consumer-package, release/Linux or
+fresh Go/C++ comparison pass is claimed by this directed result.

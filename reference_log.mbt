@@ -7,6 +7,11 @@ fn reference_log(x : Double) -> Double {
   if !@number.reference_amd64() {
     return @math.ln(x)
   }
+  reference_log_amd64(x)
+}
+
+///|
+fn reference_log_amd64(x : Double) -> Double {
   if x == 0 {
     return -1.0 / 0.0
   }
@@ -16,12 +21,14 @@ fn reference_log(x : Double) -> Double {
   if x.is_nan() || x.is_inf() {
     return x
   }
-  let bits = x.reinterpret_as_int64()
+  let small = x < 2.2250738585072014e-308
+  let normalized = if small { x * 18014398509481984.0 } else { x }
+  let bits = normalized.reinterpret_as_int64()
   let mut fraction = bits
     .land(0x000fffffffffffffL)
     .lor(0x3fe0000000000000L)
     .reinterpret_as_double()
-  let mut exponent = (bits >> 52).to_int() - 1022
+  let mut exponent = (bits >> 52).to_int() - 1022 - (if small { 54 } else { 0 })
   if fraction < 7.07106781186547524401e-01 {
     exponent -= 1
     fraction *= 2

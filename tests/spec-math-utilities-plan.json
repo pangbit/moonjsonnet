@@ -1,0 +1,292 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "7e7fc1dd8a09da66002f75814ff5317fb048820ae6fdc82a1edd257e1321c8c8",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "state": "STATIC_PREPARATION_ONLY_NOT_COMPILED_OR_EXECUTED",
+  "base_commit": "266b97753225ea9d41fb6aa5de556c2a0ffad9c6",
+  "base_tree": "29481ce866cf5394d976d2364a94be4d5860719b",
+  "phase": "Finish this four-function candidate only; hand off for explicitly scheduled Sol validation. No further cluster in this turn.",
+  "inventory": {
+    "mapped": 116,
+    "unmapped": 37,
+    "public_candidates": 153,
+    "manual_mapping_unchanged": true,
+    "counts_are_not_acceptance_percentages": true
+  },
+  "prioritization": {
+    "classification_limit": "Static triage, not 37 new full audits. Evidence candidates mean no confirmed deviation in the stated common scope, not proved correct. Shared blockers can overlap; buckets are disjoint scheduling buckets.",
+    "no_confirmed_deviation_evidence_candidates": {
+      "count": 8,
+      "names": [
+        "exponent",
+        "extVar",
+        "mantissa",
+        "native",
+        "objectFieldsEx",
+        "objectHasEx",
+        "tan",
+        "trace"
+      ],
+      "limits": {
+        "native": "Lookup and a chosen host callback contract only; arbitrary callback semantics are environment-defined.",
+        "trace": "Return/demand/message behavior only; no invented diagnostics-order promise.",
+        "objectFieldsEx": "Positional common domain only; formal rule does not supply parameter names, object assertion policy remains separate.",
+        "objectHasEx": "Positional common domain only; formal rule does not supply parameter names, object assertion policy remains separate.",
+        "mantissa": "Ordinary normalized binary-fraction witnesses; full IEEE profile not asserted.",
+        "exponent": "Ordinary normalized binary-fraction witnesses; full IEEE profile not asserted."
+      }
+    },
+    "clear_static_deviation_not_runtime_red": {
+      "count": 1,
+      "names": [
+        "hypot"
+      ],
+      "evidence": "Pinned stdlib.html Mathematical Utilities declares hypot(a,b); stdlib.mbt builtin_params groups hypot with x,y. No competing hypot std.jsonnet definition exists. MU2 freezes direct/reordered/mixed/aliased calls before any repair."
+    },
+    "shared_or_public_definition_unresolved": {
+      "count": 28,
+      "reasons": {
+        "base64": "Core 0..255 encoding already has independent regressions; B64-R0/F0 edge admission remains unresolved, so absent manual mapping is not absent implementation.",
+        "base64Decode": "Byte-to-character repair already tested; malformed input policy remains separate from valid-data transfer.",
+        "base64DecodeBytes": "Valid decoding tests exist; malformed input acceptance/recovery is not fully specified.",
+        "clamp": "Fixed body uses the disputed greater-than rule; defer that shared dependency rather than infer a waiver.",
+        "escapeStringBash": "str heading versus str_ definition; formatting dependency uses A0 array concatenation.",
+        "escapeStringDollars": "str heading versus str_ definition; clear positional replacement is implemented but complete named contract conflicts.",
+        "escapeStringJson": "str heading versus str_ definition; formatting dependency uses A0.",
+        "escapeStringPython": "Signature matches, but its escapeStringJson child uses format and A0.",
+        "escapeStringXML": "Source spelling XML and str_ conflict with documented Xml/str; do not invent an alias.",
+        "escapeStringXml": "Documentation-only spelling conflicts with source export XML.",
+        "format": "Fixed parse_codes uses out + [cur] and out + [cur,r.code]; A0 dependency. Existing source/profile tests are not missing functionality.",
+        "isEven": "Documentation integral-part rule conflicts with source round(x) % 2; retained fractional-domain conflict.",
+        "isOdd": "Documentation integral-part rule conflicts with source round(x) % 2; retained fractional-domain conflict.",
+        "manifestIni": "Source section_lines/body assembly uses Array+Array; A0 dependency.",
+        "manifestPython": "Source layout exists, but ordinary % rendering invokes format and its A0 parser dependency.",
+        "manifestPythonVars": "Source vars + [empty String] directly uses A0, in addition to rendering dependencies.",
+        "manifestToml": "Source TOML paths/section construction uses A0; existing implementation does not imply full mapping.",
+        "manifestTomlEx": "toml heading versus value source parameter plus A0 construction dependency.",
+        "manifestXmlJsonml": "Source renderer exists; formatted attributes/errors depend on format/A0. Avoid declaring this whole renderer independent of A0.",
+        "mod": "Numeric branch and formatting branch share one public contract; String branch depends on format/A0. Numeric modulo rule also needs its own adjudication.",
+        "modulo": "Formal standard-mathematics wording and current remainder behavior require precise signed-domain review; not newly declared defective here.",
+        "primitiveEquals": "PE0 remains unresolved outside the common primitive domain.",
+        "resolvePath": "Source prefix array + [r] directly depends on A0.",
+        "reverse": "arrs heading versus arr source; full admission scope needs review separate from already-tested Array transfer.",
+        "sha256": "s heading versus str source; source also declares Go-only capability, unlike current native implementation.",
+        "sha512": "s heading versus str source; source also declares Go-only capability, unlike current native implementation.",
+        "xor": "Documented Boolean operation versus general source x != y; nonboolean domain must be adjudicated, not silently narrowed.",
+        "xnor": "Documented Boolean operation versus general source x == y; nonboolean domain must be adjudicated, not silently narrowed."
+      }
+    }
+  },
+  "selected": [
+    "hypot",
+    "mantissa",
+    "exponent",
+    "tan"
+  ],
+  "authority": {
+    "commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+    "stdlib_url": "https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/stdlib.html",
+    "spec_url": "https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html",
+    "public_names": {
+      "hypot": {
+        "inline": "std.hypot(a, b)",
+        "inline_line": "253"
+      },
+      "mantissa": {
+        "inline": "std.mantissa(x)",
+        "inline_line": "240"
+      },
+      "exponent": {
+        "inline": "std.exponent(x)",
+        "inline_line": "239"
+      },
+      "tan": {
+        "inline": "std.tan(x)",
+        "inline_line": "246"
+      }
+    },
+    "fresh_read": "Read pinned official raw stdlib.html Mathematical Utilities and spec.html Standard functions in this preparation. Browser-rendered line numbers differ from persisted inventory; URL, commit and section anchor are authoritative identifiers.",
+    "source_kind": "These four are native mathematical functions, not std.jsonnet function bodies. Public signatures plus formal standard-mathematics wording and general calls/demand/finite-number rules supply the finite criteria. Hypot is listed in stdlib Mathematical Utilities but omitted from the formal list; its conventional Euclidean-norm behavior is an explicit mathematical inference, not a quoted formal equation.",
+    "interpretation": "Mantissa/exponent normalized base-two decomposition is a conventional IEEE interpretation, explicitly distinguished from an exact spelling in the terse formal paragraph. Do not promote these finite witnesses to a whole-function accuracy certificate. Hypot a,b names are explicit public text.",
+    "expected_value_basis": "Integer Pythagorean triples and exact ordinary dyadic decomposition are independently calculated literals. tan intervals follow alternating sin/cos series on abs(x)<=1 with terms through degree 11/10; rounding slack is deliberately broad. No Go/C++ output supplies an expectation.",
+    "excluded": "No arbitrary ULP threshold, all-exponent sweep, pole-neighbor accuracy, signed-zero spelling, zero mantissa normalization, error-message/competing-error order, callback count, A0, N0/R0, inherited std receiver or publication/platform claim.",
+    "no_a0_dependency": "Selected direct builtin paths: builtin_params -> normal call binding -> math_builtin -> number_value and finite. Fixture uses Array constructors only, no Array+Array. String formatting helpers are not executed to obtain numeric oracles."
+  },
+  "fixture": {
+    "path": "spec_math_utilities_contract_test.mbt",
+    "bytes": 8503,
+    "sha256": "cea149428f6336aa332820e22b3ed1b9cd3ebd2b83d16a5ffa85ce82ae937981",
+    "groups": [
+      "MU1 hypot preserves ordinary positional lengths and sign symmetry",
+      "MU2 hypot uses documented a b names through direct and aliased calls",
+      "MU3 mantissa and exponent decompose ordinary nonzero binary fractions",
+      "MU4 tan retains zero and independent ordinary radian bounds",
+      "MU5 math utility names arities and invalid bindings follow ordinary calls",
+      "MU6 math utilities reject nonnumber heads and isolated required errors",
+      "MU7 hypot avoids needless square overflow but rejects nonfinite results",
+      "MU8 unused math calls stay lazy and repeated aliases preserve inputs"
+    ],
+    "all_cases_use_source_and_handmade_ast": true,
+    "progress_limit": "MU2 and MU3 collecting helper reports all cases before failing; ordinary helper loops elsewhere may stop at first error, and remaining cases must be reported NOTRUN then."
+  },
+  "implementation_review": {
+    "hypot": "stdlib.mbt:70 x,y binding differs from a,b. std_math.mbt uses core math.hypot followed by finite; no arithmetic repair is justified statically.",
+    "mantissa_exponent": "std_math.mbt binary_fraction normalizes via 2^54 for subnormals and bit decomposition; existing legacy cases already exercise tiny/max values. This batch adds ordinary independent dyadics, names and demand, not a new subnormal exploration.",
+    "tan": "reference_trig.mbt zero/reduction/rational branch already exists. Existing architecture-specific legacy outputs are compatibility profiles only, not normative answers.",
+    "product_modified": false,
+    "conditional_minimal_repair": "After unchanged-implementation baseline, if MU2 confirms the binding defect, split hypot into [a,b] in builtin_params only; inspect direct binding metadata consumers. Keep math_builtin/core math unchanged unless a separate real failure proves otherwise.",
+    "legacy_migration_if_repair_confirmed": {
+      "file": "std_math_test.mbt",
+      "old_input": "std.hypot(x=3,y=4)",
+      "new_input": "std.hypot(a=3,b=4)",
+      "expected_result_before_and_after": 5,
+      "basis": "Explicit pinned public signature; preserve original baseline and full old line. No value expectation changes, no snapshot update."
+    }
+  },
+  "legacy_regression": {
+    "groups": 4,
+    "files": {
+      "std_math_test.mbt": [
+        "math and boolean standard functions use reviewed contracts",
+        "math argument and domain errors remain explicit",
+        "math preserves fixed Go native rounding and underflow"
+      ],
+      "arguments_test.mbt": [
+        "builtin and closure argument validation precedes forcing"
+      ]
+    },
+    "unchanged": true,
+    "scope": "Three existing math groups include separate Go-compatibility vectors and old x,y call; one ordinary-arguments group. Passing these does not adjudicate unresolved parity/modulo contracts."
+  },
+  "input_binding": {
+    "tracked_entries": 741,
+    "aggregate_sha256": "10555f3b6a2f4c16d381c36a4a388ce9af249e009e5fbc842f699a8840185956",
+    "algorithm": "Sort git ls-files -s entries by path; hash each regular file byte stream or symlink target UTF-8; JSON array of {path,mode,sha256} with sort_keys=True,separators=(comma,colon), then SHA256. No generated build files or private proposal are included.",
+    "selected_sha256": {
+      "stdlib.mbt": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+      "std_math.mbt": "3e77bc7b07190d73126c580429c638d74fc54621eac1bd2f05cdb5c473b7a9ef",
+      "reference_trig.mbt": "f576bfaa1aa27a4b2d328ba6e26a275c02370390b94c3748f0179f925bfbd3bd",
+      "stdlib_layer.mbt": "04fa199f43ac20b769abda17f046f4f6920d3bbc9ed8c1a588992eac745b5422",
+      "stdlib_source.mbt": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+      "spec_string_utilities_contract_test.mbt": "8e4e819cb0e1bfeb99a0f7cf52bf21c9ead4fe9a1abd2a09e87b9136ebb41cf9",
+      "spec_inverse_trig_contract_test.mbt": "6b50564100b2b8725333416b2342152a6aad141fcacd9545df1c812148184301",
+      "spec_math_rounding_test.mbt": "295f1381bc503fbda64c8fd79ee2ba083196c915ad5949ede6aa6b675dbf0ebc",
+      "spec_mapping_transfer_test.mbt": "c26df0a79e59b6ae5ae31ca08d2ee3776008c421b85b2c619fc6c00acdedf877",
+      "tests/spec-public-coverage.json": "eb369af4ebe615ff80d3b6d80a662d39b8b99140413eb35bc44bc1c897d2b041",
+      "docs/development/spec-public-inventory.json": "69a8f7b6888dd22020417895195b6a8a4d7c509a5602047e586c73de6463d08e",
+      "std_math_test.mbt": "41e01dd8c62bbae87161bccc611146a50ba9a05fc1407737b9a3415e2a2bb0f6",
+      "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336"
+    }
+  },
+  "validation": {
+    "state": "PROPOSED_NOT_STARTED_NO_PRIOR_BUDGET_REUSED",
+    "environment": "Local macOS existing toolchain/cache; no network, remote, upload, download, install, push or publish.",
+    "single_worker": true,
+    "stdin": "DEVNULL",
+    "env": {
+      "RUST_LOG": "error"
+    },
+    "total_seconds": 600,
+    "budget_seconds": {
+      "check": 60,
+      "outline": 10,
+      "baseline": 150,
+      "same_scope_fix_and_retest_if_scheduled": 210,
+      "info_fmt_docs_and_precise_commit_if_ready": 80,
+      "process_exit_and_persistent_receipt_reserve": 90
+    },
+    "expected_groups": 12,
+    "expected_files_and_groups": {
+      "spec_math_utilities_contract_test.mbt": [
+        "MU1 hypot preserves ordinary positional lengths and sign symmetry",
+        "MU2 hypot uses documented a b names through direct and aliased calls",
+        "MU3 mantissa and exponent decompose ordinary nonzero binary fractions",
+        "MU4 tan retains zero and independent ordinary radian bounds",
+        "MU5 math utility names arities and invalid bindings follow ordinary calls",
+        "MU6 math utilities reject nonnumber heads and isolated required errors",
+        "MU7 hypot avoids needless square overflow but rejects nonfinite results",
+        "MU8 unused math calls stay lazy and repeated aliases preserve inputs"
+      ],
+      "std_math_test.mbt": [
+        "math and boolean standard functions use reviewed contracts",
+        "math argument and domain errors remain explicit",
+        "math preserves fixed Go native rounding and underflow"
+      ],
+      "arguments_test.mbt": [
+        "builtin and closure argument validation precedes forcing"
+      ]
+    },
+    "commands": [
+      {
+        "id": "check",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "check",
+          ".",
+          "--target",
+          "native",
+          "--frozen",
+          "--deny-warn",
+          "-j",
+          "1"
+        ]
+      },
+      {
+        "id": "outline",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "test",
+          "spec_math_utilities_contract_test.mbt",
+          "std_math_test.mbt",
+          "arguments_test.mbt",
+          "--outline",
+          "--target",
+          "native",
+          "--debug",
+          "--frozen",
+          "--deny-warn",
+          "-j",
+          "1",
+          "--no-parallelize"
+        ]
+      },
+      {
+        "id": "test",
+        "argv": [
+          "<USER_HOME>/.moon/bin/moon",
+          "test",
+          "spec_math_utilities_contract_test.mbt",
+          "std_math_test.mbt",
+          "arguments_test.mbt",
+          "--target",
+          "native",
+          "--debug",
+          "--frozen",
+          "--deny-warn",
+          "-j",
+          "1",
+          "--no-parallelize"
+        ]
+      }
+    ],
+    "rules": [
+      "Outline must equal 8 new + 3 old math + 1 arguments; stop on mismatch, do not expand.",
+      "Preserve raw baseline before product or old binding correction; new fixture semantics remain fixed.",
+      "Compile/format defects are fixture issues, not semantic failures; retain original bytes and new hash if corrected.",
+      "No whole-suite, release, Linux or CLI run.",
+      "Budget is one wall-clock deadline, never reset; if not ready to commit, preserve evidence and stop within reserve.",
+      "Final info then fmt and interface/doc checks are needed before committing; formatting changes require truthful final-input binding."
+    ],
+    "receipt_path": "docs/archive/reports/spec-math-utilities-2026-10-28.json"
+  },
+  "brief_followup_document_plan": "After actual results, append only one compact section to existing SPEC-FOUNDATIONS-REVIEW, add the four manual records only for proven scopes, update inventory summary; if hypot fixed, correct the native-signature compatibility row and add one CHANGELOG bullet. Preserve all unresolved scope and original failures. No report framework or private proposal copy.",
+  "prepared_only": [
+    "Read HEAD/worktree, fixed definitions and existing implementation/tests.",
+    "Create eight-group fixture and this persistent frozen plan.",
+    "Static file/hash/count inspection only; no compiler, formatter, test, native execution or production change."
+  ]
+}

@@ -176,3 +176,62 @@ All fixtures are synthetic and use no imported/private files or network I/O.
 Standard/default, one worker and reduced priority were retained. No full suite,
 remote/browser/CLI run, installation, push or tag occurred. Product code,
 dependencies, existing test files and public interfaces are unchanged.
+
+## Comparison core constructor closure
+
+The later review closes seven named comparison constructors, relative to their
+stated child judgments. It supersedes the earlier absence of named-rule decisions
+for these seven rows only. The fixed [execution rules and numeric prose](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#execution)
+(2448–2538, 2796–2804) supply the definitions; implementation results are not the
+oracle. AO1–3 and [RS1–3](SPEC-RELATIONAL-SIGN-2026-10-23.md) retain their original
+executed evidence and hashes, without being rerun for this closure.
+
+| Named judgment | Constructor argument | Independent witnesses |
+| --- | --- | --- |
+| cmp-number | The explicit less/greater/otherwise branches exhaust admitted finite IEEE values, including equal signed zeros. No subtraction or conversion supplies the sign. | CC1, CC3–4, RS1/3 |
+| cmp-string | Compare codepoints at the first unequal position; equal common prefixes reduce to codepoint length order. | CC2–4, RS1/3 |
+| cmp-array-left-empty | Zero common length skips payloads; shorter left length has negative sign. | AO1/3, RS2 |
+| cmp-array-right-empty | Zero common length skips payloads; longer left length has positive sign. | AO1/3, RS2 |
+| cmp-array-both-empty | Zero common length and equal lengths produce zero sign. | AO1/3, RS2 |
+| cmp-array-first-different | The first nonzero child result returns immediately, preserving its sign without reading either tail. | AO1–3, RS2/3 |
+| cmp-array-first-equal | Each consumed pair has zero sign; advancing one index is the recursive tail judgment. Exhausting the common prefix leaves the same length order. | AO1–3, RS2/3 |
+
+For the last rule, induction on the finite common-prefix length establishes the
+loop invariant; nested comparisons assume their own child judgments. The private
+Int result represents the abstract result by `sgn`, not by a required magnitude:
+the SDK Compare contract promises negative/zero/positive, and `c != 0`, immediate
+return and the three `<`, `<=`, `>=` consumers preserve this abstraction. Admitted
+Strings iterate Unicode codepoints; producer encoding and unmatched surrogate
+representations are separate. Required head/child failures and skipped tails
+remain explicit; Runtime/Type markers are additional embedding checks.
+
+At unchanged source `3bf2a62b26ffb297d3fe0c24505db6e97b09ba04`, the sole new native
+selection passed **4/4**, exit 0 (9.817 s), after check/outline exited 0:
+`moon test spec_comparison_core_test.mbt --target native --debug --frozen --deny-warn -j 1 --no-parallelize`.
+The [new fixture](../../spec_comparison_core_test.mbt) SHA-256 is
+`eba515de8347ecc020ff9324f7148a0dbdab6f166a1f6f4b1b8daa9399c4bd71`;
+unchanged operators.mbt is `a93a2d005dd74b7a07ac9fa6d1a585a4fda46d7a8ce6c97dda8e3c83a30b3209`.
+No product defect or fix was found. Full/release/Linux, CLI, consumer and Go/C++
+runs were not performed for this batch; whole-language acceptance remains open.
+
+The restricted `comparison-core-transfer` metadata pins all seven exact statements,
+roles, admitted domains, abstract signs, child premises and current inspection/test
+hashes. All six `core-` negative controls rejected before output; final positive
+readback exited 0 (5.614 s), verified 229 test IDs and the 35 completed named,
+1 relative constructor, 56 partial and 2 unreviewed rows, reusing the six
+hash-verified negative results without rerunning them. Two prior positive
+failures remain preserved: the missing pinned stdlib.html was supplied unchanged,
+and the wrapper's Object assumption was corrected to the existing single-element
+Option Array representation without changing record content. The final
+`core-controls-fixed-positive/result.json` SHA-256 is
+`7f912f0ad3fa588c1c5861fb4d56510c7c829590e2a6144dfc312feb6c62f9cb`;
+no semantic test was rerun during metadata validation.
+Exactly sixteen old stdlib inspection hashes in length-object, object-has-ex,
+object-fields-ex, length-string, length-array and type-object are rebound from
+`a151cb46f68753d60cdc3c9fac5979b056c68832c5486883e91226d3c847ab4a` to
+`078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950`:
+the historical/current files differ only in the equals parameter-label split,
+so every inspected body, argument, decision and witness is unchanged. A0 and the
+printed greater-than conflict remain unresolved; PE0/B0/N0/R0 and all unrelated
+rows retain their status. No public std.cmp API, arbitrary producer, cycle/resource,
+callback-count or independent-error-priority contract is added.

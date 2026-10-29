@@ -1,0 +1,299 @@
+{
+  "_public_copy": {
+    "status": "personal-path-redacted",
+    "original_local_commit": "bbcd28fc57564bf82271270205803959da5dce97",
+    "original_sha256": "eefc20ecdbcb5ae05b73dd635b2fefc3ebfbe84aaaff3c3fefe21223fd55cdfd",
+    "manifest": "docs/archive/reports/public-path-redactions-0.2.1.json",
+    "notice": "This is a redacted copy of existing local evidence, not a new execution. Recorded times, outcomes and hashes describe the original evidence; the manifest maps original and redacted bytes."
+  },
+  "state": "NOT_STARTED",
+  "phase": "Static durable fixture preparation only; next concrete validation phase is scheduled separately.",
+  "base_head": "c44f7d4a67a13cd7a4aa7a3d91151046478f7729",
+  "functions": [
+    "trim",
+    "isEmpty"
+  ],
+  "fixture": {
+    "path": "spec_string_utilities_contract_test.mbt",
+    "sha256": "8e4e819cb0e1bfeb99a0f7cf52bf21c9ead4fe9a1abd2a09e87b9136ebb41cf9",
+    "groups": [
+      {
+        "id": "SU1",
+        "line": 38,
+        "declaration": "test \"SU1 trim removes exactly the seven fixed endpoint characters\" {",
+        "scope": "Exact seven trim endpoint characters; combinations, empty/all-trimmed input, internal characters, Unicode/NUL, all 18 extra native whitespace characters and ZWSP. All 68 source/AST observations are collected before failure."
+      },
+      {
+        "id": "SU2",
+        "line": 88,
+        "declaration": "test \"SU2 isEmpty follows supported length heads without demanding payloads\" {",
+        "scope": "String/Array/Object/Function zero/nonzero length, visible versus hidden-only fields and optional Function parameter. Container/default/body errors stay unread. All 28 source/AST observations are collected before failure."
+      },
+      {
+        "id": "SU3",
+        "line": 112,
+        "declaration": "test \"SU3 utilities retain required names arities aliases and safe binding rejection\" {",
+        "scope": "Required str/no default/arity one, positional/named/aliased calls; safe missing/extra/unknown/mixed-duplicate rejection."
+      },
+      {
+        "id": "SU4",
+        "line": 152,
+        "declaration": "test \"SU4 utilities reject only the required incompatible argument heads\" {",
+        "scope": "All six nonstring heads reject for trim; Null/Bool/Number reject for isEmpty. Rejection alone proves neither skipped payloads nor any diagnostic kind."
+      },
+      {
+        "id": "SU5",
+        "line": 180,
+        "declaration": "test \"SU5 isolated required errors propagate while unused utility calls remain lazy\" {",
+        "scope": "Single required outer error remains failure under direct/type consumers; unused call/argument/hidden field/branch/short circuit/missing binding remains lazy."
+      },
+      {
+        "id": "SU6",
+        "line": 208,
+        "declaration": "test \"SU6 utility results preserve original String Array Object and Function aliases\" {",
+        "scope": "Literal repeated results preserve String/Array/Object/Function aliases, without assertion/inherited receiver policies."
+      }
+    ]
+  },
+  "authority": {
+    "fixed_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
+    "recorded_reference_sha256": {
+      "spec.html": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
+      "stdlib.html": "0eb80c0ccaf781c4c2c1bc06a22d2d6e57f9866f41c0b62431b5ca4f510e6853",
+      "upstream-std.jsonnet": "e76dd6b8e51a2ca041b292dadea9c5521aeea5781b0ffe7c2c683865e7e45351"
+    },
+    "inventory_path": "docs/development/spec-public-inventory.json",
+    "inventory_sha256": "69a8f7b6888dd22020417895195b6a8a4d7c509a5602047e586c73de6463d08e",
+    "embedded_path": "stdlib_source.mbt",
+    "embedded_sha256": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+    "definitions": {
+      "trim": {
+        "embedded_line": 1805,
+        "embedded_block": "    #|  trim(str):: std.stripChars(str, ' \\t\\n\\f\\r\\u0085\\u00A0'),\n",
+        "embedded_block_sha256": "aad8dd5bc14afa884e413430e92ff1fc6facf9de6ba5ec009851264bfcfc08ad",
+        "fixed_definition": "  trim(str):: std.stripChars(str, ' \\t\\n\\f\\r\\u0085\\u00A0'),\n",
+        "definition_sha256": "666216ac3385152baac8b70dee1b7cb57529f88219679e83dccf24d8d6efb364",
+        "inventory_declarations": {
+          "heading": "std.trim(str)",
+          "heading_line": "830",
+          "source": "std.trim(str)",
+          "source_line": "1799"
+        }
+      },
+      "isEmpty": {
+        "embedded_line": 1768,
+        "embedded_block": "    #|  isEmpty(str):: std.length(str) == 0,\n",
+        "embedded_block_sha256": "12ab9fc75e9dab7a382751204123dbeeef7f7c35a11dbd248b3f21c73bdd4b8e",
+        "fixed_definition": "  isEmpty(str):: std.length(str) == 0,\n",
+        "definition_sha256": "d35733f863631cdd8356a9cc5376ccb1afea631a35faabcb5dcb747b4af95cb3",
+        "inventory_declarations": {
+          "heading": "std.isEmpty(str)",
+          "heading_line": "803",
+          "source": "std.isEmpty(str)",
+          "source_line": "1762"
+        }
+      },
+      "resolvePath": {
+        "embedded_line": 1625,
+        "embedded_block": "    #|  resolvePath(f, r)::\n    #|    local arr = std.split(f, '/');\n    #|    std.join('/', std.makeArray(std.length(arr) - 1, function(i) arr[i]) + [r]),\n",
+        "embedded_block_sha256": "978fc540766a63d22e097d1975a70e9a7b8623f780b4f6a0d582dafbd68a4110",
+        "fixed_definition": "  resolvePath(f, r)::\n    local arr = std.split(f, '/');\n    std.join('/', std.makeArray(std.length(arr) - 1, function(i) arr[i]) + [r]),\n",
+        "definition_sha256": "22ea9ac6591c2c20547c1abf527e6aa46fc4c1bb43070b1cb848eab2b9975fc8",
+        "inventory_declarations": {
+          "source": "std.resolvePath(f, r)",
+          "source_line": "1619"
+        }
+      }
+    },
+    "availability": "Pre-reboot /tmp reference caches are absent and were not recreated/downloaded. This phase reads embedded definitions and persisted inventory declarations/hashes; full upstream HTML prose was not reread."
+  },
+  "static_findings": {
+    "trim": {
+      "route": "stdlib.mbt:329 -> std_string.mbt:25 trim_space",
+      "fixed_codepoints": [
+        "U+0020",
+        "U+0009",
+        "U+000A",
+        "U+000C",
+        "U+000D",
+        "U+0085",
+        "U+00A0"
+      ],
+      "native_extra_codepoints": [
+        "U+000B",
+        "U+1680",
+        "U+2000",
+        "U+2001",
+        "U+2002",
+        "U+2003",
+        "U+2004",
+        "U+2005",
+        "U+2006",
+        "U+2007",
+        "U+2008",
+        "U+2009",
+        "U+200A",
+        "U+2028",
+        "U+2029",
+        "U+202F",
+        "U+205F",
+        "U+3000"
+      ],
+      "state": "STATIC_SET_DIFFERENCE_NOT_RUNTIME_RED"
+    },
+    "isEmpty": {
+      "route": "stdlib.mbt:328 -> text_value requires String",
+      "source": "length(str)==0; reviewed length supports String/Array/Object/Closure/Native/Builtin heads without reading container values or Function defaults/bodies; Null/Bool/Number reject.",
+      "state": "STATIC_ADMISSION_DIFFERENCE_NOT_RUNTIME_RED"
+    }
+  },
+  "deferred": {
+    "name": "resolvePath",
+    "state": "DEFERRED_SHARED_A0",
+    "reason": "makeArray(prefix)+[r] depends on unresolved printed array-concat. No executable resolvePath case or passing score remains.",
+    "references": [
+      "docs/development/SPEC-CONFORMANCE.md:257",
+      "docs/development/SPEC-SEQUENCE-STRUCTURE-2026-10-22.md:22"
+    ]
+  },
+  "premises": [
+    "Reviewed stripChars endpoint membership and String admission",
+    "Reviewed length rules and visible-field/parameter counts",
+    "Ordinary call/static binding and child-Value evaluation"
+  ],
+  "excluded": [
+    "Object assertion/inheritance N0/R0",
+    "Independent error kind/winner, precise callback counts or resource thresholds",
+    "Filesystem or path normalization",
+    "Whole-language acceptance and mapping scores"
+  ],
+  "unchanged_inputs_sha256": {
+    "stdlib_source.mbt": "39212e15a7fce36cda8c620b08116328df801d791ffff775734cd02497bf6e98",
+    "stdlib_layer.mbt": "8f48647412fd144ee49915a6bfa292481cc00b2cf52d556fa1235518d1c2b4bd",
+    "imports.mbt": "5854e3b0f3a928a7e8dbc1f16ee556e0a3d5cbbb680e739a5a835c6f7579d70c",
+    "stdlib.mbt": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+    "std_string.mbt": "11251f9f1142f364c56865cd5398e4523fd7714ec720582c7dbc67bca2c71026",
+    "std_string_test.mbt": "3533660f22ab38fe3bb139c7f578c766bc874e7d98c022d3c8e1960f8ba15242",
+    "arguments_test.mbt": "86def26826d5387d11a8f80219d1ccb5811006176372d7f055bae953805e1336",
+    "tests/spec-public-coverage.json": "2f488490f7db88a69a1415e9595be0c1c25e7701e36fadc5ac5f74f0ad1ac6a3"
+  },
+  "source_proposal": {
+    "state": "NOT_APPLIED_PENDING_BASELINE",
+    "diff": "--- a/stdlib_layer.mbt\n+++ b/stdlib_layer.mbt\n@@ -28,6 +28,8 @@\n     | \"isObject\"\n     | \"isArray\"\n     | \"isFunction\"\n+    | \"trim\"\n+    | \"isEmpty\"\n     | \"round\"\n     | \"isInteger\"\n     | \"isDecimal\"\n",
+    "reason": "Whitelist enables unchanged embedded fields and makes imports skip native overrides. Do not change std_string.mbt, other dispatch or resolvePath."
+  },
+  "anticipated_legacy_conflicts": [
+    {
+      "file": "std_string_test.mbt",
+      "line": 30,
+      "raw_lines": [
+        "        \"[std.trim('\\\\u2003\\\\u3000x\\\\u2029'),std.trim('\\\\u200bx\\\\u200b'),std.isEmpty(''),std.isEmpty(' '),std.id(x={a:3, b:error 'lazy'}).a]\",",
+        "        \"[\\\"x\\\",\\\"\\\\u200bx\\\\u200b\\\",true,false,3]\","
+      ],
+      "reason": "Expected x deletes U+2003/U+3000/U+2029 outside fixed trim set; preserve until actual post-fix failure."
+    },
+    {
+      "file": "std_string_test.mbt",
+      "line": 67,
+      "raw_line": "      \"std.isEmpty([])\",",
+      "reason": "Error-list isEmpty([]) conflicts with length([])==0. Preserve for baseline/post-fix evidence."
+    }
+  ],
+  "planned_validation": {
+    "state": "PROPOSED_NOT_EXECUTED",
+    "files": [
+      "spec_string_utilities_contract_test.mbt",
+      "std_string_test.mbt",
+      "arguments_test.mbt"
+    ],
+    "expected_groups": 9,
+    "actual_outline_required": true,
+    "single_worker": true,
+    "suggested_seconds": 300,
+    "commands": [
+      {
+        "id": "fmt-check",
+        "argv": [
+          "moon",
+          "fmt",
+          "--check",
+          "spec_string_utilities_contract_test.mbt"
+        ],
+        "cap_seconds": 10
+      },
+      {
+        "id": "check",
+        "argv": [
+          "moon",
+          "check",
+          ".",
+          "--target",
+          "native",
+          "--frozen",
+          "--deny-warn",
+          "-j",
+          "1"
+        ],
+        "cap_seconds": 60
+      },
+      {
+        "id": "outline",
+        "argv": [
+          "moon",
+          "test",
+          "spec_string_utilities_contract_test.mbt",
+          "std_string_test.mbt",
+          "arguments_test.mbt",
+          "--outline",
+          "--target",
+          "native",
+          "--debug",
+          "--frozen",
+          "--deny-warn",
+          "-j",
+          "1",
+          "--no-parallelize"
+        ],
+        "cap_seconds": 10
+      },
+      {
+        "id": "tests",
+        "argv": [
+          "moon",
+          "test",
+          "spec_string_utilities_contract_test.mbt",
+          "std_string_test.mbt",
+          "arguments_test.mbt",
+          "--target",
+          "native",
+          "--debug",
+          "--frozen",
+          "--deny-warn",
+          "-j",
+          "1",
+          "--no-parallelize"
+        ],
+        "cap_seconds": 180
+      }
+    ],
+    "closeout_reserve_seconds": 40,
+    "accounting": "SU1/SU2 aggregate all values/Jsonnet exceptions for both entries. Later arms after a sequential SU3-SU6 failure are NOTRUN."
+  },
+  "format": {
+    "argv": [
+      "<USER_HOME>/.moon/bin/moonfmt",
+      "-w",
+      "spec_string_utilities_contract_test.mbt"
+    ],
+    "exit": 0,
+    "note": "Two tuple-returning lambda blocks were simplified by formatter; a preliminary whitespace-only token guard flagged that syntactic change. Final literals/operations were statically reviewed. No compiler/test ran."
+  },
+  "execution": {
+    "info": false,
+    "check": false,
+    "tests": false,
+    "product_changed": false,
+    "legacy_tests_changed": false,
+    "mappings_changed": false
+  }
+}
