@@ -42,9 +42,23 @@ fn source_standard_function(name : String) -> Bool {
 ///|
 // Keep source bodies for native accelerators whose inherited calls must bind
 // object-local std to the final receiver. Canonical calls still use the native.
+// Methods with known source/native profile conflicts remain excluded.
 fn inherited_standard_function(name : String) -> Bool {
   match name {
-    "sort" | "foldr" | "flatMap" => true
+    "sort"
+    | "foldr"
+    | "flatMap"
+    | "join"
+    | "strReplace"
+    | "toString"
+    | "abs"
+    | "lines"
+    | "equals"
+    | "member"
+    | "contains"
+    | "parseInt"
+    | "manifestJsonEx"
+    | "manifestYamlDoc" => true
     _ => false
   }
 }

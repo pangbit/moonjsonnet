@@ -153,6 +153,61 @@ interfaces and all frozen oracle files unchanged. Tested SHA-256 values:
 The preceding ten field-name checks were not repeated. This is directed macOS
 evidence, not a new full-suite, Linux or complete-conformance result.
 
+### Inherited-method follow-up
+
+At c8c40a5, 32 other native accelerators have same-named functions in the fixed
+source. Four SHA definitions are Go-only stubs, and `xor`/`xnor` use private
+operator bindings rather than the public receiver; those six are unchanged.
+The remaining 26 directly or indirectly use object-local `std`. A blanket
+fallback would introduce known differences even for `std + {}`, so this batch
+adds only 11 methods to the existing private registration:
+
+`join`, `strReplace`, `toString`, `abs`, `lines`, `equals`, `member`, `contains`,
+`parseInt`, `manifestJsonEx`, `manifestYamlDoc`.
+
+The [four new groups](../../spec_inherited_standard_methods_test.mbt) give each
+method an original-`std`, empty-extension and actual-dependency-override control.
+They also cover `lines` through `join`, `manifestJson` through `manifestJsonEx`,
+the parser's object-local helper, extracted/forwarded/`super` calls, private
+operator bindings and demanded versus unused rendering options. Literal
+expectations use both source and independently built AST entry paths. Existing
+receiver groups are reused rather than rerun. The native canonical paths,
+public interface and frozen source/oracle files are unchanged.
+
+The other 15 are concrete profile reconciliation work, not 15 absent functions.
+The following are static source/native observations, not newly executed results
+or new acceptance decisions:
+
+| Methods retained on native paths | Known obstacle to unconditional source fallback |
+| --- | --- |
+| `isEven`, `isOdd` | Fractional Number handling uses truncation in the current native profile and `round` in the fixed source; for 0.5 the parity differs. The existing public prose/source conflict is unresolved. |
+| `base64`, `base64Decode`, `base64DecodeBytes` | Negative/fractional byte admission and CR/LF-containing encoded input differ between the native and source paths. Valid-byte receiver examples would not settle these existing profile boundaries. |
+| `splitLimit`, `splitLimitR` | Fractional/other-negative limits remain unadjudicated. SPL-R0 also affects valid overlapping separators: unlimited right splitting of `aaa` by `aa` differs from the source's forward-split call. |
+| `minArray`, `maxArray` | EXT-A0 concerns String and empty structural inputs beyond the Array-oriented public domain. Native rejection and mechanical source extensions must not change merely because an empty object was added. |
+| `startsWith`, `endsWith` | Non-String Array inputs can return false from the source's length comparison while native paths reject them. This is an extension-domain difference, not missing String functionality. |
+| `lstripChars`, `rstripChars`, `stripChars` | Empty Array input can return an Array from source while native paths require String input. The existing non-String boundary is not adjudicated here. |
+| `manifestTomlEx` | An empty object key is a valid Object input: native output quotes the key, while the source's empty-character-set check produces an unquoted empty key. [TOML permits quoted empty keys and rejects bare empty keys](https://toml.io/en/v1.0.0#keys), so switching paths would degrade valid output; source interpretation needs a separate decision. |
+
+The `base64Decode` and `stripChars` differences above depend on also switching
+their respective decoding/stripping callees to source. They are retained as
+dependency-group boundaries, not claims that every possible partial source/native
+combination already has those differences.
+
+No complete receiver-class, whole-function or language claim follows from the
+11-method repair. The generated matrix's review states are unchanged.
+
+Local native debug verification passed the four new groups, failed/unrun zero,
+in 14.610 s. Each of the 11 methods has both unchanged-receiver controls and a
+distinguishing override result/error. Moonc was v0.10.14+7d59c7ec9; dependencies
+were frozen, warnings denied, with one reduced-priority sequential worker.
+Info/fmt passed; `objects.mbt`, public interfaces and frozen oracles stayed
+unchanged. Tested SHA-256 values:
+
+- `stdlib_layer.mbt`: `e5788d5426a90ec256c063b0110b5fec1a600d3cc4782b0e51f184e883c68f8f`
+- `spec_inherited_standard_methods_test.mbt`: `2d6cd47f2026d9919f4e02ce06ca32e3fa4bd0f7f9c661e1dcfbbd59b54b9b7e`
+
+The earlier eight and ten groups, full suites and other platforms were not rerun.
+
 The [2026-10-23 native package regression](SPEC-NATIVE-REGRESSION-2026-10-23.md#later-complete-regression-at-84eb1f7)
 records debug and release each passing 713/713 at clean source commit
 `84eb1f71d1f408b1aa0bd11526a83b31f51b58d0`, after membership and extrema

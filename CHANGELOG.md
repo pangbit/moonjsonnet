@@ -10,6 +10,11 @@
   `std` object. Their fixed source definitions now observe overridden library
   dependencies and their associated lazy argument boundaries, using the same
   source fallback as inherited `sort`. Canonical calls retain native execution.
+- Extend that receiver correction to `join`, `strReplace`, `toString`, `abs`,
+  `lines`, `equals`, `member`, `contains`, `parseInt`, `manifestJsonEx` and
+  `manifestYamlDoc`. Their inherited source methods now observe dependency
+  overrides, including calls through other source methods and object-local
+  helpers. Methods with known source/native profile conflicts remain unchanged.
 
 ## 0.2.1
 

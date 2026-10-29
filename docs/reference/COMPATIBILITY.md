@@ -161,9 +161,12 @@ without evaluating `func` or `arr`; derived `flatMap` still checks the function
 and input type before producing an empty result for an Array. Extracted methods
 retain the receiver from which they were selected. Canonical `std` calls retain
 native execution; native-only fields such as `length` and `type` are not
-redirected to user fields beneath `std`. This is a bounded inheritance correction,
-not a claim that every accelerated standard function supports all inherited
-dependency overrides.
+redirected to user fields beneath `std`. The same correction now includes `join`,
+`strReplace`, `toString`, `abs`, `lines`, `equals`, `member`, `contains`, `parseInt`,
+`manifestJsonEx` and `manifestYamlDoc`. The
+[remaining source/native profile conflicts](../development/SPEC-CONFORMANCE.md#inherited-method-follow-up)
+prevent indiscriminate source fallback for other accelerated methods. These are
+bounded inheritance corrections, not whole-function or whole-library conformance.
 
 ## Standard library
 
