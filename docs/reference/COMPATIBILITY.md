@@ -154,6 +154,17 @@ implementation's available standard functions; it does not invent missing ones.
 Standard functions not listed below report `Unsupported` when accessed on `std`.
 There is no fallback to another interpreter.
 
+After 0.2.1, inherited `foldr` and `flatMap`, like inherited `sort`, use their
+fixed source definitions with the final object's `self`. For example, overriding
+`length(x)` to return zero makes a derived `foldr(func, arr, init)` return `init`
+without evaluating `func` or `arr`; derived `flatMap` still checks the function
+and input type before producing an empty result for an Array. Extracted methods
+retain the receiver from which they were selected. Canonical `std` calls retain
+native execution; native-only fields such as `length` and `type` are not
+redirected to user fields beneath `std`. This is a bounded inheritance correction,
+not a claim that every accelerated standard function supports all inherited
+dependency overrides.
+
 ## Standard library
 
 Go v0.21.0 crashes internally when `objectRemoveKey` receives an inherited object

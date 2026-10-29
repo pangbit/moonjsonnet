@@ -40,6 +40,16 @@ fn source_standard_function(name : String) -> Bool {
 }
 
 ///|
+// Keep source bodies for native accelerators whose inherited calls must bind
+// object-local std to the final receiver. Canonical calls still use the native.
+fn inherited_standard_function(name : String) -> Bool {
+  match name {
+    "sort" | "foldr" | "flatMap" => true
+    _ => false
+  }
+}
+
+///|
 fn standard_library_expression() -> Expr raise {
   let source = parse(standard_library_source(), "<std>", 512)
   guard source.kind is Obj(fields, locals, assertions, assertion_sites) else {
@@ -50,9 +60,9 @@ fn standard_library_expression() -> Expr raise {
       match field.key.kind {
         Literal(String(name)) =>
           source_standard_function(name) ||
+          inherited_standard_function(name) ||
           (match name {
-            "sort"
-            | "uniq"
+            "uniq"
             | "set"
             | "setUnion"
             | "setInter"

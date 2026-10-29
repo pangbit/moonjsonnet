@@ -2332,7 +2332,7 @@
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": ".filter(k => hidden || self.visible(id, top, k))",
             "argument": "The reviewed helper filters unique inherited names by effective visibility. Its producer/visibility proof is reused, not expanded."
           },
@@ -2512,31 +2512,31 @@
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "if self.objects[id].layers[i].fields.contains(name) {",
             "argument": "has_field is exactly the union membership predicate for all admitted layers."
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "fn Vm::visible(self : Vm, id : Int, top : Int, name : String) -> Bool {",
             "argument": "Visibility folds bottom to top: default leaves the prior status, hidden clears it, forced-visible sets it, matching the fixed separator law by induction over layers."
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "seen[k] = true",
             "argument": "All layer names enter one map; uniqueness is exact String identity, independent of overriding field payloads."
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": ".filter(k => hidden || self.visible(id, top, k))",
             "argument": "Enumeration filters the same effective visibility predicate as membership."
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "out.sort_by(compare_unicode)",
             "argument": "Enumeration produces a sorted list of each eligible name once."
           },
@@ -2637,31 +2637,31 @@
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "if self.objects[id].layers[i].fields.contains(name) {",
             "argument": "has_field is exactly the union membership predicate for all admitted layers."
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "fn Vm::visible(self : Vm, id : Int, top : Int, name : String) -> Bool {",
             "argument": "Visibility folds bottom to top: default leaves the prior status, hidden clears it, forced-visible sets it, matching the fixed separator law by induction over layers."
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "seen[k] = true",
             "argument": "All layer names enter one map; uniqueness is exact String identity, independent of overriding field payloads."
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": ".filter(k => hidden || self.visible(id, top, k))",
             "argument": "Enumeration filters the same effective visibility predicate as membership."
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "out.sort_by(compare_unicode)",
             "argument": "Enumeration produces a sorted list of each eligible name once."
           },
@@ -4540,19 +4540,19 @@
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "let condition = self.eval(cond, env)",
             "argument": "The condition is evaluated before the shared Boolean gate; only false evaluates/coerces an optional message. This delegates child judgments and does not specify indexing reentry."
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "for index, (cond, msg) in obj.layers[i].assertions",
             "argument": "Every stored pair is retained in the ordinary demand traversal; this source inspection is not a formal derivation of N0 or R0."
           },
           {
             "file": "objects.mbt",
-            "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+            "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
             "anchor": "self.bind(obj.layers[layer].locals, env)",
             "argument": "Layer locals are bound after installing current self and supplied to the assertion condition/message environment."
           },

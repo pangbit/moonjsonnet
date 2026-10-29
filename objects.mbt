@@ -199,12 +199,13 @@ fn Vm::field_value(
   env : Env,
   loc : Location,
 ) -> Value raise {
-  if field.field.value.kind is StandardFunction("sort") &&
+  if field.field.value.kind is StandardFunction(function_name) &&
+    inherited_standard_function(function_name) &&
     !self.objects[id].standard &&
-    self.has_field(id, layer, "sort") {
+    self.has_field(id, layer, function_name) {
     // A native value cannot capture an inherited source method's final self.
     // Keep the canonical library fast, and read its source field in this object.
-    return self.field(id, layer, "sort", loc)
+    return self.field(id, layer, function_name, loc)
   }
   if field.field.additive {
     self.push_frame(loc, false)

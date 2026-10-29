@@ -6,6 +6,10 @@
   and verbatim spellings with the same raw text can name distinct fields; true
   duplicate names remain static errors. This corrects a valid-source rejection
   present in 0.2.1 without changing public MoonBit interfaces.
+- Preserve the final receiver when calling `foldr` or `flatMap` on an inherited
+  `std` object. Their fixed source definitions now observe overridden library
+  dependencies and their associated lazy argument boundaries, using the same
+  source fallback as inherited `sort`. Canonical calls retain native execution.
 
 ## 0.2.1
 

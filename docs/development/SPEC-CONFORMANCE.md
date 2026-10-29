@@ -100,6 +100,59 @@ Test SHA-256: `9f5a3d9081d60355b4d66aa8cc7ae70208ee68afb251053937d00e88509b9581`
 Info/fmt passed; public interfaces and frozen oracles are unchanged. This is a
 directed macOS result, not a new full-suite, Linux or complete-conformance result.
 
+### Second repair: inherited sequence-method receivers
+
+The fixed [standard library](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L23)
+binds its object-local `std` to `self`.
+[flatMap](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L273-L280)
+and [foldr](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet#L771-L777)
+use that receiver's dependencies. The language reference's
+[inheritance model](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/language.html.md#inheritance)
+requires final-self lookup when the inherited field is selected. At 04714ac,
+their native overrides instead use the original array length. Static tracing
+therefore gives 45 and [1, 2] for the two calls below, contrary to their source
+definitions; no pre-repair dynamic result is claimed:
+
+```jsonnet
+local derived = std + { length(x): 0 };
+[
+  derived.foldr(function(x, acc) x + acc, [1, 2], 42),
+  derived.flatMap(function(x) [x], [1, 2]),
+]
+// Required result: [42, []]
+```
+
+One private registration now retains and selects the source fallback for
+inherited `sort`, `foldr` and `flatMap`; canonical calls still use native bodies.
+The new [four-group test](../../spec_inherited_sequence_methods_test.mbt) covers
+length overrides, repeated derivation, extracted and forwarded functions,
+`super`, lexical `std` shadowing and the differing demand boundaries. In
+particular, zero-length `foldr` skips even the callback/input heads, whereas
+`flatMap` still performs its explicit function/input type observations. A
+native-only field control prevents fallback to lower user definitions.
+
+This repairs a shared object/library dispatch defect without changing public
+interfaces or fixed source/oracle files. It does not complete general
+substitution, inheritance, the whole `foldr`/`flatMap` contracts or arbitrary
+accelerated-method dependency overrides. No generated matrix state is promoted.
+The matrix's 14 `objects.mbt` inspection hashes are refreshed only after checking
+that the six cited scope, assertion and name/visibility helpers are byte-identical.
+Their transfer conclusions retain the same child assumptions; this hash update
+does not represent additional execution or newly completed rules.
+
+Local native debug verification passed 8/8 groups: four new source/handmade-AST
+groups (10.988 s) and the four existing source-method receiver controls in
+`spec_language_object_test.mbt` (0.174 s). Moonc was v0.10.14+7d59c7ec9; runs used
+frozen dependencies, deny-warn and one worker. Info/fmt passed, with public
+interfaces and all frozen oracle files unchanged. Tested SHA-256 values:
+
+- `objects.mbt`: `b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7`
+- `stdlib_layer.mbt`: `bf37d87ebf8e5f2aa66d8a4fb0217d30c6a9f5d9218331d01b13012940a28fbe`
+- `spec_inherited_sequence_methods_test.mbt`: `c51245bc23370867b3f995c065b4f898d04f4240b69a3db29de877f012f53634`
+
+The preceding ten field-name checks were not repeated. This is directed macOS
+evidence, not a new full-suite, Linux or complete-conformance result.
+
 The [2026-10-23 native package regression](SPEC-NATIVE-REGRESSION-2026-10-23.md#later-complete-regression-at-84eb1f7)
 records debug and release each passing 713/713 at clean source commit
 `84eb1f71d1f408b1aa0bd11526a83b31f51b58d0`, after membership and extrema
