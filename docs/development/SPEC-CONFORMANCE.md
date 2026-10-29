@@ -38,6 +38,68 @@ permissions and resource limits do not reduce language or public-library scope.
 Historical raw upstream results and failure classifications remain preserved.
 Private administrative documents and personal data must not be added to commits.
 
+## Dependency triage at 53e2c49 (2026-10-29)
+
+The current generated matrix has 35 completed named-rule reviews, one completed
+constructor review, 56 finite subsets and two unreviewed rows. The following
+partition accounts for all 58 remaining rows exactly once. It groups review
+dependencies, not missing features; existing implementations and executed
+evidence remain usable. Historical checkpoints below retain their original counts.
+
+| Shared responsibility | Exact remaining rows | Next review boundary |
+| --- | --- | --- |
+| Static scope (9) | chk-self, chk-super, chk-object, chk-object-comp, chk-array, chk-apply, chk-var, chk-local, chk-function | Inspect constructor scope/traversal once and reuse child evidence. Canonical literal field-name uniqueness has a confirmed parser defect described below. |
+| Calls and substitution (4) | apply, local, local-var, SUBSTITUTION | Reuse closure/default/binding tests; review environment construction and capture boundaries. Unspecified independent-error order is not a new requirement. |
+| Objects and inheritance (9) | object, object-comp, object-index, object-inherit, SYN-OBJECT, DESUGAR-ROOT, DESUGAR-FIELDS, DESUGAR-COMPREHENSIONS, HIDDEN-INHERITANCE | Reuse final-self, lexical-super, root, key and visibility evidence. N0/R0/DF0 are shared interpretation questions, not nine missing implementations. |
+| Sequences (5) | array-index, array-concat, makeArray, filter, DESUGAR-SLICE | Reuse index/cardinality/lazy-element controls; inspect shared dispatch and domain checks. Separate A0 and the non-Boolean filter applicability question from established behavior. |
+| Boolean/equality applicability (3) | boolean-and-longcut, boolean-or-longcut, primitiveEquals | Retain tested Boolean/primitive domains and explicit B0/PE0 profiles; do not invent stronger domains from comparison output. |
+| Type observation (6) | type-null, type-boolean, type-number, type-string, type-function, type-array | Inspect the exhaustive Value dispatch. Invalid producers belong to their own judgments, not a new test campaign for every producer/type pair. |
+| Manifestation/coercion (5) | string-concat, manifest-value, manifest-object, manifest-array, JSON-VALUES | Review recursive traversal, visibility and finite scalars using existing output/assertion evidence. Keep core manifestation distinct from source-defined manifestJson. |
+| Lexing/syntax (9) | LEX-ENCODING, LEX-NAMES, LEX-NUMBERS, LEX-STRINGS, LEX-TEXT-BLOCK, SYN-EXPR, SYN-CALL, SYN-PRECEDENCE, STATIC-TRAVERSAL | Review token/constructor branches and entry paths; add only missing distinguishing cases. Ordinary/verbatim field-name composition is the first confirmed defect. |
+| Imports (1) | CORE-IMPORT | Reuse lazy isolated-import and host-cache evidence. Host callbacks must honor their documented immutable source identity; violating that precondition is not an interpreter counterexample. |
+| Scalar/operator/library dependencies (5) | VALUE-FINITE, VALUE-UNICODE, DESUGAR-OPERATORS, EXEC-OPERATORS, EXEC-BUILTINS | Review shared finite/Unicode/operator gates, then actual public contracts. Existing public mappings describe finite evidence, not whole functions. |
+| Printed greater-than rules (2) | greater-than-true, greater-than-false | The rule names and cmp signs describe greater-than, but their conclusions print less-than. The fixed numeric prose specifies ordinary IEEE/lexicographic ordering; operators.mbt already uses c > 0. Keep that explicit interpretation without changing correct runtime behavior or claiming a proof of the misprinted equations. |
+
+Completion should use finite constructor/branch review with explicit child
+assumptions and distinguishing tests. Phrases such as "every combination" in
+older remainder cells are not a demand for infinite input enumeration. A0 and
+DF0 similarly retain append and field-value behavior supported by the fixed
+guide/source, with the printed discrepancies disclosed. These interpretation
+decisions do not silently relabel the generated matrix or remove the complete
+conformance target. No matrix state is promoted by this triage.
+
+### First repair: canonical literal field names
+
+Fixed [lexing](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/spec.html#lexing)
+distinguishes escaped and verbatim strings and canonicalizes their values to
+codepoints before later rules. In `{"\u0061":1, @"\u0061":2}`, the keys are
+`a` and the literal six-character `\u0061`, so they are distinct. At 53e2c49,
+parser.mbt correctly decodes the AST key but uses the raw token payload in its
+early duplicate-name table, incorrectly rejecting this valid source even when
+the whole object is unused. The repair keys that early table by both raw text
+and decoded value. Semantic validation continues to check full canonical-name
+uniqueness before evaluation. This preserves SyntaxDocument's existing ability
+to retain differently spelled duplicate names for source tools, as well as the
+raw spelling in existing early-duplicate diagnostics. Dynamic computed-name
+collisions retain their runtime boundary.
+
+The fixed C++ parser also compares raw token data at this early check; that
+source observation is not a newly executed C++ result or the expected-value
+oracle. The normative string rule determines this correction. Frozen Go/C++
+fixtures stay unchanged. The focused checks belong in
+[spec_literal_field_names_test.mbt](../../spec_literal_field_names_test.mbt);
+this repair does not establish complete object or string conformance.
+
+Local native debug verification passed 10/10 groups: four new field-name groups,
+three existing quoted-string groups and three parsed-source groups (14.211 s).
+The initial test-only compilation errors were corrected with a Json annotation
+and a local-variable rename; inputs and assertions were unchanged. Moonc was
+v0.10.14+7d59c7ec9, with frozen dependencies, deny-warn and one test worker.
+Parser SHA-256: `9e43cb0d10f4b4cf2fcb5782a8ea3d912be060e47f451a869bd896610303de29`.
+Test SHA-256: `9f5a3d9081d60355b4d66aa8cc7ae70208ee68afb251053937d00e88509b9581`.
+Info/fmt passed; public interfaces and frozen oracles are unchanged. This is a
+directed macOS result, not a new full-suite, Linux or complete-conformance result.
+
 The [2026-10-23 native package regression](SPEC-NATIVE-REGRESSION-2026-10-23.md#later-complete-regression-at-84eb1f7)
 records debug and release each passing 713/713 at clean source commit
 `84eb1f71d1f408b1aa0bd11526a83b31f51b58d0`, after membership and extrema

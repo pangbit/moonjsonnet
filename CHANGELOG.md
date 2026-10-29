@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Compare decoded literal object-field names when checking duplicates. Escaped
+  and verbatim spellings with the same raw text can name distinct fields; true
+  duplicate names remain static errors. This corrects a valid-source rejection
+  present in 0.2.1 without changing public MoonBit interfaces.
+
 ## 0.2.1
 
 Prepared from incremental corrections and finite contract reviews made on

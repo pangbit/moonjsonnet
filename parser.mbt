@@ -223,7 +223,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
   let fields : Array[Field] = []
   let locals = []
   let local_names : Map[String, Bool] = Map([])
-  let field_names : Map[String, Bool] = Map([])
+  let field_names : Map[(String, String), Bool] = Map([])
   let assertions = []
   let assertion_sites = []
   let mut computed_field = false
@@ -299,10 +299,17 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
         )
       }
       if literal_name is Some(name) {
-        if field_names.contains(name) {
+        guard key.kind is Literal(String(canonical)) else {
+          abort("literal field name must be a string")
+        }
+        // Reject equal raw payloads only when their decoded names also match.
+        // SyntaxDocument retains differently spelled aliases; semantic validate
+        // checks complete canonical uniqueness before evaluator admission.
+        let identity = (name, canonical)
+        if field_names.contains(identity) {
           raise problem(Static, key.loc, "Duplicate field: \{name}")
         }
-        field_names[name] = true
+        field_names[identity] = true
       }
       let body = self.expr(0)
       let value : Expr = match params {

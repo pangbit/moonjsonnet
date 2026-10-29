@@ -106,6 +106,12 @@ regressions also verify that `|||-` removes one complete final LF or CRLF while
 preserving preceding endings and content CR bytes. Retained source keeps its
 original bytes independently of the canonical string value.
 
+After 0.2.1, literal field-name duplicate checks use the decoded value:
+`{"\u0061":1, @"\u0061":2}` contains two distinct keys and is accepted.
+True duplicate canonical names still reject statically. This follows the fixed
+specification's string canonicalization rule; frozen reference results are not
+rewritten to hide the earlier raw-spelling behavior.
+
 Array/string indices must be finite integers within bounds before conversion.
 Slices support omitted/null bounds, negative bounds and positive steps. Fractional
 bounds and steps retain their fractional progression. Array slices defer index
