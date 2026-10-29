@@ -2,7 +2,7 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "0bce11bd21916c2f2aabecc20ed90b77a8aeecb02a5847c94b1e5f7c96879ef2",
+  "mapping_sha256": "f8e52ed6ac0ea110061e4759e24959106cc96743c174b505ce73a477cf987f09",
   "tool_sha256": "a0c13a584368aa46883e0dc8b886affe17d47db6a93b93668f4fcd31a7b71b88",
   "mapping_schema_version": 2,
   "global_test_ids": 229,
@@ -7253,13 +7253,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The one official length parameter is forced to its outer Value; this does not traverse array payloads."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "ArrayValue(a) => a.length().to_double()",
               "argument": "This exhaustive value-kind arm implements element count without payload demand."
             },
@@ -7356,7 +7356,7 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The explicit argument head is forced before dispatch; any child construction/key error propagates without a catch, and no field/default/body traversal is added."
             },
@@ -7368,19 +7368,19 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "ObjectValue(id, top) => self.keys(id, top, false).length().to_double()",
               "argument": "The Object overload counts the visible-only name vector used by objectFieldsEx(false), without demanding fields. Finite admitted host lengths are exact Double counts."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": ".filter(k => hidden || self.visible(id, top, k))",
               "argument": "The reviewed helper filters unique inherited names by effective visibility. Its producer/visibility proof is reused, not expanded."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "The completed object-fields-ex child has one ready String per name; length-array counts that vector. The direct Object branch is the same cardinality."
             }
@@ -7459,13 +7459,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The one official length parameter is forced to its outer Value; this does not traverse array payloads."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "Str(s) => s.iter().count().to_double()",
               "argument": "This value-kind arm counts Unicode codepoints of the already produced String."
             },
@@ -7724,7 +7724,7 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The explicit argument head is forced before dispatch; any child construction/key error propagates without a catch, and no field/default/body traversal is added."
             },
@@ -7736,13 +7736,13 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "\"type\" => Str(value_type(x))",
               "argument": "The intrinsic returns its evaluated head tag without nested demand."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "ObjectValue(_, _) => \"object\"",
               "argument": "The exhaustive Object arm is exactly the required literal tag, independent of fields and pending assertions."
             }
@@ -7877,43 +7877,43 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. Only explicit Object/String/Boolean argument heads are forced, without field traversal."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "Bool(self.has_field(id, top, k) && (hidden || self.visible(id, top, k)))",
               "argument": "The predicate is name membership conjoined with include-hidden or effective visibility; neither helper reads payloads/assertion bodies."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "if self.objects[id].layers[i].fields.contains(name) {",
               "argument": "has_field is exactly the union membership predicate for all admitted layers."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "fn Vm::visible(self : Vm, id : Int, top : Int, name : String) -> Bool {",
               "argument": "Visibility folds bottom to top: default leaves the prior status, hidden clears it, forced-visible sets it, matching the fixed separator law by induction over layers."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "seen[k] = true",
               "argument": "All layer names enter one map; uniqueness is exact String identity, independent of overriding field payloads."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": ".filter(k => hidden || self.visible(id, top, k))",
               "argument": "Enumeration filters the same effective visibility predicate as membership."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "out.sort_by(compare_unicode)",
               "argument": "Enumeration produces a sorted list of each eligible name once."
             },
@@ -7925,7 +7925,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "Output elements are ready String names, not deferred field reads, and cannot force values or assertion bodies."
             },
@@ -8013,43 +8013,43 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. Only explicit Object/String/Boolean argument heads are forced, without field traversal."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "Bool(self.has_field(id, top, k) && (hidden || self.visible(id, top, k)))",
               "argument": "The predicate is name membership conjoined with include-hidden or effective visibility; neither helper reads payloads/assertion bodies."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "if self.objects[id].layers[i].fields.contains(name) {",
               "argument": "has_field is exactly the union membership predicate for all admitted layers."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "fn Vm::visible(self : Vm, id : Int, top : Int, name : String) -> Bool {",
               "argument": "Visibility folds bottom to top: default leaves the prior status, hidden clears it, forced-visible sets it, matching the fixed separator law by induction over layers."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "seen[k] = true",
               "argument": "All layer names enter one map; uniqueness is exact String identity, independent of overriding field payloads."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": ".filter(k => hidden || self.visible(id, top, k))",
               "argument": "Enumeration filters the same effective visibility predicate as membership."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "out.sort_by(compare_unicode)",
               "argument": "Enumeration produces a sorted list of each eligible name once."
             },
@@ -8061,7 +8061,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950",
+              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "Output elements are ready String names, not deferred field reads, and cannot force values or assertion bodies."
             },
@@ -8767,19 +8767,19 @@
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "let condition = self.eval(cond, env)",
               "argument": "The condition is evaluated before the shared Boolean gate; only false evaluates/coerces an optional message. This delegates child judgments and does not specify indexing reentry."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "for index, (cond, msg) in obj.layers[i].assertions",
               "argument": "Every stored pair is retained in the ordinary demand traversal; this source inspection is not a formal derivation of N0 or R0."
             },
             {
               "file": "objects.mbt",
-              "sha256": "7b91e94222b5efe68d74e6d846e13cc5c36bb6d48d3adb24d89c8f7906371d25",
+              "sha256": "b1f9e78dba91c228a0dc4a799c20de6c8e0f94abc1c6dc5c62a8742c7966f9c7",
               "anchor": "self.bind(obj.layers[layer].locals, env)",
               "argument": "Layer locals are bound after installing current self and supplied to the assertion condition/message environment."
             },

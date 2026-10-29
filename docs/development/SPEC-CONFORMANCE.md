@@ -186,7 +186,7 @@ or new acceptance decisions:
 | `minArray`, `maxArray` | EXT-A0 concerns String and empty structural inputs beyond the Array-oriented public domain. Native rejection and mechanical source extensions must not change merely because an empty object was added. |
 | `startsWith`, `endsWith` | Non-String Array inputs can return false from the source's length comparison while native paths reject them. This is an extension-domain difference, not missing String functionality. |
 | `lstripChars`, `rstripChars`, `stripChars` | Empty Array input can return an Array from source while native paths require String input. The existing non-String boundary is not adjudicated here. |
-| `manifestTomlEx` | An empty object key is a valid Object input: native output quotes the key, while the source's empty-character-set check produces an unquoted empty key. [TOML permits quoted empty keys and rejects bare empty keys](https://toml.io/en/v1.0.0#keys), so switching paths would degrade valid output; source interpretation needs a separate decision. |
+| `manifestTomlEx` | An empty object key is a valid Object input: native output quotes the key, while the source's empty-character-set check produces an unquoted empty key. [TOML permits quoted empty keys and rejects bare empty keys](https://toml.io/en/v1.0.0#keys). Retain the current valid output; any future source fallback must preserve an empty-key guard instead of reproducing this source defect. |
 
 The `base64Decode` and `stripChars` differences above depend on also switching
 their respective decoding/stripping callees to source. They are retained as
@@ -207,6 +207,37 @@ unchanged. Tested SHA-256 values:
 - `spec_inherited_standard_methods_test.mbt`: `2d6cd47f2026d9919f4e02ce06ca32e3fa4bd0f7f9c661e1dcfbbd59b54b9b7e`
 
 The earlier eight and ten groups, full suites and other platforms were not rerun.
+
+### Shared intrinsic dispatch review
+
+The next dependency review inspected the six remaining type observations:
+Null, Boolean, Number, String, Function and Array. `value_type` exhaustively
+maps these evaluated heads to constant tags; Function covers Closure, Builtin
+and Native representations. The intrinsic forces only its argument head and
+does not visit nested values, defaults or bodies. Existing
+[foundation controls](../../spec_foundation_types_test.mbt) and
+[source/AST value-head controls](../../spec_value_heads_test.mbt) support those
+boundaries. No missing dispatch branch was found. Arbitrary value producers,
+Unicode/finite admission and generic application remain their child obligations,
+not additional tag-constructor cases. This was static review without new tests
+or changes to the six rows' recorded status.
+
+The review also found 16 stale `stdlib.mbt` inspection references across
+`length-object`, `object-has-ex`, `object-fields-ex`, `length-string`,
+`length-array` and `type-object`. The exact old source hash
+`078d0c869808096e54d1a1bd92196dbc34e19e9ea4fe91e51505e3ea45b96950`
+was recovered locally and compared with current
+`2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c`.
+The differences only change `hypot` parameter names and move TOML into its
+dedicated lazy entry. The reviewed intrinsics cannot enter those paths; their
+parameters, common forcing block, type mapping and final dispatch are unchanged.
+All 16 anchors remain unique. Only these inspection hashes are refreshed;
+their child assumptions, scopes, decisions and executed evidence are retained.
+The existing metadata generator then completed once (5.426 s) against the three
+hash-verified fixed official reference files. Its generated JSON also synchronizes
+the preceding 14 object-helper hash refreshes; the Markdown output is unchanged.
+Counts remain 35 completed named reviews, one constructor review, 56 partial and
+two unreviewed rows, with no execution or complete conformance inferred.
 
 The [2026-10-23 native package regression](SPEC-NATIVE-REGRESSION-2026-10-23.md#later-complete-regression-at-84eb1f7)
 records debug and release each passing 713/713 at clean source commit
