@@ -102,6 +102,9 @@ fn EvalContext::copy_node(
   let work = [root]
   while work.pop() is Some(node) {
     self.tick()
+    if node.kind is StandardFunction(_) || node.kind is StandardValue(_) {
+      raise problem(Runtime, node.loc, "internal expression has no public AST")
+    }
     for child in ast_export_children(node) {
       work.push(child)
     }
@@ -235,19 +238,43 @@ pub fn DebugValue::kind(self : DebugValue) -> String raise JsonnetError {
 }
 
 ///|
+fn hook_exportable(expression : Expr) -> Bool {
+  if expression.kind is StandardFunction(_) ||
+    expression.kind is StandardValue(_) {
+    return false
+  }
+  // Deep runtime nodes are injected only by stdlib_layer/inherited_profiles,
+  // preserving the fixed library's <std> locations. Other runtime constructors
+  // create standalone private roots, handled above. Public AST conversion and
+  // parsing cannot create private nodes. This fast path avoids rescanning user
+  // subtrees; the filename alone never hides an expression: even a user file
+  // named <std> is observed unless an actual private descendant is found.
+  if expression.loc.file != "<std>" {
+    return true
+  }
+  let work = [expression]
+  while work.pop() is Some(node) {
+    if node.kind is StandardFunction(_) || node.kind is StandardValue(_) {
+      return false
+    }
+    work.append(ast_export_children(node))
+  }
+  true
+}
+
+///|
 fn Vm::hook_before(
   self : Vm,
   expression : Expr,
   environment : Env,
   frames : Array[EvalHookFrame],
 ) -> Unit raise {
-  // These field values are runtime implementation nodes, not exportable source
-  // expressions. Compiler sugar may reach them while resolving its builtins.
-  if expression.kind is StandardFunction(_) ||
-    expression.kind is StandardValue(_) {
-    return
-  }
   if !self.hooks_suppressed && self.eval_hook is Some(hook) {
+    // Exclude private wrappers before admitting a frame. Their clean children
+    // still get ordinary paired events, and every admitted stack node exports.
+    if !hook_exportable(expression) {
+      return
+    }
     let active = Ref(true)
     let serial = self.hook_serial
     self.hook_serial += 1
