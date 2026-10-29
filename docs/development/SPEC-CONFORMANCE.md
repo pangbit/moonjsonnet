@@ -383,6 +383,60 @@ delivery cohort for accumulated post-0.2.1 changes. The older four-mode 1087
 records do not automatically cover changed product bytes. No new full-platform
 campaign or publication is part of this local repair.
 
+### Named compatibility and finite structural review
+
+The next review resolves the three named/default choices rather than treating
+contradictory declarations as three absent functions. `removeAt` retains `i`
+and positional calls, accepting documented `idx` and source `at` as aliases of
+one required slot. Duplicate slots reject before demand; arity remains two.
+A private marker confines normalization to the original standard closure,
+including extracted/inherited copies; ordinary and replacement functions keep
+their own binding rules. This is an explicit compatible extension. XML retains
+the fixed source's existing `escapeStringXML(str_)` export, and YAML stream
+retains its `c_document_end=true` default. The latter also agrees with the
+documentation's end-marker prose, though not its printed signature. The
+[public review](SPEC-PUBLIC-STDLIB-REVIEW.md#removeat-named-parameter-reconciliation)
+records the authorities and consequences without claiming both conflicts agree.
+
+Local native debug passed 4/4 groups in 11.458 s: the
+[two alias groups](../../spec_remove_at_aliases_test.mbt), the
+[migrated binding profile](../../spec_deletion_binding_profile_test.mbt), and
+the existing ordinary-default closure control (call group 0). Source and
+handmade ASTs cover unchanged positional/`i` calls, aliases, duplicate-slot
+rejection before demand, empty-array laziness, strict heads, arity, receiver
+capture/forwarding/`super`, and ordinary user functions without aliases. The old
+`idx`/`at` error-valued inputs remain: they now reach the same required value
+error after successful binding. Info/fmt passed; public interfaces, the fixed
+source and all twenty frozen Go fixture files remained unchanged. Tested hashes:
+
+- `eval.mbt`: `d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774`
+- `stdlib_layer.mbt`: `454d7f6f1a1281e6780f55ac153eeedc0bad1ede0ecc6b885377c5dc3d372dbb`
+- `spec_deletion_binding_profile_test.mbt`: `ba4b7505e02e88f5ce1a1b0eacba8944e838d69859876801403882a990071a8c`
+- `spec_remove_at_aliases_test.mbt`: `28c88991ae9140e0346307a750da8c304462a550e73eb49b0eaaec89f56223a3`
+
+The finite review endpoint is local constructor/transfer correctness under
+explicit child judgments. It covers each current branch and its scope, demand,
+failure propagation and recursive edge; it does not require a Cartesian product
+of arbitrary child programs or a proof that recursive programs always terminate.
+
+| Responsibility and endpoint | Implementation review and reused distinguishing evidence |
+| --- | --- |
+| AST shape, scope and traversal | All 19 public constructors and 21 internal constructors (including the two private standard nodes) were checked. [Conversion](../../ast_convert.mbt), [depth traversal](../../ast_depth.mbt) and [validation](../../validate.mbt) visit defaults, arguments, field keys/values, locals, assertion conditions/messages, comprehension clauses and optional slice children. Recursive binding groups are scoped together; object keys use outer scope, bodies use object/local scope, and comprehension scope grows sequentially. Existing static, [forms](../../spec_language_forms_test.mbt) and [handmade AST](../../spec_language_forms_ast_test.mbt) controls distinguish these boundaries. No missing child or scope edge was found. |
+| Binding and capture-avoiding environment transfer | [Call environments](../../eval.mbt), [binding validation](../../arguments.mbt) and [lazy local storage](../../runtime_types.mbt) preserve definition environments, caller argument thunks and one complete callee environment for recursive defaults. Binding rejection precedes demand; local groups share their recursive child environment; strict calls force heads only. Existing [call evidence](SPEC-LANGUAGE-CALL-EVIDENCE-2026-10-22.md) distinguishes caller/default capture, mutually recursive defaults, invalid binding and skipped calls. The new alias gate is separately tested; ordinary binding is unchanged. |
+| Recursive manifestation and equality | [Manifestation](../../manifest.mbt) checks finite scalars, refuses functions, visits all Array elements and visible Object fields, runs the selected assertion policy and propagates child errors/output limits. [Equality](../../operators.mbt) compares head kind, length/visible key sets and then corresponding children, stopping at a distinguishing difference. Depth accounting is restored on exit. Existing manifestation, equality and object controls establish the child/demand premises. No missing recursive edge or swallowed error was found. |
+
+These local transfer responsibilities are closed under their stated premises.
+The call/forms/handmade-form test bytes still match their recorded evidence;
+before this alias change, the validation, environment and recursive
+implementations were unchanged from the last complete baseline except the
+separately verified standard-receiver dispatch. This review adds no mechanical
+constructor or recursion test campaign.
+Child producer contracts, N0/R0 assertion/inheritance choices and B0/PE0 domains
+remain explicit responsibilities of their own rules, rather than an unbounded
+"all nesting combinations" remainder. The new alias tests do not certify those
+other judgments. Historical matrix counts are not retroactively promoted, and
+the final source-bound delivery cohort for accumulated changes remains separate.
+
 ### Shared intrinsic dispatch review
 
 The next dependency review inspected the six remaining type observations:

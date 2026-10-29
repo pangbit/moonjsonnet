@@ -519,7 +519,7 @@ fn Vm::call_env(
     .trace_context("function <" + outer.diagnostic_context.1 + ">")
   let assigned = bind_arguments(
     params.map(p => (p.name, p.default_value is None)),
-    args,
+    remove_at_named_arguments(params, body, args),
     loc,
   )
   for name, thunk in assigned {

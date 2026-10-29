@@ -190,10 +190,12 @@ this generator. The generated inventory contains interface facts and test
 references, not copied reference implementations. The focused
 [contract matrix](SPEC-CONTRACT-REVIEW.md) retains detailed language/P0 evidence.
 
-## removeAt named-parameter candidates
+<a id="removeat-named-parameter-candidates"></a>
+
+## removeAt named-parameter reconciliation
 
 The fixed documentation declares removeAt(arr, idx). The same version's source
-declares removeAt(arr, at). Current MoonJsonnet declares i from Go. The fixed
+declares removeAt(arr, at). MoonJsonnet 0.2.1 declares i from Go. The fixed
 specification's apply rule matches a named argument to a declared parameter;
 named spelling is observable. The
 [language parameter guidance](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/doc/ref/language.html.md#function-parameters)
@@ -206,25 +208,36 @@ disables ordinary named-call matching.
 | idx | Explicit public documentation signature and description | Conflicts with the executable source definition's at |
 | at | Exact source definition specifies the function and its bound parameter | Conflicts with the documentation signature; no explicit precedence rule resolves it |
 
-Source-defined behavior makes at the stronger implementation candidate if the
-source definition is selected as the signature authority. This is a proposed
-adjudication, not a unique conclusion from the two conflicting sources. Current
-i has no independent support from those sources. Positional immutability remains
-independently specified/tested. No name is changed, no additional alias is
-accepted, and named conformance stays unresolved. Accepting multiple names would
-invent a contract and make mixed named calls ambiguous rather than settle it.
+The post-0.2.1 compatibility choice retains existing positional and `i` calls
+and accepts `at` and `idx` as names for that same index slot. This is an explicit
+compatibility extension, not a claim that the conflicting sources uniquely
+specify three aliases. Supplying the slot more than once is a duplicate-binding
+error, including mixed aliases and positional-plus-alias calls, before any
+argument/default is demanded. There is no precedence rule that silently chooses
+one supplied value. The function still has two parameters; extracted/inherited
+original functions retain the aliases, while replacement/user functions follow
+their own declarations. Ordinary index/payload laziness and `tailstrict` head
+forcing are preserved.
+
+The earlier rejection-only profile deliberately accepted neither disputed name.
+That project-policy test is migrated to the explicit alias contract, keeping the
+original `i` success and required-error inputs as demand controls. Frozen Go/C++
+oracles and the fixed source definition are unchanged. This resolves the naming
+compatibility obligation without renaming an established parameter or declaring
+the rest of `removeAt` universally conformant.
 
 ## Other source conflicts and useful gaps
 
-- The documentation spells escapeStringXml while source exports escapeStringXML. Both identifiers are retained as candidates; no alias/rename is inferred.
-- The documentation's manifestYamlStream signature defaults c_document_end to false; source defaults it to true. The existing nested-error regression establishes propagation only, not default-option conformance.
-- The documentation describes isEven/isOdd using the integral part; source uses round. Existing Go-result assertions require separate normative adjudication, especially fractional/negative inputs.
-- SHA-1/SHA-256/SHA-512/SHA3 documentation marks them Go-only, while fixed C++ source exports error stubs. Successful local digest vectors are mapped without settling the public conditional-scope/signature question.
+- XML retains the existing fixed-source export `escapeStringXML(str_)`. The documentation spells `escapeStringXml(str)` instead. Source authority and compatibility select the former; no second export or parameter alias is invented. Existing XML contract evidence verifies the selected implementation. This does not claim agreement with both signatures.
+- YAML stream retains `c_document_end=true`, as in the fixed source and existing API. The documentation's prose also describes a stream ending with `...`, although its printed signature says `false`. Explicit `false` remains supported. Existing empty-stream/default and explicit-option tests cover this choice; it is an explained conflict resolution, not a missing renderer or a promise of both defaults.
+- Parity follows the public integral-part description, retaining truncation instead of the source's conflicting `round` formula. The [profile decision](SPEC-CONFORMANCE.md#profile-decisions-and-wrapper-repair) supersedes the earlier unresolved label; it does not claim both formulas agree.
+- SHA-1/SHA-256/SHA-512/SHA3 documentation marks them Go-only, while fixed C++ source exports error stubs. Successful local digest vectors remain finite native-profile evidence, not agreement with every conditional implementation profile.
 
-These are review findings, not newly executed implementation-failure claims.
-Next useful work is to adjudicate one conflict with minimal source-level probes
-and to review actual normal/error/lazy/boundary assertions for currently U rows.
-Adding rows, registration checks or new Go-equal snapshots cannot replace that.
+These are explicit implementation choices and bounded evidence, not newly
+discovered missing functions. Historical review rows retain their original
+scope. Further work should address a concrete unfulfilled contract or missing
+distinguishing evidence; repeating probes of these same conflicts or increasing
+registration counts cannot establish complete conformance.
 
 
 ## Complete deletion responsibility continuation at ccf50ef

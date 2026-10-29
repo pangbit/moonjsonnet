@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Accept `idx` and `at` as aliases of `removeAt`'s existing `i` parameter, keeping
+  positional calls and its two-parameter arity. Duplicate index bindings reject
+  before argument evaluation; aliases remain specific to the original standard
+  function and preserve lazy and strict-call behavior.
 - Preserve inherited dependencies in String prefix/strip methods, Array extrema,
   bounded splitting, Base64 encoding/decoding and TOML rendering. Lazy local
   adapters keep the documented input policies, decoder extensions and valid

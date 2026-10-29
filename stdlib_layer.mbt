@@ -79,6 +79,37 @@ fn inherited_standard_function(name : String) -> Bool {
 }
 
 ///|
+// The public compatibility wrapper keeps two parameters. Only this private
+// marker admits the documentation/source spellings as aliases of its i slot;
+// ordinary functions, including user replacements named removeAt, are unchanged.
+fn remove_at_named_arguments(
+  params : Array[ExprParameter],
+  body : Expr?,
+  args : Array[(String?, Int)],
+) -> Array[(String?, Int)] {
+  if params.length() != 2 ||
+    params[0].name != "arr" ||
+    params[1].name != "i" ||
+    params[0].default_value is Some(_) ||
+    params[1].default_value is Some(_) {
+    return args
+  }
+  guard body is Some({ kind: Local(bindings, _), .. }) else { return args }
+  if bindings.length() != 1 ||
+    bindings[0].name != "$removeAtAliases" ||
+    !(bindings[0].value.kind is StandardFunction("removeAt")) {
+    return args
+  }
+  args.map(pair => {
+    let name = match pair.0 {
+      Some("idx") | Some("at") => Some("i")
+      _ => pair.0
+    }
+    (name, pair.1)
+  })
+}
+
+///|
 fn standard_library_expression() -> Expr raise {
   let source = parse(standard_library_source(), "<std>", 512)
   guard source.kind is Obj(fields, locals, assertions, assertion_sites) else {
@@ -156,9 +187,9 @@ fn standard_library_expression() -> Expr raise {
     })
     .map(fn(field) {
       if field.key.kind is Literal(String("removeAt")) {
-        // idx (documentation) versus at (fixed source) is unresolved. Keep the
-        // existing public i spelling without adding aliases; forward lazily and
-        // positionally to the unchanged fixed definition for the actual work.
+        // Keep existing i calls and admit documented idx / fixed-source at as
+        // explicit compatibility aliases. The unforced private node marks only
+        // this closure; aliases do not become extra parameters or public names.
         let loc = field.value.loc
         let args : Array[(String?, Expr)] = [
           (None, { kind: Var("arr"), loc, end: None, }),
@@ -172,7 +203,24 @@ fn standard_library_expression() -> Expr raise {
                 { name: "arr", default_value: None, range: None, },
                 { name: "i", default_value: None, range: None, },
               ],
-              { kind: Call(field.value, args, false), loc, end: None, },
+              {
+                kind: Local(
+                  [
+                    {
+                      name: "$removeAtAliases",
+                      value: {
+                        kind: StandardFunction("removeAt"),
+                        loc,
+                        end: None,
+                      },
+                      range: None,
+                    },
+                  ],
+                  { kind: Call(field.value, args, false), loc, end: None, },
+                ),
+                loc,
+                end: None,
+              },
             ),
             loc,
             end: None,
