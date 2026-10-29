@@ -38,6 +38,40 @@ permissions and resource limits do not reduce language or public-library scope.
 Historical raw upstream results and failure classifications remain preserved.
 Private administrative documents and personal data must not be added to commits.
 
+## Cumulative native delivery at 8022497
+
+The [derived current-source report](../archive/reports/native-cumulative-2026-10-29.json)
+records one cumulative local regression, the defect it exposed and its repair.
+The first full run aborted in host-hook AST inspection; no aggregate pass count
+was available. Private standard wrappers now stay outside public hook frames,
+while clean source children retain paired events. The original failure and its
+six passing repair controls remain separate from the final **1118/1118** native
+debug regression (227.247 s). No other full mode was added.
+
+| Technical delivery | Current conclusion |
+| --- | --- |
+| Language/library regression and the three P0 examples | Current complete project test entry passed, including immutable deletion, nonfinite rejection, fractional-index rejection and their lazy controls. This establishes executed regression results, not every normative contract. |
+| Independent native archive and three scenarios | Eight consumer groups passed against the exact 172-file local archive: four existing API groups, three fixed scenarios and one added direct-API resource/location group. Compiler paths and file hashes excluded registry substitution. |
+| CLI, tools and required failures | 24 acceptance cases passed through 27 program invocations: 11 existing cases, four resource boundaries, seven stream/multi-output cases and two formatter cases. Required error kinds/positions and output preservation are checked at their actual API/CLI interfaces. |
+| Reproduction and evidence | Source/toolchain/package/binary/input binding is retained. Both existing generators passed; 42 reviewed inspection hashes were rebound and ten stale policy descriptions reconciled without promoting rule states or inventing execution. |
+| Linux current revision | Not run: source upload was denied before process creation. Prior Linux debug/release 1087 records remain historical and are not reused as current results. No remote window was occupied. |
+
+The implementation and local delivery are supported within their documented
+profiles. **Unqualified complete v0.21.0 conformance remains unestablished.**
+The 94-row labels are review bookkeeping, not 58 absent features: finite
+constructor, capture and recursive-transfer responsibilities have explicit
+endpoints described below. Remaining limitations are the stated conflicting/underdefined
+contracts and incomplete integration of later evidence, not a demand to test
+all possible inputs. Existing source-compatible names, XML/YAML defaults,
+Base64/count/parity policies and removeAt's same-slot alias extension disclose
+what is actually implemented. B0/PE0, non-Boolean filtering, surrogate recovery
+and HP0 do not gain universal normative certificates from a passing regression.
+
+The next runtime action is one bounded current-source Linux regression once its
+specific upload is approved. The accumulated changes are suitable for one
+0.2.2 release candidate; version availability, final CI and publication remain
+separate release actions. No new version is published by this record.
+
 ## Dependency triage at 53e2c49 (2026-10-29)
 
 The current generated matrix has 35 completed named-rule reviews, one completed

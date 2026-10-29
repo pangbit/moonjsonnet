@@ -2,8 +2,8 @@
   "spec_commit": "bbb38f1020be1f5aed560928fb839b2c448cefb4",
   "spec_sha256": "bbac3701ef0316fc29de6c543049ae8f0f78c876bdd94fbf6ab845b2023a720a",
   "language_reference_sha256": "c55666af13894c8100c84fb053e647cd0ca516f3bb554d0ced29dfa83c3772be",
-  "mapping_sha256": "f8e52ed6ac0ea110061e4759e24959106cc96743c174b505ce73a477cf987f09",
-  "tool_sha256": "a0c13a584368aa46883e0dc8b886affe17d47db6a93b93668f4fcd31a7b71b88",
+  "mapping_sha256": "29afb4437fedd84b32a0a806b6714320f29909044ad4e8184f630f9d401927c0",
+  "tool_sha256": "f3c8bfd1474640e69ad8c1bace728ea22f2c924f7cfe9ba443ccff982e1d4c69",
   "mapping_schema_version": 2,
   "global_test_ids": 229,
   "named_rules": 70,
@@ -4584,13 +4584,13 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "Func(ps, body) => Closure(ps, body, env)",
               "argument": "Every Function head retains exactly its parameter/default syntax, body and defining environment; no default or body is evaluated at construction. Later application is a separate judgment."
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "Arr(items) =>\n          ArrayValue(\n            items.map(e => {\n              self.store(Pending(e, env.debug_capture([e]).trace_thunk()))\n            }),\n          )",
               "argument": "Every Array member is retained in input order as a pending expression with the defining environment; no element evaluation occurs. Future forcing/application/manifestation are outside this head transfer."
             },
@@ -5009,7 +5009,7 @@
           "inspection": [
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "expr = if boolean(self.eval(c, env), c.loc) { yes } else { no }",
               "argument": "The condition is evaluated before selection; the yes child becomes the next expression only on true, with no evaluation of the no child."
             },
@@ -5096,7 +5096,7 @@
           "inspection": [
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "expr = if boolean(self.eval(c, env), c.loc) { yes } else { no }",
               "argument": "The condition is evaluated before selection; the no child becomes the next expression only on false, with no evaluation of the yes child."
             },
@@ -5368,7 +5368,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
             },
@@ -5477,7 +5477,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
             },
@@ -5624,7 +5624,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
             },
@@ -5732,7 +5732,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
             },
@@ -5840,7 +5840,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
             },
@@ -5947,7 +5947,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Comparison operands are evaluated before dispatch with their roles preserved. Failures are propagated without a comparison-specific catch."
             },
@@ -6056,7 +6056,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
             },
@@ -6163,7 +6163,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
             },
@@ -6270,7 +6270,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
             },
@@ -6378,7 +6378,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
             },
@@ -6487,7 +6487,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
             },
@@ -6593,7 +6593,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
             },
@@ -6699,7 +6699,7 @@
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.binary(op, left, self.eval(b, env), loc)",
               "argument": "Each non-shortcut comparison evaluates its two required operand heads in the original environment and then passes ordered Values to the comparator. This preserves child outcomes without selecting an independent-error winner as a language promise."
             },
@@ -6776,7 +6776,7 @@
           "inspection": [
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "Bool(boolean(left, loc) && boolean(self.eval(b, env), loc))",
               "argument": "After evaluating the left in env, false returns without invoking the RHS evaluation or its Boolean gate; the || sibling analogously stops on true. The demanded child, when applicable, receives the same env."
             },
@@ -6897,7 +6897,7 @@
           "inspection": [
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "Bool(boolean(left, loc) && boolean(self.eval(b, env), loc))",
               "argument": "After evaluating the left in env, false returns without invoking the RHS evaluation or its Boolean gate; the || sibling analogously stops on true. The demanded child, when applicable, receives the same env."
             },
@@ -7022,13 +7022,13 @@
           "inspection": [
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "Unary(op, e) => {\n          let v = self.eval(e, env)",
               "argument": "Unary obtains its operand head in the original environment before dispatch. Any child failure propagates; a skipped whole negation never enters this branch."
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "\"!\" => Bool(!boolean(v, loc))",
               "argument": "Both possible Boolean child results enter host Boolean complement and are wrapped as Bool. No numeric/string truthiness or operand payload traversal occurs in this arm."
             },
@@ -7119,13 +7119,13 @@
           "inspection": [
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "Unary(op, e) => {\n          let v = self.eval(e, env)",
               "argument": "Unary obtains its operand head in the original environment before dispatch. Any child failure propagates; a skipped whole negation never enters this branch."
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "\"!\" => Bool(!boolean(v, loc))",
               "argument": "Both possible Boolean child results enter host Boolean complement and are wrapped as Bool. No numeric/string truthiness or operand payload traversal occurs in this arm."
             },
@@ -7253,19 +7253,19 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The one official length parameter is forced to its outer Value; this does not traverse array payloads."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "ArrayValue(a) => a.length().to_double()",
               "argument": "This exhaustive value-kind arm implements element count without payload demand."
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.store(Pending(e, env.debug_capture([e]).trace_thunk()))",
               "argument": "Array construction stores lazy element expressions; a shape count need not force them."
             },
@@ -7356,7 +7356,7 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The explicit argument head is forced before dispatch; any child construction/key error propagates without a catch, and no field/default/body traversal is added."
             },
@@ -7368,7 +7368,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "ObjectValue(id, top) => self.keys(id, top, false).length().to_double()",
               "argument": "The Object overload counts the visible-only name vector used by objectFieldsEx(false), without demanding fields. Finite admitted host lengths are exact Double counts."
             },
@@ -7380,7 +7380,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "The completed object-fields-ex child has one ready String per name; length-array counts that vector. The direct Object branch is the same cardinality."
             }
@@ -7459,19 +7459,19 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The one official length parameter is forced to its outer Value; this does not traverse array payloads."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "Str(s) => s.iter().count().to_double()",
               "argument": "This value-kind arm counts Unicode codepoints of the already produced String."
             },
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "self.store(Pending(e, env.debug_capture([e]).trace_thunk()))",
               "argument": "Array construction stores lazy element expressions; a shape count need not force them."
             },
@@ -7724,7 +7724,7 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. The explicit argument head is forced before dispatch; any child construction/key error propagates without a catch, and no field/default/body traversal is added."
             },
@@ -7736,13 +7736,13 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "\"type\" => Str(value_type(x))",
               "argument": "The intrinsic returns its evaluated head tag without nested demand."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "ObjectValue(_, _) => \"object\"",
               "argument": "The exhaustive Object arm is exactly the required literal tag, independent of fields and pending assertions."
             }
@@ -7877,13 +7877,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. Only explicit Object/String/Boolean argument heads are forced, without field traversal."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "Bool(self.has_field(id, top, k) && (hidden || self.visible(id, top, k)))",
               "argument": "The predicate is name membership conjoined with include-hidden or effective visibility; neither helper reads payloads/assertion bodies."
             },
@@ -7925,7 +7925,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "Output elements are ready String names, not deferred field reads, and cannot force values or assertion bodies."
             },
@@ -8013,13 +8013,13 @@
           "inspection": [
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "params.map(n => self.force(ids[n], loc))",
               "argument": "This intrinsic is neither join nor one of the strip, limited split, membership or extrema functions, so it takes the unchanged generic else path. Only explicit Object/String/Boolean argument heads are forced, without field traversal."
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "Bool(self.has_field(id, top, k) && (hidden || self.visible(id, top, k)))",
               "argument": "The predicate is name membership conjoined with include-hidden or effective visibility; neither helper reads payloads/assertion bodies."
             },
@@ -8061,7 +8061,7 @@
             },
             {
               "file": "stdlib.mbt",
-              "sha256": "2bf05de65bc5f755c6b8fcbeeafbf7a1e7dd5844c75c59e9da7150275910240c",
+              "sha256": "f8c54ee827295a33de5d035c14bce538db77b9660088da7a6d54ee9f7eb0ed25",
               "anchor": "self.keys(id, top, hidden).map(k => self.store(Ready(Str(k))))",
               "argument": "Output elements are ready String names, not deferred field reads, and cannot force values or assertion bodies."
             },
@@ -8761,7 +8761,7 @@
           "inspection": [
             {
               "file": "eval.mbt",
-              "sha256": "3fc27fb53057b847076b239be0720f3c79e4223bd85d5881da27bfdb66466700",
+              "sha256": "d1c9669320bf7d2f8b617795ccc70f84ca25779682ae8b75d42758137e4d4774",
               "anchor": "Assert(c, m, body) => {",
               "argument": "The expression constructor checks its condition/message before assigning the continuation; failure cannot enter the continuation."
             },

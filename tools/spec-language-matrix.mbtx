@@ -1532,7 +1532,7 @@ async fn main {
     )
   }
   markdown.write_string(
-    "\nLexical UTF-8/tokenization, full grammar/precedence, unassigned chk-* rules, recursive comprehension/desugaring details and all unassigned operator rules remain open. The public standard-library inventory, eleven array observations, removeAt naming and Unicode surrogate ambiguity retain their existing status.\n",
+    "\nRows retain their recorded review scopes and child obligations. Later bounded constructor/environment/recursive reviews, inherited-method repairs and explicit signature/input policies are consolidated in [the conformance work record](SPEC-CONFORMANCE.md). Historical broad remainders are not counts of missing features; neither this generator nor current regression success establishes complete conformance.\n",
   )
   let result : Json = {
     "spec_commit": pinned,

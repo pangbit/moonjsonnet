@@ -1,0 +1,156 @@
+{
+  "record_kind": "Derived cumulative validation summary; original complete command logs remain local. No historical failure is relabeled as success.",
+  "product_source_commit": "802249795bef6d1cabb9759f780c53475d68d604",
+  "package_source_commit": "24fcd4a5bfece783f80e73bd4070ee95409230dd",
+  "module_version_during_validation": "0.2.1",
+  "platform": "Darwin arm64",
+  "toolchain": {
+    "moon": "0.1.20260920 (914d7da)",
+    "moonc": "v0.10.14+7d59c7ec9",
+    "moonrun": "0.1.20260920 (914d7da)"
+  },
+  "initial_failure": {
+    "source_commit": "8f999959c73eddb3fe700b21c86d457e6c2eca2a",
+    "exit_code": 255,
+    "signal": "SIGABRT",
+    "elapsed_seconds": 228.266,
+    "aggregate_totals": null,
+    "case": "diagnostic_trace_test.mbt::host hook exceptions snapshot active trace and permit recovery",
+    "cause": "Public hook AST export reached runtime-only descendants in private standard adapters.",
+    "fixed_by": "802249795bef6d1cabb9759f780c53475d68d604"
+  },
+  "repair_validation": {
+    "focused_passed": 6,
+    "focused_failed": 0,
+    "focused_seconds": 14.998,
+    "full_native_debug_total": 1118,
+    "full_native_debug_passed": 1118,
+    "full_native_debug_failed": 0,
+    "full_native_debug_seconds": 227.247,
+    "command": [
+      "moon",
+      "test",
+      "--target",
+      "native",
+      "--debug",
+      "--frozen",
+      "--deny-warn",
+      "-j",
+      "1",
+      "--no-parallelize"
+    ]
+  },
+  "delivery": {
+    "consumer_test_groups": {
+      "passed": 8,
+      "failed": 0,
+      "unrun": 0
+    },
+    "original_cli_acceptance_cases": {
+      "passed": 11,
+      "failed": 0,
+      "unrun": 0
+    },
+    "resource_acceptance_cases": {
+      "passed": 4,
+      "failed": 0,
+      "unrun": 0
+    },
+    "stream_multi_acceptance_cases": {
+      "passed": 7,
+      "failed": 0,
+      "unrun": 0
+    },
+    "formatter_cli_acceptance_cases": {
+      "passed": 2,
+      "failed": 0,
+      "unrun": 0
+    },
+    "cli_acceptance_cases_total": 24,
+    "executable_invocations_for_those_cases": 27,
+    "release_build_commands": 1,
+    "release_targets": 3,
+    "package_commands": 2,
+    "standalone_consumer_check_commands": 0,
+    "consumer_compiler_plan_dry_runs": 1
+  },
+  "package": {
+    "sha256": "de8a11ad9a14b59d2c544399acd96b321387633445687a81f22496fc8760389e",
+    "files": 172,
+    "inventory_matches_current_moon_list": true,
+    "all_packaged_source_and_api_bytes_match_frozen_source": true,
+    "packaged_relative_links_valid": true
+  },
+  "consumer_provenance": {
+    "actual_all_pkgs_sha256": "b2c18b3de4b67098bbcfb9ab2a787a3f44f7561d87f45e70cda0df1077ee8adb",
+    "compiled_product_packages": 6,
+    "verified_mbt_source_files": 118,
+    "packaged_interface_files": 10,
+    "registry_substitution_excluded_by_actual_source_paths": true,
+    "original_seven_fixture_bytes_unchanged": true,
+    "eighth_fixture_sha256": "3bd20d9a3836225c7fe7260e8c177b5cdb9c03884b103ebbce45fa02e37ffd28"
+  },
+  "resource_api_reproduction": {
+    "instructions": "Use the existing tools/consumer.mbtx archive/workspace setup and its test imports plus moonbitlang/core/json; append this exact tested group and the relative fixture files below. The original four API groups come from tools/consumer.mbtx; three scenarios use existing examples and expected.json files. No registry replacement was accepted.",
+    "test_source": "// External acceptance of existing CLI resource inputs through the public API.\n// Only the error class and a usable source position are required.\n\n///|\nfn external_limit_location(d : @moonjsonnet.Diagnostic) -> Unit raise {\n  assert_eq(d.kind, @moonjsonnet.Limit)\n  assert_true(!d.location.file.is_empty())\n  assert_true(d.location.line > 0)\n  assert_true(d.location.column > 0)\n}\n\n///|\ntest \"independent public API resource errors retain kind and source position\" {\n  let defaults = @moonjsonnet.Limits::default()\n  for\n    (source, limits) in [\n      (\"std.range(0,100)\", { ..defaults, steps: 10, }),\n      (\"local f(x)=f(x+1); f(0)\", { ..defaults, depth: 20, }),\n      (\"'😀😀'\", { ..defaults, output_bytes: 8, }),\n    ] {\n    let program = @moonjsonnet.Program::parse(source, filename=\"main.jsonnet\")\n    try program.evaluate_text(limits~) catch {\n      @moonjsonnet.Error(d) => external_limit_location(d)\n    } noraise {\n      _ => fail(\"public API accepted a resource-limited configuration\")\n    }\n  }\n  try @fs.evaluate_file(\n    \"direct-resource/main.jsonnet\",\n    limits={ ..defaults, import_bytes: 2, },\n  ) catch {\n    @moonjsonnet.Error(d) => external_limit_location(d)\n  } noraise {\n    _ => fail(\"public API accepted an import exceeding its byte limit\")\n  }\n  // Keep the prior four-case controller's exact-output positive boundary.\n  let exact = @moonjsonnet.Program::parse(\"'😀'\", filename=\"main.jsonnet\")\n  assert_eq(\n    @json.parse(exact.evaluate_text(limits={ ..defaults, output_bytes: 6, })),\n    Json::string(\"😀\"),\n  )\n}\n",
+    "fixture_files": {
+      "direct-resource/main.jsonnet": "import 'value.libsonnet'",
+      "direct-resource/value.libsonnet": "{x:42}"
+    }
+  },
+  "matrix": {
+    "named_rules": 70,
+    "prose_grammar_rows": 24,
+    "completed_rule_rows": 35,
+    "completed_constructor_rows": 1,
+    "manually_reviewed_subset_rows": 56,
+    "unreviewed_rows": 2,
+    "complete_conformance": false
+  },
+  "public_inventory": {
+    "mapped_finite_profiles": 138,
+    "official_candidates": 153,
+    "unmapped_candidates_are_not_missing_functions": true,
+    "whole_contract_acceptance_inferred": false
+  },
+  "evidence_maintenance": {
+    "reviewed_inspection_hashes_rebound": 42,
+    "completion_states_or_execution_outcomes_promoted": false,
+    "current_policy_records_reconciled": 10,
+    "new_runtime_tests_from_metadata_refresh": 0
+  },
+  "linux_current_source": {
+    "status": "DENIED_BEFORE_PROCESS_CREATION",
+    "uploaded": false,
+    "executed": false,
+    "prior_1087_debug_release_records": "historical source only; not substituted for this revision",
+    "next_action": "Obtain explicit approval for the exact new frozen source packet and one bounded native debug regression."
+  },
+  "remaining_for_unqualified_complete_specification_claim": [
+    "Selected source/documentation conflicts do not prove agreement with contradictory signatures, defaults or printed rules.",
+    "B0/PE0, non-Boolean filter, surrogate recovery and HP0 hexadecimal admission retain explicitly scoped interpretation/profile limits.",
+    "Finite constructor/environment/recursive reviews are closed under child premises; historical matrix statuses are not missing-feature counts or infinite input-enumeration duties.",
+    "Several new directed repair groups are linked in SPEC-CONFORMANCE.md rather than integrated into every older clause/public mapping.",
+    "Current Linux execution and subsequent release CI are separate pending evidence; no current full workflow or fresh upstream-reference result is claimed."
+  ],
+  "preservation": {
+    "all_800_current_tracked_inputs_unchanged": true,
+    "public_interfaces_checked": 20,
+    "public_interfaces_unchanged": true,
+    "go_fixture_files_checked": 20,
+    "go_fixture_files_unchanged": true,
+    "fixed_stdlib_source_unchanged": true,
+    "private_and_origin_refs_unchanged": true,
+    "all_refs_unchanged_during_docs24f_delivery": true,
+    "consumer_and_extracted_archive_bytes_unchanged": true,
+    "binaries_unchanged": true,
+    "repo_clean": true,
+    "all_owned_process_groups_absent": true
+  },
+  "scope": "Local cumulative code/package/consumer/CLI validation only. No push, tag or publication.",
+  "raw_receipt_sha256": {
+    "full": "f99cb447e013c9f9d77652eafca00897e84e88f3034322ec7314d327bf5bba9d",
+    "focused": "c3910a1bcb3dcf5a6aff44d04c3962f6bab8e68aa42049ca173ab1aa47a83721",
+    "delivery": "5bda6d8c81f304d289b9020172e53fd5f5cb14f52680a880f85ffedc0128b62f"
+  }
+}
