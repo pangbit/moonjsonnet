@@ -566,6 +566,11 @@ abort execution and leave the evaluator available for a later call. Replacing a
 hook preserves import caches, so previously cached computations need not emit
 new events.
 
+Implementation-only standard-library wrappers and native nodes are omitted from
+hook frames; their exportable source children remain observable. Every admitted
+`node()`/`stack()` entry has a public semantic AST. A user filename such as
+`<std>` does not by itself suppress events.
+
 `EvalContext::location`, `source_range` and `evaluation_id` are immutable metadata.
 The ID is unique within one execution and pairs its before/after events.
 `node()` and `stack()` return independent semantic AST copies; stack order is

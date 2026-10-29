@@ -176,13 +176,23 @@ local adapters also cover `startsWith`, `endsWith`, `lstripChars`, `rstripChars`
 unforced, while consumed values retain the documented input policies. Decoder
 extensions are normalized through native byte conversion; TOML keeps quoted
 empty keys and resource-limit propagation. The
-[source/native profile decisions](../development/SPEC-CONFORMANCE.md#profile-decisions-and-wrapper-repair)
+[source/native profile decisions](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/SPEC-CONFORMANCE.md#profile-decisions-and-wrapper-repair)
 retain integral-part `isEven`/`isOdd` as native operations; the discarded rounding
 definition does not define their dependency behavior. Fixed C++
 replaces some source methods with natives, including `join`, `strReplace` and `splitLimit`;
 those inherited corrections follow the source-level receiver contract and are
 not claims of agreement with every C++ accelerator. These are
 bounded inheritance corrections, not whole-function or whole-library conformance.
+
+Where the fixed documentation and source disagree on required names, preserve
+existing source-compatible calls: `flattenArrays(arrs)`,
+`manifestTomlEx(value, indent)`, `escapeStringJson(str_)`, `escapeStringBash(str_)`, and `escapeStringDollars(str_)`.
+The printed alternatives are `arr`, `toml`, and `str`; they are not additional
+aliases. `removeAt`'s documented aliases are the explicit exception below.
+The pair projections `objectKeysValues` and `objectKeysValuesAll` preserve each actual field value,
+including non-Object values, following the fixed source rather than the narrow
+prose return annotation. These choices disclose the conflicting declarations;
+they do not claim that both texts specify identical interfaces.
 
 ## Standard library
 
@@ -237,7 +247,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `range(from,to)` | Source-defined inclusive unit steps; finite endpoints are not narrowed, including fractional bounds with integral length; generated size remains subject to host limits |
 | `join(sep,arr)` | String/array separator with like-typed non-null entries; null is skipped but empty items count toward delimiters. Validates the outer array before demanding the separator; nested array payloads stay lazy. See the [scoped contract review](#development-evidence-index) |
 | `split(str,c)` | Source assertions validate str, then nonempty c; unlimited left-to-right splitting retains empty pieces. See the [scoped split review](#development-evidence-index) |
-| `splitLimit(str,c,maxsplits)`, `splitLimitR(str,c,maxsplits)` | Validates str/c before demanding maxsplits; finite nonnegative integral bounds are not narrowed to Int32. -1 means unlimited. R scans from the right even for -1, following the public description rather than the fixed source's forward-split branch for overlapping separators (SPL-R0). Other negative limits reject; fractional limits reject under the project's discrete-count policy, whose conversion is not specified by the public prose. See [profile decisions](../development/SPEC-CONFORMANCE.md#profile-decisions-and-wrapper-repair) |
+| `splitLimit(str,c,maxsplits)`, `splitLimitR(str,c,maxsplits)` | Validates str/c before demanding maxsplits; finite nonnegative integral bounds are not narrowed to Int32. -1 means unlimited. R scans from the right even for -1, following the public description rather than the fixed source's forward-split branch for overlapping separators (SPL-R0). Other negative limits reject; fractional limits reject under the project's discrete-count policy, whose conversion is not specified by the public prose. See [profile decisions](https://github.com/pangbit/moonjsonnet/blob/main/docs/development/SPEC-CONFORMANCE.md#profile-decisions-and-wrapper-repair) |
 | `lstripChars(str,chars)`, `rstripChars(str,chars)`, `stripChars(str,chars)` | Validates String input before demanding chars; empty input leaves chars lazy. Uses Unicode String-set membership or source-defined Array membership, inspecting every Array member even after a match while sharing element values. Supersedes the historical eager/short-circuit behavior; see the [scoped review](#development-evidence-index) |
 | `trim(str)` | Unreleased: fixed seven-character endpoint set U+0020/U+0009/U+000A/U+000C/U+000D/U+0085/U+00A0; other codepoints are retained. Published 0.2.0 used Unicode 15 White_Space |
 | `isEmpty(str)` | Unreleased: fixed `length(str) == 0`, including Array, visible Object fields and Function parameter counts; nested payloads remain lazy. Published 0.2.0 accepted Strings only |
@@ -245,7 +255,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `asciiLower(str)`, `asciiUpper(str)`, `stringChars(str)` | Pinned source definitions; ASCII-only case conversion and Unicode code-point array |
 | `findSubstr(pat,str)` | All overlapping code-point offsets; empty pattern or string gives an empty array |
 | `parseInt(str)` | Fixed official optional minus and ASCII decimal digits; separate finite Number multiply/add accumulation without an Int64 bound; plus, whitespace, prefixes and underscores reject. This supersedes the historical Go-oriented native range/sign behavior; see the [scoped review](#development-evidence-index) |
-| `parseHex(str)`, `parseOctal(str)` | Pinned source Number digit accumulation without a host Int64 bound; no sign or radix prefix. The review leaves the hex helper's punctuation-alias discrepancy (HP0) unresolved |
+| `parseHex(str)`, `parseOctal(str)` | Pinned source Number digit accumulation without a host Int64 bound; no sign or radix prefix. The source digit fallback also accepts `:` through `?` as values 10..15; this conflicts with the hexadecimal prose (HP0) and is retained as a disclosed source profile, not certified hexadecimal admission |
 | `escapeStringJson(str_)`, `escapeStringPython(str)`, `escapeStringBash(str_)`, `escapeStringDollars(str_)`, `escapeStringXML(str_)` | String coercion and context-specific escaping, including C0/C1 JSON controls. XML retains the fixed source's existing `escapeStringXML(str_)` export; the documentation's `escapeStringXml(str)` spelling is not an additional export |
 | `resolvePath(f,r)` | Pinned lexical directory joining; does not normalize .. or treat r as an absolute replacement |
 | `id(x)` | Eager identity; nested array/object values remain lazy |
@@ -280,7 +290,7 @@ Only the following functions are supported. Arity/named-argument violations are
 | `xor(x,y)`, `xnor(x,y)` | Eager boolean-only operands |
 | `format(str,vals)` | Same formatting semantics as string `%` |
 | `slice(indexable,index,end,step)` | Same semantics as array/string slice syntax |
-| `char(n)`, `codepoint(str)` | Integral identifier conversion / one-code-point string; scalar round trips and fractional-ID rejection reviewed; surrogate-ID policy remains unadjudicated |
+| `char(n)`, `codepoint(str)` | Integral identifier conversion / one-code-point string; scalar round trips and fractional-ID rejection reviewed; the retained Go-style conversion replaces surrogate IDs with U+FFFD. That recovery policy is not uniquely specified by the scalar contract |
 | `assertEqual(a,b)` | Source-defined: equal comparable values return true; unequal values or required comparison/formatting errors fail. Exact diagnostic presentation is not a portable promise |
 | `lines(arr)` | Join non-null strings with a newline after each |
 | `sha256(s)` | SHA-256 of UTF-8 string bytes, lowercase hexadecimal; rounds consume the evaluation step budget |

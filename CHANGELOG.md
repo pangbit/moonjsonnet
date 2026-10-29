@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Prevent evaluation-hook node/stack inspection from aborting on private standard
+  adapters. Keep exportable source events paired and return a checked diagnostic
+  if an internal node ever reaches public AST inspection.
 - Accept `idx` and `at` as aliases of `removeAt`'s existing `i` parameter, keeping
   positional calls and its two-parameter arity. Duplicate index bindings reject
   before argument evaluation; aliases remain specific to the original standard
