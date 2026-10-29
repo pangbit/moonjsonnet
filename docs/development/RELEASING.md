@@ -5,8 +5,7 @@ Publication and remote push are explicit maintainer actions. Versions 0.1.0 and
 The selected next candidate is 0.2.1. Do not overwrite an existing version.
 Versioned release notes describe the changes without asserting publication or
 a source tag. Record the registry result and timestamp after actual success.
-Mooncakes publication is a project delivery goal; this checklist does not
-establish a competition requirement or a successful publication/remote CI run.
+This checklist does not establish a successful publication or remote CI run.
 
 The existing macOS/Linux native debug/release campaigns each passed 1087/1087
 at product source `3d25317903f1d42799c3d05a1e3c07bdf3a75ffc`. Reuse those results

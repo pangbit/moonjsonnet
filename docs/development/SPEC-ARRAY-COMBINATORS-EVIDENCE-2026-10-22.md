@@ -1,7 +1,7 @@
 # Array combinator contract evidence, 2026-10-22
 
 This is a bounded continuation of the
-[proposal-aligned conformance work](SPEC-CONFORMANCE.md), using the fixed Google
+[specification conformance work](SPEC-CONFORMANCE.md), using the fixed Google
 Jsonnet commit bbb38f1020be1f5aed560928fb839b2c448cefb4. Expectations were recorded
 in the [array contract review](SPEC-ARRAY-COMBINATORS-REVIEW.md) before execution.
 All new inputs are synthetic literals and local callback counters, with no

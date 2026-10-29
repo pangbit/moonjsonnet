@@ -10,8 +10,9 @@ fixed at Google Jsonnet `bbb38f1020be1f5aed560928fb839b2c448cefb4`:
 and its referenced [source definitions](https://github.com/google/jsonnet/blob/bbb38f1020be1f5aed560928fb839b2c448cefb4/stdlib/std.jsonnet).
 Go/C++ execution is separate comparison evidence. Explicit normative violations
 cannot be waived by compatibility exceptions. Ambiguities and untested behavior
-remain unresolved, not passing. This document summarizes engineering requirements;
-it does not reproduce or amend the private application document.
+remain unresolved, not passing. This document summarizes project engineering
+requirements; current supported and tested behavior is documented in
+[compatibility](../reference/COMPATIBILITY.md).
 
 Final acceptance requires:
 
@@ -35,7 +36,7 @@ Final acceptance requires:
 JS/Wasm, LSP and package management are outside the platform/tool scope. Host
 permissions and resource limits do not reduce language or public-library scope.
 Historical raw upstream results and failure classifications remain preserved.
-The original application and any personal details must not be added to commits.
+Private administrative documents and personal data must not be added to commits.
 
 The [2026-10-23 native package regression](SPEC-NATIVE-REGRESSION-2026-10-23.md#later-complete-regression-at-84eb1f7)
 records debug and release each passing 713/713 at clean source commit
