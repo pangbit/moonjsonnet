@@ -1,7 +1,7 @@
 ///|
 priv struct AstReader {
   limits : Limits
-  mut nodes : Int
+  mut nodes : Int32
   assertion_ranges : Map[String, SourceRange]
 }
 

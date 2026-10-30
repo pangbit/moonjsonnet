@@ -11,8 +11,8 @@ priv struct FormatImportSorter {
 ///|
 fn FormatImportSorter::less(
   self : FormatImportSorter,
-  a : Int,
-  b : Int,
+  a : Int32,
+  b : Int32,
 ) -> Bool {
   self.entries[a].key.lexical_compare(self.entries[b].key) < 0
 }
@@ -30,9 +30,9 @@ fn format_import_sort(entries : Array[FormatImportEntry]) -> Unit {
 ///|
 fn FormatImportSorter::pdqsort(
   self : FormatImportSorter,
-  start : Int,
-  end : Int,
-  budget : Int,
+  start : Int32,
+  end : Int32,
+  budget : Int32,
 ) -> Unit {
   let mut a = start
   let mut b = end
@@ -91,8 +91,8 @@ fn FormatImportSorter::pdqsort(
 ///|
 fn FormatImportSorter::insertion_sort(
   self : FormatImportSorter,
-  a : Int,
-  b : Int,
+  a : Int32,
+  b : Int32,
 ) -> Unit {
   for i in (a + 1)..<b {
     for j = i; j > a && self.less(j, j - 1); j = j - 1 {
@@ -104,9 +104,9 @@ fn FormatImportSorter::insertion_sort(
 ///|
 fn FormatImportSorter::sift_down(
   self : FormatImportSorter,
-  lo : Int,
-  hi : Int,
-  first : Int,
+  lo : Int32,
+  hi : Int32,
+  first : Int32,
 ) -> Unit {
   let mut root = lo
   while true {
@@ -128,8 +128,8 @@ fn FormatImportSorter::sift_down(
 ///|
 fn FormatImportSorter::heap_sort(
   self : FormatImportSorter,
-  a : Int,
-  b : Int,
+  a : Int32,
+  b : Int32,
 ) -> Unit {
   let hi = b - a
   for i = (hi - 1) / 2; i >= 0; i = i - 1 {

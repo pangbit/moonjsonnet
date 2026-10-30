@@ -5,7 +5,7 @@ fn Vm::sha1(self : Vm, s : String, loc : Location) -> String raise {
   let blocks = input.length() / 64 +
     (if input.length() % 64 < 56 { 1 } else { 2 })
   let total = blocks.to_int64() * 64L
-  let state : Array[UInt] = [
+  let state : Array[UInt32] = [
     0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0,
   ]
   let words = Array::make(80, 0U)

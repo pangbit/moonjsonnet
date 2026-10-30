@@ -4,8 +4,8 @@ priv enum Value {
   Bool(Bool)
   Num(Double)
   Str(String)
-  ArrayValue(Array[Int])
-  ObjectValue(Int, Int)
+  ArrayValue(Array[Int32])
+  ObjectValue(Int32, Int32)
   Closure(Array[ExprParameter], Expr, Env)
   Builtin(String)
   Native(NativeFunction)
@@ -14,7 +14,7 @@ priv enum Value {
 ///|
 priv struct Env {
   parent : Env?
-  names : Map[String, Int]
+  names : Map[String, Int32]
   import_from : String
   debug_visible : ((() -> Unit raise) -> Array[String] raise)?
   diagnostic_context : (String, String)
@@ -34,7 +34,7 @@ fn Env::child(self : Env) -> Env {
 }
 
 ///|
-fn Env::lookup(self : Env, name : String) -> Int? {
+fn Env::lookup(self : Env, name : String) -> Int32? {
   match self.names.get(name) {
     Some(id) => Some(id)
     None =>
@@ -48,8 +48,8 @@ fn Env::lookup(self : Env, name : String) -> Int? {
 ///|
 priv enum Thunk {
   Pending(Expr, Env)
-  GeneratedCall(Value, Array[Int], Location)
-  FieldCall(Int, Int, String, LayerField, Env, Location)
+  GeneratedCall(Value, Array[Int32], Location)
+  FieldCall(Int32, Int32, String, LayerField, Env, Location)
   Code(String, Location)
   ParsedParameter(Program, Location)
   RunningParameter(Expr, Env)
@@ -77,9 +77,9 @@ priv struct Layer {
 ///|
 priv struct ObjectData {
   layers : Array[Layer]
-  cache : Map[(Int, String), Int]
-  scopes : Map[Int, Env]
-  mut assertion_state : Int
+  cache : Map[(Int32, String), Int32]
+  scopes : Map[Int32, Env]
+  mut assertion_state : Int32
   mut assertion_error : Error?
   mut standard : Bool
 }
@@ -89,33 +89,33 @@ priv struct Vm {
   library : Expr
   thunks : Array[Thunk]
   objects : Array[ObjectData]
-  free_thunks : Array[Int]
-  free_objects : Array[Int]
+  free_thunks : Array[Int32]
+  free_objects : Array[Int32]
   persistent : Bool
-  retries : Map[Int, Thunk]
+  retries : Map[Int32, Thunk]
   accessed_sources : Map[(String, String, Bool), Unit]
   parsed_imports : Map[String, Expr]
   limits : Limits
-  ext : Map[String, Int]
+  ext : Map[String, Int32]
   native_functions : Map[String, NativeFunction]
   trace : (Location, String) -> Unit
   eval_hook : EvalHook?
   mut hooks_suppressed : Bool
   hook_stack : Array[EvalHookFrame]
-  mut hook_serial : Int
+  mut hook_serial : Int32
   mut hook_failure_environment : Env?
   resolver : ((String, String) -> Source raise)?
   binary_resolver : ((String, String) -> BinarySource raise)?
   binary_sources : Map[(String, String), BinarySource]
-  binary_imports : Map[String, Int]
+  binary_imports : Map[String, Int32]
   sources : Map[(String, String), Source]
-  imports : Map[(String, Bool), Int]
-  mut steps : Int
-  mut depth : Int
+  imports : Map[(String, Bool), Int32]
+  mut steps : Int32
+  mut depth : Int32
   frames : Array[RuntimeFrame]
   mut current_trace : TraceFrame?
-  mut imported_bytes : Int
-  mut output_bytes : Int
+  mut imported_bytes : Int32
+  mut output_bytes : Int32
 }
 
 ///|
@@ -127,7 +127,7 @@ fn Vm::tick(self : Vm, loc : Location) -> Unit raise {
 }
 
 ///|
-fn Vm::store(self : Vm, t : Thunk) -> Int {
+fn Vm::store(self : Vm, t : Thunk) -> Int32 {
   if self.free_thunks.pop() is Some(id) {
     self.thunks[id] = t
     return id
@@ -138,7 +138,7 @@ fn Vm::store(self : Vm, t : Thunk) -> Int {
 }
 
 ///|
-fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
+fn Vm::force(self : Vm, id : Int32, loc : Location) -> Value raise {
   self.tick(loc)
   let thunk = self.thunks[id]
   self.force_thunk(
@@ -154,7 +154,7 @@ fn Vm::force(self : Vm, id : Int, loc : Location) -> Value raise {
 // depth/step budgets. A running marker is never substituted with a fake limit.
 fn Vm::force_thunk(
   self : Vm,
-  id : Int,
+  id : Int32,
   thunk : Thunk,
   loc : Location,
   owner~ : Bool,
@@ -276,7 +276,7 @@ fn Vm::force_thunk(
 }
 
 ///|
-fn[T] Vm::failure(self : Vm, id : Int, error : Error) -> T raise {
+fn[T] Vm::failure(self : Vm, id : Int32, error : Error) -> T raise {
   self.thunks[id] = Failed(error)
   raise error
 }
@@ -405,7 +405,7 @@ fn number_value(v : Value, loc : Location) -> Double raise {
 }
 
 ///|
-fn array_value(v : Value, loc : Location) -> Array[Int] raise {
+fn array_value(v : Value, loc : Location) -> Array[Int32] raise {
   match v {
     ArrayValue(a) => a
     _ =>

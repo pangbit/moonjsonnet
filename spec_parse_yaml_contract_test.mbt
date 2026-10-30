@@ -2,7 +2,7 @@
 // Best-effort JSON-compatible collections, not a complete YAML dialect contract.
 
 ///|
-fn yaml_parse_call(data : String, named? : Bool = false) -> OrderingExpr {
+fn yaml_parse_call(data : String, named~ : Bool = false) -> OrderingExpr {
   rounding_apply("parseYaml", [
     (if named { Some("str") } else { None }, reflect_string(data)),
   ])

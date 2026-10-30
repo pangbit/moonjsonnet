@@ -4,17 +4,17 @@
 // Malformed byte recovery, invalid scalar Strings and diagnostic order are excluded.
 
 ///|
-fn utf8_contract_bytes(bytes : Array[Int]) -> OrderingExpr {
+fn utf8_contract_bytes(bytes : Array[Int32]) -> OrderingExpr {
   ordering_array(bytes.map(n => sequence_num(n)))
 }
 
 ///|
-fn utf8_contract_byte_json(bytes : Array[Int]) -> Json {
+fn utf8_contract_byte_json(bytes : Array[Int32]) -> Json {
   Json::array(bytes.map(n => Json::number(n.to_double())))
 }
 
 ///|
-fn utf8_contract_pair(text : String, bytes : Array[Int]) -> Unit raise {
+fn utf8_contract_pair(text : String, bytes : Array[Int32]) -> Unit raise {
   sequence_value(
     sequence_call("encodeUTF8", [reflect_string(text)]),
     utf8_contract_byte_json(bytes),

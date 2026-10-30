@@ -5,7 +5,7 @@ pub struct Program {
   priv expression : Expr
   priv filename : String
   priv anonymous : Bool
-  priv source_bytes : Int
+  priv source_bytes : Int32
 }
 
 ///|
@@ -22,9 +22,9 @@ pub struct Program {
 /// ```
 pub fn Program::parse(
   source : String,
-  filename? : String = "<input>",
-  anonymous? : Bool = false,
-  limits? : Limits = Limits::default(),
+  filename~ : String = "<input>",
+  anonymous~ : Bool = false,
+  limits~ : Limits = Limits::default(),
 ) -> Program raise JsonnetError {
   let loc : Location = { file: filename, line: 1, column: 1, }
   try {
@@ -76,9 +76,9 @@ pub fn Program::ast(self : Program) -> Ast {
 pub fn Program::from_ast(
   tree : Ast,
   filename? : String,
-  anonymous? : Bool = false,
-  limits? : Limits = Limits::default(),
-  assertion_ranges? : Map[String, SourceRange] = Map([]),
+  anonymous~ : Bool = false,
+  limits~ : Limits = Limits::default(),
+  assertion_ranges~ : Map[String, SourceRange] = Map([]),
 ) -> Program raise JsonnetError {
   try {
     check_limits(limits, tree.loc)
@@ -102,7 +102,7 @@ pub fn Program::from_ast(
 /// depth/node budgets. Scope validation happens when constructing a Program.
 pub fn Ast::clone(
   self : Ast,
-  limits? : Limits = Limits::default(),
+  limits~ : Limits = Limits::default(),
 ) -> Ast raise JsonnetError {
   check_limits(limits, self.loc)
   let reader : AstReader = { limits, nodes: 0, assertion_ranges: Map([]), }

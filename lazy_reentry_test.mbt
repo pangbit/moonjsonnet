@@ -54,7 +54,7 @@ test "recursive lazy demands retain real frame and expression limits" {
 
 ///|
 test "finite lazy reentry executes callbacks and caches final results" {
-  let sources : Array[(String, Int)] = [
+  let sources : Array[(String, Int32)] = [
     ("local x=if std.native('done')() then 42 else x+1;[x,x]", 44),
     ("local x={a:if std.native('done')() then 42 else self.a+1};[x.a,x.a]", 44),
     ("local x=[if std.native('done')() then 42 else x[0]+1];[x[0],x[0]]", 44),

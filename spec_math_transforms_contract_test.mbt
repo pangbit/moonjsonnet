@@ -47,7 +47,7 @@ test "MX2 logarithm transforms retain independent literal base identities" {
 
 ///|
 test "MX3 required x accepts positional named and aliased calls without changing inputs" {
-  let cases : Array[(String, Int, Json)] = [
+  let cases : Array[(String, Int32, Json)] = [
     ("deg2rad", 0, [0, 0, 0, 0]),
     ("rad2deg", 0, [0, 0, 0, 0]),
     ("log2", 1, [0, 0, 1, 1]),

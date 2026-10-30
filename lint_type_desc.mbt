@@ -7,29 +7,29 @@
 
 ///|
 priv struct LintArrayType {
-  elements : Array[Array[Int]]
-  further : Array[Int]
+  elements : Array[Array[Int32]]
+  further : Array[Int32]
 }
 
 ///|
 priv struct LintObjectType {
-  fields : Map[String, Array[Int]]
-  unknown : Array[Int]
+  fields : Map[String, Array[Int32]]
+  unknown : Array[Int32]
   mut known : Bool
 }
 
 ///|
 priv struct LintFunctionType {
-  results : Array[Int]
+  results : Array[Int32]
   mut params : Array[(String, Bool)]?
-  mut min : Int
-  mut max : Int
+  mut min : Int32
+  mut max : Int32
 }
 
 ///|
 priv struct LintType {
   // bool=1, number=2, string=4, null=8
-  mut mask : Int
+  mut mask : Int32
   mut array : LintArrayType?
   mut object : LintObjectType?
   mut func : LintFunctionType?
@@ -41,7 +41,7 @@ fn LintType::empty() -> LintType {
 }
 
 ///|
-fn lint_refs(refs : Array[Int]) -> Array[Int] {
+fn lint_refs(refs : Array[Int32]) -> Array[Int32] {
   if refs.contains(1) {
     return [1]
   }
@@ -197,7 +197,7 @@ fn lint_plus(a : LintType, b : LintType) -> LintType {
     t.array = Some({ elements: a.elements.map(e => e.copy()), further, })
   }
   if a.object is Some(a) && b.object is Some(b) {
-    let fields : Map[String, Array[Int]] = Map([])
+    let fields : Map[String, Array[Int32]] = Map([])
     for k, v in a.fields {
       fields[k] = v.copy()
       if !b.known && !b.fields.contains(k) {

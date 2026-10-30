@@ -31,8 +31,8 @@ pub struct ParsedSource {
 /// Program::from_ast performs scope validation before execution.
 pub fn ParsedSource::parse(
   source : String,
-  filename? : String = "<input>",
-  limits? : Limits = Limits::default(),
+  filename~ : String = "<input>",
+  limits~ : Limits = Limits::default(),
 ) -> ParsedSource raise JsonnetError {
   let loc : Location = { file: filename, line: 1, column: 1, }
   try {

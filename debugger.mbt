@@ -43,13 +43,13 @@ pub struct Debugger {
   priv evaluator : Evaluator
   priv breakpoints : Map[String, SourceRange]
   priv mut stepping : Bool
-  priv mut finishing : Int?
+  priv mut finishing : Int32?
   priv mut terminated : Bool
   priv mut running : Bool
 }
 
 ///|
-pub fn Debugger::new(evaluator? : Evaluator = Evaluator::new()) -> Debugger {
+pub fn Debugger::new(evaluator~ : Evaluator = Evaluator::new()) -> Debugger {
   {
     evaluator,
     breakpoints: Map([]),
@@ -82,8 +82,8 @@ pub fn Debugger::breakpoint_locations(program : Program) -> Array[SourceRange] {
 pub fn Debugger::set_breakpoint(
   self : Debugger,
   program : Program,
-  line : Int,
-  column? : Int,
+  line : Int32,
+  column? : Int32,
 ) -> String raise JsonnetError {
   let ranges = Debugger::breakpoint_locations(program)
   guard ranges.search_by(range => {
@@ -161,7 +161,7 @@ pub fn Debugger::run(
   self : Debugger,
   program : Program,
   on_stop~ : (DebugStop) -> DebugCommand raise,
-  start_with_step? : Bool = false,
+  start_with_step~ : Bool = false,
 ) -> String raise JsonnetError {
   if self.running {
     raise problem(

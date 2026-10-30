@@ -217,7 +217,8 @@ test "readme raw syntax editing" {
 
 ## 从源码运行
 
-已验证工具链：Moon 0.1.20260920／MoonBit v0.10.14+7d59c7ec9。
+开发工具链：Moon 0.1.20261028／MoonBit v0.10.18+6c83a7f62。
+[版本基线](docs/reference/VERSIONS.md)区分本次迁移与已发布 0.2.2 在旧编译器上的验证结果。
 
 ```sh
 moon check --target native --deny-warn

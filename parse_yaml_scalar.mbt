@@ -265,7 +265,7 @@ fn yaml_float_key(n : Double) -> String {
 fn yaml_timestamp(s : String) -> Bool {
   let a = s.to_array()
   let mut i = 0
-  let number = fn(min : Int, max : Int) {
+  let number = fn(min : Int32, max : Int32) {
     let start = i
     let mut n = 0
     while i < a.length() && a[i] >= '0' && a[i] <= '9' && i - start < max {

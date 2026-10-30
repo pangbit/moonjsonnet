@@ -43,7 +43,7 @@ fn inherited_profile_guard(
   fallback : Expr,
 ) -> Expr {
   let loc = value.loc
-  let number = fn(n : Int) {
+  let number = fn(n : Int32) {
     inherited_profile_expr(Literal(Json::number(n.to_double())), loc)
   }
   let binary = fn(op : String, a : Expr, b : Expr) {

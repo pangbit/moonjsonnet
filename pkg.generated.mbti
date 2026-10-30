@@ -53,7 +53,7 @@ pub(all) enum AstClause {
 pub(all) struct AstField {
   key : Ast
   value : Ast
-  visibility : Int
+  visibility : Int32
   additive : Bool
 }
 
@@ -128,7 +128,7 @@ pub fn Debugger::breakpoint_locations(Program) -> Array[SourceRange]
 pub fn Debugger::clear_breakpoints(Self, String) -> Unit
 pub fn Debugger::new(evaluator? : Evaluator) -> Self
 pub fn Debugger::run(Self, Program, on_stop~ : (DebugStop) -> DebugCommand raise, start_with_step? : Bool) -> String raise JsonnetError
-pub fn Debugger::set_breakpoint(Self, Program, Int, column? : Int) -> String raise JsonnetError
+pub fn Debugger::set_breakpoint(Self, Program, Int32, column? : Int32) -> String raise JsonnetError
 
 pub(all) struct Diagnostic {
   kind : ErrorKind
@@ -137,7 +137,7 @@ pub(all) struct Diagnostic {
   context : Array[Location]
   trace : Array[TraceFrame]
 } derive(@debug.Debug)
-pub fn Diagnostic::format(Self, max_trace? : Int) -> String
+pub fn Diagnostic::format(Self, max_trace? : Int32) -> String
 pub fn Diagnostic::format_syntax(Self, String) -> String
 pub fn Diagnostic::format_syntax_bytes(Self, String) -> Bytes
 pub fn Diagnostic::output(Self, &Logger) -> Unit
@@ -153,7 +153,7 @@ pub fn DiagnosticFormatter::format(Self, Diagnostic) -> String
 pub fn DiagnosticFormatter::format_bytes(Self, Diagnostic) -> Bytes
 pub fn DiagnosticFormatter::new() -> Self
 pub fn DiagnosticFormatter::set_color(Self, color? : (String) -> String) -> Unit
-pub fn DiagnosticFormatter::set_max_trace(Self, Int) -> Unit
+pub fn DiagnosticFormatter::set_max_trace(Self, Int32) -> Unit
 pub fn DiagnosticFormatter::set_source(Self, Source) -> Unit
 
 pub(all) enum ErrorKind {
@@ -173,7 +173,7 @@ pub fn ErrorKind::to_repr(Self) -> @debug.Repr
 pub struct EvalContext {
   // private fields
 }
-pub fn EvalContext::evaluation_id(Self) -> Int
+pub fn EvalContext::evaluation_id(Self) -> Int32
 pub fn EvalContext::location(Self) -> Location
 pub fn EvalContext::lookup(Self, String) -> DebugValue raise JsonnetError
 pub fn EvalContext::node(Self) -> Ast raise JsonnetError
@@ -232,8 +232,8 @@ pub fn FormatCommentStyle::equal(Self, Self) -> Bool
 pub fn FormatCommentStyle::not_equal(Self, Self) -> Bool
 
 pub(all) struct FormatOptions {
-  indent : Int
-  max_blank_lines : Int
+  indent : Int32
+  max_blank_lines : Int32
   string_style : FormatStringStyle
   comment_style : FormatCommentStyle
   pretty_field_names : Bool
@@ -256,21 +256,21 @@ pub fn FormatStringStyle::equal(Self, Self) -> Bool
 pub fn FormatStringStyle::not_equal(Self, Self) -> Bool
 
 pub(all) struct Limits {
-  steps : Int
-  depth : Int
-  stack : Int
-  source_bytes : Int
-  import_bytes : Int
-  imports : Int
-  output_bytes : Int
+  steps : Int32
+  depth : Int32
+  stack : Int32
+  source_bytes : Int32
+  import_bytes : Int32
+  imports : Int32
+  output_bytes : Int32
 } derive(@debug.Debug)
 pub fn Limits::default() -> Self
 pub fn Limits::to_repr(Self) -> @debug.Repr
 
 pub(all) struct Location {
   file : String
-  line : Int
-  column : Int
+  line : Int32
+  column : Int32
 } derive(Eq, @debug.Debug)
 pub fn Location::equal(Self, Self) -> Bool
 pub fn Location::not_equal(Self, Self) -> Bool
@@ -404,12 +404,12 @@ pub fn SyntaxDocument::raw_ast(Self, limits? : SyntaxLimits) -> RawAst raise Jso
 pub fn SyntaxDocument::text(Self) -> String
 
 pub(all) struct SyntaxLimits {
-  parser_depth : Int
-  tree_depth : Int
-  nodes : Int
-  steps : Int
-  source_bytes : Int
-  output_bytes : Int
+  parser_depth : Int32
+  tree_depth : Int32
+  nodes : Int32
+  steps : Int32
+  source_bytes : Int32
+  output_bytes : Int32
 } derive(@debug.Debug)
 pub fn SyntaxLimits::default() -> Self
 pub fn SyntaxLimits::to_repr(Self) -> @debug.Repr

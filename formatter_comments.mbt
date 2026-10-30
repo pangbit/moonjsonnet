@@ -40,8 +40,8 @@ fn format_comment_lines(trivia : Trivia) -> Array[String] {
 // original comment. Track its offset while serializing, then restore metadata.
 priv struct FormatImportOutput {
   out : StringBuilder
-  margins : Map[Int, Int]
-  mut offset : Int
+  margins : Map[Int32, Int32]
+  mut offset : Int32
 }
 
 ///|

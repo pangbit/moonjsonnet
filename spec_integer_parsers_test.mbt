@@ -178,7 +178,7 @@ test "integer parsers reject actual overflow before inspection and retain lazy s
       ] {
       let value = additive_probe_scope(rounding_apply(name, args))
       for handmade in [false, true] {
-        let counts : Map[String, Int] = Map([])
+        let counts : Map[String, Int32] = Map([])
         try
           ordering_program(value, handmade).evaluate(
             native_functions=rewrite_natives(counts),

@@ -85,8 +85,8 @@ fn inherited_standard_function(name : String) -> Bool {
 fn remove_at_named_arguments(
   params : Array[ExprParameter],
   body : Expr?,
-  args : Array[(String?, Int)],
-) -> Array[(String?, Int)] {
+  args : Array[(String?, Int32)],
+) -> Array[(String?, Int32)] {
   if params.length() != 2 ||
     params[0].name != "arr" ||
     params[1].name != "i" ||

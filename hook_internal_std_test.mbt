@@ -1,8 +1,8 @@
 ///|
 test "hooks export clean nodes and paired stacks across private standard adapters" {
   let evaluator = @moonjsonnet.Evaluator::new()
-  let active : Array[Int] = []
-  let seen : Map[Int, Bool] = Map([])
+  let active : Array[Int32] = []
+  let seen : Map[Int32, Bool] = Map([])
   let contexts : Array[@moonjsonnet.EvalContext] = []
   let values : Array[@moonjsonnet.DebugValue] = []
   let mut saw_root = false
@@ -87,7 +87,7 @@ test "hooks export clean nodes and paired stacks across private standard adapter
 ///|
 test "a user filename matching the standard library still exposes its real nodes" {
   let evaluator = @moonjsonnet.Evaluator::new()
-  let active : Array[Int] = []
+  let active : Array[Int32] = []
   let mut root_seen = false
   let mut call_seen = false
   let mut before_count = 0

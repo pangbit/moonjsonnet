@@ -17,7 +17,7 @@ fn assertion_super_extract(field : String) -> @moonjsonnet.Ast {
 ///|
 fn assertion_super_tree(
   problem : String,
-  expected : Int,
+  expected : Int32,
   body : @moonjsonnet.Ast,
 ) -> @moonjsonnet.Ast {
   let fields = [("n", assertion_self_ast(Literal(1)))]
@@ -158,7 +158,7 @@ fn assertion_super_tree(
 }
 
 ///|
-fn assertion_super_source(problem : String, expected : Int) -> String {
+fn assertion_super_source(problem : String, expected : Int32) -> String {
   "local a={n:1" +
   (if problem == "error" {
     ",problem:error 'assertion-super-marker'"

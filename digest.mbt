@@ -6,7 +6,7 @@ fn digest_byte(
   position : Int64,
   total : Int64,
   little : Bool,
-) -> UInt {
+) -> UInt32 {
   if position < input.length().to_int64() {
     input[position.to_int()].to_uint()
   } else if position == input.length().to_int64() {
@@ -21,12 +21,12 @@ fn digest_byte(
 }
 
 ///|
-fn digest_rotl32(x : UInt, n : Int) -> UInt {
+fn digest_rotl32(x : UInt32, n : Int32) -> UInt32 {
   (x << n) | (x >> (32 - n))
 }
 
 ///|
-fn digest_rotl64(x : UInt64, n : Int) -> UInt64 {
+fn digest_rotl64(x : UInt64, n : Int32) -> UInt64 {
   if n == 0 {
     x
   } else {
@@ -35,7 +35,7 @@ fn digest_rotl64(x : UInt64, n : Int) -> UInt64 {
 }
 
 ///|
-fn digest_hex(words : Array[UInt64], width : Int, little : Bool) -> String {
+fn digest_hex(words : Array[UInt64], width : Int32, little : Bool) -> String {
   let alphabet = "0123456789abcdef".to_array()
   let out = StringBuilder()
   for word in words {

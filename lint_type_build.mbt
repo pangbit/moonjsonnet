@@ -9,10 +9,10 @@
 fn LintGraph::build(
   self : LintGraph,
   e : Expr,
-  scope : Map[String, Int],
+  scope : Map[String, Int32],
   from : String,
-  id? : Int,
-  depth? : Int = 0,
+  id? : Int32,
+  depth~ : Int32 = 0,
 ) -> LintTyped raise JsonnetError {
   if depth >= self.scan.limits.depth {
     raise problem(Limit, e.loc, "lint type expression depth exceeded")
@@ -20,7 +20,7 @@ fn LintGraph::build(
   self.scan.tick(e)
   let id = id.unwrap_or_else(() => self.add())
   let children = []
-  let visit = fn(e : Expr, scope : Map[String, Int]) raise JsonnetError {
+  let visit = fn(e : Expr, scope : Map[String, Int32]) raise JsonnetError {
     let node = self.build(e, scope, from, depth=depth + 1)
     children.push(node)
     node.id
@@ -98,7 +98,7 @@ fn LintGraph::build(
       for { name: n, .. } in bs {
         inner[n] = self.add()
       }
-      let fields : Map[String, Array[Int]] = Map([])
+      let fields : Map[String, Array[Int32]] = Map([])
       let unknown = []
       let mut known = true
       // Reference traversal visits all field names before locals and bodies.

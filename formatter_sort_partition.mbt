@@ -5,10 +5,10 @@
 ///|
 fn FormatImportSorter::partition(
   self : FormatImportSorter,
-  a : Int,
-  b : Int,
-  pivot : Int,
-) -> (Int, Bool) {
+  a : Int32,
+  b : Int32,
+  pivot : Int32,
+) -> (Int32, Bool) {
   self.entries.swap(a, pivot)
   let mut i = a + 1
   let mut j = b - 1
@@ -46,10 +46,10 @@ fn FormatImportSorter::partition(
 ///|
 fn FormatImportSorter::partition_equal(
   self : FormatImportSorter,
-  a : Int,
-  b : Int,
-  pivot : Int,
-) -> Int {
+  a : Int32,
+  b : Int32,
+  pivot : Int32,
+) -> Int32 {
   self.entries.swap(a, pivot)
   let mut i = a + 1
   let mut j = b - 1
@@ -73,8 +73,8 @@ fn FormatImportSorter::partition_equal(
 ///|
 fn FormatImportSorter::partial_insertion_sort(
   self : FormatImportSorter,
-  a : Int,
-  b : Int,
+  a : Int32,
+  b : Int32,
 ) -> Bool {
   let mut i = a + 1
   for _ in 0..<5 {

@@ -9,7 +9,7 @@ fn yaml_number_value(source : String, value : Double) -> OrderingExpr {
 ///|
 fn yaml_number_doc(
   value : OrderingExpr,
-  indent? : Bool = false,
+  indent~ : Bool = false,
 ) -> OrderingExpr {
   yaml_demand_doc(value, reflect_bool(indent), reflect_bool(true))
 }

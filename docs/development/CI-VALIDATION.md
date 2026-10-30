@@ -21,20 +21,25 @@ Classification changes are explicit: Linux's seven recognized declarations becom
 ## Script dependency and platform constraints
 
 The [CI workflow](../../.github/workflows/ci.yml) uses MoonBit
-`0.10.14+7d59c7ec9` with `moonbitlang/async@0.22.4`. All `tools/*.mbtx`
+`0.10.18+6c83a7f62` with `moonbitlang/async@0.22.4`. All `tools/*.mbtx`
 imports from that module name the same version, including `fs` and `shell`.
-The versioned script import syntax is documented in the
+Imports are enclosed in `----` frontmatter. The new compiler reports
+`unfenced_import` (E0096) for the previous top-level import form, which fails
+under `--deny-warn`; import paths, dependency versions and script assertions are
+preserved. The versioned script import syntax is documented in the
 [Moon script guide](https://docs.moonbitlang.com/en/latest/toolchain/moon/script-mode.html).
 Unversioned imports resolve the newest version in the local registry index;
 `moon update` refreshes that index, not the explicit script version.
 
 Both jobs in the [previous successful CI run](https://github.com/pangbit/moonjsonnet/actions/runs/38343391121)
-used async 0.22.4 with this compiler. The
+used async 0.22.4 with the previous compiler, `0.10.14+7d59c7ec9`. The
 [first 0.2.0 candidate CI](https://github.com/pangbit/moonjsonnet/actions/runs/40456212952)
 resolved async 0.22.5 and stopped before running tests: its `moon.pkg` field
 `max_concurrent_tests` is unsupported by the pinned toolchain. The original
-failure remains visible. No compiler upgrade, dependency-source edit or
-skipped assertion is used to resolve it.
+failure remains visible. That earlier repair pinned the script dependency
+without upgrading the compiler, editing dependency source or skipping assertions.
+The subsequent 2026-10-30 toolchain migration retains the same dependency pin;
+it does not relabel earlier CI runs as results for the new compiler.
 
 The cached 0.22.4 module manifest declares no external module dependencies;
 its core imports use the installed SDK. Its registry archive checksum is

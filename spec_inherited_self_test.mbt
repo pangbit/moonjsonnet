@@ -57,7 +57,7 @@ fn receiver_local(
 }
 
 ///|
-fn receiver_extend(name : String, n : Int) -> @moonjsonnet.Ast {
+fn receiver_extend(name : String, n : Int32) -> @moonjsonnet.Ast {
   receiver_ast(
     Binary(
       "+",

@@ -4,7 +4,7 @@
 // Visibility/index/application children are premises; no inherited assertion oracle.
 
 ///|
-fn projection_box(n : Int) -> OrderingExpr {
+fn projection_box(n : Int32) -> OrderingExpr {
   reflect_object([(reflect_string("n"), 1, sequence_num(n))])
 }
 
@@ -12,7 +12,7 @@ fn projection_box(n : Int) -> OrderingExpr {
 fn projection_value_at(
   name : String,
   result : OrderingExpr,
-  index : Int,
+  index : Int32,
 ) -> OrderingExpr {
   let item = make_index(result, index)
   if name == "objectValuesAll" {
@@ -265,7 +265,7 @@ test "OP4 mapWithKey defers callback arity bodies and ignored original values" {
 test "OP5 projection and mapping functions retain public names no defaults and aliases" {
   let original = reflect_object([(reflect_string("a"), 1, projection_box(7))])
   let pair : Json = [{ "key": "a", "value": { "n": 7 } }]
-  let cases : Array[(String, Array[(String?, OrderingExpr)], Json, Int)] = [
+  let cases : Array[(String, Array[(String?, OrderingExpr)], Json, Int32)] = [
     ("objectValuesAll", [(Some("o"), original)], [{ "n": 7 }], 1),
     ("objectKeysValues", [(Some("o"), original)], pair, 1),
     ("objectKeysValuesAll", [(Some("o"), original)], pair, 1),

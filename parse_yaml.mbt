@@ -8,9 +8,9 @@
 ///|
 priv enum ParsedYamlNode {
   Scalar(String, @yaml.TScalarStyle, @yaml.Tag?)
-  Sequence(Array[Int])
-  Mapping(Array[Int])
-  Alias(Int, String)
+  Sequence(Array[Int32])
+  Mapping(Array[Int32])
+  Alias(Int32, String)
 }
 
 ///|
@@ -86,8 +86,8 @@ fn Vm::yaml_document(self : Vm, source : String, loc : Location) -> Json raise {
   let source = source.strip_prefix("\ufeff").unwrap_or(source[:])
   let parser = @yaml.Parser::new(source, max_depth=self.limits.depth)
   let nodes : Array[ParsedYamlNode] = []
-  let parents : Array[Int] = []
-  let anchors : Map[Int, Int] = Map([])
+  let parents : Array[Int32] = []
+  let anchors : Map[Int32, Int32] = Map([])
   let mut root = -1
   while true {
     self.tick(loc)
@@ -164,7 +164,7 @@ fn Vm::yaml_document(self : Vm, source : String, loc : Location) -> Json raise {
 // The fixed goyaml.v2 decoder reports parser problem lines without the scanner's
 // extra increment. Internal Marker lines are one-based; first-line errors omit
 // a line prefix in that decoder. Preserve the parser/scanner distinction.
-fn yaml_parser_error(line : Int, info : String) -> String {
+fn yaml_parser_error(line : Int32, info : String) -> String {
   let problem = if info.has_prefix("while parsing ") {
     match info.find(", ") {
       Some(index) => info[index + 2:].to_owned()
@@ -187,7 +187,7 @@ fn yaml_parser_error(line : Int, info : String) -> String {
 }
 
 ///|
-fn yaml_scanner_error(line : Int, info : String) -> String {
+fn yaml_scanner_error(line : Int32, info : String) -> String {
   let problem = if info.has_prefix("while ") {
     match info.find(", ") {
       Some(index) => info[index + 2:].to_owned()
@@ -208,9 +208,9 @@ fn yaml_scanner_error(line : Int, info : String) -> String {
 fn Vm::yaml_to_json(
   self : Vm,
   nodes : Array[ParsedYamlNode],
-  index : Int,
-  active : Map[Int, Bool],
-  depth : Int,
+  index : Int32,
+  active : Map[Int32, Bool],
+  depth : Int32,
   loc : Location,
 ) -> Json raise {
   self.tick(loc)
@@ -322,9 +322,9 @@ fn Vm::yaml_to_json(
 fn Vm::yaml_key(
   self : Vm,
   nodes : Array[ParsedYamlNode],
-  index : Int,
-  value_index : Int,
-  depth : Int,
+  index : Int32,
+  value_index : Int32,
+  depth : Int32,
   loc : Location,
 ) -> String raise {
   self.tick(loc)
@@ -374,8 +374,8 @@ fn yaml_conversion_error(message : String) -> String {
 fn Vm::yaml_go_value(
   self : Vm,
   nodes : Array[ParsedYamlNode],
-  index : Int,
-  depth : Int,
+  index : Int32,
+  depth : Int32,
   loc : Location,
 ) -> String raise {
   self.tick(loc)

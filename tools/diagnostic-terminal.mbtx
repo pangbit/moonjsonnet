@@ -1,4 +1,6 @@
+----
 import { "moonbitlang/async@0.22.4", "moonbitlang/async@0.22.4/shell", "moonbitlang/async@0.22.4/fs", "moonbitlang/core/env" }
+----
 
 async fn command(program : String, args : Array[String]) -> String {
   let output = @shell.Cmd(program,args).output()

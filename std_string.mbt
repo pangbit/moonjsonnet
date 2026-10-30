@@ -49,7 +49,7 @@ fn equal_fold(a : String, b : String) -> Bool {
 fn Vm::strip_characters(
   self : Vm,
   value : Value,
-  chars_thunk : Int,
+  chars_thunk : Int32,
   name : String,
   loc : Location,
 ) -> Value raise {
@@ -107,7 +107,7 @@ fn Vm::split_limit(
   self : Vm,
   s : String,
   separator : String,
-  maximum_thunk : Int,
+  maximum_thunk : Int32,
   reverse : Bool,
   loc : Location,
 ) -> Value raise {
@@ -140,7 +140,7 @@ fn Vm::split_limit(
       diagnostic_number(maximum),
     )
   }
-  let parts : Array[Int] = []
+  let parts : Array[Int32] = []
   let mut rest = s[:]
   while maximum == -1.0 || parts.length().to_double() < maximum {
     self.tick(loc)

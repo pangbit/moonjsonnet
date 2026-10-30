@@ -16,7 +16,7 @@ fn default_trace(loc : Location, message : String) -> Unit {
 fn Vm::call_native(
   self : Vm,
   function : NativeFunction,
-  args : Array[(String?, Int)],
+  args : Array[(String?, Int32)],
   loc : Location,
 ) -> Value raise {
   let env = self.call_env(
@@ -56,7 +56,7 @@ fn Vm::native_result(
   self : Vm,
   value : Json,
   loc : Location,
-  depth : Int,
+  depth : Int32,
 ) -> Value raise {
   self.tick(loc)
   if depth >= self.limits.depth {

@@ -5,7 +5,7 @@
 fn concat_json(
   value : OrderingExpr,
   expected : Json,
-  single_line? : Bool = true,
+  single_line~ : Bool = true,
 ) -> Unit raise {
   for handmade in [false, true] {
     guard ordering_program(value, handmade).evaluate(limits=sequence_limits())
@@ -31,7 +31,7 @@ fn concat_json_sides(value : OrderingExpr, expected : Json) -> Unit raise {
 
 ///|
 fn concat_assert_object(
-  fields : Array[(OrderingExpr, Int, OrderingExpr)],
+  fields : Array[(OrderingExpr, Int32, OrderingExpr)],
   condition : OrderingExpr,
   message : OrderingExpr?,
 ) -> OrderingExpr {

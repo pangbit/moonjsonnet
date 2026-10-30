@@ -34,7 +34,7 @@ fn write_multi(
   directory : String,
   manifest : String?,
   create_dirs : Bool,
-  limit : Int,
+  limit : Int32,
   loc : @moonjsonnet.Location,
 ) -> Unit raise {
   let keys = files.keys().collect()

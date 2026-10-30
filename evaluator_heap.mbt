@@ -26,7 +26,7 @@ fn Vm::retain_imports(self : Vm) -> Unit {
   self.binary_imports.clear()
   let thunks = Array::make(self.thunks.length(), false)
   let objects = Array::make(self.objects.length(), false)
-  let pending : Array[(Bool, Int)] = self.imports
+  let pending : Array[(Bool, Int32)] = self.imports
     .values()
     .map(id => (false, id))
     .collect()
@@ -110,7 +110,7 @@ fn copy_evaluation_error(error : Error) -> Error {
 }
 
 ///|
-fn retain_environment(env : Env, pending : Array[(Bool, Int)]) -> Unit {
+fn retain_environment(env : Env, pending : Array[(Bool, Int32)]) -> Unit {
   let mut next = Some(env)
   while next is Some(current) {
     for _, id in current.names {
@@ -126,7 +126,7 @@ fn Vm::account_import(
   from : String,
   path : String,
   binary : Bool,
-  size : Int,
+  size : Int32,
   loc : Location,
 ) -> Unit raise {
   let key = (from, path, binary)

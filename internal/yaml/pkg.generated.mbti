@@ -20,11 +20,11 @@ pub enum Event {
   StreamEnd
   DocumentStart
   DocumentEnd
-  Alias(id~ : Int)
-  Scalar(value~ : String, style~ : TScalarStyle, id~ : Int, tag~ : Tag?)
-  SequenceStart(id~ : Int, tag~ : Tag?)
+  Alias(id~ : Int32)
+  Scalar(value~ : String, style~ : TScalarStyle, id~ : Int32, tag~ : Tag?)
+  SequenceStart(id~ : Int32, tag~ : Tag?)
   SequenceEnd
-  MappingStart(id~ : Int, tag~ : Tag?)
+  MappingStart(id~ : Int32, tag~ : Tag?)
   MappingEnd
 } derive(Eq, @debug.Debug)
 pub fn Event::equal(Self, Self) -> Bool
@@ -32,19 +32,19 @@ pub fn Event::not_equal(Self, Self) -> Bool
 pub fn Event::to_repr(Self) -> @debug.Repr
 
 pub struct Marker {
-  index : Int
-  line : Int
-  col : Int
+  index : Int32
+  line : Int32
+  col : Int32
 } derive(Eq, @debug.Debug)
 pub fn Marker::equal(Self, Self) -> Bool
 pub fn Marker::not_equal(Self, Self) -> Bool
 pub fn Marker::to_repr(Self) -> @debug.Repr
 
 type Parser
-pub fn Parser::anchor_name(Self, Int) -> String
+pub fn Parser::anchor_name(Self, Int32) -> String
 pub fn Parser::keep_tags(Self, Bool) -> Unit
 pub fn[R : MarkedEventReceiver] Parser::load(Self, R, Bool) -> Unit raise YamlError
-pub fn Parser::new(StringView, max_depth? : Int) -> Self
+pub fn Parser::new(StringView, max_depth? : Int32) -> Self
 pub fn Parser::next_token(Self) -> (Event, Marker) raise YamlError
 
 pub enum TScalarStyle {

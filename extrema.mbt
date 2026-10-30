@@ -2,8 +2,8 @@
 fn Vm::extreme_value(
   self : Vm,
   input : Value,
-  key_thunk : Int?,
-  on_empty : Int?,
+  key_thunk : Int32?,
+  on_empty : Int32?,
   maximum : Bool,
   loc : Location,
 ) -> Value raise {

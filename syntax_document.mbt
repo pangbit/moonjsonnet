@@ -2,12 +2,12 @@
 /// Source-tooling budgets, independent of evaluator Limits. The complete tree
 /// is admitted before export or formatting; parsing still has a recursive cap.
 pub(all) struct SyntaxLimits {
-  parser_depth : Int
-  tree_depth : Int
-  nodes : Int
-  steps : Int
-  source_bytes : Int
-  output_bytes : Int
+  parser_depth : Int32
+  tree_depth : Int32
+  nodes : Int32
+  steps : Int32
+  source_bytes : Int32
+  output_bytes : Int32
 } derive(Debug)
 
 ///|
@@ -68,8 +68,8 @@ pub struct SyntaxDocument {
 ///|
 pub fn SyntaxDocument::parse(
   source : String,
-  filename? : String = "<input>",
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  filename~ : String = "<input>",
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> SyntaxDocument raise JsonnetError {
   let loc : Location = { file: filename, line: 1, column: 1, }
   try {
@@ -114,8 +114,8 @@ pub fn SyntaxDocument::ast(self : SyntaxDocument) -> Ast {
 /// Recheck source/tree/node budgets and format without mutating the document.
 pub fn SyntaxDocument::format(
   self : SyntaxDocument,
-  options? : FormatOptions = FormatOptions::default(),
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  options~ : FormatOptions = FormatOptions::default(),
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> String raise JsonnetError {
   let document = self.document
   let loc = document.expression.loc
@@ -152,9 +152,9 @@ pub fn SyntaxDocument::format(
 /// ```
 pub fn format_syntax_source(
   source : String,
-  filename? : String = "<input>",
-  options? : FormatOptions = FormatOptions::default(),
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  filename~ : String = "<input>",
+  options~ : FormatOptions = FormatOptions::default(),
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> String raise JsonnetError {
   SyntaxDocument::parse(source, filename~, limits~).format(options~, limits~)
 }

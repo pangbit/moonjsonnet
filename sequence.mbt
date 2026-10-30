@@ -6,7 +6,7 @@ fn Vm::defer_index(
   value : Value,
   index : Double,
   loc : Location,
-) -> Int {
+) -> Int32 {
   let env : Env = {
     parent: None,
     names: Map([("a", self.store(Ready(value)))]),
@@ -32,7 +32,7 @@ fn Vm::defer_index(
 }
 
 ///|
-fn Vm::sequence(self : Vm, value : Value, loc : Location) -> Array[Int] raise {
+fn Vm::sequence(self : Vm, value : Value, loc : Location) -> Array[Int32] raise {
   match value {
     ArrayValue(a) => a
     Str(s) =>
@@ -53,8 +53,8 @@ fn Vm::fold_sequence(
   self : Vm,
   name : String,
   input : Value,
-  func : Int,
-  initial : Int,
+  func : Int32,
+  initial : Int32,
   loc : Location,
 ) -> Value raise {
   let empty = match input {
@@ -152,8 +152,8 @@ fn Vm::flat_map(
 fn Vm::defer_call(
   self : Vm,
   func : Value,
-  args : Array[Int],
+  args : Array[Int32],
   loc : Location,
-) -> Int {
+) -> Int32 {
   self.store(GeneratedCall(func, args, loc))
 }

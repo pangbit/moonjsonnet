@@ -9,8 +9,8 @@ fn Vm::prepare_parameters(
   code : Map[String, String],
   programs : Map[String, Program],
   kind : String,
-) -> Map[String, Int] {
-  let result : Map[String, Int] = Map([])
+) -> Map[String, Int32] {
+  let result : Map[String, Int32] = Map([])
   let env : Env = {
     parent: None,
     names: Map([]),

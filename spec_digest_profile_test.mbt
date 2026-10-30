@@ -12,7 +12,7 @@
 // No MoonJsonnet, Go or C++ evaluator output supplies the expected digests.
 
 ///|
-fn digest_profile_vectors(name : String) -> Array[(Int, String)] {
+fn digest_profile_vectors(name : String) -> Array[(Int32, String)] {
   match name {
     "sha256" =>
       [
@@ -45,7 +45,7 @@ fn digest_profile_vectors(name : String) -> Array[(Int, String)] {
 }
 
 ///|
-fn digest_profile_input(byte_length : Int) -> String {
+fn digest_profile_input(byte_length : Int32) -> String {
   "a".repeat(byte_length - 7) + "é😀\u{0000}"
 }
 
@@ -53,7 +53,7 @@ fn digest_profile_input(byte_length : Int) -> String {
 fn digest_profile_call(
   name : String,
   args : Array[(String?, OrderingExpr)],
-  through_alias? : Bool = false,
+  through_alias~ : Bool = false,
 ) -> OrderingExpr {
   let function = additive_select(sequence_var("std"), name)
   if through_alias {

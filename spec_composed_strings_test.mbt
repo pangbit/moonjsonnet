@@ -56,7 +56,7 @@ fn composed_domain_failure(
 ) -> Unit raise {
   let value = additive_probe_scope(sequence_call(name, [input]))
   for handmade in [false, true] {
-    let counts : Map[String, Int] = Map([])
+    let counts : Map[String, Int32] = Map([])
     assert_eq(
       ordering_program(ordering_unused(value), handmade).evaluate(
         native_functions=rewrite_natives(counts),
@@ -254,7 +254,7 @@ test "deepJoin and lines share required input and string leaves while unused cal
       ),
     )
     for handmade in [false, true] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       assert_eq(
         ordering_program(ordering_unused(expression), handmade).evaluate(
           native_functions=rewrite_natives(counts),
@@ -296,7 +296,7 @@ test "deepJoin and lines reject bad bindings before gates without skipping stati
       ] {
       let call = additive_probe_scope(rounding_apply(name, args))
       for handmade in [false, true] {
-        let counts : Map[String, Int] = Map([])
+        let counts : Map[String, Int32] = Map([])
         assert_eq(
           ordering_program(ordering_unused(call), handmade).evaluate(
             native_functions=rewrite_natives(counts),

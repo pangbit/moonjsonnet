@@ -1,7 +1,7 @@
 ///|
 fn Vm::object_flat_merge(
   self : Vm,
-  items : Array[Int],
+  items : Array[Int32],
   loc : Location,
 ) -> Value raise {
   let fields : Map[String, LayerField] = Map([])

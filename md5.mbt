@@ -5,8 +5,8 @@ fn Vm::md5(self : Vm, s : String, loc : Location) -> String raise {
   let blocks = input.length() / 64 +
     (if input.length() % 64 < 56 { 1 } else { 2 })
   let total = blocks.to_int64() * 64L
-  let state : Array[UInt] = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]
-  let constants : Array[UInt] = [
+  let state : Array[UInt32] = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476]
+  let constants : Array[UInt32] = [
     0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee, 0xf57c0faf, 0x4787c62a, 0xa8304613,
     0xfd469501, 0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be, 0x6b901122, 0xfd987193,
     0xa679438e, 0x49b40821, 0xf61e2562, 0xc040b340, 0x265e5a51, 0xe9b6c7aa, 0xd62f105d,

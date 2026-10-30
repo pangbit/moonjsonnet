@@ -8,7 +8,7 @@ fn utf8_text_ast(kind : @moonjsonnet.AstKind) -> @moonjsonnet.Ast {
 
 ///|
 fn utf8_text_programs(
-  unused? : Bool = false,
+  unused~ : Bool = false,
 ) -> Array[@moonjsonnet.Program] raise {
   let leaf = utf8_text_ast(ImportFile("data", true))
   let source = if unused {

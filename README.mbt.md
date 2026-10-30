@@ -229,7 +229,9 @@ test "readme raw syntax editing" {
 
 ## Run from source
 
-Validated toolchain: Moon 0.1.20260920 / MoonBit v0.10.14+7d59c7ec9.
+Development toolchain: Moon 0.1.20261028 / MoonBit v0.10.18+6c83a7f62.
+The [version baseline](docs/reference/VERSIONS.md) separates this migration from
+the published 0.2.2 validation on the previous compiler.
 
 ```sh
 moon check --target native --deny-warn

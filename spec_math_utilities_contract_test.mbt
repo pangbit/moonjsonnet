@@ -5,7 +5,7 @@
 
 ///|
 test "MU1 hypot preserves ordinary positional lengths and sign symmetry" {
-  let cases : Array[(Int, Int, Int)] = [
+  let cases : Array[(Int32, Int32, Int32)] = [
     (0, 0, 0),
     (3, 0, 3),
     (0, -4, 4),
@@ -54,7 +54,7 @@ test "MU2 hypot uses documented a b names through direct and aliased calls" {
 test "MU3 mantissa and exponent decompose ordinary nonzero binary fractions" {
   // The pair is the normalized signed fraction m and exponent e in x=m*2^e.
   // Zero spelling and all-value accuracy are not inferred from these witnesses.
-  let cases : Array[(String, Double, Double, Int)] = [
+  let cases : Array[(String, Double, Double, Int32)] = [
     ("1", 1.0, 0.5, 1),
     ("2", 2.0, 0.5, 2),
     ("3", 3.0, 0.75, 2),

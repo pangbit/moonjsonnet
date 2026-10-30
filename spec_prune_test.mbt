@@ -1,7 +1,7 @@
 // Independent contract: SPEC-PRUNE-2026-10-23.md.
 
 ///|
-fn prune_call(value : OrderingExpr, named? : Bool = false) -> OrderingExpr {
+fn prune_call(value : OrderingExpr, named~ : Bool = false) -> OrderingExpr {
   rounding_apply("prune", [(if named { Some("a") } else { None }, value)])
 }
 
@@ -224,7 +224,7 @@ test "prune demands recursive membership errors while unused bodies and bindings
     ] {
     let value = additive_probe_scope(rounding_apply("prune", args))
     for handmade in [false, true] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       try
         ordering_program(value, handmade).evaluate(
           native_functions=rewrite_natives(counts),

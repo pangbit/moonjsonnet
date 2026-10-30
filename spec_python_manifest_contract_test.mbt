@@ -7,7 +7,7 @@
 fn python_manifest_call(
   name : String,
   args : Array[(String?, OrderingExpr)],
-  through_alias? : Bool = false,
+  through_alias~ : Bool = false,
 ) -> OrderingExpr {
   let function = additive_select(sequence_var("std"), name)
   if through_alias {

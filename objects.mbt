@@ -20,7 +20,7 @@ fn Vm::object_value(self : Vm, layers : Array[Layer]) -> Value {
 }
 
 ///|
-fn Vm::scope(self : Vm, id : Int, layer : Int, outer : Env) -> Env {
+fn Vm::scope(self : Vm, id : Int32, layer : Int32, outer : Env) -> Env {
   let obj = self.objects[id]
   let env = outer
     .child()
@@ -37,7 +37,7 @@ fn Vm::scope(self : Vm, id : Int, layer : Int, outer : Env) -> Env {
 }
 
 ///|
-fn Vm::layer_scope(self : Vm, id : Int, layer : Int) -> Env {
+fn Vm::layer_scope(self : Vm, id : Int32, layer : Int32) -> Env {
   let obj = self.objects[id]
   match obj.scopes.get(layer) {
     Some(e) => e
@@ -50,7 +50,7 @@ fn Vm::layer_scope(self : Vm, id : Int, layer : Int) -> Env {
 }
 
 ///|
-fn Vm::check_assertions(self : Vm, id : Int, loc : Location) -> Unit raise {
+fn Vm::check_assertions(self : Vm, id : Int32, loc : Location) -> Unit raise {
   let obj = self.objects[id]
   if obj.assertion_error is Some(error) {
     raise copy_evaluation_error(error)
@@ -101,7 +101,7 @@ fn Vm::check_assertions(self : Vm, id : Int, loc : Location) -> Unit raise {
 }
 
 ///|
-fn Vm::has_field(self : Vm, id : Int, top : Int, name : String) -> Bool {
+fn Vm::has_field(self : Vm, id : Int32, top : Int32, name : String) -> Bool {
   for i in 0..<top {
     if self.objects[id].layers[i].fields.contains(name) {
       return true
@@ -111,7 +111,7 @@ fn Vm::has_field(self : Vm, id : Int, top : Int, name : String) -> Bool {
 }
 
 ///|
-fn Vm::visible(self : Vm, id : Int, top : Int, name : String) -> Bool {
+fn Vm::visible(self : Vm, id : Int32, top : Int32, name : String) -> Bool {
   let mut visible = true
   for i in 0..<top {
     if self.objects[id].layers[i].fields.get(name) is Some(f) {
@@ -127,7 +127,7 @@ fn Vm::visible(self : Vm, id : Int, top : Int, name : String) -> Bool {
 }
 
 ///|
-fn Vm::keys(self : Vm, id : Int, top : Int, hidden : Bool) -> Array[String] {
+fn Vm::keys(self : Vm, id : Int32, top : Int32, hidden : Bool) -> Array[String] {
   let seen : Map[String, Bool] = Map([])
   for i in 0..<top {
     for k, _ in self.objects[id].layers[i].fields {
@@ -145,8 +145,8 @@ fn Vm::keys(self : Vm, id : Int, top : Int, hidden : Bool) -> Array[String] {
 ///|
 fn Vm::field(
   self : Vm,
-  id : Int,
-  top : Int,
+  id : Int32,
+  top : Int32,
   name : String,
   loc : Location,
 ) -> Value raise {
@@ -192,8 +192,8 @@ fn Vm::field(
 ///|
 fn Vm::field_value(
   self : Vm,
-  id : Int,
-  layer : Int,
+  id : Int32,
+  layer : Int32,
   name : String,
   field : LayerField,
   env : Env,
@@ -237,7 +237,7 @@ fn Vm::assertion(
   env : Env,
   failure_frame? : TraceFrame,
   condition_frame? : TraceFrame,
-  default_message? : String = "Assertion failed",
+  default_message~ : String = "Assertion failed",
 ) -> Unit raise {
   let condition = self.eval(cond, env)
   let holds = boolean(condition, cond.loc) catch {

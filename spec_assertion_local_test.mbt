@@ -21,8 +21,8 @@ fn assertion_local_sample() -> @moonjsonnet.Ast {
 ///|
 fn assertion_local_tree(
   body : @moonjsonnet.Ast,
-  bad_expected? : Bool = false,
-  local_error? : Bool = false,
+  bad_expected~ : Bool = false,
+  local_error~ : Bool = false,
 ) -> @moonjsonnet.Ast {
   let helper = if local_error {
     assertion_self_ast(
@@ -175,8 +175,8 @@ fn assertion_local_tree(
 
 ///|
 fn assertion_local_source(
-  bad_expected? : Bool = false,
-  local_error? : Bool = false,
+  bad_expected~ : Bool = false,
+  local_error~ : Bool = false,
 ) -> String {
   "local helper=error 'outer-helper-marker',receiver={tag:99}," +
   "root={tag:10,child:{tag:2,expected:[2,30,10],local receiver=self,local helper=" +

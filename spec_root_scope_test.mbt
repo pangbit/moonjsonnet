@@ -73,7 +73,7 @@ fn root_probe_function() -> @moonjsonnet.Ast {
 }
 
 ///|
-fn root_factory_object(tag : Int, inner : Int) -> @moonjsonnet.Ast {
+fn root_factory_object(tag : Int32, inner : Int32) -> @moonjsonnet.Ast {
   root_object([
     ("tag", root_ast(Literal(Json::number(tag.to_double())))),
     (

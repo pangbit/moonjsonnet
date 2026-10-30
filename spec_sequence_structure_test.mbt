@@ -7,7 +7,7 @@ fn sequence_limits() -> @moonjsonnet.Limits {
 }
 
 ///|
-fn sequence_num(n : Int) -> OrderingExpr {
+fn sequence_num(n : Int32) -> OrderingExpr {
   ordering_leaf(n.to_string(), Literal(Json::number(n.to_double())))
 }
 
@@ -60,7 +60,7 @@ fn sequence_local(
 
 ///|
 fn sequence_gate(
-  checks : Array[(OrderingExpr, Int)],
+  checks : Array[(OrderingExpr, Int32)],
   result : OrderingExpr,
 ) -> OrderingExpr {
   let mut out = result
@@ -145,7 +145,7 @@ test "sequence concatenation preserves all elements and lazy seam payloads" {
     "+",
     ordering_array([sequence_num(30), ordering_error("right-payload")]),
   )
-  let index = fn(n : Int) -> OrderingExpr {
+  let index = fn(n : Int32) -> OrderingExpr {
     {
       source: "c[" + n.to_string() + "]",
       tree: ordering_ast(Index(ordering_ast(Var("c")), sequence_num(n).tree)),
@@ -178,7 +178,7 @@ test "sequence concatenation preserves all elements and lazy seam payloads" {
 ///|
 test "sequence aliases survive deletion before and after warm concatenation" {
   let len = fn(name : String) { sequence_call("length", [sequence_var(name)]) }
-  let removed_len = fn(name : String, i : Int) {
+  let removed_len = fn(name : String, i : Int32) {
     sequence_call("length", [
       sequence_call("removeAt", [sequence_var(name), sequence_num(i)]),
     ])
@@ -247,7 +247,7 @@ test "sequence aliases survive deletion before and after warm concatenation" {
 
 ///|
 test "sequence length counts String codepoints and requires the evaluated child" {
-  let cases : Array[(String, String, Int)] = [
+  let cases : Array[(String, String, Int32)] = [
     ("''", "", 0),
     ("'😀'", "😀", 1),
     ("'e\\u0301😀'", "é😀", 3),

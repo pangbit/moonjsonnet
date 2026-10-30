@@ -51,7 +51,7 @@ fn additive_member(
   spelling : String,
   key : OrderingExpr,
   body_key : OrderingExpr,
-  visibility : Int,
+  visibility : Int32,
   rhs : OrderingExpr,
   expanded : Bool,
 ) -> AdditiveMember {
@@ -101,7 +101,7 @@ fn additive_object(fields : Array[AdditiveMember]) -> OrderingExpr {
 ///|
 fn additive_k(
   spelling : String,
-  visibility : Int,
+  visibility : Int32,
   rhs : OrderingExpr,
   expanded : Bool,
 ) -> AdditiveMember {
@@ -175,7 +175,7 @@ test "additive separator visibility and hidden prefix presence defer payload dem
             _ => [13, 13]
           }
           for handmade in [false, true] {
-            let counts : Map[String, Int] = Map([])
+            let counts : Map[String, Int32] = Map([])
             let program = ordering_program(value, handmade)
             assert_eq(counts.length(), 0)
             assert_eq(

@@ -6,7 +6,7 @@
 
 ///|
 test "CL1 clamp preserves literal finite ranges endpoints and equal bounds" {
-  let cases : Array[(Int, Int, Int, Int)] = [
+  let cases : Array[(Int32, Int32, Int32, Int32)] = [
     (-3, 0, 5, 0),
     (0, 0, 5, 0),
     (4, 0, 5, 4),

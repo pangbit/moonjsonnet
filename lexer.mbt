@@ -21,7 +21,7 @@ priv struct Trivia {
   raw : String
   range : SourceRange
   // Formatting retains this margin when imports move and are re-lexed.
-  margin : Int
+  margin : Int32
 }
 
 ///|
@@ -38,7 +38,7 @@ fn digit(c : Char) -> Bool {
 fn lex(
   source : String,
   file : String,
-  retain_trivia? : Bool = false,
+  retain_trivia~ : Bool = false,
 ) -> Array[Token] raise Error {
   let chars = source.to_array()
   let out : Array[Token] = []

@@ -48,7 +48,7 @@ fn assertion_self_invoke(body : @moonjsonnet.Ast) -> @moonjsonnet.Ast {
 ///|
 fn assertion_self_object(
   fields : Array[(String, @moonjsonnet.Ast)],
-  checks? : Array[(@moonjsonnet.Ast, @moonjsonnet.Ast?)] = [],
+  checks~ : Array[(@moonjsonnet.Ast, @moonjsonnet.Ast?)] = [],
 ) -> @moonjsonnet.Ast {
   assertion_self_ast(
     Obj(
@@ -79,10 +79,10 @@ fn assertion_self_local(
 
 ///|
 fn assertion_self_tree(
-  required : Int,
+  required : Int32,
   label : String,
   body : @moonjsonnet.Ast,
-  condition_error? : Bool = false,
+  condition_error~ : Bool = false,
 ) -> @moonjsonnet.Ast {
   let context = [
     assertion_self_index("self", "n"),
@@ -145,9 +145,9 @@ fn assertion_self_tree(
 
 ///|
 fn assertion_self_source(
-  required : Int,
+  required : Int32,
   label : String,
-  condition_error? : Bool = false,
+  condition_error~ : Bool = false,
 ) -> String {
   "local original={n:2,required:2,label:'original'," +
   "assert (function()if std.native('condition')(self.n,self.required,self.label) then " +

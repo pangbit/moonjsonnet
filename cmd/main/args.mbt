@@ -6,7 +6,7 @@ suberror CliError {
 
 ///|
 // Go uses decimal Atoi, without underscores, spaces or radix prefixes.
-fn trace_limit(value : String) -> Int raise CliError {
+fn trace_limit(value : String) -> Int32 raise CliError {
   decimal_limit(value, "--max-trace", 0)
 }
 
@@ -14,8 +14,8 @@ fn trace_limit(value : String) -> Int raise CliError {
 fn decimal_limit(
   value : String,
   option : String,
-  minimum : Int,
-) -> Int raise CliError {
+  minimum : Int32,
+) -> Int32 raise CliError {
   let invalid = "Invalid integer \"" + value + "\"\n"
   let digits = if value.has_prefix("+") || value.has_prefix("-") {
     value[1:]

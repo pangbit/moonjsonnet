@@ -13,7 +13,7 @@ fn reflect_bool(value : Bool) -> OrderingExpr {
 
 ///|
 fn reflect_object(
-  fields : Array[(OrderingExpr, Int, OrderingExpr)],
+  fields : Array[(OrderingExpr, Int32, OrderingExpr)],
 ) -> OrderingExpr {
   {
     source: "{" +

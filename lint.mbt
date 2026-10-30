@@ -18,7 +18,7 @@ priv struct LintBinding {
 ///|
 priv struct LintScan {
   limits : Limits
-  mut steps : Int
+  mut steps : Int32
   bindings : Array[LintBinding]
   diagnostics : Array[Diagnostic]
 }
@@ -45,7 +45,7 @@ fn LintScan::report(self : LintScan, loc : Location, message : String) -> Unit {
 ///|
 fn LintScan::bind(
   self : LintScan,
-  scope : Map[String, Int],
+  scope : Map[String, Int32],
   name : String,
   loc : Location,
   warn : Bool,
@@ -58,8 +58,8 @@ fn LintScan::bind(
 fn LintScan::locals(
   self : LintScan,
   bs : Array[ExprBinding],
-  scope : Map[String, Int],
-) -> Map[String, Int] raise JsonnetError {
+  scope : Map[String, Int32],
+) -> Map[String, Int32] raise JsonnetError {
   let inner = scope.copy()
   for b in bs {
     let loc = b.range
@@ -77,8 +77,8 @@ fn LintScan::locals(
 fn LintScan::clauses(
   self : LintScan,
   cs : Array[Clause],
-  scope : Map[String, Int],
-) -> Map[String, Int] raise JsonnetError {
+  scope : Map[String, Int32],
+) -> Map[String, Int32] raise JsonnetError {
   let inner = scope.copy()
   for c in cs {
     match c {
@@ -96,7 +96,7 @@ fn LintScan::clauses(
 fn LintScan::variables(
   self : LintScan,
   e : Expr,
-  scope : Map[String, Int],
+  scope : Map[String, Int32],
 ) -> Unit raise JsonnetError {
   self.tick(e)
   match e.kind {
@@ -145,8 +145,8 @@ fn LintScan::looping(
   self : LintScan,
   e : Expr,
   vars : Map[String, Expr],
-  runs : Map[String, Int],
-  run : Int,
+  runs : Map[String, Int32],
+  run : Int32,
 ) -> Bool raise JsonnetError {
   let pending = [e]
   while pending.pop() is Some(e) {
@@ -206,7 +206,7 @@ fn LintScan::loops(self : LintScan, e : Expr) -> Unit raise JsonnetError {
 pub fn lint(
   snippets : Array[Source],
   resolver? : (String, String) -> BinarySource raise,
-  limits? : Limits = Limits::default(),
+  limits~ : Limits = Limits::default(),
 ) -> Array[Diagnostic] raise JsonnetError {
   let loc : Location = { file: "<lint>", line: 1, column: 1, }
   check_limits(limits, loc)
@@ -290,7 +290,7 @@ pub fn lint(
   // Go keys inference roots by filename: only the last entry at a path has
   // inferred types. Earlier entries still receive checks on their own syntax,
   // using the empty type bound rather than the later entry's expression tree.
-  let last : Map[String, Int] = Map([])
+  let last : Map[String, Int32] = Map([])
   for i, (name, _) in entries {
     last[name] = i
   }

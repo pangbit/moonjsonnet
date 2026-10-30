@@ -60,7 +60,7 @@ pub fn Program::assertion_ranges(self : Program) -> Map[String, SourceRange] {
 fn Env::trace_context(
   self : Env,
   name : String,
-  bound? : String = "anonymous",
+  bound~ : String = "anonymous",
 ) -> Env {
   {
     ..self,

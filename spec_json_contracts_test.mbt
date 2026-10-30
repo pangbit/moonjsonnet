@@ -325,7 +325,7 @@ test "JSON manifestation demands visible values and only required formatting opt
     for args in [[], wrong] {
       let value = additive_probe_scope(rounding_apply(name, args))
       for handmade in [false, true] {
-        let counts : Map[String, Int] = Map([])
+        let counts : Map[String, Int32] = Map([])
         try
           ordering_program(value, handmade).evaluate(
             native_functions=rewrite_natives(counts),

@@ -114,7 +114,7 @@ fn Parser::end_list(
   self : Parser,
   close : String,
   element : String,
-  describe? : Bool = true,
+  describe~ : Bool = true,
 ) -> Unit raise JsonnetError {
   if !self.eat(close) {
     raise problem(

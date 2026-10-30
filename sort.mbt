@@ -2,7 +2,7 @@
 fn Vm::sort_values(
   self : Vm,
   input : Value,
-  key : Int?,
+  key : Int32?,
   loc : Location,
 ) -> Value raise {
   // The fixed source returns these Arrays before using any key or element.
@@ -66,8 +66,8 @@ fn Vm::sort_values(
   while width < n {
     let mut start = 0
     while start < n {
-      let middle = start + Int::min(width, n - start)
-      let end = middle + Int::min(width, n - middle)
+      let middle = start + Int32::min(width, n - start)
+      let end = middle + Int32::min(width, n - middle)
       let mut left = start
       let mut right = middle
       for out in start..<end {

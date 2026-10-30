@@ -10,7 +10,7 @@
 ///|
 priv enum LintIndex {
   AnyIndex
-  IntIndex(Int)
+  IntIndex(Int32)
   StringIndex(String)
   ResultIndex
 } derive(Eq, Hash)
@@ -18,15 +18,15 @@ priv enum LintIndex {
 ///|
 priv struct LintSlot {
   mut concrete : LintType
-  mut refs : Array[Int]
-  mut index : (Int, LintIndex)?
-  mut plus : (Int, Int)?
+  mut refs : Array[Int32]
+  mut index : (Int32, LintIndex)?
+  mut plus : (Int32, Int32)?
 }
 
 ///|
 priv struct LintTyped {
   expression : Expr
-  id : Int
+  id : Int32
   children : Array[LintTyped]
 }
 
@@ -34,14 +34,14 @@ priv struct LintTyped {
 priv struct LintGraph {
   scan : LintScan
   slots : Array[LintSlot]
-  elements : Map[(Int, LintIndex), Int]
+  elements : Map[(Int32, LintIndex), Int32]
   bounds : Array[LintType]
-  roots : Map[String, Int]
+  roots : Map[String, Int32]
   imports : Map[(String, String), String]
 }
 
 ///|
-fn LintGraph::add(self : LintGraph, t? : LintType = LintType::empty()) -> Int {
+fn LintGraph::add(self : LintGraph, t~ : LintType = LintType::empty()) -> Int32 {
   let id = self.slots.length()
   self.slots.push({ concrete: t, refs: [], index: None, plus: None, })
   id
@@ -50,10 +50,10 @@ fn LintGraph::add(self : LintGraph, t? : LintType = LintType::empty()) -> Int {
 ///|
 fn LintGraph::function(
   self : LintGraph,
-  result : Int,
+  result : Int32,
   params : Array[(String, Bool)],
   simple : Bool,
-) -> Int {
+) -> Int32 {
   let t = LintType::empty()
   // Fixed Go countRequiredParameters counts defaults; retain its actual rule.
   t.func = Some({
@@ -116,7 +116,7 @@ fn LintGraph::new(
 }
 
 ///|
-fn LintGraph::work(self : LintGraph, amount : Int) -> Unit raise JsonnetError {
+fn LintGraph::work(self : LintGraph, amount : Int32) -> Unit raise JsonnetError {
   if amount > self.scan.limits.steps - self.scan.steps {
     raise problem(
       Limit,
@@ -130,10 +130,10 @@ fn LintGraph::work(self : LintGraph, amount : Int) -> Unit raise JsonnetError {
 ///|
 fn LintGraph::element(
   self : LintGraph,
-  container : Int,
+  container : Int32,
   index : LintIndex,
-  depth : Int,
-) -> Int raise JsonnetError {
+  depth : Int32,
+) -> Int32 raise JsonnetError {
   if self.elements.get((container, index)) is Some(id) {
     return id
   }
@@ -276,7 +276,7 @@ fn LintGraph::solve(self : LintGraph) -> Unit raise JsonnetError {
       }
     }
   }
-  let reverse : Array[Array[Int]] = Array::makei(n, _ => [])
+  let reverse : Array[Array[Int32]] = Array::makei(n, _ => [])
   for id, children in edges {
     self.work(1 + children.length())
     for child in children {
@@ -284,7 +284,7 @@ fn LintGraph::solve(self : LintGraph) -> Unit raise JsonnetError {
     }
   }
   let group = Array::make(n, -1)
-  let groups : Array[Array[Int]] = []
+  let groups : Array[Array[Int32]] = []
   for i = order.length() - 1; i >= 0; i = i - 1 {
     let start = order[i]
     if group[start] >= 0 {

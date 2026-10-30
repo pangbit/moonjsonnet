@@ -8,9 +8,9 @@
 
 ## 环境与工作目录
 
-使用 macOS 或 Linux、原生 C 编译器和[已验证的 MoonBit 工具链](../README.zh-CN.md#从源码运行)。
+使用 macOS 或 Linux、原生 C 编译器和[开发 MoonBit 工具链](../README.zh-CN.md#从源码运行)。
 [CI 配置](../.github/workflows/ci.yml)提供固定版本的安装命令；`moon version --all` 应显示
-Moon 0.1.20260920 和 MoonBit v0.10.14+7d59c7ec9。无需另行安装 Jsonnet 解释器。
+Moon 0.1.20261028 和 MoonBit v0.10.18+6c83a7f62。无需另行安装 Jsonnet 解释器。
 
 ```sh
 git clone https://github.com/pangbit/moonjsonnet.git

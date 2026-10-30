@@ -25,7 +25,7 @@ fn reference_mul_high(a : UInt64, b : UInt64) -> UInt64 {
 }
 
 ///|
-fn reference_trig_reduce(x : Double) -> (Int, Double) {
+fn reference_trig_reduce(x : Double) -> (Int32, Double) {
   if x < 536870912.0 {
     let mut j = (x * 1.2732395447351628).to_int()
     if (j & 1) == 1 {

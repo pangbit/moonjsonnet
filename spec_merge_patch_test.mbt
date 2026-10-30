@@ -9,7 +9,7 @@ fn merge_patch_object(fields : Array[(String, OrderingExpr)]) -> OrderingExpr {
 fn merge_patch_call(
   target : OrderingExpr,
   patch : OrderingExpr,
-  named? : Bool = false,
+  named~ : Bool = false,
 ) -> OrderingExpr {
   rounding_apply("mergePatch", [
     (if named { Some("target") } else { None }, target),
@@ -290,7 +290,7 @@ test "mergePatch propagates isolated required errors and preserves static bindin
     ] {
     let value = additive_probe_scope(rounding_apply("mergePatch", args))
     for handmade in [false, true] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       try
         ordering_program(value, handmade).evaluate(
           native_functions=rewrite_natives(counts),

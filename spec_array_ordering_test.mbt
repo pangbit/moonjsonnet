@@ -76,7 +76,7 @@ fn ordering_limits() -> @moonjsonnet.Limits {
 }
 
 ///|
-fn ordering_visit(id : String, value : Int) -> OrderingExpr {
+fn ordering_visit(id : String, value : Int32) -> OrderingExpr {
   let native = ordering_ast(
     Call(
       ordering_ast(

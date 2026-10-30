@@ -1,5 +1,5 @@
 ///|
-fn Vm::account_output(self : Vm, size : Int, loc : Location) -> Unit raise {
+fn Vm::account_output(self : Vm, size : Int32, loc : Location) -> Unit raise {
   if size > self.limits.output_bytes - self.output_bytes {
     raise problem(Limit, loc, "output byte limit exceeded")
   }
@@ -11,7 +11,7 @@ fn Vm::manifest(
   self : Vm,
   value : Value,
   loc : Location,
-  depth : Int,
+  depth : Int32,
 ) -> Json raise {
   self.tick(loc)
   self.push_frame(loc, false)
@@ -26,7 +26,7 @@ fn Vm::manifest(
   try {
     match value {
       ArrayValue(a) => {
-        self.account_output(2 + Int::max(0, a.length() - 1), loc)
+        self.account_output(2 + Int32::max(0, a.length() - 1), loc)
         let values : Array[Json] = []
         for index, t in a {
           values.push(
@@ -42,7 +42,7 @@ fn Vm::manifest(
           self.check_assertions(id, loc)
         })
         let keys = self.keys(id, top, false)
-        self.account_output(2 + Int::max(0, keys.length() - 1), loc)
+        self.account_output(2 + Int32::max(0, keys.length() - 1), loc)
         let fields : Map[String, Json] = Map([])
         for k in keys {
           self.account_output(

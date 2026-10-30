@@ -13,20 +13,20 @@
 /// ```
 pub fn evaluate_text(
   source : String,
-  string_output? : Bool = false,
-  filename? : String = "<input>",
-  anonymous? : Bool = false,
-  ext_vars? : Map[String, Json] = Map([]),
-  ext_code? : Map[String, String] = Map([]),
-  ext_programs? : Map[String, Program] = Map([]),
-  tla_vars? : Map[String, Json] = Map([]),
-  tla_code? : Map[String, String] = Map([]),
-  tla_programs? : Map[String, Program] = Map([]),
-  native_functions? : Map[String, NativeFunction] = Map([]),
-  trace? : (Location, String) -> Unit = default_trace,
+  string_output~ : Bool = false,
+  filename~ : String = "<input>",
+  anonymous~ : Bool = false,
+  ext_vars~ : Map[String, Json] = Map([]),
+  ext_code~ : Map[String, String] = Map([]),
+  ext_programs~ : Map[String, Program] = Map([]),
+  tla_vars~ : Map[String, Json] = Map([]),
+  tla_code~ : Map[String, String] = Map([]),
+  tla_programs~ : Map[String, Program] = Map([]),
+  native_functions~ : Map[String, NativeFunction] = Map([]),
+  trace~ : (Location, String) -> Unit = default_trace,
   resolver? : (String, String) -> Source raise,
   binary_resolver? : (String, String) -> BinarySource raise,
-  limits? : Limits = Limits::default(),
+  limits~ : Limits = Limits::default(),
 ) -> String raise JsonnetError {
   Program::parse(source, filename~, anonymous~, limits~).evaluate_text(
     string_output~,
@@ -49,18 +49,18 @@ pub fn evaluate_text(
 /// match `evaluate_text`; source filename and anonymous mode were fixed when parsed.
 pub fn Program::evaluate_text(
   self : Program,
-  string_output? : Bool = false,
-  ext_vars? : Map[String, Json] = Map([]),
-  ext_code? : Map[String, String] = Map([]),
-  ext_programs? : Map[String, Program] = Map([]),
-  tla_vars? : Map[String, Json] = Map([]),
-  tla_code? : Map[String, String] = Map([]),
-  tla_programs? : Map[String, Program] = Map([]),
-  native_functions? : Map[String, NativeFunction] = Map([]),
-  trace? : (Location, String) -> Unit = default_trace,
+  string_output~ : Bool = false,
+  ext_vars~ : Map[String, Json] = Map([]),
+  ext_code~ : Map[String, String] = Map([]),
+  ext_programs~ : Map[String, Program] = Map([]),
+  tla_vars~ : Map[String, Json] = Map([]),
+  tla_code~ : Map[String, String] = Map([]),
+  tla_programs~ : Map[String, Program] = Map([]),
+  native_functions~ : Map[String, NativeFunction] = Map([]),
+  trace~ : (Location, String) -> Unit = default_trace,
   resolver? : (String, String) -> Source raise,
   binary_resolver? : (String, String) -> BinarySource raise,
-  limits? : Limits = Limits::default(),
+  limits~ : Limits = Limits::default(),
 ) -> String raise JsonnetError {
   evaluate_with_output(
     self,
@@ -92,19 +92,19 @@ pub fn Program::evaluate_text(
 /// ```
 pub fn evaluate_stream(
   source : String,
-  filename? : String = "<input>",
-  anonymous? : Bool = false,
-  ext_vars? : Map[String, Json] = Map([]),
-  ext_code? : Map[String, String] = Map([]),
-  ext_programs? : Map[String, Program] = Map([]),
-  tla_vars? : Map[String, Json] = Map([]),
-  tla_code? : Map[String, String] = Map([]),
-  tla_programs? : Map[String, Program] = Map([]),
-  native_functions? : Map[String, NativeFunction] = Map([]),
-  trace? : (Location, String) -> Unit = default_trace,
+  filename~ : String = "<input>",
+  anonymous~ : Bool = false,
+  ext_vars~ : Map[String, Json] = Map([]),
+  ext_code~ : Map[String, String] = Map([]),
+  ext_programs~ : Map[String, Program] = Map([]),
+  tla_vars~ : Map[String, Json] = Map([]),
+  tla_code~ : Map[String, String] = Map([]),
+  tla_programs~ : Map[String, Program] = Map([]),
+  native_functions~ : Map[String, NativeFunction] = Map([]),
+  trace~ : (Location, String) -> Unit = default_trace,
   resolver? : (String, String) -> Source raise,
   binary_resolver? : (String, String) -> BinarySource raise,
-  limits? : Limits = Limits::default(),
+  limits~ : Limits = Limits::default(),
 ) -> Array[String] raise JsonnetError {
   Program::parse(source, filename~, anonymous~, limits~).evaluate_stream(
     ext_vars~,
@@ -126,17 +126,17 @@ pub fn evaluate_stream(
 /// match `evaluate_stream`; source filename and anonymous mode were fixed when parsed.
 pub fn Program::evaluate_stream(
   self : Program,
-  ext_vars? : Map[String, Json] = Map([]),
-  ext_code? : Map[String, String] = Map([]),
-  ext_programs? : Map[String, Program] = Map([]),
-  tla_vars? : Map[String, Json] = Map([]),
-  tla_code? : Map[String, String] = Map([]),
-  tla_programs? : Map[String, Program] = Map([]),
-  native_functions? : Map[String, NativeFunction] = Map([]),
-  trace? : (Location, String) -> Unit = default_trace,
+  ext_vars~ : Map[String, Json] = Map([]),
+  ext_code~ : Map[String, String] = Map([]),
+  ext_programs~ : Map[String, Program] = Map([]),
+  tla_vars~ : Map[String, Json] = Map([]),
+  tla_code~ : Map[String, String] = Map([]),
+  tla_programs~ : Map[String, Program] = Map([]),
+  native_functions~ : Map[String, NativeFunction] = Map([]),
+  trace~ : (Location, String) -> Unit = default_trace,
   resolver? : (String, String) -> Source raise,
   binary_resolver? : (String, String) -> BinarySource raise,
-  limits? : Limits = Limits::default(),
+  limits~ : Limits = Limits::default(),
 ) -> Array[String] raise JsonnetError {
   evaluate_with_output(
     self,
@@ -156,7 +156,7 @@ pub fn Program::evaluate_stream(
 }
 
 ///|
-fn cli_json(json : Json, limit : Int, loc : Location) -> String raise {
+fn cli_json(json : Json, limit : Int32, loc : Location) -> String raise {
   let output = ManifestText::new(limit, loc)
   write_cli_json(json, output, "")
   output.text()

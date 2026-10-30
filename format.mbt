@@ -6,8 +6,8 @@ priv struct FormatCode {
   left : Bool
   blank : Bool
   plus : Bool
-  width : Int
-  precision : Int?
+  width : Int32
+  precision : Int32?
   width_arg : Bool
   precision_arg : Bool
   kind : Char
@@ -16,10 +16,10 @@ priv struct FormatCode {
 ///|
 fn parse_format(
   chars : Array[Char],
-  offset : Int,
-  limit : Int,
+  offset : Int32,
+  limit : Int32,
   loc : Location,
-) -> (FormatCode, Int) raise {
+) -> (FormatCode, Int32) raise {
   let mut i = offset
   let mut key = None
   if chars.get(i) == Some('(') {
@@ -251,7 +251,7 @@ fn format_pad(s : String, width : Double, char : Char, right : Bool) -> String {
 }
 
 ///|
-fn format_digits(n : Double, base : Int, caps : Bool) -> String {
+fn format_digits(n : Double, base : Int32, caps : Bool) -> String {
   let digits = (if caps { "0123456789ABCDEF" } else { "0123456789abcdef" }).to_array()
   let out = []
   let mut n = n
@@ -336,7 +336,7 @@ fn format_decimal(
 }
 
 ///|
-fn format_exponent(n : Double) -> Int {
+fn format_exponent(n : Double) -> Int32 {
   if n == 0 {
     0
   } else {
@@ -463,7 +463,7 @@ fn Vm::format_value(
           n,
           code,
           padding,
-          p - Int::max(1, exponent + 1).to_double(),
+          p - Int32::max(1, exponent + 1).to_double(),
           code.alt,
           loc,
         )

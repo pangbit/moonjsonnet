@@ -282,7 +282,7 @@ test "flatten operations share demanded source heads and retained leaves across 
       ),
     )
     for handmade in [false, true] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       assert_eq(
         ordering_program(ordering_unused(value), handmade).evaluate(
           native_functions=rewrite_natives(counts),
@@ -318,7 +318,7 @@ test "flatten operations reject unambiguous bad bindings before gates and preser
       ] {
       let call = additive_probe_scope(rounding_apply(name, args))
       for handmade in [false, true] {
-        let counts : Map[String, Int] = Map([])
+        let counts : Map[String, Int32] = Map([])
         assert_eq(
           ordering_program(ordering_unused(call), handmade).evaluate(
             native_functions=rewrite_natives(counts),

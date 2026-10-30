@@ -5,8 +5,8 @@
 ///|
 fn FormatImportSorter::break_patterns(
   self : FormatImportSorter,
-  a : Int,
-  b : Int,
+  a : Int32,
+  b : Int32,
 ) -> Unit {
   let length = b - a
   if length < 8 {
@@ -33,10 +33,10 @@ fn FormatImportSorter::break_patterns(
 ///|
 fn FormatImportSorter::median(
   self : FormatImportSorter,
-  x : Int,
-  y : Int,
-  z : Int,
-) -> (Int, Int) {
+  x : Int32,
+  y : Int32,
+  z : Int32,
+) -> (Int32, Int32) {
   let mut a = x
   let mut b = y
   let mut c = z
@@ -63,9 +63,9 @@ fn FormatImportSorter::median(
 ///|
 fn FormatImportSorter::choose_pivot(
   self : FormatImportSorter,
-  a : Int,
-  b : Int,
-) -> (Int, Int) {
+  a : Int32,
+  b : Int32,
+) -> (Int32, Int32) {
   let length = b - a
   let mut i = a + length / 4
   let mut j = a + length / 4 * 2
@@ -93,8 +93,8 @@ fn FormatImportSorter::choose_pivot(
 ///|
 fn FormatImportSorter::reverse(
   self : FormatImportSorter,
-  a : Int,
-  b : Int,
+  a : Int32,
+  b : Int32,
 ) -> Unit {
   for i = a, j = b - 1; i < j; i = i + 1, j = j - 1 {
     self.entries.swap(i, j)

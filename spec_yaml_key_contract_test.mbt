@@ -2,7 +2,7 @@
 // Field text is literal; no second classifier or YAML parser supplies the oracle.
 
 ///|
-fn yaml_key_doc(key : String, quote? : Bool = false) -> OrderingExpr {
+fn yaml_key_doc(key : String, quote~ : Bool = false) -> OrderingExpr {
   yaml_demand_doc(
     reflect_object([(reflect_string(key), 1, sequence_num(0))]),
     reflect_bool(false),

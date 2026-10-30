@@ -17,7 +17,7 @@ pub extern "c" fn reference_multiply_add(
 pub extern "c" fn reference_int64(value : Double) -> Int64 = "mj_reference_int64"
 
 ///|
-pub extern "c" fn reference_rune(value : Double) -> Int = "mj_reference_rune"
+pub extern "c" fn reference_rune(value : Double) -> Int32 = "mj_reference_rune"
 
 ///|
 pub extern "c" fn reference_amd64() -> Bool = "mj_reference_amd64"

@@ -1,3 +1,4 @@
+----
 import {
   "moonbitlang/async@0.22.4",
   "moonbitlang/async@0.22.4/fs",
@@ -5,6 +6,7 @@ import {
   "moonbitlang/core/env",
   "moonbitlang/core/json",
 }
+----
 
 ///|
 async fn checked_text(program : String, args : Array[String]) -> String {
@@ -25,7 +27,7 @@ async fn main {
   assert_eq(checked_text("uname", ["-s"]), "Linux")
   assert_eq(checked_text("id", ["-u"]), "65534")
   let version = checked_text("moon", ["version", "--all"])
-  assert_true(version.contains("moonc v0.10.14+7d59c7ec9"))
+  assert_true(version.contains("moonc v0.10.18+6c83a7f62"))
   assert_eq(checked_text("git", ["status", "--porcelain"]), "")
   let evidence = work + "/evidence"
   @fs.mkdir(evidence, recursive=true, allow_exist=true)

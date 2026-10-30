@@ -55,7 +55,7 @@ pub(all) struct AstParameter {
 pub(all) struct AstField {
   key : Ast
   value : Ast
-  visibility : Int
+  visibility : Int32
   additive : Bool
 }
 

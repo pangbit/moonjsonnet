@@ -1,5 +1,5 @@
 ///|
-fn formatter_sort_fixture(keys : Array[Int]) -> Array[FormatImportEntry] {
+fn formatter_sort_fixture(keys : Array[Int32]) -> Array[FormatImportEntry] {
   keys.mapi((i, key) => {
     name: "x\{i}",
     key: @utf8.encode(key.to_string()),

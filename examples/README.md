@@ -11,10 +11,10 @@ without any of these files.
 ## Prerequisites and working directory
 
 Use macOS or Linux, a native C compiler and the
-[validated MoonBit toolchain](../README.mbt.md#run-from-source). The
+[development MoonBit toolchain](../README.mbt.md#run-from-source). The
 [CI workflow](../.github/workflows/ci.yml) shows the pinned installer command;
-`moon version --all` should report Moon 0.1.20260920 and MoonBit
-v0.10.14+7d59c7ec9. A separately installed Jsonnet interpreter is not needed.
+`moon version --all` should report Moon 0.1.20261028 and MoonBit
+v0.10.18+6c83a7f62. A separately installed Jsonnet interpreter is not needed.
 
 ```sh
 git clone https://github.com/pangbit/moonjsonnet.git

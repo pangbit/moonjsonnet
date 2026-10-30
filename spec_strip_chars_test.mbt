@@ -101,7 +101,7 @@ test "strip empty results share the input head and never run a successful charac
       ),
     )
     for handmade in [false, true] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       assert_eq(
         ordering_program(ordering_unused(value), handmade).evaluate(
           native_functions=rewrite_natives(counts),
@@ -180,7 +180,7 @@ test "strip functions reject invalid needed character heads without reading thei
         sequence_call(name, [reflect_string("a"), chars]),
       )
       for handmade in [false, true] {
-        let counts : Map[String, Int] = Map([])
+        let counts : Map[String, Int32] = Map([])
         assert_eq(
           ordering_program(ordering_unused(value), handmade).evaluate(
             native_functions=rewrite_natives(counts),
@@ -220,7 +220,7 @@ test "strip functions reject length-invalid input heads before the character gat
         ]),
       )
       for handmade in [false, true] {
-        let counts : Map[String, Int] = Map([])
+        let counts : Map[String, Int32] = Map([])
         try
           ordering_program(value, handmade).evaluate(
             native_functions=rewrite_natives(counts),
@@ -289,7 +289,7 @@ test "strip functions preserve original strings and share required inputs across
         ),
       )
       for handmade in [false, true] {
-        let counts : Map[String, Int] = Map([])
+        let counts : Map[String, Int32] = Map([])
         assert_eq(
           ordering_program(ordering_unused(value), handmade).evaluate(
             native_functions=rewrite_natives(counts),
@@ -341,7 +341,7 @@ test "strip functions reject invalid bindings before argument gates and retain s
       ] {
       let value = additive_probe_scope(rounding_apply(name, args))
       for handmade in [false, true] {
-        let counts : Map[String, Int] = Map([])
+        let counts : Map[String, Int32] = Map([])
         assert_eq(
           ordering_program(ordering_unused(value), handmade).evaluate(
             native_functions=rewrite_natives(counts),
@@ -405,7 +405,7 @@ test "strip functions inspect all array character members and share their requir
       ),
     )
     for handmade in [false, true] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       assert_eq(
         ordering_program(ordering_unused(value), handmade).evaluate(
           native_functions=rewrite_natives(counts),

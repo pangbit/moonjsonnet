@@ -49,7 +49,7 @@ fn LintGraph::check_args(
 fn LintGraph::check(
   self : LintGraph,
   node : LintTyped,
-  untyped? : Bool = false,
+  untyped~ : Bool = false,
 ) -> Unit raise JsonnetError {
   self.scan.tick(node.expression)
   for child in node.children {

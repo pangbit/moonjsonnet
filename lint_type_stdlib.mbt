@@ -4,7 +4,7 @@
 
 ///|
 fn LintGraph::stdlib(self : LintGraph) -> Unit {
-  let fields : Map[String, Array[Int]] = Map([])
+  let fields : Map[String, Array[Int32]] = Map([])
   fields["extVar"] = [self.function(1, [("x", false)], true)]
   fields["thisFile"] = [4]
   fields["type"] = [self.function(4, [("x", false)], true)]

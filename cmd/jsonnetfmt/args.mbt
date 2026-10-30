@@ -54,7 +54,7 @@ fn simplify_args(given : Array[String]) -> Array[String] {
 }
 
 ///|
-fn integer(value : String, option : String) -> Int raise CliError {
+fn integer(value : String, option : String) -> Int32 raise CliError {
   let digits = if value.has_prefix("+") || value.has_prefix("-") {
     value[1:]
   } else {

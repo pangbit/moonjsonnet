@@ -5,8 +5,8 @@ priv struct DependencyScan {
   requests : Map[(String, String), BinarySource]
   parsed : Map[String, Expr]
   found : Map[String, Bool]
-  mut bytes : Int
-  mut steps : Int
+  mut bytes : Int32
+  mut steps : Int32
 }
 
 ///|
@@ -35,7 +35,7 @@ pub fn find_dependencies(
   imported_from : String,
   imported_paths : Array[String],
   resolver~ : (String, String) -> BinarySource raise,
-  limits? : Limits = Limits::default(),
+  limits~ : Limits = Limits::default(),
 ) -> Array[String] raise JsonnetError {
   find_dependencies_with_cache(
     imported_from,

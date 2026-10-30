@@ -14,8 +14,8 @@
 fn FormatOutput::write_block(
   self : FormatOutput,
   token : Token,
-  indent : Int,
-  base : Int,
+  indent : Int32,
+  base : Int32,
 ) -> Unit raise JsonnetError {
   if indent <= 0 {
     for c in token.raw.to_array() {

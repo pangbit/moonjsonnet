@@ -19,7 +19,7 @@ fn format_plus_edits(
   insert_plus : Array[Bool],
   implicit : Bool,
 ) -> Unit {
-  let positions : Map[(Int, Int), Int] = Map([])
+  let positions : Map[(Int32, Int32), Int32] = Map([])
   for i, token in tokens {
     positions[(token.loc.line, token.loc.column)] = i
   }

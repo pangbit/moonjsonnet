@@ -2,8 +2,8 @@
 /// Source location. Lines and UTF-8 byte columns are one-based, matching Go.
 pub(all) struct Location {
   file : String
-  line : Int
-  column : Int
+  line : Int32
+  column : Int32
 } derive(Debug, Eq)
 
 ///|
@@ -58,7 +58,7 @@ pub impl Show for Diagnostic with fn output(self, logger) {
 ///   )
 /// }
 /// ```
-pub fn Diagnostic::format(self : Diagnostic, max_trace? : Int = 0) -> String {
+pub fn Diagnostic::format(self : Diagnostic, max_trace~ : Int32 = 0) -> String {
   let logger = StringBuilder()
   logger.write_string(
     "\{self.location.file}:\{self.location.line}:\{self.location.column}: \{Repr(self.kind)}: \{self.message}",
@@ -113,13 +113,13 @@ pub extend BinarySource with @debug.Debug::{to_repr}
 /// }
 /// ```
 pub(all) struct Limits {
-  steps : Int
-  depth : Int
-  stack : Int
-  source_bytes : Int
-  import_bytes : Int
-  imports : Int
-  output_bytes : Int
+  steps : Int32
+  depth : Int32
+  stack : Int32
+  source_bytes : Int32
+  import_bytes : Int32
+  imports : Int32
+  output_bytes : Int32
 } derive(Debug)
 
 ///|
@@ -222,7 +222,7 @@ priv enum ExprKind {
 priv struct Field {
   key : Expr
   value : Expr
-  visibility : Int
+  visibility : Int32
   additive : Bool
 }
 

@@ -7,7 +7,7 @@ fn field(input : Json, key : String, fallback : Json) -> Json {
 }
 
 ///|
-fn integer(input : Json, key : String, fallback : Int) -> Int {
+fn integer(input : Json, key : String, fallback : Int32) -> Int32 {
   match field(input, key, null) {
     Number(n, ..) => n.to_int()
     _ => fallback

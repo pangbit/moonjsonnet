@@ -58,7 +58,7 @@ fn math_builtin(
 
 ///|
 // IEEE binary64 decomposition, including normalization of subnormal values.
-fn binary_fraction(x : Double) -> (Double, Int) {
+fn binary_fraction(x : Double) -> (Double, Int32) {
   if x == 0 || x.is_inf() || x.is_nan() {
     return (x, 0)
   }

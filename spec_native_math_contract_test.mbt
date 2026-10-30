@@ -126,7 +126,7 @@ test "NM2 logarithm and trigonometric bounds use independent mathematical interv
 
 ///|
 test "NM3 native math required x binding and aliases preserve literal results and inputs" {
-  let cases : Array[(String, Int, Json, Json)] = [
+  let cases : Array[(String, Int32, Json, Json)] = [
     ("sqrt", 0, 0, [0, 0, 0, 0]),
     ("exp", 0, 1, [1, 1, 0, 0]),
     ("log", 1, 0, [0, 0, 1, 1]),

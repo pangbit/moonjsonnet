@@ -7,8 +7,8 @@
 fn external_contract_value(
   call : OrderingExpr,
   expected : Json,
-  ext_vars? : Map[String, Json] = Map([]),
-  ext_code? : Map[String, String] = Map([]),
+  ext_vars~ : Map[String, Json] = Map([]),
+  ext_code~ : Map[String, String] = Map([]),
 ) -> Unit raise {
   for handmade in [false, true] {
     assert_eq(
@@ -25,8 +25,8 @@ fn external_contract_value(
 ///|
 fn external_contract_reject(
   call : OrderingExpr,
-  ext_vars? : Map[String, Json] = Map([]),
-  ext_code? : Map[String, String] = Map([]),
+  ext_vars~ : Map[String, Json] = Map([]),
+  ext_code~ : Map[String, String] = Map([]),
 ) -> Unit raise {
   for handmade in [false, true] {
     try

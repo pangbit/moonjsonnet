@@ -27,7 +27,7 @@ pub struct EvalContext {
   priv expression : Expr
   priv environment : Env
   priv active : Ref[Bool]
-  priv serial : Int
+  priv serial : Int32
 }
 
 ///|
@@ -42,7 +42,7 @@ pub struct DebugValue {
 priv struct EvalHookFrame {
   expression : Expr
   environment : Env
-  serial : Int
+  serial : Int32
 }
 
 ///|
@@ -78,7 +78,7 @@ pub fn EvalContext::location(self : EvalContext) -> Location {
 
 ///|
 /// Unique within one execution; before/after callbacks share the same ID.
-pub fn EvalContext::evaluation_id(self : EvalContext) -> Int {
+pub fn EvalContext::evaluation_id(self : EvalContext) -> Int32 {
   self.serial
 }
 

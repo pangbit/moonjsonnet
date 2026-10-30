@@ -8,7 +8,7 @@
 ///|
 // Child traversal for lint analysis. Direct children follow the fixed reference's
 // desugared eager edges; thunks, functions, locals and lowered std calls stop it.
-fn lint_children(e : Expr, direct? : Bool = false) -> Array[Expr] {
+fn lint_children(e : Expr, direct~ : Bool = false) -> Array[Expr] {
   let out = []
   let optional = fn(x : Expr?) { if x is Some(x) { out.push(x) } }
   match e.kind {

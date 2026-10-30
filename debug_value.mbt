@@ -23,9 +23,9 @@ pub fn DebugValue::display(self : DebugValue) -> String raise JsonnetError {
 ///|
 fn Vm::debug_thunk(
   self : Vm,
-  id : Int,
+  id : Int32,
   writer : FormatOutput,
-  depth : Int,
+  depth : Int32,
 ) -> Unit raise {
   self.tick(writer.loc)
   match self.thunks[id] {
@@ -41,7 +41,7 @@ fn Vm::debug_display(
   self : Vm,
   value : Value,
   writer : FormatOutput,
-  depth : Int,
+  depth : Int32,
 ) -> Unit raise {
   self.tick(writer.loc)
   if depth >= self.limits.depth {

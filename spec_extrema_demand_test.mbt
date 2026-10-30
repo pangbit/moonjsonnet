@@ -291,7 +291,7 @@ test "extrema branch gates preserve selected demand and shared argument values" 
         ),
       )
       for handmade in [false, true] {
-        let counts : Map[String, Int] = Map([])
+        let counts : Map[String, Int32] = Map([])
         assert_eq(
           ordering_program(ordering_unused(value), handmade).evaluate(
             native_functions=rewrite_natives(counts),

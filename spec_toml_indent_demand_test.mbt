@@ -16,8 +16,8 @@ fn toml_indent_field(name : String, value : OrderingExpr) -> OrderingExpr {
 fn toml_indent_call(
   value : OrderingExpr,
   indent : OrderingExpr,
-  through_alias? : Bool = false,
-  strict? : Bool = false,
+  through_alias~ : Bool = false,
+  strict~ : Bool = false,
 ) -> OrderingExpr {
   let function = additive_select(sequence_var("std"), "manifestTomlEx")
   let args : Array[(String?, OrderingExpr)] = [

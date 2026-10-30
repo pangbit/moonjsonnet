@@ -26,8 +26,8 @@ pub(all) enum FormatCommentStyle {
 /// Formatting controls corresponding to go-jsonnet formatter.Options.
 /// See docs/reference/COMPATIBILITY.md for the bounded formatter validation scope.
 pub(all) struct FormatOptions {
-  indent : Int
-  max_blank_lines : Int
+  indent : Int32
+  max_blank_lines : Int32
   string_style : FormatStringStyle
   comment_style : FormatCommentStyle
   pretty_field_names : Bool
@@ -64,9 +64,9 @@ pub fn FormatOptions::default() -> FormatOptions {
 /// See docs/reference/COMPATIBILITY.md for the tested Go compatibility scope.
 pub fn format_source(
   source : String,
-  filename? : String = "<input>",
-  options? : FormatOptions = FormatOptions::default(),
-  limits? : Limits = Limits::default(),
+  filename~ : String = "<input>",
+  options~ : FormatOptions = FormatOptions::default(),
+  limits~ : Limits = Limits::default(),
 ) -> String raise JsonnetError {
   ParsedSource::parse(source, filename~, limits~).format(options~, limits~)
 }
@@ -75,8 +75,8 @@ pub fn format_source(
 /// Format the retained source; the parsed document is not mutated.
 pub fn ParsedSource::format(
   self : ParsedSource,
-  options? : FormatOptions = FormatOptions::default(),
-  limits? : Limits = Limits::default(),
+  options~ : FormatOptions = FormatOptions::default(),
+  limits~ : Limits = Limits::default(),
 ) -> String raise JsonnetError {
   let loc = self.expression.loc
   check_limits(limits, loc)

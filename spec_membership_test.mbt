@@ -124,7 +124,7 @@ fn membership_empty(name : String, handmade : Bool) -> Unit raise {
       rewrite_gate(reflect_string("needle"), sequence_num(1)),
     ),
   )
-  let counts : Map[String, Int] = Map([])
+  let counts : Map[String, Int32] = Map([])
   assert_eq(
     ordering_program(ordering_unused(value), handmade).evaluate(
       native_functions=rewrite_natives(counts),
@@ -167,7 +167,7 @@ test "handmade contains empty Array leaves the target unforced" {
 fn membership_shared(
   name : String,
   elements : Array[OrderingExpr],
-  expected_counts : Map[String, Int],
+  expected_counts : Map[String, Int32],
 ) -> Unit raise {
   let array = sequence_var("array")
   let needle = sequence_var("needle")
@@ -191,7 +191,7 @@ fn membership_shared(
     ),
   )
   for handmade in [false, true] {
-    let counts : Map[String, Int] = Map([])
+    let counts : Map[String, Int32] = Map([])
     assert_eq(
       ordering_program(ordering_unused(value), handmade).evaluate(
         native_functions=rewrite_natives(counts),
@@ -280,7 +280,7 @@ test "contains stops at its first match and shares required inputs without touch
 fn membership_reject_without_gates(value : OrderingExpr) -> Unit raise {
   let value = additive_probe_scope(value)
   for handmade in [false, true] {
-    let counts : Map[String, Int] = Map([])
+    let counts : Map[String, Int32] = Map([])
     assert_eq(
       ordering_program(ordering_unused(value), handmade).evaluate(
         native_functions=rewrite_natives(counts),

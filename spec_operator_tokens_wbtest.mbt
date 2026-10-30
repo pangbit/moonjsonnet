@@ -12,7 +12,7 @@ fn op_character_text(value : Char) -> String {
 fn op_token_vector(
   source : String,
   expected : Array[String],
-  block_value? : String? = None,
+  block_value~ : String? = None,
 ) -> Unit raise {
   for retain in [false, true] {
     let tokens = lex(source, "operator-token", retain_trivia=retain)

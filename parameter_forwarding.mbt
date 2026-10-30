@@ -2,7 +2,7 @@
 // A returned extVar call can enter its code in the evaluator's existing loop.
 // Keep each real clean frame, while avoiding physical recursion for forwarding
 // chains. Non-tail calls retain their expression-depth and busy-thunk checks.
-fn Vm::forward_parameter(self : Vm, id : Int) -> (Expr, Env)? raise {
+fn Vm::forward_parameter(self : Vm, id : Int32) -> (Expr, Env)? raise {
   let original = self.thunks[id]
   if original is RunningParameter(expression, environment) {
     return Some((expression, environment))
@@ -45,7 +45,11 @@ fn Vm::forward_parameter(self : Vm, id : Int) -> (Expr, Env)? raise {
 }
 
 ///|
-fn Vm::external_parameter(self : Vm, name : Value, loc : Location) -> Int raise {
+fn Vm::external_parameter(
+  self : Vm,
+  name : Value,
+  loc : Location,
+) -> Int32 raise {
   let name = text_value(name, loc)
   match self.ext.get(name) {
     Some(id) => id

@@ -121,9 +121,9 @@ fn builtin_params(name : String) -> Array[String] {
 fn Vm::builtin(
   self : Vm,
   name : String,
-  args : Array[(String?, Int)],
+  args : Array[(String?, Int32)],
   loc : Location,
-  strict? : Bool = false,
+  strict~ : Bool = false,
 ) -> Value raise {
   let params = builtin_params(name)
   let required = if name == "sort" ||
@@ -751,15 +751,15 @@ fn Vm::builtin(
         from.to_int()
       }
       let b = StringBuilder()
-      let stop = Int::min(
+      let stop = Int32::min(
         s.length(),
         if len > s.length() {
           s.length()
         } else {
-          Int::min(start, s.length()) + len
+          Int32::min(start, s.length()) + len
         },
       )
-      for i in Int::min(start, s.length())..<stop {
+      for i in Int32::min(start, s.length())..<stop {
         b.write_char(s[i])
       }
       Str(b.to_string())
@@ -827,7 +827,7 @@ fn Vm::builtin(
 ///|
 // Core's optional parse-depth argument is deprecated. Bound nesting before
 // calling its parser, respecting escapes inside JSON strings.
-fn check_json_depth(s : String, limit : Int, loc : Location) -> Unit raise {
+fn check_json_depth(s : String, limit : Int32, loc : Location) -> Unit raise {
   let mut quoted = false
   let mut escaped = false
   let mut depth = 0
@@ -857,7 +857,7 @@ fn check_json_depth(s : String, limit : Int, loc : Location) -> Unit raise {
 fn Vm::check_json_finite(
   self : Vm,
   value : Json,
-  depth : Int,
+  depth : Int32,
   loc : Location,
 ) -> Unit raise {
   if depth >= self.limits.depth {
@@ -879,7 +879,7 @@ fn Vm::check_json_finite(
 }
 
 ///|
-fn integer(v : Value, loc : Location) -> Int raise {
+fn integer(v : Value, loc : Location) -> Int32 raise {
   let n = number_value(v, loc)
   if n != n.floor() || n < -2147483648.0 || n > 2147483647.0 {
     raise problem(

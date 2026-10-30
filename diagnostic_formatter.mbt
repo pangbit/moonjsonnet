@@ -45,7 +45,7 @@ pub fn TraceLocation::format(self : TraceLocation) -> String {
 /// Source text is supplied by the host. Color transforms the selected static
 /// source fragment; runtime traces do not invoke color, matching pinned Go.
 pub struct DiagnosticFormatter {
-  priv mut max_trace : Int
+  priv mut max_trace : Int32
   priv mut color : ((String) -> String)?
   priv sources : Map[String, String]
 }
@@ -58,7 +58,7 @@ pub fn DiagnosticFormatter::new() -> DiagnosticFormatter {
 ///|
 pub fn DiagnosticFormatter::set_max_trace(
   self : DiagnosticFormatter,
-  size : Int,
+  size : Int32,
 ) -> Unit {
   self.max_trace = size
 }

@@ -4,8 +4,8 @@
 pub fn FileHost::find_dependencies(
   self : FileHost,
   paths : Array[String],
-  imported_from? : String = "",
-  limits? : @moonjsonnet.Limits = @moonjsonnet.Limits::default(),
+  imported_from~ : String = "",
+  limits~ : @moonjsonnet.Limits = @moonjsonnet.Limits::default(),
 ) -> Array[String] raise @moonjsonnet.JsonnetError {
   @moonjsonnet.find_dependencies(
     imported_from,

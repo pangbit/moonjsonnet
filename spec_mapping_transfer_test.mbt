@@ -161,7 +161,7 @@ test "MT3 mapping constructors bind required names positional calls and aliases"
   let yes = make_function(["x"], reflect_bool(true))
   let identity = make_function(["x"], sequence_var("x"))
   let input = ordering_array([sequence_num(4), sequence_num(5)])
-  let cases : Array[(String, Array[(String?, OrderingExpr)], Json, Int)] = [
+  let cases : Array[(String, Array[(String?, OrderingExpr)], Json, Int32)] = [
     (
       "mapWithIndex",
       [(Some("arr"), input), (Some("func"), pair)],

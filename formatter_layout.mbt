@@ -9,7 +9,7 @@
 
 ///|
 priv struct FormatLayout {
-  close : Array[Int]
+  close : Array[Int32]
   index : Array[Bool]
   field_key : Array[Bool]
   parameter : Array[Bool]
@@ -37,7 +37,7 @@ fn format_layout(tokens : Array[Token]) -> FormatLayout {
     skip: Array::make(n, false),
     trailing_comma: Array::make(n, false),
   }
-  let stack : Array[Int] = []
+  let stack : Array[Int32] = []
   let mut ends_expr = false
   for i, token in tokens {
     let t = token.text
@@ -87,7 +87,7 @@ fn format_layout(tokens : Array[Token]) -> FormatLayout {
       ) {
       layout.parameter[start] = true
     }
-    let boundaries : Array[Int] = []
+    let boundaries : Array[Int32] = []
     let mut comprehension = false
     let mut local_depth = 0
     for i = start + 1; i < end; {

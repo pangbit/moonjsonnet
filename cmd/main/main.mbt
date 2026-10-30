@@ -1,6 +1,6 @@
 ///|
 priv struct CliDiagnostics {
-  mut max_trace : Int
+  mut max_trace : Int32
   formatter : @moonjsonnet.DiagnosticFormatter
   mut entry_name : (String, String)?
   trace_names : Map[String, String]

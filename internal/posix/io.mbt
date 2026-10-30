@@ -3,12 +3,12 @@ pub extern "c" fn clear_io_error() -> Unit = "mj_clear_io_error"
 
 ///|
 #borrow(path)
-extern "c" fn io_error_ffi(path : Bytes, input : Int) -> Bytes = "mj_io_error"
+extern "c" fn io_error_ffi(path : Bytes, input : Int32) -> Bytes = "mj_io_error"
 
 ///|
 // Consume the OS failure captured by the immediately preceding operation.
 // Policy failures have no OS error and continue through their structured path.
-pub fn io_error(path : String, input? : Bool = false) -> String? {
+pub fn io_error(path : String, input~ : Bool = false) -> String? {
   if path.contains("\u0000") {
     clear_io_error()
     return Some(
@@ -31,15 +31,15 @@ extern "c" fn realpath_ffi(path : Bytes) -> Bytes = "mj_realpath"
 
 ///|
 #borrow(root, relative)
-extern "c" fn read_ffi(root : Bytes, relative : Bytes, limit : Int) -> Bytes = "mj_read"
+extern "c" fn read_ffi(root : Bytes, relative : Bytes, limit : Int32) -> Bytes = "mj_read"
 
 ///|
 #borrow(path, data)
-extern "c" fn write_ffi(path : Bytes, data : Bytes) -> Int = "mj_write"
+extern "c" fn write_ffi(path : Bytes, data : Bytes) -> Int32 = "mj_write"
 
 ///|
 #borrow(path)
-extern "c" fn mkdir_all_ffi(path : Bytes) -> Int = "mj_mkdir_all"
+extern "c" fn mkdir_all_ffi(path : Bytes) -> Int32 = "mj_mkdir_all"
 
 ///|
 pub fn mkdir_all(path : String) -> Bool {
@@ -50,11 +50,11 @@ pub fn mkdir_all(path : String) -> Bool {
 
 ///|
 #borrow(path, data)
-extern "c" fn output_same_ffi(path : Bytes, data : Bytes) -> Int = "mj_output_same"
+extern "c" fn output_same_ffi(path : Bytes, data : Bytes) -> Int32 = "mj_output_same"
 
 ///|
 // 0 missing/different; 1 identical; 2 read error.
-pub fn output_same(path : String, text : String) -> Int {
+pub fn output_same(path : String, text : String) -> Int32 {
   if path.contains("\u0000") {
     2
   } else {
@@ -64,10 +64,10 @@ pub fn output_same(path : String, text : String) -> Int {
 
 ///|
 #borrow(path)
-extern "c" fn open_output_ffi(path : Bytes) -> Int = "mj_open_output"
+extern "c" fn open_output_ffi(path : Bytes) -> Int32 = "mj_open_output"
 
 ///|
-pub fn open_output(path : String) -> Int {
+pub fn open_output(path : String) -> Int32 {
   if path.contains("\u0000") {
     -1
   } else {
@@ -77,20 +77,20 @@ pub fn open_output(path : String) -> Int {
 
 ///|
 #borrow(data)
-extern "c" fn write_output_ffi(fd : Int, data : Bytes) -> Int = "mj_write_output"
+extern "c" fn write_output_ffi(fd : Int32, data : Bytes) -> Int32 = "mj_write_output"
 
 ///|
-pub fn write_output(fd : Int, text : String) -> Bool {
+pub fn write_output(fd : Int32, text : String) -> Bool {
   write_output_ffi(fd, @utf8.encode(text)) == 0
 }
 
 ///|
-pub fn close_output(fd : Int) -> Bool {
+pub fn close_output(fd : Int32) -> Bool {
   close_output_ffi(fd) == 0
 }
 
 ///|
-extern "c" fn close_output_ffi(fd : Int) -> Int = "mj_close_output"
+extern "c" fn close_output_ffi(fd : Int32) -> Int32 = "mj_close_output"
 
 ///|
 #borrow(data)
@@ -98,10 +98,10 @@ extern "c" fn stderr_ffi(data : Bytes) -> Unit = "mj_stderr"
 
 ///|
 #borrow(data)
-extern "c" fn stdout_ffi(data : Bytes) -> Int = "mj_stdout"
+extern "c" fn stdout_ffi(data : Bytes) -> Int32 = "mj_stdout"
 
 ///|
-extern "c" fn stdout_is_terminal_ffi() -> Int = "mj_stdout_is_terminal"
+extern "c" fn stdout_is_terminal_ffi() -> Int32 = "mj_stdout_is_terminal"
 
 ///|
 pub fn stdout_is_terminal() -> Bool {
@@ -114,14 +114,14 @@ pub fn stdout(text : String) -> Bool {
 }
 
 ///|
-pub extern "c" fn exit(code : Int) -> Unit = "mj_exit"
+pub extern "c" fn exit(code : Int32) -> Unit = "mj_exit"
 
 ///|
-extern "c" fn stdin_ffi(limit : Int) -> Bytes = "mj_stdin"
+extern "c" fn stdin_ffi(limit : Int32) -> Bytes = "mj_stdin"
 
 ///|
 // 0 success; 1 I/O/allocation failure; 2 invalid limit; 3 byte limit exceeded.
-pub fn read_stdin(limit : Int) -> (Int, Bytes) {
+pub fn read_stdin(limit : Int32) -> (Int32, Bytes) {
   let data = stdin_ffi(limit)
   if data[0] != 0 {
     (data[0].to_int(), b"")
@@ -142,7 +142,7 @@ pub fn canonical(path : String) -> String? {
 
 ///|
 // 0 success; 1 I/O failure; 2 invalid path; 5 invalid UTF-8; 6 not found.
-pub fn canonical_result(path : String) -> (Int, String) {
+pub fn canonical_result(path : String) -> (Int32, String) {
   if path.contains("\u0000") {
     return (2, "")
   }
@@ -156,7 +156,7 @@ pub fn canonical_result(path : String) -> (Int, String) {
 }
 
 ///|
-pub fn read(root : String, relative : String, limit : Int) -> (Int, String) {
+pub fn read(root : String, relative : String, limit : Int32) -> (Int32, String) {
   let (status, data) = read_bytes(root, relative, limit)
   if status != 0 {
     return (status, "")
@@ -170,8 +170,8 @@ pub fn read(root : String, relative : String, limit : Int) -> (Int, String) {
 pub fn read_bytes(
   root : String,
   relative : String,
-  limit : Int,
-) -> (Int, Bytes) {
+  limit : Int32,
+) -> (Int32, Bytes) {
   if root.contains("\u0000") || relative.contains("\u0000") {
     return (2, b"")
   }

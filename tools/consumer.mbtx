@@ -1,8 +1,10 @@
+----
 import {
   "moonbitlang/async@0.22.4",
   "moonbitlang/async@0.22.4/shell",
   "moonbitlang/async@0.22.4/fs",
 }
+----
 
 async fn main {
   @shell.Cmd("moon", ["package", "--frozen"]).run()

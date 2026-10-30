@@ -14,13 +14,13 @@
 
 ///|
 priv enum FormatStripFodder {
-  RetainedLineEnd(Int, Int)
+  RetainedLineEnd(Int32, Int32)
   RemovedParagraph
   RemovedInterstitial
 }
 
 ///|
-fn format_whitespace(raw : String) -> (Int, Int) {
+fn format_whitespace(raw : String) -> (Int32, Int32) {
   let mut lines = 0
   let mut indent = 0
   for c in raw.to_array() {
@@ -42,8 +42,8 @@ fn format_stripped_lines(
   token : Token,
   first : Bool,
   ensure_newline : Bool,
-  max_blank_lines : Int,
-) -> Array[(Int, Int)] {
+  max_blank_lines : Int32,
+) -> Array[(Int32, Int32)] {
   let fodder : Array[FormatStripFodder] = []
   let mut fresh_line = first
   let trivia = token.leading
@@ -102,7 +102,7 @@ fn format_stripped_lines(
     !(fodder.last() is Some(RetainedLineEnd(_, _) | RemovedParagraph)) {
     fodder.push(RetainedLineEnd(1, 0))
   }
-  let lines : Array[(Int, Int)] = []
+  let lines : Array[(Int32, Int32)] = []
   for element in fodder[start:] {
     if element is RetainedLineEnd(count, indent) {
       lines.push(

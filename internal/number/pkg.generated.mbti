@@ -18,7 +18,7 @@ pub fn reference_int64(Double) -> Int64
 
 pub fn reference_multiply_add(Double, Double, Double) -> Double
 
-pub fn reference_rune(Double) -> Int
+pub fn reference_rune(Double) -> Int32
 
 // Errors
 

@@ -148,7 +148,7 @@ test "rounding call bindings and unselected operands retain admission and lazy b
           },
         )
         for handmade in [false, true] {
-          let counts : Map[String, Int] = Map([])
+          let counts : Map[String, Int32] = Map([])
           let program = ordering_program(value, handmade)
           assert_eq(counts.length(), 0)
           if unused {

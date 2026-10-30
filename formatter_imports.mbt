@@ -10,15 +10,15 @@
 
 ///|
 priv struct FormatImportLocal {
-  bindings : Array[Int]
-  end : Int
+  bindings : Array[Int32]
+  end : Int32
 }
 
 ///|
 priv struct FormatImportEntry {
   name : String
   key : Bytes
-  start : Int
+  start : Int32
   before : Array[Trivia]
   after : Array[Trivia]
 }
@@ -26,12 +26,12 @@ priv struct FormatImportEntry {
 ///|
 fn format_import_local(
   tokens : Array[Token],
-  start : Int,
+  start : Int32,
 ) -> FormatImportLocal? {
   if tokens[start].text != "local" {
     return None
   }
-  let bindings : Array[Int] = []
+  let bindings : Array[Int32] = []
   for i = start + 1; i + 4 < tokens.length(); i = i + 5 {
     if !is_name(tokens[i].text) ||
       tokens[i + 1].text != "=" ||

@@ -13,10 +13,10 @@ priv struct FormatOutput {
   out : StringBuilder
   limits : Limits
   loc : Location
-  mut bytes : Int
-  mut steps : Int
+  mut bytes : Int32
+  mut steps : Int32
   mut line_start : Bool
-  mut column : Int
+  mut column : Int32
 }
 
 ///|
@@ -53,7 +53,7 @@ fn FormatOutput::tick(self : FormatOutput) -> Unit raise JsonnetError {
 ///|
 fn FormatOutput::indent(
   self : FormatOutput,
-  spaces : Int,
+  spaces : Int32,
 ) -> Unit raise JsonnetError {
   if self.line_start {
     if spaces > self.limits.output_bytes - self.bytes {
@@ -75,7 +75,7 @@ priv struct FormatGroup {
 
 ///|
 priv struct FormatLocal {
-  depth : Int
+  depth : Int32
   in_object : Bool
   mut equal_pending : Bool
 }
@@ -87,8 +87,8 @@ fn format_tokens(
   options : FormatOptions,
   limits : Limits,
   loc : Location,
-  tree_depth : Int,
-  node_limit : Int?,
+  tree_depth : Int32,
+  node_limit : Int32?,
 ) -> String raise JsonnetError {
   let tokens = format_rewrite(tokens, root, options)
   let tokens = if options.sort_imports {
@@ -120,7 +120,7 @@ fn format_tokens(
   let mut tight_after = false
   let mut first_comment = true
   let mut last_line = 0
-  let assertions : Array[Int] = []
+  let assertions : Array[Int32] = []
   let only_comments = !options.strip_comments && options.strip_all_but_comments
   let strip_all = !options.strip_comments &&
     !only_comments &&
@@ -150,7 +150,7 @@ fn format_tokens(
     }
     let mut newline_count = 0
     let mut interstitial = false
-    let mut comment_column : Int? = None
+    let mut comment_column : Int32? = None
     for trivia in token.leading {
       writer.tick()
       match trivia.kind {

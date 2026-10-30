@@ -2,7 +2,7 @@
 /// A POSIX import host restricted to one canonical directory.
 pub struct FileHost {
   root : String
-  max_bytes : Int
+  max_bytes : Int32
   jpaths : Array[String]
   cache : Map[String, @moonjsonnet.Source]
   binary_cache : Map[String, @moonjsonnet.BinarySource]
@@ -29,8 +29,8 @@ fn diagnostic(
 /// Library paths are relative to root; the last path has highest priority.
 pub fn FileHost::new(
   root : String,
-  jpaths? : Array[String] = [],
-  max_bytes? : Int = 1048576,
+  jpaths~ : Array[String] = [],
+  max_bytes~ : Int32 = 1048576,
 ) -> FileHost raise @moonjsonnet.JsonnetError {
   guard max_bytes > 0 && max_bytes < 2147483647 else {
     raise diagnostic(
@@ -229,17 +229,17 @@ fn FileHost::try_path(
 /// Load and evaluate a file under `root`. Entry paths are relative to `root`.
 pub fn evaluate_file(
   path : String,
-  root? : String = ".",
-  jpaths? : Array[String] = [],
-  ext_vars? : Map[String, Json] = Map([]),
-  ext_code? : Map[String, String] = Map([]),
-  ext_programs? : Map[String, @moonjsonnet.Program] = Map([]),
-  tla_vars? : Map[String, Json] = Map([]),
-  tla_code? : Map[String, String] = Map([]),
-  tla_programs? : Map[String, @moonjsonnet.Program] = Map([]),
-  native_functions? : Map[String, @moonjsonnet.NativeFunction] = Map([]),
+  root~ : String = ".",
+  jpaths~ : Array[String] = [],
+  ext_vars~ : Map[String, Json] = Map([]),
+  ext_code~ : Map[String, String] = Map([]),
+  ext_programs~ : Map[String, @moonjsonnet.Program] = Map([]),
+  tla_vars~ : Map[String, Json] = Map([]),
+  tla_code~ : Map[String, String] = Map([]),
+  tla_programs~ : Map[String, @moonjsonnet.Program] = Map([]),
+  native_functions~ : Map[String, @moonjsonnet.NativeFunction] = Map([]),
   trace? : (@moonjsonnet.Location, String) -> Unit,
-  limits? : @moonjsonnet.Limits = @moonjsonnet.Limits::default(),
+  limits~ : @moonjsonnet.Limits = @moonjsonnet.Limits::default(),
 ) -> Json raise @moonjsonnet.JsonnetError {
   let host = FileHost::new(root, jpaths~, max_bytes=limits.source_bytes)
   let source = host.load(path)

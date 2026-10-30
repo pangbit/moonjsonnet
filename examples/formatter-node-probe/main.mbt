@@ -1,5 +1,5 @@
 ///|
-fn options(style : Int) -> @moonjsonnet.FormatOptions {
+fn options(style : Int32) -> @moonjsonnet.FormatOptions {
   let defaults = @moonjsonnet.FormatOptions::default()
   match style {
     1 => { ..defaults, string_style: DoubleQuotes, }
@@ -34,7 +34,7 @@ fn edit(tree : @moonjsonnet.RawAst, mode : String) -> Unit raise {
     return
   }
   if mode == "remove" {
-    let positions : Array[Int] = []
+    let positions : Array[Int32] = []
     for i, part in tree.root.parts {
       if part is Child(_) {
         positions.push(i)

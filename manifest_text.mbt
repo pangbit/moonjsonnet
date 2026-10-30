@@ -10,13 +10,13 @@
 ///|
 priv struct ManifestText {
   buffer : StringBuilder
-  mut bytes : Int
-  limit : Int
+  mut bytes : Int32
+  limit : Int32
   loc : Location
 }
 
 ///|
-fn ManifestText::new(limit : Int, loc : Location) -> ManifestText {
+fn ManifestText::new(limit : Int32, loc : Location) -> ManifestText {
   { buffer: StringBuilder(), bytes: 0, limit, loc, }
 }
 

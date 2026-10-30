@@ -20,7 +20,7 @@ fn make_array(size : OrderingExpr, func : OrderingExpr) -> OrderingExpr {
 }
 
 ///|
-fn make_index(array : OrderingExpr, index : Int) -> OrderingExpr {
+fn make_index(array : OrderingExpr, index : Int32) -> OrderingExpr {
   {
     source: "(" + array.source + ")[" + index.to_string() + "]",
     tree: ordering_ast(Index(array.tree, sequence_num(index).tree)),

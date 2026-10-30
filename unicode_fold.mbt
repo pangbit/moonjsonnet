@@ -3,7 +3,7 @@
 // Copyright 2009 The Go Authors. BSD terms: licenses/GO-BSD-3-Clause.txt.
 
 ///|
-let unicode_fold : Map[Int, Int] = {
+let unicode_fold : Map[Int32, Int32] = {
   97: 65,
   98: 66,
   99: 67,

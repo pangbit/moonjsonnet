@@ -14,8 +14,8 @@ fn Vm::eval(
   self : Vm,
   expr : Expr,
   env : Env,
-  tail? : Bool = false,
-  preserve_binding? : Bool = false,
+  tail~ : Bool = false,
+  preserve_binding~ : Bool = false,
 ) -> Value raise {
   self.tick(expr.loc)
   if self.depth >= self.limits.depth {
@@ -48,7 +48,7 @@ fn Vm::eval_inner(
     self.current_trace = previous_trace
   }
   let events : Array[EvalHookFrame] = []
-  let forwarded : Array[(Int, Location, Bool)] = []
+  let forwarded : Array[(Int32, Location, Bool)] = []
   let result = self.eval_loop(expr, env, tail~, events~, forwarded~) catch {
     Error(d) => {
       for i = forwarded.length() - 1; i >= 0; i = i - 1 {
@@ -83,7 +83,7 @@ fn Vm::eval_loop(
   env : Env,
   tail~ : Bool,
   events~ : Array[EvalHookFrame],
-  forwarded~ : Array[(Int, Location, Bool)],
+  forwarded~ : Array[(Int32, Location, Bool)],
 ) -> Value raise {
   let mut expr = expr
   let mut env = env
@@ -441,7 +441,7 @@ fn Vm::comprehend_expression(
 fn Vm::comprehend(
   self : Vm,
   clauses : Array[Clause],
-  index : Int,
+  index : Int32,
   env : Env,
   loc : Location,
   emit : (Env) -> Unit raise,
@@ -474,9 +474,9 @@ fn Vm::comprehend(
 fn Vm::call(
   self : Vm,
   function : Value,
-  args : Array[(String?, Int)],
+  args : Array[(String?, Int32)],
   loc : Location,
-  strict? : Bool = false,
+  strict~ : Bool = false,
 ) -> Value raise {
   self.tick(loc)
   match function {
@@ -504,7 +504,7 @@ fn Vm::call(
 fn Vm::call_env(
   self : Vm,
   params : Array[ExprParameter],
-  args : Array[(String?, Int)],
+  args : Array[(String?, Int32)],
   outer : Env,
   loc : Location,
   body? : Expr,
@@ -568,7 +568,7 @@ fn Vm::index(
 }
 
 ///|
-fn array_index(key : Value, length : Int, loc : Location) -> Int raise {
+fn array_index(key : Value, length : Int32, loc : Location) -> Int32 raise {
   let number = number_value(key, loc)
   if number.is_inf() || number.is_nan() || number != number.floor() {
     raise problem(Runtime, loc, "Index must be a finite integer")

@@ -1,7 +1,7 @@
 ///|
 fn stack_result(
   source : String,
-  stack : Int,
+  stack : Int32,
 ) -> Json raise @moonjsonnet.JsonnetError {
   @moonjsonnet.evaluate(source, limits={
     ..@moonjsonnet.Limits::default(),
@@ -10,7 +10,7 @@ fn stack_result(
 }
 
 ///|
-fn stack_error(source : String, stack : Int) -> Unit raise {
+fn stack_error(source : String, stack : Int32) -> Unit raise {
   try stack_result(source, stack) catch {
     @moonjsonnet.Error(d) => {
       assert_eq(d.kind, @moonjsonnet.Limit)

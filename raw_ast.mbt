@@ -70,12 +70,12 @@ pub(all) struct RawAst {
 ///|
 priv struct RawSpan {
   kind : RawNodeKind
-  begin : Int
-  end : Int
+  begin : Int32
+  end : Int32
 } derive(Eq)
 
 ///|
-fn Parser::record_raw(self : Parser, kind : RawNodeKind, begin : Int) -> Unit {
+fn Parser::record_raw(self : Parser, kind : RawNodeKind, begin : Int32) -> Unit {
   if self.raw_spans is Some(spans) {
     let span : RawSpan = { kind, begin, end: self.pos, }
     // Objects are recorded at their own entry and at the primary expression.
@@ -143,10 +143,10 @@ fn raw_token_parts(
 
 ///|
 priv struct RawBuilt {
-  begin : Int
-  end : Int
+  begin : Int32
+  end : Int32
   node : RawNode
-  depth : Int
+  depth : Int32
 }
 
 ///|
@@ -185,7 +185,7 @@ fn build_raw_ast(
         child_index >= 0
         child_index = child_index - 1 {
       let child = children[child_index]
-      depth = Int::max(depth, child.depth + 1)
+      depth = Int32::max(depth, child.depth + 1)
       if child.begin < position {
         raise problem(Runtime, loc, "overlapping raw syntax children")
       }
@@ -240,7 +240,7 @@ fn build_raw_ast(
 /// parameters, arguments and clauses. No returned mutable container is shared.
 pub fn SyntaxDocument::raw_ast(
   self : SyntaxDocument,
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> RawAst raise JsonnetError {
   let document = self.document
   let loc = document.expression.loc
@@ -267,8 +267,8 @@ pub fn SyntaxDocument::raw_ast(
 ///|
 pub fn RawAst::parse(
   source : String,
-  filename? : String = "<input>",
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  filename~ : String = "<input>",
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> RawAst raise JsonnetError {
   SyntaxDocument::parse(source, filename~, limits~).raw_ast(limits~)
 }

@@ -5,7 +5,7 @@
 fn shared_mode_call(
   callee : OrderingExpr,
   args : Array[(String?, OrderingExpr)],
-  strict? : Bool = false,
+  strict~ : Bool = false,
 ) -> OrderingExpr {
   {
     source: "(" +

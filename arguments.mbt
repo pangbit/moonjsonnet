@@ -4,9 +4,9 @@
 // order, including repeated formal names accepted by the parser.
 fn bind_arguments(
   parameters : Array[(String, Bool)],
-  arguments : Array[(String?, Int)],
+  arguments : Array[(String?, Int32)],
   location : Location,
-) -> Map[String, Int] raise {
+) -> Map[String, Int32] raise {
   let positional = arguments.iter().filter(pair => pair.0 is None).count()
   if positional > parameters.length() {
     raise problem(
@@ -19,7 +19,7 @@ fn bind_arguments(
   for (name, _) in parameters {
     accepted[name] = true
   }
-  let bound : Map[String, Int] = Map([])
+  let bound : Map[String, Int32] = Map([])
   let mut position = 0
   for (name, thunk) in arguments {
     match name {

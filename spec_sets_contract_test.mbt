@@ -17,12 +17,12 @@ fn sets_apply(
 }
 
 ///|
-fn sets_numbers(values : Array[Int]) -> OrderingExpr {
+fn sets_numbers(values : Array[Int32]) -> OrderingExpr {
   ordering_array(values.map(sequence_num))
 }
 
 ///|
-fn sets_item(key : Int, id : String) -> OrderingExpr {
+fn sets_item(key : Int32, id : String) -> OrderingExpr {
   reflect_object([
     (reflect_string("k"), 1, sequence_num(key)),
     (reflect_string("id"), 1, reflect_string(id)),

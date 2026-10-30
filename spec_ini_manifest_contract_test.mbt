@@ -11,7 +11,7 @@ fn ini_contract_field(name : String, value : OrderingExpr) -> OrderingExpr {
 ///|
 fn ini_contract_call(
   args : Array[(String?, OrderingExpr)],
-  through_alias? : Bool = false,
+  through_alias~ : Bool = false,
 ) -> OrderingExpr {
   let function = additive_select(sequence_var("std"), "manifestIni")
   if through_alias {

@@ -43,9 +43,9 @@ struct Parser {
   mut state : State
   mut token : Token?
   mut current : (Event, Marker)?
-  anchors : @hashmap.HashMap[String, Int]
-  anchor_names : Map[Int, String]
-  mut anchor_id : Int
+  anchors : @hashmap.HashMap[String, Int32]
+  anchor_names : Map[Int32, String]
+  mut anchor_id : Int32
   /// The tag directives (`%TAG`) the parser has encountered.
   ///
   /// Key is the handle, and value is the prefix.
@@ -55,7 +55,7 @@ struct Parser {
 }
 
 ///|
-pub fn Parser::new(str : StringView, max_depth? : Int = 255) -> Parser {
+pub fn Parser::new(str : StringView, max_depth~ : Int32 = 255) -> Parser {
   Parser::{
     lexer: Lexer::new(str, max_depth~),
     states: Array(capacity=40),
@@ -869,7 +869,7 @@ fn Parser::resolve_tag(
 }
 
 ///|
-fn Parser::register_anchor(self : Parser, name : String, _ : Marker) -> Int {
+fn Parser::register_anchor(self : Parser, name : String, _ : Marker) -> Int32 {
   // anchors can be overridden/reused
   let new_id = self.anchor_id
   self.anchor_id += 1
@@ -879,7 +879,7 @@ fn Parser::register_anchor(self : Parser, name : String, _ : Marker) -> Int {
 }
 
 ///|
-pub fn Parser::anchor_name(self : Parser, id : Int) -> String {
+pub fn Parser::anchor_name(self : Parser, id : Int32) -> String {
   self.anchor_names.get(id).unwrap_or("")
 }
 

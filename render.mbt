@@ -4,8 +4,8 @@
 fn render_json(
   j : Json,
   pretty : Bool,
-  depth : Int,
-  limit : Int,
+  depth : Int32,
+  limit : Int32,
   loc : Location,
 ) -> String raise {
   let b = StringBuilder()

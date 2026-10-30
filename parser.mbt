@@ -10,9 +10,9 @@
 ///|
 priv struct Parser {
   tokens : Array[Token]
-  mut pos : Int
-  mut depth : Int
-  max_depth : Int
+  mut pos : Int32
+  mut depth : Int32
+  max_depth : Int32
   // End of the last parsed expression before semantic sugar is removed.
   mut expression_end : Location
   raw_spans : Array[RawSpan]?
@@ -89,7 +89,7 @@ fn is_name(s : String) -> Bool {
 }
 
 ///|
-fn Parser::name(self : Parser, parameter? : Bool = false) -> String raise Error {
+fn Parser::name(self : Parser, parameter~ : Bool = false) -> String raise Error {
   let t = self.take()
   if !is_name(t.text) {
     raise problem(
@@ -104,7 +104,7 @@ fn Parser::name(self : Parser, parameter? : Bool = false) -> String raise Error 
 }
 
 ///|
-fn precedence(op : String) -> Int {
+fn precedence(op : String) -> Int32 {
   match op {
     "||" => 1
     "&&" => 2
@@ -123,7 +123,7 @@ fn precedence(op : String) -> Int {
 ///|
 fn Parser::params(
   self : Parser,
-  is_method? : Bool = false,
+  is_method~ : Bool = false,
 ) -> Array[ExprParameter] raise Error {
   self.expect("(")
   let params : Array[ExprParameter] = []
@@ -169,7 +169,7 @@ fn Parser::last_end(self : Parser) -> Location {
 fn Parser::binding(
   self : Parser,
   names : Map[String, Bool],
-  in_object? : Bool = false,
+  in_object~ : Bool = false,
 ) -> ExprBinding raise Error {
   let raw_begin = self.pos
   let loc = self.peek().loc
@@ -355,7 +355,7 @@ fn Parser::object(self : Parser, loc : Location) -> Expr raise Error {
 }
 
 ///|
-fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
+fn Parser::expr(self : Parser, min_prec : Int32) -> Expr raise Error {
   let raw_begin = self.pos
   self.depth += 1
   if self.depth > self.max_depth {
@@ -627,7 +627,7 @@ fn Parser::expr(self : Parser, min_prec : Int) -> Expr raise Error {
 }
 
 ///|
-fn parse(source : String, file : String, max_depth : Int) -> Expr raise Error {
+fn parse(source : String, file : String, max_depth : Int32) -> Expr raise Error {
   try {
     let e = parse_tokens(lex(source, file), max_depth)
     validate(e, ["std"], false)
@@ -641,9 +641,9 @@ fn parse(source : String, file : String, max_depth : Int) -> Expr raise Error {
 ///|
 fn parse_tokens(
   tokens : Array[Token],
-  max_depth : Int,
-  tree_depth? : Int,
-  node_limit? : Int,
+  max_depth : Int32,
+  tree_depth? : Int32,
+  node_limit? : Int32,
   raw_spans? : Array[RawSpan],
 ) -> Expr raise Error {
   let p : Parser = {

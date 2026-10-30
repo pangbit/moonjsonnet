@@ -29,7 +29,7 @@ fn sort_contract_optional(
 }
 
 ///|
-fn sort_contract_ids(value : OrderingExpr, size : Int) -> OrderingExpr {
+fn sort_contract_ids(value : OrderingExpr, size : Int32) -> OrderingExpr {
   let fields : Array[OrderingExpr] = []
   for i in 0..<size {
     fields.push(additive_select(make_index(sequence_var("sorted"), i), "id"))
@@ -304,7 +304,7 @@ test "sort contract requires Array then key then comparison without unrelated pa
         )
       }
       let key = rewrite_gate(reflect_string("key"), key_value)
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       let value = sequence_call("length", [
         sort_demand_call(input, Some(key), true),
       ])
@@ -423,7 +423,7 @@ test "sort contract preserves mixed lazy payload heads and shared original Array
         rewrite_gate(reflect_string("right"), sequence_num(1)),
       ]),
     )
-    let counts : Map[String, Int] = Map([])
+    let counts : Map[String, Int32] = Map([])
     let body = sequence_local(
       [
         ("original", values),

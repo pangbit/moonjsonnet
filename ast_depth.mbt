@@ -1,7 +1,7 @@
 ///|
 // Pratt parsing can create arbitrarily deep left-associated trees without
 // increasing parser recursion. Walk iteratively before recursive validation.
-fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
+fn check_ast_depth(root : Expr, limit : Int32) -> Unit raise {
   let stack = [(root, 0)]
   while stack.pop() is Some((e, depth)) {
     if depth >= limit {
@@ -104,7 +104,7 @@ fn check_ast_depth(root : Expr, limit : Int) -> Unit raise {
 }
 
 ///|
-fn check_ast_nodes(root : Expr, limit : Int) -> Unit raise {
+fn check_ast_nodes(root : Expr, limit : Int32) -> Unit raise {
   let stack = [root]
   let mut nodes = 0
   while stack.pop() is Some(e) {

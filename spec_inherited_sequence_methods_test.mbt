@@ -3,7 +3,7 @@
 // Source and handmade ASTs share only neutral builders, not parser output.
 
 ///|
-fn inherited_sequence_library(count : Int) -> OrderingExpr {
+fn inherited_sequence_library(count : Int32) -> OrderingExpr {
   ordering_binary(
     sequence_var("std"),
     "+",
@@ -43,7 +43,7 @@ fn inherited_sequence_results(library : OrderingExpr) -> OrderingExpr {
 
 ///|
 test "inherited sequence methods use the final receiver length" {
-  let cases : Array[(Int, Json)] = [(0, [42, []]), (1, [43, [1]])]
+  let cases : Array[(Int32, Json)] = [(0, [42, []]), (1, [43, [1]])]
   for (count, expected) in cases {
     sequence_value(
       inherited_sequence_results(inherited_sequence_library(count)),

@@ -81,7 +81,7 @@ fn Vm::import_file(
 ///|
 fn Vm::base_env(
   self : Vm,
-  file? : String = "<input>",
+  file~ : String = "<input>",
   import_from? : String,
 ) -> Env raise {
   let import_from = import_from.unwrap_or(file)

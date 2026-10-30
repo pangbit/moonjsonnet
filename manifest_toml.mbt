@@ -33,8 +33,8 @@ fn toml_key(key : String) -> String {
 // empty nested table must not demand the next level's formatting argument.
 fn Vm::toml_indent(
   self : Vm,
-  indent : Int,
-  level : Int,
+  indent : Int32,
+  level : Int32,
   loc : Location,
 ) -> String raise {
   if level == 0 {
@@ -71,11 +71,11 @@ fn Vm::toml_section(self : Vm, value : Value, loc : Location) -> Bool raise {
 fn Vm::toml_value(
   self : Vm,
   value : Value,
-  indent : Int,
+  indent : Int32,
   inline : Bool,
-  depth : Int,
+  depth : Int32,
   loc : Location,
-  indexed_path? : Array[String] = [],
+  indexed_path~ : Array[String] = [],
 ) -> String raise {
   self.tick(loc)
   if depth >= self.limits.depth {
@@ -164,12 +164,12 @@ fn Vm::toml_value(
 fn Vm::toml_table(
   self : Vm,
   value : Value,
-  indent : Int,
+  indent : Int32,
   path : Array[String],
-  indent_level : Int,
-  depth : Int,
+  indent_level : Int32,
+  depth : Int32,
   loc : Location,
-  indexed_path? : Array[String] = [],
+  indexed_path~ : Array[String] = [],
 ) -> String raise {
   self.tick(loc)
   if depth >= self.limits.depth {

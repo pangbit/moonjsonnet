@@ -17,7 +17,7 @@ fn raw_text(
     limits: { ..limits.output_limits(), output_bytes: limits.source_bytes, },
     loc,
   }
-  let stack : Array[(RawPart, Int)] = [(Child(root), 0)]
+  let stack : Array[(RawPart, Int32)] = [(Child(root), 0)]
   let mut nodes = 0
   while stack.pop() is Some((part, depth)) {
     writer.tick()
@@ -47,7 +47,7 @@ fn raw_text(
 /// are bounded; this does not itself validate the resulting Jsonnet grammar.
 pub fn RawAst::text(
   self : RawAst,
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> String raise JsonnetError {
   raw_text(self.root, self.final_fodder, limits)
 }
@@ -55,7 +55,7 @@ pub fn RawAst::text(
 ///|
 pub fn RawNode::text(
   self : RawNode,
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> String raise JsonnetError {
   raw_text(self, [], limits)
 }
@@ -66,9 +66,9 @@ pub fn RawNode::text(
 /// node is not mutated and no expression/import is executed.
 pub fn format_node(
   node : RawNode,
-  final_fodder? : Array[SourcePart] = [],
-  options? : FormatOptions = FormatOptions::default(),
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  final_fodder~ : Array[SourcePart] = [],
+  options~ : FormatOptions = FormatOptions::default(),
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> String raise JsonnetError {
   let filename = node.range.map(r => r.begin.file).unwrap_or("<node>")
   format_syntax_source(
@@ -82,16 +82,16 @@ pub fn format_node(
 ///|
 pub fn RawAst::format(
   self : RawAst,
-  options? : FormatOptions = FormatOptions::default(),
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  options~ : FormatOptions = FormatOptions::default(),
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> String raise JsonnetError {
   format_node(self.root, final_fodder=self.final_fodder, options~, limits~)
 }
 
 ///|
 priv enum RawCloneFrame {
-  Enter(RawNode, Int)
-  Leave(RawNode, Int)
+  Enter(RawNode, Int32)
+  Leave(RawNode, Int32)
 }
 
 ///|
@@ -157,7 +157,7 @@ fn clone_raw_node(
 /// Clone every child occurrence, preserving metadata and isolating mutable arrays.
 pub fn RawNode::clone(
   self : RawNode,
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> RawNode raise JsonnetError {
   let loc = self.range
     .map(r => r.begin)
@@ -177,7 +177,7 @@ pub fn RawNode::clone(
 ///|
 pub fn RawAst::clone(
   self : RawAst,
-  limits? : SyntaxLimits = SyntaxLimits::default(),
+  limits~ : SyntaxLimits = SyntaxLimits::default(),
 ) -> RawAst raise JsonnetError {
   let loc = self.root.range
     .map(r => r.begin)

@@ -123,10 +123,10 @@ fn reference_int64(n : Double) -> Int64 {
 ///|
 fn Vm::compare_arrays(
   self : Vm,
-  a : Array[Int],
-  b : Array[Int],
+  a : Array[Int32],
+  b : Array[Int32],
   loc : Location,
-) -> Int raise {
+) -> Int32 raise {
   if self.depth >= self.limits.depth {
     raise problem(Limit, loc, "comparison depth limit exceeded")
   }
@@ -134,7 +134,7 @@ fn Vm::compare_arrays(
   defer {
     self.depth -= 1
   }
-  for i in 0..<Int::min(a.length(), b.length()) {
+  for i in 0..<Int32::min(a.length(), b.length()) {
     self.tick(loc)
     let x = self.force(a[i], loc)
     let y = self.force(b[i], loc)
@@ -152,7 +152,7 @@ fn Vm::compare_values(
   a : Value,
   b : Value,
   loc : Location,
-) -> Int raise {
+) -> Int32 raise {
   match a {
     Num(x) => compare_numbers(x, number_value(b, loc))
     Str(x) => compare_unicode(x, text_value(b, loc))
@@ -162,7 +162,7 @@ fn Vm::compare_values(
 }
 
 ///|
-fn compare_numbers(a : Double, b : Double) -> Int {
+fn compare_numbers(a : Double, b : Double) -> Int32 {
   if a < b {
     -1
   } else if a > b {
@@ -173,10 +173,10 @@ fn compare_numbers(a : Double, b : Double) -> Int {
 }
 
 ///|
-fn compare_unicode(a : String, b : String) -> Int {
+fn compare_unicode(a : String, b : String) -> Int32 {
   let x = a.to_array()
   let y = b.to_array()
-  for i in 0..<Int::min(x.length(), y.length()) {
+  for i in 0..<Int32::min(x.length(), y.length()) {
     let c = x[i].to_int().compare(y[i].to_int())
     if c != 0 {
       return c

@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- Adapt development scripts and CI to MoonBit v0.10.18+6c83a7f62 / Moon
+  0.1.20261028. Fence script imports and retain async 0.22.4 and all existing
+  expectations. Apply the new formatter's `Int32`/`UInt32` names and
+  default-parameter syntax, and regenerate interfaces without changing parameter
+  names, defaults or Jsonnet behavior. Focused runtime validation passed on
+  macOS ARM64 and OrbStack Linux AMD64; the new full regression and hosted CI
+  remain unrun. Published 0.2.2 evidence retains its original compiler.
+
 ## 0.2.2
 
 Cumulative compatibility and embedding fixes after 0.2.1. Public MoonBit API

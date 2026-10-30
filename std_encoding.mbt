@@ -123,7 +123,7 @@ fn Vm::bytes_value(self : Vm, bytes : Bytes, loc : Location) -> Value raise {
 }
 
 ///|
-fn base64_digit(c : Byte) -> Int {
+fn base64_digit(c : Byte) -> Int32 {
   let n = c.to_int()
   if n >= 65 && n <= 90 {
     n - 65
@@ -217,7 +217,7 @@ fn Vm::decode_base64(self : Vm, s : String, loc : Location) -> Bytes raise {
 }
 
 ///|
-fn base64_corrupt(loc : Location, offset : Int) -> JsonnetError {
+fn base64_corrupt(loc : Location, offset : Int32) -> JsonnetError {
   problem(
     Runtime,
     loc,

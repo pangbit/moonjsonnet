@@ -11,7 +11,7 @@ priv enum JsonDiagnosticState {
   EndTop
   Quoted
   Escape
-  Hex(Int)
+  Hex(Int32)
   Negative
   Zero
   Integer
@@ -20,14 +20,14 @@ priv enum JsonDiagnosticState {
   Exponent
   ExponentSign
   ExponentDigits
-  Literal(Bytes, Int, String)
+  Literal(Bytes, Int32, String)
 }
 
 ///|
 priv struct JsonDiagnosticScanner {
   mut state : JsonDiagnosticState
   // Object key = 0, object value = 1, array value = 2.
-  stack : Array[Int]
+  stack : Array[Int32]
 }
 
 ///|

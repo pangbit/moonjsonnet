@@ -86,10 +86,10 @@ fn Vm::yaml_value(
   indent_arrays : Bool,
   quote_keys : Bool,
   current_indent : String,
-  depth : Int,
+  depth : Int32,
   out : ManifestText,
   loc : Location,
-  option_thunks? : (Int, Int)? = None,
+  option_thunks~ : (Int32, Int32)? = None,
 ) -> Unit raise {
   self.tick(loc)
   if depth >= self.limits.depth {

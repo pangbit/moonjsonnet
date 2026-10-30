@@ -5,7 +5,7 @@
 fn remove_key_call(
   obj : OrderingExpr,
   key : OrderingExpr,
-  named? : Bool = false,
+  named~ : Bool = false,
 ) -> OrderingExpr {
   if !named {
     return sequence_call("objectRemoveKey", [obj, key])

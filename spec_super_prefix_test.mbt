@@ -24,7 +24,7 @@ fn prefix_call(target : @moonjsonnet.Ast) -> @moonjsonnet.Ast {
 ///|
 fn prefix_object(
   fields : Array[(String, @moonjsonnet.Ast)],
-  hidden? : Array[String] = [],
+  hidden~ : Array[String] = [],
 ) -> @moonjsonnet.Ast {
   prefix_ast(
     Obj(

@@ -44,7 +44,7 @@ fn quote_lex_char(c : Char?) -> String {
 }
 
 ///|
-fn number_end(chars : Array[Char], start : Int) -> Int {
+fn number_end(chars : Array[Char], start : Int32) -> Int32 {
   let mut i = start + 1
   if chars[start] != '0' {
     while chars.get(i) is Some(c) && digit(c) {

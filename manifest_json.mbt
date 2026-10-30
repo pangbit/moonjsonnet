@@ -6,11 +6,11 @@ fn Vm::manifest_json_ex(
   value : Value,
   style : (String, String, String),
   current_indent : String,
-  depth : Int,
-  limit : Int,
+  depth : Int32,
+  limit : Int32,
   loc : Location,
-  path? : Array[String] = [],
-  style_thunks? : (Int, Int, Int)? = None,
+  path~ : Array[String] = [],
+  style_thunks~ : (Int32, Int32, Int32)? = None,
 ) -> String raise {
   self.tick(loc)
   if depth >= self.limits.depth {
@@ -115,8 +115,8 @@ fn Vm::manifest_json_ex(
 fn Vm::manifest_json_style(
   self : Vm,
   style : (String, String, String),
-  pending : (Int, Int, Int)?,
-  slot : Int,
+  pending : (Int32, Int32, Int32)?,
+  slot : Int32,
   loc : Location,
 ) -> String raise {
   match pending {

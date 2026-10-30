@@ -5,7 +5,7 @@
 
 ///|
 fn assertion_paths_object(
-  fields : Array[(String, Int, OrderingExpr)],
+  fields : Array[(String, Int32, OrderingExpr)],
   condition : OrderingExpr,
   message : OrderingExpr?,
 ) -> OrderingExpr {

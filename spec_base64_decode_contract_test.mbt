@@ -7,13 +7,13 @@
 fn base64_decode_call(
   name : String,
   input : OrderingExpr,
-  named? : Bool = false,
+  named~ : Bool = false,
 ) -> OrderingExpr {
   rounding_apply(name, [(if named { Some("str") } else { None }, input)])
 }
 
 ///|
-fn base64_decode_byte_json(bytes : Array[Int]) -> Json {
+fn base64_decode_byte_json(bytes : Array[Int32]) -> Json {
   Json::array(bytes.map(n => Json::number(n.to_double())))
 }
 
@@ -166,7 +166,7 @@ test "B64D-C05 byte decoder preserves all octets mixed groups and the full alpha
       base64_decode_byte_json(bytes),
     )
   }
-  let bytes : Array[Int] = []
+  let bytes : Array[Int32] = []
   for n in 0..<256 {
     bytes.push(n)
   }
@@ -218,7 +218,7 @@ test "B64D-C09 full byte alphabet decoding yields the exact naive String" {
 
 ///|
 test "B64D-C10 explicit UTF8 decoding retains valid text as a separate operation" {
-  let cases : Array[(String, Array[Int], String)] = [
+  let cases : Array[(String, Array[Int32], String)] = [
     ("", [], ""),
     ("AA==", [0], "\u0000"),
     ("Zm9v", [102, 111, 111], "foo"),

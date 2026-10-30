@@ -1,8 +1,8 @@
 ///|
 fn Vm::remove_at(
   self : Vm,
-  items : Array[Int],
-  index : Int,
+  items : Array[Int32],
+  index : Int32,
   loc : Location,
 ) -> Value raise {
   if index < 0 || index >= items.length() {

@@ -5,7 +5,7 @@
 fn remove_search_call(
   arr : OrderingExpr,
   elem : OrderingExpr,
-  named? : Bool = false,
+  named~ : Bool = false,
 ) -> OrderingExpr {
   rounding_apply(
     "remove",

@@ -2,7 +2,7 @@
 fn Vm::membership(
   self : Vm,
   input : Value,
-  target_thunk : Int,
+  target_thunk : Int32,
   short_circuit : Bool,
   loc : Location,
 ) -> Value raise {

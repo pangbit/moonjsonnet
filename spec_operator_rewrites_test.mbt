@@ -57,7 +57,7 @@ fn rewrite_gate(id : OrderingExpr, value : OrderingExpr) -> OrderingExpr {
 
 ///|
 fn rewrite_natives(
-  counts : Map[String, Int],
+  counts : Map[String, Int32],
 ) -> Map[String, @moonjsonnet.NativeFunction] {
   Map([
     (
@@ -113,7 +113,7 @@ test "rewritten operators retain private std and one demanded head per operand r
           },
         )
         for handmade in [false, true] {
-          let counts : Map[String, Int] = Map([])
+          let counts : Map[String, Int32] = Map([])
           let program = ordering_program(value, handmade)
           assert_eq(counts.length(), 0)
           assert_eq(
@@ -157,7 +157,7 @@ test "core logic keeps shortcuts while rewritten errors remain isolated under st
         },
       )
       for handmade in [false, true] {
-        let counts : Map[String, Int] = Map([])
+        let counts : Map[String, Int32] = Map([])
         assert_eq(
           ordering_program(value, handmade).evaluate(
             native_functions=rewrite_natives(counts),
@@ -253,7 +253,7 @@ test "in super preserves hidden lexical prefix after extracting a function from 
   for unused in [false, true] {
     let value = rewrite_scope(if unused { ordering_unused(body) } else { body })
     for handmade in [false, true] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       assert_eq(
         ordering_program(value, handmade).evaluate(
           native_functions=rewrite_natives(counts),

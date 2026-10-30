@@ -10,8 +10,8 @@
 ///|
 fn reverse_contract_call(
   value : OrderingExpr,
-  through_alias? : Bool = false,
-  strict? : Bool = false,
+  through_alias~ : Bool = false,
+  strict~ : Bool = false,
 ) -> OrderingExpr {
   let function = additive_select(sequence_var("std"), "reverse")
   if through_alias {
@@ -105,7 +105,7 @@ test "RV3 reverse transfers Object and Function lengths before indexing" {
     ] {
     transfer_value(reverse_contract_call(input), [])
   }
-  let cases : Array[(OrderingExpr, Int)] = [
+  let cases : Array[(OrderingExpr, Int32)] = [
     (reflect_object([(reflect_string("a"), 1, unread)]), 1),
     (
       reflect_object([

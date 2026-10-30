@@ -1,4 +1,6 @@
+----
 import {"moonbitlang/async@0.22.4", "moonbitlang/async@0.22.4/fs", "moonbitlang/async@0.22.4/shell", "moonbitlang/core/json", "moonbitlang/core/env"}
+----
 async fn main {
   let args=@env.args();guard args.length()==3 else {fail("CLI GO_REFERENCE; run differential.mbtx first")}
   let cli=@fs.realpath(args[1]);let reference=@fs.realpath(args[2])

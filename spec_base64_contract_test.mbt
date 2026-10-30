@@ -6,13 +6,13 @@
 ///|
 fn base64_contract_call(
   input : OrderingExpr,
-  named? : Bool = false,
+  named~ : Bool = false,
 ) -> OrderingExpr {
   rounding_apply("base64", [(if named { Some("input") } else { None }, input)])
 }
 
 ///|
-fn base64_contract_bytes(values : Array[Int]) -> OrderingExpr {
+fn base64_contract_bytes(values : Array[Int32]) -> OrderingExpr {
   ordering_array(values.map(sequence_num))
 }
 
@@ -305,7 +305,7 @@ test "B64-C14 explicit UTF8 encoding remains distinct from byte String interpret
 test "B64-C15 the full byte alphabet retains one unwrapped padded result" {
   let vectors = base64_contract_single_vectors()
   let text = vectors.map(pair => pair.0).join("")
-  let bytes : Array[Int] = []
+  let bytes : Array[Int32] = []
   for n in 0..<256 {
     bytes.push(n)
   }
@@ -580,7 +580,7 @@ fn base64_contract_single_vectors() -> Array[(String, String)] {
 }
 
 ///|
-fn base64_contract_group_vectors() -> Array[(String, Array[Int], String)] {
+fn base64_contract_group_vectors() -> Array[(String, Array[Int32], String)] {
   [
     ("\u0000", [0], "AA=="),
     ("\u0000\u007f", [0, 127], "AH8="),

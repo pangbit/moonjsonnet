@@ -1,7 +1,7 @@
 ///|
 fn parse_yaml_test(
   source : String,
-  limits? : @moonjsonnet.Limits = @moonjsonnet.Limits::default(),
+  limits~ : @moonjsonnet.Limits = @moonjsonnet.Limits::default(),
 ) -> Json raise @moonjsonnet.JsonnetError {
   @moonjsonnet.evaluate(
     "std.parseYaml(str=" + Json::string(source).stringify() + ")",

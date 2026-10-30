@@ -230,7 +230,7 @@ fn join_arr_guard(handmade : Bool) -> Unit raise {
       ),
     ] {
     let value = additive_probe_scope(join_call(sep, arr))
-    let counts : Map[String, Int] = Map([])
+    let counts : Map[String, Int32] = Map([])
     try
       ordering_program(value, handmade).evaluate(
         native_functions=rewrite_natives(counts),
@@ -349,7 +349,7 @@ test "join refuses invalid bindings before argument gates and retains unused cal
     ] {
     let call = rounding_apply("join", args)
     for handmade in [false, true] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       assert_eq(
         ordering_program(additive_probe_scope(ordering_unused(call)), handmade).evaluate(
           native_functions=rewrite_natives(counts),

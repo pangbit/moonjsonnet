@@ -11,7 +11,7 @@ fn conjunction_check(
   id : String,
   predicate : @moonjsonnet.Ast,
   context : @moonjsonnet.Ast,
-  error_message? : Bool = false,
+  error_message~ : Bool = false,
 ) -> (@moonjsonnet.Ast, @moonjsonnet.Ast?) {
   (
     assertion_self_ast(
@@ -43,7 +43,7 @@ fn conjunction_source_check(
   id : String,
   predicate : String,
   context : String,
-  error_message? : Bool = false,
+  error_message~ : Bool = false,
 ) -> String {
   "assert (if std.native('seen')('" +
   id +
@@ -135,7 +135,7 @@ fn conjunction_source(bad : Array[String]) -> String {
 fn conjunction_natives(
   seen : Map[String, Bool],
   messages : Map[String, Bool],
-  payloads : Ref[Int],
+  payloads : Ref[Int32],
 ) -> Map[String, @moonjsonnet.NativeFunction] {
   Map([
     (

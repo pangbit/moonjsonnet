@@ -2,7 +2,7 @@
 fn AstReader::read(
   self : AstReader,
   e : Ast,
-  depth : Int,
+  depth : Int32,
 ) -> Expr raise JsonnetError {
   if depth >= self.limits.depth || self.nodes >= self.limits.steps {
     raise problem(Limit, e.loc, "AST conversion limit exceeded")
@@ -235,7 +235,7 @@ fn ast_export_children(e : Expr) -> Array[Expr] {
 ///|
 priv enum AstExportFrame {
   Enter(Expr)
-  Leave(Expr, Int)
+  Leave(Expr, Int32)
 }
 
 ///|

@@ -177,8 +177,8 @@ fn debug_visibility(
 fn Env::debug_capture(
   self : Env,
   roots : Array[Expr],
-  bound? : Array[String] = [],
-  extra? : Array[String] = [],
+  bound~ : Array[String] = [],
+  extra~ : Array[String] = [],
 ) -> Env {
   {
     ..self,

@@ -18,7 +18,7 @@ fn repeat_search_call(
 
 ///|
 test "RS1 repeat retains literal String Array cardinalities and Unicode data" {
-  let cases : Array[(OrderingExpr, Int, Json)] = [
+  let cases : Array[(OrderingExpr, Int32, Json)] = [
     (reflect_string("blah"), 2, "blahblah"),
     (reflect_string("A\u0000e\u0301😀"), 0, ""),
     (reflect_string("A\u0000e\u0301😀"), 1, "A\u0000e\u0301😀"),

@@ -9,7 +9,7 @@
 // Copyright Google Inc.; Apache-2.0; see NOTICE.
 
 ///|
-fn literal_hex(bytes : Bytes, start : Int) -> Int? {
+fn literal_hex(bytes : Bytes, start : Int32) -> Int32? {
   let mut value = 0
   for i in start..<(start + 4) {
     let b = bytes[i].to_int()

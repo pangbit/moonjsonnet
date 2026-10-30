@@ -294,7 +294,7 @@ test "sort degenerate native gates demand only array shape until a result elemen
         Some(key),
         true,
       )
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       assert_eq(
         ordering_program(
           additive_probe_scope(sequence_call("length", [value])),
@@ -307,7 +307,7 @@ test "sort degenerate native gates demand only array shape until a result elemen
       )
       assert_eq(counts, Map([("array", 1)]))
       if n == 1 {
-        let selected : Map[String, Int] = Map([])
+        let selected : Map[String, Int32] = Map([])
         assert_eq(
           ordering_program(additive_probe_scope(make_index(value, 0)), handmade).evaluate(
             native_functions=rewrite_natives(selected),
@@ -330,7 +330,7 @@ test "sort degenerate native gates demand only array shape until a result elemen
       rewrite_gate(reflect_string("element"), sequence_num(1)),
     ])
     let value = sort_demand_call(two, Some(key), false)
-    let counts : Map[String, Int] = Map([])
+    let counts : Map[String, Int32] = Map([])
     assert_eq(
       ordering_program(
         additive_probe_scope(sequence_call("length", [value])),
@@ -360,7 +360,7 @@ test "sort call admission binding failures and skipped calls preserve their phas
   for args in bad {
     let value = rounding_apply("sort", args)
     for handmade in [false, true] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       assert_eq(
         ordering_program(additive_probe_scope(ordering_unused(value)), handmade).evaluate(
           native_functions=rewrite_natives(counts),

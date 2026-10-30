@@ -8,7 +8,7 @@ fn prec_v(name : String) -> @moonjsonnet.Ast {
 }
 
 ///|
-fn prec_n(value : Int) -> @moonjsonnet.Ast {
+fn prec_n(value : Int32) -> @moonjsonnet.Ast {
   ordering_ast(NumberLiteral(value.to_string()))
 }
 
@@ -204,7 +204,7 @@ test "precedence keeps unary operands above all binary tiers" {
 }
 
 ///|
-fn prec_postfix(base : @moonjsonnet.Ast, form : Int) -> @moonjsonnet.Ast {
+fn prec_postfix(base : @moonjsonnet.Ast, form : Int32) -> @moonjsonnet.Ast {
   match form {
     0 => ordering_ast(Call(base, [(None, prec_v("b"))], false))
     1 => ordering_ast(Index(base, prec_v("b")))

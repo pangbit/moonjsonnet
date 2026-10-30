@@ -5,7 +5,7 @@
 fn ostatic_object(
   locals : Array[(String, OrderingExpr)],
   checks : Array[(OrderingExpr, OrderingExpr?)],
-  fields? : Array[(OrderingExpr, OrderingExpr)] = [],
+  fields~ : Array[(OrderingExpr, OrderingExpr)] = [],
 ) -> OrderingExpr {
   let members : Array[String] = []
   // Put assertions before locals to check whole-object scope in source too.

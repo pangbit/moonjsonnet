@@ -5,7 +5,7 @@
 fn aggregate_admit_call(
   name : String,
   input : OrderingExpr,
-  named? : Bool = false,
+  named~ : Bool = false,
 ) -> OrderingExpr {
   rounding_apply(name, [(if named { Some("arr") } else { None }, input)])
 }

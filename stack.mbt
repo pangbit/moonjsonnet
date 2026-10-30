@@ -14,7 +14,7 @@ fn Vm::eval_frame(
   self : Vm,
   expr : Expr,
   env : Env,
-  trimmable? : Bool = false,
+  trimmable~ : Bool = false,
 ) -> Value raise {
   self.push_frame(expr.loc, trimmable)
   let size = self.frames.length()

@@ -162,7 +162,7 @@ fn extrema_predicate_before_payload(
       None,
     )
     for observation in [value, sequence_call("type", [value])] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       let scoped = additive_probe_scope(observation)
       assert_eq(
         ordering_program(ordering_unused(scoped), handmade).evaluate(

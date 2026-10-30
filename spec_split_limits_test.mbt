@@ -44,7 +44,7 @@ test "split contracts preserve directional nonoverlapping data and named paramet
       expected,
     )
   }
-  let limited : Array[(String, String, Int, Json, Json)] = [
+  let limited : Array[(String, String, Int32, Json, Json)] = [
     ("", "::", 0, [""], [""]),
     ("abc", "::", 1, ["abc"], ["abc"]),
     ("a::b::c", "::", 0, ["a::b::c"], ["a::b::c"]),
@@ -155,7 +155,7 @@ fn split_guard_failure(
 ) -> Unit raise {
   let value = additive_probe_scope(value)
   for handmade in [false, true] {
-    let counts : Map[String, Int] = Map([])
+    let counts : Map[String, Int32] = Map([])
     assert_eq(
       ordering_program(ordering_unused(value), handmade).evaluate(
         native_functions=rewrite_natives(counts),
@@ -346,7 +346,7 @@ test "split contracts require valid argument heads before observing the result a
 
 ///|
 test "split contracts share required inputs and preserve originals across result reads" {
-  let cases : Array[(String, Json, Int)] = [
+  let cases : Array[(String, Json, Int32)] = [
     ("split", ["a", "b", "c"], 3),
     ("splitLimit", ["a", "b::c"], 2),
     ("splitLimitR", ["a::b", "c"], 2),
@@ -383,7 +383,7 @@ test "split contracts share required inputs and preserve originals across result
       ),
     )
     for handmade in [false, true] {
-      let counts : Map[String, Int] = Map([])
+      let counts : Map[String, Int32] = Map([])
       assert_eq(
         ordering_program(ordering_unused(value), handmade).evaluate(
           native_functions=rewrite_natives(counts),

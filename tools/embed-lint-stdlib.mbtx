@@ -1,4 +1,6 @@
+----
 import {"moonbitlang/async@0.22.4","moonbitlang/async@0.22.4/fs","moonbitlang/async@0.22.4/shell","moonbitlang/core/env"}
+----
 async fn main {
   let args=@env.args();guard args.length()==2 else {fail("Usage: moon run tools/embed-lint-stdlib.mbtx GO_CHECKOUT")}
   let root=args[1]

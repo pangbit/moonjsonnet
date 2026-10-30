@@ -10,8 +10,8 @@
 
 ///|
 priv struct FormatIndentValue {
-  anchor : Int
-  levels : Int
+  anchor : Int32
+  levels : Int32
 } derive(Eq)
 
 ///|
@@ -29,10 +29,10 @@ priv struct FormatIndentPlan {
 ///|
 fn FormatIndentValue::resolve(
   self : FormatIndentValue,
-  columns : Array[Int],
-  indent : Int,
-  maximum : Int,
-) -> Int {
+  columns : Array[Int32],
+  indent : Int32,
+  maximum : Int32,
+) -> Int32 {
   // Slice closing fodder is intentionally left untouched by fixed Go.
   if self.anchor == -2 {
     return self.levels
@@ -49,7 +49,7 @@ fn FormatIndentValue::resolve(
 fn format_grouping_paren(
   tokens : Array[Token],
   layout : FormatLayout,
-  open : Int,
+  open : Int32,
 ) -> Bool {
   if tokens[open].text != "(" || layout.parameter[open] {
     return false
@@ -80,8 +80,8 @@ fn format_indent_plan(
     base: Array::make(tokens.length(), zero),
     line_up: Array::make(tokens.length(), zero),
   }
-  let positions : Map[(Int, Int), Int] = Map([])
-  let ends : Map[(Int, Int), Int] = Map([])
+  let positions : Map[(Int32, Int32), Int32] = Map([])
+  let ends : Map[(Int32, Int32), Int32] = Map([])
   for i, token in tokens {
     writer.tick()
     positions[(token.loc.line, token.loc.column)] = i
@@ -117,7 +117,7 @@ fn format_indent_plan(
       None => start(current) + 1
     }
   }
-  let on_new_line = fn(i : Int) {
+  let on_new_line = fn(i : Int32) {
     if layout.newline[i] {
       true
     } else {
@@ -144,7 +144,7 @@ fn format_indent_plan(
     }
   }
   let child_at = fn(
-    i : Int,
+    i : Int32,
     old : FormatIndentContext,
     strong : Bool,
   ) -> FormatIndentContext {

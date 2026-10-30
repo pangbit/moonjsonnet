@@ -2,7 +2,7 @@
 // BSD terms: licenses/GO-BSD-3-Clause.txt.
 
 ///|
-fn lint_lower_bound(xs : Array[Int], n : Int) -> Int {
+fn lint_lower_bound(xs : Array[Int32], n : Int32) -> Int32 {
   let mut low = 0
   let mut high = xs.length()
   while low < high {
@@ -17,7 +17,7 @@ fn lint_lower_bound(xs : Array[Int], n : Int) -> Int {
 }
 
 ///|
-fn lint_printable(n : Int) -> Bool {
+fn lint_printable(n : Int32) -> Bool {
   if n <= 255 {
     return (n >= 32 && n <= 126) || (n >= 161 && n <= 255 && n != 173)
   }
