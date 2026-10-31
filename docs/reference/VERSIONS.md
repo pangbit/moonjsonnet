@@ -3,6 +3,9 @@
 The development toolchain was updated on 2026-10-30. The Jsonnet references
 remain fixed at the versions chosen before implementation on 2026-10-02:
 
+Version 0.2.3 requires the MoonBit compiler and Moon CLI below. This is the
+validated SDK baseline for this toolchain compatibility release.
+
 | Component | Version / source |
 | --- | --- |
 | Moon / moonrun | 0.1.20261028, e1e1f15 |
@@ -36,8 +39,15 @@ OrbStack Ubuntu 24.04 Linux AMD64. Each platform built the current release CLI
 once and passed its version and configuration-input smoke checks. macOS also
 passed the five differential-validator regression tests, the 31-case archive
 consumer, and the documentation check (217 files, 1954 links). These are focused
-toolchain-migration checks. The full test suite, fresh reference comparisons,
-Linux archive consumer and hosted CI have not been rerun with the new compiler.
+toolchain-migration checks. Subsequently,
+[CI 41147766353](https://github.com/pangbit/moonjsonnet/actions/runs/41147766353)
+passed the exact adaptation commit `aa50b50c648e130241a6a7efb720b8abd70c3bfe`
+on macOS ARM64 and Linux AMD64: native debug and release each passed 1118/1118,
+and both jobs ran formatting, interface, documentation, C++ comparison, CLI
+integration and 31 archive-consumer cases. The C++ comparison retained 103
+matching cases and six explicit reference differences, with zero failures;
+303 upstream language cases passed. Fresh Go comparisons were not rerun.
+Release-commit CI and registry installation remain separate checks.
 
 CI pins the installer argument and reference commit. Toolchain download archives
 have an upstream retention policy; if the pinned build becomes unavailable,

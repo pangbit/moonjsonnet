@@ -1,21 +1,22 @@
 # Release checklist
 
 Publication and remote push are explicit maintainer actions. Versions 0.1.0,
-0.2.0 and 0.2.1 have published registry records; 0.1.0 was published on 2026-10-13.
-The selected next candidate is 0.2.2. Do not overwrite an existing version.
+0.2.0, 0.2.1 and 0.2.2 have published registry records; 0.1.0 was published on 2026-10-13.
+The selected next candidate is 0.2.3. Do not overwrite an existing version.
 Versioned release notes describe the changes without asserting publication or
 a source tag. Record the registry result and timestamp after actual success.
 This checklist does not establish a successful publication or remote CI run.
 
-The cumulative native debug regression passed 1118/1118 on macOS ARM64 at
-product source `802249795bef6d1cabb9759f780c53475d68d604` and Linux AMD64 at
-`6ca452f7be9c80d032fec2e762f1714178e14c78`; their product and fixture bytes match.
-Eight independent archive-consumer groups and 24 CLI acceptance cases passed
-for that product. Reuse those source-bound results instead of repeating them
-for version/documentation-only edits. The older four-mode 1087 results remain
-historical. The 138 finite public mappings do not establish complete v0.21.0
-conformance. A new version creates a distinct package identity: earlier archive
-and local-consumer success do not verify the 0.2.2 archive or a registry install.
+The toolchain adaptation at `aa50b50c648e130241a6a7efb720b8abd70c3bfe` passed
+[CI 41147766353](https://github.com/pangbit/moonjsonnet/actions/runs/41147766353):
+native debug and release each passed 1118/1118 on macOS ARM64 and Linux AMD64,
+plus documentation, CLI integration and 31 archive-consumer cases per platform.
+Reuse those source-bound functional results for version/documentation-only
+edits; the exact release commit still needs its own CI result. Older regression
+and finite-contract records retain their historical scope and do not establish
+complete v0.21.0 conformance. A new version creates a distinct package identity:
+earlier archive and local-consumer success do not verify the 0.2.3 archive or a
+registry install. The release requires the SDK in [VERSIONS](../reference/VERSIONS.md).
 
 1. Review the diff, compatibility scope, license/NOTICE, module version and
    repository URL. Select applicable checks from [VALIDATION](VALIDATION.md),
@@ -39,13 +40,13 @@ and local-consumer success do not verify the 0.2.2 archive or a registry install
    are byte-identical merely because their extracted contents match.
 5. Verify a clean worktree and `moon whoami` for namespace `pangbit`. Inspect the
    target registry version before any publication; versions are release identities.
-   Keep version `0.2.2` notes free of unverified publication dates or claims.
+   Keep version `0.2.3` notes free of unverified publication dates or claims.
    If the version already exists, stop and select a new version explicitly;
    do not attempt to replace it. Revalidate a changed toolchain or package.
 6. With explicit authorization, push commits and verify CI for that exact release
    commit; an older green main run is not evidence for new commits. No auto-publish
    token is stored in CI. Then publish using `moon publish` and verify the registry
-   with a fresh independent `moon add pangbit/moonjsonnet@0.2.2` consumer. Update
+   with a fresh independent `moon add pangbit/moonjsonnet@0.2.3` consumer. Update
    both README status paragraphs if needed after the actual publication is confirmed;
    do not present the local archive consumer as a registry installation.
 7. Record the actual registry result and archive checksum, update release notes,
